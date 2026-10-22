@@ -1,0 +1,25 @@
+{
+  "allowed_external_roots": [
+    "__future__",
+    "collections",
+    "datetime",
+    "decimal",
+    "hashlib",
+    "heapq",
+    "importlib",
+    "io",
+    "json",
+    "pathlib",
+    "pydantic",
+    "typing",
+    "zoneinfo"
+  ],
+  "checked_files": [
+    "pdos-next/server/pdos_next/engines/planning/__init__.py",
+    "pdos-next/server/pdos_next/engines/planning/calendar.py",
+    "pdos-next/server/pdos_next/engines/planning/dto.py",
+    "pdos-next/server/pdos_next/engines/planning/forecast.py"
+  ],
+  "legacy_or_business_imports": [],
+  "status": "passed"
+}

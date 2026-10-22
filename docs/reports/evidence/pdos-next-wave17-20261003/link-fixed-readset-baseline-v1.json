@@ -1,0 +1,16 @@
+{
+  "scope": "actual immutable old Link source closure comparison, no owner API and no writes",
+  "outputs": [
+    {
+      "kind": "verification_request",
+      "stored_count": 2,
+      "fixed_row_count": 2,
+      "stored_equal_fixed": true,
+      "snapshot_reads_equal_stored": true,
+      "stored_sha256": "89f67ea75cc2c67de928b26d085b8a693728a0a42cebd141357e6e2986899035",
+      "fixed_sha256": "89f67ea75cc2c67de928b26d085b8a693728a0a42cebd141357e6e2986899035",
+      "method_assessments_count": 0,
+      "window_proposals_count": 0
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "argv": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+    "format",
+    "--config",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+    "wave22_authority_readback.py",
+    "test_wave22_authority_readback.py"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.025,
+  "created_at": "2026-10-03T18:51:59.445681+00:00",
+  "no_db_http": true
+}

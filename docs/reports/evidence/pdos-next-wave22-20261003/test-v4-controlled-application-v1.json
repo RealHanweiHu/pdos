@@ -1,0 +1,15 @@
+{
+  "status": "APPLIED_AND_CHECKED",
+  "files": {
+    "tools/wave22_shared_test.py": "e1613219fec3fd4ff8b6c954c3f023905a5290499ac47bb3240d40a8230e9659",
+    "tools/tests/test_wave22_shared_test.py": "b6d0be746b89496f49e8f5139146de830629d1cdc017550ce576d45eeb7655a3"
+  },
+  "pure_log": "test-actual-layout-pure-v6.log",
+  "passed": 97,
+  "counts_not_summed": true,
+  "retained_errors": [
+    "test-actual-layout-pure-v5.log (wrong test path, zero collected)",
+    "Root application evidence relative-path error after successful two-file copy; no business operations"
+  ],
+  "core_runtime_changed": false
+}

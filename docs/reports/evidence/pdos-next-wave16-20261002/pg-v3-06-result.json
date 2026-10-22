@@ -1,0 +1,9 @@
+{
+  "node": "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.issue.root_cause.decide]",
+  "exit_code": 0,
+  "seconds": 1891.78,
+  "source_stable": true,
+  "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+  "log_file": "pg-v3-06.log",
+  "log_sha256": "8eae185cc2be84507e942f57bd0bff92f6ceddc648168ba5c146de48132b80e6"
+}

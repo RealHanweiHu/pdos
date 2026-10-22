@@ -1,0 +1,9 @@
+{
+  "actual_final_candidate": "/private/tmp/pdos-s3-continuation-rk2giy_8",
+  "prior_pure_candidate": "/private/tmp/pdos-s3-continuation-a4g8bm50",
+  "changed": [
+    "pdos-next/server/tests/change_execution/approved_configuration_continuation_helpers.py"
+  ],
+  "37_host_checks_runtime_and_test_unchanged": true,
+  "final_5_owned_lint_and_format_passed": true
+}

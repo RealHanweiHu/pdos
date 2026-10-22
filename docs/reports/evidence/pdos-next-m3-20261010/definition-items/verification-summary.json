@@ -1,0 +1,36 @@
+{
+  "schema_head": "s0_0756",
+  "synthetic_only": true,
+  "llm_calls": 0,
+  "database_target": "127.0.0.1:64245/pdos_test",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "checks": {
+    "pg-6.xml": {
+      "tests": 200,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "pure-1.xml": {
+      "tests": 251,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "diff-pure-4.xml": {
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "frontend_different_cases": 52,
+  "frontend_component_and_view_cases": 36,
+  "bff_and_navigation_cases": 16,
+  "pure_overlap_note": "13 final diff cases overlap earlier pure coverage; do not add them to 251 as distinct cases.",
+  "backend_freeze": "Final database suite completed before frontend notice-only repair; no backend or schema edits followed.",
+  "browser_result": "Actual commit then response loss, no automatic POST after reload, one explicit original POST returned the same receipt; database count one.",
+  "migration_roundtrip": "0752→0753→0752→0753;0753→0754→0753→0754;0754→0755→0754→0755;0755→0756→0755→0756, exact catalog and full ORM checked.",
+  "source_manifest": "source-manifest.json",
+  "stage_result": "definition item/continuation/diff checkpoint passed; complete M3/S1 pending"
+}

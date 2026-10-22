@@ -1,0 +1,53 @@
+▶ sealed typed-only G0/published continuation sends only fixed-parent fields
+  ✔ draft (15.730958ms)
+  ✔ published (1.9985ms)
+✔ sealed typed-only G0/published continuation sends only fixed-parent fields (18.757958ms)
+✔ actual full item edit retains zero and M3 fields, strips every provenance field (11.432916ms)
+▶ boolean false and enum text survive actual editing without numeric conversion
+  ✔ boolean (9.972042ms)
+  ✔ enum (9.673625ms)
+✔ boolean false and enum text survive actual editing without numeric conversion (19.966708ms)
+✔ new confirmed item requires user's explicit statement; no source is invented (29.225208ms)
+✔ remove uses actual preview then the sealed request, never sends content or source fields (13.512292ms)
+✔ unmount and refresh recover unknown exact command without automatic submission (15.361084ms)
+✔ precise version refusal survives remount and requires explicit reread before a new request (18.912334ms)
+✔ fixed-consumption refusal keeps parent and guides an explicit continuation (18.285417ms)
+▶ 401/403 clear private presentation and retain the exact request across refresh
+  ✔ 401 (12.888084ms)
+  ✔ 403 (12.212375ms)
+✔ 401/403 clear private presentation and retain the exact request across refresh (25.402208ms)
+▶ unknown 409 and 5xx never release the original request
+  ✔ 409 (13.30275ms)
+  ✔ 503 (13.117458ms)
+✔ unknown 409 and 5xx never release the original request (26.712333ms)
+✔ receipt success notifies owner immediately and survives failed refresh (14.350542ms)
+✔ a new unknown request clears the previous success and preserves exact manual recovery (27.146875ms)
+✔ scope switch ignores old UI response but stores the original scope's receipt (11.918833ms)
+✔ storage failure prevents a new write and mismatched receipts preserve recovery (6.239042ms)
+✔ projection never fills unknown with zero and reference extras never become policy (0.100083ms)
+▶ specific format and item validation refusals allow explicit reread, while preserving the original until then
+  ✔ INVALID_PAYLOAD (2.438333ms)
+  ✔ parameter_unit_mismatch (2.258792ms)
+  ✔ definition_item_removed (2.201666ms)
+✔ specific format and item validation refusals allow explicit reread, while preserving the original until then (7.189666ms)
+✔ late removal preview never enters another fixed definition scope (0.831916ms)
+✔ actual numeric editor saves a single bound without changing dictionary identity or copied conditions (1.582166ms)
+✔ typed definitions display false, enum, exact zero and unknown without truthiness loss (0.234667ms)
+✔ a newer definition in another variant, product or category is not this definition's successor (0.075417ms)
+✔ legacy override projects only accepted business fields, preserving exact decimals and original references (0.18475ms)
+✔ complete typed facts and provenance cannot be silently lowered into NativeOverride (0.555209ms)
+✔ empty migration defaults preserve old shape, while unknown does not acquire a numeric zero (0.071334ms)
+✔ latest parent is scoped to the same category, product and variant instead of list order (0.103625ms)
+✔ sealed, published, source-unavailable and modern parents do not enable Native derive (0.063625ms)
+✔ G0 comparison remains readable without permitting native rebase, and legacy rebase retains lineage checks (0.188834ms)
+✔ source bounds display as explicit constraints without a fabricated endpoint (0.044541ms)
+✔ the dictionary number type accepts bounds and rejects mixed scalar or missing values (0.047167ms)
+✔ item and full-definition views preserve number-bound identity and exact decimal display (0.195333ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 298.323125

@@ -1,0 +1,25 @@
+{
+  "target": {
+    "host": "localhost",
+    "port": 57432,
+    "database": "pdos"
+  },
+  "before_head": "0423_xiaopai_conversation_search",
+  "backup": {
+    "path": "/Users/huhanwei/pdos-preview-backups/20261006-0423-061450/pdos-before-0424.dump",
+    "sha256": "bd06d95abf47ab8085e66335e241aa1c1fbcf6a869142389798a2fb7289817b7",
+    "bytes": 4249379,
+    "mode": "0o600",
+    "archive_list_verified": true,
+    "restored": false
+  },
+  "before_counts": {
+    "cehub_core.tenants": 1,
+    "cehub_core.users": 6,
+    "cehub_project.projects": 1,
+    "cehub_ai.agent_runs": 4,
+    "cehub_product.market_spaces": 1,
+    "cehub_product.product_nodes": 0,
+    "cehub_product.product_source_files": 0
+  }
+}

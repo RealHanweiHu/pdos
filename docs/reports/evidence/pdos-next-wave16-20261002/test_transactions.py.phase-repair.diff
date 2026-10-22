@@ -1,0 +1,42 @@
+--- utc-clock-assertion-before-v3.py.txt
++++ tests/quality_followup_transactions/test_transactions.py
+@@ -4,7 +4,7 @@
+ 
+ from copy import deepcopy
+ from dataclasses import replace
+-from datetime import timedelta
++from datetime import datetime, timedelta
+ from uuid import UUID, uuid4
+ 
+ import pytest
+@@ -170,7 +170,14 @@
+     for index, action in enumerate(complete.issue_snapshot["capa"]["actions"]):
+         persisted = action["completion"]
+         assert persisted["executor_id"] == str(work.quality.human)
+-        assert persisted["at"]["occurred_at"] == work.completions[index]["at"]["occurred_at"]
++        actual_at = datetime.fromisoformat(persisted["at"]["occurred_at"])
++        original_at = datetime.fromisoformat(work.completions[index]["at"]["occurred_at"])
++        assert actual_at.utcoffset() is not None and original_at.utcoffset() is not None
++        assert actual_at == original_at
++        assert (
++            persisted["at"]["original_timezone"]
++            == work.completions[index]["at"]["original_timezone"]
++        )
+         assert persisted["text"] == work.completion_rows[index]["text"]
+     for row, command_value, receipt in (
+         (partial, first_command, first),
+@@ -181,9 +188,11 @@
+         assert receipt["subject_id"] == str(row.id)
+         observation = row.source_basis["completion_observations"][-1]
+         assert observation["received_at"] is not None
+-        assert observation["fact"]["occurred_at"] in {
+-            r["occurred_at"] for r in work.completion_rows
+-        }
++        actual_at = datetime.fromisoformat(observation["fact"]["occurred_at"])
++        original_times = {datetime.fromisoformat(r["occurred_at"]) for r in work.completion_rows}
++        assert actual_at.utcoffset() is not None
++        assert all(instant.utcoffset() is not None for instant in original_times)
++        assert actual_at in original_times
+     historical = fixed_issue(work, before.revision)
+     assert historical.issue_snapshot == before.issue_snapshot
+     saved_execution = current_rows(work)

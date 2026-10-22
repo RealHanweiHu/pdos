@@ -1,0 +1,112 @@
+{
+  "passed": true,
+  "database": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d"
+  },
+  "steps": [
+    {
+      "name": "before",
+      "head": "s0_0810",
+      "table_exists": false
+    },
+    {
+      "name": "upgrade_1",
+      "target": "s0_0811",
+      "exit_code": 0,
+      "output": "",
+      "actual": {
+        "head": "s0_0811",
+        "table_exists": true,
+        "rows": 0,
+        "owner_and_rls": {
+          "owner": "pdos_next_owner",
+          "rls": true,
+          "forced": true
+        },
+        "privileges": {
+          "pdos_next_app": {
+            "SELECT": true,
+            "INSERT": true,
+            "UPDATE": false,
+            "DELETE": false
+          },
+          "pdos_agent": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          },
+          "pdos_next_auth": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          },
+          "pdos_next_dispatch": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          }
+        },
+        "new_table_orm_diff": []
+      }
+    },
+    {
+      "name": "downgrade_2",
+      "target": "s0_0810",
+      "exit_code": 0,
+      "output": "",
+      "actual": {
+        "head": "s0_0810",
+        "table_exists": false
+      }
+    },
+    {
+      "name": "upgrade_3",
+      "target": "s0_0811",
+      "exit_code": 0,
+      "output": "",
+      "actual": {
+        "head": "s0_0811",
+        "table_exists": true,
+        "rows": 0,
+        "owner_and_rls": {
+          "owner": "pdos_next_owner",
+          "rls": true,
+          "forced": true
+        },
+        "privileges": {
+          "pdos_next_app": {
+            "SELECT": true,
+            "INSERT": true,
+            "UPDATE": false,
+            "DELETE": false
+          },
+          "pdos_agent": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          },
+          "pdos_next_auth": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          },
+          "pdos_next_dispatch": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          }
+        },
+        "new_table_orm_diff": []
+      }
+    }
+  ]
+}

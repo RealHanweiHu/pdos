@@ -1,0 +1,8 @@
+{
+  "predecessor": "next_0020",
+  "successor": "next_0021",
+  "old_function_sha256": "6a5b83f21be3f7fc6f4dbdf7b93e0e743cfbfc71359353f1e9ca4861813b3ec5",
+  "new_function_sha256": "05e8d8c0387949e51a24de6b4456f896c7e9c99d5de9170a26fe9268fbd6f262",
+  "change": "Both JSON extraction operands explicitly parenthesized before @>; applied 0019 and 0020 retained.",
+  "applied": false
+}

@@ -1,0 +1,35 @@
+{
+  "verified_database": {
+    "name": "pdos_test",
+    "port": 64245,
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d"
+  },
+  "verified_initial_head": "s0_0758",
+  "steps": [
+    {
+      "command": "alembic upgrade head",
+      "exit": 0,
+      "revision": "s0_0759"
+    },
+    {
+      "command": "alembic downgrade s0_0758",
+      "exit": 0
+    },
+    {
+      "command": "alembic upgrade head",
+      "exit": 0,
+      "revision": "s0_0759"
+    }
+  ],
+  "verified_final_head": "s0_0759",
+  "empty_new_tables_roundtrip": true,
+  "actual_orm_differences": [],
+  "orm_compared_tables": [
+    "platforms",
+    "platform_product_links",
+    "platform_link_current"
+  ],
+  "reflection_warning": "Existing action_receipts/claims/definition_revisions/proposals/runs/work_requests FK cycles; no new platform table differences.",
+  "private_pre_upgrade_backup": "pdos-next/.local/platform-links-20261015-before.dump",
+  "immutable_history_downgrade": "refused and rolled back in test_platform_migration_refuses_to_remove_committed_history"
+}

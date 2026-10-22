@@ -1,0 +1,41 @@
+{
+  "schema_version": "pdos-next-wave19-actual-browser-v1",
+  "status": "PASS",
+  "url": "http://localhost:3028/?area=projects&view=issues&product=b1e23421-6c70-4fc5-a87f-96744baab2e8",
+  "synthetic": true,
+  "business_commands_submitted": 0,
+  "initial": {
+    "disabled": false,
+    "options": [
+      {
+        "label": "请明确选择候选，不默认采用历史记录",
+        "selected": true,
+        "value": ""
+      },
+      {
+        "label": "复验候选 · 2026-10-03T13:57:32.934716+00:00 · 固定配对 0 项 · 私人范围",
+        "selected": false,
+        "value": "f392b96f-3739-4f00-b4cd-ea7d21235f86"
+      }
+    ],
+    "value": ""
+  },
+  "selected": {
+    "disabled": false,
+    "value": "f392b96f-3739-4f00-b4cd-ea7d21235f86"
+  },
+  "unsent_draft_cleared": true,
+  "review_preview_enabled": false,
+  "rule_history_present": true,
+  "observation_history_present": true,
+  "visible_missing": [
+    "当前专业资格尚不能核对，暂不能办理。",
+    "本操作当前具名职责或资格尚需核对。",
+    "规则、原记录或当前专业核验依据尚不完整。"
+  ],
+  "screenshots": [
+    "actual-candidate-selection.jpg",
+    "actual-review-blocked.jpg"
+  ],
+  "scope": "actual selection, draft discard, current selected GET, negative professional gate; no positive NamedReview or full formal joint exit"
+}

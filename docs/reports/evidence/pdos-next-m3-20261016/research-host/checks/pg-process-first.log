@@ -1,0 +1,43 @@
+F
+=================================== FAILURES ===================================
+__ test_default_research_worker_retains_child_checkpoint_and_actual_snapshot ___
+
+setup = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1229804d0>
+tmp_path = PosixPath('/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/research-host-first-20261016/test_default_research_worker_r0')
+
+    def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
+        setup, monkeypatch, tmp_path
+    ):
+        fixtures = [fixture(setup, skill_key=key) for key in ("proposal_drafting", "public_research")]
+        monkeypatch.setattr(AliyunKms, "sdk", lambda _self: KmsSdk())
+        value = document(setup.tenant)
+        value["research"] = {
+            "search_endpoint": "http://127.0.0.1:18888/search",
+            "search_provider": "synthetic-search",
+            "artifact_root": str(tmp_path / "research"),
+        }
+        monkeypatch.setenv(
+            "PDOS_TENANT_RUNTIME_CONFIG", str(write_config(tmp_path / "host.json", value))
+        )
+>       checkpoint_url = verified_checkpoint_url(os.environ["M2_TEST_CHECKPOINT_URL"])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_research_runtime_process.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/workflows/checkpoints.py:19: in verified_checkpoint_url
+    engine = engine_for(url)
+             ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+url = '[PRIVATE_DSN]'
+
+    def engine_for(url: str):
+        if not url.startswith("postgresql+psycopg://"):
+>           raise RuntimeError("Explicit PostgreSQL psycopg URL required; no environment fallback")
+E           RuntimeError: Explicit PostgreSQL psycopg URL required; no environment fallback
+
+pdos_next/database.py:12: RuntimeError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_research_runtime_process.py::test_default_research_worker_retains_child_checkpoint_and_actual_snapshot
+1 failed in 2.17s

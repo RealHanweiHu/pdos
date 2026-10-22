@@ -1,0 +1,17 @@
+{
+  "observed_at": "2026-10-03T09:01:39.880801+00:00",
+  "scope": "Actual local v3 built UI with owned v5 helper; synthetic actor only",
+  "actual_states": [
+    "Original execute request restored after page reload",
+    "Server bound not_saved_expired_proof response accepted by exact-echo UI helper",
+    "Original request retained as manual repreview; no automatic preview or approval",
+    "Refresh current facts showed Issue v4 and current authority before manual repreview"
+  ],
+  "original_issue_revision": 4,
+  "business_save_not_yet_observed": true,
+  "web_manifest_sha256": "48732bfa43269b42bfc55685d414e2b12b633545f4fa82d9a1289441d5387d81",
+  "backend_manifest_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+  "image": "browser-expired-recovery-v5.png",
+  "image_sha256": "15aacab8e97e0aa8634675603a8962d8bd60dd9a8570bf315ca69f300f12bbbe",
+  "no_local_storage_mutation_or_alternate_command": true
+}

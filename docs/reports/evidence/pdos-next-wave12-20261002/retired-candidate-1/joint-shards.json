@@ -1,0 +1,184 @@
+{
+  "pure": [
+    "tests/build_operational_facts/test_pure.py",
+    "tests/build_start/test_rules.py",
+    "tests/derivation_engine/test_derivation.py",
+    "tests/evidence_processing/test_documents.py",
+    "tests/evidence_processing/test_storage.py",
+    "tests/evidence_security/test_scanning.py",
+    "tests/object_journal/test_store.py",
+    "tests/object_lifecycle_runtime/test_runtime.py",
+    "tests/original_lifecycle/test_rules.py",
+    "tests/original_lifecycle/test_safety_guard.py",
+    "tests/original_lifecycle/test_service.py",
+    "tests/original_lifecycle_execution/test_codec.py",
+    "tests/original_lifecycle_execution/test_fact_clock.py",
+    "tests/original_lifecycle_execution/test_ports.py",
+    "tests/planning/test_scheduling.py",
+    "tests/planning_engine/test_calendar.py",
+    "tests/planning_engine/test_forecast.py",
+    "tests/products/test_definition_payload.py",
+    "tests/products/test_variants_payload.py",
+    "tests/professional_authority/test_assessment.py",
+    "tests/providers/test_claim_gateway.py",
+    "tests/providers/test_persistent_budget_contract.py",
+    "tests/providers/test_reconciliation_schema.py",
+    "tests/sample_handoff/test_rules.py",
+    "tests/security_runtime/test_runtime.py",
+    "tests/supply_cost_engine/test_contract.py",
+    "tests/supply_cost_engine/test_costs.py",
+    "tests/supply_cost_engine/test_coverage.py",
+    "tests/verification_front/test_pure.py",
+    "tests/verification_handoff/test_pure.py"
+  ],
+  "build_start-0": [
+    "tests/build_start/test_transactions.py::test_assessment_unknown_professional_but_reviewable_uses_exact_same_persisted_demand",
+    "tests/build_start/test_transactions.py::test_changed_start_semantic_cannot_reuse_own_reservation",
+    "tests/build_start/test_transactions.py::test_reassessment_cas_invalidates_old_fixed_approval_start",
+    "tests/build_start/test_transactions.py::test_end_of_outbox_rollback_leaves_no_start_holds_epoch_or_confirmation_consumption",
+    "tests/build_start/test_transactions.py::test_shared_build_three_named_people_and_distinct_grant_expiries"
+  ],
+  "build_start-1": [
+    "tests/build_start/test_transactions.py::test_t2_preview_named_one_confirmation_and_approve_not_t1",
+    "tests/build_start/test_transactions.py::test_source_withdrawal_guards_successful_start_replay_and_keeps_history",
+    "tests/build_start/test_transactions.py::test_missing_professional_controls_or_no_exact_readset_blocks_before_confirmation",
+    "tests/build_start/test_transactions.py::test_execution_facts_immutable_and_pointer_cannot_delete_or_backtrack"
+  ],
+  "build_start-2": [
+    "tests/build_start/test_transactions.py::test_atomic_start_holds_receipt_and_read_projection_do_not_modify_original_plan",
+    "tests/build_start/test_transactions.py::test_original_approver_qualification_revoke_restore_aba_invalidates_old_t1",
+    "tests/build_start/test_transactions.py::test_product_writer_without_trusted_professional_fact_cannot_self_authorize",
+    "tests/build_start/test_transactions.py::test_preexisting_actual_deviation_is_nonwaivable_start_blocker"
+  ],
+  "build_start-3": [
+    "tests/build_start/test_transactions.py::test_start_same_key_and_new_key_semantic_replay_has_no_double_holds",
+    "tests/build_start/test_transactions.py::test_authorization_revoke_cas_blocks_old_start_and_does_not_erase_old_approval",
+    "tests/build_start/test_transactions.py::test_agent_or_run_never_performs_t2_or_start",
+    "tests/build_start/test_transactions.py::test_poststart_deviation_remains_recordable_but_requires_stop_recheck"
+  ],
+  "build_operational_facts-0": [
+    "tests/build_operational_facts/test_transactions.py::test_known_fixed_demand_host_import_and_category_clock_stability",
+    "tests/build_operational_facts/test_transactions.py::test_grant_revoke_restore_epoch_and_named_decision_revoke_never_restore_old_authority",
+    "tests/build_operational_facts/test_transactions.py::test_concurrent_successor_cas_keeps_one_complete_atomic_global_version",
+    "tests/build_operational_facts/test_transactions.py::test_exact_source_quote_and_final_tables_have_rls_agent_zero_and_immutable_facts"
+  ],
+  "build_operational_facts-1": [
+    "tests/build_operational_facts/test_transactions.py::test_import_same_and_alias_key_replays_one_receipt_without_rewriting_assets",
+    "tests/build_operational_facts/test_transactions.py::test_opaque_scope_and_current_person_guard_without_productgrant_upgrade",
+    "tests/build_operational_facts/test_transactions.py::test_terminal_outbox_failure_rolls_back_facts_assets_pointer_and_requestkey"
+  ],
+  "build_operational_facts-2": [
+    "tests/build_operational_facts/test_transactions.py::test_history_replay_never_rewinds_current_bundle_or_global_asset",
+    "tests/build_operational_facts/test_transactions.py::test_same_physical_version_different_content_and_bom_quantity_shrinking_are_rejected",
+    "tests/build_operational_facts/test_transactions.py::test_reserve_cannot_commit_without_exact_same_uow_buildstart_owner"
+  ],
+  "build_operational_facts-3": [
+    "tests/build_operational_facts/test_transactions.py::test_current_source_is_checked_before_import_replay_and_whole_uow_stays_unchanged",
+    "tests/build_operational_facts/test_transactions.py::test_fact_withdrawal_changes_global_epoch_and_blocks_old_bundle",
+    "tests/build_operational_facts/test_transactions.py::test_other_private_build_is_fully_counted_but_hidden_from_public_computation"
+  ],
+  "sample_handoff-0": [
+    "tests/sample_handoff/test_transactions.py::test_targeted_execution_projection_preserves_qualification_stop_and_source_guards",
+    "tests/sample_handoff/test_transactions.py::test_signer_qualification_revoke_restore_epoch_does_not_revive_readiness"
+  ],
+  "sample_handoff-1": [
+    "tests/sample_handoff/test_transactions.py::test_ready_is_exact_purpose_current_and_three_readers_have_same_objective_fingerprint",
+    "tests/sample_handoff/test_transactions.py::test_physical_fact_and_current_pointer_immutable_history_cannot_be_overwritten"
+  ],
+  "sample_handoff-2": [
+    "tests/sample_handoff/test_transactions.py::test_hold_blocks_all_purposes_and_receipt_replay_never_rewinds_current",
+    "tests/sample_handoff/test_transactions.py::test_shared_transaction_failure_rolls_back_fact_pointer_receipt_and_confirmation"
+  ],
+  "sample_handoff-3": [
+    "tests/sample_handoff/test_transactions.py::test_new_observation_source_withdrawal_blocks_current_ready_and_new_ready_write"
+  ],
+  "verification_handoff-0": [
+    "tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth",
+    "tests/verification_handoff/test_transactions.py::test_bad_actual_configuration_and_event_source_locator_are_rejected",
+    "tests/verification_handoff/test_transactions.py::test_quality_and_engineering_roles_not_interchangeable_and_cross_tenant_hidden"
+  ],
+  "verification_handoff-1": [
+    "tests/verification_handoff/test_transactions.py::test_planned_positive_never_substitutes_actual_method_unknown",
+    "tests/verification_handoff/test_transactions.py::test_method_pair_concurrent_cas_has_one_batch_and_one_common_receipt",
+    "tests/verification_handoff/test_transactions.py::test_actual_fact_immutable_rls_agent_zero_write_and_current_pointer_cannot_backtrack"
+  ],
+  "verification_handoff-2": [
+    "tests/verification_handoff/test_transactions.py::test_same_actual_intent_new_key_replays_batch_before_pair_cas",
+    "tests/verification_handoff/test_transactions.py::test_terminal_common_receipt_failure_rolls_back_actual_facts_pointer_and_confirmation",
+    "tests/verification_handoff/test_transactions.py::test_stale_actual_qualification_keeps_real_pair_pointer_and_can_be_renewed"
+  ],
+  "verification_handoff-3": [
+    "tests/verification_handoff/test_transactions.py::test_hold_after_accept_review_invalidates_confirmation_and_preserves_scope",
+    "tests/verification_handoff/test_transactions.py::test_source_withdrawal_blocks_receipt_replay_without_erasing_history",
+    "tests/verification_handoff/test_transactions.py::test_withdrawn_new_same_plan_actual_observation_blocks_acceptance"
+  ],
+  "tests-test_build_execution": [
+    "tests/test_build_execution.py"
+  ],
+  "tests-test_cost_execution": [
+    "tests/test_cost_execution.py"
+  ],
+  "tests-test_verification_execution": [
+    "tests/test_verification_execution.py"
+  ],
+  "products-test_definition_transactions": [
+    "tests/products/test_definition_transactions.py"
+  ],
+  "products-test_variants_transactions": [
+    "tests/products/test_variants_transactions.py"
+  ],
+  "professional_authority-test_transactions": [
+    "tests/professional_authority/test_transactions.py"
+  ],
+  "providers-test_persistent_budget_transactions": [
+    "tests/providers/test_persistent_budget_transactions.py"
+  ],
+  "tests-test_build_comparison": [
+    "tests/test_build_comparison.py"
+  ],
+  "tests-test_build_demand": [
+    "tests/test_build_demand.py"
+  ],
+  "tests-test_build_readiness": [
+    "tests/test_build_readiness.py"
+  ],
+  "tests-test_build_start_common": [
+    "tests/test_build_start_common.py"
+  ],
+  "tests-test_builds": [
+    "tests/test_builds.py"
+  ],
+  "tests-test_checkpoint_recovery": [
+    "tests/test_checkpoint_recovery.py"
+  ],
+  "tests-test_configurations": [
+    "tests/test_configurations.py"
+  ],
+  "tests-test_durable_evidence": [
+    "tests/test_durable_evidence.py"
+  ],
+  "tests-test_handoff_common": [
+    "tests/test_handoff_common.py"
+  ],
+  "tests-test_original_security": [
+    "tests/test_original_security.py"
+  ],
+  "tests-test_project_first_plan": [
+    "tests/test_project_first_plan.py"
+  ],
+  "tests-test_supply_execution": [
+    "tests/test_supply_execution.py"
+  ],
+  "tests-test_trusted_source_work": [
+    "tests/test_trusted_source_work.py"
+  ],
+  "verification_front-test_read_concurrency_transactions": [
+    "tests/verification_front/test_read_concurrency_transactions.py"
+  ],
+  "verification_front-test_transactions": [
+    "tests/verification_front/test_transactions.py"
+  ],
+  "lifecycle-isolated": [
+    "tests/test_original_lifecycle_integration.py"
+  ]
+}

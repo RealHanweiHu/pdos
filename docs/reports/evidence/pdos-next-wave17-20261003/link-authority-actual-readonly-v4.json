@@ -1,0 +1,23 @@
+{
+  "scope": "actual readonly Link professional fingerprint; no fact writes",
+  "model_calls": 0,
+  "False": {
+    "current": false,
+    "authorized": true,
+    "qualified": true,
+    "reason_codes": [
+      "PROFESSIONAL_AUTHORITY_CHANGED"
+    ]
+  },
+  "True": {
+    "current": true,
+    "authorized": true,
+    "qualified": true,
+    "reason_codes": []
+  },
+  "actual_link": {
+    "current": true
+  },
+  "status": "PASS",
+  "finished_at": "2026-10-03T13:29:48.555076+00:00"
+}

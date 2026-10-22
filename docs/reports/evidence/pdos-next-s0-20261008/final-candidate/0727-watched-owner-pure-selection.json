@@ -1,0 +1,5 @@
+[
+  "tests/build_start/test_writer_projection.py",
+  "tests/test_build_start_common.py",
+  "tests/sample_handoff/test_read_context.py"
+]

@@ -1,0 +1,68 @@
+F.........FF
+=================================== FAILURES ===================================
+_____________ test_batch_t1_named_t2_atom_replay_and_actual_policy _____________
+
+f = namespace(setup=<isolated synthetic test scope>, client=<starlette.testclient.TestClient object at 0x117286150>, ports...None, read_tools={}, preload=None, research_service=None, research_artifacts=None, research_checkpointer_factory=None))
+
+    def test_batch_t1_named_t2_atom_replay_and_actual_policy(f):
+        original, saved, refs = review(f)
+        assert not eligible(f)
+        data = grant_command(f, refs)
+>       assert post(f, data).json()["code"] == "APPROVAL_REQUIRED"
+E       AssertionError: assert 'NAMED_DECISION_REQUIRED' == 'APPROVAL_REQUIRED'
+E         
+E         - APPROVAL_REQUIRED
+E         + NAMED_DECISION_REQUIRED
+
+tests/agent_kernel/test_skill_qualification.py:139: AssertionError
+______ test_critical_review_pauses_next_t0_and_named_rereview_can_resume _______
+
+f = namespace(setup=<isolated synthetic test scope>, client=<starlette.testclient.TestClient object at 0x121981340>, ports...None, read_tools={}, preload=None, research_service=None, research_artifacts=None, research_checkpointer_factory=None))
+
+    def test_critical_review_pauses_next_t0_and_named_rereview_can_resume(f):
+        _, _, refs = review(f)
+>       confirmed(f, grant_command(f, refs))
+
+tests/agent_kernel/test_skill_qualification.py:212: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = namespace(setup=<isolated synthetic test scope>, client=<starlette.testclient.TestClient object at 0x121981340>, ports...None, read_tools={}, preload=None, research_service=None, research_artifacts=None, research_checkpointer_factory=None))
+data = {'command_id': '98591be7-4467-4026-9227-5f6960289166', 'idempotency_key': '41771c17-ca64-49be-9f9b-ee0566089a1b', 'operation': 'ai.skill.qualify', 'category_id': 'b526101b-5b33-40cb-9407-2703d2961d88', ...}
+
+    def confirmed(f, data):
+        preview = post(f, data, "commands/preview")
+>       assert preview.status_code == 200, preview.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = <Response [422 Unprocessable Content]>.status_code
+
+tests/agent_kernel/test_skill_qualification.py:58: AssertionError
+____________ test_revoke_survives_model_removal_and_trial_shutdown _____________
+
+f = namespace(setup=<isolated synthetic test scope>, client=<starlette.testclient.TestClient object at 0x12103ede0>, ports...None, read_tools={}, preload=None, research_service=None, research_artifacts=None, research_checkpointer_factory=None))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1212d73e0>
+
+    def test_revoke_survives_model_removal_and_trial_shutdown(f, monkeypatch):
+        _, _, refs = review(f)
+>       confirmed(f, grant_command(f, refs))
+
+tests/agent_kernel/test_skill_qualification.py:227: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+f = namespace(setup=<isolated synthetic test scope>, client=<starlette.testclient.TestClient object at 0x12103ede0>, ports...None, read_tools={}, preload=None, research_service=None, research_artifacts=None, research_checkpointer_factory=None))
+data = {'command_id': '8f09f135-c745-4ac6-aabf-a8820acf48eb', 'idempotency_key': '927a25dc-fd2c-4a8c-a581-ddcd3406dc5b', 'operation': 'ai.skill.qualify', 'category_id': '2be4e61c-cb26-4872-aaa5-54026b7e6484', ...}
+
+    def confirmed(f, data):
+        preview = post(f, data, "commands/preview")
+>       assert preview.status_code == 200, preview.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = <Response [422 Unprocessable Content]>.status_code
+
+tests/agent_kernel/test_skill_qualification.py:58: AssertionError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_skill_qualification.py::test_batch_t1_named_t2_atom_replay_and_actual_policy
+FAILED tests/agent_kernel/test_skill_qualification.py::test_critical_review_pauses_next_t0_and_named_rereview_can_resume
+FAILED tests/agent_kernel/test_skill_qualification.py::test_revoke_survives_model_removal_and_trial_shutdown
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 3 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+3 failed, 9 passed in 29.33s

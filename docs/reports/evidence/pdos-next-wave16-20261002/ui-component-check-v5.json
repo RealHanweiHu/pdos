@@ -1,0 +1,93 @@
+{
+  "candidate": "Wave16 owned UI v5: exact not-saved expired-proof recovery",
+  "recorded_at": "2026-10-03T08:54:40.816232+00:00",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "aad32a09053227f1ac7007a3a8430f2a04cb2bbb8d20ef76469509a75b320922"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "8a216f69b378eed95839ccb76b3f02740e24449ae32bfc3f2c55475a95612f5a"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "5b9a31c2bb50774e928b9259a9c1e464107646aef46d5541dd20648fad15b72b"
+    }
+  ],
+  "baseline": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "b00f6c5be2302a58882a2540a86cdc1a14cbe0a6c6bda54b0f4e76454ae1f4d6",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v4-source/build-quality-followup.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "c44ea7a6957570350d7af248095a2e6091787dc56906ba165ddabc9108c9f4e3",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v4-source/build-quality-followup-view.ts"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "88054bac3a979d0213b21b6f3a703ba34846f58b76904a6d8d3d0cd0741c42ca",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v4-source/build-quality-followup-view.test.ts"
+    }
+  ],
+  "delta_file": "ui-v4-to-v5.diff",
+  "public_paths_changed": false,
+  "helper_checks": {
+    "tests": 50,
+    "passed": 50,
+    "failed": 0,
+    "exit_code": 0,
+    "raw_output": "ui-helper-v5-checks.log",
+    "prepare_command": "node /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v5-rxixuff7/prepare-tests.cjs",
+    "command": "node --test /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v5-rxixuff7/build-quality-followup-view.test.js",
+    "runner_source": "ui-v5-test-runner.cjs",
+    "transpilation": "bundled TypeScript.transpileModule ES2022/CommonJS/esModuleInterop for product-view.ts + owned helper/test to tmp only",
+    "no_src_javascript_created": true
+  },
+  "typecheck": {
+    "command": "node_modules/.bin/tsc --project /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v5-rxixuff7/tsconfig.json",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+    "exit_code": 0,
+    "raw_output": "ui-type-v5-check.log",
+    "configuration": "ui-local-v5-type-config.json"
+  },
+  "lint": {
+    "command": "node_modules/.bin/eslint src/components/builds/build-quality-followup.tsx src/lib/build-quality-followup-view.ts src/lib/build-quality-followup-view.test.ts --format json --output-file /Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave16-20261002/ui-lint-v5-result.json",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+    "exit_code": 0,
+    "errors": 0,
+    "warnings": 0,
+    "raw_output": "ui-lint-v5-result.json"
+  },
+  "changes": [
+    "Only an explicit recovery of an existing execute pending can accept HTTP 409 FOLLOWUP_CONFIRMATION_EXPIRED with state not_saved_expired_proof.",
+    "Server tokenless command must deep-equal every original command field; object key order only is ignored, arrays, null, raw microsecond time and offsets remain exact.",
+    "Stage preview with reconfirmation flag keeps original command/key/product revision/payload/readset and requires manual repreview then new named T2 or T1 confirmation.",
+    "First execution, ordinary confirmation errors, timeout, conflicts, malformed echo and known successful receipt do not unlock; repreview does not re-fetch inputs or manufacture a new command.",
+    "Renewed preview may be closed/reopened or restored locally without losing exact pending identity; original v3 committed privacy cleanup and no-repeat notice remain."
+  ],
+  "new_meaningful_checks": [
+    "Bound recovered expiry and local restore",
+    "Fail-closed ordinary errors, first execute and known commit",
+    "All identity/readset/payload and echo mismatch rejection",
+    "Full microsecond and offset/explicit-null preservation",
+    "Fixed output link T1 token renewal without invented output",
+    "Fresh named T2 preview and restored-stage flag validation",
+    "Original input and recovery echo remain immutable"
+  ],
+  "preserved_evidence": [
+    "ui-component-check-v4.json",
+    "ui-source-v4-manifest.json",
+    "ui-v4-source-manifest.json",
+    "ui-v4-source/*"
+  ],
+  "boundaries": {
+    "db_http_browser_public_build_run": false,
+    "shared_api_bff_parent_modified": false,
+    "backend_migration_or_proof_gate_modified": false,
+    "actual_business_success_claimed": false,
+    "effectiveness_close_formal_release_enabled": false
+  }
+}

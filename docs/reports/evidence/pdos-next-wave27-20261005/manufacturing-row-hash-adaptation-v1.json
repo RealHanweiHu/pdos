@@ -1,0 +1,97 @@
+{
+  "schema_version": "pdos-manufacturing-row-hash-adaptation-v1",
+  "recorded_at": "2026-10-05T19:41:49.824844+00:00",
+  "status": "STATIC_ONLY_ACTUAL_DATABASE_TEST_PENDING",
+  "reason": "A successful new consuming document reference legitimately advances products.lifecycle_epoch through existing lifecycle_reference_gate. Frozen parents() compared this watermark together with business content, incorrectly expecting the watermark to remain unchanged after successful saves. Only successful parent-business-content comparisons exclude Product.lifecycle_epoch; rollback and recovery retain complete effect, Product and Confirmation hashes.",
+  "root_owned_adaptation_to_frozen_stage": {
+    "manifest_path": "pdos-next/.local/wave27-manufacturing-positive-fixture-staged/evidence/source-manifest-v1.json",
+    "manifest_sha256": "d1ac838d8c0ced710797ffac6609fcad3c5e6b1f0873d59c68c5a786cd4439e4",
+    "frozen_stage_unchanged": true,
+    "sources": [
+      {
+        "path": "pdos-next/server/tests/manufacturing_preparation_transactions/fixtures.py",
+        "frozen_stage_path": "pdos-next/.local/wave27-manufacturing-positive-fixture-staged/manufacturing_preparation_transactions/fixtures.py",
+        "frozen_stage_sha256": "92f2bae9991809117016869338ef67cc2f5ffc5eab2508f1466e2fd68ece9a6b",
+        "pre_adaptation_actual_sha256": "eaf2f70948c1185d5623845a838b50de84cf96c4def9496405d62f9f870a959a",
+        "sha256": "46f5180b9cd30051b99952f647e2e3d2bbbac45e43c5e8e4e8072bfe7eaaf24c"
+      },
+      {
+        "path": "pdos-next/server/tests/manufacturing_preparation_transactions/test_transactions.py",
+        "frozen_stage_path": "pdos-next/.local/wave27-manufacturing-positive-fixture-staged/manufacturing_preparation_transactions/test_transactions.py",
+        "frozen_stage_sha256": "18fe0045b6aa5fcd3a12ebefa7d4f06806a5c45dc1eddeb7096295b3280ae4ca",
+        "pre_adaptation_actual_sha256": "153054bc4ac7aa5e6d6811f2b9e9bf52343531a900eb06f2026999bc314de894",
+        "sha256": "f9185c8fbf454037d154c21c1481532e3c937ac8b2cce96fdeb1ab86619da0e8"
+      }
+    ]
+  },
+  "parents": {
+    "models_unchanged": [
+      "Product",
+      "Project",
+      "ProjectProductLink",
+      "DefinitionRevision",
+      "DefinitionSource",
+      "DefinitionSpecRow",
+      "PartIdentity",
+      "BomRevision",
+      "BomLine",
+      "EngineeringConfiguration",
+      "ProcessRevision"
+    ],
+    "product_excluded_columns": [
+      "lifecycle_epoch"
+    ],
+    "all_other_product_columns_retained": true,
+    "ten_other_parent_tables_all_columns_retained": true
+  },
+  "effect_hashes": {
+    "models": [
+      "PreparationVersion",
+      "PreparationCurrent",
+      "BaselineDocumentLink",
+      "Receipt",
+      "Audit",
+      "Outbox",
+      "RequestKey",
+      "Product",
+      "Confirmation"
+    ],
+    "scope": "all tenant rows, sorted by id",
+    "columns": "all columns, including Product.lifecycle_epoch and Confirmation.consumed",
+    "excluded_columns": [],
+    "assertions": [
+      {
+        "line": 226,
+        "assertion": "effect_hashes(work) == committed_effect_hashes"
+      },
+      {
+        "line": 291,
+        "assertion": "effect_hashes(work) == before_failure_hashes"
+      },
+      {
+        "line": 327,
+        "assertion": "effect_hashes(work) == before_stale_recovery_hashes"
+      }
+    ]
+  },
+  "boundaries": {
+    "unknown_recovery": "capture full committed hashes after actual commit, before exact-original-request recovery; compare after recovery",
+    "terminal_common_fault": "capture after preparation and unconsumed confirmation, before append_receipt fault; compare after API rollback",
+    "stale_recovery": "capture after actual Artifact withdrawal and retained reads, before original-request recovery; compare after rejected recovery"
+  },
+  "existing_effect_counts_unchanged": true,
+  "static_validation": {
+    "ruff_check": "PASS",
+    "ruff_format_check": "PASS",
+    "ast_parse_and_compile_without_execution": "PASS",
+    "unchanged_model_sets_and_count_function_ast": "PASS",
+    "three_full_hash_assertions": "PASS"
+  },
+  "not_executed": [
+    "database connections or tests",
+    "HTTP or network calls",
+    "runtime or migration edits",
+    "shared fixtures or queue edits"
+  ],
+  "remaining": "Root freezes the candidate and runs the actual isolated PostgreSQL/API case; static checks do not establish SQL or transaction success."
+}

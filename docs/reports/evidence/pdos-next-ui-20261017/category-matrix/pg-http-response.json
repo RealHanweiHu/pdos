@@ -1,0 +1,212 @@
+{
+  "version": "category-matrix/v1",
+  "category_id": "01fb4de3-088d-4582-a365-5420d8ffd3ed",
+  "as_of": "2026-10-17T13:49:07.494071+00:00",
+  "display": {
+    "breaks": [
+      "150",
+      "300"
+    ],
+    "bands": [
+      {
+        "id": "band:0",
+        "lower": null,
+        "upper": "150",
+        "lower_inclusive": false,
+        "upper_inclusive": false
+      },
+      {
+        "id": "band:1",
+        "lower": "150",
+        "upper": "300",
+        "lower_inclusive": true,
+        "upper_inclusive": false
+      },
+      {
+        "id": "band:2",
+        "lower": "300",
+        "upper": null,
+        "lower_inclusive": true,
+        "upper_inclusive": false
+      }
+    ],
+    "semantics": "read_only_distribution"
+  },
+  "groups": [
+    {
+      "id": "f283f4b31454f695be5f38166e27a0886dc0a5546f197b744a0c1398bb171377",
+      "basis": {
+        "currency": "CNY",
+        "as_of": "2026-10-17",
+        "basis": "retail",
+        "includes_tax": true,
+        "includes_shipping": null,
+        "region": null,
+        "channel": null
+      },
+      "rows": [
+        {
+          "segment": {
+            "lineage_id": "07d08f19-5fde-4124-ab08-0daf61e56c33",
+            "version": 1,
+            "entry_id": "265b4644-7863-410c-a011-cb225fb57722",
+            "label": "合成汽车应急细分",
+            "status": "active",
+            "source_refs": [
+              {
+                "type": "knowledge",
+                "id": "265b4644-7863-410c-a011-cb225fb57722",
+                "version": 1
+              }
+            ],
+            "reasons": []
+          },
+          "cells": [
+            {
+              "band_id": "band:0",
+              "status": "no_readable_observations",
+              "products": [],
+              "competitors": [],
+              "counts": {
+                "products": 0,
+                "competitors": 0
+              }
+            },
+            {
+              "band_id": "band:1",
+              "status": "observed",
+              "products": [
+                {
+                  "subject": {
+                    "type": "product",
+                    "id": "f6847955-6b46-4df6-ab75-8fc86ce3fd34",
+                    "label": "合成矩阵型号",
+                    "revision": 1
+                  },
+                  "price": {
+                    "amount": "150.000000000000",
+                    "currency": "CNY",
+                    "basis": "retail",
+                    "as_of": "2026-10-17",
+                    "includes_tax": true,
+                    "observation_id": "f6847955-6b46-4df6-ab75-8fc86ce3fd34:target_price",
+                    "source_refs": [
+                      {
+                        "id": "0d7e6399-5f97-488b-babe-8d30097c2b11",
+                        "line": null,
+                        "type": "human",
+                        "quote": null,
+                        "version": 1,
+                        "statement": "Synthetic named matrix target price"
+                      }
+                    ],
+                    "availability": "known",
+                    "comparable": true,
+                    "reasons": [],
+                    "g0_source": {
+                      "proposal_id": "d3db79b0-0d71-4f83-8fb5-89de946b9ee4",
+                      "decision_id": "f703d379-ca5f-4677-b091-741941ea1dd8",
+                      "submission_id": "105e7dce-8160-4da1-a147-548dbf33cd15",
+                      "submission_revision": 1,
+                      "document_digest": "77898ac119663eddef4994cd5514590305ad53f07ef5a1ddc50d103aa43f11f6",
+                      "item_id": "1aa225d8-9b9a-41d9-964a-7ce8a2fdfd6f"
+                    }
+                  },
+                  "source_refs": [
+                    {
+                      "id": "0d7e6399-5f97-488b-babe-8d30097c2b11",
+                      "line": null,
+                      "type": "human",
+                      "quote": null,
+                      "version": 1,
+                      "statement": "Synthetic named matrix target price"
+                    }
+                  ]
+                }
+              ],
+              "competitors": [],
+              "counts": {
+                "products": 1,
+                "competitors": 0
+              }
+            },
+            {
+              "band_id": "band:2",
+              "status": "no_readable_observations",
+              "products": [],
+              "competitors": [],
+              "counts": {
+                "products": 0,
+                "competitors": 0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "unplaced": [
+    {
+      "subject": {
+        "type": "product",
+        "id": "f70507b1-44b1-4b4c-84bf-302ee8d8250e",
+        "label": "Synthetic product",
+        "revision": 1
+      },
+      "fixed_segment": null,
+      "price": {
+        "amount": null,
+        "currency": null,
+        "basis": null,
+        "as_of": null,
+        "includes_tax": null,
+        "observation_id": "f70507b1-44b1-4b4c-84bf-302ee8d8250e:target_price",
+        "source_refs": [],
+        "availability": "unknown",
+        "comparable": false,
+        "reasons": [
+          "currency_missing",
+          "g0_price_source_unavailable",
+          "price_basis_missing",
+          "price_date_missing",
+          "price_source_unavailable",
+          "price_unknown"
+        ]
+      },
+      "source_refs": [],
+      "reasons": [
+        "currency_missing",
+        "g0_price_source_unavailable",
+        "price_basis_missing",
+        "price_date_missing",
+        "price_source_unavailable",
+        "price_unknown",
+        "segment_missing"
+      ]
+    }
+  ],
+  "coverage": {
+    "visible_products": 2,
+    "visible_competitors": 0,
+    "placed_subjects": 1,
+    "unplaced_subjects": 1,
+    "partially_placed_subjects": 0,
+    "placements": 1,
+    "price_observations": 2,
+    "reason_counts": {
+      "currency_missing": 1,
+      "g0_price_source_unavailable": 1,
+      "price_basis_missing": 1,
+      "price_date_missing": 1,
+      "price_source_unavailable": 1,
+      "price_unknown": 1,
+      "segment_missing": 1
+    }
+  },
+  "limitations": [
+    "competitor_segment_link_unavailable",
+    "empty_cells_are_not_market_gaps",
+    "target_price_requires_readable_matching_g0_source",
+    "unknown_basis_dimensions_are_separate_null_groups"
+  ]
+}

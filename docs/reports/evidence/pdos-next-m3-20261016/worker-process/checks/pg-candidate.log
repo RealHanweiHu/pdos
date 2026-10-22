@@ -1,0 +1,4 @@
+{"run_id": "6e6991a4-4500-452c-800e-e0c015d6196f", "temporal_run_id": "01a145ed-5ea8-75cc-b0ed-138b9e400c81", "same_temporal_run": true, "history_reference_fields": ["actor_id", "category_id", "requester_id", "subject_id", "tenant_id"], "answer_signals": 1, "activities": 2, "worker_processes": 2, "actual_claims": 1, "real_model_calls": 0}
+.{"run_id": "c2f4c3a1-2d7d-4486-8305-065e0b9ce3b7", "same_temporal_run": true, "worker_processes": 2, "cancelled": true, "actual_claims": 0, "held_tokens": 0, "real_model_calls": 0}
+.
+2 passed in 33.69s

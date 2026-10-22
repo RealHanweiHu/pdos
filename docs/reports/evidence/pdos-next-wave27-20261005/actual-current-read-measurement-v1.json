@@ -1,0 +1,38 @@
+{
+  "scope": "Actual first partial flow measurements, same actual Engine and Root thread only; API worker owner/query counts excluded",
+  "profile_sha256": "69836769f96b33a275880923f7c37495cafdd0ab398948f29bec213dcae4fe79",
+  "full_pytest_elapsed_seconds": 519.66,
+  "profile_elapsed_seconds": 375.117,
+  "sections_seconds": {
+    "actual_start": 58.949,
+    "future_window_wait": 218.022,
+    "plan_promise": 80.301
+  },
+  "root_thread_SQL_queries": 2295,
+  "root_thread_SQL_elapsed_seconds": 4.12,
+  "root_thread_owners": {
+    "front._recheck": {
+      "calls": 6,
+      "inclusive_seconds": 0.458,
+      "exclusive_seconds": 0.458
+    },
+    "physical._basis": {
+      "calls": 6,
+      "inclusive_seconds": 0.298,
+      "exclusive_seconds": 0.298
+    },
+    "resources._load": {
+      "calls": 2,
+      "inclusive_seconds": 4.848,
+      "exclusive_seconds": 4.678
+    },
+    "retained.inspect": {
+      "calls": 2,
+      "inclusive_seconds": 5.774,
+      "exclusive_seconds": 0.341
+    }
+  },
+  "passed_full_flow": false,
+  "failure": "Root receipt identity assertion used receipt_id; actual contract uses id",
+  "safe_speed_action": "Reuse one actual fresh parent case for 3 transaction failures and successful response-loss recovery; reuse old unchanged checks. Any owner caching requires further actual measurements and same material/withdrawal/clock validation."
+}

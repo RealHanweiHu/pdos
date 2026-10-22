@@ -1,0 +1,69 @@
+{
+  "version": "pai-sources-actual-dto-validation/v1",
+  "status": "passed",
+  "strict_parsing_count": 3,
+  "input": {
+    "path": "docs/reports/evidence/pdos-next-ui-20261017/pai-sources/pg-http-response.json",
+    "sha256": "4fcbb0118eb46db7f42a919ffa5f74a34954143eeb85e7401d20b4ea2780cda3"
+  },
+  "reader": {
+    "path": "pdos-next/web/src/lib/pai-sources.ts",
+    "sha256": "3635b622abe8b8bbcaaa94d0af70d0baf8ca97da9b5d5f1585ec821c88b77aea"
+  },
+  "database_operations": false,
+  "network_requests": false,
+  "browser_used": false,
+  "business_writes": false,
+  "product_source_modified": false,
+  "pure_tests_rerun": false,
+  "cases": [
+    {
+      "dto": "list",
+      "status": "passed",
+      "scope": {
+        "category_id": "61102442-faec-466b-944d-d385089949fd",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "item_count": 2,
+      "available_count": 2,
+      "next_cursor": null,
+      "calls": [
+        "v1/categories/61102442-faec-466b-944d-d385089949fd/agent-input-sources?page_size=20"
+      ]
+    },
+    {
+      "dto": "product_list",
+      "status": "passed",
+      "scope": {
+        "category_id": "61102442-faec-466b-944d-d385089949fd",
+        "product_id": "e826cd41-f7c4-4070-b63c-a828b8d96e9d",
+        "proposal_id": null
+      },
+      "item_count": 3,
+      "available_count": 3,
+      "next_cursor": null,
+      "calls": [
+        "v1/categories/61102442-faec-466b-944d-d385089949fd/agent-input-sources?page_size=20&product_id=e826cd41-f7c4-4070-b63c-a828b8d96e9d"
+      ]
+    },
+    {
+      "dto": "bindings",
+      "status": "passed",
+      "scope": {
+        "category_id": "61102442-faec-466b-944d-d385089949fd",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "run_id": "5311aa17-a19b-4c96-a7e4-1964f5272637",
+      "session_id": "11f3c90e-a14a-4f38-be6c-7aad24ced44e",
+      "binding_count": 2,
+      "current_unreadable_count": 0,
+      "selected_reference_count": 2,
+      "selected_exact_subset": true,
+      "calls": [
+        "v1/categories/61102442-faec-466b-944d-d385089949fd/agent-runs/5311aa17-a19b-4c96-a7e4-1964f5272637/source-bindings"
+      ]
+    }
+  ]
+}

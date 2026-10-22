@@ -1,0 +1,33 @@
+{
+  "actual_pg_pytest_exit": 0,
+  "pg_snapshot_runner_exit": 99,
+  "pg_snapshot_source_change": [
+    "pdos-next/web/src/components/projects/project-cockpit.tsx"
+  ],
+  "final_backend_matches_pg_start": {
+    "pdos-next/server/pdos_next/personal_project_work.py": "2c429500c6e9cb38a223fb70177e4bb2a7b8d656d5cdc435f825240674ada863",
+    "pdos-next/server/pdos_next/project_work_summaries.py": "a521bc13593cdfbc120f83725a9683a6037e417732ac36e8ff4ab4924641713e",
+    "pdos-next/server/tests/work_management/test_personal_projection.py": "8d67ebdd960587012b0a5d75747eba1d46bb5cff954fc6beb75e6b5db6beb253",
+    "pdos-next/server/tests/work_management_pg/test_personal_projection.py": "1a23d07288cb91199d681d3efc9b958cbaf72f11916c27107dc1dc9d80517318",
+    "pdos-next/server/pdos_next/personal_views.py": "a4890e30d2c810735c53e8413a698a7765ef77442d767e048861e4400b68a82f",
+    "pdos-next/server/tests/work_management_pg/personal_browser_seed.py": "a251302cd00c621d7b3ca9f3a0467b950122b2514a60db605fec35626595aa97"
+  },
+  "final_frontend_runtime_matches_build_02": {
+    "pdos-next/web/src/lib/personal-project-work.ts": "2ca966e00af45b6cd19f4a38a4027023b32dc5f70925692f0bec2917aa14ffec",
+    "pdos-next/web/src/components/my-work-project-work.tsx": "b15ac603947d35cf33289c97c6edd94dda48cd460ae5283ba400119df7867c53",
+    "pdos-next/web/src/components/my-work-project-work.module.css": "67c8dd5ed1af83d7e6c6ce9b46addacf2b05e0f6c90bb8fa9e0141e752bc4275",
+    "pdos-next/web/src/lib/project-status-update.ts": "466f50631497afed32064b0f3501017f9fbe1401f6e0665377eb5b11b2871f86",
+    "pdos-next/web/src/components/projects/project-status-summary.tsx": "eaf9f79b33e30cada7e96a331c362910a973e5129cf90098156328897c6ff890",
+    "pdos-next/web/src/components/projects/project-status-summary.module.css": "e51178cff0a2874dc578fcca285de25d2e7949947753e791fdd028405ad0bff3",
+    "pdos-next/web/src/lib/portfolio-reads.ts": "6bb8ea28d57a42d1604b86c3607a897ebdf45644a592d812897236ea6eecf1ae",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "fefe79a80d48d522fc8d6cc46c590ea873fb4a6c8b95a610b7d9540b48fb0ce4",
+    "pdos-next/web/src/components/my-work.tsx": "80689bf7719e335beb5f15baa0402b51a80f35e9bca3a2db28e6a48ed4858cbe",
+    "pdos-next/web/src/components/projects/project-list.tsx": "039577bc6bf039ab66092cdbb73b4a145de3785ce43914260aa3e28f4de55ab7",
+    "pdos-next/web/src/components/projects/project-cockpit.tsx": "6fb40b5ed94d1616b7a97a930cd4a011ed334dd03b6e42651e18fe5655c539d5"
+  },
+  "after_build_change": "Only redundant eslint test comments removed; no runtime source changed",
+  "new_integration_checks": 2,
+  "final_static_exit": 0,
+  "not_a_single_unchanged_whole_repository_run": true,
+  "owned_source_count": 23
+}

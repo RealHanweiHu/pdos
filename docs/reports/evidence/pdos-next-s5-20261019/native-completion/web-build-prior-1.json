@@ -1,0 +1,21 @@
+{
+  "exit": 1,
+  "output": "▲ Next.js 16.3.3 (webpack)\n✓ Running next.config.ts took 18ms\n\n  Creating an optimized production build ...\ngetaddrinfo ENOTFOUND fonts.googleapis.com\n\nRetrying 1/3...\ngetaddrinfo ENOTFOUND fonts.googleapis.com\n\nRetrying 1/3...\ngetaddrinfo ENOTFOUND fonts.googleapis.com\n\nRetrying 2/3...\ngetaddrinfo ENOTFOUND fonts.googleapis.com\n\nRetrying 2/3...\ngetaddrinfo ENOTFOUND fonts.googleapis.com\n\nRetrying 3/3...\ngetaddrinfo ENOTFOUND fonts.googleapis.com\n\nRetrying 3/3...\nError: getaddrinfo ENOTFOUND fonts.googleapis.com\n    at ignore-listed frames {\n  errno: -3008,\n  code: 'ENOTFOUND',\n  syscall: 'getaddrinfo',\n  hostname: 'fonts.googleapis.com'\n}\nError: getaddrinfo ENOTFOUND fonts.googleapis.com\n    at ignore-listed frames {\n  errno: -3008,\n  code: 'ENOTFOUND',\n  syscall: 'getaddrinfo',\n  hostname: 'fonts.googleapis.com'\n}\nFailed to compile.\n\nsrc/app/layout.tsx\n`next/font` error:\nFailed to fetch `Geist` from Google Fonts.\n\nsrc/app/layout.tsx\n`next/font` error:\nFailed to fetch `Geist Mono` from Google Fonts.\n\n\n> Build failed because of webpack errors\n",
+  "snapshot": "/private/tmp/pdos-change-completion-n19md1o4",
+  "web_manifest": {
+    "pdos-next/web/src/app/api/[...path]/route.ts": "2300d607e29e16e2ad28e7291d2efdb8e117123a99b38149c2aefb41e74e4539",
+    "pdos-next/web/src/lib/build-change-completion-view.ts": "a3cc86417a49a146dc746f6e7c10a4afd33452fe88458d388bb861b9b30c2dfa",
+    "pdos-next/web/src/lib/build-change-completion-view.test.ts": "bcd28790c706473b1cf81823133f629a1b5289d5b5b654cc5f2aba112f2d99a1",
+    "pdos-next/web/src/lib/build-change-orders-view.test.ts": "154049e178c7655b6ff69c11d5c49dd6a7ddbc29d17685546c6ea53e909079b2",
+    "pdos-next/web/src/lib/build-change-orders-view.ts": "bfc36b5bcd90e379f451c50c77cece72faedebc6891906586c5ef9efd5eb03d3",
+    "pdos-next/web/src/lib/change-source-material.ts": "2610c9b3ce723d7bf0c9cedc5a1941a2c335e549376d69bb415056d17975c09d",
+    "pdos-next/web/src/lib/change-source-material.test.ts": "548ed0283f161d75ac48f2a3c0de509babc848e85494211694e31fbdff9d094c",
+    "pdos-next/web/src/components/builds/build-change-completion.tsx": "0534acbcb81c602243443fa55e9d718936afab7735fb9fbfd6e6f59c95653597",
+    "pdos-next/web/src/components/builds/build-change-completion.test.mjs": "00a83f5a9211502dbf052f958ceae7d29a350249a5d74dbdff2965e3084079e5",
+    "pdos-next/web/src/components/builds/build-change-orders.tsx": "3ed5108bdb7d193c54c179a6b786344594a853cd6121689470377367c4a8e4db",
+    "pdos-next/web/src/components/builds/build-change-orders.test.mjs": "0eb9d806ba2dce1848ae38caa5d022f825a5b8025d42d5f9d78479231cd26040",
+    "pdos-next/web/src/components/builds/change-source-material.tsx": "828624459343221e03317ce1f8adb5e70e50fc05ed8c2f40fc0ac20ac084d962",
+    "pdos-next/web/src/components/builds/field-change-plan.test.mjs": "81ef52d79eee322edd396dc45063f5f2a406baa642e7e92826a6675b8f9d26d6"
+  },
+  "network_scope": "public font assets required by the existing Next build"
+}

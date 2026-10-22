@@ -1,0 +1,7 @@
+{
+  "status": "EVIDENCE_COPY_DRIVER_FAILED",
+  "failure": "Expected logs directory; stage uses checks",
+  "runtime_or_business_executed": false,
+  "new_tool_files_copied_and_frozen": "source-manifest-v1.json",
+  "resolution": "Copy actual checks directory and validate exact listed hashes"
+}

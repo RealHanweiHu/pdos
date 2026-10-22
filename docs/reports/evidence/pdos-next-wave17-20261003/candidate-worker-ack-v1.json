@@ -1,0 +1,6 @@
+{
+  "status": "FAIL_PRE_READ",
+  "reason": "UndefinedTable",
+  "scope": "Root read-only diagnostic used incorrect table names outbox/inbox; transaction rolled back before selected evidence was read; no business writes",
+  "observed_at": "2026-10-03T14:51:11.977390+00:00"
+}

@@ -1,0 +1,10 @@
+✔ 反馈历史保留实际版本和问题类别，文本转义且不冒充业务批准 (18.317625ms)
+✔ 关闭反馈入口不读取或保存，不伪造模型版本 (4.900459ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 466.723375

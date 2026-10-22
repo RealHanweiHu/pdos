@@ -1,0 +1,105 @@
+{
+  "head": "next_0018",
+  "endpoint": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "rows": {
+    "verification_formal_requests": {
+      "rows": 488,
+      "sha256": "7473ba59ea21c8a7f38cc252b4af04b608b8de8a986417880f8d1edb2ff0199e"
+    },
+    "verification_run_versions": {
+      "rows": 33,
+      "sha256": "296da5f10140e09a52951f6332bf35d4057aa45c788b7803afb57e297485ad0f"
+    },
+    "operational_resource_occupancies": {
+      "rows": 180,
+      "sha256": "dc2a2af696653de87630fe3a6491b3fbced25a1511cc1ac8cc324059f5eb6682"
+    },
+    "sample_run_usages": {
+      "rows": 9,
+      "sha256": "8300c55e76a4b316a194b24e368050a95c6caf537c142a2d01aed17f70264a00"
+    }
+  },
+  "checks": {
+    "verification_formal_requests": [
+      [
+        "verification_formal_launch_check_0",
+        "CHECK ((((revision = 1) AND (previous_request_id IS NULL) AND (previous_revision IS NULL)) OR ((previous_request_id IS NOT NULL) AND (previous_request_id <> id) AND (previous_revision IS NOT NULL) AND (revision = (previous_revision + 1)))))"
+      ],
+      [
+        "verification_formal_launch_check_1",
+        "CHECK (((((status)::text <> 'scheduled'::text) OR ((operation)::text = 'verification.schedule.promise'::text)) AND (((status)::text <> 'executing'::text) OR ((operation)::text = 'test.run.start'::text))))"
+      ],
+      [
+        "verification_formal_launch_check_10",
+        "CHECK ((((status)::text <> 'draft'::text) OR COALESCE((((request_snapshot -> 'samples'::text) = '[]'::jsonb) AND ((request_snapshot -> 'acceptances'::text) = '[]'::jsonb) AND ((request_snapshot -> 'returns'::text) = '[]'::jsonb) AND ((request_snapshot -> 'offered_coverage'::text) = '[]'::jsonb)), false)))"
+      ],
+      [
+        "verification_formal_launch_check_11",
+        "CHECK ((((status)::text <> 'draft'::text) OR COALESCE(((((request_snapshot -> 'timeline'::text) -> 'sample_ready'::text) = 'null'::jsonb) AND (((request_snapshot -> 'timeline'::text) -> 'offered'::text) = 'null'::jsonb) AND (((request_snapshot -> 'timeline'::text) -> 'accepted'::text) = 'null'::jsonb)), false)))"
+      ],
+      [
+        "verification_formal_launch_check_12",
+        "CHECK ((((status)::text = 'draft'::text) OR COALESCE(((jsonb_array_length((request_snapshot -> 'samples'::text)) > 0) AND (jsonb_array_length((request_snapshot -> 'offered_coverage'::text)) > 0) AND (jsonb_typeof(((request_snapshot -> 'timeline'::text) -> 'offered'::text)) = 'object'::text)), false)))"
+      ],
+      [
+        "verification_formal_launch_check_13",
+        "CHECK ((((status)::text = ANY ((ARRAY['draft'::character varying, 'offered'::character varying, 'accepted'::character varying, 'scheduled'::character varying, 'executing'::character varying])::text[])) AND ((visibility)::text = ANY ((ARRAY['private'::character varying, 'product'::character varying])::text[]))))"
+      ],
+      [
+        "verification_formal_launch_check_14",
+        "CHECK ((((status)::text <> ALL ((ARRAY['accepted'::character varying, 'scheduled'::character varying, 'executing'::character varying])::text[])) OR COALESCE(((jsonb_array_length((request_snapshot -> 'acceptances'::text)) > 0) AND (jsonb_typeof(((request_snapshot -> 'timeline'::text) -> 'accepted'::text)) = 'object'::text)), false)))"
+      ],
+      [
+        "verification_formal_launch_check_2",
+        "CHECK (COALESCE(\nCASE\n    WHEN ((status)::text = ANY ((ARRAY['scheduled'::character varying, 'executing'::character varying])::text[])) THEN (jsonb_typeof(((request_snapshot -> 'timeline'::text) -> 'promised_start'::text)) = 'object'::text)\n    ELSE (((request_snapshot -> 'timeline'::text) -> 'promised_start'::text) = 'null'::jsonb)\nEND, false))"
+      ],
+      [
+        "verification_formal_launch_check_3",
+        "CHECK (COALESCE(\nCASE\n    WHEN ((status)::text = 'executing'::text) THEN (jsonb_typeof(((request_snapshot -> 'timeline'::text) -> 'actual_start'::text)) = 'object'::text)\n    ELSE (((request_snapshot -> 'timeline'::text) -> 'actual_start'::text) = 'null'::jsonb)\nEND, false))"
+      ],
+      [
+        "verification_formal_launch_check_4",
+        "CHECK (COALESCE((((request_snapshot -> 'timeline'::text) -> 'disposed'::text) = 'null'::jsonb), false))"
+      ],
+      [
+        "verification_formal_launch_check_5",
+        "CHECK (COALESCE((((request_snapshot -> 'timeline'::text) -> 'final_result'::text) = 'null'::jsonb), false))"
+      ],
+      [
+        "verification_formal_launch_check_6",
+        "CHECK (COALESCE((((request_snapshot -> 'timeline'::text) -> 'preliminary_result'::text) = 'null'::jsonb), false))"
+      ],
+      [
+        "verification_formal_launch_check_7",
+        "CHECK (COALESCE(((request_snapshot ->> 'status'::text) = (status)::text), false))"
+      ],
+      [
+        "verification_formal_launch_check_8",
+        "CHECK (((operation)::text = ANY ((ARRAY['verification.request.create'::character varying, 'verification.method.prepare'::character varying, 'verification.schedule.propose'::character varying, 'verification.handoff.offer'::character varying, 'verification.handoff.accept'::character varying, 'verification.handoff.return'::character varying, 'verification.schedule.promise'::character varying, 'test.run.start'::character varying])::text[])))"
+      ],
+      [
+        "verification_formal_launch_check_9",
+        "CHECK (((revision > 0) AND (build_revision > 0) AND (preparation_revision > 0)))"
+      ]
+    ],
+    "verification_run_versions": [
+      [
+        "verification_run_versions_check",
+        "CHECK (((build_revision > 0) AND (request_revision > 0) AND (revision > 0)))"
+      ],
+      [
+        "verification_run_versions_check1",
+        "CHECK ((((visibility)::text = ANY ((ARRAY['private'::character varying, 'product'::character varying])::text[])) AND ((status)::text = ANY ((ARRAY['planned'::character varying, 'running'::character varying])::text[]))))"
+      ],
+      [
+        "verification_run_versions_check2",
+        "CHECK ((((revision = 1) AND ((status)::text = 'planned'::text) AND (previous_run_version_id IS NULL) AND (previous_revision IS NULL)) OR ((revision = 2) AND ((status)::text = 'running'::text) AND (previous_run_version_id IS NOT NULL) AND (previous_revision = 1))))"
+      ],
+      [
+        "verification_run_versions_operation_check",
+        "CHECK (((operation)::text = ANY ((ARRAY['test.run.plan'::character varying, 'test.run.start'::character varying])::text[])))"
+      ]
+    ]
+  }
+}

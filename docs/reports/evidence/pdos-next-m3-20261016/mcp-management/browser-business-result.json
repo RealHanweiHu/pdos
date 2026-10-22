@@ -1,0 +1,107 @@
+{
+  "target": "verified independent 64245/pdos_test",
+  "head": "s0_0770",
+  "receipts": [
+    {
+      "id": "34090a7f-fe99-49af-911e-12c39dee2391",
+      "operation": "mcp.connector.allow",
+      "subject_id": "58722acf-5463-443a-b601-6e7da077b2bc",
+      "revision": 1,
+      "result": {
+        "id": "58722acf-5463-443a-b601-6e7da077b2bc",
+        "key": "synthetic-browser-mcp",
+        "active": true,
+        "status": "admitted",
+        "revision": 1,
+        "tool_count": 1
+      },
+      "atom_counts": {
+        "audit_entries": 1,
+        "outbox_events": 1,
+        "mcp_control_records": 1
+      }
+    },
+    {
+      "id": "6472abcf-8855-4005-a1c5-1f9887832825",
+      "operation": "mcp.tool.grant",
+      "subject_id": "e9c51cb7-95da-4533-84dd-1161e697eec2",
+      "revision": 1,
+      "result": {
+        "id": "e9c51cb7-95da-4533-84dd-1161e697eec2",
+        "tool": "lookup",
+        "active": true,
+        "status": "granted",
+        "revision": 1,
+        "skill_key": "proposal_drafting",
+        "connector_id": "58722acf-5463-443a-b601-6e7da077b2bc",
+        "allow_external_write": false
+      },
+      "atom_counts": {
+        "audit_entries": 1,
+        "outbox_events": 1,
+        "mcp_control_records": 1
+      }
+    },
+    {
+      "id": "f1a28424-ecc8-4f1b-a3ce-5a3233a73840",
+      "operation": "mcp.tool.grant",
+      "subject_id": "e9c51cb7-95da-4533-84dd-1161e697eec2",
+      "revision": 2,
+      "result": {
+        "id": "e9c51cb7-95da-4533-84dd-1161e697eec2",
+        "tool": "lookup",
+        "active": false,
+        "status": "revoked",
+        "revision": 2,
+        "skill_key": "proposal_drafting",
+        "connector_id": "58722acf-5463-443a-b601-6e7da077b2bc",
+        "allow_external_write": false
+      },
+      "atom_counts": {
+        "audit_entries": 1,
+        "outbox_events": 1,
+        "mcp_control_records": 1
+      }
+    },
+    {
+      "id": "181e6820-0175-450e-ad13-f3fba33ed58a",
+      "operation": "mcp.connector.allow",
+      "subject_id": "58722acf-5463-443a-b601-6e7da077b2bc",
+      "revision": 2,
+      "result": {
+        "id": "58722acf-5463-443a-b601-6e7da077b2bc",
+        "key": "synthetic-browser-mcp",
+        "active": false,
+        "status": "inactive",
+        "revision": 2,
+        "tool_count": 1
+      },
+      "atom_counts": {
+        "audit_entries": 1,
+        "outbox_events": 1,
+        "mcp_control_records": 1
+      }
+    }
+  ],
+  "connectors": [
+    {
+      "id": "58722acf-5463-443a-b601-6e7da077b2bc",
+      "revision": 2,
+      "active": false,
+      "tool_count": 1
+    }
+  ],
+  "grants": [
+    {
+      "id": "e9c51cb7-95da-4533-84dd-1161e697eec2",
+      "revision": 2,
+      "active": false,
+      "tool": "lookup",
+      "skill_key": "proposal_drafting",
+      "allow_external_write": false
+    }
+  ],
+  "real_mcp_calls": 0,
+  "real_model_calls": 0,
+  "real_credentials_resolved": 0
+}

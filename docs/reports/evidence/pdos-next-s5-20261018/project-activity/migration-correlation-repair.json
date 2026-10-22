@@ -1,0 +1,7 @@
+{
+  "reason": "Catalog audit found an uncorrelated inner Project in the receipt-proof predicate. Revert read-only proof before replacing the candidate; no new business cases ran under initial proof.",
+  "from": "s0_0792",
+  "to": "s0_0791",
+  "exit": 0,
+  "output": ""
+}

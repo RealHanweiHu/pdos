@@ -1,0 +1,76 @@
+{
+  "algorithm_version": "planning.minute_forecast.v1",
+  "dto_version": "planning.v1",
+  "package_candidate_sha256": "0901bc928a4fff028736e683920c4e18300de1745432962b2941b15c97e95115",
+  "files": [
+    {
+      "path": "docs/reports/evidence/pdos-next-planning-20261002/checks.json",
+      "sha256": "7fa8689e20612051352f02d49cd8a0da3b3d30aeeafa1f393817d06e564b7c5a"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-planning-20261002/example.json",
+      "sha256": "2ed1caff96dab7810c9a419021545a84a07fb96ee8575fc8d6a83bcec653cdda"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-planning-20261002/example.py",
+      "sha256": "b40c692630d34cf202c2c552aff71a7f6672d266a62f7386d771f0a8c0492da0"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-planning-20261002/format.log",
+      "sha256": "ef7d13d02214e98ca902b05257cdbe6a8e84f3b4714508efdc19766460b54209"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-planning-20261002/freeze.py",
+      "sha256": "a6fc21791e1a60943702d72584ceb10c81b8a1919f54c470ccc68b9b6a5c6fb6"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-planning-20261002/import-boundary.json",
+      "sha256": "ee3142fce20d291c1f20628af7fb71c86604f33aef7e10efb66fe2957906297d"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-planning-20261002/pytest.log",
+      "sha256": "622b918fc332a762ca3a4ffd54b16f778c84b71db99237dcd8c4565c9585fa99"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-planning-20261002/result.md",
+      "sha256": "466713d17310642374fd41b97f53f42b757a330784e942c63a39e59b4b271940"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-planning-20261002/ruff.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-planning-20261002/source-summary.json",
+      "sha256": "ce925084d416e4f3bb1048582fe7a49902bf1418269afdf7e76ea2422682278c"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-planning-20261002/verify.py",
+      "sha256": "2e0072d6b9d590b7d59aec85544104baec4875d67d7682b3e69015042488306e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/__init__.py",
+      "sha256": "da41441ab73ff5c024f1f39095eab7f93f739728b2828d328be5b14a37e12364"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/calendar.py",
+      "sha256": "8d57a37a5137f2bbd058986d7220296c0c0a9da0613decc7e97c19808434d42d"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/dto.py",
+      "sha256": "22acd27e207250208e86c37b9dcef4d79d31817948c125602c1d5c2ff5693a4f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/forecast.py",
+      "sha256": "0dbd3aa72ea4b801caca855ab20e39be562b1848c6af1c57df04b4d7aa0ef829"
+    },
+    {
+      "path": "pdos-next/server/tests/planning_engine/test_calendar.py",
+      "sha256": "e6eb48e74c02ea0f9894d28d2ce83ef273652f76b5016c2098bbcf194e79dd7f"
+    },
+    {
+      "path": "pdos-next/server/tests/planning_engine/test_forecast.py",
+      "sha256": "09c0ecbf266850ad268c13df3d6e0b2d5e7f0e91a1c7a70d25e947dbe3a8bfa0"
+    }
+  ],
+  "scope": "Pure algorithms; no database, business writes, model calls, UI, migration or stage Exit"
+}

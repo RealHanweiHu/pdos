@@ -1,0 +1,22 @@
+{
+  "checked_at": "2026-10-16T22:00:33.088968+00:00",
+  "own_services_closed": [
+    3051,
+    8051
+  ],
+  "own_api_exit": 0,
+  "own_web_interrupt_exit": 130,
+  "own_tab_closed": true,
+  "viewport_reset": true,
+  "synthetic_login_expired": true,
+  "synthetic_administrator_disabled": true,
+  "history_preserved": true,
+  "cleanup_evidence": "browser-cleanup.json",
+  "retained_test_database": "verified independent 64245/pdos_test",
+  "shared_temporal_and_runtime_not_stopped": true,
+  "real_mcp_calls": 0,
+  "real_model_calls": 0,
+  "real_credentials_resolved": 0,
+  "push": false,
+  "production": false
+}

@@ -1,0 +1,14 @@
+{
+  "files": {
+    "pdos-next/server/tests/test_launch_storage.py": {
+      "before": "bdceaeaa13d3abdffeb633d77e72980b9870e3663b1a0154de22f07f0cd18ef0",
+      "after": "15fef0686e0183d1b8e80ef2838f775710f99c70a11dbe17ab932c627b7a850f"
+    }
+  },
+  "production_unchanged": true,
+  "repair": "Only wrong-sample fault prepares its new foreign-key sentinel inside the same failed UOW, before injection. All changes still roll back; original complete-set error expectation and other five faults remain.",
+  "original_failure_log": "recheck-storage-real-window.log",
+  "original_failure": "Immediate sentinel FK correctly rejected corruption before intended deferred complete-set guard.",
+  "source_archive": "storage-test-before-sentinel-order-repair",
+  "frozen_at": "2026-10-03T02:38:43.378398+00:00"
+}

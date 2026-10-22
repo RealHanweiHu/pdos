@@ -1,0 +1,8 @@
+.....................................................................    [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_public_run_revert.py::test_private_external_definition_consumption_is_opaque_but_blocks_whole_run
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+69 passed, 1 warning in 39.98s

@@ -1,0 +1,5 @@
+$ next typegen && tsc --noEmit
+Generating route types...
+✓ Types generated successfully
+src/components/object-search.tsx(6,15): error TS2305: Module '"@/components/workspace"' has no exported member 'WorkspaceTransport'.
+[ELIFECYCLE] Command failed with exit code 2.

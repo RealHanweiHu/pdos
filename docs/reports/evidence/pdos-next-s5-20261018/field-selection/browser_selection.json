@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "change_id": "a16d3af9-2ddd-5707-80a8-b4f37041ae41",
+  "feedback_id": "9bfb5ddc-c3a0-55a8-8b8f-f9cc28291091",
+  "artifact_receipt": "6cb0ef4d-d180-466e-9438-64250e7c5be5",
+  "source_id": "31f0aa80-a4a9-4c3b-befb-963a45caf4ac",
+  "selection_id": "ad2cb469-c3aa-45b7-af3f-3dd24ac79df3",
+  "selection_receipt": "48c3dd2c-bc92-40ca-8cb3-18d0f9e9bd9d",
+  "selection_revision": 1,
+  "named_t2": true,
+  "expires_at": null,
+  "actual_field_origin": true,
+  "future_plan_separate_from_response": true,
+  "response_loss_exercised": true,
+  "refresh_posts": 0,
+  "original_command_and_receipt_replayed": true,
+  "retained_unknown_count": 154,
+  "model_calls": 0
+}

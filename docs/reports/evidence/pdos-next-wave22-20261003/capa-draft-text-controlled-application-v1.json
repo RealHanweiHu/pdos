@@ -1,0 +1,38 @@
+{
+  "status": "APPLIED_NOT_YET_VERIFIED",
+  "manifest_sha256": "c619086ee226d555dd3faf6a378bcf70de49c886f36574cad6949c06b6ceeb16",
+  "files": [
+    {
+      "staged": "pdos-next/.local/wave22-capa-draft-revision-staged/server/pdos_next/domain/quality_issues/rules.py",
+      "target": "pdos-next/server/pdos_next/domain/quality_issues/rules.py",
+      "before_sha256": "a6504baf0f28049dc0e97313c5c93ce275b86ee0fba7c628db2f90f186f1f92a",
+      "after_sha256": "4ded3535d24b4ad645b6c17708147939232887727c2dfc711f892cf96659bb13",
+      "bytes": 5681,
+      "runtime_baseline_still_identical": true
+    },
+    {
+      "staged": "pdos-next/.local/wave22-capa-draft-revision-staged/server/pdos_next/domain/quality_issues/handlers.py",
+      "target": "pdos-next/server/pdos_next/domain/quality_issues/handlers.py",
+      "before_sha256": "bfa0ddd8bf0fd9013b4f99bc46fb9e42d5ce34c560a2f92c3ee810f2640825e4",
+      "after_sha256": "4a4a23b7a48962c85e305a6057b362334315d2b9dfd726fd62945efd3e6e4ecc",
+      "bytes": 29880,
+      "runtime_baseline_still_identical": true
+    },
+    {
+      "staged": "pdos-next/.local/wave22-capa-draft-revision-staged/server/pdos_next/domain/quality_execution/service.py",
+      "target": "pdos-next/server/pdos_next/domain/quality_execution/service.py",
+      "before_sha256": "131edca7957a49ef5de63f8addfbca47444adbd3694551c42ed9404d1dcffa99",
+      "after_sha256": "e5d54dc814faa6e2611c48395c9ec4215f18da411ccbea8e06df8e79f9c22020",
+      "bytes": 45160,
+      "runtime_baseline_still_identical": true
+    }
+  ],
+  "test": {
+    "staged": "pdos-next/.local/wave22-capa-draft-revision-staged/test_capa_draft_revision.py",
+    "future_target": "pdos-next/server/tests/quality_execution/test_capa_draft_revision.py",
+    "sha256": "e7c993c777af7fe1292a7c77bcbf2f800ca9fcb4a51fefa381ed84df393ea6cb"
+  },
+  "original_runtime_backup": ".local/wave22-capa-draft-controlled-before-v1",
+  "actual_database_head_unchanged": "next_0026",
+  "db_writes": 0
+}

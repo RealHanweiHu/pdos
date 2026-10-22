@@ -1,0 +1,19 @@
+{
+  "owned_preview_pids": [
+    51589,
+    51594,
+    51595,
+    51596,
+    51598,
+    51614,
+    51616,
+    51622,
+    51637,
+    57080
+  ],
+  "verified_open_sessions_before_stop": 0,
+  "retained_unknown_sessions": 1,
+  "runtime_basis": "runtime-snapshot-v6.json",
+  "adopted_increment": "server/app/ai/conversation_research.py",
+  "no_meter_or_budget_changes": true
+}

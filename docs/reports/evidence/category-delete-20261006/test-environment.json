@@ -1,0 +1,10 @@
+{
+  "container_id": "32f0ada653b08d5dba656f3fb89befa97197022c5ae0cec942baae957c6cec80",
+  "volume": "77e7fd2cb63f150bb1f00a880b3e9810cd2fd96afda8cf55d12661041ea961fe",
+  "port": 53992,
+  "database": "pdos_test",
+  "initial_tenants": 0,
+  "initial_running": false,
+  "created_for_task": true,
+  "reason": "Earlier reused test container was concurrently cleared by another test process; detached without further writes or cleanup."
+}

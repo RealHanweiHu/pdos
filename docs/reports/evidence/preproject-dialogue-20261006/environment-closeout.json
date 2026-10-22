@@ -1,0 +1,72 @@
+{
+  "container_id": "d1d1f17f275a6414a847533e067263347e6006958b8c81c7918ac7ee653f6bba",
+  "database": "pdos_test",
+  "last_port": 58496,
+  "main_preview_stopped": false,
+  "test_volume_removed": false,
+  "qa_tab_closed": true,
+  "stages": [
+    {
+      "stage": "identity_verified",
+      "at": "2026-10-06T12:37:11.897802+00:00",
+      "volume": "b70319901940c66e3136427eb9c45b8ecee5b933934dd90a069f533bf064c94e"
+    },
+    {
+      "stage": "owned_qa_services_signalled",
+      "at": "2026-10-06T12:37:11.906773+00:00",
+      "pids": [
+        1200,
+        97404
+      ]
+    },
+    {
+      "stage": "pre_backup_target_verified",
+      "at": "2026-10-06T12:37:12.052286+00:00",
+      "synthetic_counts": {
+        "tenants": 1,
+        "market_spaces": 2,
+        "product_proposals": 3,
+        "conversations": 3,
+        "preproject_confirmations": 1
+      }
+    },
+    {
+      "stage": "private_backup_verified",
+      "at": "2026-10-06T12:37:13.393677+00:00",
+      "path": "/Users/huhanwei/pdos-preview-backups/preproject-dialogue-closeout-20261006-123712/pdos_test-after-dialogue.dump",
+      "bytes": 4298731,
+      "sha256": "cebaf40e8e5856221c092ba24b716be8b3139f171baebd5298893c83099218d9",
+      "mode": "0o600"
+    },
+    {
+      "stage": "synthetic_tenants_cleared",
+      "at": "2026-10-06T12:37:13.881240+00:00",
+      "result": {
+        "method": "delete",
+        "table_count": 472,
+        "changed_table_count": 22,
+        "deleted_rows": 71,
+        "fallback_reason": null
+      }
+    },
+    {
+      "stage": "empty_roundtrip_passed",
+      "at": "2026-10-06T12:37:14.320723+00:00",
+      "head": "0428_preproject_dialogue",
+      "tenants": 0,
+      "agent_insert": false
+    },
+    {
+      "stage": "owned_container_stopped",
+      "at": "2026-10-06T12:37:14.878811+00:00",
+      "status": "exited",
+      "volume_retained": true
+    }
+  ],
+  "listener_verification": {
+    "main_3000": true,
+    "main_8000": true,
+    "qa_3046": false,
+    "qa_8846": false
+  }
+}

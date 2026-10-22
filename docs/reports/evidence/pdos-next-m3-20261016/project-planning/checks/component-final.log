@@ -1,0 +1,24 @@
+✔ direct project hydration reads only that project and migrates only its matching legacy input (8.716375ms)
+✔ other project input and unknown pending save remain in their old cache, never populate the direct editor (1.547375ms)
+✔ direct cache binding rejects a pending request to another project while preserving the original value (0.280459ms)
+✔ direct project reload retains the unknown original save and only an explicit retry replays it unchanged (1.819625ms)
+✔ direct read failure keeps input, avoids a false empty project and refreshes without issuing a command (2.454791ms)
+✔ retire preview project.create only, preserving every plan draft field (0.154875ms)
+✔ retire execute project.create only, preserving every plan draft field (0.075875ms)
+✔ malformed retired command cannot discard a valid plan draft (0.077584ms)
+✔ retain exact work.plan.propose execute retry and source set (0.090208ms)
+✔ retain exact work.plan.apply preview retry and source set (0.094959ms)
+✔ retain exact work.plan.apply execute retry and source set (0.058208ms)
+✔ retired cache hydration persists request removal, renders G0 guidance and performs read-only project refresh (4.164125ms)
+✔ retained first-plan request retries unchanged without rebuilding or replacing its draft (4.742542ms)
+✔ existing G0 project can still save a first-plan proposal using pinned source reads (20.364917ms)
+✔ first-plan apply still previews then executes the exact confirmed request (8.926959ms)
+✔ initial rendering exposes G0 route guidance without a project creation control or network write (11.267583ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 548.491667

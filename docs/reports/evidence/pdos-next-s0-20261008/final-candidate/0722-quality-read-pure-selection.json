@@ -1,0 +1,12 @@
+[
+  "tests/test_quality_result_bridge_reuse.py",
+  "tests/test_resources/test_owned_snapshot_rows.py",
+  "tests/verification_handoff/test_basis_snapshot_reuse.py",
+  "tests/quality_execution_transactions/test_native_registration_batch.py",
+  "tests/quality_execution/test_pure.py",
+  "tests/verification_results/test_pure.py",
+  "tests/verification_launch/test_formal_projection_reuse.py",
+  "tests/test_resources/test_rules.py",
+  "tests/quality_execution_transactions/test_request_prepare.py::test_rr_quality_rows_keep_exact_versions_guards_and_transaction_boundaries",
+  "tests/quality_execution_transactions/test_request_prepare.py::test_non_snapshot_quality_current_writer_keeps_fresh_locked_reads"
+]

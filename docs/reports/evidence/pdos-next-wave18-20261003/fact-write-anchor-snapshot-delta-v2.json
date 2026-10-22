@@ -1,0 +1,46 @@
+{
+  "recorded_at": "2026-10-03T15:40:05.203401+00:00",
+  "reason": "Root authorized new Current anchor_snapshot NOT NULL repair only; immutable full snapshot deep-copied from actual Fact row",
+  "previous_manifest": {
+    "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-source-manifest-v1.json",
+    "sha256": "618a034d3f884c65f05a7bfe1bd8f4dd2d1dd07baea92815b6a3bcc79bc5b733"
+  },
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+      "sha256": "6abbbbcd7cf362a060cda7f53a10b58cf47d3f61bb6f249317e38997ee9e545e"
+    },
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_fact_write.py",
+      "sha256": "bd721b1e46f110c8f47659d99c73760fb6569cb0d4763ff597f2cd72edad5e0d"
+    }
+  ],
+  "checks": [
+    {
+      "exit_code": 0,
+      "passed": 59,
+      "log": {
+        "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-anchor-snapshot-pure-v2.log",
+        "sha256": "acbc5b82dbbf83355fc7661fe53e83c9bff34fad07f9e38d4d777158d31ee242"
+      }
+    },
+    {
+      "exit_code": 0,
+      "log": {
+        "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-anchor-snapshot-ruff-v2.log",
+        "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+      }
+    }
+  ],
+  "unchanged": [
+    "fact_commands.py",
+    "test_fact_commands.py",
+    "Root host/common functions",
+    "staging/models/codec"
+  ],
+  "not_run": [
+    "DB",
+    "HTTP",
+    "public checks"
+  ]
+}

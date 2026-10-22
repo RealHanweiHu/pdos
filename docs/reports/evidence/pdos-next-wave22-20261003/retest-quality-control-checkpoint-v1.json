@@ -1,0 +1,51 @@
+{
+  "at": "2026-10-04T01:35:59.920327+00:00",
+  "phase": "current_shared_capa_draft_no_root_or_completion",
+  "case_id": "84ec3fbc-17f3-5de7-ab18-55efc15d4173",
+  "issue_id": "f42a3f5c-688e-56d6-87ad-cec2e5522f66",
+  "capa_id": "9b710c1e-8422-52fc-8ccf-190e48f9ee4b",
+  "old_triage_preserved": true,
+  "old_rejected_command_id": "863fc3b3-0aef-5c57-b755-c755ec91bd2a",
+  "new_triage_command_id": "9fe75aee-945a-59c6-82f6-b1d66b687555",
+  "confirmed_new_preview_digest": "ac0aac987a0389b1018788fc8c4483c52ccd4fa5055c6b31c37b39ec576430ca",
+  "new_triage_receipt": {
+    "id": "9959cec3-d089-4d13-80b6-afd1016fffb1",
+    "operation": "quality.issue.triage",
+    "subject_type": "quality_issue",
+    "subject_id": "ba33863d-d41d-4972-b34d-d908e973678d",
+    "subject_revision": 2,
+    "writer_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+    "requester_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+    "created_at": "2026-10-04T01:34:37.153479+00:00",
+    "result": {
+      "id": "ba33863d-d41d-4972-b34d-d908e973678d",
+      "revision": 2,
+      "status": "triaged",
+      "issue_id": "f42a3f5c-688e-56d6-87ad-cec2e5522f66",
+      "capa_id": null
+    }
+  },
+  "capa_receipt": {
+    "id": "13b2809c-682f-4e0f-8918-4ed35442838d",
+    "operation": "quality.capa.draft",
+    "subject_type": "quality_issue",
+    "subject_id": "6c16414d-88d0-4c86-a7a2-5e36eeefd8ca",
+    "subject_revision": 3,
+    "writer_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+    "requester_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+    "created_at": "2026-10-04T01:35:39.275916+00:00",
+    "result": {
+      "id": "6c16414d-88d0-4c86-a7a2-5e36eeefd8ca",
+      "revision": 3,
+      "status": "actioning",
+      "issue_id": "f42a3f5c-688e-56d6-87ad-cec2e5522f66",
+      "capa_id": "9b710c1e-8422-52fc-8ccf-190e48f9ee4b"
+    }
+  },
+  "observed_effectiveness": null,
+  "close": false,
+  "synthetic_only": true,
+  "actual_sql_groups_still_to_verify": true,
+  "control_source_manifest": "control-candidate-source-v5.json",
+  "affected_core_manifest": "preview-anchor-core-source-v1.json"
+}

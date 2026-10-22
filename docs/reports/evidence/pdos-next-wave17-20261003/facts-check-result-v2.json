@@ -1,0 +1,67 @@
+{
+  "schema_version": 2,
+  "created_at": "2026-10-03T10:33:25.921625+00:00",
+  "result": "owned pure/static checks passed; staged and unmounted",
+  "manifest": "docs/reports/evidence/pdos-next-wave17-20261003/facts-source-manifest-v2.json",
+  "manifest_sha256": "f0fd5f4893130396848a61cbb3e5a71e8c39c3df49f405d46d978453cc7436d4",
+  "checks": [
+    {
+      "argv": [
+        "pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "pdos-next/staging/wave17/facts.py",
+        "pdos-next/staging/wave17/test_facts.py"
+      ],
+      "exit_code": 0,
+      "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/facts-format-v2.log",
+      "sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    },
+    {
+      "argv": [
+        "pdos-next/server/.venv/bin/ruff",
+        "check",
+        "pdos-next/staging/wave17/facts.py",
+        "pdos-next/staging/wave17/test_facts.py"
+      ],
+      "exit_code": 0,
+      "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/facts-ruff-v2.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "argv": [
+        "pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-q",
+        "-x",
+        "--tb=short",
+        "pdos-next/staging/wave17/test_facts.py"
+      ],
+      "exit_code": 0,
+      "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/facts-pure-tests-v2.log",
+      "sha256": "fd8011484ab1097ca6b65f6a8afb75ed643b1fdc41d1a0f997c7d4e867304c15"
+    },
+    {
+      "program": "ast.parse(read_text()) for two owned files",
+      "exit_code": 0,
+      "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/facts-ast-v2.log",
+      "sha256": "32db90b7af755cdfa0b6782504a67c6853249deba3642245305bfff08cce9eac"
+    }
+  ],
+  "pure_result": {
+    "passed": 88,
+    "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/facts-pure-tests-v2.log"
+  },
+  "correction": "Require real SQLAlchemy Session/SessionTransaction, active Session/root/all nested ancestors, exact same Session parent chain and UOW identity. No duck-type placeholders or closed/partial-rollback transactions accepted.",
+  "tests_use_actual_in_memory_uow": true,
+  "tests_have_engine_or_bind": false,
+  "failed_flush_test": "UnboundExecutionError with no engine/bind/connection; verifies real partial rollback state without SQL execution",
+  "prior_77_evidence_preserved": true,
+  "limitations": [
+    "All source/authority/participant/applicability/provenance owner inputs remain synthetic test callbacks.",
+    "No actual companion publication, public operations/qualification, DB/HTTP, Evidence assembly or effectiveness/close writer is enabled.",
+    "Not an audit of Root480 or any current public-source candidate."
+  ]
+}

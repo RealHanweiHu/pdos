@@ -1,0 +1,22 @@
+I001 [*] Import block is un-sorted or un-formatted
+   --> pdos-next/server/pdos_next/agent_kernel/api.py:161:9
+    |
+159 |       @result.get("/v1/personal/agent-runs/{run_id}")
+160 |       def read(run_id: UUID, ctx=run_dependency):
+161 | /         from .run_reconciliation import completed_record
+162 | |         from .process_view import read_process
+    | |______________________________________________^
+163 |           with transaction(ctx, read_snapshot=True) as s:
+164 |               row = visible_run(s, ctx, s.get(AgentRun, run_id))
+    |
+help: Organize imports
+    |
+160 |     def read(run_id: UUID, ctx=run_dependency):
+161 +         from .process_view import read_process
+162 |         from .run_reconciliation import completed_record
+    -         from .process_view import read_process
+163 |         with transaction(ctx, read_snapshot=True) as s:
+    |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

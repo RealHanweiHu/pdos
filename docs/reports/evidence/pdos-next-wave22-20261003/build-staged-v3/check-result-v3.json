@@ -1,0 +1,37 @@
+{
+  "schema_version": "wave22-build-start-readset-delta-v3",
+  "v2_unchanged": {
+    "wave22_shared_build.py": "bd8035806019ebf22dd6b7e3079fa85ccda23d6d9400ccc1a4c8fd7bf35315c0",
+    "test_wave22_shared_build.py": "bd30e211c34fe1724c324e466194ef879346ecf66728a29513e0626f0d3be46d"
+  },
+  "source_files": {
+    "wave22_shared_build.py": "3911be2ab31f651bc8447db1ddb4551ce20e1b0eff39e4196a41d09fd5109cc6",
+    "test_wave22_shared_build.py": "51ccfc53862be2969702789781ced7821667484cb60459885c6eea77219c23b3",
+    "start-source-and-rejection-contract-v3.md": "0e35af5df6fa2837563a801bb57aaf8aed7643ed5f750356b52b863cc6428709"
+  },
+  "delta": "Only actual Current two authorization closures and Start authority joins assessment/cap/event reads; start resumes old request first; no rejection unlock/checkpoint mutation added.",
+  "checks": {
+    "count": 44,
+    "seconds": 0.717,
+    "exit_code": 0,
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=pdos-next/server pdos-next/server/.venv/bin/python -m unittest discover -s pdos-next/.local/wave22-build-staged/v3 -p test_wave22_shared_build.py -v",
+    "log": "checks/pure-final-44.log",
+    "scope": "Same changed v3 candidate: previous 38 plus 6 new checks; no cumulative historical coverage"
+  },
+  "ruff": {
+    "exit_code": 0,
+    "log": "checks/ruff-final.log"
+  },
+  "ast_compile": {
+    "files": 2,
+    "exit_code": 0,
+    "bytecode_written": false
+  },
+  "db_http_or_actual_checkpoint_modified": false,
+  "safe_actual_issue": {
+    "preview_status": 409,
+    "code": "MISSING_REQUIRED_EVIDENCE",
+    "actual_confirmation_or_receipt_by_this_agent": false
+  },
+  "actual_rejected_request_archival": "Root must bind actual noReceipt/noProof evidence before explicit archival; genuine UNKNOWN stays locked."
+}

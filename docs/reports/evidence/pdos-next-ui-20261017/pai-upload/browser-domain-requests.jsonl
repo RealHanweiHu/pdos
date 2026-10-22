@@ -1,0 +1,34 @@
+{"method": "GET", "path": "/v1/session", "query": {}, "status": 200}
+{"method": "GET", "path": "/v1/session", "query": {}, "status": 401}
+{"method": "GET", "path": "/v1/session", "query": {}, "status": 200}
+{"method": "GET", "path": "/v1/session", "query": {}, "status": 200}
+{"method": "GET", "path": "/v1/personal/projects", "query": {"page_size": "6"}, "status": 200}
+{"method": "GET", "path": "/v1/categories", "query": {}, "status": 200}
+{"method": "GET", "path": "/v1/personal/run-activity", "query": {"page_size": "100"}, "status": 200}
+{"method": "GET", "path": "/v1/personal/test-start-promises", "query": {"page_size": "20"}, "status": 200}
+{"method": "GET", "path": "/v1/personal/g0-reviews", "query": {"page_size": "50"}, "status": 200}
+{"method": "GET", "path": "/v1/personal/projects", "query": {"page_size": "100"}, "status": 200}
+{"method": "GET", "path": "/v1/personal/run-activity", "query": {"page_size": "12"}, "status": 200}
+{"method": "GET", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-sessions", "query": {"page_size": "20"}, "status": 200}
+{"method": "GET", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-target", "query": {}, "status": 200}
+{"method": "POST", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/originals", "query": {}, "status": 401, "case": "ui_upload"}
+{"method": "GET", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020", "query": {}, "status": 401}
+{"method": "GET", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020", "query": {}, "status": 200}
+{"method": "GET", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-target", "query": {}, "status": 200}
+{"method": "GET", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020", "query": {}, "status": 200}
+{"method": "POST", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/originals", "query": {}, "status": 503, "case": "ui_upload", "underlying_status": 200, "original_id": "b5321584-6dbf-49b7-8819-513d19317e87"}
+{"method": "GET", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020", "query": {}, "status": 200}
+{"method": "GET", "path": "/v1/session", "query": {}, "status": 200}
+{"method": "GET", "path": "/v1/personal/projects", "query": {"page_size": "6"}, "status": 200}
+{"method": "GET", "path": "/v1/categories", "query": {}, "status": 200}
+{"method": "GET", "path": "/v1/personal/run-activity", "query": {"page_size": "12"}, "status": 200}
+{"method": "GET", "path": "/v1/personal/run-activity", "query": {"page_size": "100"}, "status": 200}
+{"method": "GET", "path": "/v1/personal/projects", "query": {"page_size": "100"}, "status": 200}
+{"method": "GET", "path": "/v1/personal/g0-reviews", "query": {"page_size": "50"}, "status": 200}
+{"method": "GET", "path": "/v1/personal/test-start-promises", "query": {"page_size": "20"}, "status": 200}
+{"method": "GET", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-sessions", "query": {"page_size": "20"}, "status": 200}
+{"method": "GET", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020", "query": {}, "status": 200}
+{"method": "GET", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-target", "query": {}, "status": 200}
+{"method": "GET", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020", "query": {}, "status": 200}
+{"method": "GET", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020", "query": {}, "status": 409}
+{"method": "POST", "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/originals", "query": {}, "status": 200, "case": "boundary_exact", "original_id": "5f36d181-0340-4d96-b576-276a62ede990"}

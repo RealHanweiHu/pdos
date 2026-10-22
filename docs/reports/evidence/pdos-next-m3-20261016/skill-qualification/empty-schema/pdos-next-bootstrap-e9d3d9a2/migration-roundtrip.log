@@ -1,0 +1,4 @@
+upgrade s0_0765: passed
+upgrade s0_0769: passed
+downgrade s0_0765: passed
+upgrade s0_0769: passed

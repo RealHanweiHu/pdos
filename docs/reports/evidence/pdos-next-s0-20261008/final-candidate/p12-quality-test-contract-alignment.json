@@ -1,0 +1,28 @@
+{
+  "test_only": true,
+  "runtime_and_migration_changes": false,
+  "changes": [
+    {
+      "path": "pdos-next/server/tests/quality_execution/test_transactions.py",
+      "before": "1da531a31e29076c28f92eef0d3ea2178b269b4bf512325584bec4a16d2eb68c",
+      "after": "db7916f460e5513502d17cea6d35a92719bc682ebd9726a32eda8cb719bb3286",
+      "changed_test_functions": [
+        "test_original_bytes_read_runtime_revocation_is_atomic"
+      ],
+      "fixture_definitions_unchanged": true
+    },
+    {
+      "path": "pdos-next/server/tests/quality_execution_transactions/test_read_batch.py",
+      "before": "c1cc2e26ea4b39e86ddbd246f7f2704f4e71278a6f16bd734e743813dbb6bc97",
+      "after": "089ce2f381a79355ed504dc8e8966d83cbb07ecd2ba2e719b8571e13d0f523da",
+      "changed_test_functions": [
+        "test_actual_multi_failure_reading_shares_retained_and_rejects_late_byte_revocation",
+        "test_actual_writer_late_access_io_cannot_revoke_original_run_issuer_and_return_preview",
+        "test_actual_writer_preparation_keeps_record_fresh_and_seals_qualification_after_terminal_io"
+      ],
+      "fixture_definitions_unchanged": true
+    }
+  ],
+  "basis": "v1.1 §08.11: existing Issue reads use direct Current/source watermarks; genuine retained IO guards are exercised on unadmitted failures",
+  "validation_pending": true
+}

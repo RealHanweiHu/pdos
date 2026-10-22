@@ -1,0 +1,50 @@
+{
+  "new-pg-00": [
+    "tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution"
+  ],
+  "new-pg-01": [
+    "tests/verification_results/test_transactions.py::test_import_last_outbox_failure_rolls_back_measurements_projection_chain_and_token"
+  ],
+  "new-pg-02": [
+    "tests/verification_results/test_guards.py::test_capture_stable_key_and_unknown_original_value_remain_explicit"
+  ],
+  "new-pg-03": [
+    "tests/verification_results/test_guards.py::test_full_previously_returned_values_support_final_empty_batch_without_consuming_again"
+  ],
+  "new-pg-04": [
+    "tests/verification_results/test_guards.py::test_report_source_withdrawal_blocks_pending_confirm_and_receipt_replay_keeps_history"
+  ],
+  "new-pg-05": [
+    "tests/verification_results/test_guards.py::test_concurrent_imports_same_run_cas_commit_exactly_one_atomic_group"
+  ],
+  "new-pg-06": [
+    "tests/verification_results/test_guards.py::test_quality_current_role_and_exact_scope_cannot_be_supplied_by_client_or_agent"
+  ],
+  "new-pg-07": [
+    "tests/verification_results/test_guards.py::test_result_tables_are_immutable_and_rls_agent_zero_write"
+  ],
+  "new-pg-08": [
+    "tests/verification_results/test_runtime_guards.py::test_store_read_runtime_revocation_blocks_import_and_rolls_back_confirmation"
+  ],
+  "new-pg-09": [
+    "tests/verification_results/test_runtime_guards.py::test_compute_semantic_replay_also_rechecks_runtime_after_old_measurement_io"
+  ],
+  "new-pg-10": [
+    "tests/test_retained_execution.py::test_retained_saved_start_with_simulated_late_read_clock_and_no_new_permission"
+  ],
+  "new-pg-11": [
+    "tests/test_retained_execution.py::test_retained_proof_rejects_changed_fixed_run_basis_even_with_valid_snapshot_hash"
+  ],
+  "new-pg-12": [
+    "tests/test_retained_execution.py::test_retained_proof_rechecks_source_terminal_withdrawal_and_resource_sample_epochs"
+  ],
+  "new-pg-13": [
+    "tests/test_retained_execution.py::test_retained_proof_rejects_issuer_disable_restore_aba_without_new_effects"
+  ],
+  "new-pg-14": [
+    "tests/test_retained_execution.py::test_retained_proof_rejects_original_professional_qualification_revoke_restore_aba"
+  ],
+  "new-pg-15": [
+    "tests/test_retained_execution.py::test_retained_proof_rejects_new_real_observation_of_configuration_deviation"
+  ]
+}

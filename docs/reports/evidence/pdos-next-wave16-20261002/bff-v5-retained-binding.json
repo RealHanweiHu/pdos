@@ -1,0 +1,16 @@
+{
+  "scope": "Original actual 54 selected BFF pass retained only for identical route/tests on web v5; readonly Workspace retry and takeover loading have separate owned and actual UI checks; no whole-tree test claim",
+  "paths": {
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "2f876d4b1b73851305dc1c365d494d63829f96af984b647b9a660a6bdcc072a3",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "1c94099e657f564a2030dd8a9ec738f46f5daf6e49dc2fca93a1d55156461888",
+    "pdos-next/web/src/app/api/[...path]/wave16-route.test.ts": "f9e238a5964be2f1f64877082574649d3246c63fee8cd2bb2ab98f6ee3db7e8c"
+  },
+  "selected_result_sha256": "ad0d8ad421fc202dc684cafd4c486ee070a9c6a196d1c4b2cf3e1514bee30b07",
+  "web_v4_manifest_sha256": "a9f808d9dfe575de40f76ea2623b9ad57b521a6626661a18315ba183194f94a8",
+  "web_v5_manifest_sha256": "216befebe6eb1a96edd806d67bb09bd08edd44814011a4f92d15f4264495ea9b",
+  "changed_paths_since_v4": [
+    "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+    "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+    "pdos-next/web/src/components/workspace.tsx"
+  ]
+}

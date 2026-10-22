@@ -1,0 +1,918 @@
+{
+  "history": {
+    "items": [
+      {
+        "id": "bb62ed05-4d89-46f4-a2d9-f317ad7f8dfb",
+        "revision": 1,
+        "project_id": "70300502-3f96-4481-8048-9f7e6649640f",
+        "purpose": "Verify preparation",
+        "discipline": "engineering",
+        "action": "withdrawn",
+        "basis_package": {
+          "id": "bb82cd7a-b6c5-4375-9a01-4d8da3bc5fe2",
+          "revision": 3
+        },
+        "series_id": "647f6c96-0c43-4d1d-924c-8c4ea1087feb",
+        "visibility": "category",
+        "expiry": null,
+        "created_at": "2026-10-18T00:10:51.895690+00:00",
+        "receipt_id": "f62c3e5a-957f-4859-8387-b288c0641e86",
+        "as_of": {
+          "decision": {
+            "id": "bb62ed05-4d89-46f4-a2d9-f317ad7f8dfb",
+            "revision": 1
+          },
+          "epoch": 2,
+          "action": "withdrawn"
+        },
+        "current": {
+          "decision": {
+            "id": "bb62ed05-4d89-46f4-a2d9-f317ad7f8dfb",
+            "revision": 1
+          },
+          "epoch": 2,
+          "action": "withdrawn"
+        },
+        "applicability": "not_checked"
+      },
+      {
+        "id": "a56fb6a9-920d-4f32-a0ca-1dc084484eb4",
+        "revision": 1,
+        "project_id": "70300502-3f96-4481-8048-9f7e6649640f",
+        "purpose": "Verify preparation",
+        "discipline": "engineering",
+        "action": "withdrawn",
+        "basis_package": {
+          "id": "d1ff8abe-d465-4fc4-be8d-c7505da1c5d0",
+          "revision": 5
+        },
+        "series_id": "4fb416d4-775d-45fa-8bde-1c4e0876325e",
+        "visibility": "category",
+        "expiry": null,
+        "created_at": "2026-10-18T00:19:30.819433+00:00",
+        "receipt_id": "135c29ee-e410-4037-a0f2-0804e88781fc",
+        "as_of": {
+          "decision": {
+            "id": "a56fb6a9-920d-4f32-a0ca-1dc084484eb4",
+            "revision": 1
+          },
+          "epoch": 2,
+          "action": "withdrawn"
+        },
+        "current": {
+          "decision": {
+            "id": "a56fb6a9-920d-4f32-a0ca-1dc084484eb4",
+            "revision": 1
+          },
+          "epoch": 2,
+          "action": "withdrawn"
+        },
+        "applicability": "not_checked"
+      },
+      {
+        "id": "647f6c96-0c43-4d1d-924c-8c4ea1087feb",
+        "revision": 1,
+        "project_id": "70300502-3f96-4481-8048-9f7e6649640f",
+        "purpose": "Verify preparation",
+        "discipline": "engineering",
+        "action": "approved",
+        "basis_package": {
+          "id": "bb82cd7a-b6c5-4375-9a01-4d8da3bc5fe2",
+          "revision": 3
+        },
+        "series_id": "647f6c96-0c43-4d1d-924c-8c4ea1087feb",
+        "visibility": "category",
+        "expiry": null,
+        "created_at": "2026-10-18T00:10:38.744529+00:00",
+        "receipt_id": "2ede8c27-c626-40e4-9200-be33f26a4988",
+        "as_of": {
+          "decision": {
+            "id": "bb62ed05-4d89-46f4-a2d9-f317ad7f8dfb",
+            "revision": 1
+          },
+          "epoch": 2,
+          "action": "withdrawn"
+        },
+        "current": {
+          "decision": {
+            "id": "bb62ed05-4d89-46f4-a2d9-f317ad7f8dfb",
+            "revision": 1
+          },
+          "epoch": 2,
+          "action": "withdrawn"
+        },
+        "applicability": "not_checked"
+      },
+      {
+        "id": "4fb416d4-775d-45fa-8bde-1c4e0876325e",
+        "revision": 1,
+        "project_id": "70300502-3f96-4481-8048-9f7e6649640f",
+        "purpose": "Verify preparation",
+        "discipline": "engineering",
+        "action": "approved",
+        "basis_package": {
+          "id": "d1ff8abe-d465-4fc4-be8d-c7505da1c5d0",
+          "revision": 5
+        },
+        "series_id": "4fb416d4-775d-45fa-8bde-1c4e0876325e",
+        "visibility": "category",
+        "expiry": null,
+        "created_at": "2026-10-18T00:15:15.666221+00:00",
+        "receipt_id": "aaa11be8-ec8a-4eb6-8077-41bcdb914565",
+        "as_of": {
+          "decision": {
+            "id": "a56fb6a9-920d-4f32-a0ca-1dc084484eb4",
+            "revision": 1
+          },
+          "epoch": 2,
+          "action": "withdrawn"
+        },
+        "current": {
+          "decision": {
+            "id": "a56fb6a9-920d-4f32-a0ca-1dc084484eb4",
+            "revision": 1
+          },
+          "epoch": 2,
+          "action": "withdrawn"
+        },
+        "applicability": "not_checked"
+      }
+    ],
+    "next_cursor": null
+  },
+  "approved": {
+    "id": "4fb416d4-775d-45fa-8bde-1c4e0876325e",
+    "revision": 1,
+    "project_id": "70300502-3f96-4481-8048-9f7e6649640f",
+    "purpose": "Verify preparation",
+    "discipline": "engineering",
+    "action": "approved",
+    "basis_package": {
+      "id": "d1ff8abe-d465-4fc4-be8d-c7505da1c5d0",
+      "revision": 5
+    },
+    "series_id": "4fb416d4-775d-45fa-8bde-1c4e0876325e",
+    "visibility": "category",
+    "expiry": null,
+    "created_at": "2026-10-18T00:15:15.666221+00:00",
+    "receipt_id": "aaa11be8-ec8a-4eb6-8077-41bcdb914565",
+    "as_of": {
+      "decision": {
+        "id": "a56fb6a9-920d-4f32-a0ca-1dc084484eb4",
+        "revision": 1
+      },
+      "epoch": 2,
+      "action": "withdrawn"
+    },
+    "current": {
+      "decision": {
+        "id": "a56fb6a9-920d-4f32-a0ca-1dc084484eb4",
+        "revision": 1
+      },
+      "epoch": 2,
+      "action": "withdrawn"
+    },
+    "applicability": "needs_recheck",
+    "decision": {
+      "structural_only": true,
+      "status": "unexecuted_candidate",
+      "operation": "release.exception.decide",
+      "action": "approved",
+      "declaration": {
+        "expiry": null,
+        "limits": [
+          {
+            "text": "Internal documentation scope only; no physical production",
+            "sources": [
+              {
+                "id": "7fd63091-329a-491e-819f-5f5c41889b42",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:32a9de8280c19b551bc430558f92a2400e0db994d705c09b4fc57ed00f74b645",
+                "revision": 1
+              }
+            ]
+          }
+        ],
+        "reason": "Actual named browser decision over this separate fixed synthetic package",
+        "purpose": "Verify preparation",
+        "sources": [
+          {
+            "id": "7fd63091-329a-491e-819f-5f5c41889b42",
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:32a9de8280c19b551bc430558f92a2400e0db994d705c09b4fc57ed00f74b645",
+            "revision": 1
+          }
+        ],
+        "check_keys": [
+          "engineering.bounded_test_disposition"
+        ],
+        "discipline": "engineering",
+        "basis_package": {
+          "id": "d1ff8abe-d465-4fc4-be8d-c7505da1c5d0",
+          "revision": 5
+        },
+        "release_scope": {
+          "lots": [],
+          "site": "SYN-INTERNAL-LAB",
+          "unit": null,
+          "lines": [],
+          "regions": [
+            "CN"
+          ],
+          "quantity": null
+        },
+        "risk_controls": [
+          {
+            "text": "Keep quarantine and individual traceability",
+            "sources": [
+              {
+                "id": "7fd63091-329a-491e-819f-5f5c41889b42",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:32a9de8280c19b551bc430558f92a2400e0db994d705c09b4fc57ed00f74b645",
+                "revision": 1
+              }
+            ]
+          }
+        ]
+      },
+      "scope": {
+        "tenant_id": "a327743a-d35a-4c48-9750-260c7af97525",
+        "product_id": "332526d1-148b-469f-91c8-ad3fea3688f4",
+        "project_id": "70300502-3f96-4481-8048-9f7e6649640f"
+      },
+      "category_id": "8f1d2f8c-2087-489c-b0b4-f510f4e4d4d1",
+      "owner_id": "56d8ba33-72ac-434b-ad02-bf08446406a4",
+      "visibility": "category",
+      "discipline": "engineering",
+      "basis_package": {
+        "id": "d1ff8abe-d465-4fc4-be8d-c7505da1c5d0",
+        "revision": 5
+      },
+      "policy_fact": {
+        "id": "35bdb605-c05c-4dca-a336-34903191a6ed",
+        "revision": 3
+      },
+      "policy_version": "synthetic-documentation-exception-v3",
+      "subject_config": {
+        "definition": {
+          "id": "7524b5f5-c62e-44fc-8531-15835c94a96d",
+          "revision": 1
+        },
+        "engineering_configuration": {
+          "id": "b2a7162e-3e13-45f8-b674-01de08eb50a5",
+          "revision": 1
+        },
+        "manufacturing_configuration": {
+          "id": "f7017994-7e5a-42a5-bef9-b86c245f478a",
+          "revision": 1
+        }
+      },
+      "release_scope": {
+        "quantity": null,
+        "unit": null,
+        "lots": [],
+        "site": "SYN-INTERNAL-LAB",
+        "lines": [],
+        "regions": [
+          "CN"
+        ]
+      },
+      "purpose": "Verify preparation",
+      "check_keys": [
+        "engineering.bounded_test_disposition"
+      ],
+      "selected_checks": [
+        {
+          "key": "engineering.bounded_test_disposition",
+          "discipline": "engineering",
+          "applicable": true,
+          "required": true,
+          "state": "unknown",
+          "non_waivable": false,
+          "detail": "规则 engineering.bounded_test_disposition@1；责任角色：engineering。必要实际证据或当前水位尚未核实。",
+          "sources": [
+            {
+              "id": "ac6aa7c5-f446-49ab-aa6c-e0e1590cc32d",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:7fd947a6ddbbf7995dcf46ad94f6ec31566142352a4771d4d77cceb74f877e8c"
+            }
+          ],
+          "release_scope": {
+            "quantity": null,
+            "unit": null,
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "lines": [],
+            "regions": [
+              "CN"
+            ]
+          },
+          "exception": null
+        }
+      ],
+      "limits": [
+        {
+          "text": "Internal documentation scope only; no physical production",
+          "sources": [
+            {
+              "id": "7fd63091-329a-491e-819f-5f5c41889b42",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:32a9de8280c19b551bc430558f92a2400e0db994d705c09b4fc57ed00f74b645"
+            }
+          ]
+        }
+      ],
+      "risk_controls": [
+        {
+          "text": "Keep quarantine and individual traceability",
+          "sources": [
+            {
+              "id": "7fd63091-329a-491e-819f-5f5c41889b42",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:32a9de8280c19b551bc430558f92a2400e0db994d705c09b4fc57ed00f74b645"
+            }
+          ]
+        }
+      ],
+      "expiry": null,
+      "sources": [
+        {
+          "id": "cce4b40c-988f-4eed-be98-3ac06443bf24",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:4e09fd3e467f2485414dbf8a81a011fd1ceddc5cf3185b56363903df2539dcb6"
+        },
+        {
+          "id": "67141240-bd34-41f2-a3c3-63cd1a176cdc",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:6c45900fa0f6dc79066b3eece66a3f7827cf00dad36f2a64732fbb20fe0aa9fa"
+        },
+        {
+          "id": "cce4b40c-988f-4eed-be98-3ac06443bf24",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:5;quote_sha256:73eff3e3c4bcd7308156e65b9cfc4dd24057da33f210fd41aacddc19e5bbf238"
+        },
+        {
+          "id": "cce4b40c-988f-4eed-be98-3ac06443bf24",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:7;quote_sha256:84bed8a58a5cc75d3f27efcd73b3d795071cd4fb60a138157b39e43533f971fc"
+        },
+        {
+          "id": "cce4b40c-988f-4eed-be98-3ac06443bf24",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:4;quote_sha256:121eb6ef001c60e44bec6af7187d4638b281704f2585ae8967585fbd7cb1dbb4"
+        },
+        {
+          "id": "cce4b40c-988f-4eed-be98-3ac06443bf24",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:3;quote_sha256:ac774556527bdc52b30d3602e38315db1c6ba7d22b1e53789388918f7f3dc6d3"
+        },
+        {
+          "id": "ac6aa7c5-f446-49ab-aa6c-e0e1590cc32d",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:7fd947a6ddbbf7995dcf46ad94f6ec31566142352a4771d4d77cceb74f877e8c"
+        },
+        {
+          "id": "7fd63091-329a-491e-819f-5f5c41889b42",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:32a9de8280c19b551bc430558f92a2400e0db994d705c09b4fc57ed00f74b645"
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "67141240-bd34-41f2-a3c3-63cd1a176cdc",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "75438883-bd07-49ef-87da-7f2e03528b57",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "7fd63091-329a-491e-819f-5f5c41889b42",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "a3fbbab7-c459-40dd-b0dc-03275b4cee4f",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "ac6aa7c5-f446-49ab-aa6c-e0e1590cc32d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "b4515df2-7d66-48c6-83b2-acee6ddadcca",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "cce4b40c-988f-4eed-be98-3ac06443bf24",
+          "expected_revision": 1
+        }
+      ],
+      "signers": [
+        "56d8ba33-72ac-434b-ad02-bf08446406a4"
+      ],
+      "prepared_at": "2026-10-18T00:15:14.935852Z",
+      "previous": null,
+      "reason": "Actual named browser decision over this separate fixed synthetic package",
+      "state": "READY",
+      "unknown": [],
+      "blocked": []
+    },
+    "authority": {
+      "roles": [
+        "engineering"
+      ],
+      "scope": {
+        "tenant_id": "a327743a-d35a-4c48-9750-260c7af97525",
+        "product_id": "332526d1-148b-469f-91c8-ad3fea3688f4",
+        "project_id": "70300502-3f96-4481-8048-9f7e6649640f"
+      },
+      "purpose": "Verify preparation",
+      "fact_refs": [
+        {
+          "id": "78683fac-2074-42bb-b6fb-3f4278646605",
+          "kind": "duty",
+          "role": "engineering",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "78683fac-2074-42bb-b6fb-3f4278646605",
+          "issuer_key": "synthetic-publication:332526d1-148b-469f-91c8-ad3fea3688f4",
+          "operations": [
+            "release.engineering.approve",
+            "release.policy.import"
+          ],
+          "valid_from": "2026-10-18T00:09:19.243821+00:00",
+          "fact_sha256": "59224330549b959babef0c4e6469dd94042cf9c4ed9f3c6de8f6b027f2e40e33",
+          "valid_until": "2026-10-18T00:55:19.243821+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "a52253cd-95a4-4dc8-bcdf-9995963a6ad1",
+          "kind": "qualification",
+          "role": "engineering",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "a52253cd-95a4-4dc8-bcdf-9995963a6ad1",
+          "issuer_key": "synthetic-publication:332526d1-148b-469f-91c8-ad3fea3688f4",
+          "operations": [
+            "release.engineering.approve",
+            "release.policy.import"
+          ],
+          "valid_from": "2026-10-18T00:09:19.243821+00:00",
+          "fact_sha256": "409fa6b7c8fdbccf29eec3e0a6de2953213852617175e6413ae0ec58fc0adc6f",
+          "valid_until": "2026-10-18T00:55:19.243821+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "18d1e1df-891f-4607-b64b-5bedc2e9d870",
+          "kind": "duty",
+          "role": "engineering",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "18d1e1df-891f-4607-b64b-5bedc2e9d870",
+          "issuer_key": "synthetic-publication:332526d1-148b-469f-91c8-ad3fea3688f4",
+          "operations": [
+            "release.exception.decide"
+          ],
+          "valid_from": "2026-10-18T00:09:20.036169+00:00",
+          "fact_sha256": "ade0e21a012772568942d48b4270a0f77b2a9106d5e95405a225213289fdf168",
+          "valid_until": "2026-10-18T00:50:20.036169+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "3c4a04c3-ebe6-4412-b2d3-33283496f3e4",
+          "kind": "duty",
+          "role": "manufacturing",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "3c4a04c3-ebe6-4412-b2d3-33283496f3e4",
+          "issuer_key": "synthetic-publication:332526d1-148b-469f-91c8-ad3fea3688f4",
+          "operations": [
+            "npi.control_plan.record",
+            "npi.manufacturing_baseline.publish",
+            "npi.manufacturing_baseline.record",
+            "npi.work_instruction.record"
+          ],
+          "valid_from": "2026-10-18T00:08:34.260647+00:00",
+          "fact_sha256": "67a5f729df8466793fa174607c15f86e97c152ba6c1d331bcc5e6e11a527be53",
+          "valid_until": "2026-10-18T00:54:34.260647+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "b2f14ab8-5c4c-44a5-a78d-e6d3a9facc7c",
+          "kind": "qualification",
+          "role": "manufacturing",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "b2f14ab8-5c4c-44a5-a78d-e6d3a9facc7c",
+          "issuer_key": "synthetic-publication:332526d1-148b-469f-91c8-ad3fea3688f4",
+          "operations": [
+            "npi.control_plan.record",
+            "npi.manufacturing_baseline.publish",
+            "npi.manufacturing_baseline.record",
+            "npi.work_instruction.record"
+          ],
+          "valid_from": "2026-10-18T00:08:34.260647+00:00",
+          "fact_sha256": "8f3edc1cd151b32196af009cc5c142565dc719458fd40d8d3a1a8899e86d4aa6",
+          "valid_until": "2026-10-18T00:54:34.260647+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "3ac9aa0f-418d-4a0c-b073-cc8344cfb9de",
+          "kind": "qualification",
+          "role": "engineering",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "3ac9aa0f-418d-4a0c-b073-cc8344cfb9de",
+          "issuer_key": "synthetic-publication:332526d1-148b-469f-91c8-ad3fea3688f4",
+          "operations": [
+            "release.exception.decide"
+          ],
+          "valid_from": "2026-10-18T00:09:20.036169+00:00",
+          "fact_sha256": "da757a07e1f7ffc490ceb10c05ca0b7ba55d235f2e049a6004b0aa72a6d4cd68",
+          "valid_until": "2026-10-18T00:50:20.036169+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        }
+      ],
+      "operation": "release.exception.decide",
+      "qualified": true,
+      "synthetic": true,
+      "authorized": true,
+      "subject_id": "56d8ba33-72ac-434b-ad02-bf08446406a4",
+      "valid_until": null,
+      "reason_codes": [],
+      "facts_revision": "4cb2b83defd701e2d58b38b630954c81c411a05d1482c7fa11f6dcf75fdc9b7f",
+      "required_source_read_set": [
+        {
+          "artifact_id": "75438883-bd07-49ef-87da-7f2e03528b57",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "a3fbbab7-c459-40dd-b0dc-03275b4cee4f",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "b4515df2-7d66-48c6-83b2-acee6ddadcca",
+          "expected_revision": 1
+        }
+      ]
+    }
+  },
+  "withdrawn": {
+    "id": "a56fb6a9-920d-4f32-a0ca-1dc084484eb4",
+    "revision": 1,
+    "project_id": "70300502-3f96-4481-8048-9f7e6649640f",
+    "purpose": "Verify preparation",
+    "discipline": "engineering",
+    "action": "withdrawn",
+    "basis_package": {
+      "id": "d1ff8abe-d465-4fc4-be8d-c7505da1c5d0",
+      "revision": 5
+    },
+    "series_id": "4fb416d4-775d-45fa-8bde-1c4e0876325e",
+    "visibility": "category",
+    "expiry": null,
+    "created_at": "2026-10-18T00:19:30.819433+00:00",
+    "receipt_id": "135c29ee-e410-4037-a0f2-0804e88781fc",
+    "as_of": {
+      "decision": {
+        "id": "a56fb6a9-920d-4f32-a0ca-1dc084484eb4",
+        "revision": 1
+      },
+      "epoch": 2,
+      "action": "withdrawn"
+    },
+    "current": {
+      "decision": {
+        "id": "a56fb6a9-920d-4f32-a0ca-1dc084484eb4",
+        "revision": 1
+      },
+      "epoch": 2,
+      "action": "withdrawn"
+    },
+    "applicability": "current",
+    "decision": {
+      "structural_only": true,
+      "status": "unexecuted_candidate",
+      "operation": "release.exception.withdraw",
+      "action": "withdrawn",
+      "declaration": {
+        "reason": "Explicit peer withdrawal of this actual new browser exception; preserve original approval and unknown condition",
+        "sources": [
+          {
+            "id": "75d70857-4b36-482d-9db3-f5a9bdcf65d0",
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:ed0540b7c8dcf051c25c1638c326a24ad35fc03da00e33318d31a30bff4c5594",
+            "revision": 1
+          }
+        ],
+        "exception": {
+          "id": "4fb416d4-775d-45fa-8bde-1c4e0876325e",
+          "revision": 1
+        }
+      },
+      "scope": {
+        "tenant_id": "a327743a-d35a-4c48-9750-260c7af97525",
+        "product_id": "332526d1-148b-469f-91c8-ad3fea3688f4",
+        "project_id": "70300502-3f96-4481-8048-9f7e6649640f"
+      },
+      "category_id": "8f1d2f8c-2087-489c-b0b4-f510f4e4d4d1",
+      "owner_id": "56d8ba33-72ac-434b-ad02-bf08446406a4",
+      "visibility": "category",
+      "discipline": "engineering",
+      "basis_package": {
+        "id": "d1ff8abe-d465-4fc4-be8d-c7505da1c5d0",
+        "revision": 5
+      },
+      "policy_fact": {
+        "id": "35bdb605-c05c-4dca-a336-34903191a6ed",
+        "revision": 3
+      },
+      "policy_version": "synthetic-documentation-exception-v3",
+      "subject_config": {
+        "definition": {
+          "id": "7524b5f5-c62e-44fc-8531-15835c94a96d",
+          "revision": 1
+        },
+        "engineering_configuration": {
+          "id": "b2a7162e-3e13-45f8-b674-01de08eb50a5",
+          "revision": 1
+        },
+        "manufacturing_configuration": {
+          "id": "f7017994-7e5a-42a5-bef9-b86c245f478a",
+          "revision": 1
+        }
+      },
+      "release_scope": {
+        "quantity": null,
+        "unit": null,
+        "lots": [],
+        "site": "SYN-INTERNAL-LAB",
+        "lines": [],
+        "regions": [
+          "CN"
+        ]
+      },
+      "purpose": "Verify preparation",
+      "check_keys": [
+        "engineering.bounded_test_disposition"
+      ],
+      "selected_checks": [
+        {
+          "key": "engineering.bounded_test_disposition",
+          "discipline": "engineering",
+          "applicable": true,
+          "required": true,
+          "state": "unknown",
+          "non_waivable": false,
+          "detail": "规则 engineering.bounded_test_disposition@1；责任角色：engineering。必要实际证据或当前水位尚未核实。",
+          "sources": [
+            {
+              "id": "ac6aa7c5-f446-49ab-aa6c-e0e1590cc32d",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:7fd947a6ddbbf7995dcf46ad94f6ec31566142352a4771d4d77cceb74f877e8c"
+            }
+          ],
+          "release_scope": {
+            "quantity": null,
+            "unit": null,
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "lines": [],
+            "regions": [
+              "CN"
+            ]
+          },
+          "exception": null
+        }
+      ],
+      "limits": [
+        {
+          "text": "Internal documentation scope only; no physical production",
+          "sources": [
+            {
+              "id": "7fd63091-329a-491e-819f-5f5c41889b42",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:32a9de8280c19b551bc430558f92a2400e0db994d705c09b4fc57ed00f74b645"
+            }
+          ]
+        }
+      ],
+      "risk_controls": [
+        {
+          "text": "Keep quarantine and individual traceability",
+          "sources": [
+            {
+              "id": "7fd63091-329a-491e-819f-5f5c41889b42",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:32a9de8280c19b551bc430558f92a2400e0db994d705c09b4fc57ed00f74b645"
+            }
+          ]
+        }
+      ],
+      "expiry": null,
+      "sources": [
+        {
+          "id": "75d70857-4b36-482d-9db3-f5a9bdcf65d0",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:ed0540b7c8dcf051c25c1638c326a24ad35fc03da00e33318d31a30bff4c5594"
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "43f66960-24e8-4377-945b-6f29a56b3bc9",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "75d70857-4b36-482d-9db3-f5a9bdcf65d0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "f243edde-1723-47bd-84c0-9c08614008f8",
+          "expected_revision": 1
+        }
+      ],
+      "signers": [
+        "4a567f41-cdcf-458a-bb14-3d2211f5bb6e"
+      ],
+      "prepared_at": "2026-10-18T00:19:30.453703Z",
+      "previous": {
+        "id": "4fb416d4-775d-45fa-8bde-1c4e0876325e",
+        "revision": 1
+      },
+      "reason": "Explicit peer withdrawal of this actual new browser exception; preserve original approval and unknown condition",
+      "state": "READY",
+      "unknown": [],
+      "blocked": []
+    },
+    "authority": {
+      "roles": [
+        "manufacturing"
+      ],
+      "scope": {
+        "tenant_id": "a327743a-d35a-4c48-9750-260c7af97525",
+        "product_id": "332526d1-148b-469f-91c8-ad3fea3688f4",
+        "project_id": "70300502-3f96-4481-8048-9f7e6649640f"
+      },
+      "purpose": "Verify preparation",
+      "fact_refs": [
+        {
+          "id": "2a810c24-82b0-4e92-a0cf-f60dfbcb5ecf",
+          "kind": "qualification",
+          "role": "manufacturing",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "2a810c24-82b0-4e92-a0cf-f60dfbcb5ecf",
+          "issuer_key": "synthetic-publication:332526d1-148b-469f-91c8-ad3fea3688f4",
+          "operations": [
+            "release.manufacturing.approve"
+          ],
+          "valid_from": "2026-10-18T00:09:19.631662+00:00",
+          "fact_sha256": "372c9e0e91ef7fbc123fed34cb2a96af29d6c5e4a9e85f7b9ac60dbc8db8209a",
+          "valid_until": "2026-10-18T00:55:19.631662+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "e6383a70-a0aa-4613-96cb-f4d40e8dd2ec",
+          "kind": "duty",
+          "role": "manufacturing",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "e6383a70-a0aa-4613-96cb-f4d40e8dd2ec",
+          "issuer_key": "synthetic-publication:332526d1-148b-469f-91c8-ad3fea3688f4",
+          "operations": [
+            "release.manufacturing.approve"
+          ],
+          "valid_from": "2026-10-18T00:09:19.631662+00:00",
+          "fact_sha256": "2bcc658f1561d1c72473e3b6952e20a650d2a999398d60c5050937c542950e74",
+          "valid_until": "2026-10-18T00:55:19.631662+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "d14a724b-59b5-4383-9b4f-f202fc291846",
+          "kind": "qualification",
+          "role": "manufacturing",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "d14a724b-59b5-4383-9b4f-f202fc291846",
+          "issuer_key": "synthetic-publication:332526d1-148b-469f-91c8-ad3fea3688f4",
+          "operations": [
+            "release.exception.withdraw"
+          ],
+          "valid_from": "2026-10-18T00:09:20.036169+00:00",
+          "fact_sha256": "3867ab45d65b76fd0c4fd07e1147cc1d1b982293035e36ca7d0e21a1daae5845",
+          "valid_until": "2026-10-18T00:50:20.036169+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        },
+        {
+          "id": "235a0da7-02c7-471b-847a-627e57617685",
+          "kind": "duty",
+          "role": "manufacturing",
+          "epoch": 1,
+          "state": "active",
+          "nature": "synthetic",
+          "purposes": [
+            "Verify preparation"
+          ],
+          "revision": 1,
+          "series_id": "235a0da7-02c7-471b-847a-627e57617685",
+          "issuer_key": "synthetic-publication:332526d1-148b-469f-91c8-ad3fea3688f4",
+          "operations": [
+            "release.exception.withdraw"
+          ],
+          "valid_from": "2026-10-18T00:09:20.036169+00:00",
+          "fact_sha256": "51ecbb045697e47695bce742b1d1a7f8c918fad72f5c44cb065b87a4d69d9a46",
+          "valid_until": "2026-10-18T00:50:20.036169+00:00",
+          "issuer_epoch": 1,
+          "issuer_version": "isolated-publication-v1"
+        }
+      ],
+      "operation": "release.exception.withdraw",
+      "qualified": true,
+      "synthetic": true,
+      "authorized": true,
+      "subject_id": "4a567f41-cdcf-458a-bb14-3d2211f5bb6e",
+      "valid_until": null,
+      "reason_codes": [],
+      "facts_revision": "80ec84ab72f4d9232d43621203a5d791ad13ad8fa02b5315d061cdf4a23559bc",
+      "required_source_read_set": [
+        {
+          "artifact_id": "43f66960-24e8-4377-945b-6f29a56b3bc9",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "f243edde-1723-47bd-84c0-9c08614008f8",
+          "expected_revision": 1
+        }
+      ]
+    }
+  }
+}

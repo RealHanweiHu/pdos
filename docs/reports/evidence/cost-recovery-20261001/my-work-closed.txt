@@ -1,0 +1,63 @@
+- alert
+- link "跳到主要内容":
+  - /url: "#main-content"
+- banner:
+  - generic: P
+  - generic: PDOS
+  - link "搜索":
+    - /url: /search
+  - link "现场采集":
+    - /url: /capture
+  - button "切换为深色主题":
+  - button "退出登录":
+- navigation "移动端主导航":
+  - generic: 我的工作
+  - button "展开导航":
+    - text: 展开导航
+- main:
+  - heading "今天由我负责什么" [level=1]
+  - paragraph: 聚合分派给 Fixture project_manager 的项目执行与立项前工作、待验证及待签核事项。
+  - button "刷新待办"
+  - link "切换到组合视图":
+    - /url: /
+  - term: 项目待办
+  - definition: "0"
+  - term: AI 待办理
+  - definition: "0"
+  - generic "查找完整待办范围"
+  - option "全部可见项目" [selected]
+  - option "全部类型" [selected]
+  - option "成本冻结待批"
+  - option "任务"
+  - option "问题"
+  - option "风险"
+  - option "CAPA 行动"
+  - option "阶段签核"
+  - option "AI 建议"
+  - option "跨项目确认"
+  - option "ID 设计确认／接收"
+  - option "变更执行确认"
+  - option "风险结果提交／接收"
+  - option "任务交接接收／补齐"
+  - option "全部" [selected]
+  - option "已逾期"
+  - option "今日到期"
+  - option "已阻塞"
+  - option "高优先／严重"
+  - option "待审阅／确认"
+  - region "立项前工作":
+    - heading "立项前研究、专业工作与实验" [level=2]
+    - button "刷新立项前工作"
+    - paragraph: 共 0 项，已读取 0 项。按当前职责与读取权限列示，和项目执行待办分开计数。
+    - paragraph: 当前没有分派给你或等待你接收的立项前工作。
+  - status: 「硬件成本超标」已更新为已关闭。
+  - region "同类建议集中办理":
+    - button "同类建议集中办理"
+  - region "提醒设置":
+    - button "提醒时段与每日额度"
+  - status:
+    - heading "当前没有分派给你的项目执行待办" [level=2]
+    - paragraph: 新的任务、问题、验证或签核出现时会在这里聚合，并按到期日排序。
+    - link "浏览项目":
+      - /url: /projects
+- button "打开小Pai":

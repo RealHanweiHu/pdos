@@ -1,0 +1,47 @@
+{
+  "schema_version": "wave26-retained-fingerprint-plan-v1",
+  "created_at": "2026-10-04T03:48:51.269826+00:00",
+  "files": {
+    "retained-fingerprint-plan-v1.md": "d1e4dfa4b8cef0c050503a15e8ddad8da722bedbb72800e7be09bd918c8be42a",
+    "source-stage-applicability-v2.md": "f59dbc1fec442690b1b739fec40a9fbb7ca96e3e3ceef4b12042f1d83962ea2b",
+    "source-stage-freeze-v2.json": "8a3e0fec47c3327a5f39821c4072457caa9e23bcfd3ee962872c08713dc4e834"
+  },
+  "readonly_actual_dependencies": {
+    "pdos-next/.local/wave25-retained-diagnostic-staged/retained_diagnostic.py": "a1fd4ee0c2963ba20d96f4329fe3f0aaaa35f4621f814f732c636749bf456abf",
+    "pdos-next/server/pdos_next/domain/test_resources/retained.py": "abf1c6d4599b3a5c13f113666b1971e85bfb173b5c27e1b34e1e17197517e0de",
+    "pdos-next/server/pdos_next/domain/test_resources/service.py": "d40119ba12f5504ffe9f2259e4bf9504ad2060829112cfbfecdd6b08a7a608c1",
+    "pdos-next/server/pdos_next/domain/test_resources/models.py": "0106bff9a6228b6adbec057f4b30e8ee329f919141cd5e3cad491fb68d7cd0a4",
+    "pdos-next/server/pdos_next/domain/test_resources/schemas.py": "5d2ee92b25f6777a6815b318569f53c5c18715e7f29fe3dc31e4307ed0758bab",
+    "pdos-next/server/pdos_next/domain/verification_handoff/service.py": "d1e222468c379366cd7eeacdeec110ea75dcd9720051990163111ea58592c424",
+    "pdos-next/server/pdos_next/domain/verification_launch/service.py": "f2c4484ee8f55a1a64e73bf9a5ab1ae1f57655a67f54c685f9b59a1bbbde64bd",
+    "pdos-next/server/pdos_next/domain/verification_launch/models.py": "d5c57c98a2bae45063ce935406474425f60b9bb13d93366e1959e7eb0d62e79c",
+    "pdos-next/server/pdos_next/domain/measurement_evidence/verifier.py": "0f833b0dfcfa151442580ef1aa92dd0c55b57a79c9d0afb56eda995741ff162f",
+    "pdos-next/server/pdos_next/domain/supply_execution/service.py": "47c901147ac936b2a3c537badfc44574237ce97cc95be95eb2cb6ae3af2d021a",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py": "6b6d05de7e0e4f2ffee541b6be66c34265feeeec098417367834281d8e31e16e",
+    "pdos-next/server/pdos_next/domain/build_operational_facts/service.py": "1104eeabcb1537fff99ab9cbeec34588c0b15339ce0ea4ffd1dd870be3bfe3ee",
+    "pdos-next/server/pdos_next/domain/resource_readiness/rules.py": "97e57ff1fd0c0d42dcc8cbffa57d5c621c84fea465fe7f9dd36863ded0012336",
+    "pdos-next/server/pdos_next/schemas/resource_readiness/contracts.py": "563b181ad3e4051a6360e61f701223364cdb5d53087ff499abfd275d877dd871",
+    "pdos-next/server/pdos_next/domain/sample_handoff/service.py": "e1764354eff6cc1e3d83c833cfb18fd0d023b9f6f2814982a288ca2d9f743156",
+    "pdos-next/server/pdos_next/quality_result_bridge.py": "28eef312b51350f1085329c59a45d3dd28efafbda0b25a466dc0ce6c791d3077",
+    "pdos-next/server/pdos_next/service.py": "d7efbcd63714b72a18297d74f59392004905a6c7139d84491437c5e15a5bdbb4",
+    "pdos-next/server/pdos_next/models.py": "e273a662d00df66130dd4969772cf9219542dd9a34ab873747feb3740fe1c539",
+    "pdos-next/server/pdos_next/originals.py": "5e27b30bed12cacb9a5704904ee16e3933448948c2d97685bafc7a19cb9400a6",
+    "pdos-next/server/pdos_next/original_security.py": "e4cf1636c8f07f06dec043273688ce6099c6a0b0189ff4a53d0bdcba93b90952",
+    "pdos-next/server/pdos_next/evidence_security/rules.py": "b4edcb84184f226ff59aea1b0aa65d8221e688e78f4f90dd23979f4d41467bdc",
+    "pdos-next/server/pdos_next/object_storage/__init__.py": "db02b4363a147de4ec18bc4d7d54148b20bf580961365068ffa3c7e4bc46d341",
+    "pdos-next/server/pdos_next/object_storage/adapters.py": "bb24af925be876eb2dcbcc8cb75d44ada8b20127de74f68368466de9894d6f0d",
+    "pdos-next/server/pdos_next/object_storage/types.py": "6a96ee13bb918473e856d1e88bf65bf93c010800b76a1431266beb63abeac737"
+  },
+  "authoritative_diagnostic": {
+    "path": "docs/reports/evidence/pdos-next-wave25-20261003/actual-retained-diagnostic-v3.json",
+    "sha256": "9f00b2b37a362a7836f01dbe31f1363fa85343d5ec0a0b21c408f3d885017ab0",
+    "reason_codes": [
+      "RETAINED_EXECUTION_CHANGED"
+    ]
+  },
+  "unrelated_issuer_proven_actual_cause": null,
+  "compatibility_patch_implemented": false,
+  "new_checks_executed": 0,
+  "runtime_source_modified": false,
+  "actual_db_http_test_build": false
+}

@@ -1,0 +1,18 @@
+{
+  "checks": [
+    {
+      "material": "prior_preimage",
+      "source_sha256": "91bc116a6237de8c2d545566369818aaf186f40d3e542aa4d5b49705366b8550",
+      "formatter_exit": 0,
+      "only_change": "one preexisting empty line removed before definitions route"
+    },
+    {
+      "material": "tested_candidate",
+      "source_sha256": "c0252295f337beca873bc379ce9f893e81c37031dcbed684286fe9cdf0b4ca41",
+      "formatter_exit": 0,
+      "only_change": "one preexisting empty line removed before definitions route"
+    }
+  ],
+  "own_hunks_unchanged_by_formatter": true,
+  "foreign_whitespace_preserved": true
+}

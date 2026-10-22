@@ -1,0 +1,34 @@
+{
+  "started_at": "2026-10-17T19:30:37.915445+00:00",
+  "finished_at": "2026-10-17T19:30:45.590303+00:00",
+  "snapshot": "/private/tmp/pdos-s4-publication-1uo9t71h",
+  "checks": [
+    {
+      "label": "affected-pure",
+      "exit": 0,
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/manufacturing_preparation/test_preparation.py",
+        "tests/manufacturing_preparation/test_peer_preparation_request_binding.py",
+        "tests/manufacturing_preparation/test_publication_rules.py",
+        "tests/manufacturing_preparation/test_publication_material_owner.py",
+        "tests/manufacturing_preparation/test_publication_service.py",
+        "tests/manufacturing_preparation/test_publication_consumption.py",
+        "tests/manufacturing_preparation/test_publication_storage_schema.py",
+        "tests/manufacturing_preparation/test_publication_migration.py",
+        "tests/manufacturing_preparation/test_expiry.py",
+        "tests/manufacturing_preparation/test_public_protocol.py",
+        "tests/change_execution/test_default_action_fulfillment_wiring.py",
+        "-k",
+        "not test_full_lifecycle_catalog_matches_actual_isolated_model_namespace"
+      ]
+    }
+  ],
+  "source_changed": [],
+  "database_or_http": false,
+  "excluded_old_namespace_assertion": true,
+  "exclusion_reason": "Only current publication tables were added; older unrelated model namespace gaps are retained as unknown, not counted as passing."
+}

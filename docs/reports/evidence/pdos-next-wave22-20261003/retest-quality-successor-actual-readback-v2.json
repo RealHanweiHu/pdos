@@ -1,0 +1,110 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-04T02:10:02.000717+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "head": "next_0026",
+  "old_draft_v3_exact_preserved": true,
+  "new_draft_v4_only_action_text_revision_and_one_history_append": true,
+  "capa_identity_actions_order_executor_hypotheses_requirement_preserved": true,
+  "complete_source_count": 14,
+  "actual_current_revision": 6,
+  "unique_saved_groups": [
+    {
+      "label": "issue",
+      "operation": "quality.issue.create",
+      "receipt_id": "245aab02-ce91-4d60-8f9d-b368ec29e5f7",
+      "request_key_count": 1,
+      "audit_count": 1,
+      "outbox_count": 1
+    },
+    {
+      "label": "triage-runtime-reload-v1",
+      "operation": "quality.issue.triage",
+      "receipt_id": "9959cec3-d089-4d13-80b6-afd1016fffb1",
+      "request_key_count": 1,
+      "audit_count": 1,
+      "outbox_count": 1
+    },
+    {
+      "label": "capa",
+      "operation": "quality.capa.draft",
+      "receipt_id": "13b2809c-682f-4e0f-8918-4ed35442838d",
+      "request_key_count": 1,
+      "audit_count": 1,
+      "outbox_count": 1
+    },
+    {
+      "label": "preparation",
+      "operation": "verification.preparation.record",
+      "receipt_id": "1c4cb12b-a4ce-49bc-b641-5d44c2a44afd",
+      "request_key_count": 1,
+      "audit_count": 1,
+      "outbox_count": 1
+    },
+    {
+      "label": "formal",
+      "operation": "verification.request.create",
+      "receipt_id": "ccd33f58-ec3b-4f4c-9dc3-898c887030b1",
+      "request_key_count": 1,
+      "audit_count": 1,
+      "outbox_count": 1
+    },
+    {
+      "label": "method",
+      "operation": "verification.method.prepare",
+      "receipt_id": "a1024cfb-b155-499f-bd77-0f6ede82c3a1",
+      "request_key_count": 1,
+      "audit_count": 1,
+      "outbox_count": 1
+    },
+    {
+      "label": "actual-method",
+      "operation": "verification.actual_method.prepare",
+      "receipt_id": "76e4a181-5139-4b89-b374-c6d02574563b",
+      "request_key_count": 1,
+      "audit_count": 1,
+      "outbox_count": 1
+    },
+    {
+      "label": "capa-preparation-scope-v1",
+      "operation": "quality.capa.draft",
+      "receipt_id": "c5433113-4ee6-481d-895d-17175134146d",
+      "request_key_count": 1,
+      "audit_count": 1,
+      "outbox_count": 1
+    },
+    {
+      "label": "remediation-native",
+      "operation": "evidence.artifact.register",
+      "receipt_id": "5de3f281-9fa9-44f9-a413-ee3d1c6edfc7",
+      "request_key_count": 1,
+      "audit_count": 1,
+      "outbox_count": 1
+    },
+    {
+      "label": "root-cause",
+      "operation": "quality.issue.root_cause.decide",
+      "receipt_id": "4f87e16d-df27-4748-8baf-32b47647d4af",
+      "request_key_count": 1,
+      "audit_count": 1,
+      "outbox_count": 1
+    },
+    {
+      "label": "complete",
+      "operation": "quality.capa.actions.complete",
+      "receipt_id": "9c7c8aa1-067e-4c48-ad1b-ba2ec93b5b19",
+      "request_key_count": 1,
+      "audit_count": 1,
+      "outbox_count": 1
+    }
+  ],
+  "old_rejected_triage_receipt_and_key_and_consumption_zero": true,
+  "reviewer_business_writes": 0,
+  "business_writes": 0,
+  "formal_implementation": null,
+  "effectiveness": null,
+  "close": false,
+  "prior_readback_error": "v1 guessed nonexistent confirmations.command_id; all earlier snapshot/group assertions passed; v2 uses exact original token digest without printing token",
+  "script_sha256": "69ef355d0e1c63d3fd4e07f939e89b2e7ed8de4e8d2f070d61d1f2af3b63c0db"
+}

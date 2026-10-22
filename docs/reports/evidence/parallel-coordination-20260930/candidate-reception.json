@@ -1,0 +1,184 @@
+{
+  "recorded_at_utc": "2026-09-30T14:49:26.889695+00:00",
+  "purpose": "Coordinator reception of two first-round candidates; no code mutation or test rerun",
+  "candidates": {
+    "schedule": {
+      "candidate_manifest": "docs/reports/evidence/parallel-schedule-20260930/candidate.json",
+      "files": [
+        {
+          "path": "server/app/domain/resource_reallocation_inputs.py",
+          "expected_sha256": "eb7c6e9a480e60322ab8f68feeb3ce84e25fe6599e03470b301c515baa5aae47",
+          "actual_sha256": "eb7c6e9a480e60322ab8f68feeb3ce84e25fe6599e03470b301c515baa5aae47",
+          "matches": true
+        },
+        {
+          "path": "server/app/domain/resource_reallocations.py",
+          "expected_sha256": "7949ba5cdd88739f9263e161dcb2733d568b5d18b8c309134d9f974b924d4ebf",
+          "actual_sha256": "7949ba5cdd88739f9263e161dcb2733d568b5d18b8c309134d9f974b924d4ebf",
+          "matches": true
+        },
+        {
+          "path": "server/app/api/plan_scenarios.py",
+          "expected_sha256": "44c5344447368deb62153a9917ca84e3f1a157770f7345f01a3de1790c7b39e5",
+          "actual_sha256": "44c5344447368deb62153a9917ca84e3f1a157770f7345f01a3de1790c7b39e5",
+          "matches": true
+        },
+        {
+          "path": "web/src/components/projects/resource-reallocations.tsx",
+          "expected_sha256": "335b76dde41217f7d555e4f3521b3cc232322d737b0245e40e2d192a97c3f0c2",
+          "actual_sha256": "335b76dde41217f7d555e4f3521b3cc232322d737b0245e40e2d192a97c3f0c2",
+          "matches": true
+        },
+        {
+          "path": "server/tests/test_resource_reallocations.py",
+          "expected_sha256": "4db574f1615010113812ca40f181f97f04cc362f7100bdcedf17d7a57f5a4a5e",
+          "actual_sha256": "4db574f1615010113812ca40f181f97f04cc362f7100bdcedf17d7a57f5a4a5e",
+          "matches": true
+        },
+        {
+          "path": "server/tests/test_resource_reallocations_api.py",
+          "expected_sha256": "bb071d758085f6af2f5b0e12ca9742ba26086de1c558a48972cd680657b4d506",
+          "actual_sha256": "bb071d758085f6af2f5b0e12ca9742ba26086de1c558a48972cd680657b4d506",
+          "matches": true
+        },
+        {
+          "path": "server/tests/test_resource_schedule_preparations.py",
+          "expected_sha256": "c74654d40bcd34ca3fdb70d40867a7e019a31eea44f71ea0a5374cda4ac62017",
+          "actual_sha256": "c74654d40bcd34ca3fdb70d40867a7e019a31eea44f71ea0a5374cda4ac62017",
+          "matches": true
+        },
+        {
+          "path": "server/tests/test_resource_schedule_solver.py",
+          "expected_sha256": "f15f69e4256b2aef43a063b089ecd781b53d31058298b5b975dba60892ed0595",
+          "actual_sha256": "f15f69e4256b2aef43a063b089ecd781b53d31058298b5b975dba60892ed0595",
+          "matches": true
+        },
+        {
+          "path": "server/tests/test_schedule_forecast_engine.py",
+          "expected_sha256": "23acab4149a05a945c131e1417a885caf0415c2b6e5d210330e258f9410d8c0a",
+          "actual_sha256": "23acab4149a05a945c131e1417a885caf0415c2b6e5d210330e258f9410d8c0a",
+          "matches": true
+        },
+        {
+          "path": "web/src/components/projects/resource-reallocations.test.tsx",
+          "expected_sha256": "7319769d789d1b6f1d7cd49911ede8be97cb534a3cef072b4873def2748a83d1",
+          "actual_sha256": "7319769d789d1b6f1d7cd49911ede8be97cb534a3cef072b4873def2748a83d1",
+          "matches": true
+        }
+      ],
+      "all_match": true
+    },
+    "supply": {
+      "candidate_manifest": "docs/reports/evidence/parallel-supply-20260930/candidate.json",
+      "files": [
+        {
+          "path": "server/app/api/npi_execution.py",
+          "expected_sha256": "bf17ba40606403c6882e93217b7e7aff449bb1631c42281c61f15d9576e60ddf",
+          "actual_sha256": "bf17ba40606403c6882e93217b7e7aff449bb1631c42281c61f15d9576e60ddf",
+          "matches": true
+        },
+        {
+          "path": "server/app/domain/cost_backtests.py",
+          "expected_sha256": "8255ac82a36dabc4a2a268ee8bfa9fa914cbc2c00cadef83542f841d6e4803de",
+          "actual_sha256": "8255ac82a36dabc4a2a268ee8bfa9fa914cbc2c00cadef83542f841d6e4803de",
+          "matches": true
+        },
+        {
+          "path": "server/app/domain/cost_rollups.py",
+          "expected_sha256": "cbcbf5193cdacb8bc1bd4b9ed3adbb19a42f62254b68537f095cfc6389d95059",
+          "actual_sha256": "cbcbf5193cdacb8bc1bd4b9ed3adbb19a42f62254b68537f095cfc6389d95059",
+          "matches": true
+        },
+        {
+          "path": "server/app/domain/material_coverage.py",
+          "expected_sha256": "c264df235feaf3e461dbe60bf65e74a9dfc2b2f2d1108ee695fc795188ed5dcf",
+          "actual_sha256": "c264df235feaf3e461dbe60bf65e74a9dfc2b2f2d1108ee695fc795188ed5dcf",
+          "matches": true
+        },
+        {
+          "path": "server/app/domain/supplier_engineering.py",
+          "expected_sha256": "877567d37cc0fde3056b3bbe6b9b28d1551ebcd2325453fcdb94ff3c8673bfe8",
+          "actual_sha256": "877567d37cc0fde3056b3bbe6b9b28d1551ebcd2325453fcdb94ff3c8673bfe8",
+          "matches": true
+        },
+        {
+          "path": "web/src/components/projects/build-material-coverage.tsx",
+          "expected_sha256": "29d52a827e44857424a85150557c461c4da7416566eb448de9ff159a2178dae7",
+          "actual_sha256": "29d52a827e44857424a85150557c461c4da7416566eb448de9ff159a2178dae7",
+          "matches": true
+        },
+        {
+          "path": "web/src/components/projects/supplier-engineering.tsx",
+          "expected_sha256": "819080396fd4ab77dc34cbc40f460aba2ce8c7ea271c38af9b1ce1bc729cefeb",
+          "actual_sha256": "819080396fd4ab77dc34cbc40f460aba2ce8c7ea271c38af9b1ce1bc729cefeb",
+          "matches": true
+        },
+        {
+          "path": "server/app/domain/supplier_replies.py",
+          "expected_sha256": "200c87cdb663897fb9baf8ed2b4c30e70531d289451709d411fb2b9c07fa52fb",
+          "actual_sha256": "200c87cdb663897fb9baf8ed2b4c30e70531d289451709d411fb2b9c07fa52fb",
+          "matches": true
+        },
+        {
+          "path": "server/tests/test_supplier_replies.py",
+          "expected_sha256": "83b7538d4b23e4b3d84ad5b7edf8fa7a3eeff5f61a27de681db67b7388bef9a1",
+          "actual_sha256": "83b7538d4b23e4b3d84ad5b7edf8fa7a3eeff5f61a27de681db67b7388bef9a1",
+          "matches": true
+        },
+        {
+          "path": "server/tests/test_supplier_replies_api.py",
+          "expected_sha256": "1bad4be50ddaae5de6742ef44b0772c9b7bd947d97dfec82e40e4469cf437e22",
+          "actual_sha256": "1bad4be50ddaae5de6742ef44b0772c9b7bd947d97dfec82e40e4469cf437e22",
+          "matches": true
+        },
+        {
+          "path": "server/tests/test_material_allocations.py",
+          "expected_sha256": "61bf90dea3517f20a1c52718d542f5bfd6cd04118d406ef75c99fe9d4a192cef",
+          "actual_sha256": "61bf90dea3517f20a1c52718d542f5bfd6cd04118d406ef75c99fe9d4a192cef",
+          "matches": true
+        },
+        {
+          "path": "server/tests/test_material_coverage.py",
+          "expected_sha256": "08c939c9bf485ed6f83304ebcfeb32ae96ee4693b8e41d233c1d4ab89bf847ba",
+          "actual_sha256": "08c939c9bf485ed6f83304ebcfeb32ae96ee4693b8e41d233c1d4ab89bf847ba",
+          "matches": true
+        },
+        {
+          "path": "server/tests/test_cost_rollups.py",
+          "expected_sha256": "39dc3bec32c56a139ca3aa7bb15d58e0e2b11f23fc5ccaf466f5d80c3844704e",
+          "actual_sha256": "39dc3bec32c56a139ca3aa7bb15d58e0e2b11f23fc5ccaf466f5d80c3844704e",
+          "matches": true
+        },
+        {
+          "path": "web/src/components/projects/supplier-replies.tsx",
+          "expected_sha256": "a3c4abf8a34e72c72303e9f4cfb89b6eb9de802439425901e796a853786ef4e9",
+          "actual_sha256": "a3c4abf8a34e72c72303e9f4cfb89b6eb9de802439425901e796a853786ef4e9",
+          "matches": true
+        },
+        {
+          "path": "web/src/components/projects/supplier-replies.test.tsx",
+          "expected_sha256": "829444a4c7bf99eb53de29ff55d1e5a8771ef622518e625e9b12a79f6a2c075b",
+          "actual_sha256": "829444a4c7bf99eb53de29ff55d1e5a8771ef622518e625e9b12a79f6a2c075b",
+          "matches": true
+        },
+        {
+          "path": "web/src/app/api/projects/[projectId]/npi/supplier-replies/[supplierId]/[recordId]/[operation]/route.ts",
+          "expected_sha256": "95605b1fba3ac47fdb1f261570869d49b9ca5105585b8855ad860f5199d587ff",
+          "actual_sha256": "95605b1fba3ac47fdb1f261570869d49b9ca5105585b8855ad860f5199d587ff",
+          "matches": true
+        },
+        {
+          "path": "web/src/app/api/projects/[projectId]/npi/supplier-replies/[supplierId]/[recordId]/[operation]/route.test.ts",
+          "expected_sha256": "6207ad03f8da3b41ba10d37c05e0a13e88b134b86a92e525194b3654485debda",
+          "actual_sha256": "6207ad03f8da3b41ba10d37c05e0a13e88b134b86a92e525194b3654485debda",
+          "matches": true
+        }
+      ],
+      "all_match": true
+    }
+  },
+  "candidate_file_overlap": [],
+  "database_accessed": false,
+  "full_build_or_browser_run": false,
+  "formal_completion_claimed": false
+}

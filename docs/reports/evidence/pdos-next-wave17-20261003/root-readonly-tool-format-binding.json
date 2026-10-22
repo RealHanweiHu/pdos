@@ -1,0 +1,25 @@
+{
+  "scope": "Read-only tools after successful actual runs; no re-run or business change",
+  "before": {
+    "pdos-next/tools/wave17_origin_observation.py": "ec77b0e6885e488558f3b755d6f154926caea0f5b217f6a227c63b63a92e2095",
+    "pdos-next/tools/wave17_sql_observation.py": "d0c3b809ea48ce3da51fdf7d8e22e05e34a3b0c0442ce6de1f8c0e33a314a98a"
+  },
+  "original_static_observation": {
+    "ruff_errors": 4,
+    "causes": [
+      "one unused pathlib.Path import",
+      "three line-length errors"
+    ],
+    "format_files": 2
+  },
+  "after": {
+    "pdos-next/tools/wave17_origin_observation.py": "7fa0db7e120972d2ba0889ebaed34cfc07caf4c69cf10f0cb400adf78a0d8986",
+    "pdos-next/tools/wave17_sql_observation.py": "489ecdcdaf6985264f0ece2ea31aaacb9acb02d0ad48a32fa2100b68a5f7e5d4"
+  },
+  "last_change": "Removed one unused import and formatted line breaks only; actual readonly observations remain original runs, no DB retry.",
+  "static": {
+    "ruff": "PASS",
+    "ast_parsed_files": 2,
+    "format_files": 2
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "status": "PASS_ACTUAL_PREVIEW_RECOVERY_AND_RETURN",
+  "scope": "Frozen web v2; actual original pending request recovered into full business preview, returned without second observation save",
+  "dialog": {
+    "definitions": 43,
+    "headings": [
+      "实际观察：一次确认",
+      "固定问题与用途",
+      "实际事件与本人说明",
+      "原失败、根因与已完成整改",
+      "固定原失败测量",
+      "已固定的实际措施完成",
+      "实际固定规则与抽样要求",
+      "实际观察范围",
+      "本地合成 · 存续记录实际快照观察（未实物复测） · retained-synthetic-sample",
+      "服务器实际核对与保留缺项",
+      "当前专业职责、政策与缺项"
+    ],
+    "microsecondClocks": [
+      "2026-10-03T15:43:34.454922Z",
+      "2026-10-03T08:08:20.788303Z",
+      "2026-10-03T08:08:20.788303Z",
+      "2026-10-03T15:43:19.675996Z",
+      "2026-10-03T15:43:34.454922Z",
+      "原记录发生于 2026-10-03T15:43:34.454922+00:00；范围 2026-10-03T15:43:19.675996+00:00 ～ 2026-10-03T15:43:34.454922+00:00",
+      "2026-10-03T15:43:34.454922Z"
+    ],
+    "saveButtons": [
+      {
+        "disabled": false,
+        "text": ""
+      },
+      {
+        "disabled": false,
+        "text": "一次确认保存实际观察"
+      },
+      {
+        "disabled": false,
+        "text": "返回核对"
+      }
+    ],
+    "sections": 10
+  },
+  "after_return": {
+    "dialog_closed": true,
+    "history_observations": 1,
+    "saved_fact_still_available": true,
+    "current_review_disabled": true,
+    "business_save_clicked": false
+  },
+  "web_manifest": "web-candidate-source-v2.json",
+  "screenshot": "actual-observation-preview-v2.jpg",
+  "historical_offline_display": "fact-ui-actual-contract-check-v4.json"
+}

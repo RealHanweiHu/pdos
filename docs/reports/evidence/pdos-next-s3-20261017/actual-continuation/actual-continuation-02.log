@@ -1,0 +1,158 @@
+F
+=================================== FAILURES ===================================
+_ test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0] _
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': '686fc118-1bea-458e-8359-53d2cc04e138', 'project': ...80-a7e6-48860bda71ee', 'expected_issue_revision': 4, 'approval_token': '[TOKEN_REDACTED]'}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10d3a7980>
+
+    @pytest.mark.parametrize("launch_work", [{"window_minutes": 45, "fact_minutes": 60}], indirect=True)
+    def test_completed_approved_actions_create_new_actual_build_samples_request_and_run(
+        quality_work, monkeypatch
+    ):
+        work = quality_work
+        continuation_people(work)
+        original_failure = deepcopy(work.failure_run.model_dump(mode="json"))
+        original_result_id = work.failure_run_version_id
+        with ExitStack() as cleanup:
+    
+            def continue_round(fixed, basis, implementations, engineering, manufacturing):
+                return next_round.continue_after_implementations(
+                    fixed,
+                    basis,
+                    implementations,
+                    engineering,
+                    manufacturing,
+                    monkeypatch,
+                    cleanup=cleanup,
+                    executor=fixed.setup,
+                    test_executor=fixed.retest_executor,
+                    independent_reviewer=fixed.independent_reviewer,
+                    test_person_resource=fixed.retest_person_resource,
+                    raw_value="10.0000",
+                )
+    
+>           continued = upstream.run_approved_configuration_implementations(
+                work, after_issue=named_root_cause, continuation=continue_round
+            )
+
+tests/change_execution/test_approved_configuration_continuation_chain.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/change_execution/test_approved_configuration_implementation_chain.py:627: in run_approved_configuration_implementations
+    return continuation(
+tests/change_execution/test_approved_configuration_continuation_chain.py:179: in continue_round
+    return next_round.continue_after_implementations(
+tests/change_execution/approved_configuration_continuation_helpers.py:879: in continue_after_implementations
+    completed = complete_implemented_actions(work, basis, implementations, executor=executor)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/change_execution/approved_configuration_continuation_helpers.py:148: in complete_implemented_actions
+    source = _implementation_source(work, executor, receipt, occurrence)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = namespace(setup=<isolated synthetic test scope>, config={'source': '686fc118-1bea-458e-8359-53d2cc04e138', 'project': ...80-a7e6-48860bda71ee', 'expected_issue_revision': 4, 'approval_token': '[TOKEN_REDACTED]'}})
+executor = namespace(admin=Engine([PRIVATE_DSN] engine=Engine(postgresql+psycopg:...e, cancel_epoch=None, category_id=UUID('239a13e8-b6ac-4b58-bda5-e80dbb184b3d'), agent_run_id=None, agent_call_id=None))
+receipt = {'id': '0d22cd8d-7142-453d-b8e8-3aaad0104937', 'category_id': '239a13e8-b6ac-4b58-bda5-e80dbb184b3d', 'product_id': 'd22d532a-1cb9-4552-9045-ced1d821ddb7', 'operation': 'change.implementation.record', ...}
+occurrence = Occurrence(schema_version='pdos-change-implementation-occurrence-v2', scope=Scope(tenant_id=UUID('584d9c68-208c-4482-9...='Only the real saved configuration output is recorded; no effectivity or verification is claimed', nature='synthetic')
+
+    def _implementation_source(work, executor, receipt, occurrence):
+        """Find the one actual capture, then verify its fixed first original source.
+    
+        ``prepare_capture`` stores input.source first; this is its original position,
+        not a choice of the first/latest row. All scope and immutable atom identities
+        below must match before the normal completion owner rechecks the full proof.
+        """
+        assert type(occurrence) is Occurrence
+        with approved.session(work, executor) as stored:
+            captures = stored.scalars(
+                select(ImplementationCapture).where(
+                    ImplementationCapture.tenant_id == work.setup.tenant,
+                    ImplementationCapture.product_id == work.setup.product,
+                    ImplementationCapture.project_id == occurrence.scope.project_id,
+                    ImplementationCapture.change_id == occurrence.change_id,
+                    ImplementationCapture.order_id == occurrence.order_id,
+                    ImplementationCapture.item_id == occurrence.item_id,
+                    ImplementationCapture.fact_id == occurrence.implementation_id,
+                    ImplementationCapture.executor_id == executor.human,
+                )
+            ).all()
+            assert len(captures) == 1, "Need one exact saved implementation capture"
+            capture = captures[0]
+            assert capture.occurrence_snapshot == occurrence.model_dump(mode="json")
+            atoms = stored.scalars(
+                select(ChangeImplementationRecord).where(
+                    ChangeImplementationRecord.tenant_id == work.setup.tenant,
+                    ChangeImplementationRecord.product_id == work.setup.product,
+                    ChangeImplementationRecord.project_id == occurrence.scope.project_id,
+                    ChangeImplementationRecord.capture_id == capture.id,
+>                   ChangeImplementationRecord.receipt_id == UUID(receipt["id"]),
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    ChangeImplementationRecord.fact_id == occurrence.implementation_id,
+                    ChangeImplementationRecord.item_id == occurrence.item_id,
+                    ChangeImplementationRecord.order_id == occurrence.order_id,
+                )
+            ).all()
+E           AttributeError: type object 'ChangeImplementationRecord' has no attribute 'receipt_id'
+
+tests/change_execution/approved_configuration_continuation_helpers.py:109: AttributeError
+=============================== warnings summary ===============================
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-a4g8bm50/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-a4g8bm50/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-a4g8bm50/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-a4g8bm50/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-a4g8bm50/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-a4g8bm50/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-a4g8bm50/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-a4g8bm50/pdos-next/server/pdos_next/change_controlled_owner.py:770: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # BEFORE Current target guard, never a commit/second Receipt.
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-a4g8bm50/pdos-next/server/pdos_next/domain/change_coverage_owner/importer.py:368: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([fact])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-a4g8bm50/pdos-next/server/pdos_next/service.py:1164: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-a4g8bm50/pdos-next/server/pdos_next/change_order_service.py:1012: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Actual candidate trigger validates parent before pointer flush.
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-a4g8bm50/pdos-next/server/pdos_next/change_implementation_owner.py:616: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([result])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 20 warnings in 626.93s (0:10:26)

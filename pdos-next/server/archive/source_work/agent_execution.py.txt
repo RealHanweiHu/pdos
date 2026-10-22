@@ -1,0 +1,149 @@
+"""Model composition for the next host; original PDOS business imports are forbidden."""
+
+from collections.abc import Callable
+from contextlib import contextmanager
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from typing import Protocol
+from uuid import UUID
+
+from pdos_agent_runtime.graph import in_agent_graph
+from sqlalchemy import select
+
+from pdos_next.database import tenant_session
+from pdos_next.errors import DomainError
+from pdos_next.model_configuration.ports import RuntimeQuery
+from pdos_next.model_configuration.runtime import RuntimeConfiguration
+from pdos_next.model_gateway.claim import ClaimGateway
+from pdos_next.model_gateway.persistent_budget import DatabaseBudgetPort
+from pdos_next.model_gateway.ports import CallPermit, ExtractionInput
+from pdos_next.models import Invocation, Run, WorkRequest
+from pdos_next.providers.types import ProviderRoute
+from pdos_next.runtime import Provider
+from pdos_next.service import Context, require_access
+
+
+class ProviderFactory(Protocol):
+    """The host binds current configuration, REAL qualification, egress and accounting."""
+
+    def __call__(self, context: Context, work_id: UUID) -> Provider | None: ...
+
+
+@dataclass(frozen=True)
+class ModelRuntimePorts:
+    """Current ports from a trusted host; no implicit credential or qualification fallback."""
+
+    configuration: RuntimeConfiguration
+    writer_for: Callable[[Context, UUID], UUID]
+    authorize: Callable[[RuntimeQuery, ExtractionInput, ProviderRoute], CallPermit]
+    require_current: Callable[[RuntimeQuery, CallPermit], None]
+
+
+class ConfiguredProviderFactory:
+    def __init__(self, engine, ports: ModelRuntimePorts | None):
+        self.engine, self.ports = engine, ports
+
+    def __call__(self, context: Context, work_id: UUID) -> Provider:
+        ports = self.ports
+        if ports is None:
+            raise DomainError(
+                "MODEL_RUNTIME_PORTS_MISSING", "尚未配置独立模型、资格和出站授权接口。"
+            )
+        writer = ports.writer_for(context, work_id)
+        with tenant_session(
+            self.engine,
+            context.tenant_id,
+            actor_id=context.actor_id,
+            requester_id=context.requester_id,
+            category_id=context.category_id,
+        ) as session:
+            work = session.get(WorkRequest, work_id)
+            run = session.scalar(select(Run).where(Run.work_id == work_id))
+            if not work or not run or work.accountable_owner_id != context.requester_id:
+                raise DomainError("FORBIDDEN_SCOPE", "原工作不在当前授权范围。", 403)
+            require_access(session, context, work.product_id, write=True)
+            query = RuntimeQuery(
+                tenant_id=context.tenant_id,
+                run_id=run.id,
+                writer_id=writer,
+                operation="evidence.claim.record",
+                purpose="source_claim",
+                skill_version=run.skill_version,
+                tool_version="evidence.claim.record@1",
+                cancel_epoch=run.cancel_epoch,
+            )
+            agent_context = Context(
+                context.tenant_id,
+                writer,
+                run.requester_id,
+                run.id,
+                run.cancel_epoch,
+                category_id=work.category_id,
+            )
+        selection = ports.configuration.select(query, now=datetime.now(UTC))
+        if selection.state != "authorizer_check":
+            raise DomainError(selection.code, "当前模型配置、真实资格或授权条件尚未齐备。")
+        current = ports.configuration.currentness(
+            selection,
+            query,
+            now=lambda: datetime.now(UTC),
+            require_permit_current=lambda permit: ports.require_current(query, permit),
+        )
+
+        def authorize(request, route):
+            if not in_agent_graph():
+                raise DomainError("AGENT_LANGGRAPH_ENTRY_REQUIRED", "模型须由受控工作图调用。")
+            permit = ports.authorize(query, request, route)
+            with tenant_session(
+                self.engine,
+                query.tenant_id,
+                actor_id=writer,
+                requester_id=context.requester_id,
+                category_id=context.category_id,
+            ) as session:
+                invocation = session.scalar(
+                    select(Invocation).where(
+                        Invocation.run_id == query.run_id,
+                        Invocation.step_key == "source-claim-extract-v1",
+                    )
+                )
+                if (
+                    invocation is None
+                    or invocation.status != "started"
+                    or invocation.provider_version != selection.configuration.provider_version
+                    or invocation.call_id != permit.call_id
+                ):
+                    raise DomainError(
+                        "MODEL_PERMIT_BINDING_MISMATCH", "模型授权与原调用不匹配。", 403
+                    )
+            return permit
+
+        return ClaimGateway(
+            writer_id=writer,
+            route=selection.route,
+            authorize=authorize,
+            require_current=current,
+            budget=DatabaseBudgetPort(self.engine, agent_context, require_current=current),
+        )
+
+
+def configure_model_runtime(engine, ports: ModelRuntimePorts) -> None:
+    if not isinstance(ports, ModelRuntimePorts):
+        raise TypeError("A trusted host must supply the fixed model runtime ports")
+    engine._pdos_model_runtime_ports = ports
+
+
+def configured_provider_factory(engine) -> ProviderFactory:
+    return ConfiguredProviderFactory(engine, getattr(engine, "_pdos_model_runtime_ports", None))
+
+
+@contextmanager
+def selected_provider(factory: ProviderFactory, context: Context, work_id: UUID):
+    provider = factory(context, work_id)
+    try:
+        yield provider
+    finally:
+        if provider is not None:
+            close = getattr(provider, "close", None)
+            if close:
+                close()

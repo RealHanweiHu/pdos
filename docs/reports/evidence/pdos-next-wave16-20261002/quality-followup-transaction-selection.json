@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "wave": "Wave16",
+  "status": "offline_test_candidate_public_integration_and_guarded_pg_execution_pending",
+  "scope": "new tests/quality_followup_transactions only; no frozen production or public source changes",
+  "source_files": {
+    "pdos-next/server/tests/quality_followup_transactions/__init__.py": "2bd2a2a9e7a48a2132019f9974d5ca9c351f2954d0399d3b23ff45cd9af36165",
+    "pdos-next/server/tests/quality_followup_transactions/fixtures.py": "cae4abd15db6dcfd164e14ca6f858648405521145f620c2a47c6f16d028dd3a9",
+    "pdos-next/server/tests/quality_followup_transactions/test_transactions.py": "58bfa1250c427af0d7b6842dd33dd38b52a3b2cbed37ea364f13a1284f17ca80"
+  },
+  "source_file_count": 3,
+  "source_manifest_sha256": "60007fe3775132e7abf720e04a925249ae00ed493460a3b0f2771a488c3fc3fc",
+  "test_function_count": 10,
+  "collected_node_count": 18,
+  "nodes": [
+    "tests/quality_followup_transactions/test_transactions.py::test_t2_named_root_cause_uses_actual_common_uuid_and_atomic_shared_receipt",
+    "tests/quality_followup_transactions/test_transactions.py::test_real_consumption_marker_requires_no_sql_gap_and_cannot_cross_transaction",
+    "tests/quality_followup_transactions/test_transactions.py::test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution",
+    "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.issue.root_cause.decide]",
+    "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.capa.actions.complete]",
+    "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.capa.followup.link]",
+    "tests/quality_followup_transactions/test_transactions.py::test_exact_nine_fields_and_named_executor_cannot_change_after_review[executor]",
+    "tests/quality_followup_transactions/test_transactions.py::test_exact_nine_fields_and_named_executor_cannot_change_after_review[event_clock]",
+    "tests/quality_followup_transactions/test_transactions.py::test_exact_nine_fields_and_named_executor_cannot_change_after_review[event_text]",
+    "tests/quality_followup_transactions/test_transactions.py::test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_and_history[completion_original]",
+    "tests/quality_followup_transactions/test_transactions.py::test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_and_history[classification]",
+    "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[original_epoch]",
+    "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[policy_epoch]",
+    "tests/quality_followup_transactions/test_transactions.py::test_link_t1_preserves_issue_pointer_and_records_exact_scoped_owner_output",
+    "tests/quality_followup_transactions/test_transactions.py::test_classification_profile_aba_during_actual_source_checks_cannot_reuse_old_closure",
+    "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.issue.root_cause.decide-issue.root_cause_decided]",
+    "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.capa.actions.complete-capa.actions_completed]",
+    "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.capa.followup.link-capa.followup_linked]"
+  ],
+  "root_first_selection": [
+    "tests/quality_followup_transactions/test_transactions.py::test_t2_named_root_cause_uses_actual_common_uuid_and_atomic_shared_receipt",
+    "tests/quality_followup_transactions/test_transactions.py::test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution",
+    "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.capa.actions.complete-capa.actions_completed]"
+  ],
+  "validation": {
+    "ruff": {
+      "command": ".venv/bin/ruff check tests/quality_followup_transactions",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    "ast_compile": {
+      "file_count": 3,
+      "result": "passed"
+    },
+    "collection": {
+      "command": ".venv/bin/python -m pytest tests/quality_followup_transactions --noconftest --collect-only -q",
+      "exit_code": 0,
+      "collected": 18,
+      "duration_seconds": 1.31,
+      "fixture_execution": false,
+      "result": "passed"
+    },
+    "database": "not_run",
+    "http": "not_run",
+    "public_tests": "not_run",
+    "browser": "not_run"
+  },
+  "previous_frozen_sources": {
+    "quality-followup-freeze.json": {
+      "manifest_sha256": "21059f8c3a9169f0ef8203019c9dff35629b61147c78c36553883c5630528f1c",
+      "source_file_count": 9,
+      "hashes_match": true,
+      "changed": []
+    },
+    "quality-host-freeze.json": {
+      "manifest_sha256": "8469a5c7b6b21f87e9228e40c6c84b18a560080796a1a843f34f0859504bc30b",
+      "source_file_count": 3,
+      "hashes_match": true,
+      "changed": []
+    },
+    "quality-bootstrap-freeze.json": {
+      "manifest_sha256": "38e02b11fa0770fc36cefe03b4cd626f5944ed938d2fbc03f2d453ddecfb90e7",
+      "source_file_count": 3,
+      "hashes_match": true,
+      "changed": []
+    }
+  },
+  "dependencies": [
+    "Actual shared PAYLOADS/handler/OPERATION_ROLES/T1-T2 registrations",
+    "consume callback immediately after real false-to-true before SQL/flush",
+    "monotonic Issue state/op constraints + link scoped/RLS/receipt atom migration",
+    "shared preview/execute and GET/inputs quality-followup routes",
+    "configure_integration explicit exact synthetic profile, actual native registration and security parse",
+    "verified isolated test target and real guarded head"
+  ],
+  "coverage": [
+    "T2 actual decision UUID/shared atomic receipt",
+    "no SQL-gap and transaction-isolated consumed marker",
+    "partial/allComplete+source clocks+old execution retained",
+    "same/cross-key replay without second consume/effect",
+    "executor/time/text exact observed fields",
+    "completion original/classification withdrawal",
+    "security epoch and trusted policy ABA final guards",
+    "classification profile runtime ABA",
+    "exact informational owner output link without advancing Issue",
+    "terminal Outbox failure rootcause/complete/link rollback and retry"
+  ],
+  "non_claims": [
+    "No PG or HTTP case has executed",
+    "No production qualification or formal Exit",
+    "No effectiveness/closure or automatic owner Run creation",
+    "No public hook, role, proof, source-positive or SQL guard bypass",
+    "Collection does not verify database schema, RLS or same-UOW public consumption"
+  ],
+  "evidence_files": {
+    "quality-followup-transaction-review.md": "1c3c03cc33f83aef5f9b2949c097790cfd93dab342f846c4c81974c7da9e1fdf"
+  }
+}

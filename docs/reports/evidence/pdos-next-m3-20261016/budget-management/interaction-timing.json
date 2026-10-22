@@ -1,0 +1,12 @@
+{
+  "operation": "ai.budget.configure",
+  "samples": 20,
+  "actual_http": true,
+  "median_ms": 106.89,
+  "p95_ms": 265.13,
+  "max_ms": 313.06,
+  "sql_count_min": 26,
+  "sql_count_max": 26,
+  "counts_include_auth_and_domain": true,
+  "scope": "one owner; alternating allocate/stop; not full S1 acceptance"
+}

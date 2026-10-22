@@ -1,0 +1,65 @@
+{
+  "scope": "actual readonly Link professional fingerprint; no fact writes",
+  "model_calls": 0,
+  "False": {
+    "current": false,
+    "authorized": true,
+    "qualified": true,
+    "reason_codes": [
+      "PROFESSIONAL_AUTHORITY_CHANGED"
+    ]
+  },
+  "True": {
+    "current": true,
+    "authorized": true,
+    "qualified": true,
+    "reason_codes": []
+  },
+  "actual_link": {
+    "current": false,
+    "code": "RECHECK_REQUIRED",
+    "message": "\u6574\u6539\u56de\u94fe\u7684\u56fa\u5b9a\u8f93\u51fa\u6216\u6765\u6e90\u53d1\u751f\u53d8\u5316\u3002",
+    "frames": [
+      {
+        "file": "wave17_link_authority_observation.py",
+        "line": 107
+      },
+      {
+        "file": "service.py",
+        "line": 639
+      }
+    ]
+  },
+  "fixed_output_differences": [
+    {
+      "path": "/outputs/0/owner_basis_sha256",
+      "old_sha256": "ba964dbcd23aa85a402f8de388bbd8e264b5d85b8f52e66107295140641d64e1",
+      "new_sha256": "27c3cf46b4ed51ba13d783a52c34f04b375df9d6ad3b3322671a8293698947d5",
+      "old_length": 64,
+      "new_length": 64
+    },
+    {
+      "path": "/outputs/0/required_source_read_set",
+      "old_sha256": "89f67ea75cc2c67de928b26d085b8a693728a0a42cebd141357e6e2986899035",
+      "new_sha256": "a154299c3b86a6968df5c73bb59a9631e4373c03d3f959a252629e87aa155f91",
+      "old_length": 2,
+      "new_length": 3
+    },
+    {
+      "path": "/outputs/0/snapshot/required_source_read_set",
+      "old_sha256": "89f67ea75cc2c67de928b26d085b8a693728a0a42cebd141357e6e2986899035",
+      "new_sha256": "a154299c3b86a6968df5c73bb59a9631e4373c03d3f959a252629e87aa155f91",
+      "old_length": 2,
+      "new_length": 3
+    },
+    {
+      "path": "/source_basis_sha256",
+      "old_sha256": "5ff96a3d556fe4d9b12e210361c648216cf89d9f916c7d598a77ca56acee63fc",
+      "new_sha256": "3331a3c91fa7e134eabfd66f6a417bba678f28403c5dedace85537246ec82aee",
+      "old_length": 64,
+      "new_length": 64
+    }
+  ],
+  "status": "PASS",
+  "finished_at": "2026-10-03T13:26:43.774936+00:00"
+}

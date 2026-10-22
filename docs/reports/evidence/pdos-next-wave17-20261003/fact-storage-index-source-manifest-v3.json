@@ -1,0 +1,51 @@
+{
+  "scope": "Final C-owned staged model/index bounds; no SQL/DB/HTTP/qualification",
+  "original_model_sha256": "c5e19ebd676ebca70421897a2ada1e3214d6fd1d6e7905bdb9a57d7be39f9a56",
+  "backup": {
+    "path": "pdos-next/.local/wave17-fact-storage-index-before-v2/fact_storage_models.py",
+    "mode": "0o600",
+    "directory_mode": "0o700"
+  },
+  "sources": {
+    "pdos-next/staging/wave17/fact_storage_models.py": "a7b5f65137f5456f72aa32e9b50d8749ea7a62003f699dedf596495b0a174162",
+    "pdos-next/staging/wave17/test_fact_storage_index_bounds.py": "f274a7ca1ac7b9bef65f5c0ac36d64421b7c3300c6f687e1a6644860d6517af3",
+    "pdos-next/staging/wave17/fact-storage-index-bounds-contract.md": "aebcbdb253d6d61f736f1469bec71597ef9c25f0ae96d7ef085d731e80db98fd"
+  },
+  "unchanged_dependencies": {
+    "pdos-next/staging/wave17/facts.py": "a9c06b974300729fe8953f1c7b85ec5a5c3ceb57416bc4d81c0c79f708083f50",
+    "pdos-next/staging/wave17/fact_storage_codec.py": "962a7ad94babe6a5a4552d85dffa993cf0d8271e9ae49d4338f6ebf05fa835cf",
+    "pdos-next/staging/wave17/test_fact_storage_codec.py": "6b7e124d5b01d06896fabc129b51160da96d96261779975a5cf9027e478d0726",
+    "pdos-next/staging/wave17/fact-storage-contract.md": "eb020013ea6f10c7ca8ee6959bc361ef878679317fe1ea485d9a5a6c6e9f9f85",
+    "pdos-next/staging/wave17/fact_registry_storage.py": "18c7d06f06ee67d23ce82ef2ee6141781be4b7528f5d7a3325b6f02587ec46c7"
+  },
+  "raw_evidence": {
+    "fact-storage-index-ast-v3.log": "ed0c90787c384bef41dcd290652936d203aeb3a34176cc622e666ba00011e324",
+    "fact-storage-index-check-result-v3.json": "c1fe3a339df0236ee45a03af4dcc8a430ed626faaf6219de363c2c0e0e44d5f8",
+    "fact-storage-index-ddl-v3.sql": "6684b77cde4616766638366b73904a968067e95185acbe4b412710372605fb3f",
+    "fact-storage-index-delta-v3.patch": "898980ad01f53a24399e89d6f13b581c17f784c13ddab4d192ef0875b495177f",
+    "fact-storage-index-format-v3.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "fact-storage-index-pure-v3.log": "ef44ddf3b3742b621b0e6fbd6c731c8b4869029cc5aba6d3d703166d4b87ce6a",
+    "fact-storage-index-ruff-v3.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "fact-storage-index-widths-v3.json": "077b1476d54bd8eae2d27ebd3973360e45675087e0fa5475fb3e10456251fee8"
+  },
+  "checks": {
+    "final_v3_new_pure_passed": 25,
+    "final_v3_pytest_seconds": 0.78,
+    "ruff_exit": 0,
+    "format_check_exit": 0,
+    "ast_in_memory_compile_files": 2,
+    "db_http_public_checks_run": false
+  },
+  "earlier_v2": {
+    "manifest": "fact-storage-index-source-manifest-v2.json",
+    "model_sha256": "d3df2e247dfbb2000925deb1cc86f06d906ff6e95d8839e99489b13de2e1c44a",
+    "test_sha256": "0da4264a31b8490f225da9169103f618c990f7d536ae09cc362bc1fd0a82f7e6",
+    "checks": "Actual 24 new + original 38 = 62 passed / 2.21s before preserving semantic BINDING. Not final v3 coverage."
+  },
+  "old_38_scope": "Original file/results preserved. Two parameterized Current FK and one previous FK assertion equate semantic BINDING with physical FK; now replaced in new v3 checks by INDEX_BINDING assertions. They were not silently edited or rerun as final pass.",
+  "minimum_root_checks": [
+    "Regenerate full new DDL with five tenant indexes + parent confirmation Unique and new SQL guards",
+    "Real 8KB PostgreSQL Unicode boundaries, overlong issuer rejection/no truncation, exact-purpose Current/previous/child guards",
+    "Root unified migration/schema/RLS/proof/receipt/SAVEPOINT checks before writer enablement"
+  ]
+}

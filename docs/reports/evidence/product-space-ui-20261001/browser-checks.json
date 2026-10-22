@@ -1,0 +1,40 @@
+{
+  "dataset": "独立临时 pdos_test 中的合成租户、产品线、研究和 Finding；不代表真实研究或模型资格",
+  "transport": "现有测试夹具中的合成 transport；浏览器未调用模型、未采集公开资料、未接受/批准/应用业务内容",
+  "viewports": [
+    {
+      "width": 1280,
+      "height": 720,
+      "light": true,
+      "dark": true,
+      "scrollWidth": 1280
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "light": true,
+      "dark": true,
+      "scrollWidth": 390
+    },
+    {
+      "width": 320,
+      "height": 720,
+      "light": true,
+      "scrollWidth": 320
+    }
+  ],
+  "checks": [
+    "真实队列、研究、缺项和原运行链接可见",
+    "候选自动只读核对；显式修订后展开表单",
+    "审阅区获得焦点；收起回到原入口",
+    "桌面小Pai宽420px；手机390×844铺满屏幕",
+    "关闭小Pai焦点回到发起按钮",
+    "手机视图选择器替代滚动tab",
+    "研究先显示任务，资料与采集位于下方折叠区",
+    "空间设置独立页面且没有日常专业区底部管理表单",
+    "切视图保留原产品线；键盘ArrowRight切换并聚焦研究",
+    "产品主题列表与共同研究为独立范围"
+  ],
+  "cleanup": "浏览器已关闭，临时视口恢复，主题恢复浅色；自建前端3023/API8893已停止，自建容器pdos-ui-test-20261001-a71c已删除；三个端口无监听。",
+  "database_head": "0415_product_planning_v6_runs"
+}

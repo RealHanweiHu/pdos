@@ -1,0 +1,74 @@
+.....F.{"registered_graph_run_id": "f5994488-2e84-42fb-b568-d0b9780ed6f3", "synthetic_model_turns": 4, "outcome": "completed", "claim_id": "96b62506-fc06-4563-977b-3487625d66e5", "original_read_set_unchanged": true, "real_provider_calls": 0}
+...............{"scope": "one synthetic original, outbound watermark read", "elapsed_ms": 54.59, "sql_count": 20, "artifact_body_selects": 0}
+............
+=================================== FAILURES ===================================
+__ test_admission_rolls_back_with_receipt_and_retries_without_duplicate[True] __
+
+work = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x13815fb60>
+human = True
+
+    @pytest.mark.parametrize("human", [False, True])
+    def test_admission_rolls_back_with_receipt_and_retries_without_duplicate(work, monkeypatch, human):
+        f = bound(work, monkeypatch)
+        args = claim_args(f)
+        source = source_for(f, "evidence.claim.record", args)
+        intent = execution_key(f.scope.run_id, source.model_call_id, 0)
+        if human:
+            candidate = f.owner.prepare_candidate(
+                f.scope, f.registry.get("evidence.claim.record"), args, intent
+            )
+            checked = post(work, candidate["command"], preview=True)
+            assert checked.status_code == 200, checked.text
+            command = checked.json()["command"]
+
+            def perform():
+                response = post(work, command)
+                assert response.status_code == 200, response.text
+                return response.json()
+        else:
+
+            def perform():
+                return f.adapter.execute(f.scope, "evidence.claim.record", args, intent, source=source)
+
+        before, business = current(f), counts(work)
+
+        def fail(_c, _cursor, statement, *_args):
+            if statement.startswith("UPDATE agent_runs SET versions"):
+                raise RuntimeError("Synthetic context admission tail failure")
+
+        event.listen(work.engine, "before_cursor_execute", fail)
+        try:
+            with pytest.raises(RuntimeError, match="context admission tail failure"):
+                perform()
+        finally:
+            event.remove(work.engine, "before_cursor_execute", fail)
+        assert current(f) == before and counts(work) == business
+        if human:
+            with Session(work.admin) as session:
+                confirmation = session.scalar(
+>                   select(Confirmation).where(
+                    ^^^^^^
+                        Confirmation.token_hash == digest(command["payload"]["confirmation_token"])
+                    )
+                )
+E               NameError: name 'select' is not defined. Did you forget to import 'select'
+
+tests/agent_kernel/test_proposal_context_admission_pg.py:271: NameError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_context_admission_pg.py: 9 warnings
+tests/agent_kernel/test_proposal_context_pg.py: 14 warnings
+tests/agent_kernel/test_snapshot_proof_transactions.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_admission_pg.py: 60 warnings
+tests/agent_kernel/test_proposal_context_pg.py: 92 warnings
+tests/agent_kernel/test_snapshot_proof_transactions.py: 6 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_proposal_context_admission_pg.py::test_admission_rolls_back_with_receipt_and_retries_without_duplicate[True]
+1 failed, 33 passed, 182 warnings in 95.25s (0:01:35)

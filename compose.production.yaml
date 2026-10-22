@@ -1,0 +1,282 @@
+name: pdos
+
+x-api-image: &api-image
+  image: "pdos-api:${PDOS_IMAGE_TAG:?PDOS_IMAGE_TAG must be set}"
+  build:
+    context: .
+    dockerfile: server/Dockerfile
+    args:
+      PDOS_IMAGE_REVISION: "${PDOS_IMAGE_TAG:?PDOS_IMAGE_TAG must be set}"
+      PYTHON_BASE_IMAGE: "${PDOS_PYTHON_BASE_IMAGE:-python:3.12.10-slim-bookworm@sha256:fd95fa221297a88e1cf49c55ec1828edd7c5a428187e67b5d1805692d11588db}"
+      UV_BASE_IMAGE: "${PDOS_UV_BASE_IMAGE:-ghcr.io/astral-sh/uv:0.11.7@sha256:240fb85ab0f263ef12f492d8476aa3a2e4e1e333f7d67fbdd923d00a506a516a}"
+      UV_DEFAULT_INDEX: "${PDOS_UV_DEFAULT_INDEX:-https://pypi.org/simple}"
+
+x-service-hardening: &service-hardening
+  init: true
+  security_opt:
+    - no-new-privileges:true
+  logging:
+    driver: json-file
+    options:
+      max-file: "3"
+      max-size: 10m
+
+services:
+  migrate:
+    <<: [*api-image, *service-hardening]
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      DATABASE_URL: "${DATABASE_URL:?DATABASE_URL must be set}"
+    read_only: true
+    restart: "no"
+    tmpfs:
+      - /tmp
+
+  api:
+    <<: [*api-image, *service-hardening]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: "${DATABASE_URL:?DATABASE_URL must be set}"
+      JWT_ACCESS_TOKEN_MINUTES: "${JWT_ACCESS_TOKEN_MINUTES:-30}"
+      JWT_AUDIENCE: "${JWT_AUDIENCE:-pdos-web}"
+      JWT_ISSUER: "${JWT_ISSUER:-pdos-api}"
+      JWT_SECRET: "${JWT_SECRET:?JWT_SECRET must be set}"
+      PDOS_AI_DAILY_TOKEN_BUDGET: "${PDOS_AI_DAILY_TOKEN_BUDGET:-2000000}"
+      PDOS_APPLICATION_MODEL_BUDGET_MODE: "${PDOS_APPLICATION_MODEL_BUDGET_MODE:-legacy}"
+      PDOS_APPLICATION_MODEL_BUDGET_PROFILE: "${PDOS_APPLICATION_MODEL_BUDGET_PROFILE:-}"
+      PDOS_APPLICATION_MODEL_METER_PATH: "${PDOS_APPLICATION_MODEL_METER_PATH:-}"
+      PDOS_APPLICATION_MODEL_METER_SHA256: "${PDOS_APPLICATION_MODEL_METER_SHA256:-}"
+      PDOS_LLM_PROVIDER: "${PDOS_LLM_PROVIDER:-minimax}"
+      PDOS_LLM_BASE_URL: "${PDOS_LLM_BASE_URL:-https://api.minimaxi.com/v1}"
+      PDOS_LLM_API_KEY: "${PDOS_LLM_API_KEY:-}"
+      PDOS_LLM_MODEL: "${PDOS_LLM_MODEL:-MiniMax-M3}"
+      PDOS_LLM_MINIMAX_BASE_URL: "${PDOS_LLM_MINIMAX_BASE_URL:-https://api.minimaxi.com/v1}"
+      PDOS_LLM_MINIMAX_MODEL: "${PDOS_LLM_MINIMAX_MODEL:-MiniMax-M3}"
+      PDOS_LLM_MINIMAX_API_KEY: "${PDOS_LLM_MINIMAX_API_KEY:-}"
+      PDOS_LLM_DEEPSEEK_BASE_URL: "${PDOS_LLM_DEEPSEEK_BASE_URL:-https://api.deepseek.com}"
+      PDOS_LLM_DEEPSEEK_MODEL: "${PDOS_LLM_DEEPSEEK_MODEL:-deepseek-v4-flash}"
+      PDOS_LLM_DEEPSEEK_API_KEY: "${PDOS_LLM_DEEPSEEK_API_KEY:-}"
+      PDOS_LLM_GLM_BASE_URL: "${PDOS_LLM_GLM_BASE_URL:-https://open.bigmodel.cn/api/paas/v4}"
+      PDOS_LLM_GLM_MODEL: "${PDOS_LLM_GLM_MODEL:-glm-5.2}"
+      PDOS_LLM_GLM_API_KEY: "${PDOS_LLM_GLM_API_KEY:-}"
+      PDOS_LLM_OPENAI_BASE_URL: "${PDOS_LLM_OPENAI_BASE_URL:-https://api.openai.com/v1}"
+      PDOS_LLM_OPENAI_MODEL: "${PDOS_LLM_OPENAI_MODEL:-gpt-5.1}"
+      PDOS_LLM_OPENAI_API_KEY: "${PDOS_LLM_OPENAI_API_KEY:-}"
+      PDOS_LLM_ANTHROPIC_BASE_URL: "${PDOS_LLM_ANTHROPIC_BASE_URL:-https://api.anthropic.com}"
+      PDOS_LLM_ANTHROPIC_MODEL: "${PDOS_LLM_ANTHROPIC_MODEL:-claude-sonnet-5}"
+      PDOS_LLM_ANTHROPIC_API_KEY: "${PDOS_LLM_ANTHROPIC_API_KEY:-}"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      PDOS_LLM_OPENROUTER_BASE_URL: "${PDOS_LLM_OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}"
+      PDOS_LLM_OPENROUTER_MODEL: "${PDOS_LLM_OPENROUTER_MODEL:-openai/gpt-5.2}"
+      PDOS_LLM_OPENROUTER_API_KEY: "${PDOS_LLM_OPENROUTER_API_KEY:-}"
+      PDOS_LLM_OPENCODE_GO_BASE_URL: "${PDOS_LLM_OPENCODE_GO_BASE_URL:-https://opencode.ai/zen/go/v1}"
+      PDOS_LLM_OPENCODE_GO_MODEL: "${PDOS_LLM_OPENCODE_GO_MODEL:-deepseek-v4-flash}"
+      PDOS_LLM_OPENCODE_GO_API_KEY: "${PDOS_LLM_OPENCODE_GO_API_KEY:-}"
+      PDOS_DINGTALK_CLIENT_ID: "${PDOS_DINGTALK_CLIENT_ID:-}"
+      PDOS_DINGTALK_CLIENT_SECRET: "${PDOS_DINGTALK_CLIENT_SECRET:-}"
+      PDOS_DINGTALK_CALLBACK_TOKEN: "${PDOS_DINGTALK_CALLBACK_TOKEN:-}"
+      PDOS_DINGTALK_CALLBACK_AES_KEY: "${PDOS_DINGTALK_CALLBACK_AES_KEY:-}"
+      PDOS_DINGTALK_CARD_CALLBACK_SECRET: "${PDOS_DINGTALK_CARD_CALLBACK_SECRET:-}"
+      PDOS_DINGTALK_DELIVERY_ENABLED: "${PDOS_DINGTALK_DELIVERY_ENABLED:-false}"
+      PDOS_PUBLIC_BASE_URL: "${PDOS_PUBLIC_BASE_URL:-https://pdos.beepump.net}"
+      PDOS_REMINDER_QUIET_HOURS: "${PDOS_REMINDER_QUIET_HOURS:-21:00-08:00}"
+      PDOS_REMINDER_DAILY_DM_CAP: "${PDOS_REMINDER_DAILY_DM_CAP:-50}"
+      S3_ENDPOINT: "${S3_ENDPOINT:?S3_ENDPOINT must be set}"
+      S3_REGION: "${S3_REGION:?S3_REGION must be set}"
+      S3_BUCKET: "${S3_BUCKET:?S3_BUCKET must be set}"
+      S3_ACCESS_KEY_ID: "${S3_ACCESS_KEY_ID:?S3_ACCESS_KEY_ID must be set}"
+      S3_SECRET_ACCESS_KEY: "${S3_SECRET_ACCESS_KEY:?S3_SECRET_ACCESS_KEY must be set}"
+      S3_FORCE_PATH_STYLE: "${S3_FORCE_PATH_STYLE:-false}"
+    expose:
+      - "8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=2).read()"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    read_only: true
+    restart: unless-stopped
+    tmpfs:
+      - /tmp
+
+  dispatcher:
+    <<: [*api-image, *service-hardening]
+    command: ["python", "-m", "scripts.run_dispatcher"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      PDOS_WORKER_DATABASE_URL: "${PDOS_WORKER_DATABASE_URL:?PDOS_WORKER_DATABASE_URL must be set}"
+      PDOS_AGENT_MODEL_BUDGET_MODE: "${PDOS_AGENT_MODEL_BUDGET_MODE:-legacy}"
+      PDOS_AGENT_MODEL_BUDGET_PROFILE: "${PDOS_AGENT_MODEL_BUDGET_PROFILE:-}"
+      PDOS_AGENT_LOOP_QUALIFICATION_PATH: "${PDOS_AGENT_LOOP_QUALIFICATION_PATH:-}"
+      PDOS_AGENT_LOOP_QUALIFICATION_SHA256: "${PDOS_AGENT_LOOP_QUALIFICATION_SHA256:-}"
+      PDOS_AGENT_DEBOUNCE_MINUTES: "${PDOS_AGENT_DEBOUNCE_MINUTES:-15}"
+      PDOS_DISPATCHER_POLL_SECONDS: "${PDOS_DISPATCHER_POLL_SECONDS:-2}"
+    healthcheck:
+      test: ["CMD", "python", "-c", "from pathlib import Path; raise SystemExit(0 if b'scripts.run_dispatcher' in Path('/proc/1/cmdline').read_bytes() else 1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    read_only: true
+    restart: unless-stopped
+    tmpfs:
+      - /tmp
+
+  executor:
+    <<: [*api-image, *service-hardening]
+    command: ["python", "-m", "scripts.run_executor"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      PDOS_AGENT_DATABASE_URL: "${PDOS_AGENT_DATABASE_URL:?PDOS_AGENT_DATABASE_URL must be set}"
+      PDOS_AGENT_MODEL_BUDGET_MODE: "${PDOS_AGENT_MODEL_BUDGET_MODE:-legacy}"
+      PDOS_AGENT_MODEL_BUDGET_PROFILE: "${PDOS_AGENT_MODEL_BUDGET_PROFILE:-}"
+      PDOS_AGENT_LOOP_QUALIFICATION_PATH: "${PDOS_AGENT_LOOP_QUALIFICATION_PATH:-}"
+      PDOS_AGENT_LOOP_QUALIFICATION_SHA256: "${PDOS_AGENT_LOOP_QUALIFICATION_SHA256:-}"
+      PDOS_AGENT_MODEL_METER_PATH: "${PDOS_AGENT_MODEL_METER_PATH:-}"
+      PDOS_AGENT_MODEL_METER_SHA256: "${PDOS_AGENT_MODEL_METER_SHA256:-}"
+      PDOS_EXECUTOR_POLL_SECONDS: "${PDOS_EXECUTOR_POLL_SECONDS:-2}"
+      PDOS_AI_DAILY_TOKEN_BUDGET: "${PDOS_AI_DAILY_TOKEN_BUDGET:-2000000}"
+      PDOS_LLM_PROVIDER: "${PDOS_LLM_PROVIDER:-minimax}"
+      PDOS_LLM_BASE_URL: "${PDOS_LLM_BASE_URL:-https://api.minimaxi.com/v1}"
+      PDOS_LLM_API_KEY: "${PDOS_LLM_API_KEY:-}"
+      PDOS_LLM_MODEL: "${PDOS_LLM_MODEL:-MiniMax-M3}"
+      PDOS_LLM_MINIMAX_BASE_URL: "${PDOS_LLM_MINIMAX_BASE_URL:-https://api.minimaxi.com/v1}"
+      PDOS_LLM_MINIMAX_MODEL: "${PDOS_LLM_MINIMAX_MODEL:-MiniMax-M3}"
+      PDOS_LLM_MINIMAX_API_KEY: "${PDOS_LLM_MINIMAX_API_KEY:-}"
+      PDOS_LLM_DEEPSEEK_BASE_URL: "${PDOS_LLM_DEEPSEEK_BASE_URL:-https://api.deepseek.com}"
+      PDOS_LLM_DEEPSEEK_MODEL: "${PDOS_LLM_DEEPSEEK_MODEL:-deepseek-v4-flash}"
+      PDOS_LLM_DEEPSEEK_API_KEY: "${PDOS_LLM_DEEPSEEK_API_KEY:-}"
+      PDOS_LLM_GLM_BASE_URL: "${PDOS_LLM_GLM_BASE_URL:-https://open.bigmodel.cn/api/paas/v4}"
+      PDOS_LLM_GLM_MODEL: "${PDOS_LLM_GLM_MODEL:-glm-5.2}"
+      PDOS_LLM_GLM_API_KEY: "${PDOS_LLM_GLM_API_KEY:-}"
+      PDOS_LLM_OPENAI_BASE_URL: "${PDOS_LLM_OPENAI_BASE_URL:-https://api.openai.com/v1}"
+      PDOS_LLM_OPENAI_MODEL: "${PDOS_LLM_OPENAI_MODEL:-gpt-5.1}"
+      PDOS_LLM_OPENAI_API_KEY: "${PDOS_LLM_OPENAI_API_KEY:-}"
+      PDOS_LLM_ANTHROPIC_BASE_URL: "${PDOS_LLM_ANTHROPIC_BASE_URL:-https://api.anthropic.com}"
+      PDOS_LLM_ANTHROPIC_MODEL: "${PDOS_LLM_ANTHROPIC_MODEL:-claude-sonnet-5}"
+      PDOS_LLM_ANTHROPIC_API_KEY: "${PDOS_LLM_ANTHROPIC_API_KEY:-}"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      PDOS_LLM_OPENROUTER_BASE_URL: "${PDOS_LLM_OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}"
+      PDOS_LLM_OPENROUTER_MODEL: "${PDOS_LLM_OPENROUTER_MODEL:-openai/gpt-5.2}"
+      PDOS_LLM_OPENROUTER_API_KEY: "${PDOS_LLM_OPENROUTER_API_KEY:-}"
+      PDOS_LLM_OPENCODE_GO_BASE_URL: "${PDOS_LLM_OPENCODE_GO_BASE_URL:-https://opencode.ai/zen/go/v1}"
+      PDOS_LLM_OPENCODE_GO_MODEL: "${PDOS_LLM_OPENCODE_GO_MODEL:-deepseek-v4-flash}"
+      PDOS_LLM_OPENCODE_GO_API_KEY: "${PDOS_LLM_OPENCODE_GO_API_KEY:-}"
+    healthcheck:
+      test: ["CMD", "python", "-c", "from pathlib import Path; raise SystemExit(0 if b'scripts.run_executor' in Path('/proc/1/cmdline').read_bytes() else 1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    read_only: true
+    restart: unless-stopped
+    tmpfs:
+      - /tmp
+
+  dingtalk:
+    <<: [*api-image, *service-hardening]
+    command: ["python", "-m", "scripts.run_dingtalk_connector"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: "${DATABASE_URL:?DATABASE_URL must be set}"
+      JWT_SECRET: "${JWT_SECRET:?JWT_SECRET must be set}"
+      PDOS_DINGTALK_CLIENT_ID: "${PDOS_DINGTALK_CLIENT_ID:-}"
+      PDOS_DINGTALK_CLIENT_SECRET: "${PDOS_DINGTALK_CLIENT_SECRET:-}"
+      PDOS_DINGTALK_CALLBACK_TOKEN: "${PDOS_DINGTALK_CALLBACK_TOKEN:-}"
+      PDOS_DINGTALK_CALLBACK_AES_KEY: "${PDOS_DINGTALK_CALLBACK_AES_KEY:-}"
+      PDOS_DINGTALK_CARD_CALLBACK_SECRET: "${PDOS_DINGTALK_CARD_CALLBACK_SECRET:-}"
+      PDOS_DINGTALK_DELIVERY_ENABLED: "${PDOS_DINGTALK_DELIVERY_ENABLED:-false}"
+      PDOS_DINGTALK_POLL_SECONDS: "${PDOS_DINGTALK_POLL_SECONDS:-2}"
+      PDOS_PUBLIC_BASE_URL: "${PDOS_PUBLIC_BASE_URL:-https://pdos.beepump.net}"
+    healthcheck:
+      test: ["CMD", "python", "-c", "from pathlib import Path; raise SystemExit(0 if b'scripts.run_dingtalk_connector' in Path('/proc/1/cmdline').read_bytes() else 1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    read_only: true
+    restart: unless-stopped
+    tmpfs:
+      - /tmp
+
+  reminders:
+    <<: [*api-image, *service-hardening]
+    command: ["python", "-m", "scripts.run_reminder_scheduler"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: "${DATABASE_URL:?DATABASE_URL must be set}"
+      JWT_SECRET: "${JWT_SECRET:?JWT_SECRET must be set}"
+      PDOS_PUBLIC_BASE_URL: "${PDOS_PUBLIC_BASE_URL:-https://pdos.beepump.net}"
+      PDOS_DINGTALK_DELIVERY_ENABLED: "${PDOS_DINGTALK_DELIVERY_ENABLED:-false}"
+      PDOS_REMINDER_SCAN_SECONDS: "${PDOS_REMINDER_SCAN_SECONDS:-60}"
+      PDOS_REMINDER_QUIET_HOURS: "${PDOS_REMINDER_QUIET_HOURS:-21:00-08:00}"
+      PDOS_REMINDER_DAILY_DM_CAP: "${PDOS_REMINDER_DAILY_DM_CAP:-50}"
+    healthcheck:
+      test: ["CMD", "python", "-c", "from pathlib import Path; raise SystemExit(0 if b'scripts.run_reminder_scheduler' in Path('/proc/1/cmdline').read_bytes() else 1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    read_only: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+    tmpfs:
+      - /tmp
+
+  schedule-propagation:
+    <<: [*api-image, *service-hardening]
+    profiles: ["schedule-propagation"]
+    command: ["python", "-m", "scripts.run_schedule_propagation"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: "${DATABASE_URL:?DATABASE_URL must be set}"
+      JWT_SECRET: "${JWT_SECRET:?JWT_SECRET must be set}"
+      PDOS_SCHEDULE_PROPAGATION_ENABLED: "${PDOS_SCHEDULE_PROPAGATION_ENABLED:-false}"
+      PDOS_SCHEDULE_PROPAGATION_SCAN_SECONDS: "${PDOS_SCHEDULE_PROPAGATION_SCAN_SECONDS:-60}"
+    read_only: true
+    restart: "no"
+    stop_grace_period: 30s
+    tmpfs:
+      - /tmp
+
+  web:
+    <<: *service-hardening
+    image: "pdos-web:${PDOS_IMAGE_TAG:?PDOS_IMAGE_TAG must be set}"
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      args:
+        PDOS_IMAGE_REVISION: "${PDOS_IMAGE_TAG:?PDOS_IMAGE_TAG must be set}"
+        NODE_BASE_IMAGE: "${PDOS_NODE_BASE_IMAGE:-node:22.22.0-bookworm-slim@sha256:dd9d21971ec4395903fa6143c2b9267d048ae01ca6d3ea96f16cb30df6187d94}"
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      PDOS_API_INTERNAL_URL: http://api:8000
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/login').then((response) => { if (!response.ok) process.exit(1) }).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "127.0.0.1:${APP_PORT:-3002}:3000"
+    networks:
+      default:
+        aliases:
+          - pdos-web
+    restart: unless-stopped
+    stop_grace_period: 20s

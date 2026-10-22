@@ -1,0 +1,27 @@
+{
+  "base_commit": "57650db50655f0481a0a5b2f241187a4a0080cc9",
+  "alembic_head": "s0_0762",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/agent_kernel/management.py": "2ba467596b0662356a2cbb30f4fbeb9e14d33d96b0f5f4516d3765d4505ea996",
+    "pdos-next/server/pdos_next/agent_kernel/management_api.py": "c346c3d6974e934e6fa0619d06b08362d0a9115bca4cf78cb4340760e1a8f5ef",
+    "pdos-next/server/pdos_next/api.py": "e18c9956d417d846bb3cc7fc37bfcc5f0c4b87e1621558b5174f7cee7691009a",
+    "pdos-next/server/tests/agent_kernel/test_management_api.py": "d4e9fa500c00add4645aeca9efac6eb2a8349c5a948ebedf3272a19d32f4b90f",
+    "pdos-next/web/src/lib/provider-agreements.ts": "422b5861a856f80b80f156e5718cfd0b84f964e4c0a473aacef56968f821edb9",
+    "pdos-next/web/src/lib/provider-agreements.test.ts": "65d473645f55377156122b78ab18bb6c5331aeaae511d1004452b881636d9ea0",
+    "pdos-next/web/src/components/model_configuration/provider-agreements.tsx": "53dd1a3c005db52bd7bfdc23a736e87f207eee7bcdf81c6789ecdc1a48f5710f",
+    "pdos-next/web/src/components/workspace.tsx": "7f3a4747149f8a7f3f84bcc307026b42d7da9904c5a2269afd3dfb3e7fda2b49",
+    "pdos-next/web/src/components/preproject/proposal-views.tsx": "2d35cc4cd8ce202c9a5142b97bc2a48a36580c4356a839c8c001d6e117b2abec",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "5e93c3c6a6ad0a832c4f3cd67563311939be23239fef740f73eb20f78a8c3381",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "8bababc08515ecc7c2fd295e88f2b859b922a9206c126f4bd48b1ab5896f95ec",
+    "pdos-next/web/src/app/globals.css": "9dac6b84026c25fcfd74fffe8bba5d73a0fcecd93c8eac9fa2a5917bea3dc969",
+    "docs/runbooks/pdos-next-tenant-model-runtime.md": "4505230ff3a31274c0fb9f82b56bb3bd9cce281b56c90c4ca4fff6cea650f03b"
+  },
+  "distinct_cases": {
+    "postgres": 16,
+    "frontend": 75,
+    "total": 91
+  },
+  "real_model_calls": 0,
+  "real_agreements": 0,
+  "stage_complete": false
+}

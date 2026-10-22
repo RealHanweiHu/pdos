@@ -1,0 +1,35 @@
+{
+  "target": "127.0.0.1:51698/pdos_test",
+  "marker": "3749a9d8-a9de-4544-87c7-6766338a73a8",
+  "container_identity_checked": true,
+  "head": [
+    "s0_0716"
+  ],
+  "binding_not_null": true,
+  "binding_has_server_default": false,
+  "shape_constraint_validated": true,
+  "binding_immutable_guard": true,
+  "pdos_agent_call_dml": {
+    "INSERT": false,
+    "UPDATE": false,
+    "DELETE": false
+  },
+  "real_model_calls": 0,
+  "main_database_operations": 0,
+  "owned_metadata_comparison": "12 owned tables matched; asserted by final-owned-ports-candidate.log test",
+  "migration_steps": [
+    {
+      "command": "upgrade s0_0716",
+      "exit_code": 0
+    },
+    {
+      "command": "downgrade s0_0715",
+      "exit_code": 0
+    },
+    {
+      "command": "upgrade s0_0716",
+      "exit_code": 0
+    }
+  ],
+  "roundtrip_before_new_binding_fixtures": true
+}

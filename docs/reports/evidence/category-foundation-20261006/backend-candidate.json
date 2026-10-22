@@ -1,0 +1,17 @@
+{
+  "server/app/db/category_schema.py": "d5ad26b8550a3ad51e35d01bd4a6c35ba65bd6cbf2b82332f7eb8054471c0fc9",
+  "server/app/db/schema.py": "7e601c302331031e36240022208adb33885747796f73232509cb8959a5ea806a",
+  "server/app/domain/product_categories.py": "43c8dc822e59889ebcbb408dfc9fa50f8914091bda166e798c8c27bdc81fd01f",
+  "server/app/api/product_categories.py": "14704683acbcf631941f14350c4a56617dafb5f7758d5d29e3079cfc287b6a66",
+  "server/app/domain/product_catalog.py": "3ddfc5ef5bc7c78a2382b5055afcf0e8160641bb14399d3874d80d6d6024a1f5",
+  "server/app/domain/product_definitions.py": "4e9a81aa3ac6f0ed4431ab1f58baab97501813abbd458bff977248dff49009bf",
+  "server/app/domain/product_matrix.py": "68f697077d9d36f61ede78c05e3886dc1cca15f2d73be30580e2795106db88b9",
+  "server/app/domain/product_workspace.py": "d690aad1f18223333dc5fdaf04662f451fc26dacf393028f8b9dcdc8cd56e8f8",
+  "server/app/domain/competitors.py": "47624a91e20d844af945eebb023cfdbce1980c15b0e4682eb914ebd68df0f8d6",
+  "server/app/domain/product_proposals.py": "968d4bc9908d8d177ea2ae97a4094efe68e3429ae1faf2bcda6daa9a51780639",
+  "server/app/contracts/product_proposals.py": "14ec68a20f4200a0cc38eb7a3d583f4fb45d81a5b97b5fa88d810750544033e0",
+  "server/app/contracts/product_records.py": "580e147da9c157be10067f88c3ee953bf270327b8b5ee37ed438b937dbc6aea5",
+  "server/app/ai/product_proposal.py": "c6a9340dd088bba7187499874e8b1d6543a23b77f47b715ae77e618b00e74e2b",
+  "server/app/main.py": "d70b121af8ca1781e21b457d4a766935946042b2ce45b12c5b77975d9149ed6b",
+  "server/migrations/versions/0425_category_foundation.py": "08d4ddfc86550eb89e84ea59c2f89d92934ba9447b04f74b3dffee0a4cbe1e04"
+}

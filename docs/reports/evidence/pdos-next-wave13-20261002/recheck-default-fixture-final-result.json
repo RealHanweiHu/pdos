@@ -1,0 +1,12 @@
+{
+  "selection": "tests/verification_launch/test_transactions.py::test_inputs_are_readonly_even_when_sentinels_do_not_exist",
+  "exit_code": 0,
+  "elapsed_seconds": 231.31,
+  "port": 62513,
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "source": {
+    "pdos-next/server/tests/verification_launch/test_transactions.py": "f2437243378a6d78768afaac15334961563006e08c6a7d637c139ef4591caee8",
+    "pdos-next/server/tests/verification_launch/fixtures.py": "10e5c57889064fd47be6044f80197eecb6c07f46079153e6e6dcb63eef81ff5f"
+  },
+  "reason": "Final ready_work wrapper default branch on real PostgreSQL; existing readonly-input assertion replaces its older success, not an extra unique case."
+}

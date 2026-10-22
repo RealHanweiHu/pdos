@@ -1,0 +1,8 @@
+[
+  "tests/professional_authority/test_assessment.py",
+  "tests/professional_authority/test_profiles.py",
+  "tests/sample_handoff/test_rules.py",
+  "tests/sample_handoff/test_read_context.py",
+  "tests/verification_handoff/test_pure.py",
+  "tests/verification_handoff/test_basis_snapshot_reuse.py"
+]

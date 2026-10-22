@@ -1,0 +1,133 @@
+{
+  "snapshot": "/private/tmp/pdos-s4-release-vb2f936l",
+  "started_at": "2026-10-17T22:23:26.871129+00:00",
+  "finished_at": "2026-10-17T22:23:41.056634+00:00",
+  "results": [
+    {
+      "label": "backend-lint",
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "ruff",
+        "check",
+        "migrations/schema_s0_0779.py",
+        "migrations/schema_s0_0780.py",
+        "migrations/versions/s0_0779_release_packages.py",
+        "migrations/versions/s0_0780_release_read_set_grouping.py",
+        "pdos_next/api.py",
+        "pdos_next/command_handlers.py",
+        "pdos_next/contracts.py",
+        "pdos_next/domain/manufacturing_baseline/consumption.py",
+        "pdos_next/domain/professional_authority/service.py",
+        "pdos_next/domain/release/__init__.py",
+        "pdos_next/domain/release/api.py",
+        "pdos_next/domain/release/constants.py",
+        "pdos_next/domain/release/material_owner.py",
+        "pdos_next/domain/release/models.py",
+        "pdos_next/domain/release/rules.py",
+        "pdos_next/domain/release/schemas.py",
+        "pdos_next/domain/release/service.py",
+        "pdos_next/domain/release/storage_schema.py",
+        "pdos_next/models.py",
+        "pdos_next/service.py",
+        "tests/release/__init__.py",
+        "tests/release/test_material_owner.py",
+        "tests/release/test_migration.py",
+        "tests/release/test_models.py",
+        "tests/release/test_rules.py",
+        "tests/release/test_service.py",
+        "tests/release/test_storage_schema.py",
+        "tests/release_transactions/__init__.py",
+        "tests/release_transactions/conftest.py",
+        "tests/release_transactions/test_transactions.py"
+      ],
+      "exit": 0,
+      "log": "static-final-02-backend-lint.log"
+    },
+    {
+      "label": "backend-format",
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "ruff",
+        "format",
+        "--check",
+        "migrations/schema_s0_0779.py",
+        "migrations/schema_s0_0780.py",
+        "migrations/versions/s0_0779_release_packages.py",
+        "migrations/versions/s0_0780_release_read_set_grouping.py",
+        "pdos_next/domain/release/__init__.py",
+        "pdos_next/domain/release/api.py",
+        "pdos_next/domain/release/constants.py",
+        "pdos_next/domain/release/material_owner.py",
+        "pdos_next/domain/release/models.py",
+        "pdos_next/domain/release/rules.py",
+        "pdos_next/domain/release/schemas.py",
+        "pdos_next/domain/release/service.py",
+        "pdos_next/domain/release/storage_schema.py",
+        "tests/release/__init__.py",
+        "tests/release/test_material_owner.py",
+        "tests/release/test_migration.py",
+        "tests/release/test_models.py",
+        "tests/release/test_rules.py",
+        "tests/release/test_service.py",
+        "tests/release/test_storage_schema.py",
+        "tests/release_transactions/__init__.py",
+        "tests/release_transactions/conftest.py",
+        "tests/release_transactions/test_transactions.py"
+      ],
+      "exit": 0,
+      "log": "static-final-02-backend-format.log"
+    },
+    {
+      "label": "web-components-and-bff",
+      "command": [
+        "node",
+        "--test",
+        "src/app/api/release-route.test.mjs",
+        "src/components/manufacturing/release-packages.test.mjs"
+      ],
+      "exit": 0,
+      "log": "static-final-02-web-components-and-bff.log"
+    },
+    {
+      "label": "web-request-flows",
+      "command": [
+        "node",
+        "../tools/s0_web_checkpoint.cjs",
+        "releases"
+      ],
+      "exit": 0,
+      "log": "static-final-02-web-request-flows.log"
+    },
+    {
+      "label": "web-types",
+      "command": [
+        "./node_modules/.bin/tsc",
+        "--noEmit",
+        "--incremental",
+        "false"
+      ],
+      "exit": 0,
+      "log": "static-final-02-web-types.log"
+    },
+    {
+      "label": "web-lint",
+      "command": [
+        "./node_modules/.bin/eslint",
+        "--no-cache",
+        "src/app/api/[...path]/route.ts",
+        "src/app/api/release-route.test.mjs",
+        "src/components/workspace.tsx",
+        "src/lib/releases.ts",
+        "src/lib/releases.test.ts",
+        "src/components/manufacturing/release-packages.tsx",
+        "src/components/manufacturing/release-packages.test.mjs"
+      ],
+      "exit": 0,
+      "log": "static-final-02-web-lint.log"
+    }
+  ],
+  "source_changed": [],
+  "database_connections": 0
+}

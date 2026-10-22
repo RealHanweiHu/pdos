@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "started_at": "2026-10-03T14:11:55.402578+00:00",
+  "steps": [
+    {
+      "step": "original-request-replay",
+      "http_status": 200,
+      "duration_seconds": 182.773,
+      "response_sha256": "d26e3d43711e48dcb58c502d87747ed2ca6534356e5ccaf810cb1fd5cdf68576",
+      "error_code": null
+    },
+    {
+      "step": "actual-saved-read",
+      "http_status": 200,
+      "duration_seconds": 129.222,
+      "response_sha256": "91db877fe53dc7f997a17aa43d43bc377e6066ed0847dadb6d2845bc7a83827e",
+      "error_code": null
+    }
+  ],
+  "source_manifest_sha256": "194973a0bd6a3058aaa8c896a5155de516dd0320dd46e00a74dcfce8c45bb5f9",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "model_calls": 0,
+  "original_command_sha256": "f8cb6129288252cc34c3c744955035a6df24dab801e9755ad342e7df14f6ec07",
+  "full_source_read_count": 17,
+  "receipt_id": "d0db65da-292a-42aa-b29a-8e02d345a5ad",
+  "candidate_id": "f392b96f-3739-4f00-b4cd-ea7d21235f86",
+  "current_issue_revision": 6,
+  "original_request_replay_same_receipt": true,
+  "three_evaluation_columns_null": true,
+  "effectiveness_enabled": false,
+  "close_enabled": false,
+  "finished_at": "2026-10-03T14:17:08.239331+00:00",
+  "source_stable": true
+}

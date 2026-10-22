@@ -1,0 +1,67 @@
+{
+  "changes_after_validation": [
+    {
+      "path": "pdos-next/web/src/lib/build-change-orders-view.ts",
+      "validated_sha256": "c323448685ea49f65f6db670a750bffeccbb2070f8f393081dea7109d544da16",
+      "current_sha256": "9718519d334a966918b4ba203d063de0fff7e688974fb3223461a697b941f316",
+      "validated_equals_committed_head": true
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-change-approvals.tsx",
+      "validated_sha256": "1528fbbbbe1d6f43f511a6aba62f0c2476b9591de0e66952d9e97a1298db7b22",
+      "current_sha256": "cdae85493ca56d11ce8be36c02e8f67c16c1f7f0b6eb50440a94adc28e50c67d",
+      "validated_equals_committed_head": true
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-change-orders.tsx",
+      "validated_sha256": "e4d420b15fc2f9bf7f1190858550e1ad9d2285dccb8d3f22b766fbd61b54df66",
+      "current_sha256": "9d580d3bd6d8ea2c5a4cedb96725a1dfd9e4b514241cfccc169051b597529349",
+      "validated_equals_committed_head": true
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-change-implementations.tsx",
+      "validated_sha256": "aa04336a0cea070c310a9fff1b65d35a59e5444984debe126cbdf7a43c08f415",
+      "current_sha256": "35422b1e7e07302617fc29f569b4dae0ea39d5620313818831a2069107cfc45a",
+      "validated_equals_committed_head": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/change_controlled_schemas.py",
+      "validated_sha256": "ff87beac32170fbe33652dbc588464d17a75f3fbb121719d26a2344d0ef7ac3e",
+      "current_sha256": "a0cfbcedf96698e3cd86d4362da6bda741b361539b667599c68f279c9e44c6c0",
+      "validated_equals_committed_head": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/change_implementation_owner.py",
+      "validated_sha256": "326273fc9d236e89e379205c9e773385fdd380c63cadd356cf63bf4b2c0772c4",
+      "current_sha256": "8500464e2c2db2e552019711acfdfcdba56516d2457a57cef40428400cd1796e",
+      "validated_equals_committed_head": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/change_selection_service.py",
+      "validated_sha256": "ee47a9e10fff47b2a1d061fdb6c6e8b75da349c7bae8ba9482b346e99466c100",
+      "current_sha256": "fccec5d1ccd21e048440aacfce68d5ce53bcd97f561275670d80186e1f15dff2",
+      "validated_equals_committed_head": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/change_preparation_view.py",
+      "validated_sha256": "e724724b712ec420a27d4db1e16ed3a835c87893a60d721481495fc848683a0d",
+      "current_sha256": "1aae905076476be8b68d7c248269e2050d20fce6e824b3718a6718819ebc8aa3",
+      "validated_equals_committed_head": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/change_controlled_store.py",
+      "validated_sha256": "f517a43c07389946c85599bb39c0b0130a7940648dfcd82846489ce08faa11d4",
+      "current_sha256": "302eacf9b3ea28485c3f6e6de31421bcf55e2f59aee6975a2a9c09deff97ef7f",
+      "validated_equals_committed_head": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/change_controlled_owner.py",
+      "validated_sha256": "c69ba10755af02ade0960b724d570207d60bcd942ea7d82854a07f01b922b428",
+      "current_sha256": "d23aa15ce88a377aad66b133780136f2f795736264fda01409e138a68ac100f0",
+      "validated_equals_committed_head": true
+    }
+  ],
+  "changed_during_pg_check": false,
+  "frontend_changed_during_build": false,
+  "scope": "Other construction continues the field feedback to controlled change selection/order bridge after this candidate. These later changes are excluded from its validation claims; new project external-handoff UI, dedicated API/service/model/schema and raw DTO inputs remain identical."
+}

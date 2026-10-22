@@ -1,0 +1,9 @@
+[
+  {
+    "sqlstate": "23514",
+    "message_primary": "Publication fixed body original command and reviewed material mismatch",
+    "constraint_name": null,
+    "table_name": null,
+    "context": "PL/pgSQL function assert_manufacturing_publication_atom(uuid,uuid) line 75 at RAISE\nSQL statement \"SELECT public.assert_manufacturing_publication_atom(NEW.tenant_id,NEW.id)\"\nPL/pgSQL function require_manufacturing_publication_atom() line 2 at PERFORM"
+  }
+]

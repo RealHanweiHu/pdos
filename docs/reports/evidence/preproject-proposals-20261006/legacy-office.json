@@ -1,0 +1,38 @@
+[
+  {
+    "format": "doc",
+    "status": "parsed",
+    "fragments": 1,
+    "locators": [
+      "paragraph:1"
+    ],
+    "metadata": {
+      "source_format": ".doc",
+      "converted_format": ".docx"
+    }
+  },
+  {
+    "format": "ppt",
+    "status": "parsed",
+    "fragments": 1,
+    "locators": [
+      "slide:1:shape:1"
+    ],
+    "metadata": {
+      "source_format": ".ppt",
+      "converted_format": ".pptx"
+    }
+  },
+  {
+    "format": "xls",
+    "status": "parsed",
+    "fragments": 1,
+    "locators": [
+      "sheet:Sheet,rows:1-1"
+    ],
+    "metadata": {
+      "source_format": ".xls",
+      "converted_format": ".xlsx"
+    }
+  }
+]

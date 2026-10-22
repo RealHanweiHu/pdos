@@ -1,0 +1,16 @@
+{
+  "own_preview_services": [
+    {
+      "port": 53304,
+      "stopped": true
+    },
+    {
+      "port": 53305,
+      "stopped": true
+    }
+  ],
+  "own_browser_closed": true,
+  "own_synthetic_login_removed": true,
+  "database_and_backups_retained": true,
+  "shared_temporal_unchanged": true
+}

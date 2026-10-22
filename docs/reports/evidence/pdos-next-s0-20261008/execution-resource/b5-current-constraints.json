@@ -1,0 +1,392 @@
+[
+  {
+    "table_name": "capa_current_observations",
+    "conname": "capa_current_observations_check",
+    "definition": "CHECK (((origin_issue_revision > 0) AND ((visibility)::text = ANY ((ARRAY['private'::character varying, 'category'::character varying, 'audience'::character varying])::text[])) AND ((nature)::text = ANY ((ARRAY['real'::character varying, 'synthetic'::character varying])::text[])) AND ((length(purpose) >= 1) AND (length(purpose) <= 2000)) AND (purpose = btrim(purpose))))"
+  },
+  {
+    "table_name": "capa_current_observations",
+    "conname": "capa_current_observations_check1",
+    "definition": "CHECK ((((anchor_sha256)::text ~ '^[0-9a-f]{64}$'::text) AND ((requirement_sha256)::text ~ '^[0-9a-f]{64}$'::text)))"
+  },
+  {
+    "table_name": "capa_current_observations",
+    "conname": "capa_current_observations_check2",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(anchor_snapshot) = 'object'::text) AND ((anchor_snapshot ->> 'anchor_sha256'::text) = (anchor_sha256)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'ref'::text) ->> 'id'::text) = (origin_issue_version_id)::text) AND (((((anchor_snapshot -> 'origin'::text) -> 'ref'::text) ->> 'revision'::text))::integer = origin_issue_revision) AND (((anchor_snapshot -> 'origin'::text) ->> 'issue_id'::text) = (issue_id)::text) AND (((((anchor_snapshot -> 'origin'::text) -> 'issue'::text) -> 'capa'::text) ->> 'id'::text) = (capa_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'tenant_id'::text) = (tenant_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'product_id'::text) = (product_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'project_id'::text) = (project_id)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'owner_id'::text) = (owner_id)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'visibility'::text) = (visibility)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'nature'::text) = (nature)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'purpose'::text) = purpose)), false))"
+  },
+  {
+    "table_name": "capa_current_observations",
+    "conname": "capa_current_observations_check3",
+    "definition": "CHECK (((fact_revision > 0) AND (epoch > 0)))"
+  },
+  {
+    "table_name": "capa_current_verification_rules",
+    "conname": "capa_current_verification_rules_check",
+    "definition": "CHECK (((origin_issue_revision > 0) AND ((visibility)::text = ANY ((ARRAY['private'::character varying, 'category'::character varying, 'audience'::character varying])::text[])) AND ((nature)::text = ANY ((ARRAY['real'::character varying, 'synthetic'::character varying])::text[])) AND ((length(purpose) >= 1) AND (length(purpose) <= 2000)) AND (purpose = btrim(purpose))))"
+  },
+  {
+    "table_name": "capa_current_verification_rules",
+    "conname": "capa_current_verification_rules_check1",
+    "definition": "CHECK ((((anchor_sha256)::text ~ '^[0-9a-f]{64}$'::text) AND ((requirement_sha256)::text ~ '^[0-9a-f]{64}$'::text)))"
+  },
+  {
+    "table_name": "capa_current_verification_rules",
+    "conname": "capa_current_verification_rules_check2",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(anchor_snapshot) = 'object'::text) AND ((anchor_snapshot ->> 'anchor_sha256'::text) = (anchor_sha256)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'ref'::text) ->> 'id'::text) = (origin_issue_version_id)::text) AND (((((anchor_snapshot -> 'origin'::text) -> 'ref'::text) ->> 'revision'::text))::integer = origin_issue_revision) AND (((anchor_snapshot -> 'origin'::text) ->> 'issue_id'::text) = (issue_id)::text) AND (((((anchor_snapshot -> 'origin'::text) -> 'issue'::text) -> 'capa'::text) ->> 'id'::text) = (capa_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'tenant_id'::text) = (tenant_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'product_id'::text) = (product_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'project_id'::text) = (project_id)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'owner_id'::text) = (owner_id)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'visibility'::text) = (visibility)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'nature'::text) = (nature)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'purpose'::text) = purpose)), false))"
+  },
+  {
+    "table_name": "capa_current_verification_rules",
+    "conname": "capa_current_verification_rules_check3",
+    "definition": "CHECK (((fact_revision > 0) AND (epoch > 0)))"
+  },
+  {
+    "table_name": "capa_current_verification_rules",
+    "conname": "capa_current_verification_rules_check4",
+    "definition": "CHECK ((((length((issuer_key)::text) >= 1) AND (length((issuer_key)::text) <= 100)) AND ((length((issuer_version)::text) >= 1) AND (length((issuer_version)::text) <= 100)) AND (length((external_id)::text) > 0)))"
+  },
+  {
+    "table_name": "capa_named_verification_reviews",
+    "conname": "capa_named_verification_reviews_check",
+    "definition": "CHECK (((origin_issue_revision > 0) AND ((visibility)::text = ANY ((ARRAY['private'::character varying, 'category'::character varying, 'audience'::character varying])::text[])) AND ((nature)::text = ANY ((ARRAY['real'::character varying, 'synthetic'::character varying])::text[])) AND ((length(purpose) >= 1) AND (length(purpose) <= 2000)) AND (purpose = btrim(purpose))))"
+  },
+  {
+    "table_name": "capa_named_verification_reviews",
+    "conname": "capa_named_verification_reviews_check1",
+    "definition": "CHECK ((((anchor_sha256)::text ~ '^[0-9a-f]{64}$'::text) AND ((requirement_sha256)::text ~ '^[0-9a-f]{64}$'::text)))"
+  },
+  {
+    "table_name": "capa_named_verification_reviews",
+    "conname": "capa_named_verification_reviews_check10",
+    "definition": "CHECK (COALESCE(((((fact_body -> 'body'::text) -> 'previous'::text) = 'null'::jsonb) AND ((((fact_body -> 'body'::text) -> 'candidate'::text) ->> 'id'::text) = (candidate_id)::text) AND (((((fact_body -> 'body'::text) -> 'candidate'::text) ->> 'revision'::text))::integer = candidate_revision) AND ((((fact_body -> 'body'::text) -> 'candidate'::text) ->> 'sha256'::text) = (candidate_sha256)::text) AND (((fact_body -> 'body'::text) ->> 'candidate_sha256'::text) = (candidate_sha256)::text) AND ((((fact_body -> 'body'::text) -> 'rule'::text) ->> 'id'::text) = (rule_fact_id)::text) AND (((((fact_body -> 'body'::text) -> 'rule'::text) ->> 'revision'::text))::integer = rule_revision) AND ((((fact_body -> 'body'::text) -> 'rule'::text) ->> 'sha256'::text) = (rule_sha256)::text) AND (((fact_body -> 'body'::text) ->> 'reviewer_id'::text) = (reviewer_id)::text) AND (((fact_body -> 'body'::text) -> 'authority_snapshot'::text) = authority_snapshot) AND (((fact_body -> 'body'::text) -> 'policy_snapshot'::text) = policy_snapshot) AND ((((fact_body -> 'body'::text) ->> 'valid_until'::text))::timestamp with time zone = valid_until)), false))"
+  },
+  {
+    "table_name": "capa_named_verification_reviews",
+    "conname": "capa_named_verification_reviews_check2",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(anchor_snapshot) = 'object'::text) AND ((anchor_snapshot ->> 'anchor_sha256'::text) = (anchor_sha256)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'ref'::text) ->> 'id'::text) = (origin_issue_version_id)::text) AND (((((anchor_snapshot -> 'origin'::text) -> 'ref'::text) ->> 'revision'::text))::integer = origin_issue_revision) AND (((anchor_snapshot -> 'origin'::text) ->> 'issue_id'::text) = (issue_id)::text) AND (((((anchor_snapshot -> 'origin'::text) -> 'issue'::text) -> 'capa'::text) ->> 'id'::text) = (capa_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'tenant_id'::text) = (tenant_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'product_id'::text) = (product_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'project_id'::text) = (project_id)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'owner_id'::text) = (owner_id)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'visibility'::text) = (visibility)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'nature'::text) = (nature)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'purpose'::text) = purpose)), false))"
+  },
+  {
+    "table_name": "capa_named_verification_reviews",
+    "conname": "capa_named_verification_reviews_check3",
+    "definition": "CHECK (((revision > 0) AND ((operation)::text = 'quality.capa.verification.review'::text) AND ((tier)::text = 'T2'::text) AND ((fact_kind)::text = 'review'::text) AND ((status)::text = 'reviewed'::text) AND (actor_id = requester_id) AND (writer_id = actor_id)))"
+  },
+  {
+    "table_name": "capa_named_verification_reviews",
+    "conname": "capa_named_verification_reviews_check4",
+    "definition": "CHECK (((shared_proof_id IS NOT NULL) AND (shared_proof_revision IS NOT NULL) AND (shared_proof_revision > 0) AND (proof_expires_at IS NOT NULL) AND (proof_consumed_at IS NOT NULL) AND (proof_consumed_at <= created_at) AND (created_at < proof_expires_at) AND (token_sha256 IS NOT NULL) AND (material_sha256 IS NOT NULL) AND ((token_sha256)::text ~ '^[0-9a-f]{64}$'::text) AND ((material_sha256)::text ~ '^[0-9a-f]{64}$'::text)))"
+  },
+  {
+    "table_name": "capa_named_verification_reviews",
+    "conname": "capa_named_verification_reviews_check5",
+    "definition": "CHECK ((((payload_sha256)::text ~ '^[0-9a-f]{64}$'::text) AND ((intent_digest)::text ~ '^[0-9a-f]{64}$'::text) AND ((read_set_sha256)::text ~ '^[0-9a-f]{64}$'::text)))"
+  },
+  {
+    "table_name": "capa_named_verification_reviews",
+    "conname": "capa_named_verification_reviews_check6",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(fact_body) = 'object'::text) AND ((fact_body ->> 'schema_version'::text) = 'pdos-capa-fact-body-v1'::text) AND ((fact_body - ARRAY['schema_version'::text, 'body'::text]) = '{}'::jsonb) AND (jsonb_typeof((fact_body -> 'body'::text)) = 'object'::text) AND ((fact_body -> 'body'::text) ?& ARRAY['ref'::text, 'previous'::text, 'scope'::text, 'issue_id'::text, 'capa_id'::text, 'purpose'::text, 'anchor_sha256'::text, 'requirement_sha256'::text, 'nature'::text, 'owner_id'::text, 'visibility'::text, 'created_at'::text, 'sources'::text, 'required_source_read_set'::text, 'source_basis'::text, 'kind'::text, 'candidate'::text, 'candidate_sha256'::text, 'rule'::text, 'observations'::text, 'reviewer_id'::text, 'at'::text, 'pair_applicability'::text, 'action_fulfillment'::text, 'participants'::text, 'participant_owner_material'::text, 'conclusion'::text, 'reason'::text, 'authority_snapshot'::text, 'policy_snapshot'::text, 'valid_until'::text]) AND (((fact_body -> 'body'::text) - ARRAY['ref'::text, 'previous'::text, 'scope'::text, 'issue_id'::text, 'capa_id'::text, 'purpose'::text, 'anchor_sha256'::text, 'requirement_sha256'::text, 'nature'::text, 'owner_id'::text, 'visibility'::text, 'created_at'::text, 'sources'::text, 'required_source_read_set'::text, 'source_basis'::text, 'kind'::text, 'candidate'::text, 'candidate_sha256'::text, 'rule'::text, 'observations'::text, 'reviewer_id'::text, 'at'::text, 'pair_applicability'::text, 'action_fulfillment'::text, 'participants'::text, 'participant_owner_material'::text, 'conclusion'::text, 'reason'::text, 'authority_snapshot'::text, 'policy_snapshot'::text, 'valid_until'::text]) = '{}'::jsonb) AND (((fact_body -> 'body'::text) ->> 'kind'::text) = (fact_kind)::text) AND ((((fact_body -> 'body'::text) -> 'ref'::text) ->> 'id'::text) = (id)::text) AND (((((fact_body -> 'body'::text) -> 'ref'::text) ->> 'revision'::text))::integer = revision) AND ((((fact_body -> 'body'::text) -> 'ref'::text) - ARRAY['id'::text, 'revision'::text]) = '{}'::jsonb) AND ((((fact_body -> 'body'::text) -> 'scope'::text) ->> 'tenant_id'::text) = (tenant_id)::text) AND ((((fact_body -> 'body'::text) -> 'scope'::text) ->> 'product_id'::text) = (product_id)::text) AND ((((fact_body -> 'body'::text) -> 'scope'::text) ->> 'project_id'::text) = (project_id)::text) AND (((fact_body -> 'body'::text) ->> 'issue_id'::text) = (issue_id)::text) AND (((fact_body -> 'body'::text) ->> 'capa_id'::text) = (capa_id)::text) AND (((fact_body -> 'body'::text) ->> 'owner_id'::text) = (owner_id)::text) AND (((fact_body -> 'body'::text) ->> 'visibility'::text) = (visibility)::text) AND (((fact_body -> 'body'::text) ->> 'nature'::text) = (nature)::text) AND (((fact_body -> 'body'::text) ->> 'purpose'::text) = purpose) AND (((fact_body -> 'body'::text) ->> 'anchor_sha256'::text) = (anchor_sha256)::text) AND (((fact_body -> 'body'::text) ->> 'requirement_sha256'::text) = (requirement_sha256)::text) AND ((((fact_body -> 'body'::text) ->> 'created_at'::text))::timestamp with time zone = created_at)), false))"
+  },
+  {
+    "table_name": "capa_named_verification_reviews",
+    "conname": "capa_named_verification_reviews_check7",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(required_source_read_set) = 'array'::text) AND ((jsonb_array_length(required_source_read_set) >= 1) AND (jsonb_array_length(required_source_read_set) <= 20)) AND (jsonb_typeof(source_basis) = 'array'::text) AND ((jsonb_array_length(source_basis) >= 1) AND (jsonb_array_length(source_basis) <= 20)) AND (jsonb_typeof(sources) = 'array'::text) AND (jsonb_array_length(sources) > 0) AND (required_source_read_set = ((fact_body -> 'body'::text) -> 'required_source_read_set'::text)) AND (source_basis = ((fact_body -> 'body'::text) -> 'source_basis'::text)) AND (sources = ((fact_body -> 'body'::text) -> 'sources'::text))), false))"
+  },
+  {
+    "table_name": "capa_named_verification_reviews",
+    "conname": "capa_named_verification_reviews_check8",
+    "definition": "CHECK ((COALESCE(((jsonb_typeof(input_snapshot) = 'object'::text) AND (jsonb_typeof(authority_snapshot) = 'object'::text) AND (jsonb_typeof(policy_snapshot) = 'object'::text)), false) AND (NOT (input_snapshot ? 'confirmation_token'::text)) AND (NOT (input_snapshot ? 'approval_token'::text))))"
+  },
+  {
+    "table_name": "capa_named_verification_reviews",
+    "conname": "capa_named_verification_reviews_check9",
+    "definition": "CHECK (((revision = 1) AND (candidate_revision = 1) AND (rule_revision > 0) AND (reviewer_id = writer_id) AND (valid_until > created_at) AND ((candidate_sha256)::text ~ '^[0-9a-f]{64}$'::text) AND ((rule_sha256)::text ~ '^[0-9a-f]{64}$'::text)))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check",
+    "definition": "CHECK (((origin_issue_revision > 0) AND ((visibility)::text = ANY ((ARRAY['private'::character varying, 'category'::character varying, 'audience'::character varying])::text[])) AND ((nature)::text = ANY ((ARRAY['real'::character varying, 'synthetic'::character varying])::text[])) AND ((length(purpose) >= 1) AND (length(purpose) <= 2000)) AND (purpose = btrim(purpose))))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check1",
+    "definition": "CHECK ((((anchor_sha256)::text ~ '^[0-9a-f]{64}$'::text) AND ((requirement_sha256)::text ~ '^[0-9a-f]{64}$'::text)))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check10",
+    "definition": "CHECK (COALESCE((((previous_fact_id IS NULL) AND (((fact_body -> 'body'::text) -> 'previous'::text) = 'null'::jsonb)) OR ((previous_fact_id IS NOT NULL) AND ((((fact_body -> 'body'::text) -> 'previous'::text) ->> 'id'::text) = (previous_fact_id)::text) AND (((((fact_body -> 'body'::text) -> 'previous'::text) ->> 'revision'::text))::integer = previous_revision) AND ((((fact_body -> 'body'::text) -> 'previous'::text) ->> 'sha256'::text) ~ '^[0-9a-f]{64}$'::text))), false))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check11",
+    "definition": "CHECK (((rule_revision > 0) AND ((rule_sha256)::text ~ '^[0-9a-f]{64}$'::text) AND (issuer_epoch > 0) AND (executor_id = writer_id) AND (observed_until > observed_from) AND ((length((issuer_key)::text) >= 1) AND (length((issuer_key)::text) <= 100)) AND ((length((issuer_version)::text) >= 1) AND (length((issuer_version)::text) <= 100))))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check12",
+    "definition": "CHECK (COALESCE((((((fact_body -> 'body'::text) -> 'rule'::text) ->> 'id'::text) = (rule_fact_id)::text) AND (((((fact_body -> 'body'::text) -> 'rule'::text) ->> 'revision'::text))::integer = rule_revision) AND ((((fact_body -> 'body'::text) -> 'rule'::text) ->> 'sha256'::text) = (rule_sha256)::text) AND ((((fact_body -> 'body'::text) -> 'issuer'::text) ->> 'key'::text) = (issuer_key)::text) AND ((((fact_body -> 'body'::text) -> 'issuer'::text) ->> 'version'::text) = (issuer_version)::text) AND (((((fact_body -> 'body'::text) -> 'issuer'::text) ->> 'epoch'::text))::integer = issuer_epoch) AND ((((fact_body -> 'body'::text) -> 'issuer'::text) ->> 'nature'::text) = (nature)::text) AND (((fact_body -> 'body'::text) ->> 'executor_id'::text) = (executor_id)::text) AND ((((fact_body -> 'body'::text) ->> 'observed_from'::text))::timestamp with time zone = observed_from) AND ((((fact_body -> 'body'::text) ->> 'observed_until'::text))::timestamp with time zone = observed_until)), false))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check2",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(anchor_snapshot) = 'object'::text) AND ((anchor_snapshot ->> 'anchor_sha256'::text) = (anchor_sha256)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'ref'::text) ->> 'id'::text) = (origin_issue_version_id)::text) AND (((((anchor_snapshot -> 'origin'::text) -> 'ref'::text) ->> 'revision'::text))::integer = origin_issue_revision) AND (((anchor_snapshot -> 'origin'::text) ->> 'issue_id'::text) = (issue_id)::text) AND (((((anchor_snapshot -> 'origin'::text) -> 'issue'::text) -> 'capa'::text) ->> 'id'::text) = (capa_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'tenant_id'::text) = (tenant_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'product_id'::text) = (product_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'project_id'::text) = (project_id)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'owner_id'::text) = (owner_id)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'visibility'::text) = (visibility)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'nature'::text) = (nature)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'purpose'::text) = purpose)), false))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check3",
+    "definition": "CHECK (((revision > 0) AND ((operation)::text = 'quality.capa.observation.record'::text) AND ((tier)::text = 'T1'::text) AND ((fact_kind)::text = 'observation'::text) AND ((status)::text = 'recorded'::text) AND (actor_id = requester_id) AND (writer_id = actor_id)))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check4",
+    "definition": "CHECK (((shared_proof_id IS NOT NULL) AND (shared_proof_revision IS NOT NULL) AND (shared_proof_revision > 0) AND (proof_expires_at IS NOT NULL) AND (proof_consumed_at IS NOT NULL) AND (proof_consumed_at <= created_at) AND (created_at < proof_expires_at) AND (token_sha256 IS NOT NULL) AND (material_sha256 IS NOT NULL) AND ((token_sha256)::text ~ '^[0-9a-f]{64}$'::text) AND ((material_sha256)::text ~ '^[0-9a-f]{64}$'::text)))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check5",
+    "definition": "CHECK ((((payload_sha256)::text ~ '^[0-9a-f]{64}$'::text) AND ((intent_digest)::text ~ '^[0-9a-f]{64}$'::text) AND ((read_set_sha256)::text ~ '^[0-9a-f]{64}$'::text)))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check6",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(fact_body) = 'object'::text) AND ((fact_body ->> 'schema_version'::text) = 'pdos-capa-fact-body-v1'::text) AND ((fact_body - ARRAY['schema_version'::text, 'body'::text]) = '{}'::jsonb) AND (jsonb_typeof((fact_body -> 'body'::text)) = 'object'::text) AND ((fact_body -> 'body'::text) ?& ARRAY['ref'::text, 'previous'::text, 'scope'::text, 'issue_id'::text, 'capa_id'::text, 'purpose'::text, 'anchor_sha256'::text, 'requirement_sha256'::text, 'nature'::text, 'owner_id'::text, 'visibility'::text, 'created_at'::text, 'sources'::text, 'required_source_read_set'::text, 'source_basis'::text, 'kind'::text, 'rule'::text, 'issuer'::text, 'targets'::text, 'executor_id'::text, 'observed_from'::text, 'observed_until'::text, 'at'::text, 'records'::text, 'coverage_sources'::text, 'sampling_material'::text]) AND (((fact_body -> 'body'::text) - ARRAY['ref'::text, 'previous'::text, 'scope'::text, 'issue_id'::text, 'capa_id'::text, 'purpose'::text, 'anchor_sha256'::text, 'requirement_sha256'::text, 'nature'::text, 'owner_id'::text, 'visibility'::text, 'created_at'::text, 'sources'::text, 'required_source_read_set'::text, 'source_basis'::text, 'kind'::text, 'rule'::text, 'issuer'::text, 'targets'::text, 'executor_id'::text, 'observed_from'::text, 'observed_until'::text, 'at'::text, 'records'::text, 'coverage_sources'::text, 'sampling_material'::text]) = '{}'::jsonb) AND (((fact_body -> 'body'::text) ->> 'kind'::text) = (fact_kind)::text) AND ((((fact_body -> 'body'::text) -> 'ref'::text) ->> 'id'::text) = (id)::text) AND (((((fact_body -> 'body'::text) -> 'ref'::text) ->> 'revision'::text))::integer = revision) AND ((((fact_body -> 'body'::text) -> 'ref'::text) - ARRAY['id'::text, 'revision'::text]) = '{}'::jsonb) AND ((((fact_body -> 'body'::text) -> 'scope'::text) ->> 'tenant_id'::text) = (tenant_id)::text) AND ((((fact_body -> 'body'::text) -> 'scope'::text) ->> 'product_id'::text) = (product_id)::text) AND ((((fact_body -> 'body'::text) -> 'scope'::text) ->> 'project_id'::text) = (project_id)::text) AND (((fact_body -> 'body'::text) ->> 'issue_id'::text) = (issue_id)::text) AND (((fact_body -> 'body'::text) ->> 'capa_id'::text) = (capa_id)::text) AND (((fact_body -> 'body'::text) ->> 'owner_id'::text) = (owner_id)::text) AND (((fact_body -> 'body'::text) ->> 'visibility'::text) = (visibility)::text) AND (((fact_body -> 'body'::text) ->> 'nature'::text) = (nature)::text) AND (((fact_body -> 'body'::text) ->> 'purpose'::text) = purpose) AND (((fact_body -> 'body'::text) ->> 'anchor_sha256'::text) = (anchor_sha256)::text) AND (((fact_body -> 'body'::text) ->> 'requirement_sha256'::text) = (requirement_sha256)::text) AND ((((fact_body -> 'body'::text) ->> 'created_at'::text))::timestamp with time zone = created_at)), false))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check7",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(required_source_read_set) = 'array'::text) AND ((jsonb_array_length(required_source_read_set) >= 1) AND (jsonb_array_length(required_source_read_set) <= 20)) AND (jsonb_typeof(source_basis) = 'array'::text) AND ((jsonb_array_length(source_basis) >= 1) AND (jsonb_array_length(source_basis) <= 20)) AND (jsonb_typeof(sources) = 'array'::text) AND (jsonb_array_length(sources) > 0) AND (required_source_read_set = ((fact_body -> 'body'::text) -> 'required_source_read_set'::text)) AND (source_basis = ((fact_body -> 'body'::text) -> 'source_basis'::text)) AND (sources = ((fact_body -> 'body'::text) -> 'sources'::text))), false))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check8",
+    "definition": "CHECK ((COALESCE(((jsonb_typeof(input_snapshot) = 'object'::text) AND (jsonb_typeof(authority_snapshot) = 'object'::text) AND (jsonb_typeof(policy_snapshot) = 'object'::text)), false) AND (NOT (input_snapshot ? 'confirmation_token'::text)) AND (NOT (input_snapshot ? 'approval_token'::text))))"
+  },
+  {
+    "table_name": "capa_observation_facts",
+    "conname": "capa_observation_facts_check9",
+    "definition": "CHECK ((((revision = 1) AND (series_id = id) AND (previous_fact_id IS NULL) AND (previous_revision IS NULL)) OR ((revision > 1) AND (previous_fact_id IS NOT NULL) AND (previous_revision IS NOT NULL) AND (previous_fact_id <> id) AND (revision = (previous_revision + 1)))))"
+  },
+  {
+    "table_name": "capa_remediation_links",
+    "conname": "capa_remediation_links_check",
+    "definition": "CHECK (((revision = 1) AND (issue_revision > 0) AND ((visibility)::text = ANY ((ARRAY['private'::character varying, 'category'::character varying, 'audience'::character varying])::text[]))))"
+  },
+  {
+    "table_name": "capa_remediation_links",
+    "conname": "capa_remediation_links_check1",
+    "definition": "CHECK (COALESCE((((basis_snapshot ->> 'issue_id'::text) = (issue_id)::text) AND ((basis_snapshot ->> 'issue_version_id'::text) = (issue_version_id)::text) AND (((basis_snapshot ->> 'issue_revision'::text))::integer = issue_revision) AND ((basis_snapshot ->> 'capa_id'::text) = (capa_id)::text) AND ((basis_snapshot ->> 'purpose'::text) = purpose) AND ((basis_snapshot ->> 'nature'::text) = (nature)::text) AND (((basis_snapshot -> 'scope'::text) ->> 'tenant_id'::text) = (tenant_id)::text) AND (((basis_snapshot -> 'scope'::text) ->> 'product_id'::text) = (product_id)::text) AND (((basis_snapshot -> 'scope'::text) ->> 'project_id'::text) = (project_id)::text)), false))"
+  },
+  {
+    "table_name": "capa_remediation_links",
+    "conname": "capa_remediation_links_check2",
+    "definition": "CHECK (COALESCE((((output_snapshot ->> 'action_id'::text) = (action_id)::text) AND ((output_snapshot ->> 'resolution_sha256'::text) = (resolution_sha256)::text)), false))"
+  },
+  {
+    "table_name": "capa_remediation_links",
+    "conname": "capa_remediation_links_input_snapshot_check",
+    "definition": "CHECK ((COALESCE(((((input_snapshot -> 'shared_proof'::text) ->> 'tier'::text) = 'T1'::text) AND (((input_snapshot -> 'shared_proof'::text) ->> 'id'::text) ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'::text)), false) AND (NOT (input_snapshot ? 'confirmation_token'::text)) AND (NOT (input_snapshot ? 'approval_token'::text))))"
+  },
+  {
+    "table_name": "capa_remediation_links",
+    "conname": "capa_remediation_links_nature_check",
+    "definition": "CHECK (((nature)::text = ANY ((ARRAY['real'::character varying, 'synthetic'::character varying])::text[])))"
+  },
+  {
+    "table_name": "capa_remediation_links",
+    "conname": "capa_remediation_links_required_source_read_set_check",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(required_source_read_set) = 'array'::text) AND ((jsonb_array_length(required_source_read_set) >= 1) AND (jsonb_array_length(required_source_read_set) <= 20))), false))"
+  },
+  {
+    "table_name": "capa_remediation_links",
+    "conname": "capa_remediation_links_status_check",
+    "definition": "CHECK (((status)::text = 'recorded'::text))"
+  },
+  {
+    "table_name": "capa_verification_evidence",
+    "conname": "capa_verification_evidence_candidate_snapshot_check",
+    "definition": "CHECK (COALESCE((((candidate_snapshot ->> 'result'::text) = 'indeterminate'::text) AND ((candidate_snapshot -> 'applicable'::text) = 'null'::jsonb) AND ((candidate_snapshot -> 'independently_verified'::text) = 'null'::jsonb) AND ((candidate_snapshot -> 'observation_complete'::text) = 'null'::jsonb)), false))"
+  },
+  {
+    "table_name": "capa_verification_evidence",
+    "conname": "capa_verification_evidence_check",
+    "definition": "CHECK (((revision = 1) AND (issue_revision > 0) AND ((visibility)::text = ANY ((ARRAY['private'::character varying, 'category'::character varying, 'audience'::character varying])::text[]))))"
+  },
+  {
+    "table_name": "capa_verification_evidence",
+    "conname": "capa_verification_evidence_check1",
+    "definition": "CHECK (COALESCE((((basis_snapshot ->> 'issue_id'::text) = (issue_id)::text) AND ((basis_snapshot ->> 'issue_version_id'::text) = (issue_version_id)::text) AND (((basis_snapshot ->> 'issue_revision'::text))::integer = issue_revision) AND ((basis_snapshot ->> 'capa_id'::text) = (capa_id)::text) AND ((basis_snapshot ->> 'purpose'::text) = purpose) AND ((basis_snapshot ->> 'nature'::text) = (nature)::text) AND (((basis_snapshot -> 'scope'::text) ->> 'tenant_id'::text) = (tenant_id)::text) AND (((basis_snapshot -> 'scope'::text) ->> 'product_id'::text) = (product_id)::text) AND (((basis_snapshot -> 'scope'::text) ->> 'project_id'::text) = (project_id)::text)), false))"
+  },
+  {
+    "table_name": "capa_verification_evidence",
+    "conname": "capa_verification_evidence_check2",
+    "definition": "CHECK ((((status)::text = 'candidate'::text) AND ((result)::text = 'indeterminate'::text) AND (applicable IS NULL) AND (independently_verified IS NULL) AND (observation_complete IS NULL)))"
+  },
+  {
+    "table_name": "capa_verification_evidence",
+    "conname": "capa_verification_evidence_nature_check",
+    "definition": "CHECK (((nature)::text = ANY ((ARRAY['real'::character varying, 'synthetic'::character varying])::text[])))"
+  },
+  {
+    "table_name": "capa_verification_evidence",
+    "conname": "capa_verification_evidence_required_source_read_set_check",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(required_source_read_set) = 'array'::text) AND ((jsonb_array_length(required_source_read_set) >= 1) AND (jsonb_array_length(required_source_read_set) <= 20))), false))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check",
+    "definition": "CHECK (((origin_issue_revision > 0) AND ((visibility)::text = ANY ((ARRAY['private'::character varying, 'category'::character varying, 'audience'::character varying])::text[])) AND ((nature)::text = ANY ((ARRAY['real'::character varying, 'synthetic'::character varying])::text[])) AND ((length(purpose) >= 1) AND (length(purpose) <= 2000)) AND (purpose = btrim(purpose))))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check1",
+    "definition": "CHECK ((((anchor_sha256)::text ~ '^[0-9a-f]{64}$'::text) AND ((requirement_sha256)::text ~ '^[0-9a-f]{64}$'::text)))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check10",
+    "definition": "CHECK (COALESCE((((previous_fact_id IS NULL) AND (((fact_body -> 'body'::text) -> 'previous'::text) = 'null'::jsonb)) OR ((previous_fact_id IS NOT NULL) AND ((((fact_body -> 'body'::text) -> 'previous'::text) ->> 'id'::text) = (previous_fact_id)::text) AND (((((fact_body -> 'body'::text) -> 'previous'::text) ->> 'revision'::text))::integer = previous_revision) AND ((((fact_body -> 'body'::text) -> 'previous'::text) ->> 'sha256'::text) ~ '^[0-9a-f]{64}$'::text))), false))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check11",
+    "definition": "CHECK (((issuer_epoch > 0) AND (valid_until > valid_from) AND (length((external_id)::text) > 0) AND ((length((issuer_key)::text) >= 1) AND (length((issuer_key)::text) <= 100)) AND ((length((issuer_version)::text) >= 1) AND (length((issuer_version)::text) <= 100))))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check12",
+    "definition": "CHECK (COALESCE((((((fact_body -> 'body'::text) -> 'issuer'::text) ->> 'key'::text) = (issuer_key)::text) AND ((((fact_body -> 'body'::text) -> 'issuer'::text) ->> 'version'::text) = (issuer_version)::text) AND (((((fact_body -> 'body'::text) -> 'issuer'::text) ->> 'epoch'::text))::integer = issuer_epoch) AND ((((fact_body -> 'body'::text) -> 'issuer'::text) ->> 'nature'::text) = (nature)::text) AND ((((fact_body -> 'body'::text) ->> 'valid_from'::text))::timestamp with time zone = valid_from) AND ((((fact_body -> 'body'::text) ->> 'valid_until'::text))::timestamp with time zone = valid_until)), false))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check2",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(anchor_snapshot) = 'object'::text) AND ((anchor_snapshot ->> 'anchor_sha256'::text) = (anchor_sha256)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'ref'::text) ->> 'id'::text) = (origin_issue_version_id)::text) AND (((((anchor_snapshot -> 'origin'::text) -> 'ref'::text) ->> 'revision'::text))::integer = origin_issue_revision) AND (((anchor_snapshot -> 'origin'::text) ->> 'issue_id'::text) = (issue_id)::text) AND (((((anchor_snapshot -> 'origin'::text) -> 'issue'::text) -> 'capa'::text) ->> 'id'::text) = (capa_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'tenant_id'::text) = (tenant_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'product_id'::text) = (product_id)::text) AND ((((anchor_snapshot -> 'origin'::text) -> 'scope'::text) ->> 'project_id'::text) = (project_id)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'owner_id'::text) = (owner_id)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'visibility'::text) = (visibility)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'nature'::text) = (nature)::text) AND (((anchor_snapshot -> 'origin'::text) ->> 'purpose'::text) = purpose)), false))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check3",
+    "definition": "CHECK (((revision > 0) AND ((operation)::text = 'quality.capa.verification.rule.import'::text) AND ((tier)::text = 'host_import'::text) AND ((fact_kind)::text = 'rule'::text) AND ((status)::text = 'published'::text) AND (actor_id = requester_id) AND (writer_id = actor_id)))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check4",
+    "definition": "CHECK (((shared_proof_id IS NULL) AND (shared_proof_revision IS NULL) AND (proof_expires_at IS NULL) AND (proof_consumed_at IS NULL) AND (token_sha256 IS NULL) AND (material_sha256 IS NULL)))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check5",
+    "definition": "CHECK ((((payload_sha256)::text ~ '^[0-9a-f]{64}$'::text) AND ((intent_digest)::text ~ '^[0-9a-f]{64}$'::text) AND ((read_set_sha256)::text ~ '^[0-9a-f]{64}$'::text)))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check6",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(fact_body) = 'object'::text) AND ((fact_body ->> 'schema_version'::text) = 'pdos-capa-fact-body-v1'::text) AND ((fact_body - ARRAY['schema_version'::text, 'body'::text]) = '{}'::jsonb) AND (jsonb_typeof((fact_body -> 'body'::text)) = 'object'::text) AND ((fact_body -> 'body'::text) ?& ARRAY['ref'::text, 'previous'::text, 'scope'::text, 'issue_id'::text, 'capa_id'::text, 'purpose'::text, 'anchor_sha256'::text, 'requirement_sha256'::text, 'nature'::text, 'owner_id'::text, 'visibility'::text, 'created_at'::text, 'sources'::text, 'required_source_read_set'::text, 'source_basis'::text, 'kind'::text, 'issuer'::text, 'policy_ref'::text, 'policy_sha256'::text, 'failures'::text, 'actions'::text, 'method'::text, 'criterion'::text, 'sampling'::text, 'rule_material'::text, 'independence_material'::text, 'valid_from'::text, 'valid_until'::text]) AND (((fact_body -> 'body'::text) - ARRAY['ref'::text, 'previous'::text, 'scope'::text, 'issue_id'::text, 'capa_id'::text, 'purpose'::text, 'anchor_sha256'::text, 'requirement_sha256'::text, 'nature'::text, 'owner_id'::text, 'visibility'::text, 'created_at'::text, 'sources'::text, 'required_source_read_set'::text, 'source_basis'::text, 'kind'::text, 'issuer'::text, 'policy_ref'::text, 'policy_sha256'::text, 'failures'::text, 'actions'::text, 'method'::text, 'criterion'::text, 'sampling'::text, 'rule_material'::text, 'independence_material'::text, 'valid_from'::text, 'valid_until'::text]) = '{}'::jsonb) AND (((fact_body -> 'body'::text) ->> 'kind'::text) = (fact_kind)::text) AND ((((fact_body -> 'body'::text) -> 'ref'::text) ->> 'id'::text) = (id)::text) AND (((((fact_body -> 'body'::text) -> 'ref'::text) ->> 'revision'::text))::integer = revision) AND ((((fact_body -> 'body'::text) -> 'ref'::text) - ARRAY['id'::text, 'revision'::text]) = '{}'::jsonb) AND ((((fact_body -> 'body'::text) -> 'scope'::text) ->> 'tenant_id'::text) = (tenant_id)::text) AND ((((fact_body -> 'body'::text) -> 'scope'::text) ->> 'product_id'::text) = (product_id)::text) AND ((((fact_body -> 'body'::text) -> 'scope'::text) ->> 'project_id'::text) = (project_id)::text) AND (((fact_body -> 'body'::text) ->> 'issue_id'::text) = (issue_id)::text) AND (((fact_body -> 'body'::text) ->> 'capa_id'::text) = (capa_id)::text) AND (((fact_body -> 'body'::text) ->> 'owner_id'::text) = (owner_id)::text) AND (((fact_body -> 'body'::text) ->> 'visibility'::text) = (visibility)::text) AND (((fact_body -> 'body'::text) ->> 'nature'::text) = (nature)::text) AND (((fact_body -> 'body'::text) ->> 'purpose'::text) = purpose) AND (((fact_body -> 'body'::text) ->> 'anchor_sha256'::text) = (anchor_sha256)::text) AND (((fact_body -> 'body'::text) ->> 'requirement_sha256'::text) = (requirement_sha256)::text) AND ((((fact_body -> 'body'::text) ->> 'created_at'::text))::timestamp with time zone = created_at)), false))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check7",
+    "definition": "CHECK (COALESCE(((jsonb_typeof(required_source_read_set) = 'array'::text) AND ((jsonb_array_length(required_source_read_set) >= 1) AND (jsonb_array_length(required_source_read_set) <= 20)) AND (jsonb_typeof(source_basis) = 'array'::text) AND ((jsonb_array_length(source_basis) >= 1) AND (jsonb_array_length(source_basis) <= 20)) AND (jsonb_typeof(sources) = 'array'::text) AND (jsonb_array_length(sources) > 0) AND (required_source_read_set = ((fact_body -> 'body'::text) -> 'required_source_read_set'::text)) AND (source_basis = ((fact_body -> 'body'::text) -> 'source_basis'::text)) AND (sources = ((fact_body -> 'body'::text) -> 'sources'::text))), false))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check8",
+    "definition": "CHECK ((COALESCE(((jsonb_typeof(input_snapshot) = 'object'::text) AND (jsonb_typeof(authority_snapshot) = 'object'::text) AND (jsonb_typeof(policy_snapshot) = 'object'::text)), false) AND (NOT (input_snapshot ? 'confirmation_token'::text)) AND (NOT (input_snapshot ? 'approval_token'::text))))"
+  },
+  {
+    "table_name": "capa_verification_rule_facts",
+    "conname": "capa_verification_rule_facts_check9",
+    "definition": "CHECK ((((revision = 1) AND (series_id = id) AND (previous_fact_id IS NULL) AND (previous_revision IS NULL)) OR ((revision > 1) AND (previous_fact_id IS NOT NULL) AND (previous_revision IS NOT NULL) AND (previous_fact_id <> id) AND (revision = (previous_revision + 1)))))"
+  },
+  {
+    "table_name": "quality_current_issues",
+    "conname": "quality_current_issues_check",
+    "definition": "CHECK (((issue_revision > 0) AND (epoch > 0)))"
+  },
+  {
+    "table_name": "quality_current_policies",
+    "conname": "quality_current_policies_check",
+    "definition": "CHECK (((epoch > 0) AND (fact_revision > 0)))"
+  },
+  {
+    "table_name": "quality_event_failure_links",
+    "conname": "quality_event_failure_links_check",
+    "definition": "CHECK (((run_revision > 2) AND (issue_revision > 0) AND (projection_revision > 0)))"
+  },
+  {
+    "table_name": "quality_event_failure_links",
+    "conname": "quality_event_failure_links_check1",
+    "definition": "CHECK (COALESCE((((failure ->> 'identity'::text) = (failure_identity)::text) AND (((failure -> 'run'::text) ->> 'id'::text) = (run_id)::text) AND ((((failure -> 'run'::text) ->> 'revision'::text))::integer = run_revision) AND ((failure ->> 'measurement_id'::text) = (measurement_id)::text) AND (((failure -> 'build'::text) ->> 'id'::text) = (build_id)::text) AND (((failure -> 'build'::text) ->> 'product_id'::text) = (product_id)::text) AND (((failure -> 'build'::text) ->> 'project_id'::text) = (project_id)::text)), false))"
+  },
+  {
+    "table_name": "quality_event_failure_links",
+    "conname": "quality_event_failure_links_measurement_revision_check",
+    "definition": "CHECK ((measurement_revision = 1))"
+  },
+  {
+    "table_name": "quality_event_failure_links",
+    "conname": "quality_event_failure_links_required_source_read_set_check",
+    "definition": "CHECK (((jsonb_typeof(required_source_read_set) = 'array'::text) AND ((jsonb_array_length(required_source_read_set) >= 1) AND (jsonb_array_length(required_source_read_set) <= 20))))"
+  },
+  {
+    "table_name": "quality_failure_maps",
+    "conname": "quality_failure_maps_check",
+    "definition": "CHECK (((epoch > 0) AND (length((failure_identity)::text) = 64)))"
+  },
+  {
+    "table_name": "quality_failure_maps",
+    "conname": "quality_failure_maps_check1",
+    "definition": "CHECK (COALESCE((((failure ->> 'identity'::text) = (failure_identity)::text) AND (((failure -> 'build'::text) ->> 'product_id'::text) = (product_id)::text) AND (((failure -> 'build'::text) ->> 'project_id'::text) = (project_id)::text)), false))"
+  },
+  {
+    "table_name": "quality_issue_versions",
+    "conname": "quality_issue_versions_check",
+    "definition": "CHECK (((revision > 0) AND ((visibility)::text = ANY ((ARRAY['private'::character varying, 'category'::character varying, 'audience'::character varying])::text[]))))"
+  },
+  {
+    "table_name": "quality_issue_versions",
+    "conname": "quality_issue_versions_check1",
+    "definition": "CHECK ((((revision = 1) AND (previous_issue_version_id IS NULL) AND (previous_revision IS NULL)) OR ((previous_issue_version_id IS NOT NULL) AND (previous_revision IS NOT NULL) AND (previous_issue_version_id <> id) AND (revision = (previous_revision + 1)))))"
+  },
+  {
+    "table_name": "quality_issue_versions",
+    "conname": "quality_issue_versions_check2",
+    "definition": "CHECK (COALESCE((((issue_snapshot ->> 'id'::text) = (issue_id)::text) AND (((issue_snapshot ->> 'revision'::text))::integer = revision) AND ((issue_snapshot ->> 'status'::text) = (status)::text)), false))"
+  },
+  {
+    "table_name": "quality_issue_versions",
+    "conname": "quality_issue_versions_check3",
+    "definition": "CHECK (COALESCE(((((issue_snapshot -> 'scope'::text) ->> 'tenant_id'::text) = (tenant_id)::text) AND (((issue_snapshot -> 'scope'::text) ->> 'product_id'::text) = (product_id)::text) AND (((issue_snapshot -> 'scope'::text) ->> 'project_id'::text) = (project_id)::text)), false))"
+  },
+  {
+    "table_name": "quality_issue_versions",
+    "conname": "quality_issue_versions_operation_check",
+    "definition": "CHECK (((operation)::text = ANY ((ARRAY['quality.issue.create'::character varying, 'quality.issue.merge'::character varying, 'quality.issue.triage'::character varying, 'quality.issue.containment.record'::character varying, 'quality.capa.draft'::character varying, 'quality.issue.root_cause.decide'::character varying, 'quality.capa.actions.complete'::character varying])::text[])))"
+  },
+  {
+    "table_name": "quality_issue_versions",
+    "conname": "quality_issue_versions_required_source_read_set_check",
+    "definition": "CHECK (((jsonb_typeof(required_source_read_set) = 'array'::text) AND ((jsonb_array_length(required_source_read_set) >= 1) AND (jsonb_array_length(required_source_read_set) <= 20))))"
+  },
+  {
+    "table_name": "quality_issue_versions",
+    "conname": "quality_issue_versions_status_check",
+    "definition": "CHECK (((status)::text = ANY ((ARRAY['open'::character varying, 'triaged'::character varying, 'actioning'::character varying, 'awaiting_verification'::character varying])::text[])))"
+  },
+  {
+    "table_name": "quality_policy_facts",
+    "conname": "quality_policy_facts_check",
+    "definition": "CHECK ((((nature)::text = 'synthetic'::text) AND ((status)::text = ANY ((ARRAY['active'::character varying, 'withdrawn'::character varying])::text[])) AND ((risk)::text = ANY ((ARRAY['low'::character varying, 'medium'::character varying, 'high'::character varying, 'critical'::character varying])::text[]))))"
+  },
+  {
+    "table_name": "quality_policy_facts",
+    "conname": "quality_policy_facts_check1",
+    "definition": "CHECK (((revision > 0) AND (issuer_epoch > 0) AND (valid_until > valid_from) AND ((visibility)::text = ANY ((ARRAY['private'::character varying, 'category'::character varying, 'audience'::character varying])::text[]))))"
+  },
+  {
+    "table_name": "quality_policy_facts",
+    "conname": "quality_policy_facts_check2",
+    "definition": "CHECK ((((revision = 1) AND (previous_id IS NULL) AND (previous_revision IS NULL) AND (series_id = id)) OR ((previous_id IS NOT NULL) AND (previous_revision IS NOT NULL) AND (previous_id <> id) AND (revision = (previous_revision + 1)))))"
+  },
+  {
+    "table_name": "quality_policy_facts",
+    "conname": "quality_policy_facts_required_source_read_set_check",
+    "definition": "CHECK (((jsonb_typeof(required_source_read_set) = 'array'::text) AND ((jsonb_array_length(required_source_read_set) >= 1) AND (jsonb_array_length(required_source_read_set) <= 20))))"
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "status": "PASS_UNSENT_DRAFT_ALIGNED",
+  "prior_request_key_rows": 0,
+  "prior_receipt_rows": 0,
+  "command_id_preserved": true,
+  "sources_payload_and_clocks_preserved": true,
+  "only_idempotency_uuid_and_absent_null_confirmation": true
+}

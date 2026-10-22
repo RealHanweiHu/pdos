@@ -1,0 +1,8 @@
+{
+  "status": "EVIDENCE_DRIVER_FAILED_BEFORE_WRITE",
+  "failure": "KeyError: readback",
+  "actual_before_field": "before",
+  "business_replay": false,
+  "database_effects": false,
+  "resolution": "Use recorded before field; rerun read-only proof only"
+}

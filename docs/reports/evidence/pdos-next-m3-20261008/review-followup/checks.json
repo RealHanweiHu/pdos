@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-09",
+  "checks": [
+    {
+      "name": "final-m3",
+      "tests": 46,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "log": "final-m3.log",
+      "junit": "final-m3.xml"
+    },
+    {
+      "name": "final-binding-graph",
+      "tests": 58,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "log": "final-binding-graph.log",
+      "junit": "final-binding-graph.xml"
+    },
+    {
+      "name": "final-b3-common",
+      "tests": 32,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "log": "final-b3-common.log",
+      "junit": "final-b3-common.xml"
+    },
+    {
+      "name": "final-project-creation",
+      "tests": 10,
+      "errors": 0,
+      "failures": 0,
+      "skipped": 0,
+      "log": "final-project-creation.log",
+      "junit": "final-project-creation.xml"
+    }
+  ],
+  "affected_checks": 146,
+  "full_system_acceptance": false,
+  "covered_source_drift": []
+}

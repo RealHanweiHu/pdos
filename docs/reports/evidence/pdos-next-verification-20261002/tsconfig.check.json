@@ -1,0 +1,11 @@
+{
+  "extends": "../../../../pdos-next/web/tsconfig.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "incremental": false,
+    "plugins": [],
+    "typeRoots": ["../../../../pdos-next/web/node_modules/@types"]
+  },
+  "include": ["../../../../pdos-next/web/src/components/verification/**/*.ts", "../../../../pdos-next/web/src/components/verification/**/*.tsx"],
+  "exclude": ["../../../../pdos-next/web/node_modules"]
+}

@@ -1,0 +1,21 @@
+{
+  "base_image": "sha256:04e0b4721883a7b878e91662548cd04ddbc2f256cfa86f43920b92557198c1c3",
+  "dependencies": {
+    "et-xmlfile": "2.0.0",
+    "openpyxl": "3.1.5",
+    "pypdf": "6.19.0"
+  },
+  "entrypoint_sha256": "ab9909dd18cb72aa6e6bc7302e23538408d48d82b9c7f2ff628e9daf6c5af3ee",
+  "image_id": "sha256:9ef51694b875bcf60289cf4527cd88bcad6b6d6f04dbbf17479bc85e456b3ed1",
+  "parser_version": "pdos-evidence-v1",
+  "source_sha256": {
+    "parsers.py": "86d03868035fc03753d14c29abe3724ecc680a2f53e34ad870a396d8d635452d",
+    "types.py": "9a4165a890bd1e7ad3a50075bba38891009ef747eb00bf2ec92f3e6c9eb918b4"
+  },
+  "state": "built_local_unqualified",
+  "wheel_sha256": {
+    "et_xmlfile-2.0.0-py3-none-any.whl": "7a91720bc756843502c3b7504c77b8fe44217c85c537d85037f0f536151b2caa",
+    "openpyxl-3.1.5-py2.py3-none-any.whl": "5282c12b107bffeef825f4617dc029afaf41d0ea60823bbb665ef3079dc79de2",
+    "pypdf-6.19.0-py3-none-any.whl": "7e5d6e730e7dae87d560a2cee218b852f6498c8be61966f3cd02ead971e48d14"
+  }
+}

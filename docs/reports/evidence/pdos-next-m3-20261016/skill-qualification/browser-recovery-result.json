@@ -1,0 +1,11 @@
+{
+  "success_response_replaced_by_503": true,
+  "approve_business_posts": 1,
+  "revoke_business_posts": 1,
+  "readonly_recovery_posts": 1,
+  "approve_posts_after_reload": 0,
+  "desktop": "1280 light",
+  "mobile": "320 dark",
+  "real_model_calls": 0,
+  "real_qualifications": 0
+}

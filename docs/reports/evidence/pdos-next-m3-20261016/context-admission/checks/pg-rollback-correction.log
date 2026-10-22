@@ -1,0 +1,17 @@
+.
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_admission_rolls_back_with_receipt_and_retries_without_duplicate[True]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_admission_rolls_back_with_receipt_and_retries_without_duplicate[True]
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_admission_rolls_back_with_receipt_and_retries_without_duplicate[True]
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_admission_rolls_back_with_receipt_and_retries_without_duplicate[True]
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_admission_rolls_back_with_receipt_and_retries_without_duplicate[True]
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_admission_rolls_back_with_receipt_and_retries_without_duplicate[True]
+tests/agent_kernel/test_proposal_context_admission_pg.py::test_admission_rolls_back_with_receipt_and_retries_without_duplicate[True]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 7 warnings in 4.65s

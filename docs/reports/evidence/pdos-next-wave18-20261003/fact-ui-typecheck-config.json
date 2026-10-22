@@ -1,0 +1,25 @@
+{
+  "extends": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+  "compilerOptions": {
+    "incremental": false,
+    "allowJs": false,
+    "noEmit": true,
+    "plugins": [],
+    "typeRoots": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/@types"
+    ],
+    "types": [
+      "node",
+      "react",
+      "react-dom"
+    ]
+  },
+  "files": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/capa-effectiveness/fact-workflow-contract.ts",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/capa-effectiveness/fact-workflow-state.ts",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/capa-effectiveness/fact-workflow.tsx",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/capa-effectiveness/fact-workflow-state.test.ts"
+  ],
+  "include": [],
+  "exclude": []
+}

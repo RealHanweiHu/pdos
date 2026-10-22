@@ -1,0 +1,251 @@
+FFFF......F.......
+=================================== FAILURES ===================================
+_ test_three_bound_private_entries_compare_shared_models_and_competitors_without_writes[customer_request] _
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...bf0>, parser=<function parse_original at 0x10f73c720>), client=<starlette.testclient.TestClient object at 0x11c22dc10>)
+entry = 'customer_request'
+
+    @pytest.mark.parametrize("entry", ["customer_request", "new_product", "derivative"])
+    def test_three_bound_private_entries_compare_shared_models_and_competitors_without_writes(
+        work, security_work, entry
+    ):
+        f = ledger(fixture(work, security_work, entry))
+        before = counts(work)
+        with f.owner.store.transaction(f.scope) as (_, run):
+            original = digest([run.read_sources, run.data_categories, run.versions[KEY]])
+        result = invoke(f)
+        assert counts(work) == before
+        assert len(result["subjects"]) == 3 and result["groups"]
+        observations = [row for group in result["groups"] for row in group["observations"]]
+        assert any(row["upper"] == "75" for row in observations), result
+>       assert any(row["value"] == "70" for row in observations), result
+E       AssertionError: {'engine_version': 'spec-compare/v2', 'requested_parameters': [], 'subjects': [{'type': 'proposal', 'id': 'abdde1fe-9c...meter': {'key': 'noise', 'name': '噪声', 'value_type': 'number', 'direction': 'lower', ...}, 'unit': 'dB(A)', ...}], ...}
+E       assert False
+E        +  where False = any(<generator object test_three_bound_private_entries_compare_shared_models_and_competitors_without_writes.<locals>.<genexpr> at 0x11f39c6c0>)
+
+tests/agent_kernel/test_private_spec_compare_pg.py:179: AssertionError
+_ test_three_bound_private_entries_compare_shared_models_and_competitors_without_writes[new_product] _
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...730>, parser=<function parse_original at 0x10f73c720>), client=<starlette.testclient.TestClient object at 0x11fd6ddf0>)
+entry = 'new_product'
+
+    @pytest.mark.parametrize("entry", ["customer_request", "new_product", "derivative"])
+    def test_three_bound_private_entries_compare_shared_models_and_competitors_without_writes(
+        work, security_work, entry
+    ):
+        f = ledger(fixture(work, security_work, entry))
+        before = counts(work)
+        with f.owner.store.transaction(f.scope) as (_, run):
+            original = digest([run.read_sources, run.data_categories, run.versions[KEY]])
+        result = invoke(f)
+        assert counts(work) == before
+        assert len(result["subjects"]) == 3 and result["groups"]
+        observations = [row for group in result["groups"] for row in group["observations"]]
+        assert any(row["upper"] == "75" for row in observations), result
+>       assert any(row["value"] == "70" for row in observations), result
+E       AssertionError: {'engine_version': 'spec-compare/v2', 'requested_parameters': [], 'subjects': [{'type': 'proposal', 'id': '8caed07b-fd...meter': {'key': 'noise', 'name': '噪声', 'value_type': 'number', 'direction': 'lower', ...}, 'unit': 'dB(A)', ...}], ...}
+E       assert False
+E        +  where False = any(<generator object test_three_bound_private_entries_compare_shared_models_and_competitors_without_writes.<locals>.<genexpr> at 0x1283c6c20>)
+
+tests/agent_kernel/test_private_spec_compare_pg.py:179: AssertionError
+_ test_three_bound_private_entries_compare_shared_models_and_competitors_without_writes[derivative] _
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...a70>, parser=<function parse_original at 0x10f73c720>), client=<starlette.testclient.TestClient object at 0x12802f950>)
+entry = 'derivative'
+
+    @pytest.mark.parametrize("entry", ["customer_request", "new_product", "derivative"])
+    def test_three_bound_private_entries_compare_shared_models_and_competitors_without_writes(
+        work, security_work, entry
+    ):
+        f = ledger(fixture(work, security_work, entry))
+        before = counts(work)
+        with f.owner.store.transaction(f.scope) as (_, run):
+            original = digest([run.read_sources, run.data_categories, run.versions[KEY]])
+        result = invoke(f)
+        assert counts(work) == before
+        assert len(result["subjects"]) == 3 and result["groups"]
+        observations = [row for group in result["groups"] for row in group["observations"]]
+        assert any(row["upper"] == "75" for row in observations), result
+>       assert any(row["value"] == "70" for row in observations), result
+E       AssertionError: {'engine_version': 'spec-compare/v2', 'requested_parameters': [], 'subjects': [{'type': 'proposal', 'id': '7b21df73-a4...meter': {'key': 'noise', 'name': '噪声', 'value_type': 'number', 'direction': 'lower', ...}, 'unit': 'dB(A)', ...}], ...}
+E       assert False
+E        +  where False = any(<generator object test_three_bound_private_entries_compare_shared_models_and_competitors_without_writes.<locals>.<genexpr> at 0x11c58b2a0>)
+
+tests/agent_kernel/test_private_spec_compare_pg.py:179: AssertionError
+___________ test_bound_private_comparison_keeps_missing_unit_unknown ___________
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...fa0>, parser=<function parse_original at 0x10f73c720>), client=<starlette.testclient.TestClient object at 0x128e7aae0>)
+
+    def test_bound_private_comparison_keeps_missing_unit_unknown(work, security_work):
+>       f = ledger(fixture(work, security_work, missing_unit=True))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_private_spec_compare_pg.py:192:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests/agent_kernel/test_private_spec_compare_pg.py:109: in fixture
+    proposal, _ = create(work, data)
+                  ^^^^^^^^^^^^^^^^^^
+tests/preproject/test_g0.py:132: in create
+    result, req = save(work, request(work, "proposal.create", data or payload(work)))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+work = <isolated synthetic test scope>
+req = {'command_id': 'f4477393-71c0-442c-be3b-3106562da3b7', 'idempotency_key': '6042c609-50bb-4dc7-9c4c-b0f021732551', 'category_id': '8d8db160-d6c7-43d4-ab56-0318dffa8b56', 'product_id': None, ...}
+actor = None
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+>       assert checked.status_code == 200, checked.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"单位与所引参数版本不一致。","detail":{"reason":"parameter_unit_mismatch"}}
+E       assert 409 == 200
+E        +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/preproject/test_g0.py:93: AssertionError
+____ test_registered_graph_uses_private_comparison_and_finishes_in_same_run ____
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...7a0>, parser=<function parse_original at 0x10f73c720>), client=<starlette.testclient.TestClient object at 0x12d6c7d10>)
+
+    def test_registered_graph_uses_private_comparison_and_finishes_in_same_run(work, security_work):
+        f = fixture(work, security_work)
+        agree(work, f.scope, f.scope.data_categories)
+        f.owner.route = lambda *_: configured_route()
+        with Session(work.admin) as session, session.begin():
+            session.get(AgentRun, f.scope.run_id).token_limit = 1_000_000
+        calls = []
+
+        def answer(kwargs):
+            calls.append(kwargs["messages"])
+            if len(calls) == 1:
+                return ModelTurn(
+                    calls=(ToolCall(id="compare", name=TOOL, arguments=f.arguments),),
+                    usage=ProviderUsage(2, 1),
+                )
+            result = json.loads(kwargs["messages"][-1]["content"])
+            assert "error" not in result and len(result["subjects"]) == 3, result
+            return ModelTurn(
+                structured={
+                    "status": "completed",
+                    "summary": "Synthetic private comparison",
+                    "result": {"input_digest": result["input_digest"]},
+                    "questions": [],
+                    "unfinished": [],
+                },
+                usage=ProviderUsage(2, 1),
+            )
+
+        client = Client(answer)
+        adapters = replace(
+            f.owner.adapters(),
+            route_for=lambda _: configured_route(),
+            provider_for=lambda *_: "synthetic-provider",
+            provider_client=client,
+            cost_required=False,
+        )
+>       result = AgentKernel(BoundHost(f.owner.store, adapters), f.owner.registry).execute(
+            f.scope, goal="Synthetic proposal comparison", preload=("competitor_comparison",)
+        )
+
+tests/agent_kernel/test_private_spec_compare_pg.py:350:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pdos_next/agent_kernel/graph.py:629: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:196: in prepare
+    skill = catalog.load(name, scope, ports.enabled)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x128f57f80>
+name = 'competitor_comparison'
+scope = RunScope(tenant_id=UUID('be70798a-1cef-4ddb-8c30-e6cf534d5201'), requester_id=UUID('9f17ad20-6f80-49fe-b2b1-d00164cff0...ories=frozenset({'customer_original', 'customer'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+permitted = <bound method BoundHost.enabled of <pdos_next.agent_kernel.host.BoundHost object at 0x128f576e0>>
+
+    def load(self, name, scope, permitted):
+        skill = self._skills.get(name)
+        if skill is None or not permitted(scope, skill):
+>           raise DomainError("FORBIDDEN_SCOPE", "该技能未在当前租户与范围启用。")
+E           pdos_next.errors.DomainError: 该技能未在当前租户与范围启用。
+E           During task with name 'prepare_context' and id 'a582111b-fe96-2bd2-fd43-03ab6e94c049'
+
+pdos_next/agent_kernel/skills.py:93: DomainError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_private_spec_compare_pg.py: 11 warnings
+tests/agent_kernel/test_m3_spec_compare_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:512: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_private_spec_compare_pg.py: 11 warnings
+tests/agent_kernel/test_m3_spec_compare_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:557: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_private_spec_compare_pg.py: 12 warnings
+tests/agent_kernel/test_m3_spec_compare_pg.py: 6 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_private_spec_compare_pg.py: 70 warnings
+tests/agent_kernel/test_m3_spec_compare_pg.py: 30 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_private_spec_compare_pg.py::test_private_binding_does_not_authorize_another_private_object[private_product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_private_objects_stop_before_comparison_or_source_projection[product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_g0_baseline_ignores_unselected_private_definition_history
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:863: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/agent_kernel/test_private_spec_compare_pg.py::test_private_binding_does_not_authorize_another_private_object[private_product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_private_objects_stop_before_comparison_or_source_projection[product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_g0_baseline_ignores_unselected_private_definition_history
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:918: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/agent_kernel/test_private_spec_compare_pg.py::test_private_binding_does_not_authorize_another_private_object[private_product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_private_objects_stop_before_comparison_or_source_projection[product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_g0_baseline_ignores_unselected_private_definition_history
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/agent_kernel/test_private_spec_compare_pg.py::test_private_binding_does_not_authorize_another_private_object[private_product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_private_objects_stop_before_comparison_or_source_projection[product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_g0_baseline_ignores_unselected_private_definition_history
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_g0_baseline_ignores_unselected_private_definition_history
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_private_spec_compare_pg.py::test_private_binding_does_not_authorize_another_private_object[private_product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_private_objects_stop_before_comparison_or_source_projection[product]
+tests/agent_kernel/test_m3_spec_compare_pg.py::test_actual_g0_baseline_ignores_unselected_private_definition_history
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_private_spec_compare_pg.py::test_three_bound_private_entries_compare_shared_models_and_competitors_without_writes[customer_request]
+FAILED tests/agent_kernel/test_private_spec_compare_pg.py::test_three_bound_private_entries_compare_shared_models_and_competitors_without_writes[new_product]
+FAILED tests/agent_kernel/test_private_spec_compare_pg.py::test_three_bound_private_entries_compare_shared_models_and_competitors_without_writes[derivative]
+FAILED tests/agent_kernel/test_private_spec_compare_pg.py::test_bound_private_comparison_keeps_missing_unit_unknown
+FAILED tests/agent_kernel/test_private_spec_compare_pg.py::test_registered_graph_uses_private_comparison_and_finishes_in_same_run
+5 failed, 13 passed, 158 warnings in 58.32s

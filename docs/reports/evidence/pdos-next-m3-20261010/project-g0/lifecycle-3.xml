@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="72" time="22.416" timestamp="2026-10-11T02:39:23.847705-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_frozen_catalog_matches_actual_columns_without_consuming_transport" time="0.001" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposals]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_items]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_item_versions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_revisions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_sources]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_submissions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_decisions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-project_open_items]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-category_knowledge_entries]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-category_knowledge_current]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-product_target_segments]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-parameter_versions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-parameter_current]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-promotion_proofs]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-evidence_links]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-claim_withdrawals]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposals]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_items]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_item_versions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_revisions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_sources]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_submissions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_decisions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-project_open_items]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-category_knowledge_entries]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-category_knowledge_current]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-product_target_segments]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-parameter_versions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-parameter_current]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-promotion_proofs]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-evidence_links]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-claim_withdrawals]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_unknown_columns_tables_and_wrong_guard_implementation_fail_closed" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_frozen_migration_has_source_free_fast_path_and_exact_predecessor_down" time="0.000" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute" time="1.297" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[artifact]" time="0.202" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[original]" time="0.213" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[claim]" time="0.217" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[knowledge]" time="0.300" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[definition]" time="0.209" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_arbitrary_content_relation_keys_are_not_source_edges[section]" time="0.228" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_arbitrary_content_relation_keys_are_not_source_edges[option]" time="0.240" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_arbitrary_content_relation_keys_are_not_source_edges[risk]" time="0.243" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_registered_nested_reference_containers_are_retained[commercial]" time="0.215" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_registered_nested_reference_containers_are_retained[competitor]" time="0.204" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_registered_nested_reference_containers_are_retained[voice]" time="0.197" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_registered_nested_reference_containers_are_retained[frozen_link]" time="0.306" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_actual_original_roots_fence_and_advance_both_scopes[False-False]" time="2.077" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_actual_original_roots_fence_and_advance_both_scopes[False-True]" time="1.504" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_actual_original_roots_fence_and_advance_both_scopes[True-False]" time="1.321" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_actual_original_roots_fence_and_advance_both_scopes[True-True]" time="1.768" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_public_m3_source_adoption_is_counted" time="1.420" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_fixed_knowledge_claim_and_definition_edges_retain_actual_original" time="2.412" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_parameter_reference_resolves_fixed_version_not_current_head" time="0.595" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_source_free_item_never_invokes_history_node_queries" time="0.352" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_evidence_link_target_closure_retains_original_after_withdrawal[knowledge_entry]" time="2.080" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_evidence_link_target_closure_retains_original_after_withdrawal[definition_spec]" time="1.601"><failure message="sqlalchemy.exc.ProgrammingError: (psycopg.errors.InsufficientPrivilege) permission denied for table definition_specs&#10;[SQL: SELECT definition_specs.product_id, definition_specs.definition_id, definition_specs.key, definition_specs.parameter, definition_specs.value_type, definition_specs.availability, definition_specs.value, definition_specs.lower, definition_specs.upper, definition_specs.text, definition_specs.unit, definition_specs.tolerance, definition_specs.test_conditions, definition_specs.method, definition_specs.acceptance_criterion, definition_specs.nature, definition_specs.state, definition_specs.owner_id, definition_specs.reason, definition_specs.parameter_id, definition_specs.parameter_version, definition_specs.item_status, definition_specs.condition_note, definition_specs.modality, definition_specs.exceptions, definition_specs.applicable_variants, definition_specs.source_refs, definition_specs.origin, definition_specs.writer_id, definition_specs.run_id, definition_specs.confirmed_by, definition_specs.receipt_id, definition_specs.id, definition_specs.tenant_id, definition_specs.created_at, definition_specs.category_id &#10;FROM definition_specs &#10;WHERE definition_specs.id IN (%(id_1_1)s::UUID) ORDER BY definition_specs.id FOR UPDATE]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/f405)">self = &lt;sqlalchemy.engine.base.Connection object at 0x11d9b0980&gt;
+dialect = &lt;sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x10c70dbe0&gt;
+context = &lt;sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x11d9a43e0&gt;
+statement = &lt;sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x11d9b04a0&gt;
+parameters = [{'id_1_1': UUID('003b87fc-e861-442f-ad58-82a3499f5679')}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x119fdf4d0&gt;
+query = 'SELECT definition_specs.product_id, definition_specs.definition_id, definition_specs.key, definition_specs.parameter,...y_id \nFROM definition_specs \nWHERE definition_specs.id IN (%(id_1_1)s::UUID) ORDER BY definition_specs.id FOR UPDATE'
+params = {'id_1_1': UUID('003b87fc-e861-442f-ad58-82a3499f5679')}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.InsufficientPrivilege: permission denied for table definition_specs
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: InsufficientPrivilege
+
+The above exception was the direct cause of the following exception:
+
+lifecycle_work = namespace(setup=&lt;isolated synthetic test scope&gt;, store=&lt;pdos_next.original_store.OriginalStore object at 0x119f58620&gt;,...ays=1), effect_timeout=datetime.timedelta(seconds=20)), client=&lt;starlette.testclient.TestClient object at 0x119fcda30&gt;)
+target_kind = 'definition_spec'
+
+    @pytest.mark.parametrize("target_kind", ["knowledge_entry", "definition_spec"])
+    def test_pg_evidence_link_target_closure_retains_original_after_withdrawal(
+        lifecycle_work, target_kind
+    ):
+        from pdos_next.domain.products.models import DefinitionSpecRow
+        from tests.preproject.test_evidence_commands_pg import record_claim, withdraw_request
+        from tests.preproject.test_g0 import post, request, save
+        from tests.preproject.test_material_commands_pg import knowledge
+        from tests.test_project_first_plan import cmd
+    
+        setup = lifecycle_work.setup
+        original_id, source_id = uploaded(lifecycle_work, False, visibility="category")
+        claim = record_claim(setup, source_id, quote="Synthetic exact M3 lifecycle source")
+        if target_kind == "knowledge_entry":
+            receipt, _ = save(setup, request(setup, "category.knowledge.add", knowledge()))
+            target_id = receipt["result"]["entry_id"]
+            query_table, query_id = "category_knowledge_entries", target_id
+            command = request(setup, "evidence.link.create", {})
+        else:
+            # Native spec source is a standalone Artifact with no UploadedOriginal.
+            # Only the EvidenceLink→Claim path can reach the separate uploaded root.
+            native = product_artifact(setup)
+            native_ref = {
+                "artifact_id": str(native),
+                "expected_revision": 1,
+                "line": 1,
+                "quote": "Synthetic exact public source",
+            }
+            defined = post(
+                setup,
+                cmd(
+                    setup,
+                    "product.definition.draft",
+                    {
+                        "title": "EvidenceLink-only original root",
+                        "purpose": "Synthetic fixed closure",
+                        "use_cases": ["Synthetic lifecycle source retention"],
+                        "change_reason": "Synthetic definition",
+                        "sources": [native_ref],
+                        "specs": [
+                            {
+                                "key": "unknown",
+                                "parameter": "Unknown",
+                                "value_type": "text",
+                                "availability": "unknown",
+                                "reason": "Synthetic uncertainty",
+                                "sources": [native_ref],
+                            }
+                        ],
+                    },
+                    str(native),
+                ),
+            )
+            assert defined.status_code == 200, defined.text
+            query_table, query_id = "definition_revisions", defined.json()["subject_id"]
+            with scoped(setup) as session:
+                target_id = str(
+                    session.scalar(
+                        select(DefinitionSpecRow.id).where(
+                            DefinitionSpecRow.definition_id == UUID(query_id)
+                        )
+                    )
+                )
+            command = cmd(setup, "evidence.link.create", {})
+    
+        def roots():
+            with scoped(setup, admin=True) as session:
+                return session.scalar(
+                    text(
+                        f"SELECT m3_lifecycle_roots(:t,:c,:table,to_jsonb(x)) FROM {query_table} x "
+                        "WHERE x.id=:id"
+                    ),
+                    {
+                        "t": setup.tenant,
+                        "c": setup.category,
+                        "table": query_table,
+                        "id": UUID(query_id),
+                    },
+                )
+    
+        assert original_id not in roots()
+        command["payload"] = {
+            "evidence": {"type": "claim", "id": claim["subject_id"], "version": 1},
+            "target": {"type": target_kind, "id": target_id, "version": 1},
+            "relation": "supports",
+        }
+&gt;       linked = post(setup, command)
+                 ^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_m3_lifecycle_catalog.py:631: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_g0.py:86: in post
+    return work.client.post(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1204: in post
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1310: in handle
+    await super().handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:282: in handle
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+pdos_next/api.py:595: in command
+    result = category_transaction(engine, ctx, apply_command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:81: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/api.py:593: in apply_command
+    return execute(s, ctx, data, synthetic_mode=synthetic_mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:941: in execute
+    validated_write = module.validate(s, ctx, command, product, payload)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/request_proof.py:295: in bound
+    proof.read_rows[key] = function(
+pdos_next/domain/preproject/evidence_service.py:562: in validate
+    target, owner, shared = _target(s, ctx, command, scope, payload.target)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/preproject/evidence_service.py:151: in _target
+    row = _row(s, ctx, DefinitionSpecRow, target.id)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/preproject/evidence_service.py:61: in _row
+    row = batch_read(s, model, [identity], lock=lock).get(identity)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/request_proof.py:141: in batch_read
+    rows = {row.id: row for row in session.scalars(locked)}
+                                   ^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2594: in scalars
+    return self._execute_internal(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2363: in _execute_internal
+    compile_state_cls.orm_execute_statement(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py:316: in orm_execute_statement
+    result = conn.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x119fdf4d0&gt;
+query = 'SELECT definition_specs.product_id, definition_specs.definition_id, definition_specs.key, definition_specs.parameter,...y_id \nFROM definition_specs \nWHERE definition_specs.id IN (%(id_1_1)s::UUID) ORDER BY definition_specs.id FOR UPDATE'
+params = {'id_1_1': UUID('003b87fc-e861-442f-ad58-82a3499f5679')}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           sqlalchemy.exc.ProgrammingError: (psycopg.errors.InsufficientPrivilege) permission denied for table definition_specs
+E           [SQL: SELECT definition_specs.product_id, definition_specs.definition_id, definition_specs.key, definition_specs.parameter, definition_specs.value_type, definition_specs.availability, definition_specs.value, definition_specs.lower, definition_specs.upper, definition_specs.text, definition_specs.unit, definition_specs.tolerance, definition_specs.test_conditions, definition_specs.method, definition_specs.acceptance_criterion, definition_specs.nature, definition_specs.state, definition_specs.owner_id, definition_specs.reason, definition_specs.parameter_id, definition_specs.parameter_version, definition_specs.item_status, definition_specs.condition_note, definition_specs.modality, definition_specs.exceptions, definition_specs.applicable_variants, definition_specs.source_refs, definition_specs.origin, definition_specs.writer_id, definition_specs.run_id, definition_specs.confirmed_by, definition_specs.receipt_id, definition_specs.id, definition_specs.tenant_id, definition_specs.created_at, definition_specs.category_id 
+E           FROM definition_specs 
+E           WHERE definition_specs.id IN (%(id_1_1)s::UUID) ORDER BY definition_specs.id FOR UPDATE]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/f405)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: ProgrammingError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_concurrency" name="test_pg_product_evidence_and_category_patch_share_category_first_fence" time="2.053"><failure message="pdos_next.errors.DomainError: 来源不在当前授权范围。">lifecycle_work = namespace(setup=&lt;isolated synthetic test scope&gt;, store=&lt;pdos_next.original_store.OriginalStore object at 0x11cef4e00&gt;,...ays=1), effect_timeout=datetime.timedelta(seconds=20)), client=&lt;starlette.testclient.TestClient object at 0x11da79310&gt;)
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x11e05a7b0&gt;
+
+    def test_pg_product_evidence_and_category_patch_share_category_first_fence(
+        lifecycle_work, monkeypatch
+    ):
+        setup = lifecycle_work.setup
+        original_id, source_id = uploaded(lifecycle_work, True)
+        native = post(
+            setup,
+            cmd(
+                setup,
+                "evidence.artifact.register",
+                {
+                    "title": "Synthetic product definition source",
+                    "source_label": "Synthetic lifecycle concurrency fixture",
+                    "content": "Synthetic exact public source",
+                    "visibility": "category",
+                },
+            ),
+        )
+        assert native.status_code == 200, native.text
+        native_id = UUID(native.json()["subject_id"])
+        native_ref = {
+            "artifact_id": str(native_id),
+            "expected_revision": 1,
+            "line": 1,
+            "quote": "Synthetic exact public source",
+        }
+        defined = post(
+            setup,
+            cmd(
+                setup,
+                "product.definition.draft",
+                {
+                    "title": "Concurrent actual evidence target",
+                    "purpose": "Synthetic Category/Product lifecycle fence",
+                    "use_cases": ["Synthetic concurrent evidence adoption"],
+                    "change_reason": "Synthetic initial definition",
+                    "sources": [native_ref],
+                    "specs": [
+                        {
+                            "key": "unknown",
+                            "parameter": "Unknown",
+                            "value_type": "text",
+                            "availability": "unknown",
+                            "reason": "Synthetic uncertainty",
+                            "sources": [native_ref],
+                        }
+                    ],
+                },
+                str(native_id),
+            ),
+        )
+        assert defined.status_code == 200, defined.text
+        proposal_id, _ = create(setup)
+        document = read(setup, proposal_id).json()
+        item = next(row for row in document["items"] if row["kind"] == "section")
+        with scoped(setup) as session:
+            spec_id = session.scalar(
+                select(DefinitionSpecRow.id).where(
+                    DefinitionSpecRow.definition_id == UUID(defined.json()["subject_id"])
+                )
+            )
+            before_category = session.get(Category, setup.category).lifecycle_epoch
+            before_product = session.get(Product, setup.product).lifecycle_epoch
+        assert spec_id is not None
+        link = cmd(
+            setup,
+            "evidence.link.create",
+            {
+                "evidence": {"type": "artifact", "id": str(source_id), "version": 1},
+                "target": {"type": "definition_spec", "id": str(spec_id), "version": 1},
+                "relation": "supports",
+            },
+        )
+        assert link["source_read_set"] == []
+        reference = {
+            "type": "artifact",
+            "id": str(source_id),
+            "version": 1,
+            "line": 1,
+            "quote": "Synthetic exact M3 lifecycle source",
+        }
+        patch = request(
+            setup,
+            "proposal.item.patch",
+            {
+                "proposal_id": proposal_id,
+                "ops": [
+                    {
+                        "kind": item["kind"],
+                        "item_id": item["item_id"],
+                        "base_version": item["version"],
+                        "content": {**item["content"], "text": "Synthetic concurrent adoption"},
+                        "source_refs": [reference],
+                    }
+                ],
+            },
+        )
+        category_locked, link_ready, observed_wait = Event(), Event(), Event()
+        backend_ids = {}
+        real_command_scope = service.command_scope
+    
+        def observed_scope(session, ctx, command, *, lock=False):
+            scope = real_command_scope(session, ctx, command, lock=lock)
+            if lock and command.command_id == UUID(patch["command_id"]):
+                category_locked.set()
+                assert link_ready.wait(5), "Second app connection did not start"
+                deadline = monotonic() + 5
+                while monotonic() &lt; deadline:
+                    blockers = session.scalar(
+                        text("SELECT pg_blocking_pids(:pid)"), {"pid": backend_ids["link"]}
+                    )
+                    if backend_ids["patch"] in blockers:
+                        observed_wait.set()
+                        break
+                    Event().wait(0.01)
+                assert observed_wait.is_set(), "Actual evidence command never waited on Category"
+            return scope
+    
+        monkeypatch.setattr(service, "command_scope", observed_scope)
+    
+        def run(name, body):
+            with scoped(setup) as session:
+                session.execute(text("SET LOCAL lock_timeout='8s'"))
+                session.execute(text("SET LOCAL statement_timeout='12s'"))
+                backend_ids[name] = session.scalar(text("SELECT pg_backend_pid()"))
+                if name == "link":
+                    link_ready.set()
+                    assert category_locked.wait(5), "Category command did not obtain its scope lock"
+                # Intentionally avoid category_transaction's deadlock retry wrapper.
+                receipt = service.execute(session, setup.ctx, Command.model_validate(body))
+            return receipt
+    
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            patch_future = pool.submit(run, "patch", patch)
+            link_future = pool.submit(run, "link", link)
+&gt;           patched = patch_future.result(timeout=20)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_m3_lifecycle_concurrency.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/thread.py:59: in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_m3_lifecycle_concurrency.py:158: in run
+    receipt = service.execute(session, setup.ctx, Command.model_validate(body))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:941: in execute
+    validated_write = module.validate(s, ctx, command, product, payload)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/preproject/service.py:371: in validate
+    check_references(new_refs)
+pdos_next/domain/preproject/service.py:247: in check_references
+    for ref, privacy in _references(s, ctx, refs, approved=approved)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/preproject/service.py:100: in _references
+    source = source_for(s, ctx, None, ref.id, ref.version)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = &lt;sqlalchemy.orm.session.Session object at 0x11e086d80&gt;
+ctx = Context(tenant_id=UUID('4a2b7024-5e4c-4474-ae79-22b0ad296762'), actor_id=UUID('e24823f8-5220-4b78-80e2-db0f121a90b3'),...ne, cancel_epoch=None, category_id=UUID('1b097b50-993f-41ef-9718-ffbad3a876e1'), agent_run_id=None, agent_call_id=None)
+product_id = None, artifact_id = UUID('dec62ca1-a41d-4a46-bdb1-f4b1849b1262')
+revision = 1
+
+    def source_for(s, ctx, product_id, artifact_id, revision=None):
+        from pdos_next.request_proof import request_proof
+    
+        category_id = ctx.category_id or require_access(s, ctx, product_id).category_id
+        proof = request_proof(s)
+        key = (
+            ctx.tenant_id,
+            ctx.actor_id,
+            ctx.requester_id,
+            ctx.category_id,
+            product_id,
+            artifact_id,
+        )
+        writing = any(entry["locked"] for entry in proof.authority.values())
+        locked_key = (Artifact, ("locked", artifact_id))
+        held = s.info.get("read_snapshot") or (writing and proof.read_rows.get(locked_key))
+        source = (
+            (
+                proof.sources.get(key)
+                or proof.source_rows.get(key)
+                or proof.read_rows.get((Artifact, artifact_id))
+            )
+            if held
+            else None
+        )
+        if source is None or (writing and not proof.read_rows.get(locked_key)):
+            query = select(Artifact).where(
+                Artifact.id == artifact_id,
+                Artifact.category_id == category_id,
+                Artifact.product_id.is_(None) | (Artifact.product_id == product_id),
+            )
+            source = s.scalar(
+                (query.with_for_update(read=True) if writing else query).execution_options(
+                    populate_existing=True
+                )
+            )
+            proof.read_rows[locked_key] = writing
+        # Database RLS applies the model audience and named reviewers as well as category membership.
+        if (
+            not source
+            or source.tenant_id != ctx.tenant_id
+            or source.category_id != category_id
+            or source.product_id not in (None, product_id)
+        ):
+&gt;           raise DomainError("SOURCE_UNAVAILABLE", "来源不在当前授权范围。", 403)
+E           pdos_next.errors.DomainError: 来源不在当前授权范围。
+
+pdos_next/service.py:396: DomainError</failure></testcase><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_explicit_empty_source_definition_reaches_existing_process_gate" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_active_claim_with_no_artifact_edges_is_locked_and_revalidated" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_withdrawn_claim_cannot_be_new_manufacturing_basis_even_with_empty_artifacts[withdrawn]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_withdrawn_claim_cannot_be_new_manufacturing_basis_even_with_empty_artifacts[reverted]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_unusable_fixed_knowledge_cannot_be_new_manufacturing_basis[unreadable]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_unusable_fixed_knowledge_cannot_be_new_manufacturing_basis[version]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_unusable_fixed_knowledge_cannot_be_new_manufacturing_basis[withdraw_entry]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_fixed_knowledge_recurses_into_its_withdrawn_claim" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_at53_fixed_knowledge_survives_later_lineage_withdrawal" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_schema_declared_nested_knowledge_claim_cannot_escape_new_consumption[metrics]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_schema_declared_nested_knowledge_claim_cannot_escape_new_consumption[features]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_schema_declared_nested_knowledge_claim_cannot_escape_new_consumption[prices]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_schema_declared_nested_knowledge_claim_cannot_escape_new_consumption[representative_refs]" time="0.002" /></testsuite></testsuites>

@@ -1,0 +1,8 @@
+{
+  "initial_failure": "ModuleNotFoundError_migrations",
+  "stage": "Alembic_script_discovery_after_12_public_paths_applied",
+  "recovery": "Set_explicit_server_module_path_then_verify_proposed_hashes_and_actual_next_0023",
+  "public_paths_applied": 12,
+  "database_mutation_before_recovery": false,
+  "migration_was_not_created": true
+}

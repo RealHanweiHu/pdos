@@ -1,0 +1,1936 @@
+{
+  "purpose": "Pure affected verification for original XML failures still missing precise actual pass evidence.",
+  "authoritative_original_results": "full-regression-results.json",
+  "collect_only": true,
+  "tests_executed": false,
+  "collect_exit": 0,
+  "is_pass_evidence": false,
+  "selection_rules": [
+    "Only still-pending original XML failure/error functions outside current 52-selector transaction selection.",
+    "Only source-reviewed pure files; PG/transactions/preproject/archive/providers excluded.",
+    "Function selectors expand to complete current parameter cases; collection is never passing.",
+    "Unknown historical invocation scopes are never used as pass evidence."
+  ],
+  "selectors": [
+    "tests/change_scope_only/test_scope.py::test_list_history_uses_scope_only_seed_without_complete_seed_walk",
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff",
+    "tests/discovery/test_discovery.py::test_original_page_cell_mapping_and_version_are_current_not_claimed",
+    "tests/discovery/test_discovery.py::test_partial_import_keeps_omitted_and_missing_with_explicit_reason",
+    "tests/discovery/test_discovery.py::test_payload_current_source_quote_substitution_and_ambiguous_mapping_rejected",
+    "tests/discovery/test_discovery.py::test_ports_unavailable_never_simulate_success",
+    "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write",
+    "tests/discovery/test_discovery.py::test_research_needs_no_product_project_or_placeholder",
+    "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen",
+    "tests/discovery/test_discovery.py::test_same_id_different_payload_rejected_without_partial_record",
+    "tests/discovery/test_discovery.py::test_scope_and_ai_guards",
+    "tests/discovery/test_discovery.py::test_source_package_mapping_limit_is_explicit_no_silent_truncation",
+    "tests/discovery/test_discovery.py::test_wrong_group_choice_is_rejected_not_silently_resolved",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow",
+    "tests/manufacturing_resource_api/test_routes.py::test_complete_20_source_readset_and_relation_originals_are_preserved",
+    "tests/manufacturing_resource_api/test_routes.py::test_failed_authentication_never_opens_tenant_uow",
+    "tests/manufacturing_resource_api/test_routes.py::test_historical_fact_and_exact_resource_are_passed_without_selecting_current",
+    "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query",
+    "tests/manufacturing_resource_api/test_routes.py::test_only_url_and_context_bind_roots_and_opaque_proof_stays_private",
+    "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow",
+    "tests/manufacturing_resource_api/test_routes.py::test_real_owner_rejects_agent_context_before_any_owner_io",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+    "tests/test_launch_common.py::test_common_reader_accepts_running_only_with_matching_start_operation",
+    "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader",
+    "tests/test_launch_common.py::test_running_history_cannot_lose_its_required_clock",
+    "tests/test_operational_bootstrap_profiles.py::test_exact_scope_selects_real_issuer_before_finite_decision_callback",
+    "tests/test_test_resource_bootstrap_profiles.py::test_wrong_product_is_rejected_by_actual_domain_issuer_and_wrong_run_by_callback",
+    "tests/verification/test_handlers.py::test_acceptance_cannot_precede_current_selected_sample_ready_time",
+    "tests/verification/test_handlers.py::test_available_sample_without_physical_ready_fact_cannot_be_accepted",
+    "tests/verification/test_handlers.py::test_build_drift_after_preview_prevents_acceptance_record",
+    "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action",
+    "tests/verification/test_handlers.py::test_default_ports_never_imply_an_enabled_handler",
+    "tests/verification/test_handlers.py::test_evidence_source_check_without_measurement_verifier_explicitly_blocks_import",
+    "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end",
+    "tests/verification/test_handlers.py::test_fixed_run_methods_cannot_drift_to_current_request_methods",
+    "tests/verification/test_handlers.py::test_handler_rejects_port_returning_a_different_actual_configuration",
+    "tests/verification/test_handlers.py::test_method_update_cannot_change_already_received_item",
+    "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success",
+    "tests/verification/test_handlers.py::test_partial_acceptance_requires_return_reason_and_next_responsibility",
+    "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance",
+    "tests/verification/test_handlers.py::test_planned_build_cannot_offer_fictitious_sample_even_when_payload_has_sample_ref",
+    "tests/verification/test_handlers.py::test_raw_measurement_cannot_be_overwritten_by_later_partial_import",
+    "tests/verification/test_handlers.py::test_repeated_acceptance_under_new_intent_cannot_duplicate_business_scope",
+    "tests/verification/test_handlers.py::test_run_cannot_be_planned_over_unaccepted_pairs",
+    "tests/verification/test_handlers.py::test_sample_availability_and_applicability_are_rechecked_on_acceptance",
+    "tests/verification/test_handlers.py::test_start_cannot_precede_acceptance_of_its_specific_sample_pair",
+    "tests/verification/test_handlers.py::test_two_destructive_items_cannot_consume_same_sample",
+    "tests/verification/test_handlers.py::test_unknown_operation_or_mismatched_payload_is_rejected_before_begin",
+    "tests/verification/test_handlers.py::test_wrong_semantic_digest_is_refused_before_begin",
+    "tests/verification/test_rules.py::test_coverage_cannot_be_empty_or_repeat_exact_pair",
+    "tests/verification/test_rules.py::test_coverage_cannot_escape_supplied_sample_or_item_scope",
+    "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape",
+    "tests/verification/test_rules.py::test_same_sample_cannot_have_two_actual_configuration_versions",
+    "tests/verification/test_rules.py::test_unrequested_cavity_cannot_silently_be_counted_as_applicable"
+  ],
+  "selector_count": 55,
+  "original_failed_node_count": 131,
+  "collected_nodes": [
+    "tests/change_scope_only/test_scope.py::test_list_history_uses_scope_only_seed_without_complete_seed_walk",
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes0-SOURCE_UNAVAILABLE]",
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes1-FORBIDDEN_SCOPE]",
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes2-SOURCE_STALE]",
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes3-FORBIDDEN_SCOPE]",
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes4-INTEGRITY_MISMATCH]",
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes5-FORBIDDEN_SCOPE]",
+    "tests/discovery/test_discovery.py::test_original_page_cell_mapping_and_version_are_current_not_claimed",
+    "tests/discovery/test_discovery.py::test_partial_import_keeps_omitted_and_missing_with_explicit_reason",
+    "tests/discovery/test_discovery.py::test_payload_current_source_quote_substitution_and_ambiguous_mapping_rejected",
+    "tests/discovery/test_discovery.py::test_ports_unavailable_never_simulate_success",
+    "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[product_version]",
+    "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[selection_reason]",
+    "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[verdict]",
+    "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[policy]",
+    "tests/discovery/test_discovery.py::test_research_needs_no_product_project_or_placeholder",
+    "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change0]",
+    "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change1]",
+    "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change2]",
+    "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change3]",
+    "tests/discovery/test_discovery.py::test_same_id_different_payload_rejected_without_partial_record",
+    "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change0-SCOPE_BINDING_REQUIRED]",
+    "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change1-SCOPE_BINDING_REQUIRED]",
+    "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change2-FORBIDDEN_SCOPE]",
+    "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change3-FORBIDDEN_SCOPE]",
+    "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change4-CAPABILITY_DISABLED]",
+    "tests/discovery/test_discovery.py::test_source_package_mapping_limit_is_explicit_no_silent_truncation",
+    "tests/discovery/test_discovery.py::test_wrong_group_choice_is_rejected_not_silently_resolved",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[tenant_id]",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[product_id]",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[build_id]",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[scope]",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[owner_id]",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[actor_id]",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[authority]",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[source_read_set]",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[opaque_token]",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[basis]",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[accepted]",
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[command_id]",
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[missing_process]",
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[bool_revision]",
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[string_revision]",
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[float_quantity]",
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[bad_window]",
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[nested_authority]",
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[partial_fact]",
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[wrong_kind]",
+    "tests/manufacturing_resource_api/test_routes.py::test_complete_20_source_readset_and_relation_originals_are_preserved",
+    "tests/manufacturing_resource_api/test_routes.py::test_failed_authentication_never_opens_tenant_uow",
+    "tests/manufacturing_resource_api/test_routes.py::test_historical_fact_and_exact_resource_are_passed_without_selecting_current",
+    "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?resource_id=x]",
+    "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?revision=1]",
+    "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?fact_id=x&fact_id=x]",
+    "tests/manufacturing_resource_api/test_routes.py::test_only_url_and_context_bind_roots_and_opaque_proof_stays_private",
+    "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[FORBIDDEN_SCOPE-403]",
+    "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[RESOURCE_RECHECK_REQUIRED-409]",
+    "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[RESOURCE_PEOPLE_NOWAIT_REQUIRED-503]",
+    "tests/manufacturing_resource_api/test_routes.py::test_real_owner_rejects_agent_context_before_any_owner_io",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-professional_synthetic_scope-professional_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-operational_synthetic_profile-operational_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-quality_synthetic_profile-quality_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-professional_synthetic_scope-professional_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-operational_synthetic_profile-operational_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-quality_synthetic_profile-quality_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-professional_synthetic_scope-professional_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-operational_synthetic_profile-operational_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-quality_synthetic_profile-quality_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-professional_synthetic_scope-professional_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-operational_synthetic_profile-operational_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-quality_synthetic_profile-quality_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-professional_synthetic_scope-professional_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-operational_synthetic_profile-operational_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-quality_synthetic_profile-quality_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+    "tests/test_launch_common.py::test_common_reader_accepts_running_only_with_matching_start_operation",
+    "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader[preliminary_result]",
+    "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader[final_result]",
+    "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader[disposed]",
+    "tests/test_launch_common.py::test_running_history_cannot_lose_its_required_clock[promised_start]",
+    "tests/test_launch_common.py::test_running_history_cannot_lose_its_required_clock[actual_start]",
+    "tests/test_operational_bootstrap_profiles.py::test_exact_scope_selects_real_issuer_before_finite_decision_callback",
+    "tests/test_test_resource_bootstrap_profiles.py::test_wrong_product_is_rejected_by_actual_domain_issuer_and_wrong_run_by_callback",
+    "tests/verification/test_handlers.py::test_acceptance_cannot_precede_current_selected_sample_ready_time",
+    "tests/verification/test_handlers.py::test_available_sample_without_physical_ready_fact_cannot_be_accepted",
+    "tests/verification/test_handlers.py::test_build_drift_after_preview_prevents_acceptance_record",
+    "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes0-FORBIDDEN_OPERATION]",
+    "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes1-FORBIDDEN_OPERATION]",
+    "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes2-RUN_CANCELLED]",
+    "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes3-NAMED_DECISION_REQUIRED]",
+    "tests/verification/test_handlers.py::test_default_ports_never_imply_an_enabled_handler",
+    "tests/verification/test_handlers.py::test_evidence_source_check_without_measurement_verifier_explicitly_blocks_import",
+    "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end[changes0-ACTUAL_END_REQUIRED]",
+    "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end[changes1-INCOMPLETE_FINAL_SCOPE]",
+    "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end[changes2-INVALID_EVENT_TIME]",
+    "tests/verification/test_handlers.py::test_fixed_run_methods_cannot_drift_to_current_request_methods",
+    "tests/verification/test_handlers.py::test_handler_rejects_port_returning_a_different_actual_configuration",
+    "tests/verification/test_handlers.py::test_method_update_cannot_change_already_received_item",
+    "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[commands]",
+    "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[builds]",
+    "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[evidence]",
+    "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[samples]",
+    "tests/verification/test_handlers.py::test_partial_acceptance_requires_return_reason_and_next_responsibility[changes0]",
+    "tests/verification/test_handlers.py::test_partial_acceptance_requires_return_reason_and_next_responsibility[changes1]",
+    "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[planned]",
+    "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[draft]",
+    "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[preparing]",
+    "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[authorized]",
+    "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[unknown]",
+    "tests/verification/test_handlers.py::test_planned_build_cannot_offer_fictitious_sample_even_when_payload_has_sample_ref",
+    "tests/verification/test_handlers.py::test_raw_measurement_cannot_be_overwritten_by_later_partial_import",
+    "tests/verification/test_handlers.py::test_repeated_acceptance_under_new_intent_cannot_duplicate_business_scope",
+    "tests/verification/test_handlers.py::test_run_cannot_be_planned_over_unaccepted_pairs",
+    "tests/verification/test_handlers.py::test_sample_availability_and_applicability_are_rechecked_on_acceptance[unavailable]",
+    "tests/verification/test_handlers.py::test_sample_availability_and_applicability_are_rechecked_on_acceptance[inapplicable]",
+    "tests/verification/test_handlers.py::test_start_cannot_precede_acceptance_of_its_specific_sample_pair",
+    "tests/verification/test_handlers.py::test_two_destructive_items_cannot_consume_same_sample",
+    "tests/verification/test_handlers.py::test_unknown_operation_or_mismatched_payload_is_rejected_before_begin",
+    "tests/verification/test_handlers.py::test_wrong_semantic_digest_is_refused_before_begin",
+    "tests/verification/test_rules.py::test_coverage_cannot_be_empty_or_repeat_exact_pair[selected0]",
+    "tests/verification/test_rules.py::test_coverage_cannot_be_empty_or_repeat_exact_pair[selected1]",
+    "tests/verification/test_rules.py::test_coverage_cannot_escape_supplied_sample_or_item_scope[selected0]",
+    "tests/verification/test_rules.py::test_coverage_cannot_escape_supplied_sample_or_item_scope[selected1]",
+    "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape[readings0]",
+    "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape[readings1]",
+    "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape[readings2]",
+    "tests/verification/test_rules.py::test_same_sample_cannot_have_two_actual_configuration_versions",
+    "tests/verification/test_rules.py::test_unrequested_cavity_cannot_silently_be_counted_as_applicable"
+  ],
+  "collected_node_count": 142,
+  "fixture_closures": {
+    "tests/change_scope_only/test_scope.py::test_list_history_uses_scope_only_seed_without_complete_seed_walk": [
+      "deny_connections",
+      "monkeypatch"
+    ],
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes0-SOURCE_UNAVAILABLE]": [
+      "changes",
+      "code"
+    ],
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes1-FORBIDDEN_SCOPE]": [
+      "changes",
+      "code"
+    ],
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes2-SOURCE_STALE]": [
+      "changes",
+      "code"
+    ],
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes3-FORBIDDEN_SCOPE]": [
+      "changes",
+      "code"
+    ],
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes4-INTEGRITY_MISMATCH]": [
+      "changes",
+      "code"
+    ],
+    "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes5-FORBIDDEN_SCOPE]": [
+      "changes",
+      "code"
+    ],
+    "tests/discovery/test_discovery.py::test_original_page_cell_mapping_and_version_are_current_not_claimed": [],
+    "tests/discovery/test_discovery.py::test_partial_import_keeps_omitted_and_missing_with_explicit_reason": [],
+    "tests/discovery/test_discovery.py::test_payload_current_source_quote_substitution_and_ambiguous_mapping_rejected": [],
+    "tests/discovery/test_discovery.py::test_ports_unavailable_never_simulate_success": [],
+    "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[product_version]": [
+      "change"
+    ],
+    "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[selection_reason]": [
+      "change"
+    ],
+    "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[verdict]": [
+      "change"
+    ],
+    "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[policy]": [
+      "change"
+    ],
+    "tests/discovery/test_discovery.py::test_research_needs_no_product_project_or_placeholder": [],
+    "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change0]": [
+      "change"
+    ],
+    "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change1]": [
+      "change"
+    ],
+    "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change2]": [
+      "change"
+    ],
+    "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change3]": [
+      "change"
+    ],
+    "tests/discovery/test_discovery.py::test_same_id_different_payload_rejected_without_partial_record": [],
+    "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change0-SCOPE_BINDING_REQUIRED]": [
+      "change",
+      "code"
+    ],
+    "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change1-SCOPE_BINDING_REQUIRED]": [
+      "change",
+      "code"
+    ],
+    "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change2-FORBIDDEN_SCOPE]": [
+      "change",
+      "code"
+    ],
+    "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change3-FORBIDDEN_SCOPE]": [
+      "change",
+      "code"
+    ],
+    "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change4-CAPABILITY_DISABLED]": [
+      "change",
+      "code"
+    ],
+    "tests/discovery/test_discovery.py::test_source_package_mapping_limit_is_explicit_no_silent_truncation": [],
+    "tests/discovery/test_discovery.py::test_wrong_group_choice_is_rejected_not_silently_resolved": [],
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[tenant_id]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "key"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[product_id]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "key"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[build_id]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "key"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[scope]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "key"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[owner_id]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "key"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[actor_id]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "key"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[authority]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "key"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[source_read_set]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "key"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[opaque_token]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "key"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[basis]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "key"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[accepted]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "key"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[command_id]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "key"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[missing_process]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "case"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[bool_revision]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "case"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[string_revision]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "case"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[float_quantity]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "case"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[bad_window]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "case"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[nested_authority]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "case"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[partial_fact]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "case"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[wrong_kind]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "case"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_complete_20_source_readset_and_relation_originals_are_preserved": [
+      "forbidden_io",
+      "monkeypatch",
+      "route"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_failed_authentication_never_opens_tenant_uow": [
+      "forbidden_io",
+      "monkeypatch",
+      "route"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_historical_fact_and_exact_resource_are_passed_without_selecting_current": [
+      "forbidden_io",
+      "monkeypatch",
+      "route"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?resource_id=x]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "suffix"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?revision=1]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "suffix"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?fact_id=x&fact_id=x]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "suffix"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_only_url_and_context_bind_roots_and_opaque_proof_stays_private": [
+      "forbidden_io",
+      "monkeypatch",
+      "route"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[FORBIDDEN_SCOPE-403]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "code",
+      "status"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[RESOURCE_RECHECK_REQUIRED-409]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "code",
+      "status"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[RESOURCE_PEOPLE_NOWAIT_REQUIRED-503]": [
+      "forbidden_io",
+      "monkeypatch",
+      "route",
+      "code",
+      "status"
+    ],
+    "tests/manufacturing_resource_api/test_routes.py::test_real_owner_rejects_agent_context_before_any_owner_io": [
+      "forbidden_io",
+      "monkeypatch",
+      "route"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-professional_synthetic_scope-professional_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-operational_synthetic_profile-operational_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-test_resource_synthetic_profile-test_resource_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-quality_synthetic_profile-quality_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-professional_synthetic_scope-professional_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-operational_synthetic_profile-operational_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-test_resource_synthetic_profile-test_resource_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-quality_synthetic_profile-quality_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-professional_synthetic_scope-professional_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-operational_synthetic_profile-operational_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-test_resource_synthetic_profile-test_resource_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-quality_synthetic_profile-quality_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-professional_synthetic_scope-professional_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-operational_synthetic_profile-operational_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-test_resource_synthetic_profile-test_resource_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-quality_synthetic_profile-quality_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-professional_synthetic_scope-professional_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-operational_synthetic_profile-operational_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-test_resource_synthetic_profile-test_resource_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-quality_synthetic_profile-quality_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]": [
+      "monkeypatch",
+      "single",
+      "plural",
+      "invalid"
+    ],
+    "tests/test_launch_common.py::test_common_reader_accepts_running_only_with_matching_start_operation": [
+      "work"
+    ],
+    "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader[preliminary_result]": [
+      "work",
+      "clock"
+    ],
+    "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader[final_result]": [
+      "work",
+      "clock"
+    ],
+    "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader[disposed]": [
+      "work",
+      "clock"
+    ],
+    "tests/test_launch_common.py::test_running_history_cannot_lose_its_required_clock[promised_start]": [
+      "work",
+      "clock"
+    ],
+    "tests/test_launch_common.py::test_running_history_cannot_lose_its_required_clock[actual_start]": [
+      "work",
+      "clock"
+    ],
+    "tests/test_operational_bootstrap_profiles.py::test_exact_scope_selects_real_issuer_before_finite_decision_callback": [
+      "monkeypatch"
+    ],
+    "tests/test_test_resource_bootstrap_profiles.py::test_wrong_product_is_rejected_by_actual_domain_issuer_and_wrong_run_by_callback": [
+      "monkeypatch"
+    ],
+    "tests/verification/test_handlers.py::test_acceptance_cannot_precede_current_selected_sample_ready_time": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_available_sample_without_physical_ready_fact_cannot_be_accepted": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_build_drift_after_preview_prevents_acceptance_record": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes0-FORBIDDEN_OPERATION]": [
+      "host",
+      "changes",
+      "code"
+    ],
+    "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes1-FORBIDDEN_OPERATION]": [
+      "host",
+      "changes",
+      "code"
+    ],
+    "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes2-RUN_CANCELLED]": [
+      "host",
+      "changes",
+      "code"
+    ],
+    "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes3-NAMED_DECISION_REQUIRED]": [
+      "host",
+      "changes",
+      "code"
+    ],
+    "tests/verification/test_handlers.py::test_default_ports_never_imply_an_enabled_handler": [],
+    "tests/verification/test_handlers.py::test_evidence_source_check_without_measurement_verifier_explicitly_blocks_import": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end[changes0-ACTUAL_END_REQUIRED]": [
+      "host",
+      "changes",
+      "code"
+    ],
+    "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end[changes1-INCOMPLETE_FINAL_SCOPE]": [
+      "host",
+      "changes",
+      "code"
+    ],
+    "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end[changes2-INVALID_EVENT_TIME]": [
+      "host",
+      "changes",
+      "code"
+    ],
+    "tests/verification/test_handlers.py::test_fixed_run_methods_cannot_drift_to_current_request_methods": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_handler_rejects_port_returning_a_different_actual_configuration": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_method_update_cannot_change_already_received_item": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[commands]": [
+      "host",
+      "port_name"
+    ],
+    "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[builds]": [
+      "host",
+      "port_name"
+    ],
+    "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[evidence]": [
+      "host",
+      "port_name"
+    ],
+    "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[samples]": [
+      "host",
+      "port_name"
+    ],
+    "tests/verification/test_handlers.py::test_partial_acceptance_requires_return_reason_and_next_responsibility[changes0]": [
+      "host",
+      "changes"
+    ],
+    "tests/verification/test_handlers.py::test_partial_acceptance_requires_return_reason_and_next_responsibility[changes1]": [
+      "host",
+      "changes"
+    ],
+    "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[planned]": [
+      "host",
+      "state"
+    ],
+    "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[draft]": [
+      "host",
+      "state"
+    ],
+    "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[preparing]": [
+      "host",
+      "state"
+    ],
+    "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[authorized]": [
+      "host",
+      "state"
+    ],
+    "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[unknown]": [
+      "host",
+      "state"
+    ],
+    "tests/verification/test_handlers.py::test_planned_build_cannot_offer_fictitious_sample_even_when_payload_has_sample_ref": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_raw_measurement_cannot_be_overwritten_by_later_partial_import": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_repeated_acceptance_under_new_intent_cannot_duplicate_business_scope": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_run_cannot_be_planned_over_unaccepted_pairs": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_sample_availability_and_applicability_are_rechecked_on_acceptance[unavailable]": [
+      "host",
+      "condition"
+    ],
+    "tests/verification/test_handlers.py::test_sample_availability_and_applicability_are_rechecked_on_acceptance[inapplicable]": [
+      "host",
+      "condition"
+    ],
+    "tests/verification/test_handlers.py::test_start_cannot_precede_acceptance_of_its_specific_sample_pair": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_two_destructive_items_cannot_consume_same_sample": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_unknown_operation_or_mismatched_payload_is_rejected_before_begin": [
+      "host"
+    ],
+    "tests/verification/test_handlers.py::test_wrong_semantic_digest_is_refused_before_begin": [
+      "host"
+    ],
+    "tests/verification/test_rules.py::test_coverage_cannot_be_empty_or_repeat_exact_pair[selected0]": [
+      "selected"
+    ],
+    "tests/verification/test_rules.py::test_coverage_cannot_be_empty_or_repeat_exact_pair[selected1]": [
+      "selected"
+    ],
+    "tests/verification/test_rules.py::test_coverage_cannot_escape_supplied_sample_or_item_scope[selected0]": [
+      "selected"
+    ],
+    "tests/verification/test_rules.py::test_coverage_cannot_escape_supplied_sample_or_item_scope[selected1]": [
+      "selected"
+    ],
+    "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape[readings0]": [
+      "readings"
+    ],
+    "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape[readings1]": [
+      "readings"
+    ],
+    "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape[readings2]": [
+      "readings"
+    ],
+    "tests/verification/test_rules.py::test_same_sample_cannot_have_two_actual_configuration_versions": [],
+    "tests/verification/test_rules.py::test_unrequested_cavity_cannot_silently_be_counted_as_applicable": []
+  },
+  "source_review_by_file": {
+    "tests/change_scope_only/test_scope.py": "Source-only contract; local deny_connections autouse fixture; no DB fixture.",
+    "tests/discovery/test_discovery.py": "Explicit pure module with memory ports; local setup() is not a pytest fixture.",
+    "tests/manufacturing_resource_api/test_routes.py": "Synthetic in-process HTTP ports; forbidden_io blocks database and network.",
+    "tests/test_host_profile_choices.py": "Explicit no-database startup checks; monkeypatch stops engine creation.",
+    "tests/test_launch_common.py": "Pure launch/handoff synthetic work fixture and fixed snapshot reader.",
+    "tests/test_operational_bootstrap_profiles.py": "Explicit no connections; SimpleNamespace engine and monkeypatched marker.",
+    "tests/test_test_resource_bootstrap_profiles.py": "Explicit no database; synthetic issuer/DTO registry and monkeypatched marker.",
+    "tests/verification/test_handlers.py": "Memory ports; local host fixture contains no database fixture.",
+    "tests/verification/test_rules.py": "Pure DTO/rules checks without database fixture."
+  },
+  "selected_source_sha256": {
+    "tests/change_scope_only/test_scope.py": "3d75cc59eb8d2013af1d49038daa476e4bc202a392de1d0017e75b76cdb6c0b5",
+    "tests/discovery/test_discovery.py": "c131c85a3def95f92e20f62f89ee3dc8d7ad2639e319c8d8eb95b11fd4311990",
+    "tests/manufacturing_resource_api/test_routes.py": "c24e1fa4d78d4b6a9c1197aa849edec30837f4cd586afb7ce1ce6ef48d6805c0",
+    "tests/test_host_profile_choices.py": "f4809ea1b0481369889a6f3a3190849a103d4b828ba2089e350295dd8e2a7353",
+    "tests/test_launch_common.py": "ba6f4a73ff263414566a91ce841c85b3f840307d84ae335e46cf605f3af54cbb",
+    "tests/test_operational_bootstrap_profiles.py": "29cf718b729e978a7c675dd9924b30fc95fbe2a363b407d3c73c9e620510347c",
+    "tests/test_test_resource_bootstrap_profiles.py": "b2fb0e1575c56dafddd6227a4e08caa10e8ac100b1ae24e0a9526d75e1f22290",
+    "tests/verification/test_handlers.py": "775da8e46837f6b412b4e2b0b72caa31fbf849b5f684da332b1d64f9458a33d2",
+    "tests/verification/test_rules.py": "1baead47e200047f699c662d121f718f79ac81590a1a208091cc4415700a09bf"
+  },
+  "original_failure_mapping": [
+    {
+      "original_node": "tests/change_scope_only/test_scope.py::test_list_history_keeps_original_complete_seed_path",
+      "original_outcome": "failure",
+      "mapping_kind": "contract_semantics_rename",
+      "current_selector": "tests/change_scope_only/test_scope.py::test_list_history_uses_scope_only_seed_without_complete_seed_walk",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Old repeated complete seed-walk source assertion replaced by scope-only Current seed contract."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_research_needs_no_product_project_or_placeholder",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_research_needs_no_product_project_or_placeholder",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change0-SCOPE_BINDING_REQUIRED]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_scope_and_ai_guards",
+      "current_parameter_suffix": "[change0-SCOPE_BINDING_REQUIRED]",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change1-SCOPE_BINDING_REQUIRED]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_scope_and_ai_guards",
+      "current_parameter_suffix": "[change1-SCOPE_BINDING_REQUIRED]",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change4-CAPABILITY_DISABLED]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_scope_and_ai_guards",
+      "current_parameter_suffix": "[change4-CAPABILITY_DISABLED]",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change3]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen",
+      "current_parameter_suffix": "[change3]",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_same_id_different_payload_rejected_without_partial_record",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_same_id_different_payload_rejected_without_partial_record",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_partial_import_keeps_omitted_and_missing_with_explicit_reason",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_partial_import_keeps_omitted_and_missing_with_explicit_reason",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes4-INTEGRITY_MISMATCH]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff",
+      "current_parameter_suffix": "[changes4-INTEGRITY_MISMATCH]",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[product_version]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write",
+      "current_parameter_suffix": "[product_version]",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[selection_reason]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write",
+      "current_parameter_suffix": "[selection_reason]",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[verdict]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write",
+      "current_parameter_suffix": "[verdict]",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[policy]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write",
+      "current_parameter_suffix": "[policy]",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_ports_unavailable_never_simulate_success",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_ports_unavailable_never_simulate_success",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_original_page_cell_mapping_and_version_are_current_not_claimed",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_original_page_cell_mapping_and_version_are_current_not_claimed",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_payload_current_source_quote_substitution_and_ambiguous_mapping_rejected",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_payload_current_source_quote_substitution_and_ambiguous_mapping_rejected",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_source_package_mapping_limit_is_explicit_no_silent_truncation",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_source_package_mapping_limit_is_explicit_no_silent_truncation",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/discovery/test_discovery.py::test_wrong_group_choice_is_rejected_not_silently_resolved",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/discovery/test_discovery.py::test_wrong_group_choice_is_rejected_not_silently_resolved",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Internal DomainError reason was asserted through public .code; public category and exact reason are now distinct."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_only_url_and_context_bind_roots_and_opaque_proof_stays_private",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_only_url_and_context_bind_roots_and_opaque_proof_stays_private",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[tenant_id]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+      "current_parameter_suffix": "[tenant_id]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[product_id]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+      "current_parameter_suffix": "[product_id]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[build_id]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+      "current_parameter_suffix": "[build_id]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[scope]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+      "current_parameter_suffix": "[scope]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[owner_id]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+      "current_parameter_suffix": "[owner_id]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[actor_id]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+      "current_parameter_suffix": "[actor_id]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[authority]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+      "current_parameter_suffix": "[authority]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[source_read_set]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+      "current_parameter_suffix": "[source_read_set]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[opaque_token]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+      "current_parameter_suffix": "[opaque_token]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[basis]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+      "current_parameter_suffix": "[basis]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[accepted]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+      "current_parameter_suffix": "[accepted]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[command_id]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command",
+      "current_parameter_suffix": "[command_id]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?resource_id=x]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query",
+      "current_parameter_suffix": "[?resource_id=x]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?revision=1]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query",
+      "current_parameter_suffix": "[?revision=1]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?fact_id=x&fact_id=x]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query",
+      "current_parameter_suffix": "[?fact_id=x&fact_id=x]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[missing_process]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow",
+      "current_parameter_suffix": "[missing_process]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[bool_revision]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow",
+      "current_parameter_suffix": "[bool_revision]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[string_revision]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow",
+      "current_parameter_suffix": "[string_revision]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[float_quantity]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow",
+      "current_parameter_suffix": "[float_quantity]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[bad_window]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow",
+      "current_parameter_suffix": "[bad_window]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[nested_authority]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow",
+      "current_parameter_suffix": "[nested_authority]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[partial_fact]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow",
+      "current_parameter_suffix": "[partial_fact]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[wrong_kind]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow",
+      "current_parameter_suffix": "[wrong_kind]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_historical_fact_and_exact_resource_are_passed_without_selecting_current",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_historical_fact_and_exact_resource_are_passed_without_selecting_current",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_complete_20_source_readset_and_relation_originals_are_preserved",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_complete_20_source_readset_and_relation_originals_are_preserved",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[FORBIDDEN_SCOPE-403]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow",
+      "current_parameter_suffix": "[FORBIDDEN_SCOPE-403]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[RESOURCE_RECHECK_REQUIRED-409]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow",
+      "current_parameter_suffix": "[RESOURCE_RECHECK_REQUIRED-409]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[RESOURCE_PEOPLE_NOWAIT_REQUIRED-503]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow",
+      "current_parameter_suffix": "[RESOURCE_PEOPLE_NOWAIT_REQUIRED-503]",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_failed_authentication_never_opens_tenant_uow",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_failed_authentication_never_opens_tenant_uow",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/manufacturing_resource_api/test_routes.py::test_real_owner_rejects_agent_context_before_any_owner_io",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/manufacturing_resource_api/test_routes.py::test_real_owner_rejects_agent_context_before_any_owner_io",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Old Product-root HTTP route/context expectations adapted to explicit category root."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-professional_synthetic_scope-professional_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid0-professional_synthetic_scope-professional_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-operational_synthetic_profile-operational_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid0-operational_synthetic_profile-operational_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid0-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-quality_synthetic_profile-quality_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid0-quality_synthetic_profile-quality_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid0-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid0-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-professional_synthetic_scope-professional_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid1-professional_synthetic_scope-professional_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-operational_synthetic_profile-operational_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid1-operational_synthetic_profile-operational_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid1-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-quality_synthetic_profile-quality_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid1-quality_synthetic_profile-quality_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid1-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid1-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-professional_synthetic_scope-professional_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid2-professional_synthetic_scope-professional_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-operational_synthetic_profile-operational_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid2-operational_synthetic_profile-operational_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid2-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-quality_synthetic_profile-quality_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid2-quality_synthetic_profile-quality_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid2-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid2-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-professional_synthetic_scope-professional_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[False-professional_synthetic_scope-professional_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-operational_synthetic_profile-operational_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[False-operational_synthetic_profile-operational_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[False-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-quality_synthetic_profile-quality_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[False-quality_synthetic_profile-quality_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[False-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[False-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-professional_synthetic_scope-professional_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid4-professional_synthetic_scope-professional_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-operational_synthetic_profile-operational_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid4-operational_synthetic_profile-operational_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid4-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-quality_synthetic_profile-quality_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid4-quality_synthetic_profile-quality_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid4-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation",
+      "current_parameter_suffix": "[invalid4-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+      "cause_and_fix": "Removed arbitrary profile-count/finite-list cap; nonempty/type/scope uniqueness checks remain."
+    },
+    {
+      "original_node": "tests/test_launch_common.py::test_common_reader_accepts_running_only_with_matching_start_operation",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_launch_common.py::test_common_reader_accepts_running_only_with_matching_start_operation",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Retained reader integrity reasons now use .reason with canonical top-level category."
+    },
+    {
+      "original_node": "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader[preliminary_result]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader",
+      "current_parameter_suffix": "[preliminary_result]",
+      "cause_and_fix": "Retained reader integrity reasons now use .reason with canonical top-level category."
+    },
+    {
+      "original_node": "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader[final_result]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader",
+      "current_parameter_suffix": "[final_result]",
+      "cause_and_fix": "Retained reader integrity reasons now use .reason with canonical top-level category."
+    },
+    {
+      "original_node": "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader[disposed]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_launch_common.py::test_launch_cannot_smuggle_result_or_disposition_through_shared_reader",
+      "current_parameter_suffix": "[disposed]",
+      "cause_and_fix": "Retained reader integrity reasons now use .reason with canonical top-level category."
+    },
+    {
+      "original_node": "tests/test_launch_common.py::test_running_history_cannot_lose_its_required_clock[promised_start]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_launch_common.py::test_running_history_cannot_lose_its_required_clock",
+      "current_parameter_suffix": "[promised_start]",
+      "cause_and_fix": "Retained reader integrity reasons now use .reason with canonical top-level category."
+    },
+    {
+      "original_node": "tests/test_launch_common.py::test_running_history_cannot_lose_its_required_clock[actual_start]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_launch_common.py::test_running_history_cannot_lose_its_required_clock",
+      "current_parameter_suffix": "[actual_start]",
+      "cause_and_fix": "Retained reader integrity reasons now use .reason with canonical top-level category."
+    },
+    {
+      "original_node": "tests/test_operational_bootstrap_profiles.py::test_exact_scope_selects_real_issuer_before_finite_decision_callback",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_operational_bootstrap_profiles.py::test_exact_scope_selects_real_issuer_before_finite_decision_callback",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Issuer failure reason is retained as .reason; public category is QUALIFICATION_REQUIRED."
+    },
+    {
+      "original_node": "tests/test_test_resource_bootstrap_profiles.py::test_wrong_product_is_rejected_by_actual_domain_issuer_and_wrong_run_by_callback",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/test_test_resource_bootstrap_profiles.py::test_wrong_product_is_rejected_by_actual_domain_issuer_and_wrong_run_by_callback",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Issuer failure reason is retained as .reason; public category is QUALIFICATION_REQUIRED."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes0-FORBIDDEN_OPERATION]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action",
+      "current_parameter_suffix": "[changes0-FORBIDDEN_OPERATION]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes1-FORBIDDEN_OPERATION]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action",
+      "current_parameter_suffix": "[changes1-FORBIDDEN_OPERATION]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action[changes2-RUN_CANCELLED]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_current_server_authority_refuses_method_action",
+      "current_parameter_suffix": "[changes2-RUN_CANCELLED]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[commands]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success",
+      "current_parameter_suffix": "[commands]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[builds]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success",
+      "current_parameter_suffix": "[builds]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[evidence]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success",
+      "current_parameter_suffix": "[evidence]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success[samples]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_missing_required_port_explicitly_blocks_success",
+      "current_parameter_suffix": "[samples]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_unknown_operation_or_mismatched_payload_is_rejected_before_begin",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_unknown_operation_or_mismatched_payload_is_rejected_before_begin",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_partial_acceptance_requires_return_reason_and_next_responsibility[changes0]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_partial_acceptance_requires_return_reason_and_next_responsibility",
+      "current_parameter_suffix": "[changes0]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_partial_acceptance_requires_return_reason_and_next_responsibility[changes1]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_partial_acceptance_requires_return_reason_and_next_responsibility",
+      "current_parameter_suffix": "[changes1]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[planned]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance",
+      "current_parameter_suffix": "[planned]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[draft]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance",
+      "current_parameter_suffix": "[draft]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[preparing]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance",
+      "current_parameter_suffix": "[preparing]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[authorized]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance",
+      "current_parameter_suffix": "[authorized]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance[unknown]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_plan_or_authorization_is_not_actual_sample_proof_at_acceptance",
+      "current_parameter_suffix": "[unknown]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_sample_availability_and_applicability_are_rechecked_on_acceptance[unavailable]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_sample_availability_and_applicability_are_rechecked_on_acceptance",
+      "current_parameter_suffix": "[unavailable]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_sample_availability_and_applicability_are_rechecked_on_acceptance[inapplicable]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_sample_availability_and_applicability_are_rechecked_on_acceptance",
+      "current_parameter_suffix": "[inapplicable]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_repeated_acceptance_under_new_intent_cannot_duplicate_business_scope",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_repeated_acceptance_under_new_intent_cannot_duplicate_business_scope",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_run_cannot_be_planned_over_unaccepted_pairs",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_run_cannot_be_planned_over_unaccepted_pairs",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_handler_rejects_port_returning_a_different_actual_configuration",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_handler_rejects_port_returning_a_different_actual_configuration",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_two_destructive_items_cannot_consume_same_sample",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_two_destructive_items_cannot_consume_same_sample",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end[changes0-ACTUAL_END_REQUIRED]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end",
+      "current_parameter_suffix": "[changes0-ACTUAL_END_REQUIRED]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end[changes1-INCOMPLETE_FINAL_SCOPE]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end",
+      "current_parameter_suffix": "[changes1-INCOMPLETE_FINAL_SCOPE]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end[changes2-INVALID_EVENT_TIME]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_final_result_requires_whole_run_measurement_scope_and_actual_end",
+      "current_parameter_suffix": "[changes2-INVALID_EVENT_TIME]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_raw_measurement_cannot_be_overwritten_by_later_partial_import",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_raw_measurement_cannot_be_overwritten_by_later_partial_import",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_build_drift_after_preview_prevents_acceptance_record",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_build_drift_after_preview_prevents_acceptance_record",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_wrong_semantic_digest_is_refused_before_begin",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_wrong_semantic_digest_is_refused_before_begin",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_default_ports_never_imply_an_enabled_handler",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_default_ports_never_imply_an_enabled_handler",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_planned_build_cannot_offer_fictitious_sample_even_when_payload_has_sample_ref",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_planned_build_cannot_offer_fictitious_sample_even_when_payload_has_sample_ref",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_start_cannot_precede_acceptance_of_its_specific_sample_pair",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_start_cannot_precede_acceptance_of_its_specific_sample_pair",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_acceptance_cannot_precede_current_selected_sample_ready_time",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_acceptance_cannot_precede_current_selected_sample_ready_time",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_fixed_run_methods_cannot_drift_to_current_request_methods",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_fixed_run_methods_cannot_drift_to_current_request_methods",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_available_sample_without_physical_ready_fact_cannot_be_accepted",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_available_sample_without_physical_ready_fact_cannot_be_accepted",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_method_update_cannot_change_already_received_item",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_method_update_cannot_change_already_received_item",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_handlers.py::test_evidence_source_check_without_measurement_verifier_explicitly_blocks_import",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_handlers.py::test_evidence_source_check_without_measurement_verifier_explicitly_blocks_import",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_rules.py::test_coverage_cannot_be_empty_or_repeat_exact_pair[selected0]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_rules.py::test_coverage_cannot_be_empty_or_repeat_exact_pair",
+      "current_parameter_suffix": "[selected0]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_rules.py::test_coverage_cannot_be_empty_or_repeat_exact_pair[selected1]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_rules.py::test_coverage_cannot_be_empty_or_repeat_exact_pair",
+      "current_parameter_suffix": "[selected1]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_rules.py::test_coverage_cannot_escape_supplied_sample_or_item_scope[selected0]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_rules.py::test_coverage_cannot_escape_supplied_sample_or_item_scope",
+      "current_parameter_suffix": "[selected0]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_rules.py::test_coverage_cannot_escape_supplied_sample_or_item_scope[selected1]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_rules.py::test_coverage_cannot_escape_supplied_sample_or_item_scope",
+      "current_parameter_suffix": "[selected1]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_rules.py::test_unrequested_cavity_cannot_silently_be_counted_as_applicable",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_rules.py::test_unrequested_cavity_cannot_silently_be_counted_as_applicable",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_rules.py::test_same_sample_cannot_have_two_actual_configuration_versions",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_rules.py::test_same_sample_cannot_have_two_actual_configuration_versions",
+      "current_parameter_suffix": "",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape[readings0]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape",
+      "current_parameter_suffix": "[readings0]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape[readings1]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape",
+      "current_parameter_suffix": "[readings1]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    },
+    {
+      "original_node": "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape[readings2]",
+      "original_outcome": "failure",
+      "mapping_kind": "same_current_function",
+      "current_selector": "tests/verification/test_rules.py::test_measurement_pair_identity_and_run_scope_cannot_duplicate_or_escape",
+      "current_parameter_suffix": "[readings2]",
+      "cause_and_fix": "Exact DomainError internal reason no longer equals the public sixteen-category .code."
+    }
+  ],
+  "unmatched_original_parameter_suffixes": [],
+  "excluded_still_pending_outside_current_52": [
+    {
+      "file": "tests/change_coverage_transactions/test_fences.py",
+      "reason": "Actual transaction tests require root real-database verification."
+    },
+    {
+      "file": "tests/providers/test_claim_gateway.py",
+      "reason": "Retired direct-provider pipeline is archived; root must confirm mapped registered-kernel replacement contract/evidence."
+    }
+  ],
+  "actual_verification_command": "PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 .venv/bin/python - <<'PY'\nimport json\nfrom pathlib import Path\nimport pytest\np = Path('../../docs/reports/evidence/pdos-next-s0-20261008/final-candidate/current-pure-closure-selection.json')\nselectors = json.loads(p.read_text())['selectors']\nraise SystemExit(pytest.main(['-q', '-p', 'no:cacheprovider', *selectors]))\nPY",
+  "actual_verification_workdir": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+  "generated_at_utc": "2026-10-09T14:49:57.802998+00:00",
+  "authorization": "Reviewer modified only failure-closure-map-draft.json and current-pure-closure-selection.json; source review and explicit pure pytest collect-only were performed. No tests, PostgreSQL, service operation, or performance timing were executed."
+}

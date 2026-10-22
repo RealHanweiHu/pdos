@@ -1,0 +1,194 @@
+{
+  "date": "2026-09-11",
+  "scope": "0083 actual risk/test-plan/report-mapping observations and admitted manifests; application trace guard; no late context backfill",
+  "tests": {
+    "distinct_passed": 217,
+    "shared_batch_passed": 160,
+    "independent_role_batch_passed": 57,
+    "new_cases": 18,
+    "formula": "160 + 57 = 217; focused repeats excluded",
+    "focused_after_environment_repair": {
+      "passed": 24,
+      "failed": 2,
+      "cause": "API normalized missing-history reason; corrected before final regression"
+    },
+    "initial_focused_interrupted": "Cloud-evicted dependency source blocked traceback reading; not counted"
+  },
+  "checks": {
+    "mypy_files": 5,
+    "ruff_files": 10,
+    "common_contract_artifacts": 4,
+    "runtime_contract_artifacts": 5,
+    "approved_manifests_unchanged": {
+      "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "source_sha256": {
+    "server/app/ai/application_context.py": "2e8e4fbbca2d064fff42d0961b58da7e413a56d9524b764049100bef2fdeb40b",
+    "server/app/ai/application_domain_context.py": "9ed0fb198a532c279adf997c11892cc5de34c96cb54f0e9785d75daf28482404",
+    "server/app/ai/risk_suggestions.py": "db3b932c1bdb0f7d01e495ad50e4480446837dda59981467cf5974cdd251a9ef",
+    "server/app/ai/test_plan_suggestions.py": "1441b284d1b5391cf9cc501634e94954b74ef03247e4389fbf546fe2756fd0d2",
+    "server/app/domain/test_report_import.py": "0fbdfe1ff66b02db2b04d881f74b5b006b4e33e51edcab493d41034c17b56a4f",
+    "server/migrations/versions/0083_domain_context_adapters.py": "065892745d64c2a3d2d08a8b3295e9f033b60c6cef566764ff48e0fcf7543ccb",
+    "server/tests/test_application_domain_context.py": "dd3296d0fec0cf30c40dba40bd7f0fa3884e3b5b91fa89fd237eafff1f7bafc8",
+    "server/tests/test_report_context.py": "b08b0564fbe577f4d226afa23ba2dee796d6f6ae5b11e1ed520fac3bac8859af",
+    "server/tests/test_application_run_budget_api.py": "48d43832ac3b4ad439a38fb55c9f8d77a8878b4fd34e523e27a8acf91978967f",
+    "server/tests/test_test_report_import_api.py": "1c6fb092e602001e1f8e02c8c2f540667839a059da63b1304f82e6c849543645"
+  },
+  "log_sha256": {
+    "pdos-domain-context-first.log": "4f513ebf0ff93abe69f63070fe445dad470990e4c2bf155fe2543a2ad553dfb6",
+    "pdos-domain-context-focused.log": "537f3fb69ba01fc388a3a5c920c485b2873d5f327305c3dd2004d6a04451659b",
+    "pdos-domain-context-focused-final.log": "caa08a45b732a9f2220f4245c38780064493b8d1d851bb16ea036d1eb30e35e1",
+    "pdos-domain-context-regression.log": "a4e6c812cf191c02c38c787966c5fdfdf2c5a510bdcb01f4abb5e2b8614d15a5",
+    "pdos-domain-context-roles.log": "208bdea38b1dba703cef270195a7d9e639dd182e22575328e5d13f4303c83cda",
+    "pdos-domain-context-mypy-final-checked.log": "e317872697c2cbfdefa321527a6efe73290dff3a390b0fa8723b87092eccba6a"
+  },
+  "database_verification": {
+    "57432": {
+      "database": "pdos_test",
+      "head": "0083_domain_context_adapters",
+      "functions": {
+        "require_application_manifest": {
+          "sha256": "150eb1299005d60cf92c892caf5ddd5ae8931986c89ef906f4c313fd1b76e54a",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "require_application_trace_manifests": {
+          "sha256": "28bbcd7d7745ed0b918dafb0f9938f4575391949f19dec5c82d4340c94faab2f",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        }
+      },
+      "tables": {
+        "application_context_observations": {
+          "pdos_agent": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          },
+          "pdos_worker": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          }
+        },
+        "application_context_manifests": {
+          "pdos_agent": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          },
+          "pdos_worker": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          }
+        }
+      }
+    },
+    "57433": {
+      "database": "pdos_test",
+      "head": "0083_domain_context_adapters",
+      "functions": {
+        "require_application_manifest": {
+          "sha256": "150eb1299005d60cf92c892caf5ddd5ae8931986c89ef906f4c313fd1b76e54a",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "require_application_trace_manifests": {
+          "sha256": "28bbcd7d7745ed0b918dafb0f9938f4575391949f19dec5c82d4340c94faab2f",
+          "matches_migration": true,
+          "security_definer": true,
+          "settings": [
+            "search_path=pg_catalog"
+          ],
+          "role_execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        }
+      },
+      "tables": {
+        "application_context_observations": {
+          "pdos_agent": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          },
+          "pdos_worker": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          }
+        },
+        "application_context_manifests": {
+          "pdos_agent": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          },
+          "pdos_worker": {
+            "SELECT": false,
+            "INSERT": false,
+            "UPDATE": false,
+            "DELETE": false
+          }
+        }
+      }
+    }
+  },
+  "environment_repair": {
+    "empty_openpyxl_py_typed": "restored confirmed zero-byte type marker in local .venv",
+    "starlette_errors_source": "restored local cached bytes matching installed RECORD sha256=UZttzAUUejJtNZpPts0PXnYgV9C4h8o3sWDHRkN9ECg"
+  },
+  "dedicated_test_container": {
+    "name": "pdos-domain-context-test",
+    "image": "pgvector/pgvector:0.8.6-pg16-bookworm",
+    "removed": true
+  },
+  "remaining": [
+    "initial failed-read observations",
+    "derived and multi-anchor source ACL",
+    "atomic source and dispatch validation",
+    "full historical source queries",
+    "owner leases and durable dispatch",
+    "durable waiting and stepwise recovery",
+    "full environment content pinning and real purpose qualification"
+  ],
+  "status": {
+    "N0-03": "partial",
+    "production_changed": false,
+    "real_model_calls": 0,
+    "golden_files_written": false,
+    "production_delivery": false
+  }
+}

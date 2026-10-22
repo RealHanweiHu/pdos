@@ -1,0 +1,29 @@
+{
+  "nodes": [
+    "tests/quality_followup_transactions/test_transactions.py::test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution",
+    "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.capa.followup.link]",
+    "tests/quality_followup_transactions/test_transactions.py::test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_and_history[classification]",
+    "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[original_epoch]",
+    "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[policy_epoch]",
+    "tests/quality_followup_transactions/test_transactions.py::test_link_t1_preserves_issue_pointer_and_records_exact_scoped_owner_output",
+    "tests/quality_followup_transactions/test_transactions.py::test_classification_profile_aba_during_actual_source_checks_cannot_reuse_old_closure",
+    "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.issue.root_cause.decide-issue.root_cause_decided]",
+    "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.capa.followup.link-capa.followup_linked]"
+  ],
+  "original_indices": [
+    1,
+    8,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "candidate": "backend-candidate-source-v4.json",
+  "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+  "original_selection_sha256": "b1aced4dfb7cfb61ba85e911eb924bcd8fe830f1074ae7982eb9bc867fd40857",
+  "concurrency": 6,
+  "scope": "Two v3 failures and all seven unfinished nodes; scoped replacement, no full-tree claim"
+}

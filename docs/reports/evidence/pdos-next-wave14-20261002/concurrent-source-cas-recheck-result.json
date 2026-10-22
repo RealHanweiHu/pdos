@@ -1,0 +1,5 @@
+{
+  "node": "tests/verification_results/test_guards.py::test_concurrent_imports_same_run_cas_commit_exactly_one_atomic_group",
+  "exit_code": 0,
+  "seconds": 876.34
+}

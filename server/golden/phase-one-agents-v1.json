@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "suite_version": "s2-phase-one-agents-v1",
+  "prompt_versions": {
+    "project_intelligence": "project-intelligence-v3",
+    "knowledge_lite": "knowledge-lite-v3"
+  },
+  "cases": [
+    {
+      "id": "project-issue-blocker",
+      "agent_key": "project_intelligence",
+      "event_type": "ISSUE_CREATED",
+      "output": {
+        "disposition": "human_review_candidate",
+        "candidate_type": "blocker_alert",
+        "summary": "The scoped issue may block the current delivery plan.",
+        "proposed_payload": {
+          "title": "Review delivery blocker",
+          "description": "The scoped issue may block the current delivery plan.",
+          "likelihood": 4,
+          "impact": 4
+        },
+        "evidence_event_ids": [42],
+        "confidence": 0.84
+      },
+      "expected_finding_type": "blocker_alert"
+    },
+    {
+      "id": "project-test-risk",
+      "agent_key": "project_intelligence",
+      "event_type": "TEST_FAILED",
+      "output": {
+        "disposition": "human_review_candidate",
+        "candidate_type": "risk_suggestion",
+        "summary": "The scoped failure may expose delivery risk.",
+        "proposed_payload": {
+          "title": "Review failed-test risk",
+          "description": "The scoped failure may expose delivery risk.",
+          "likelihood": 3,
+          "impact": 5
+        },
+        "evidence_event_ids": [42],
+        "confidence": 0.81
+      },
+      "expected_finding_type": "risk_suggestion"
+    },
+    {
+      "id": "project-stage-gate-anomaly",
+      "agent_key": "project_intelligence",
+      "event_type": "PROJECT_STAGE_CHANGED",
+      "output": {
+        "disposition": "human_review_candidate",
+        "candidate_type": "gate_readiness_anomaly",
+        "summary": "The stage change warrants a human Gate-readiness check.",
+        "proposed_payload": {
+          "title": "Review Gate readiness",
+          "description": "The stage change warrants a human Gate-readiness check.",
+          "likelihood": 3,
+          "impact": 4
+        },
+        "evidence_event_ids": [42],
+        "confidence": 0.78
+      },
+      "expected_finding_type": "gate_readiness_anomaly"
+    },
+    {
+      "id": "knowledge-document-draft",
+      "agent_key": "knowledge_lite",
+      "event_type": "DOCUMENT_UPLOADED",
+      "output": {
+        "disposition": "human_review_candidate",
+        "candidate_type": "knowledge_draft",
+        "summary": "The scoped document reference may support a reusable lesson.",
+        "proposed_payload": {
+          "title": "Review document lesson",
+          "draft_text": "Retain the source-backed lesson only as an unverified draft.",
+          "applicability": "Projects with the same evidence pattern."
+        },
+        "evidence_event_ids": [42],
+        "confidence": 0.72
+      },
+      "expected_finding_type": "knowledge_draft"
+    },
+    {
+      "id": "knowledge-gate-draft",
+      "agent_key": "knowledge_lite",
+      "event_type": "GATE_APPROVED",
+      "output": {
+        "disposition": "human_review_candidate",
+        "candidate_type": "knowledge_draft",
+        "summary": "The approved Gate may support a reusable project lesson.",
+        "proposed_payload": {
+          "title": "Review approved-Gate lesson",
+          "draft_text": "Retain the Gate lesson only as an unverified draft."
+        },
+        "evidence_event_ids": [42],
+        "confidence": 0.75
+      },
+      "expected_finding_type": "knowledge_draft"
+    },
+    {
+      "id": "project-insufficient-evidence",
+      "agent_key": "project_intelligence",
+      "event_type": "ISSUE_CREATED",
+      "output": {
+        "disposition": "no_action",
+        "candidate_type": null,
+        "summary": "No evidence-backed action is warranted.",
+        "proposed_payload": null,
+        "evidence_event_ids": [],
+        "confidence": 0.91
+      },
+      "expected_finding_type": null
+    }
+  ]
+}

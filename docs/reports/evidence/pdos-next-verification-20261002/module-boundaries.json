@@ -1,0 +1,38 @@
+{
+  "production_imports": {
+    "pdos-next/server/pdos_next/domain/verification/__init__.py": [],
+    "pdos-next/server/pdos_next/domain/verification/handlers.py": [
+      "hashlib",
+      "json",
+      "uuid",
+      "pdos_next.errors",
+      "pdos_next.schemas.verification.contracts",
+      ".ports",
+      ".rules"
+    ],
+    "pdos-next/server/pdos_next/domain/verification/ports.py": [
+      "datetime",
+      "typing",
+      "uuid",
+      "pdos_next.schemas.verification.contracts"
+    ],
+    "pdos-next/server/pdos_next/domain/verification/rules.py": [
+      "decimal",
+      "pdos_next.errors",
+      "pdos_next.schemas.verification.contracts"
+    ],
+    "pdos-next/server/pdos_next/schemas/verification/__init__.py": [],
+    "pdos-next/server/pdos_next/schemas/verification/contracts.py": [
+      "datetime",
+      "decimal",
+      "typing",
+      "uuid",
+      "zoneinfo",
+      "pydantic"
+    ]
+  },
+  "own_commit_calls": 0,
+  "forbidden_direct_dependencies": 0,
+  "database_connection_tests_executed": 0,
+  "note": "Static source boundary inspection plus no-DB package tests; not evidence of a live host transaction."
+}

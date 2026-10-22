@@ -1,0 +1,21 @@
+{
+  "counts_unchanged": true,
+  "counts": {
+    "projects": 25,
+    "tasks": 1460,
+    "task_dependencies": 2820,
+    "issues": 500,
+    "risks": 200,
+    "findings": 100,
+    "reminders": 200
+  },
+  "finding_statuses": {
+    "archived": 25,
+    "pending_review": 75
+  },
+  "reminder_statuses": {
+    "fired": 200
+  },
+  "synthetic_model_invocation_rows": 25,
+  "integration_outbox_rows": 0
+}

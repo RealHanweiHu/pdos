@@ -1,0 +1,52 @@
+........F.                                                               [100%]
+=================================== FAILURES ===================================
+_ test_registered_graph_receives_persisted_task_memory_and_replay_does_not_call_model _
+
+setup = <isolated synthetic test scope>
+
+    def test_registered_graph_receives_persisted_task_memory_and_replay_does_not_call_model(setup):
+        import json
+        from dataclasses import replace
+    
+        from langgraph.checkpoint.memory import MemorySaver
+    
+        from pdos_next.agent_kernel.graph import AgentKernel
+        from pdos_next.agent_kernel.host import BoundHost
+        from pdos_next.agent_kernel.types import ModelTurn
+        from pdos_next.providers.types import ProviderUsage
+        from tests.agent_kernel.test_api import client
+        from tests.agent_kernel.test_gateway import Client, configured_route
+    
+        api, _ = client(setup, binding_state={"token_limit": 2_000_000})
+        first = api.post(path(setup), json={"goal": "原目标：单位未知必须保留。",
+                                          "idempotency_key": str(uuid4())}).json()
+        finish(setup, UUID(first["run_id"]))
+        second = api.post(path(setup), json={"goal": "继续核对工况。", "idempotency_key": str(uuid4()),
+            "continue_from_run_id": first["run_id"]}).json()
+        bound = scope(setup, UUID(second["run_id"]))
+        def reply(request):
+            context = json.loads(request["messages"][0]["content"])["context"]["conversation"]
+            assert context["root_goal"] == "原目标：单位未知必须保留。"
+            assert context["turns"][0]["historical_outcome"]["unfinished"] == ["核对适用工况"]
+            return ModelTurn(usage=ProviderUsage(20, 10), structured={
+                "status": "completed", "summary": "合成续接成功，未知仍然保留。",
+                "result_json": "{}", "questions": [], "unfinished": [],
+            })
+        provider = Client(reply)
+        host = Bootstrap(setup.engine)
+        adapters = replace(host.adapters(), route_for=lambda *_: configured_route(),
+                           provider_for=lambda *_: "synthetic", provider_client=provider,
+                           cost_required=False)
+        kernel = AgentKernel(BoundHost(KernelStore(setup.engine), adapters), host.registry)
+        saver = MemorySaver()
+        result = kernel.execute(bound, goal="继续核对工况。", checkpointer=saver)
+>       assert result["output"]["summary"] == "合成续接成功，未知仍然保留。"
+E       AssertionError: assert '结果未通过完整核对。' == '合成续接成功，未知仍然保留。'
+E         
+E         - 合成续接成功，未知仍然保留。
+E         + 结果未通过完整核对。
+
+tests/agent_kernel/test_run_continuation.py:234: AssertionError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_run_continuation.py::test_registered_graph_receives_persisted_task_memory_and_replay_does_not_call_model
+1 failed, 9 passed in 10.37s

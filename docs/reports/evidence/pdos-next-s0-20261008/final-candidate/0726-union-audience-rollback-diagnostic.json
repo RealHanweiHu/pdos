@@ -1,0 +1,21 @@
+{
+  "outcome": "rejected_diagnostic_failed",
+  "passed": false,
+  "diagnostic_completed": false,
+  "candidate_supported": false,
+  "head": "s0_0726",
+  "is_p95_evidence": false,
+  "qualification_or_formal_acceptance": false,
+  "business_dml": "nested_synthetic_business_dml_rollback_only",
+  "public_parameters_recorded": false,
+  "synthetic_cases_are_nested_only": true,
+  "failure_code": "NO_REAL_TYPE_PAIR_FOR_BOTH_SHORT_CIRCUIT_ORDERS",
+  "catalog_restored": true,
+  "business_fingerprints_unchanged": true,
+  "sequence_values_unchanged": true,
+  "all43_definer_metadata_restored": true,
+  "head_unchanged": true,
+  "source_unchanged": true,
+  "state_files_unchanged": true,
+  "private_diagnostic": ".local/s0-0726-union-audience-rollback/e083cb9fa64740d79cfd87d3bb3742a6.json"
+}

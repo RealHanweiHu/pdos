@@ -1,0 +1,145 @@
+{
+  "recorded_at": "2026-09-30T17:03:12.248930+00:00",
+  "baseline_head": "9fab424c4a3dfc4909499aea11862b3cb0bc50ba",
+  "candidate_scope": "independent_supply_recovery_code",
+  "files": [
+    {
+      "path": "server/app/domain/material_exceptions.py",
+      "change": "modified",
+      "before_sha256": "2f5a858040005ce98c7b1deb1a1a62fc6fbcf3616dec2413d3030c59a796529e",
+      "sha256": "5550d3985a4c44eec3bd89f1d430c5d5deed587de3c6293e2a8767a31a7fe4b9"
+    },
+    {
+      "path": "server/app/domain/material_movements.py",
+      "change": "modified",
+      "before_sha256": "76706d0ea18b7fb8aec2f86dc204e228321d0fefbfcb6ff45783508b361d583c",
+      "sha256": "06ef9d918bbd5094667ed8770e3aceeec61f940ef84a5117af7a71e5315c0d9c"
+    },
+    {
+      "path": "server/app/domain/material_allocations.py",
+      "change": "modified",
+      "before_sha256": "2c67610c02938500cda6d86ed36a837728d5876785802d6aa5900a2d31a95de1",
+      "sha256": "38e13159966889a90d1ab4810f7c236d7b98dc37ac1d159ced5da9bdc859aa66"
+    },
+    {
+      "path": "server/app/api/npi_execution.py",
+      "change": "modified",
+      "before_sha256": "bf17ba40606403c6882e93217b7e7aff449bb1631c42281c61f15d9576e60ddf",
+      "sha256": "7a76486da597897db444f0daa7a31fb69a5f7dfa409da8282a2a5fc60a2a8304"
+    },
+    {
+      "path": "server/tests/test_material_recovery.py",
+      "change": "new",
+      "before_sha256": null,
+      "sha256": "936635ce40e922294ab42f3269294de395d691a304b8a7c6d0ee858ef2327126"
+    },
+    {
+      "path": "server/tests/test_material_recovery_postgres.py",
+      "change": "new",
+      "before_sha256": null,
+      "sha256": "cebdd73175eadaefac020cf2bdd472af57e96ce7932e7b6b5715f1fddefb2604"
+    },
+    {
+      "path": "web/src/components/projects/material-exceptions.tsx",
+      "change": "modified",
+      "before_sha256": "dfef3ff3a68a31adbab5ec58d25bfdd40848ad43d91cd652d6a59e062b89fbb5",
+      "sha256": "ee1bfbd0f11ec694fde2680d95e0b9f611215f8b3e343d5bb531bde4b4d0e1a8"
+    },
+    {
+      "path": "web/src/components/projects/material-movements.tsx",
+      "change": "modified",
+      "before_sha256": "c7d93081c92235de7a5c4e35d6b69c6d2ca58c26b83baeab5c8f9efaec61c49f",
+      "sha256": "490fbcf675237d1cea52d7e31f481724c9de150bd4805873e9e4cc0d44ad40af"
+    },
+    {
+      "path": "web/src/components/projects/build-material-coverage.tsx",
+      "change": "modified",
+      "before_sha256": "29d52a827e44857424a85150557c461c4da7416566eb448de9ff159a2178dae7",
+      "sha256": "76935712baec10ca51e0f1e130b0b8af86ae44d33a3b7c6bd07fe441aee5927f"
+    },
+    {
+      "path": "web/src/components/projects/material-reconciliation-review.tsx",
+      "change": "new",
+      "before_sha256": null,
+      "sha256": "d58c59616d4398441b9c848aae8ed9a7e2bcb4f5bd4d03fa2832ec7ace576b75"
+    },
+    {
+      "path": "web/src/components/projects/material-reconciliation-review.test.tsx",
+      "change": "new",
+      "before_sha256": null,
+      "sha256": "74e8eb19a3e551a3e4e37246257dc0e4d7153eab5196b4d272e0557ec3b30a0b"
+    },
+    {
+      "path": "web/src/components/projects/material-recovery-status.tsx",
+      "change": "new",
+      "before_sha256": null,
+      "sha256": "52de408c68c41cee52f3c04cf2dcca2e56603bd1d243afee90aa9871b02c87bd"
+    },
+    {
+      "path": "web/src/components/projects/material-recovery-status.test.tsx",
+      "change": "new",
+      "before_sha256": null,
+      "sha256": "d11595d79234b1f4558a148bca9f2b79da5ee31df1c687ed6fb141df44b65d62"
+    },
+    {
+      "path": "web/src/app/api/projects/[projectId]/npi/material-movements/[movementId]/reconcile/preview/route.ts",
+      "change": "new",
+      "before_sha256": null,
+      "sha256": "9cff46f7fb4b906835d38680a61f42b5fcd7baecfe7f42a12b864660fc916bc4"
+    },
+    {
+      "path": "web/src/app/api/projects/[projectId]/npi/material-movements/[movementId]/reconcile/preview/route.test.ts",
+      "change": "new",
+      "before_sha256": null,
+      "sha256": "37969edb144c3d090ef5cd470b497a1e18d673cadff5d0ebfcbbf4c775c48605"
+    }
+  ],
+  "dependencies_at_handoff": [
+    {
+      "path": "server/app/domain/material_schedule.py",
+      "sha256": "a1316ffe2deee45b1df77ad18baef12160e6b633d7cc114eca007b616f711801",
+      "edited_by_this_thread": false
+    },
+    {
+      "path": "server/app/domain/issues.py",
+      "sha256": "3462d8483bf248163a89b674181fb0c769499d9cdbf5b851239a269b60feee1e",
+      "edited_by_this_thread": false
+    },
+    {
+      "path": "server/tests/test_parallel_supply_postgres.py",
+      "sha256": "5cefa1545b0c68ec563254db2340fbed280d394e9d3815b2a5af532fbf5e419c",
+      "edited_by_this_thread": false
+    },
+    {
+      "path": "server/tests/test_supplier_replies_postgres.py",
+      "sha256": "30a6553017b1b71ceb181d75edf416b1361badc3848b68b6850f699393aeb225",
+      "edited_by_this_thread": false
+    },
+    {
+      "path": "web/src/lib/npi-bff.ts",
+      "sha256": "ba88956626b27070f75770f05f5fdb8c416afb1754575d79ed4efbe68fcbea5d",
+      "edited_by_this_thread": false
+    },
+    {
+      "path": "web/src/components/projects/supply-sharing.tsx",
+      "sha256": "5b669a1d43919f1ae92657a2d1e629b403eec807ab6e391b56e5115a7bee734f",
+      "edited_by_this_thread": false
+    }
+  ],
+  "checks": {
+    "backend_pure_tests": 18,
+    "frontend_component_tests": 7,
+    "bff_tests": 3,
+    "ruff": "passed",
+    "mypy": "6 targets passed with follow-imports=silent",
+    "frontend_eslint": "passed",
+    "tsc_no_emit_no_incremental": "passed",
+    "postgres_ast_compile": "passed",
+    "postgres_declared_cases": 15,
+    "postgres_execution": "not_run",
+    "full_build_http_browser": "not_run"
+  },
+  "database_access": "none; no environment assigned",
+  "shared_issue_closure_integration": "coordinator_required; see coordination-needs.md",
+  "candidate_digest": "63e23ef47d73614acb8e310a2b79cccb007e18572d182afb6254101db9dccf71"
+}

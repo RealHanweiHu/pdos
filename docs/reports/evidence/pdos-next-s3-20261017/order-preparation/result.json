@@ -1,0 +1,34 @@
+{
+  "complete": true,
+  "unique_real_pg_scenarios": 1,
+  "failed_prior_runs": 5,
+  "backend_pure": 256,
+  "frontend_checks": 116,
+  "backend_candidate": "/private/tmp/pdos-s3-orders-pjg4_zii",
+  "assertions_passed_before_browser_at": "2026-10-17T14:25:17.171447+00:00",
+  "pytest_duration_includes_live_fixture_browser_wait": true,
+  "browser": {
+    "same_fixture": true,
+    "saved_order_professional_decisions": 0,
+    "real_selection_disciplines": [
+      "engineering",
+      "manufacturing"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "actions": "local synthetic login; GETs, local selection and expand; no business submit clicked",
+    "capture": "saved-order-light.png"
+  },
+  "cleanup": {
+    "own_browser_closed": true,
+    "own_web_stopped": true,
+    "own_fixture_API_stopped": true,
+    "marked_test_database_and_other_services_preserved": true
+  },
+  "performance_acceptance": "deferred; no p95 claim",
+  "real_model_calls": 0,
+  "real_KMS_calls": 0,
+  "new_migrations": 0
+}

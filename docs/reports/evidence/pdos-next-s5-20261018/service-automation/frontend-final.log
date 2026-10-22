@@ -1,0 +1,48 @@
+✔ only exact category rule reads are forwarded (37.040583ms)
+✔ manual trigger keeps original bytes and performs one transport attempt (5.132542ms)
+✔ manual trigger rejects extra-authority (1.236792ms)
+✔ manual trigger rejects version (1.126875ms)
+✔ manual trigger rejects revision (1.14425ms)
+✔ manual trigger rejects empty-key (1.060208ms)
+✔ manual trigger rejects long-key (1.027209ms)
+✔ manual trigger rejects json (1.25775ms)
+✔ manual rule authorization and origin guards precede forwarding (2.195083ms)
+✔ a failed list read is visible, distinct from empty, and actual refresh performs only GET (15.3615ms)
+✔ activation previews the actual common command and only explicit confirmation submits once (27.536625ms)
+✔ response loss restores the exact confirmed command and never automatically POSTs on remount (23.305042ms)
+✔ manual trigger recovery preserves the old admission key/version and opens the actual returned Run (21.305708ms)
+✔ pause and resume use their actual fixed published version and keep the T1 boundary (20.014833ms)
+✔ draft save uses its actual fixed catalog/budget and is persisted before the sole T0 command (10.432375ms)
+✔ storage failure is contained at preview and confirmation events and prevents unrecorded writes (21.842416ms)
+✔ scope switch ignores a late preview and cannot carry private rule content into the next category (8.139125ms)
+✔ 403 erases page/local private rule material and cannot claim the list is empty (12.462375ms)
+✔ no category displays the actual selection requirement without issuing a request (1.046875ms)
+✔ editing a fixed-product rule displays its immutable range and preserves the product on draft save (10.983792ms)
+✔ schedule form events keep explicit ISO/timezone and save one real draft without guessing a date (29.94075ms)
+✔ automatic rules show actual service identity and suppression source, with no manual admission button (14.594459ms)
+✔ automatic activation displays server-prepared service authorization but remains behind explicit T1 (6.294709ms)
+✔ read-only capability limits and actual budget/skill identities remain fixed (2.37125ms)
+✔ missing or duplicate declared skills and incomplete numeric budgets fail closed (0.194166ms)
+✔ list and selected history parsing do not convert missing reads into empty success (0.574875ms)
+✔ common T1 preview alone cannot execute activate or pause (1.318917ms)
+✔ preview binds command/key/category/version/payload and needs a finite T1 deadline (0.387625ms)
+✔ the confirmed stage is read-only until the caller explicitly advances to execute (0.194208ms)
+✔ human draft save uses one common command and verifies the original operation and target (0.389917ms)
+✔ unknown save retry preserves exactly the original confirmed command, key and token (0.248792ms)
+✔ manual trigger is one actual admission with exact published version and stable key on explicit replay (0.20575ms)
+✔ restoring is pure and isolates principal/category while refusing arbitrary endpoints or injected policy (0.418666ms)
+✔ form choices use real catalog bindings and exact microdollars without floating point rounding (0.449625ms)
+✔ scope disposal suppresses late preview results and cannot dispatch an execution continuation (0.17125ms)
+✔ actual product-bound rules remain readable in both list and exact detail (0.157041ms)
+✔ each automatic trigger round-trips actual fixed material without guessing a clock or timezone (20.95325ms)
+✔ invalid trigger clocks or sources do not degrade into manual or client-authorized runs (0.333125ms)
+✔ manual defaults retain the installed shape and legacy local forms never rewrite an original confirmed request (0.348917ms)
+✔ service grants and suppressed trigger sources are actual independent reads without a manufactured Run (0.241333ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 686.462291

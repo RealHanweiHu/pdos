@@ -1,0 +1,365 @@
+### Browser `pdos-s5-project-context-20261018` opened with pid 76111.
+### Ran Playwright code
+```js
+await page.goto('about:blank');
+```
+### Page
+- Page URL: about:blank
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T19-12-43-559Z.yml)
+
+### Result
+{"syntheticLoginSet":true}
+### Ran Playwright code
+```js
+await (async page => { await page.context().addCookies([{"name": "pdos-next-session", "value": "[SYNTHETIC_LOGIN_REDACTED]", "domain": "127.0.0.1", "path": "/", "httpOnly": true, "sameSite": "Lax"}]); return { syntheticLoginSet: true }; })(page);
+```
+
+### Ran Playwright code
+```js
+await page.goto('http://127.0.0.1:63583/?area=cockpit&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb&project=2463833c-3b0e-4eda-8f54-9a8e4ab608fe');
+```
+### Page
+- Page URL: http://127.0.0.1:63583/?area=cockpit&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb&project=2463833c-3b0e-4eda-8f54-9a8e4ab608fe
+- Page Title: PDOS · 研发工作区
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T19-12-44-861Z.yml)
+
+### Page
+- Page URL: http://127.0.0.1:63583/?area=cockpit&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb&project=2463833c-3b0e-4eda-8f54-9a8e4ab608fe
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e4]
+  - generic [ref=e5]:
+    - link "跳到工作内容" [ref=e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e11]: PDOS
+        - button "收起侧栏" [ref=e12]
+      - navigation "工作区导航" [ref=e13]:
+        - link "我的工作" [ref=e14] [cursor=pointer]:
+          - /url: "?area=work&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb"
+        - link "项目驾驶舱" [ref=e18] [cursor=pointer]:
+          - /url: "?area=cockpit&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb"
+        - link "项目列表" [ref=e22] [cursor=pointer]:
+          - /url: "?area=projects&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb"
+        - link "项目集" [ref=e26] [cursor=pointer]:
+          - /url: "?area=programs&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb"
+          - generic [ref=e30]: 尚未接入
+        - link "产品品类工作区" [ref=e31] [cursor=pointer]:
+          - /url: "?area=category&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb"
+        - link "知识" [ref=e35] [cursor=pointer]:
+          - /url: "?area=knowledge&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb"
+        - generic [ref=e39]:
+          - paragraph [ref=e40]: 当前品类
+          - paragraph [ref=e41]: 汽车充气泵
+          - paragraph [ref=e42]: 项目与专业工作按品类范围授权
+      - generic [ref=e43]:
+        - link "计划执行进度" [ref=e44] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=e47]: 计划进度
+        - button "小Pai 工作栏" [ref=e48]:
+          - generic [ref=e51]: 小Pai
+        - link "设置" [ref=e52] [cursor=pointer]:
+          - /url: "?area=settings&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb"
+        - generic [ref=e56]:
+          - generic [aria-hidden] [ref=e57]: S
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Synthetic owner
+            - paragraph [ref=e60]: 本地合成环境
+    - generic [ref=e61]:
+      - banner [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]: PDOS
+          - generic [ref=e67]: 项目驾驶舱
+        - generic [ref=e68]:
+          - button "搜索对象" [ref=e69]:
+            - generic [ref=e70]: 搜索
+          - button "小Pai 工作栏" [ref=e71]
+          - button "切换明暗主题" [ref=e72]
+      - main [ref=e73]:
+        - button "刷新" [ref=e74]
+        - paragraph [ref=e75]:
+          - text: 项目资料读取于
+          - time [ref=e76]: 10/18/2026, 12:12:45 PM
+        - generic [ref=e77]:
+          - generic [ref=e78]:
+            - heading "Synthetic named work loop" [level=1] [ref=e79]
+            - paragraph [ref=e80]: 汽车充气泵 · Synthetic named work loop · 项目驾驶舱
+          - generic [ref=e81]:
+            - button "经营总览" [ref=e82]
+            - button "进入项目工作台" [ref=e83]
+        - generic [ref=e84]:
+          - generic [ref=e85]:
+            - region "项目基础信息" [ref=e86]:
+              - heading "基础信息" [level=2] [ref=e87]
+              - generic [ref=e88]:
+                - generic [ref=e89]:
+                  - term [ref=e90]: 用途
+                  - definition [ref=e91]: Actual work acceptance with bounded independent commitments
+                - generic [ref=e92]:
+                  - term [ref=e93]: 工作范围
+                  - definition [ref=e94]: Actual work acceptance with bounded independent commitments
+                - generic [ref=e95]:
+                  - term [ref=e96]: 可见性
+                  - definition [ref=e97]: 品类共享
+                - generic [ref=e98]:
+                  - term [ref=e99]: 负责人
+                  - definition [ref=e100]: Synthetic owner（本人）
+                - generic [ref=e101]:
+                  - term [ref=e102]: 建立时间
+                  - definition [ref=e103]:
+                    - time [ref=e104]: 10/18/2026, 12:10:37 PM
+                - generic [ref=e105]:
+                  - term [ref=e106]: 立项定义
+                  - definition [ref=e107]: Synthetic named work loop · 固定 v1
+            - region "未决事项" [ref=e108]:
+              - generic [ref=e109]:
+                - heading "未决事项" [level=2] [ref=e112]
+                - generic [ref=e113]: 0 项
+              - paragraph [ref=e114]: 没有未决任务或风险。
+          - generic [ref=e115]:
+            - paragraph [ref=e116]: 尚无具名状态更新。
+            - region "计划与时间线" [ref=e117]:
+              - heading "计划与时间线" [level=2] [ref=e121]
+              - paragraph [ref=e122]: 尚无已应用计划。首版计划在工作与计划区起草并经一次确认应用。
+              - paragraph [ref=e123]: 批准基线、个人承诺与实绩时间线尚未记录；此处不填零，取得后分列显示。
+            - region "工作包与任务" [ref=e124]:
+              - heading "工作包与任务" [level=2] [ref=e125]
+              - generic [ref=e126]:
+                - generic [ref=e127]:
+                  - term [ref=e128]: 工作包
+                  - definition [ref=e129]: 尚无
+                - generic [ref=e130]:
+                  - term [ref=e131]: 排期任务
+                  - definition [ref=e132]: 尚无可读计划
+              - button "在工作台办理计划与执行" [ref=e134]
+        - region "项目动态" [ref=e135]:
+          - generic [ref=e136]:
+            - generic [ref=e137]:
+              - heading "项目动态" [level=2] [ref=e138]
+              - paragraph [ref=e139]: 本项目的实际业务记录、具名回执，以及本人绑定本项目的小Pai运行。
+            - button "刷新动态" [ref=e140]
+          - paragraph [ref=e141]:
+            - text: 读取时点
+            - time [ref=e142]: 2026-10-18T19:12:45.588061+00:00
+            - text: · Synthetic named work loop v1
+          - list [ref=e143]:
+            - listitem [ref=e144]:
+              - generic [ref=e145]:
+                - generic [ref=e146]: 本人项目运行
+                - generic [ref=e147]:
+                  - text: 记录于
+                  - time [ref=e150]: 2026-10-18T19:10:55.788746+00:00
+              - heading "小Pai 工作已受理" [level=3] [ref=e151]
+              - generic [ref=e152]:
+                - term [ref=e153]: 绑定执行身份
+                - definition [ref=e154]: Synthetic agent · 81ebd931-035a-48ad-aea6-33cb462bf140
+                - term [ref=e155]: 请求人
+                - definition [ref=e156]: Synthetic owner · db3b77df-96b4-4d2c-8a54-bd184d9e1306
+                - term [ref=e157]: 运行与事件序号
+                - definition [ref=e158]: agent_run · 570317b7-4250-4722-8c5d-5c84a3004039 · 事件序号 1
+                - term [ref=e159]: 事件状态
+                - definition [ref=e160]: 等待执行
+                - term [ref=e161]: 实际发生
+                - definition [ref=e162]:
+                  - time [ref=e163]: 2026-10-18T19:10:55.788746+00:00
+              - group [ref=e164]:
+                - generic "运行事件记录" [ref=e165] [cursor=pointer]
+              - generic [ref=e166]: 运行 570317b7-4250-4722-8c5d-5c84a3004039
+            - listitem [ref=e168]:
+              - generic [ref=e169]:
+                - generic [ref=e170]: 具名操作
+                - generic [ref=e171]:
+                  - text: 记录于
+                  - time [ref=e174]: 2026-10-18T19:10:51.278425+00:00
+              - heading "本人承诺已记录" [level=3] [ref=e175]
+              - generic [ref=e176]:
+                - term [ref=e177]: 执行人
+                - definition [ref=e178]: Synthetic peer · b191c859-fcbb-46c7-ac63-baa64f6b7ba5
+                - term [ref=e179]: 请求人
+                - definition [ref=e180]: Synthetic peer · b191c859-fcbb-46c7-ac63-baa64f6b7ba5
+                - term [ref=e181]: 固定对象
+                - definition [ref=e182]: work_commitment · 52b6263f-1ffd-4ea2-998d-e38eb26da24f · v1
+                - term [ref=e183]: 实际发生
+                - definition [ref=e184]: 未登记发生时间
+              - group [ref=e185]:
+                - generic "回执、事件与固定引用" [ref=e186] [cursor=pointer]
+              - link "打开工作与计划" [ref=e188] [cursor=pointer]:
+                - /url: "?area=category&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb&bench=projects&view=plan&product=c84e6024-a5fa-47c9-b355-4175efd30444&project=2463833c-3b0e-4eda-8f54-9a8e4ab608fe"
+            - listitem [ref=e191]:
+              - generic [ref=e192]:
+                - generic [ref=e193]: 具名操作
+                - generic [ref=e194]:
+                  - text: 记录于
+                  - time [ref=e197]: 2026-10-18T19:10:48.057633+00:00
+              - heading "本人责任承接已记录" [level=3] [ref=e198]
+              - paragraph [ref=e199]: Actual relative clock project
+              - generic [ref=e200]:
+                - term [ref=e201]: 执行人
+                - definition [ref=e202]: Synthetic peer · b191c859-fcbb-46c7-ac63-baa64f6b7ba5
+                - term [ref=e203]: 请求人
+                - definition [ref=e204]: Synthetic peer · b191c859-fcbb-46c7-ac63-baa64f6b7ba5
+                - term [ref=e205]: 固定对象
+                - definition [ref=e206]: work_task · 4399896a-cf3b-4599-8b54-f8ea12eab22d · v3
+                - term [ref=e207]: 实际发生
+                - definition [ref=e208]: 未登记发生时间
+              - group [ref=e209]:
+                - generic "回执、事件与固定引用" [ref=e210] [cursor=pointer]
+              - link "打开工作与计划" [ref=e212] [cursor=pointer]:
+                - /url: "?area=category&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb&bench=projects&view=plan&product=c84e6024-a5fa-47c9-b355-4175efd30444&project=2463833c-3b0e-4eda-8f54-9a8e4ab608fe"
+            - listitem [ref=e215]:
+              - generic [ref=e216]:
+                - generic [ref=e217]: 具名操作
+                - generic [ref=e218]:
+                  - text: 记录于
+                  - time [ref=e221]: 2026-10-18T19:10:45.869318+00:00
+              - heading "责任分派已记录" [level=3] [ref=e222]
+              - paragraph [ref=e223]: Actual relative clock project
+              - generic [ref=e224]:
+                - term [ref=e225]: 执行人
+                - definition [ref=e226]: Synthetic owner · db3b77df-96b4-4d2c-8a54-bd184d9e1306
+                - term [ref=e227]: 请求人
+                - definition [ref=e228]: Synthetic owner · db3b77df-96b4-4d2c-8a54-bd184d9e1306
+                - term [ref=e229]: 固定对象
+                - definition [ref=e230]: work_task · 7445cbb2-ad9a-4351-89c5-4e81c72c66f5 · v2
+                - term [ref=e231]: 实际发生
+                - definition [ref=e232]: 未登记发生时间
+              - group [ref=e233]:
+                - generic "回执、事件与固定引用" [ref=e234] [cursor=pointer]
+              - link "打开工作与计划" [ref=e236] [cursor=pointer]:
+                - /url: "?area=category&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb&bench=projects&view=plan&product=c84e6024-a5fa-47c9-b355-4175efd30444&project=2463833c-3b0e-4eda-8f54-9a8e4ab608fe"
+            - listitem [ref=e239]:
+              - generic [ref=e240]:
+                - generic [ref=e241]: 具名操作
+                - generic [ref=e242]:
+                  - text: 记录于
+                  - time [ref=e245]: 2026-10-18T19:10:43.376295+00:00
+              - heading "项目行动已建立" [level=3] [ref=e246]
+              - paragraph [ref=e247]: Actual relative clock project
+              - generic [ref=e248]:
+                - term [ref=e249]: 执行人
+                - definition [ref=e250]: Synthetic owner · db3b77df-96b4-4d2c-8a54-bd184d9e1306
+                - term [ref=e251]: 请求人
+                - definition [ref=e252]: Synthetic owner · db3b77df-96b4-4d2c-8a54-bd184d9e1306
+                - term [ref=e253]: 固定对象
+                - definition [ref=e254]: work_task · 1c471596-4d00-4921-ab46-baf35e6a8d4f · v1
+                - term [ref=e255]: 实际发生
+                - definition [ref=e256]: 未登记发生时间
+              - group [ref=e257]:
+                - generic "回执、事件与固定引用" [ref=e258] [cursor=pointer]
+              - link "打开工作与计划" [ref=e260] [cursor=pointer]:
+                - /url: "?area=category&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb&bench=projects&view=plan&product=c84e6024-a5fa-47c9-b355-4175efd30444&project=2463833c-3b0e-4eda-8f54-9a8e4ab608fe"
+            - listitem [ref=e263]:
+              - generic [ref=e264]:
+                - generic [ref=e265]: 具名操作
+                - generic [ref=e266]:
+                  - text: 记录于
+                  - time [ref=e269]: 2026-10-18T19:10:38.104933+00:00
+              - heading "项目建立决定已保存" [level=3] [ref=e270]
+              - paragraph [ref=e271]: Synthetic named work loop
+              - generic [ref=e272]:
+                - term [ref=e273]: 执行人
+                - definition [ref=e274]: Synthetic peer · b191c859-fcbb-46c7-ac63-baa64f6b7ba5
+                - term [ref=e275]: 请求人
+                - definition [ref=e276]: Synthetic peer · b191c859-fcbb-46c7-ac63-baa64f6b7ba5
+                - term [ref=e277]: 固定对象
+                - definition [ref=e278]: proposal · ca68f5aa-5d40-42e4-8cac-2d9445385a59 · v4
+                - term [ref=e279]: 实际发生
+                - definition [ref=e280]: 未登记发生时间
+              - group [ref=e281]:
+                - generic "回执、事件与固定引用" [ref=e282] [cursor=pointer]
+              - link "打开工作与计划" [ref=e284] [cursor=pointer]:
+                - /url: "?area=category&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb&bench=projects&view=plan&product=c84e6024-a5fa-47c9-b355-4175efd30444&project=2463833c-3b0e-4eda-8f54-9a8e4ab608fe"
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T19-12-44-701Z.log#L1
+
+### Ran Playwright code
+```js
+await page.reload();
+```
+### Page
+- Page URL: http://127.0.0.1:63583/?area=cockpit&category=ae56afdd-1798-4718-9c09-c1bed8bf38eb&project=2463833c-3b0e-4eda-8f54-9a8e4ab608fe
+- Page Title: PDOS · 研发工作区
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T19-15-33-001Z.yml)
+
+### Result
+{"projectId":"2463833c-3b0e-4eda-8f54-9a8e4ab608fe","parentRunId":"203a1328-fe8d-4734-ba5b-bb76e79508d2","childRunId":"152f140a-8b80-4f4e-acdf-b3197db9eae5","sameSession":true,"actualProjectInherited":true,"privateGoalNotInActivity":true,"runEventSequence":true,"noInventedReceipt":true,"reloadNonGet":0,"uiStarts":2,"uiCancels":2,"mobile":{"width":288,"overflow":false,"pageOverflow":false},"realModelCalls":0,"performanceAcceptance":false}
+### Ran Playwright code
+```js
+await (async page => {
+ const check=(v,m)=>{if(!v)throw new Error(m);};
+ const projectId=new URL(page.url()).searchParams.get('project');
+ const writes=[];page.on('request',req=>{if(req.method()!=='GET')writes.push({method:req.method(),path:new URL(req.url()).pathname,body:req.postDataJSON()});});
+ await page.setViewportSize({width:1440,height:1050});
+ const activity=page.getByRole('region',{name:'项目动态',exact:true});await activity.locator('ol > li').first().waitFor();
+ const rail=page.getByRole('complementary',{name:'小Pai 工作栏',exact:true});
+ if(!await rail.isVisible())await page.getByRole('button',{name:'小Pai 工作栏',exact:true}).first().click();
+ await rail.getByText(/新工作绑定项目：/).waitFor();
+ check(await rail.getByLabel('关联当前型号',{exact:true}).count()===0,'project context must be fixed, without an ineffective optional product checkbox');
+ await rail.locator('summary').filter({hasText:'新建委派'}).click();
+ await rail.getByRole('textbox',{name:'希望得到什么结果',exact:true}).fill('PRIVATE-BROWSER-PROJECT: 只核对本次项目，不执行真实模型');
+ const started=page.waitForResponse(r=>r.request().method()==='POST'&&/\/agent-runs$/.test(new URL(r.url()).pathname));
+ await rail.getByRole('button',{name:'保存并开始',exact:true}).click();const response=await started;check(response.status()===202,'start accepted');const parent=await response.json();
+ await rail.getByText('运行绑定项目：'+projectId,{exact:true}).waitFor();
+ const base=new URL(response.url()).pathname;
+ const read=async id=>page.evaluate(async url=>{const r=await fetch(url);if(!r.ok)throw new Error('actual run read failed '+r.status);return r.json();},base+'/'+id);
+ const parentRecord=await read(parent.run_id);check(parentRecord.project_id===projectId&&!!parentRecord.product_id,'actual persisted project/product');
+ await rail.locator('summary').filter({hasText:'取消此次运行'}).click();
+ await rail.getByRole('button',{name:'确认取消后续执行',exact:true}).click();
+ await rail.getByRole('heading',{name:'已取消后续执行',exact:true}).waitFor();
+ await rail.locator('summary').filter({hasText:'基于这次工作继续'}).click();
+ await rail.getByRole('textbox',{name:'接下来希望得到什么结果',exact:true}).fill('PRIVATE-BROWSER-CONTINUE: 沿用原项目与会话继续核对');
+ const continued=page.waitForResponse(r=>r.request().method()==='POST'&&/\/agent-runs$/.test(new URL(r.url()).pathname));
+ await rail.getByRole('button',{name:'保存并继续',exact:true}).click();const nextResponse=await continued;check(nextResponse.status()===202,'continuation accepted');const child=await nextResponse.json();
+ await rail.getByRole('heading',{name:'已保存，等待执行',exact:true}).waitFor();
+ const childRecord=await read(child.run_id);check(childRecord.project_id===parentRecord.project_id&&childRecord.product_id===parentRecord.product_id&&childRecord.session_id===parentRecord.session_id,'same session/project/product');
+ check(childRecord.conversation.previous_run_id===parent.run_id,'actual parent linked');
+ await rail.locator('summary').filter({hasText:'取消此次运行'}).click();await rail.getByRole('button',{name:'确认取消后续执行',exact:true}).click();await rail.getByRole('heading',{name:'已取消后续执行',exact:true}).waitFor();
+ await rail.getByRole('button',{name:'关闭小Pai 工作栏',exact:true}).click();
+ await activity.getByRole('button',{name:'刷新动态',exact:true}).click();await activity.getByText('本人项目运行',{exact:true}).first().waitFor();
+ const text=await activity.textContent();check(!text.includes('PRIVATE-BROWSER-'),'activity must not reveal private goal or result');check(text.includes(parent.run_id)&&text.includes(child.run_id),'actual parent and child event metadata');check(text.includes('事件序号'),'event sequence must not claim Run revision');check(text.includes('无业务写入回执'),'read-only Run must not invent receipt');
+ const starts=writes.filter(x=>/\/agent-runs$/.test(x.path));check(starts.length===2&&starts[0].body.project_id===projectId&&starts[0].body.product_id===parentRecord.product_id,'only explicit UI starts with actual context');check(starts[1].body.continue_from_run_id===parent.run_id&&!Object.hasOwn(starts[1].body,'project_id'),'continue carries original ref, server inherits project');
+ const countBeforeReload=writes.length;await page.reload();await activity.getByText('本人项目运行',{exact:true}).first().waitFor();check(writes.length===countBeforeReload,'reload reads without resubmission');
+ await page.evaluate(()=>{document.documentElement.classList.remove('dark');document.documentElement.style.colorScheme='light';});await activity.evaluate(x=>x.scrollIntoView({block:'start'}));
+ await page.screenshot({path:'/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s5-20261018/project-run-context/desktop-light.png'});
+ await page.setViewportSize({width:320,height:920});await page.evaluate(()=>{document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';});await activity.evaluate(x=>x.scrollIntoView({block:'start'}));
+ const mobile=await activity.evaluate(x=>({width:x.clientWidth,overflow:x.scrollWidth>x.clientWidth,pageOverflow:document.documentElement.scrollWidth>innerWidth}));check(!mobile.overflow&&!mobile.pageOverflow,'320px mixed activity fits');
+ await page.screenshot({path:'/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s5-20261018/project-run-context/mobile-dark.png'});
+ return {projectId,parentRunId:parent.run_id,childRunId:child.run_id,sameSession:true,actualProjectInherited:true,privateGoalNotInActivity:true,runEventSequence:true,noInventedReceipt:true,reloadNonGet:0,uiStarts:starts.length,uiCancels:writes.filter(x=>/\/cancel$/.test(x.path)).length,mobile,realModelCalls:0,performanceAcceptance:false};
+}
+)(page);
+```
+
+### Result
+{"actualScopedHistory":true,"rows":3,"allProjectBound":true,"missingProjectStatus":403,"duplicateProjectStatus":422,"finalReadNonGet":0,"realModelCalls":0}
+### Ran Playwright code
+```js
+await (async page => {
+ const location=new URL(page.url()),project=location.searchParams.get('project'),category=location.searchParams.get('category');
+ const writes=[];page.on('request',r=>{if(r.method()!=='GET')writes.push(r.method());});
+ const result=await page.evaluate(async({project,category})=>{
+  const root='/api/v1/categories/'+category+'/agent-runs';
+  const real=await fetch(root+'?project_id='+project+'&page_size=200');if(real.status!==200)throw new Error('Final scoped history failed '+real.status);const value=await real.json();
+  if(!value.items.length||value.items.some(x=>x.project_id!==project))throw new Error('History includes another/unbound project');
+  const missing=await fetch(root+'?project_id=ffffffff-ffff-4fff-8fff-ffffffffffff');if(missing.status!==403)throw new Error('Absent project did not reject');
+  const duplicate=await fetch(root+'?project_id='+project+'&project_id='+project);if(duplicate.status!==422)throw new Error('BFF duplicate project was forwarded');
+  return {actualScopedHistory:true,rows:value.items.length,allProjectBound:true,missingProjectStatus:missing.status,duplicateProjectStatus:duplicate.status};
+ },{project,category});
+ await page.reload();await page.getByRole('region',{name:'项目动态',exact:true}).getByText('本人项目运行',{exact:true}).first().waitFor();
+ if(writes.length)throw new Error('Final recovery wrote requests');return {...result,finalReadNonGet:0,realModelCalls:0};
+}
+)(page);
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T19-12-44-701Z.log#L2-L3
+
+Browser 'pdos-s5-project-context-20261018' closed
+
+

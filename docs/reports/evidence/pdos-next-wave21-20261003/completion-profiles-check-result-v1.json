@@ -1,0 +1,118 @@
+{
+  "schema_version": "wave21-completion-profiles-staged-check-result-v1",
+  "recorded_at": "2026-10-03T17:52:34.305951+00:00",
+  "source_manifest": "docs/reports/evidence/pdos-next-wave21-20261003/completion-profiles-source-v1.json",
+  "checks": [
+    {
+      "name": "pure",
+      "command": [
+        "server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        ".local/wave21-completion-staged/tests/quality_followup_root/test_completion_profiles.py",
+        "-q",
+        "--tb=short",
+        "-o",
+        "cache_dir=.local/wave21-completion-staged/.pytest_cache"
+      ],
+      "environment": {
+        "PYTHONPATH": ".local/wave21-completion-staged:server/tests",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "working_directory": "pdos-next",
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave21-20261003/completion-profiles-pure-final-v1.log",
+      "log_sha256": "0fa93974b0b685ab8e5ffc5b3cb78bf779330fd4460945e5fe99103fc81b98a5"
+    },
+    {
+      "name": "static",
+      "command": [
+        "server/.venv/bin/ruff",
+        "check",
+        "--no-cache",
+        ".local/wave21-completion-staged/pdos_next/quality_followup_integration.py",
+        ".local/wave21-completion-staged/tests/quality_followup_root/test_completion_profiles.py"
+      ],
+      "environment": {
+        "PYTHONPATH": ".local/wave21-completion-staged:server/tests",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "working_directory": "pdos-next",
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave21-20261003/completion-profiles-static-final-v1.log",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "name": "format",
+      "command": [
+        "server/.venv/bin/ruff",
+        "format",
+        "--check",
+        ".local/wave21-completion-staged/pdos_next/quality_followup_integration.py",
+        ".local/wave21-completion-staged/tests/quality_followup_root/test_completion_profiles.py"
+      ],
+      "environment": {
+        "PYTHONPATH": ".local/wave21-completion-staged:server/tests",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "working_directory": "pdos-next",
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave21-20261003/completion-profiles-format-final-v1.log",
+      "log_sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    },
+    {
+      "name": "ast",
+      "command": [
+        "server/.venv/bin/python",
+        "-c",
+        "import ast,pathlib; paths=['.local/wave21-completion-staged/pdos_next/quality_followup_integration.py', '.local/wave21-completion-staged/tests/quality_followup_root/test_completion_profiles.py']; [ast.parse(pathlib.Path(p).read_text(),filename=p) for p in paths]; print(\"2 owned staged files AST parsed\")"
+      ],
+      "environment": {
+        "PYTHONPATH": ".local/wave21-completion-staged:server/tests",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "working_directory": "pdos-next",
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave21-20261003/completion-profiles-ast-final-v1.log",
+      "log_sha256": "b683f8221e405ace41df59f9bc7033fc95cd9f42de168fa757b893f58b17cced"
+    },
+    {
+      "name": "import",
+      "command": [
+        "server/.venv/bin/python",
+        "-c",
+        "from pathlib import Path; from pdos_next import quality_followup_integration as m, quality_followup_bootstrap as b; expected=Path(\".local/wave21-completion-staged/pdos_next\").resolve(); assert Path(m.__file__).resolve().parent==Path(b.__file__).resolve().parent==expected; import inspect; print(inspect.signature(m.configure_integration)); print(\"imports bound to isolated staged package\")"
+      ],
+      "environment": {
+        "PYTHONPATH": ".local/wave21-completion-staged:server/tests",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "working_directory": "pdos-next",
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave21-20261003/completion-profiles-import-final-v1.log",
+      "log_sha256": "3ff8ebc14fde1d417f9ff882a84b3c8adf41898584dce27672b313744c669aaf"
+    }
+  ],
+  "passed_cases": 40,
+  "earlier_attempts": [
+    {
+      "exit_code": 1,
+      "kind": "pure tool stdout only",
+      "passed": 36,
+      "failed": 1,
+      "reason": "Product mismatch fixture changed both basis product and supplied product; actual exact unknown scope correctly returned COMPLETION_PROFILE_SCOPE_MISSING. Repaired fixture to retain original supplied product, proving the real mismatch guard. Not a production defect; superseded by final 40."
+    },
+    {
+      "exit_code": 1,
+      "kind": "static tool stdout only",
+      "reason": "Import ordering, line length and imported fixture F811 annotations; fixed. Earlier stdout was not saved as a raw file."
+    }
+  ],
+  "limitations": [
+    "Only two owned staged files checked; no shared pytest/build/DB/HTTP/service restart.",
+    "Existing bootstrap helper copied byte-for-byte and actual dispatch invokes its real registration/source verifier; raw source evidence/verified target are explicit pure substitutes.",
+    "Profiles never grant professional qualification, action fulfillment or physical implementation.",
+    "No staged file has been applied to running server."
+  ]
+}

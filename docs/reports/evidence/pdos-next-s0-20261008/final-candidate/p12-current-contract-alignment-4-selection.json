@@ -1,0 +1,3 @@
+[
+  "tests/quality_execution_transactions/test_read_batch.py::test_actual_multi_failure_reading_shares_retained_and_rejects_late_byte_revocation"
+]

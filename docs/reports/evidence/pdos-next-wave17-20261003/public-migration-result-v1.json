@@ -1,0 +1,24 @@
+{
+  "status": "FAIL",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "business_fact_writes": 0,
+  "model_calls": 0,
+  "steps": [],
+  "scope": "Numbered migration roundtrip, schema/lifecycle/role catalog; no fact publication",
+  "source_sha256": {
+    "pdos_next/models.py": "9e34f7a30834fa3576cca9737b6996a12d35c8ad06b12c445aaf1de46f7c7482",
+    "pdos_next/lifecycle_catalog.py": "429b26ad4bc5985992a5a23322186fa79b4fbf8560824863e649ce816b2cec46",
+    "pdos_next/domain/capa_effectiveness/models.py": "490cd7258e0c920ef51f0cff593c86aff197fb254323af859113934af5ae1e6f",
+    "pdos_next/domain/capa_effectiveness/fact_storage_models.py": "77cde6bac7d5c49b109a44d8540e4fba476fa52c1853317f25182afb813108fe",
+    "pdos_next/domain/capa_effectiveness/fact_storage_codec.py": "9c8a5fe2acc9878eb394812c61f0583fc697e89a1c531093c83ef061c61b1ba8",
+    "pdos_next/domain/capa_effectiveness/facts.py": "6110e8683420833a8188af34c076a075ebbd46993e351beb890325926b45a7f5",
+    "pdos_next/domain/capa_effectiveness/anchor.py": "2db9d275a2718fd1d0449e33372c3c2876fb73523c2120968e32f9fef70e7c82",
+    "pdos_next/domain/capa_effectiveness/paired.py": "4df6e7a2c734d5bc8dcf3f586fb7cec1d2fc637f6e77dd83bd1ce0bba3fd1be1",
+    "migrations/versions/0026_capa_verification_facts.py": "2229809083a26528a9122e596c69a31c615218a0c44ced7cfd39fdb64b05c053"
+  },
+  "error_type": "KeyError",
+  "error": "'agent_url'",
+  "source_stable": true,
+  "observed_at": "2026-10-03T12:35:01.741402+00:00"
+}

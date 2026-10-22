@@ -1,0 +1,16 @@
+{
+  "parent_commit": "5fde92af2499daf9f5991206009fb3c2d04b5856",
+  "scope": "Only the standard-product human read workbench and affected shared comparison; not full M3 acceptance",
+  "files": {
+    "pdos-next/server/pdos_next/domain/preproject/standard_match.py": "c4dc0a36c9ac2d2acafb487f439da35d4711a5e94849d40c771abc0a75e7c807",
+    "pdos-next/server/pdos_next/domain/preproject/api.py": "8f2b478d0850ed11c6cbdebf6e88caee4bfc077210913c699d5b56d28e4b856e",
+    "pdos-next/server/pdos_next/domain/preproject/spec_compare.py": "0825ef71e755a13dca75336b759339e64a831ef93291c3a76b5f684563f8c9d7",
+    "pdos-next/server/tests/preproject/test_standard_match.py": "86908aea72e7ad06dda9c291428638899abba5948e1048c706a9b0a65526a518",
+    "pdos-next/server/tests/preproject/test_standard_match_pg.py": "f4e8a2b028c7b2b16caf97eaa400920272bdee69599f3343d535811bcf537e52",
+    "pdos-next/web/src/components/preproject/standard-match.tsx": "ae220d64fc096abdac00b5eb98037a390c7056e0e3791ff9e62c3dff30ed316e",
+    "pdos-next/web/src/components/category-home.tsx": "fada0f5db90606e38a2e48e843ac117dde87253fc99b7b4697f7cc9280c12f43",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "5234f617a53d57d5210136897ec588e3500c053f14f9becdc0d978ee9d3261ee",
+    "pdos-next/web/src/app/api/route-proposal-views.test.mjs": "2a562c8960c15766757933ccbdeac96e5e87876fea821ff7aa84fe4ed5347e1f",
+    "pdos-next/web/src/app/globals.css": "cc2f0755b354ac1586069600e252eb8ff319f243c41fca4e75e22a807dce6ea7"
+  }
+}

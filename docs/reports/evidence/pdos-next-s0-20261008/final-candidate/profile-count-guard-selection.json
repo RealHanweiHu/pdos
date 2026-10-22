@@ -1,0 +1,3 @@
+[
+  "tests/test_host_profile_choices.py::test_professional_plural_requires_real_target_guard_before_issuer_registration"
+]

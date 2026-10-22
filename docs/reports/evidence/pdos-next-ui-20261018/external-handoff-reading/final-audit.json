@@ -1,0 +1,97 @@
+{
+  "head": "258cb35bbe5a920cb1d597e877ece8ce3053712b",
+  "frontend_inputs": 476,
+  "frontend_changes_after_check": [
+    "src/lib/build-change-orders-view.ts",
+    "src/components/builds/build-change-approvals.tsx",
+    "src/components/builds/build-change-orders.tsx",
+    "src/components/builds/build-change-implementations.tsx"
+  ],
+  "dedicated_backend_changes_since_check": [],
+  "runtime_changes_after_check": [
+    "pdos_next/change_controlled_schemas.py",
+    "pdos_next/change_implementation_owner.py",
+    "pdos_next/change_selection_service.py",
+    "pdos_next/change_preparation_view.py",
+    "pdos_next/change_controlled_store.py",
+    "pdos_next/change_controlled_owner.py"
+  ],
+  "runtime_changes_during_check": [],
+  "subsequent_other_owner_change_boundary": "post-check-source-boundary.json",
+  "checks": [
+    {
+      "name": "frontend-tests",
+      "exit_code": 0
+    },
+    {
+      "name": "lint",
+      "exit_code": 0
+    },
+    {
+      "name": "build",
+      "exit_code": 0
+    },
+    {
+      "name": "typecheck",
+      "exit_code": 0
+    }
+  ],
+  "source_sha256": {
+    "pdos-next/web/src/lib/project-external-handoffs.ts": "1e0838f0edb808d94c6140ed6ed3f2cbe53dc8d7d39af5d21dc90db4c20bffeb",
+    "pdos-next/web/src/lib/project-external-handoffs.test.mjs": "6c67e3df734828b332101a1d2dc1d51f24042c9035146e39da819d4bd71b8a70",
+    "pdos-next/web/src/components/projects/project-external-handoffs.tsx": "c331d8d91ce7fe45b189f6726bc00a31ecad036ec3053a5b79da2252520ad19c",
+    "pdos-next/web/src/components/projects/project-external-handoffs.module.css": "8c4ec75c6908c13fb0c0cb7f81dfd678135e3c3cef7fac6c280dfb1b80f7113e",
+    "pdos-next/web/src/components/projects/project-external-handoffs.test.mjs": "00ee1c0cc4703038a938970f6e14ea50d7b349d562dae058a6d59714d905c250",
+    "pdos-next/web/src/components/projects/project-workspace.tsx": "391dc3f492ca7d4124f9c458c73435bc2439eaff55a397409d968c77676c30a5",
+    "pdos-next/web/src/components/projects/project-views.test.mjs": "32a4d6c1f2ac82cd32ee1898fcbb05b4ebb1fe3a1e4d44995c8d349bc3ef0bd2",
+    "pdos-next/server/tests/ui/test_project_external_handoffs_projection_pg.py": "afe433084207bcfe27feec1891f16252557c164ca3392ea87b2ab0b576c2dd0c"
+  },
+  "report_sha256": {
+    "migration-state-before-check.json": "99337e4cded193c973f3f5bea996219db9f2f7125bbb2251d8ea5889f7efc879",
+    "result.md": "5d0581f3c2ef7279505735ec84fea98d9fce51735b1c9640ab3a963a28b7854d",
+    "lint.log": "f3b87a6aa199cc84df8e3119b3717c25d0f7d1ea5b02a38499ef1a13c682b202",
+    "pg-http-responses.json": "3eb9716db632657743f5a166592ee2c9e4652a3ef210fdb924f35c3beef696a0",
+    "candidate.json": "ec8e624ba8c3b9b601082e696b994836dede5d6155718e10c09bea340433391f",
+    "typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "post-check-source-boundary.json": "a377313c9d0a3cc10fc60a0e09c348d00a995f92309f2899dc7c100c5acf3fdd",
+    "backend-tests.log": "0a01a25ae941b3085e93d7a3adb31b50ebf4a10b875d7dba9934b38fe54db4ec",
+    "frontend-tests.log": "8651390c60f16b5b4c8504d67818fb999af56c31f0f9dc71eb94c26f9cbf4db6",
+    "backend-candidate.json": "2495d911ddca1a321a558b020252d6c523bcc908d40371144f8546fbf5e6d7e5",
+    "post-check-other-owner-model.diff": "08003f2bf44032f493eb2df0fe8b340447fe9eb2cceee15474c07d9a2ced93be",
+    "actual-dto-validation.json": "8274ce110fee28ba3d68b87b3d8591d91525777ef76be40ce1a5bba762f18937",
+    "post-check-other-owner-changes.diff": "458516bf9f1e6a373fd248b80d13ad7254128638759ec13a1562b872f69bd52b",
+    "parent-integration.diff": "2ea11c465bcd2bb3630a9a01325179707e8dc2fef579ada59f53c2db81db7cdb",
+    "build.log": "0af8078622e005f40891029170e41098f6ba6f4f5397c4a90059e38ff2f63dd4",
+    "initial-export-null-field-failure/backend-tests.log": "2ac65680a3ac7d95466fce9db168673f9a90f11240b06486fec807f67aa007d3",
+    "initial-export-null-field-failure/backend-candidate.json": "0de5630975039e0e2883e0a01ed576292437b9ea5de20d07a276a644c69f53e8"
+  },
+  "actual_dto_summary": {
+    "phases": 8,
+    "original_get_responses": 30,
+    "offline_get_calls": 30,
+    "one_to_one_original_read_mapping": true,
+    "successful_lists": 9,
+    "successful_details": 9,
+    "successful_receipt_pages": 9,
+    "original_foreign_403": 3,
+    "unique_raw_receipts": 6,
+    "model_counts_per_phase": 36,
+    "actual_cursor_pages": 0,
+    "actual_pagination": "not_exercised",
+    "pure_display_ssr_instances": 35,
+    "detail_ssr_instances": 8,
+    "receipt_ssr_instances": 27,
+    "added_synthetic_gets": 0,
+    "client_stage_recomputation": false,
+    "real_external_delivery": "not_exercised_not_authorized"
+  },
+  "initial_failure_preserved": true,
+  "queue_and_pointer_updated": true,
+  "migrations_executed": false,
+  "browser_used": false,
+  "actual_new_bff_chain": false,
+  "phase_acceptance": false,
+  "performance_sampling": false,
+  "new_preview_services": false,
+  "automation": "continues; approved scope remains incomplete"
+}

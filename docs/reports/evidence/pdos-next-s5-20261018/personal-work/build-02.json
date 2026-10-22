@@ -1,0 +1,20 @@
+{
+  "base_commit": "2985e4a6b4dea6804afda83b6b4c0e914b000d74",
+  "snapshot": "/private/tmp/pdos-s5-personal-delivery-ln6r5t19",
+  "candidate_revision": 6,
+  "started_at": "2026-10-18T01:18:51.241760+00:00",
+  "finished_at": "2026-10-18T01:19:07.328374+00:00",
+  "steps": [
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exit": 0
+    }
+  ],
+  "source_changed": [],
+  "real_external_calls": 0,
+  "performance_acceptance": false
+}

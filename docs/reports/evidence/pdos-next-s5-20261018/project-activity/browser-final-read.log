@@ -1,0 +1,29 @@
+### Result
+{"finalBackendRead":true,"actualTaskClocks":3,"originalTimezonePreserved":true,"actualWorkspaceLink":true,"events":25,"visibleFirstPage":20,"nonGetRequests":0,"mobileFits":true}
+### Ran Playwright code
+```js
+await (async page => {
+ const r=page.getByRole('region',{name:'项目动态',exact:true});const writes=[];
+ page.on('request',request=>{if(request.method()!=='GET')writes.push(request.method());});
+ await r.getByRole('button',{name:'刷新动态',exact:true}).click();
+ await r.getByRole('link',{name:'打开工作与计划',exact:true}).first().waitFor();
+ const href=new URL(await r.locator('a').first().getAttribute('href'),page.url());
+ const query=href.searchParams;
+ const endpoint='/api/v1/categories/'+query.get('category')+'/products/'+query.get('product')+'/project-work/activity?'+new URLSearchParams({project_id:query.get('project'),page_size:'100'});
+ const response=await page.request.get(new URL(endpoint,page.url()).toString());if(response.status()!==200)throw Error('Final actual read failed');const data=await response.json();
+ const clocks=data.items.filter(row=>['work.task.start','work.task.submit','work.task.review'].includes(row.operation));
+ if(clocks.length<3||clocks.some(row=>!row.occurred_at||row.original_timezone!=='Asia/Shanghai'))throw Error('Actual Work clocks or original timezone missing');
+ await page.setViewportSize({width:1440,height:1000});
+ await page.evaluate(()=>{document.documentElement.classList.remove('dark');document.documentElement.style.colorScheme='light';});
+ await r.evaluate(element=>element.scrollIntoView({block:'start'}));
+ await page.screenshot({path:'/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s5-20261018/project-activity/desktop-light.png'});
+ await page.setViewportSize({width:320,height:920});
+ await page.evaluate(()=>{document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';});
+ await r.evaluate(element=>element.scrollIntoView({block:'start'}));
+ const fits=await r.evaluate(e=>e.scrollWidth<=e.clientWidth&&document.documentElement.scrollWidth<=innerWidth);
+ await page.screenshot({path:'/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s5-20261018/project-activity/mobile-dark.png'});
+ if(writes.length||!fits)throw Error('Final activity must remain read-only and fit mobile');
+ return {finalBackendRead:true,actualTaskClocks:clocks.length,originalTimezonePreserved:true,actualWorkspaceLink:true,events:data.items.length,visibleFirstPage:await r.locator('ol > li').count(),nonGetRequests:writes.length,mobileFits:fits};
+}
+)(page);
+```

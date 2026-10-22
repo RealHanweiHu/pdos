@@ -1,0 +1,11 @@
+{
+  "failed_record": "final-selection.failed-20261003T073300849955Z.json",
+  "error": "PURE_81_EVIDENCE_MISMATCH",
+  "cause": "Log parser excluded one exact pytest parameter id containing a space; original raw 81-pass log unchanged.",
+  "parser_file": "pdos-next/tools/wave15_closeout.py",
+  "parser_sha256": "0fcc923ba1894ee8e4d3c7f37d183cdf30f53f54e26ba6d7a3cd0c1069d348fc",
+  "original_pure_raw_sha256": "d8dedaeff9f4575dc1668611d569d72c95d691a01f9f290e576d19e22ae9bde6",
+  "exact_nodes_parsed": 81,
+  "recovery_record": "final-selection.pending-20261003T073402230422Z.json",
+  "status": "pending_original_scoped_graph_v4_checks"
+}

@@ -1,0 +1,21 @@
+{
+  "started_at": "2026-10-17T23:27:48.434655+00:00",
+  "finished_at": "2026-10-17T23:27:48.466413+00:00",
+  "snapshot": "/private/tmp/pdos-external-handoff-o49cu6f6",
+  "command": [
+    "./.local/external_handoff_schema_check_20261017.py"
+  ],
+  "exit": 2,
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "before_head": "s0_0783",
+    "after_head": "s0_0783"
+  },
+  "source_changed": [],
+  "real_model_calls": 0,
+  "real_KMS_calls": 0,
+  "performance_acceptance": false
+}

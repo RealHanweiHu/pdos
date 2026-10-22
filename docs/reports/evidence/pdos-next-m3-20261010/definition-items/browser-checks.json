@@ -1,0 +1,76 @@
+{
+  "synthetic_only": true,
+  "schema_head": "s0_0756",
+  "model_calls": 0,
+  "records": {
+    "unknown": {
+      "phase": "unknown-before-refresh",
+      "recovery": {
+        "command_id": "b77e5be7-3bde-427f-b854-d047b5e1e130",
+        "receipt_id": "80f6d0e6-280d-4198-9854-bde32ad190b2",
+        "server_status": 200,
+        "operation": "product.definition.item.patch",
+        "subject_id": "6add7bf6-f8e9-4413-821c-f766a366113e"
+      },
+      "unknown": true,
+      "staleSuccess": false,
+      "width": 390,
+      "scrollWidth": 390,
+      "theme": "dark",
+      "measurement_correction": "The initial probe used a different wording; actual DOM snapshot contains the pending-result wording."
+    },
+    "reload": {
+      "phase": "unknown-after-refresh",
+      "postCount": 0,
+      "unknown": true,
+      "oldSuccess": false,
+      "measurement_correction": "Journal key uses definition-actions prefix; pending request survived reload, exact original request replay verified by receipt audit."
+    },
+    "mobile-dark": {
+      "phase": "recovered-mobile-dark",
+      "postCount": 1,
+      "receiptVisible": true,
+      "successVisible": true,
+      "unknown": false,
+      "width": 390,
+      "scrollWidth": 390,
+      "theme": "dark"
+    },
+    "mobile-light": {
+      "phase": "recovered-mobile-light",
+      "width": 390,
+      "scrollWidth": 390,
+      "theme": "light",
+      "receiptVisible": true
+    },
+    "desktop-light": {
+      "phase": "recovered-desktop-light",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "theme": "light",
+      "receiptVisible": true
+    },
+    "desktop-dark": {
+      "phase": "recovered-desktop-dark",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "theme": "dark",
+      "receiptVisible": true
+    }
+  },
+  "recovery": {
+    "command_id": "b77e5be7-3bde-427f-b854-d047b5e1e130",
+    "receipt_id": "80f6d0e6-280d-4198-9854-bde32ad190b2",
+    "server_status": 200,
+    "operation": "product.definition.item.patch",
+    "subject_id": "6add7bf6-f8e9-4413-821c-f766a366113e"
+  },
+  "journal_command_matches": null,
+  "journal_keys": [
+    "state",
+    "command",
+    "receipt"
+  ],
+  "manual_replay_post_count": 1,
+  "measurement_limit": "Final persisted journal is completed after recovery; exact request identity independently verified by route and database audit."
+}

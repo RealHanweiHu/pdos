@@ -1,0 +1,10 @@
+........................................................................ [ 59%]
+..................................................                       [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_context_projection_pg.py: 5 warnings
+tests/agent_kernel/test_extract_dispatch_pg.py: 5 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+122 passed, 10 warnings in 179.42s (0:02:59)

@@ -1,0 +1,60 @@
+{
+  "scope": "Root unmounted new fact common-consumption hook only, no DB/HTTP/public changes",
+  "source_files": {
+    "pdos-next/staging/wave17/fact_consumption.py": "4bbc52ff7423fa4cf389ff12b21f7c64201a0566b6296580399561bfade50458",
+    "pdos-next/staging/wave17/test_fact_consumption.py": "cac4835928a7a21f32d675eac9be1832a1cb6be99f8d5f7b2e042fb47bab9ea2",
+    "pdos-next/staging/wave17/fact-consumption-contract.md": "762e37ecbfce9387bd216fe65eda3483fe482de30e9abb46f13c2c2e19705dce"
+  },
+  "dependencies_sha256": {
+    "pdos-next/staging/wave17/fact_atom_storage.py": "b3794750da19f6394dc12cce062489e1aad7022619f4aac7dccb7e7246b9e604",
+    "pdos-next/staging/wave17/facts.py": "a9c06b974300729fe8953f1c7b85ec5a5c3ceb57416bc4d81c0c79f708083f50",
+    "pdos-next/staging/wave17/fact_storage_models.py": "c5e19ebd676ebca70421897a2ada1e3214d6fd1d6e7905bdb9a57d7be39f9a56",
+    "pdos-next/staging/wave17/fact_storage_codec.py": "962a7ad94babe6a5a4552d85dffa993cf0d8271e9ae49d4338f6ebf05fa835cf"
+  },
+  "pure": {
+    "passed": 29,
+    "failed": 0,
+    "seconds": 0.84,
+    "raw_log": "fact-consumption-pure-v4.log",
+    "command": "PYTHONPATH=pdos-next/server:pdos-next/staging/wave17 pdos-next/server/.venv/bin/python -m pytest --noconftest -q --tb=short pdos-next/staging/wave17/test_fact_consumption.py",
+    "exit_capture": "Composite shell ended 0; raw pytest summary records 29 passed. Individual pytest return code was not separately captured."
+  },
+  "raw_logs_sha256": {
+    "fact-consumption-pure-v1.log": "40f1fe2dc16e6bd7d9267bbeae247ed950d78de13959bb6cdaef56a59f51c961",
+    "fact-consumption-pure-v2.log": "1c8c90cdb9b0f30a2b6c1cab639767b689b315797b50bae0aad426ea1eb44598",
+    "fact-consumption-pure-v3.log": "ca8a7995f8b8a26ad3f83c2dcc7852ce9ef3b08cf8729f3e1da798c68822494e",
+    "fact-consumption-pure-v4.log": "f1efca889fd6269b18b2589bc742d977670703037df9ecd9d19bc7b1048d6aac"
+  },
+  "prior_results_preserved": [
+    {
+      "version": "v1",
+      "passed": 17,
+      "failed": 11,
+      "reason": "Test DomainError.code vs exception text, duplicate keyword overrides, SQLAlchemy transaction constructor"
+    },
+    {
+      "version": "v2",
+      "passed": 27,
+      "failed": 1,
+      "reason": "Negative fixture real new SAVEPOINT tried mandatory ORM flush blocked by no-IO sentinel"
+    },
+    {
+      "version": "v3",
+      "passed": 28,
+      "failed": 1,
+      "reason": "Same negative fixture dirty ORM state not fully cleared; corrected explicit external-flush substitute before real SAVEPOINT"
+    }
+  ],
+  "narrow_implementation_delta": "Reject Session pending-deleted Confirmation before capture; one targeted negative added after initial 28 selection. Other intermediate fixes were test construction and formatting only.",
+  "boundaries": {
+    "public_consumer_registered": false,
+    "schema_or_reverse_targets_installed": false,
+    "database_used": false,
+    "http_used": false,
+    "qualification_granted": false,
+    "commit_clock_guarantee": false,
+    "persistent_row_substitute_explicit": true,
+    "actual_session_orm_history_used": true,
+    "source_professional_authorization_attested": false
+  }
+}

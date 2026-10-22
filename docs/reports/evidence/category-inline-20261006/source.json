@@ -1,0 +1,6 @@
+{
+  "web/src/components/product-work/product-proposals.tsx": "d2d5e2a69ba9de546a557c6735312e90d81fc901f17537ebe20fd8ebd40de768",
+  "web/src/components/product-work/product-categories.tsx": "8b85b07612e9a363fe6f220cd04a97d5f5b87a96f5ff11fcd638229c320390ae",
+  "web/src/components/product-work/product-proposals.test.tsx": "ab8d37e28a2b785b18d68502012f12d023595866706ffdefa3cb7d38bf76e45c",
+  "web/src/components/product-work/product-workspace.test.tsx": "1b43b78552e58f783a646b659e10b52ed80d06dafc2c2b10d682efb5f25b7046"
+}

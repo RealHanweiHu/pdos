@@ -1,0 +1,7 @@
+{
+  "reason": "verification script edit failed before launch; obsolete category-mode request stopped through normal API",
+  "at": "2026-10-07T03:08:34.723820+00:00",
+  "response": {
+    "status": "stop_requested"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "source": "actual Next + FastAPI + isolated PostgreSQL; one injected lost transport response after real commit",
+  "preview": {
+    "humanReadable": true,
+    "fullContentInDetails": true
+  },
+  "desktop": {
+    "documentWidth": 1280,
+    "heading": [
+      "搜索对象",
+      "提案管道",
+      "品类矩阵",
+      "先核对现有型号",
+      "我的运行历史"
+    ],
+    "theme": "light",
+    "width": 1280
+  },
+  "narrow": {
+    "width": 320,
+    "documentWidth": 320,
+    "editorWidth": 270,
+    "checkboxWidth": 16,
+    "checkboxHeight": 16,
+    "matrixTableWidth": 660,
+    "matrixContainerWidth": 262,
+    "themes": [
+      "light",
+      "dark"
+    ]
+  },
+  "recovery": {
+    "noAutomaticPostAfterReload": true,
+    "currentReadVersion": 2,
+    "originalRequestVersion": 1,
+    "receipt": "f636af07-b7a5-450c-9fd3-cd1db777efbd"
+  },
+  "fixedSegment": {
+    "label": "合成浏览器汽车应急",
+    "version": 1
+  },
+  "price": {
+    "amount": "150.000000000001",
+    "currency": "CNY",
+    "band": "[150, 300)"
+  },
+  "initialFailuresRetained": [
+    "unscoped command path",
+    "checkbox inherited input width",
+    "nested source repeated on full roundtrip"
+  ],
+  "screenshots": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-competitor-segments-20261017"
+}

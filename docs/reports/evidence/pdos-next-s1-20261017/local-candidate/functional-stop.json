@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-17T08:34:00.467536+00:00",
+  "reason": "Observed multiple failures; collect this failure batch before continuing the candidate regression",
+  "observed_failure_markers": 7,
+  "pid": 99244,
+  "signal": "SIGINT",
+  "full_regression_passed": false
+}

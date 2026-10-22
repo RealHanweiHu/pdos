@@ -1,0 +1,37 @@
+[
+  {
+    "path": "server/app/domain/product_workspace.py",
+    "sha256": "b0a31b5f0d003f445debfbf3558d1e2596b84578855c19a7c1ec521c8fac74a4"
+  },
+  {
+    "path": "server/app/domain/product_catalog.py",
+    "sha256": "b170cb900805411a6f2cfe288139cd71e3ee0245a192e3a75d0fedf407f1c432"
+  },
+  {
+    "path": "server/tests/test_category_lifecycle_api.py",
+    "sha256": "2c6c07c2770356e8fba888b27f894c9a27a75ad5af84f27c0f6f22e58a6f3daf"
+  },
+  {
+    "path": "web/src/components/product-work/product-workspace.tsx",
+    "sha256": "a9762b7a8ea4e2b0d06281fd47bae6d5ae22cab3ea8a69a6e5bb24b482466628",
+    "runtime_snapshot_matches": true
+  },
+  {
+    "path": "web/src/components/product-work/product-work-api.ts",
+    "sha256": "5e6f8e96762d8286d909c50e25a814ded10df1a4b73a6c5048010ca9df19e038",
+    "runtime_snapshot_matches": true
+  },
+  {
+    "path": "web/src/components/product-work/product-workspace.test.tsx",
+    "sha256": "db9b76458cdf2cf786cf8a59fe833e4155848e71053b6f68edeab5ba1fd0db3a"
+  },
+  {
+    "path": "web/src/components/product-work/category-lifecycle-action.tsx",
+    "sha256": "a1c7222420b8d8f703930628832f46311154623ab4a4bd096b5cba1373158b81",
+    "runtime_snapshot_matches": true
+  },
+  {
+    "path": "web/src/components/product-work/category-lifecycle-action.test.tsx",
+    "sha256": "2a9a340578e9b25d484c4cb43747f45a661c2863df0fb8f1046875ab34b76fd4"
+  }
+]

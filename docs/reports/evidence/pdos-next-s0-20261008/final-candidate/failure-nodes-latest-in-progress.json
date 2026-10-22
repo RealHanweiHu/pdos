@@ -1,0 +1,535 @@
+{
+  "observed": 3351,
+  "collected": 5257,
+  "not_final": true,
+  "failures": [
+    {
+      "node": "tests/change_coverage_transactions/test_fences.py::test_actual_publisher_a_reader_b_fenced_until_transaction_end",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/change_coverage_transactions/test_fences.py::test_actual_pending_grant_revocation_never_reset_by_fresh_lock[can_write]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/change_coverage_transactions/test_fences.py::test_actual_pending_grant_revocation_never_reset_by_fresh_lock[expires_at]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/change_coverage_transactions/test_fences.py::test_actual_pending_grant_revocation_never_reset_by_fresh_lock[access_epoch]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/change_scope_only/test_scope.py::test_list_history_uses_scope_only_seed_without_complete_seed_walk",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_research_needs_no_product_project_or_placeholder",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change0-SCOPE_BINDING_REQUIRED]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change1-SCOPE_BINDING_REQUIRED]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_scope_and_ai_guards[change4-CAPABILITY_DISABLED]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_research_scope_and_private_owner_never_widen[change3]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_same_id_different_payload_rejected_without_partial_record",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_partial_import_keeps_omitted_and_missing_with_explicit_reason",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_current_sources_rechecked_on_inspect_preview_and_handoff[changes4-INTEGRITY_MISMATCH]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[product_version]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[selection_reason]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[verdict]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_preview_change_prevents_owner_write[policy]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_ports_unavailable_never_simulate_success",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_original_page_cell_mapping_and_version_are_current_not_claimed",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_payload_current_source_quote_substitution_and_ambiguous_mapping_rejected",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_source_package_mapping_limit_is_explicit_no_silent_truncation",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/discovery/test_discovery.py::test_wrong_group_choice_is_rejected_not_silently_resolved",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_only_url_and_context_bind_roots_and_opaque_proof_stays_private",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[tenant_id]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[product_id]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[build_id]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[scope]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[owner_id]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[actor_id]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[authority]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[source_read_set]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[opaque_token]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[basis]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[accepted]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[command_id]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?resource_id=x]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?revision=1]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?fact_id=x&fact_id=x]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[missing_process]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[bool_revision]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[string_revision]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[float_quantity]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[bad_window]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[nested_authority]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[partial_fact]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[wrong_kind]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_historical_fact_and_exact_resource_are_passed_without_selecting_current",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_complete_20_source_readset_and_relation_originals_are_preserved",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[FORBIDDEN_SCOPE-403]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[RESOURCE_RECHECK_REQUIRED-409]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[RESOURCE_PEOPLE_NOWAIT_REQUIRED-503]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_failed_authentication_never_opens_tenant_uow",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_api/test_routes.py::test_real_owner_rejects_agent_context_before_any_owner_io",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_native_transactions/test_native_read.py::test_native_source_current_owner_refresh_and_authenticated_post_have_no_effects",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/manufacturing_resource_transactions/test_locks.py::test_actual_mvcc_read_returns_prior_asset_while_global_clock_blocks_writer",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/manufacturing_resource_transactions/test_locks.py::test_actual_outer_clock_people_nowait_rolls_back_uow_and_releases_writer",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/manufacturing_resource_transactions/test_locks.py::test_actual_same_uow_asset_aba_keeps_mirror_but_advances_exact_clock",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/manufacturing_resource_transactions/test_locks.py::test_actual_asset_counter_reset_refused_and_whole_uow_unchanged",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>0]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>1]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>2]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>3]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>4]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>5]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>6]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>7]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_http_failures_are_bounded_and_not_retried[302-PROVIDER_REDIRECT_DENIED-settle]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_http_failures_are_bounded_and_not_retried[401-PROVIDER_REQUEST_REJECTED-settle]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_http_failures_are_bounded_and_not_retried[429-PROVIDER_RATE_LIMITED-settle]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_http_failures_are_bounded_and_not_retried[503-PROVIDER_SERVER_ERROR-unknown]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_timeout_records_unknown_and_same_call_cannot_be_resent",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_invalid_usage_or_response_is_unknown[<lambda>0]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_invalid_usage_or_response_is_unknown[<lambda>1]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_invalid_usage_or_response_is_unknown[<lambda>2]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes0]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes1]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes2]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes3]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes4]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes5]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes6]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes7]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes8]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes9]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_response_size_bound_rejects_without_leaking_source",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_anthropic_nonfinal_or_nontext_content_is_never_a_claim[max_tokens-blocks0-PROVIDER_OUTPUT_TRUNCATED]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_anthropic_nonfinal_or_nontext_content_is_never_a_claim[refusal-blocks1-PROVIDER_REFUSAL]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_anthropic_nonfinal_or_nontext_content_is_never_a_claim[tool_use-blocks2-PROVIDER_INVALID_RESPONSE]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_anthropic_nonfinal_or_nontext_content_is_never_a_claim[end_turn-blocks3-PROVIDER_INVALID_RESPONSE]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_anthropic_nonfinal_or_nontext_content_is_never_a_claim[end_turn-blocks4-PROVIDER_INVALID_RESPONSE]",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_persistent_port_blocks_unknown_call_across_gateway_instances",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_compressed_response_is_refused_before_unbounded_decompression",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/providers/test_claim_gateway.py::test_duplicate_provider_json_keys_are_rejected_as_unknown",
+      "outcome": "F"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_historical_consumed_bool_without_real_marker_cannot_be_used",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_record_needs_immediate_unflushed_actual_transition[deleted0-added0]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_record_needs_immediate_unflushed_actual_transition[deleted1-added1]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_record_needs_immediate_unflushed_actual_transition[deleted2-added2]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_record_rejects_detached_or_transient_object",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_repeat_assertion_returns_same_actual_uuid_without_consumption_or_preview",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_marker_cannot_cross_commit_rollback_savepoint_or_session[transaction]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_marker_cannot_cross_commit_rollback_savepoint_or_session[inactive]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_marker_cannot_cross_commit_rollback_savepoint_or_session[nested]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_marker_cannot_cross_commit_rollback_savepoint_or_session[another_session]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_actual_provenance_is_bound_to_exact_command_material_and_tier[command_id]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_actual_provenance_is_bound_to_exact_command_material_and_tier[idempotency_key]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_actual_provenance_is_bound_to_exact_command_material_and_tier[readset]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_actual_provenance_is_bound_to_exact_command_material_and_tier[payload]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_actual_provenance_is_bound_to_exact_command_material_and_tier[tier]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_changed_confirmation_record_is_not_reusable[subject_id]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_changed_confirmation_record_is_not_reusable[revision]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_changed_confirmation_record_is_not_reusable[actor_id]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_changed_confirmation_record_is_not_reusable[consumed]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_changed_confirmation_record_is_not_reusable[snapshot]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_final_assertion_rechecks_real_expiry_and_current_principal",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_product_confirmation_does_not_accept_issue_id_as_subject",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_real_orm_transition_is_recorded_without_any_connection_or_sql",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_cross_actor_or_ai_identity_cannot_assert_human_marker",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_append_preserves_fixed_old_issue_and_continuously_updates_current_once",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_append_rejects_cas_scope_intent_preview_or_incomplete_sources_before_writing[pointer]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_append_rejects_cas_scope_intent_preview_or_incomplete_sources_before_writing[scope]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_append_rejects_cas_scope_intent_preview_or_incomplete_sources_before_writing[intent]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_append_rejects_cas_scope_intent_preview_or_incomplete_sources_before_writing[preview]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_append_rejects_cas_scope_intent_preview_or_incomplete_sources_before_writing[reads]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_append_rejects_cas_scope_intent_preview_or_incomplete_sources_before_writing[proof]",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_host/test_pure.py::test_compatible_same_command_cannot_append_after_own_success",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_root/test_expired_recovery.py::test_expired_followup_proof_has_bound_no_saved_repreview_and_saved_replay",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_root/test_savepoint.py::test_actual_followup_savepoint_commits_and_orphan_consumption_rolls_back",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_transactions/test_capa_fact_flow.py::test_actual_candidate_rule_and_observation_keep_complete_sources_current_and_receipt",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_t2_named_root_cause_uses_actual_common_uuid_and_atomic_shared_receipt",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_real_consumption_marker_requires_no_sql_gap_and_cannot_cross_transaction",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution",
+      "outcome": "E"
+    },
+    {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.issue.root_cause.decide]",
+      "outcome": "E"
+    }
+  ]
+}

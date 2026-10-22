@@ -1,0 +1,82 @@
+{
+  "status": "PASS",
+  "scope": "Postcheck only; exact retained up/down/up/schema log binding",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "tool_sha256": "6695f4f191bb1b73c069b4974f03637a9d225ff1e7e326e85fda20a2f0c5c5dd",
+  "roundtrip_result_sha256": "cc3b0c1d621f985fd428832d08424851e2b9ed5069b05080bf7c2673b961babe",
+  "roundtrip_steps": [
+    {
+      "step": [
+        "upgrade",
+        "next_0026"
+      ],
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": [
+        "downgrade",
+        "next_0025"
+      ],
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": [
+        "upgrade",
+        "next_0026"
+      ],
+      "exit_code": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "step": [
+        "check"
+      ],
+      "exit_code": 0,
+      "log_sha256": "43d345b67ace77ab8c4cbf575a3baddf66e8623cf7d1e0b78e602b1d641ecf50"
+    }
+  ],
+  "source_sha256": {
+    "pdos_next/models.py": "9e34f7a30834fa3576cca9737b6996a12d35c8ad06b12c445aaf1de46f7c7482",
+    "pdos_next/lifecycle_catalog.py": "429b26ad4bc5985992a5a23322186fa79b4fbf8560824863e649ce816b2cec46",
+    "pdos_next/domain/capa_effectiveness/models.py": "490cd7258e0c920ef51f0cff593c86aff197fb254323af859113934af5ae1e6f",
+    "pdos_next/domain/capa_effectiveness/fact_storage_models.py": "77cde6bac7d5c49b109a44d8540e4fba476fa52c1853317f25182afb813108fe",
+    "pdos_next/domain/capa_effectiveness/fact_storage_codec.py": "9c8a5fe2acc9878eb394812c61f0583fc697e89a1c531093c83ef061c61b1ba8",
+    "pdos_next/domain/capa_effectiveness/facts.py": "6110e8683420833a8188af34c076a075ebbd46993e351beb890325926b45a7f5",
+    "pdos_next/domain/capa_effectiveness/anchor.py": "2db9d275a2718fd1d0449e33372c3c2876fb73523c2120968e32f9fef70e7c82",
+    "pdos_next/domain/capa_effectiveness/paired.py": "4df6e7a2c734d5bc8dcf3f586fb7cec1d2fc637f6e77dd83bd1ce0bba3fd1be1",
+    "migrations/versions/0026_capa_verification_facts.py": "2229809083a26528a9122e596c69a31c615218a0c44ced7cfd39fdb64b05c053"
+  },
+  "retained_before_sha256": "d727e9ed4a71ad81d18890366742944a7b69688894da06c88e45723124e80233",
+  "business_fact_writes": 0,
+  "model_calls": 0,
+  "migration_rerun": false,
+  "head": "next_0026",
+  "retained_tables": 106,
+  "all_retained_rows_unchanged": true,
+  "public_tables": 111,
+  "runtime_catalog_database_column_names_match": true,
+  "new_five_column_order_match": true,
+  "retained_physical_order_differences": [
+    "principals",
+    "products",
+    "grants",
+    "artifact_versions",
+    "work_requests",
+    "runs",
+    "outbox_events",
+    "confirmations",
+    "model_invocations",
+    "model_budget_reservations",
+    "operational_resource_occupancies"
+  ],
+  "five_force_rls": true,
+  "five_enabled_lifecycle_gates": true,
+  "actual_schema_covered": true,
+  "agent_direct_privileges": 0,
+  "new_fact_publication": false,
+  "source_stable": true,
+  "observed_at": "2026-10-03T12:40:48.348693+00:00"
+}

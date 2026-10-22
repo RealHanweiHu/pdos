@@ -1,0 +1,6353 @@
+{
+  "schema_version": "pdos-root-current-read-profile-v2",
+  "case_label": "wave27_real_flow",
+  "elapsed_ns": 505542949292,
+  "scope": {
+    "root_thread_only": false,
+    "worker_threads_explicitly_enabled": true,
+    "worker_owner_requires_exact_session_engine_binding": true,
+    "worker_sections_are_unattributed_never_inherit_root_section": true,
+    "sql_pairs_use_thread_connection_execution_context": true,
+    "concurrent_owner_durations_can_exceed_wall_time": true,
+    "same_actual_engine_only": true,
+    "source_bindings_captured_before_install": true,
+    "sections_are_explicit_labels_not_inferred_sleep": true,
+    "nested_inclusive_durations_overlap_do_not_sum": true,
+    "instrumentation_overhead_is_included": true,
+    "existing_local_aliases_may_bypass_wrapped_module_attributes": true,
+    "no_domain_clock_transaction_return_value_owner_read_set_changed": true,
+    "sql_params_text_rows_credentials_emitted": false
+  },
+  "source_bindings": {
+    "physical._basis": {
+      "module": "pdos_next.domain.verification_handoff.service",
+      "qualname": "_basis",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_handoff/service.py",
+      "file_sha256": "d1e222468c379366cd7eeacdeec110ea75dcd9720051990163111ea58592c424"
+    },
+    "physical._inspect": {
+      "module": "pdos_next.domain.verification_handoff.service",
+      "qualname": "_inspect",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_handoff/service.py",
+      "file_sha256": "d1e222468c379366cd7eeacdeec110ea75dcd9720051990163111ea58592c424"
+    },
+    "front._recheck": {
+      "module": "pdos_next.domain.verification_front.service",
+      "qualname": "_recheck",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_front/service.py",
+      "file_sha256": "dcb1196a83cd28fbb3a41e53322c75a2ee9ecb83520ebbf6b5472d0dd491293c"
+    },
+    "resources._load": {
+      "module": "pdos_next.domain.test_resources.service",
+      "qualname": "_load",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/service.py",
+      "file_sha256": "a588bdef2d51375d17f6b0caf4534d89ce3ba4fc7aecf893ed20bac350a32d03"
+    },
+    "retained.inspect": {
+      "module": "pdos_next.domain.test_resources.retained",
+      "qualname": "inspect_retained_execution",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/retained.py",
+      "file_sha256": "aa8179e86d2766daafa2910a9fb2e08c290d9a9e34f3fbe34d68b9c88d591716"
+    }
+  },
+  "profiler_sha256": "7342f055e7bff7ae6be0d5c96d3e231c67d16140d33095db3ab70c1f4dc0a4cd",
+  "owners": {
+    "front._recheck": {
+      "calls": 166,
+      "failures": 0,
+      "inclusive_ns": 12592303997,
+      "exclusive_ns": 12592303997
+    },
+    "physical._basis": {
+      "calls": 176,
+      "failures": 0,
+      "inclusive_ns": 8329370425,
+      "exclusive_ns": 8329370425
+    },
+    "physical._inspect": {
+      "calls": 33,
+      "failures": 0,
+      "inclusive_ns": 57216283957,
+      "exclusive_ns": 57216283957
+    },
+    "resources._load": {
+      "calls": 60,
+      "failures": 0,
+      "inclusive_ns": 139912283713,
+      "exclusive_ns": 133045869372
+    },
+    "retained.inspect": {
+      "calls": 2,
+      "failures": 0,
+      "inclusive_ns": 6019383917,
+      "exclusive_ns": 351437793
+    }
+  },
+  "sections": {
+    "actual_start_preview": {
+      "calls": 1,
+      "inclusive_ns": 12211062458,
+      "exclusive_ns": 12211062458
+    },
+    "actual_start_response_loss": {
+      "calls": 1,
+      "inclusive_ns": 42289627667,
+      "exclusive_ns": 42289627667
+    },
+    "api_precommit_fault": {
+      "calls": 1,
+      "inclusive_ns": 42718951125,
+      "exclusive_ns": 42718951125
+    },
+    "deferred_sql_negatives": {
+      "calls": 1,
+      "inclusive_ns": 83379354958,
+      "exclusive_ns": 83379354958
+    },
+    "future_window_wait": {
+      "calls": 1,
+      "inclusive_ns": 216315069917,
+      "exclusive_ns": 216315069917
+    },
+    "original_request_recovery": {
+      "calls": 1,
+      "inclusive_ns": 12973068208,
+      "exclusive_ns": 12973068208
+    },
+    "plan_promise": {
+      "calls": 1,
+      "inclusive_ns": 81754025542,
+      "exclusive_ns": 81754025542
+    }
+  },
+  "query_count": 104191,
+  "queries": [
+    {
+      "statement_sha256": "00cae2066e01718411153ca36358a8dbe3bdbb1ceddeac66812197d2dbc0262a",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 26332956
+    },
+    {
+      "statement_sha256": "00cae2066e01718411153ca36358a8dbe3bdbb1ceddeac66812197d2dbc0262a",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 138639251
+    },
+    {
+      "statement_sha256": "00cae2066e01718411153ca36358a8dbe3bdbb1ceddeac66812197d2dbc0262a",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2196916
+    },
+    {
+      "statement_sha256": "00cae2066e01718411153ca36358a8dbe3bdbb1ceddeac66812197d2dbc0262a",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 16169499
+    },
+    {
+      "statement_sha256": "00cae2066e01718411153ca36358a8dbe3bdbb1ceddeac66812197d2dbc0262a",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 29,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 50571876
+    },
+    {
+      "statement_sha256": "0423a738c3f9fd8e3b5495d7feb2cf19bdb14dbc91f1a114688f4a2c60f675e5",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 143539132
+    },
+    {
+      "statement_sha256": "0423a738c3f9fd8e3b5495d7feb2cf19bdb14dbc91f1a114688f4a2c60f675e5",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 250,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 511042045
+    },
+    {
+      "statement_sha256": "0423a738c3f9fd8e3b5495d7feb2cf19bdb14dbc91f1a114688f4a2c60f675e5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 200,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 319975124
+    },
+    {
+      "statement_sha256": "0423a738c3f9fd8e3b5495d7feb2cf19bdb14dbc91f1a114688f4a2c60f675e5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 380,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 662301918
+    },
+    {
+      "statement_sha256": "0423a738c3f9fd8e3b5495d7feb2cf19bdb14dbc91f1a114688f4a2c60f675e5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 26393413
+    },
+    {
+      "statement_sha256": "0423a738c3f9fd8e3b5495d7feb2cf19bdb14dbc91f1a114688f4a2c60f675e5",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 88,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 127679873
+    },
+    {
+      "statement_sha256": "0423a738c3f9fd8e3b5495d7feb2cf19bdb14dbc91f1a114688f4a2c60f675e5",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 254,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 353607796
+    },
+    {
+      "statement_sha256": "04da8930b263d28f5bdfab090259785778d60ccf70196073ef090d5f81ddc4bc",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5544834
+    },
+    {
+      "statement_sha256": "05cff2e345880250822f23b13ef634cd6dc4f37209190c3790511c8b03d78808",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2865000
+    },
+    {
+      "statement_sha256": "05cff2e345880250822f23b13ef634cd6dc4f37209190c3790511c8b03d78808",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1952709
+    },
+    {
+      "statement_sha256": "0873ca98625d695e31bb5c30a405cab45680067f82c66c6fe173b9538752f9fb",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2727917
+    },
+    {
+      "statement_sha256": "0873ca98625d695e31bb5c30a405cab45680067f82c66c6fe173b9538752f9fb",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 16564626
+    },
+    {
+      "statement_sha256": "0a8912926dccb7d7c89a68fbe4d615aef37de4947ffcb5d30b9b6fae2ff79bf7",
+      "verb": "INSERT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8373750
+    },
+    {
+      "statement_sha256": "0a8912926dccb7d7c89a68fbe4d615aef37de4947ffcb5d30b9b6fae2ff79bf7",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 18943585
+    },
+    {
+      "statement_sha256": "0b6aadc5f991c8ac1910ab722ccc54a9e2b3b62fb85366126f3406f56dc4ee74",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 32,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 122953837
+    },
+    {
+      "statement_sha256": "0b6aadc5f991c8ac1910ab722ccc54a9e2b3b62fb85366126f3406f56dc4ee74",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 100,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 131953995
+    },
+    {
+      "statement_sha256": "0b6aadc5f991c8ac1910ab722ccc54a9e2b3b62fb85366126f3406f56dc4ee74",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 126073707
+    },
+    {
+      "statement_sha256": "0b6aadc5f991c8ac1910ab722ccc54a9e2b3b62fb85366126f3406f56dc4ee74",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 152,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 285652331
+    },
+    {
+      "statement_sha256": "0b6aadc5f991c8ac1910ab722ccc54a9e2b3b62fb85366126f3406f56dc4ee74",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 16066290
+    },
+    {
+      "statement_sha256": "0b6aadc5f991c8ac1910ab722ccc54a9e2b3b62fb85366126f3406f56dc4ee74",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 40,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 52767042
+    },
+    {
+      "statement_sha256": "0b6aadc5f991c8ac1910ab722ccc54a9e2b3b62fb85366126f3406f56dc4ee74",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 116,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 161753915
+    },
+    {
+      "statement_sha256": "0e7640fa555646964bef9fadc28aecdb4065608fc82eb161012de2713b7fe5be",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 21642541
+    },
+    {
+      "statement_sha256": "0e7640fa555646964bef9fadc28aecdb4065608fc82eb161012de2713b7fe5be",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 46377541
+    },
+    {
+      "statement_sha256": "0e7640fa555646964bef9fadc28aecdb4065608fc82eb161012de2713b7fe5be",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 38890458
+    },
+    {
+      "statement_sha256": "0e7640fa555646964bef9fadc28aecdb4065608fc82eb161012de2713b7fe5be",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 77443833
+    },
+    {
+      "statement_sha256": "0e7640fa555646964bef9fadc28aecdb4065608fc82eb161012de2713b7fe5be",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9407959
+    },
+    {
+      "statement_sha256": "0e7640fa555646964bef9fadc28aecdb4065608fc82eb161012de2713b7fe5be",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 18133751
+    },
+    {
+      "statement_sha256": "0e7640fa555646964bef9fadc28aecdb4065608fc82eb161012de2713b7fe5be",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 29,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 41585081
+    },
+    {
+      "statement_sha256": "0f1585c72de7ea507e3af553fc0dddd2848ef0a2ad13a8464a07016e18c54853",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 68900541
+    },
+    {
+      "statement_sha256": "0f1585c72de7ea507e3af553fc0dddd2848ef0a2ad13a8464a07016e18c54853",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 75,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 466361416
+    },
+    {
+      "statement_sha256": "0f1585c72de7ea507e3af553fc0dddd2848ef0a2ad13a8464a07016e18c54853",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 60,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 275342247
+    },
+    {
+      "statement_sha256": "0f1585c72de7ea507e3af553fc0dddd2848ef0a2ad13a8464a07016e18c54853",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 114,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 442612049
+    },
+    {
+      "statement_sha256": "0f1585c72de7ea507e3af553fc0dddd2848ef0a2ad13a8464a07016e18c54853",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 23526209
+    },
+    {
+      "statement_sha256": "0f1585c72de7ea507e3af553fc0dddd2848ef0a2ad13a8464a07016e18c54853",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 30,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 89613251
+    },
+    {
+      "statement_sha256": "0f1585c72de7ea507e3af553fc0dddd2848ef0a2ad13a8464a07016e18c54853",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 87,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 443396340
+    },
+    {
+      "statement_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "deferred_sql_negatives",
+      "count": 46,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 57256582
+    },
+    {
+      "statement_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unattributed",
+      "count": 114,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 175191199
+    },
+    {
+      "statement_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 13653290
+    },
+    {
+      "statement_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 72,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 99409045
+    },
+    {
+      "statement_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 225,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 337688044
+    },
+    {
+      "statement_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 200,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 448853457
+    },
+    {
+      "statement_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 380,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 664018930
+    },
+    {
+      "statement_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 22,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 28564458
+    },
+    {
+      "statement_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 90,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 281960953
+    },
+    {
+      "statement_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 261,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 394038378
+    },
+    {
+      "statement_sha256": "10d8a685a5381b786278308e57317844c7bd198f87da91207d0e6487c9e79e05",
+      "verb": "INSERT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6064458
+    },
+    {
+      "statement_sha256": "10d8a685a5381b786278308e57317844c7bd198f87da91207d0e6487c9e79e05",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3182292
+    },
+    {
+      "statement_sha256": "1204c1e041d0b3c4963f60cd82523057c69d479168f06daafa5169c460df64d5",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2350124
+    },
+    {
+      "statement_sha256": "1204c1e041d0b3c4963f60cd82523057c69d479168f06daafa5169c460df64d5",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 16267209
+    },
+    {
+      "statement_sha256": "122933d3aea44253d12aa0ed45395c1cd76c1bd8d8a96b033f3ac94b1a2a9ed2",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 50037836
+    },
+    {
+      "statement_sha256": "122933d3aea44253d12aa0ed45395c1cd76c1bd8d8a96b033f3ac94b1a2a9ed2",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 26,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 127066462
+    },
+    {
+      "statement_sha256": "122933d3aea44253d12aa0ed45395c1cd76c1bd8d8a96b033f3ac94b1a2a9ed2",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 22,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 41581210
+    },
+    {
+      "statement_sha256": "122933d3aea44253d12aa0ed45395c1cd76c1bd8d8a96b033f3ac94b1a2a9ed2",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 67,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 105612458
+    },
+    {
+      "statement_sha256": "12a5164247581f9a03993407627bfd3f88fc5e08c384975be86cdcb75d919180",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6016791
+    },
+    {
+      "statement_sha256": "13e6a15a4c3e7e01c2e3efde10d5419fb1de751ccf30ad7091cfafada037d0e1",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 18896874
+    },
+    {
+      "statement_sha256": "13e6a15a4c3e7e01c2e3efde10d5419fb1de751ccf30ad7091cfafada037d0e1",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 52985669
+    },
+    {
+      "statement_sha256": "13e6a15a4c3e7e01c2e3efde10d5419fb1de751ccf30ad7091cfafada037d0e1",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 43295959
+    },
+    {
+      "statement_sha256": "13e6a15a4c3e7e01c2e3efde10d5419fb1de751ccf30ad7091cfafada037d0e1",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 108831914
+    },
+    {
+      "statement_sha256": "13e6a15a4c3e7e01c2e3efde10d5419fb1de751ccf30ad7091cfafada037d0e1",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11226291
+    },
+    {
+      "statement_sha256": "13e6a15a4c3e7e01c2e3efde10d5419fb1de751ccf30ad7091cfafada037d0e1",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3676499
+    },
+    {
+      "statement_sha256": "13e6a15a4c3e7e01c2e3efde10d5419fb1de751ccf30ad7091cfafada037d0e1",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6738750
+    },
+    {
+      "statement_sha256": "14c4999733cbc5412499b7af96385f3b50855985a3aba43fd3a583e6b00dbebf",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 60,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 96792669
+    },
+    {
+      "statement_sha256": "14c4999733cbc5412499b7af96385f3b50855985a3aba43fd3a583e6b00dbebf",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 114,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 180002876
+    },
+    {
+      "statement_sha256": "14c4999733cbc5412499b7af96385f3b50855985a3aba43fd3a583e6b00dbebf",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6504666
+    },
+    {
+      "statement_sha256": "14c4999733cbc5412499b7af96385f3b50855985a3aba43fd3a583e6b00dbebf",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 14848167
+    },
+    {
+      "statement_sha256": "14c4999733cbc5412499b7af96385f3b50855985a3aba43fd3a583e6b00dbebf",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9353876
+    },
+    {
+      "statement_sha256": "14c4999733cbc5412499b7af96385f3b50855985a3aba43fd3a583e6b00dbebf",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 41755459
+    },
+    {
+      "statement_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "deferred_sql_negatives",
+      "count": 46,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 78021957
+    },
+    {
+      "statement_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unattributed",
+      "count": 114,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 167128794
+    },
+    {
+      "statement_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7667875
+    },
+    {
+      "statement_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 72,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 110655538
+    },
+    {
+      "statement_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 225,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 295246292
+    },
+    {
+      "statement_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 200,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 392995660
+    },
+    {
+      "statement_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 380,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 665663499
+    },
+    {
+      "statement_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 22,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 25851583
+    },
+    {
+      "statement_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 90,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 130538295
+    },
+    {
+      "statement_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 261,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 541924537
+    },
+    {
+      "statement_sha256": "15e5bc2448cb14c7c853ce7f777a34771d7fc8e59d00a0c131a3844ff5250d76",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4941542
+    },
+    {
+      "statement_sha256": "1926fa570c264da9700bd40d6ac7b58616d677d5e68a48399d5d5ac6adb3acfd",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9611876
+    },
+    {
+      "statement_sha256": "1926fa570c264da9700bd40d6ac7b58616d677d5e68a48399d5d5ac6adb3acfd",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 53531665
+    },
+    {
+      "statement_sha256": "1926fa570c264da9700bd40d6ac7b58616d677d5e68a48399d5d5ac6adb3acfd",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 31678041
+    },
+    {
+      "statement_sha256": "1926fa570c264da9700bd40d6ac7b58616d677d5e68a48399d5d5ac6adb3acfd",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 77010915
+    },
+    {
+      "statement_sha256": "1926fa570c264da9700bd40d6ac7b58616d677d5e68a48399d5d5ac6adb3acfd",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2405875
+    },
+    {
+      "statement_sha256": "1926fa570c264da9700bd40d6ac7b58616d677d5e68a48399d5d5ac6adb3acfd",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 22236041
+    },
+    {
+      "statement_sha256": "1926fa570c264da9700bd40d6ac7b58616d677d5e68a48399d5d5ac6adb3acfd",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 29,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 41526544
+    },
+    {
+      "statement_sha256": "1fc6949af440492b1591275979fed3fc1af1b7db7875b845ff5b1140f85ba05e",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10549876
+    },
+    {
+      "statement_sha256": "20eed89159e729729f704a3e50575b21438906106f0e246ab362371d77fcb580",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3939166
+    },
+    {
+      "statement_sha256": "20eed89159e729729f704a3e50575b21438906106f0e246ab362371d77fcb580",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9692333
+    },
+    {
+      "statement_sha256": "239e3366b64ed47cf62b8762fc6f7b0387e9602559ef79cdec66e8a066498f13",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4137792
+    },
+    {
+      "statement_sha256": "239e3366b64ed47cf62b8762fc6f7b0387e9602559ef79cdec66e8a066498f13",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 12663750
+    },
+    {
+      "statement_sha256": "239e3366b64ed47cf62b8762fc6f7b0387e9602559ef79cdec66e8a066498f13",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 38120751
+    },
+    {
+      "statement_sha256": "2606077ad99f4436815f22ce945aa87ed1ead9522f00cfd6de31c31211c2494a",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 17327584
+    },
+    {
+      "statement_sha256": "2606077ad99f4436815f22ce945aa87ed1ead9522f00cfd6de31c31211c2494a",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 65465373
+    },
+    {
+      "statement_sha256": "2606077ad99f4436815f22ce945aa87ed1ead9522f00cfd6de31c31211c2494a",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 72702789
+    },
+    {
+      "statement_sha256": "2606077ad99f4436815f22ce945aa87ed1ead9522f00cfd6de31c31211c2494a",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 116805414
+    },
+    {
+      "statement_sha256": "2606077ad99f4436815f22ce945aa87ed1ead9522f00cfd6de31c31211c2494a",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 83026750
+    },
+    {
+      "statement_sha256": "2606077ad99f4436815f22ce945aa87ed1ead9522f00cfd6de31c31211c2494a",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 34163167
+    },
+    {
+      "statement_sha256": "2606077ad99f4436815f22ce945aa87ed1ead9522f00cfd6de31c31211c2494a",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 29,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 86259046
+    },
+    {
+      "statement_sha256": "27b3fc7b106465f15c3072225b2da1bc2cd5e4cea3399cb1603353e9e7d61c22",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3139083
+    },
+    {
+      "statement_sha256": "27b3fc7b106465f15c3072225b2da1bc2cd5e4cea3399cb1603353e9e7d61c22",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2188833
+    },
+    {
+      "statement_sha256": "28f96931ad06ada4ecb5c4bda5657709248794ac522ee0573364b3bac604a53e",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2780375
+    },
+    {
+      "statement_sha256": "28f96931ad06ada4ecb5c4bda5657709248794ac522ee0573364b3bac604a53e",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9657541
+    },
+    {
+      "statement_sha256": "28f96931ad06ada4ecb5c4bda5657709248794ac522ee0573364b3bac604a53e",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 19,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 34697458
+    },
+    {
+      "statement_sha256": "29b09de4e17a27c5005cd5840cf26508049359a36d795673976081353d35dd65",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 12273458
+    },
+    {
+      "statement_sha256": "29b09de4e17a27c5005cd5840cf26508049359a36d795673976081353d35dd65",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 28929791
+    },
+    {
+      "statement_sha256": "29b09de4e17a27c5005cd5840cf26508049359a36d795673976081353d35dd65",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 32147416
+    },
+    {
+      "statement_sha256": "29b09de4e17a27c5005cd5840cf26508049359a36d795673976081353d35dd65",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 46448502
+    },
+    {
+      "statement_sha256": "29b09de4e17a27c5005cd5840cf26508049359a36d795673976081353d35dd65",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3736042
+    },
+    {
+      "statement_sha256": "29b09de4e17a27c5005cd5840cf26508049359a36d795673976081353d35dd65",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 19670792
+    },
+    {
+      "statement_sha256": "29b09de4e17a27c5005cd5840cf26508049359a36d795673976081353d35dd65",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 29,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 43094000
+    },
+    {
+      "statement_sha256": "2b56b4bcf40d8ce19d7ba1d08d7eaccf340f0f400dc74a2a09bec2443345af5e",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 32,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 36627080
+    },
+    {
+      "statement_sha256": "2b56b4bcf40d8ce19d7ba1d08d7eaccf340f0f400dc74a2a09bec2443345af5e",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 100,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 124355166
+    },
+    {
+      "statement_sha256": "2b56b4bcf40d8ce19d7ba1d08d7eaccf340f0f400dc74a2a09bec2443345af5e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 84,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 199845084
+    },
+    {
+      "statement_sha256": "2b56b4bcf40d8ce19d7ba1d08d7eaccf340f0f400dc74a2a09bec2443345af5e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 140,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 196891415
+    },
+    {
+      "statement_sha256": "2b56b4bcf40d8ce19d7ba1d08d7eaccf340f0f400dc74a2a09bec2443345af5e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7541665
+    },
+    {
+      "statement_sha256": "2b56b4bcf40d8ce19d7ba1d08d7eaccf340f0f400dc74a2a09bec2443345af5e",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 58,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 72282921
+    },
+    {
+      "statement_sha256": "2b56b4bcf40d8ce19d7ba1d08d7eaccf340f0f400dc74a2a09bec2443345af5e",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 175,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 251703753
+    },
+    {
+      "statement_sha256": "2cc4f577cdc96f7682643ecca33aa6a7b99798283bd70260b882fd6f3fc5aa39",
+      "verb": "INSERT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5584791
+    },
+    {
+      "statement_sha256": "2cc4f577cdc96f7682643ecca33aa6a7b99798283bd70260b882fd6f3fc5aa39",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11033541
+    },
+    {
+      "statement_sha256": "2cffec6957cc809df5f69636761b41286e05e21bf298b20c74035f2f8ee980d9",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 17619790
+    },
+    {
+      "statement_sha256": "2cffec6957cc809df5f69636761b41286e05e21bf298b20c74035f2f8ee980d9",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 43437748
+    },
+    {
+      "statement_sha256": "2d0a18dc683b26d4e9975abe05134b232b754c59bbc11d58e3c13563cf96bb2e",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2655584
+    },
+    {
+      "statement_sha256": "2d0a18dc683b26d4e9975abe05134b232b754c59bbc11d58e3c13563cf96bb2e",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 13458957
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "deferred_sql_negatives",
+      "count": 184,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 274263660
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unattributed",
+      "count": 456,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 736002962
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 43856165
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "deferred_sql_negatives",
+      "count": 298,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 512718593
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "unattributed",
+      "count": 723,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1097436418
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "unsectioned",
+      "count": 46,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 52872250
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 808,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1302177332
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 2525,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4191209990
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 2260,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4056994449
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 4294,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7517441561
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 238,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 435716715
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 108,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 124208496
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 898,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1639592995
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 2621,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4198566161
+    },
+    {
+      "statement_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "deferred_sql_negatives",
+      "count": 184,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 299039039
+    },
+    {
+      "statement_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unattributed",
+      "count": 456,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1197444129
+    },
+    {
+      "statement_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 35505791
+    },
+    {
+      "statement_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 432,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1006817747
+    },
+    {
+      "statement_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 1350,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2798810886
+    },
+    {
+      "statement_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 1160,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2136593178
+    },
+    {
+      "statement_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 2204,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4275928289
+    },
+    {
+      "statement_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 128,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 216611210
+    },
+    {
+      "statement_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 524,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1146031625
+    },
+    {
+      "statement_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 1516,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3451055712
+    },
+    {
+      "statement_sha256": "375b4761b49678d09b1725fdd6efde55790a4461961352e3116a19e281959b0a",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4802249
+    },
+    {
+      "statement_sha256": "38154a718b34ee709720690321c62d6692ba6dee0b123b0998285077ff1505c7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 33422291
+    },
+    {
+      "statement_sha256": "38154a718b34ee709720690321c62d6692ba6dee0b123b0998285077ff1505c7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 64607918
+    },
+    {
+      "statement_sha256": "38154a718b34ee709720690321c62d6692ba6dee0b123b0998285077ff1505c7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2727750
+    },
+    {
+      "statement_sha256": "3b295db76c059a76f7dd63aa29b10c87948607a04c6f7aeae5f9d908df1bfbda",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 200669786
+    },
+    {
+      "statement_sha256": "3b295db76c059a76f7dd63aa29b10c87948607a04c6f7aeae5f9d908df1bfbda",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 250,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 480847053
+    },
+    {
+      "statement_sha256": "3b295db76c059a76f7dd63aa29b10c87948607a04c6f7aeae5f9d908df1bfbda",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 200,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 303599079
+    },
+    {
+      "statement_sha256": "3b295db76c059a76f7dd63aa29b10c87948607a04c6f7aeae5f9d908df1bfbda",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 380,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 643506514
+    },
+    {
+      "statement_sha256": "3b295db76c059a76f7dd63aa29b10c87948607a04c6f7aeae5f9d908df1bfbda",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 24413789
+    },
+    {
+      "statement_sha256": "3b295db76c059a76f7dd63aa29b10c87948607a04c6f7aeae5f9d908df1bfbda",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 88,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 239645334
+    },
+    {
+      "statement_sha256": "3b295db76c059a76f7dd63aa29b10c87948607a04c6f7aeae5f9d908df1bfbda",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 254,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 543000423
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "deferred_sql_negatives",
+      "count": 184,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 240547166
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unattributed",
+      "count": 456,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 785422759
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 45348584
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "deferred_sql_negatives",
+      "count": 50,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 83689542
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "unattributed",
+      "count": 120,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 206766538
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7224499
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 528,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1080661590
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 1650,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2382035147
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 1520,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2644607340
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 2890,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4912857079
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 166,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 313227243
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 654,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1159309878
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 1881,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3123030543
+    },
+    {
+      "statement_sha256": "404c41d03d898a20eac7294092cdfd16ebb575d0e049746f94c0407a7574a49d",
+      "verb": "UPDATE",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3549000
+    },
+    {
+      "statement_sha256": "404c41d03d898a20eac7294092cdfd16ebb575d0e049746f94c0407a7574a49d",
+      "verb": "UPDATE",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2298000
+    },
+    {
+      "statement_sha256": "40b00d432d94f65dd5b39916d4f086b2188b93cc60b56d98198b8a4b69952558",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 12100625
+    },
+    {
+      "statement_sha256": "40b00d432d94f65dd5b39916d4f086b2188b93cc60b56d98198b8a4b69952558",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 32146667
+    },
+    {
+      "statement_sha256": "40b00d432d94f65dd5b39916d4f086b2188b93cc60b56d98198b8a4b69952558",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 37336623
+    },
+    {
+      "statement_sha256": "40b00d432d94f65dd5b39916d4f086b2188b93cc60b56d98198b8a4b69952558",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 64796169
+    },
+    {
+      "statement_sha256": "40b00d432d94f65dd5b39916d4f086b2188b93cc60b56d98198b8a4b69952558",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2220625
+    },
+    {
+      "statement_sha256": "40b00d432d94f65dd5b39916d4f086b2188b93cc60b56d98198b8a4b69952558",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2481250
+    },
+    {
+      "statement_sha256": "40b00d432d94f65dd5b39916d4f086b2188b93cc60b56d98198b8a4b69952558",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5136917
+    },
+    {
+      "statement_sha256": "46c4e1f497118216807e2b95ce8ae0c25a80519063913f54853a21d4891e5882",
+      "verb": "UPDATE",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 2,
+      "elapsed_ns": 3216124
+    },
+    {
+      "statement_sha256": "46c4e1f497118216807e2b95ce8ae0c25a80519063913f54853a21d4891e5882",
+      "verb": "UPDATE",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 2,
+      "elapsed_ns": 3016709
+    },
+    {
+      "statement_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "deferred_sql_negatives",
+      "count": 46,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 141183587
+    },
+    {
+      "statement_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unattributed",
+      "count": 114,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 160559206
+    },
+    {
+      "statement_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6853083
+    },
+    {
+      "statement_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 72,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 111672792
+    },
+    {
+      "statement_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 225,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 405047661
+    },
+    {
+      "statement_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 200,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 290586623
+    },
+    {
+      "statement_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 380,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 746885556
+    },
+    {
+      "statement_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 22,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 29539878
+    },
+    {
+      "statement_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 82,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 107662999
+    },
+    {
+      "statement_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 239,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 363220997
+    },
+    {
+      "statement_sha256": "47de3f8f69286c96514a0ab105c6e1529902541a1576bf22965d386ba1c5628d",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 16103875
+    },
+    {
+      "statement_sha256": "47de3f8f69286c96514a0ab105c6e1529902541a1576bf22965d386ba1c5628d",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 42706457
+    },
+    {
+      "statement_sha256": "47de3f8f69286c96514a0ab105c6e1529902541a1576bf22965d386ba1c5628d",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 29858289
+    },
+    {
+      "statement_sha256": "47de3f8f69286c96514a0ab105c6e1529902541a1576bf22965d386ba1c5628d",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 72095126
+    },
+    {
+      "statement_sha256": "47de3f8f69286c96514a0ab105c6e1529902541a1576bf22965d386ba1c5628d",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2193707
+    },
+    {
+      "statement_sha256": "47de3f8f69286c96514a0ab105c6e1529902541a1576bf22965d386ba1c5628d",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4363917
+    },
+    {
+      "statement_sha256": "47de3f8f69286c96514a0ab105c6e1529902541a1576bf22965d386ba1c5628d",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7466040
+    },
+    {
+      "statement_sha256": "48c33a8b2000144623a93f3fc5fabfae6ff29c16c76f4b8c917950a81c88232e",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11332999
+    },
+    {
+      "statement_sha256": "48c33a8b2000144623a93f3fc5fabfae6ff29c16c76f4b8c917950a81c88232e",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 47958081
+    },
+    {
+      "statement_sha256": "48c33a8b2000144623a93f3fc5fabfae6ff29c16c76f4b8c917950a81c88232e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 24447249
+    },
+    {
+      "statement_sha256": "48c33a8b2000144623a93f3fc5fabfae6ff29c16c76f4b8c917950a81c88232e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 58800709
+    },
+    {
+      "statement_sha256": "48c33a8b2000144623a93f3fc5fabfae6ff29c16c76f4b8c917950a81c88232e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1896584
+    },
+    {
+      "statement_sha256": "48c33a8b2000144623a93f3fc5fabfae6ff29c16c76f4b8c917950a81c88232e",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 13080125
+    },
+    {
+      "statement_sha256": "48c33a8b2000144623a93f3fc5fabfae6ff29c16c76f4b8c917950a81c88232e",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 29,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 51261048
+    },
+    {
+      "statement_sha256": "4965e70f732d99d946e2465d32a3eb3ebcd85f3141ddd3164867659e2701c2b5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5988208
+    },
+    {
+      "statement_sha256": "4965e70f732d99d946e2465d32a3eb3ebcd85f3141ddd3164867659e2701c2b5",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 20542500
+    },
+    {
+      "statement_sha256": "4965e70f732d99d946e2465d32a3eb3ebcd85f3141ddd3164867659e2701c2b5",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 90832918
+    },
+    {
+      "statement_sha256": "49b2fbdaf5da59d9303935277c7035575e198230a85321b535cbdcd7a3f6aae8",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11585667
+    },
+    {
+      "statement_sha256": "49b2fbdaf5da59d9303935277c7035575e198230a85321b535cbdcd7a3f6aae8",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 27972458
+    },
+    {
+      "statement_sha256": "4c65ff8cff2c5fc5016e90deb486fc0a659fbefca7bc869a2487c016dc8e4bbc",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 14156333
+    },
+    {
+      "statement_sha256": "4c65ff8cff2c5fc5016e90deb486fc0a659fbefca7bc869a2487c016dc8e4bbc",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 94774750
+    },
+    {
+      "statement_sha256": "4d3622eeb792390fff4e14fa3ef60e52b9b92d53968601d533e5e04737b2908d",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6099417
+    },
+    {
+      "statement_sha256": "4efc6a81db3736872a4ae35f8d43648eaf9bfa24436b32d91cc308c059637eac",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 32,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 41503997
+    },
+    {
+      "statement_sha256": "4efc6a81db3736872a4ae35f8d43648eaf9bfa24436b32d91cc308c059637eac",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 100,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 151845087
+    },
+    {
+      "statement_sha256": "4efc6a81db3736872a4ae35f8d43648eaf9bfa24436b32d91cc308c059637eac",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 119863789
+    },
+    {
+      "statement_sha256": "4efc6a81db3736872a4ae35f8d43648eaf9bfa24436b32d91cc308c059637eac",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 152,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 322188589
+    },
+    {
+      "statement_sha256": "4efc6a81db3736872a4ae35f8d43648eaf9bfa24436b32d91cc308c059637eac",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8607833
+    },
+    {
+      "statement_sha256": "4efc6a81db3736872a4ae35f8d43648eaf9bfa24436b32d91cc308c059637eac",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 42,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 61001168
+    },
+    {
+      "statement_sha256": "4efc6a81db3736872a4ae35f8d43648eaf9bfa24436b32d91cc308c059637eac",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 123,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 190245250
+    },
+    {
+      "statement_sha256": "4fb2095b3dd0e23c8e61d30e419589f6e0c24c127dfd0f0427a0442a676504e9",
+      "verb": "INSERT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 2,
+      "elapsed_ns": 9305833
+    },
+    {
+      "statement_sha256": "4fb2095b3dd0e23c8e61d30e419589f6e0c24c127dfd0f0427a0442a676504e9",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 2,
+      "elapsed_ns": 7523500
+    },
+    {
+      "statement_sha256": "506ca940ce40374944b49a8ca7290046c24baa7b7e9cc2d22216bcec6a30d754",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5047334
+    },
+    {
+      "statement_sha256": "506ca940ce40374944b49a8ca7290046c24baa7b7e9cc2d22216bcec6a30d754",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9649541
+    },
+    {
+      "statement_sha256": "53625be3813d7eef62f0577d93f2291109516136623f9af48d66e08ee6c1e933",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5000500
+    },
+    {
+      "statement_sha256": "553a1578042dbfaec833969a4d215256c9fecfc55fba4008a072689a6ead24f3",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 16,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 41142539
+    },
+    {
+      "statement_sha256": "553a1578042dbfaec833969a4d215256c9fecfc55fba4008a072689a6ead24f3",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 50,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 194799709
+    },
+    {
+      "statement_sha256": "553a1578042dbfaec833969a4d215256c9fecfc55fba4008a072689a6ead24f3",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 40,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 134197289
+    },
+    {
+      "statement_sha256": "553a1578042dbfaec833969a4d215256c9fecfc55fba4008a072689a6ead24f3",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 76,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 249079544
+    },
+    {
+      "statement_sha256": "553a1578042dbfaec833969a4d215256c9fecfc55fba4008a072689a6ead24f3",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 18821583
+    },
+    {
+      "statement_sha256": "553a1578042dbfaec833969a4d215256c9fecfc55fba4008a072689a6ead24f3",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 71053126
+    },
+    {
+      "statement_sha256": "553a1578042dbfaec833969a4d215256c9fecfc55fba4008a072689a6ead24f3",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 58,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 235774376
+    },
+    {
+      "statement_sha256": "5a59425c715de5a292f80ba4ffac5714e37ccc44b8226690089bd7aeb297be20",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 88,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 124221500
+    },
+    {
+      "statement_sha256": "5a59425c715de5a292f80ba4ffac5714e37ccc44b8226690089bd7aeb297be20",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 275,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 394465621
+    },
+    {
+      "statement_sha256": "5a59425c715de5a292f80ba4ffac5714e37ccc44b8226690089bd7aeb297be20",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 224,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 501414626
+    },
+    {
+      "statement_sha256": "5a59425c715de5a292f80ba4ffac5714e37ccc44b8226690089bd7aeb297be20",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 406,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 673276629
+    },
+    {
+      "statement_sha256": "5a59425c715de5a292f80ba4ffac5714e37ccc44b8226690089bd7aeb297be20",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 23650333
+    },
+    {
+      "statement_sha256": "5a59425c715de5a292f80ba4ffac5714e37ccc44b8226690089bd7aeb297be20",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 138,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 296402158
+    },
+    {
+      "statement_sha256": "5a59425c715de5a292f80ba4ffac5714e37ccc44b8226690089bd7aeb297be20",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 410,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 603132706
+    },
+    {
+      "statement_sha256": "5b9bf535e897f13bfbd5278747b8778e18f97ff9b385e661123253729047cbfd",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10741416
+    },
+    {
+      "statement_sha256": "5b9bf535e897f13bfbd5278747b8778e18f97ff9b385e661123253729047cbfd",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 50510790
+    },
+    {
+      "statement_sha256": "5d71656ea7deb73e10ae726c322348006b5a0dde1c139905c3cee98a56932a73",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3914917
+    },
+    {
+      "statement_sha256": "5e2571e3d7dd2518fda76737109a6de780922b8b358601df43a0988db7c0f14d",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2924625
+    },
+    {
+      "statement_sha256": "5eae466019ff0d40771b6461d9e488c6eb26bb6cedae487613a42f5c19673ab5",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9092539
+    },
+    {
+      "statement_sha256": "5eae466019ff0d40771b6461d9e488c6eb26bb6cedae487613a42f5c19673ab5",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 40546084
+    },
+    {
+      "statement_sha256": "5eae466019ff0d40771b6461d9e488c6eb26bb6cedae487613a42f5c19673ab5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 30570708
+    },
+    {
+      "statement_sha256": "5eae466019ff0d40771b6461d9e488c6eb26bb6cedae487613a42f5c19673ab5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 56546832
+    },
+    {
+      "statement_sha256": "5eae466019ff0d40771b6461d9e488c6eb26bb6cedae487613a42f5c19673ab5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4278000
+    },
+    {
+      "statement_sha256": "5eae466019ff0d40771b6461d9e488c6eb26bb6cedae487613a42f5c19673ab5",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 13539083
+    },
+    {
+      "statement_sha256": "5eae466019ff0d40771b6461d9e488c6eb26bb6cedae487613a42f5c19673ab5",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 29,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 38906833
+    },
+    {
+      "statement_sha256": "61488a86d37b4521fbf5a0a76a572c75754a34d435ef4c43fa254e7b27a025ac",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 48,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 64201502
+    },
+    {
+      "statement_sha256": "61488a86d37b4521fbf5a0a76a572c75754a34d435ef4c43fa254e7b27a025ac",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 132,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 200055291
+    },
+    {
+      "statement_sha256": "6171c48d4d925831371b2b0c15071daf4455afac4965d4db909f001697ba7306",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 16,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 21528415
+    },
+    {
+      "statement_sha256": "6171c48d4d925831371b2b0c15071daf4455afac4965d4db909f001697ba7306",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 50,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 78955581
+    },
+    {
+      "statement_sha256": "6171c48d4d925831371b2b0c15071daf4455afac4965d4db909f001697ba7306",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4195541
+    },
+    {
+      "statement_sha256": "6171c48d4d925831371b2b0c15071daf4455afac4965d4db909f001697ba7306",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2190625
+    },
+    {
+      "statement_sha256": "6171c48d4d925831371b2b0c15071daf4455afac4965d4db909f001697ba7306",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2523583
+    },
+    {
+      "statement_sha256": "6171c48d4d925831371b2b0c15071daf4455afac4965d4db909f001697ba7306",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1024458
+    },
+    {
+      "statement_sha256": "634a90b9899931566066bde51e43c084fdad20a4a1d53ded8a8fe1f69697d19c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3918791
+    },
+    {
+      "statement_sha256": "634a90b9899931566066bde51e43c084fdad20a4a1d53ded8a8fe1f69697d19c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9985167
+    },
+    {
+      "statement_sha256": "63c31e871455fc4af85f923c3f312007f8235ab61caf7ff8e270cb351c38a5dc",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3897457
+    },
+    {
+      "statement_sha256": "63c31e871455fc4af85f923c3f312007f8235ab61caf7ff8e270cb351c38a5dc",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 24024249
+    },
+    {
+      "statement_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "deferred_sql_negatives",
+      "count": 46,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 95386957
+    },
+    {
+      "statement_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unattributed",
+      "count": 114,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 207808878
+    },
+    {
+      "statement_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8546543
+    },
+    {
+      "statement_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 72,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 300939620
+    },
+    {
+      "statement_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 225,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 511840916
+    },
+    {
+      "statement_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 200,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 419431749
+    },
+    {
+      "statement_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 380,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 842505952
+    },
+    {
+      "statement_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 22,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 111008540
+    },
+    {
+      "statement_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 82,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 130768838
+    },
+    {
+      "statement_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 236,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 489396668
+    },
+    {
+      "statement_sha256": "6475c9ae5692754e7ddc478409f10d23b52f5e9d64f41ed84580cb0e1baa677d",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 26793499
+    },
+    {
+      "statement_sha256": "65219141cf09d12e0d1abb0d5ed169969fdfd482fb760e55fe655efb561808ee",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 13694083
+    },
+    {
+      "statement_sha256": "68593c58e646d3dd6aff948f73240250a3d7e5ae67ae8cc44c6ad374dfdd8210",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 16,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 133262460
+    },
+    {
+      "statement_sha256": "68593c58e646d3dd6aff948f73240250a3d7e5ae67ae8cc44c6ad374dfdd8210",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 50,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 275677506
+    },
+    {
+      "statement_sha256": "68593c58e646d3dd6aff948f73240250a3d7e5ae67ae8cc44c6ad374dfdd8210",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 40,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 331718794
+    },
+    {
+      "statement_sha256": "68593c58e646d3dd6aff948f73240250a3d7e5ae67ae8cc44c6ad374dfdd8210",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 76,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 450408044
+    },
+    {
+      "statement_sha256": "68593c58e646d3dd6aff948f73240250a3d7e5ae67ae8cc44c6ad374dfdd8210",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 22060709
+    },
+    {
+      "statement_sha256": "68593c58e646d3dd6aff948f73240250a3d7e5ae67ae8cc44c6ad374dfdd8210",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 150860042
+    },
+    {
+      "statement_sha256": "68593c58e646d3dd6aff948f73240250a3d7e5ae67ae8cc44c6ad374dfdd8210",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 58,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 436943169
+    },
+    {
+      "statement_sha256": "69d518ebd99f365a5aec53897f8b9bf1e6af6f5ce174f44ac3103232b02797ec",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2865625
+    },
+    {
+      "statement_sha256": "69d518ebd99f365a5aec53897f8b9bf1e6af6f5ce174f44ac3103232b02797ec",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8001082
+    },
+    {
+      "statement_sha256": "6b5a4dbcdcd57936f9f5515e29b8988f9dd9295dabe3c1e4f099b27dee608a4c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 5,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 14118749
+    },
+    {
+      "statement_sha256": "6b5a4dbcdcd57936f9f5515e29b8988f9dd9295dabe3c1e4f099b27dee608a4c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11488958
+    },
+    {
+      "statement_sha256": "6b5a4dbcdcd57936f9f5515e29b8988f9dd9295dabe3c1e4f099b27dee608a4c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 14525167
+    },
+    {
+      "statement_sha256": "6b5a4dbcdcd57936f9f5515e29b8988f9dd9295dabe3c1e4f099b27dee608a4c",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 26,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 72093332
+    },
+    {
+      "statement_sha256": "6c615ace4dbb64bb8b9ca4496fa6d4bd16138f49288a52bd1533b161969876e4",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 51994041
+    },
+    {
+      "statement_sha256": "6c615ace4dbb64bb8b9ca4496fa6d4bd16138f49288a52bd1533b161969876e4",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 26,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 142474747
+    },
+    {
+      "statement_sha256": "6c9749364385a0e3cbf6a37d0bc9b7f84f02dbd90120348b86e2595b2af55fde",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 28390043
+    },
+    {
+      "statement_sha256": "6c9749364385a0e3cbf6a37d0bc9b7f84f02dbd90120348b86e2595b2af55fde",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 62503668
+    },
+    {
+      "statement_sha256": "6c9749364385a0e3cbf6a37d0bc9b7f84f02dbd90120348b86e2595b2af55fde",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2302916
+    },
+    {
+      "statement_sha256": "6c9749364385a0e3cbf6a37d0bc9b7f84f02dbd90120348b86e2595b2af55fde",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2216542
+    },
+    {
+      "statement_sha256": "6c9749364385a0e3cbf6a37d0bc9b7f84f02dbd90120348b86e2595b2af55fde",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5429167
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "deferred_sql_negatives",
+      "count": 184,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 349735503
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unattributed",
+      "count": 456,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 896781877
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 25784333
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "deferred_sql_negatives",
+      "count": 298,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 535150340
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "unattributed",
+      "count": 723,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1240434489
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "unsectioned",
+      "count": 46,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 60487621
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 568,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 976823659
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 1775,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3356104995
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 2300,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3639600760
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 4344,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7809569043
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 268,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 354824252
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 854,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1266586109
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 2433,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4195715214
+    },
+    {
+      "statement_sha256": "7133752e9e01dd7fcc5264035f5652c882a4eaa33d7641e122d8702c75d98847",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11037416
+    },
+    {
+      "statement_sha256": "7133752e9e01dd7fcc5264035f5652c882a4eaa33d7641e122d8702c75d98847",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 38586791
+    },
+    {
+      "statement_sha256": "7550dc8ae3edf0dc31c5034555668df80d574e9177e33f6494db7f6a48e8ade3",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5016333
+    },
+    {
+      "statement_sha256": "7550dc8ae3edf0dc31c5034555668df80d574e9177e33f6494db7f6a48e8ade3",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 25019291
+    },
+    {
+      "statement_sha256": "765fd6853d96b6cfc7fc74792628a6c1b0858e59ad7efdf72e9594443e36fc06",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9180666
+    },
+    {
+      "statement_sha256": "765fd6853d96b6cfc7fc74792628a6c1b0858e59ad7efdf72e9594443e36fc06",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 46884205
+    },
+    {
+      "statement_sha256": "765fd6853d96b6cfc7fc74792628a6c1b0858e59ad7efdf72e9594443e36fc06",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 30114832
+    },
+    {
+      "statement_sha256": "765fd6853d96b6cfc7fc74792628a6c1b0858e59ad7efdf72e9594443e36fc06",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 55567083
+    },
+    {
+      "statement_sha256": "765fd6853d96b6cfc7fc74792628a6c1b0858e59ad7efdf72e9594443e36fc06",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2231958
+    },
+    {
+      "statement_sha256": "765fd6853d96b6cfc7fc74792628a6c1b0858e59ad7efdf72e9594443e36fc06",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2337042
+    },
+    {
+      "statement_sha256": "765fd6853d96b6cfc7fc74792628a6c1b0858e59ad7efdf72e9594443e36fc06",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5825750
+    },
+    {
+      "statement_sha256": "78d36a184df1cec6c0750a35325a0381da079a4292fd014057c82e004f0b588d",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 96192792
+    },
+    {
+      "statement_sha256": "78d36a184df1cec6c0750a35325a0381da079a4292fd014057c82e004f0b588d",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 250,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 463252297
+    },
+    {
+      "statement_sha256": "78d36a184df1cec6c0750a35325a0381da079a4292fd014057c82e004f0b588d",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 200,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 413733500
+    },
+    {
+      "statement_sha256": "78d36a184df1cec6c0750a35325a0381da079a4292fd014057c82e004f0b588d",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 380,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 674352671
+    },
+    {
+      "statement_sha256": "78d36a184df1cec6c0750a35325a0381da079a4292fd014057c82e004f0b588d",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 28373583
+    },
+    {
+      "statement_sha256": "78d36a184df1cec6c0750a35325a0381da079a4292fd014057c82e004f0b588d",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 88,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 224715868
+    },
+    {
+      "statement_sha256": "78d36a184df1cec6c0750a35325a0381da079a4292fd014057c82e004f0b588d",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 254,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 525071194
+    },
+    {
+      "statement_sha256": "78fe1c6906615fcffe149776e303be2773bd7c70e13c28abc4399083c0f345bc",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3370167
+    },
+    {
+      "statement_sha256": "78fe1c6906615fcffe149776e303be2773bd7c70e13c28abc4399083c0f345bc",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5705417
+    },
+    {
+      "statement_sha256": "7aee3e3c964c7c32fba956d5b2035b3cd924c4b47f7f41c7cdebb67680d6f92e",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 99342501
+    },
+    {
+      "statement_sha256": "7b5cd34a89d10a6ff4d58121477d9c4eede3b0e2251c92a9b87859e2c802be97",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 14381208
+    },
+    {
+      "statement_sha256": "7c2848ecd2d64a38f7478141bb4493f921e050f36379f9b7488353cab1779a0c",
+      "verb": "INSERT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 12,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 23129542
+    },
+    {
+      "statement_sha256": "7c2848ecd2d64a38f7478141bb4493f921e050f36379f9b7488353cab1779a0c",
+      "verb": "INSERT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 12,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 23538458
+    },
+    {
+      "statement_sha256": "7c2900ee361e398e9b1d5cbdb0a470c3f66abdaa04a46a0d47d4fcc29c4eac07",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5547084
+    },
+    {
+      "statement_sha256": "7cdae899adb2f73d79f5e4513520026d1cad3b8297341baa7afae0d1b9bec6c2",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9366376
+    },
+    {
+      "statement_sha256": "7cdae899adb2f73d79f5e4513520026d1cad3b8297341baa7afae0d1b9bec6c2",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 33358416
+    },
+    {
+      "statement_sha256": "7cdae899adb2f73d79f5e4513520026d1cad3b8297341baa7afae0d1b9bec6c2",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 34305957
+    },
+    {
+      "statement_sha256": "7cdae899adb2f73d79f5e4513520026d1cad3b8297341baa7afae0d1b9bec6c2",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 45165747
+    },
+    {
+      "statement_sha256": "7cdae899adb2f73d79f5e4513520026d1cad3b8297341baa7afae0d1b9bec6c2",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2135084
+    },
+    {
+      "statement_sha256": "7cdae899adb2f73d79f5e4513520026d1cad3b8297341baa7afae0d1b9bec6c2",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 15180459
+    },
+    {
+      "statement_sha256": "7cdae899adb2f73d79f5e4513520026d1cad3b8297341baa7afae0d1b9bec6c2",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 29,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 51557582
+    },
+    {
+      "statement_sha256": "7ce82b0eb4b30a7c5b186d4aa345b0731f3c94948e0d7a12cafe78e10cfa7d51",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6544584
+    },
+    {
+      "statement_sha256": "7ce82b0eb4b30a7c5b186d4aa345b0731f3c94948e0d7a12cafe78e10cfa7d51",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 15262458
+    },
+    {
+      "statement_sha256": "7d37fa7075b5b3204d9818e8ff452744ba6434847c5658728d5d7e1843d23e09",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 16,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 22534041
+    },
+    {
+      "statement_sha256": "7d37fa7075b5b3204d9818e8ff452744ba6434847c5658728d5d7e1843d23e09",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 50,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 73494752
+    },
+    {
+      "statement_sha256": "7d37fa7075b5b3204d9818e8ff452744ba6434847c5658728d5d7e1843d23e09",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4399458
+    },
+    {
+      "statement_sha256": "7d37fa7075b5b3204d9818e8ff452744ba6434847c5658728d5d7e1843d23e09",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2597625
+    },
+    {
+      "statement_sha256": "7d37fa7075b5b3204d9818e8ff452744ba6434847c5658728d5d7e1843d23e09",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3182958
+    },
+    {
+      "statement_sha256": "7e273149380df3fad45f6a0410d4c67fae088f68e6288dcd79c02c457d742c03",
+      "verb": "INSERT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1449833
+    },
+    {
+      "statement_sha256": "7e273149380df3fad45f6a0410d4c67fae088f68e6288dcd79c02c457d742c03",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7449708
+    },
+    {
+      "statement_sha256": "7fe5420fccd7db38e75023e695c1f6cf8eebabf12b04e609363f353432bf16a1",
+      "verb": "INSERT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2519959
+    },
+    {
+      "statement_sha256": "7fe5420fccd7db38e75023e695c1f6cf8eebabf12b04e609363f353432bf16a1",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8117083
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "deferred_sql_negatives",
+      "count": 184,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 329150166
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unattributed",
+      "count": 456,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 668709418
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 27302037
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "deferred_sql_negatives",
+      "count": 298,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 516902201
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "unattributed",
+      "count": 723,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1343226362
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "unsectioned",
+      "count": 46,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 155182498
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 568,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 902813629
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 1775,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2842665264
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 2300,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4140532632
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 4344,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7216517972
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 268,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 396024205
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 852,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1594085385
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 2423,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3987423759
+    },
+    {
+      "statement_sha256": "8bcf316b5fa597d43d356d5cf9f3b64a97cfcf51c2327ea9dc76e67df8fb5a75",
+      "verb": "UPDATE",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3412417
+    },
+    {
+      "statement_sha256": "8bcf316b5fa597d43d356d5cf9f3b64a97cfcf51c2327ea9dc76e67df8fb5a75",
+      "verb": "UPDATE",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3792709
+    },
+    {
+      "statement_sha256": "8c25e33f794aaffc45a4747c8635ec6e59530b320fe43ba03ef81665a878e9fc",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 15204584
+    },
+    {
+      "statement_sha256": "8c25e33f794aaffc45a4747c8635ec6e59530b320fe43ba03ef81665a878e9fc",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 39197751
+    },
+    {
+      "statement_sha256": "8c25e33f794aaffc45a4747c8635ec6e59530b320fe43ba03ef81665a878e9fc",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 42269417
+    },
+    {
+      "statement_sha256": "8c25e33f794aaffc45a4747c8635ec6e59530b320fe43ba03ef81665a878e9fc",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 166929960
+    },
+    {
+      "statement_sha256": "8c25e33f794aaffc45a4747c8635ec6e59530b320fe43ba03ef81665a878e9fc",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1905249
+    },
+    {
+      "statement_sha256": "8c25e33f794aaffc45a4747c8635ec6e59530b320fe43ba03ef81665a878e9fc",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 18197666
+    },
+    {
+      "statement_sha256": "8c25e33f794aaffc45a4747c8635ec6e59530b320fe43ba03ef81665a878e9fc",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 29,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 132520165
+    },
+    {
+      "statement_sha256": "8c8c6a31ee99cca261e1f506911af1fd93f449eacf422433a24562c6d4d57223",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 48,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 182031288
+    },
+    {
+      "statement_sha256": "8c8c6a31ee99cca261e1f506911af1fd93f449eacf422433a24562c6d4d57223",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 132,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 305357165
+    },
+    {
+      "statement_sha256": "8cf0fef6f8de1559d6b0ae92a5493747a0b03481354e8e6a155213aa36f3f661",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9712626
+    },
+    {
+      "statement_sha256": "8d8c1f046512036a7d28304d6d7cad17ea967771879a7cea9be55f5c16a0497f",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 32,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 156537248
+    },
+    {
+      "statement_sha256": "8d8c1f046512036a7d28304d6d7cad17ea967771879a7cea9be55f5c16a0497f",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 100,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 261794457
+    },
+    {
+      "statement_sha256": "8d8c1f046512036a7d28304d6d7cad17ea967771879a7cea9be55f5c16a0497f",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 156007625
+    },
+    {
+      "statement_sha256": "8d8c1f046512036a7d28304d6d7cad17ea967771879a7cea9be55f5c16a0497f",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 152,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 449612375
+    },
+    {
+      "statement_sha256": "8d8c1f046512036a7d28304d6d7cad17ea967771879a7cea9be55f5c16a0497f",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 16819959
+    },
+    {
+      "statement_sha256": "8d8c1f046512036a7d28304d6d7cad17ea967771879a7cea9be55f5c16a0497f",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 40,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 77674501
+    },
+    {
+      "statement_sha256": "8d8c1f046512036a7d28304d6d7cad17ea967771879a7cea9be55f5c16a0497f",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 116,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 315657791
+    },
+    {
+      "statement_sha256": "8fa8e0711d2b7032335474499068df4e5c6a6d298a6704c80b4783f4fe8e2faf",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 248701791
+    },
+    {
+      "statement_sha256": "8fa8e0711d2b7032335474499068df4e5c6a6d298a6704c80b4783f4fe8e2faf",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 264426875
+    },
+    {
+      "statement_sha256": "92d94afddc518a0a41b6bc69df4424e09051be41c6dbbd2105022d840e028922",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 27664584
+    },
+    {
+      "statement_sha256": "92d94afddc518a0a41b6bc69df4424e09051be41c6dbbd2105022d840e028922",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 65052546
+    },
+    {
+      "statement_sha256": "92d94afddc518a0a41b6bc69df4424e09051be41c6dbbd2105022d840e028922",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11868625
+    },
+    {
+      "statement_sha256": "92d94afddc518a0a41b6bc69df4424e09051be41c6dbbd2105022d840e028922",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3930833
+    },
+    {
+      "statement_sha256": "92d94afddc518a0a41b6bc69df4424e09051be41c6dbbd2105022d840e028922",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 13522250
+    },
+    {
+      "statement_sha256": "92d94afddc518a0a41b6bc69df4424e09051be41c6dbbd2105022d840e028922",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 22267124
+    },
+    {
+      "statement_sha256": "93977f5eead6218843db539a57e983d191cc789a0779e86c2892dc1a2a159593",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4241750
+    },
+    {
+      "statement_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 100,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 430864794
+    },
+    {
+      "statement_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 190,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 809666073
+    },
+    {
+      "statement_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 17846916
+    },
+    {
+      "statement_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 218011829
+    },
+    {
+      "statement_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3661500
+    },
+    {
+      "statement_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2194584
+    },
+    {
+      "statement_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 232,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 840062251
+    },
+    {
+      "statement_sha256": "94533ccd778177a3fd52487ed45c3f9987615815465385f0a1e05d9473742b6a",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5000333
+    },
+    {
+      "statement_sha256": "94533ccd778177a3fd52487ed45c3f9987615815465385f0a1e05d9473742b6a",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 12939918
+    },
+    {
+      "statement_sha256": "94920245f2dacccbc673e376b416bcfe2efc88469e6aa23938af40ee7f248929",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4340292
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "deferred_sql_negatives",
+      "count": 92,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 135661040
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unattributed",
+      "count": 190,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 438166374
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 12,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 14729874
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 256,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 451378134
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 765,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1230212283
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 760,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1114752396
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 1379,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2450870013
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 111838460
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1697332
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 316,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 599300367
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 886,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1368843370
+    },
+    {
+      "statement_sha256": "991a418e2547467a8dc7d860d425b77f58ba2ef2f8c3ab3b33f89fbe87aed2f1",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 16648333
+    },
+    {
+      "statement_sha256": "991a418e2547467a8dc7d860d425b77f58ba2ef2f8c3ab3b33f89fbe87aed2f1",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 24198125
+    },
+    {
+      "statement_sha256": "a071a11f1a571dfdb8f98b6d81eee9114ab74f0c45f3bf60509e50da661ff183",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8959791
+    },
+    {
+      "statement_sha256": "a071a11f1a571dfdb8f98b6d81eee9114ab74f0c45f3bf60509e50da661ff183",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 34817166
+    },
+    {
+      "statement_sha256": "a071a11f1a571dfdb8f98b6d81eee9114ab74f0c45f3bf60509e50da661ff183",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 41335832
+    },
+    {
+      "statement_sha256": "a071a11f1a571dfdb8f98b6d81eee9114ab74f0c45f3bf60509e50da661ff183",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 130796833
+    },
+    {
+      "statement_sha256": "a071a11f1a571dfdb8f98b6d81eee9114ab74f0c45f3bf60509e50da661ff183",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1918250
+    },
+    {
+      "statement_sha256": "a071a11f1a571dfdb8f98b6d81eee9114ab74f0c45f3bf60509e50da661ff183",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 107375166
+    },
+    {
+      "statement_sha256": "a071a11f1a571dfdb8f98b6d81eee9114ab74f0c45f3bf60509e50da661ff183",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 29,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 34712294
+    },
+    {
+      "statement_sha256": "a0fa63d5cbdd6908001e35eb5955423431ae0a466bfdae86e704ece076d6bfcc",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5080958
+    },
+    {
+      "statement_sha256": "a20df15a24715359b97786beb72790ff154d5fe9da0a77fb78010047bcc607a7",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 13507292
+    },
+    {
+      "statement_sha256": "a20df15a24715359b97786beb72790ff154d5fe9da0a77fb78010047bcc607a7",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 51399795
+    },
+    {
+      "statement_sha256": "a20df15a24715359b97786beb72790ff154d5fe9da0a77fb78010047bcc607a7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 60,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 123305871
+    },
+    {
+      "statement_sha256": "a20df15a24715359b97786beb72790ff154d5fe9da0a77fb78010047bcc607a7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 114,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 462113832
+    },
+    {
+      "statement_sha256": "a20df15a24715359b97786beb72790ff154d5fe9da0a77fb78010047bcc607a7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8744501
+    },
+    {
+      "statement_sha256": "a20df15a24715359b97786beb72790ff154d5fe9da0a77fb78010047bcc607a7",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 18,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 37678917
+    },
+    {
+      "statement_sha256": "a20df15a24715359b97786beb72790ff154d5fe9da0a77fb78010047bcc607a7",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 54,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 90758289
+    },
+    {
+      "statement_sha256": "a34202ba7c1144fdb271e063dc1d0ef9794403d2e2ec851c5c4daa8766aec531",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 112,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 169588204
+    },
+    {
+      "statement_sha256": "a34202ba7c1144fdb271e063dc1d0ef9794403d2e2ec851c5c4daa8766aec531",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 350,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 907018547
+    },
+    {
+      "statement_sha256": "a34202ba7c1144fdb271e063dc1d0ef9794403d2e2ec851c5c4daa8766aec531",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 280,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 699981165
+    },
+    {
+      "statement_sha256": "a34202ba7c1144fdb271e063dc1d0ef9794403d2e2ec851c5c4daa8766aec531",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 532,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 837604994
+    },
+    {
+      "statement_sha256": "a34202ba7c1144fdb271e063dc1d0ef9794403d2e2ec851c5c4daa8766aec531",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 28,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 124988463
+    },
+    {
+      "statement_sha256": "a34202ba7c1144fdb271e063dc1d0ef9794403d2e2ec851c5c4daa8766aec531",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 130,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 269812788
+    },
+    {
+      "statement_sha256": "a34202ba7c1144fdb271e063dc1d0ef9794403d2e2ec851c5c4daa8766aec531",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 377,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 761967114
+    },
+    {
+      "statement_sha256": "a53699ce3388de53ab5eae324ff3f889a47753cb27b855d39b5c61faf1155d44",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6348582
+    },
+    {
+      "statement_sha256": "a5f112903adfd1d16c9faeb3b1ff138254e5e9052caa67cd720183a5c4c8f6be",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10333498
+    },
+    {
+      "statement_sha256": "a5f112903adfd1d16c9faeb3b1ff138254e5e9052caa67cd720183a5c4c8f6be",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 30506374
+    },
+    {
+      "statement_sha256": "a7a67830babc4fcb3875adc7a37da88038ea09a8e4395b9f5bd85cc444f26943",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 14256210
+    },
+    {
+      "statement_sha256": "a8829512172bc684e76e7b182dbea53871925a69c96306b7522d112e6f466402",
+      "verb": "INSERT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8191167
+    },
+    {
+      "statement_sha256": "a8829512172bc684e76e7b182dbea53871925a69c96306b7522d112e6f466402",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10505624
+    },
+    {
+      "statement_sha256": "ab31b040f33228f06daeea1aa3a867da8c3054dc24f551e31f6c10794bf904f2",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1346000
+    },
+    {
+      "statement_sha256": "ab5f6539f1f52a13c5c1ece645269b9ecf6536a3a98757a228087f9bb148b052",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 16,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 18203166
+    },
+    {
+      "statement_sha256": "ab5f6539f1f52a13c5c1ece645269b9ecf6536a3a98757a228087f9bb148b052",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 50,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 65396960
+    },
+    {
+      "statement_sha256": "ab5f6539f1f52a13c5c1ece645269b9ecf6536a3a98757a228087f9bb148b052",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 60,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 173628168
+    },
+    {
+      "statement_sha256": "ab5f6539f1f52a13c5c1ece645269b9ecf6536a3a98757a228087f9bb148b052",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 114,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 275302839
+    },
+    {
+      "statement_sha256": "ab5f6539f1f52a13c5c1ece645269b9ecf6536a3a98757a228087f9bb148b052",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 14734083
+    },
+    {
+      "statement_sha256": "ab5f6539f1f52a13c5c1ece645269b9ecf6536a3a98757a228087f9bb148b052",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 28325794
+    },
+    {
+      "statement_sha256": "ab5f6539f1f52a13c5c1ece645269b9ecf6536a3a98757a228087f9bb148b052",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 58,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 96405544
+    },
+    {
+      "statement_sha256": "ac2a15de57e6c52e4aa7b56454df34ca6ad5dc014589109d980a150332631121",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10061959
+    },
+    {
+      "statement_sha256": "ac2a15de57e6c52e4aa7b56454df34ca6ad5dc014589109d980a150332631121",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 57694917
+    },
+    {
+      "statement_sha256": "ac2a15de57e6c52e4aa7b56454df34ca6ad5dc014589109d980a150332631121",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 37011374
+    },
+    {
+      "statement_sha256": "ac2a15de57e6c52e4aa7b56454df34ca6ad5dc014589109d980a150332631121",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 62214584
+    },
+    {
+      "statement_sha256": "ac2a15de57e6c52e4aa7b56454df34ca6ad5dc014589109d980a150332631121",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1926834
+    },
+    {
+      "statement_sha256": "ac2a15de57e6c52e4aa7b56454df34ca6ad5dc014589109d980a150332631121",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 13912915
+    },
+    {
+      "statement_sha256": "ac2a15de57e6c52e4aa7b56454df34ca6ad5dc014589109d980a150332631121",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 29,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 44375913
+    },
+    {
+      "statement_sha256": "b01ff2bfecf68274e378dd06e603902b54ee5133fb8238ff0943d8091ff70670",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 32,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 44011209
+    },
+    {
+      "statement_sha256": "b01ff2bfecf68274e378dd06e603902b54ee5133fb8238ff0943d8091ff70670",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 100,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 131519583
+    },
+    {
+      "statement_sha256": "b01ff2bfecf68274e378dd06e603902b54ee5133fb8238ff0943d8091ff70670",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 84,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 199634835
+    },
+    {
+      "statement_sha256": "b01ff2bfecf68274e378dd06e603902b54ee5133fb8238ff0943d8091ff70670",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 140,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 197983797
+    },
+    {
+      "statement_sha256": "b01ff2bfecf68274e378dd06e603902b54ee5133fb8238ff0943d8091ff70670",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6753335
+    },
+    {
+      "statement_sha256": "b01ff2bfecf68274e378dd06e603902b54ee5133fb8238ff0943d8091ff70670",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 58,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 115175911
+    },
+    {
+      "statement_sha256": "b01ff2bfecf68274e378dd06e603902b54ee5133fb8238ff0943d8091ff70670",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 175,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 450091846
+    },
+    {
+      "statement_sha256": "b1448e59979b1f7c7ff1b2337c7dbb8cde03f9044947822a812d5f21a108bd7a",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1068167
+    },
+    {
+      "statement_sha256": "b1448e59979b1f7c7ff1b2337c7dbb8cde03f9044947822a812d5f21a108bd7a",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1783375
+    },
+    {
+      "statement_sha256": "b1c6bbf26cd878d50e7591adb87bcc2be1cb70d0d088a98562631537f92397cc",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 25635627
+    },
+    {
+      "statement_sha256": "b1c6bbf26cd878d50e7591adb87bcc2be1cb70d0d088a98562631537f92397cc",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 45319292
+    },
+    {
+      "statement_sha256": "b2458f9f20b86535182b4498ac9fa80bcf7f347ca0db0a1dfccbd1bf57c4cd78",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9660875
+    },
+    {
+      "statement_sha256": "b2458f9f20b86535182b4498ac9fa80bcf7f347ca0db0a1dfccbd1bf57c4cd78",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 66597417
+    },
+    {
+      "statement_sha256": "b2458f9f20b86535182b4498ac9fa80bcf7f347ca0db0a1dfccbd1bf57c4cd78",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2889500
+    },
+    {
+      "statement_sha256": "b2458f9f20b86535182b4498ac9fa80bcf7f347ca0db0a1dfccbd1bf57c4cd78",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2831500
+    },
+    {
+      "statement_sha256": "b2458f9f20b86535182b4498ac9fa80bcf7f347ca0db0a1dfccbd1bf57c4cd78",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 49,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 151390667
+    },
+    {
+      "statement_sha256": "b39ac80382671d0158b35c106c8d1728120bdc395edebafe7be0687df484f2ac",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 25603334
+    },
+    {
+      "statement_sha256": "b39ac80382671d0158b35c106c8d1728120bdc395edebafe7be0687df484f2ac",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 59668791
+    },
+    {
+      "statement_sha256": "b39ac80382671d0158b35c106c8d1728120bdc395edebafe7be0687df484f2ac",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10229833
+    },
+    {
+      "statement_sha256": "b39ac80382671d0158b35c106c8d1728120bdc395edebafe7be0687df484f2ac",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4574959
+    },
+    {
+      "statement_sha256": "b39ac80382671d0158b35c106c8d1728120bdc395edebafe7be0687df484f2ac",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4562457
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "deferred_sql_negatives",
+      "count": 46,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 78339500
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unattributed",
+      "count": 114,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 167803424
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6537085
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 216,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 425022083
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 675,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1155905027
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 616,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 903260024
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 1190,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2109119947
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 66,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 112097627
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1774791
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 248,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 342023337
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 716,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1140455963
+    },
+    {
+      "statement_sha256": "b8ef43bb7b849ef77c42751758988e8b33581cf2949bac682edac5acfd5be2d1",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 135579076
+    },
+    {
+      "statement_sha256": "b8ef43bb7b849ef77c42751758988e8b33581cf2949bac682edac5acfd5be2d1",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 250,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 461936037
+    },
+    {
+      "statement_sha256": "b8ef43bb7b849ef77c42751758988e8b33581cf2949bac682edac5acfd5be2d1",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 200,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 308499503
+    },
+    {
+      "statement_sha256": "b8ef43bb7b849ef77c42751758988e8b33581cf2949bac682edac5acfd5be2d1",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 380,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 587504132
+    },
+    {
+      "statement_sha256": "b8ef43bb7b849ef77c42751758988e8b33581cf2949bac682edac5acfd5be2d1",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 37105542
+    },
+    {
+      "statement_sha256": "b8ef43bb7b849ef77c42751758988e8b33581cf2949bac682edac5acfd5be2d1",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 88,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 115968710
+    },
+    {
+      "statement_sha256": "b8ef43bb7b849ef77c42751758988e8b33581cf2949bac682edac5acfd5be2d1",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 254,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 483627706
+    },
+    {
+      "statement_sha256": "ba4c931a8c4cd49de23f9f3a7289d4f1c3b40ada814531377b58d3317daea304",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 48,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 69984705
+    },
+    {
+      "statement_sha256": "ba4c931a8c4cd49de23f9f3a7289d4f1c3b40ada814531377b58d3317daea304",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 132,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 227125037
+    },
+    {
+      "statement_sha256": "ba995d2420df71b6a5d544f2cc743059e0f4568b1cfe1795cf4d4aef3cf19c58",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 112,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 152199620
+    },
+    {
+      "statement_sha256": "ba995d2420df71b6a5d544f2cc743059e0f4568b1cfe1795cf4d4aef3cf19c58",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 350,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 753435417
+    },
+    {
+      "statement_sha256": "ba995d2420df71b6a5d544f2cc743059e0f4568b1cfe1795cf4d4aef3cf19c58",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 280,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 613650544
+    },
+    {
+      "statement_sha256": "ba995d2420df71b6a5d544f2cc743059e0f4568b1cfe1795cf4d4aef3cf19c58",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 532,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 849909510
+    },
+    {
+      "statement_sha256": "ba995d2420df71b6a5d544f2cc743059e0f4568b1cfe1795cf4d4aef3cf19c58",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 28,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 117407421
+    },
+    {
+      "statement_sha256": "ba995d2420df71b6a5d544f2cc743059e0f4568b1cfe1795cf4d4aef3cf19c58",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 130,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 279061336
+    },
+    {
+      "statement_sha256": "ba995d2420df71b6a5d544f2cc743059e0f4568b1cfe1795cf4d4aef3cf19c58",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 377,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 754804170
+    },
+    {
+      "statement_sha256": "beb26d2953e2b768f0804bc33493394a3056fd27d0f60f198e44d0df7cf14c31",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8486626
+    },
+    {
+      "statement_sha256": "beb26d2953e2b768f0804bc33493394a3056fd27d0f60f198e44d0df7cf14c31",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 27258457
+    },
+    {
+      "statement_sha256": "c1aec9c3015850eb84d48a2cc75a05bf5b1d284a85bd2a3563876b45e16a79fd",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4945249
+    },
+    {
+      "statement_sha256": "c1aec9c3015850eb84d48a2cc75a05bf5b1d284a85bd2a3563876b45e16a79fd",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 15337457
+    },
+    {
+      "statement_sha256": "c6e7a991cc1b8e677a7ebde22a4a02b60575bb3cfb2c119a675c9a1d01901943",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11289334
+    },
+    {
+      "statement_sha256": "c6e7a991cc1b8e677a7ebde22a4a02b60575bb3cfb2c119a675c9a1d01901943",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 16668959
+    },
+    {
+      "statement_sha256": "c94881258e3bfb11cf7d1efa1858609f03e30e21d5ae4dad73918e58ddacaf72",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7364833
+    },
+    {
+      "statement_sha256": "c9f75732bda3b46822473b4d29d7e16f11b6f3abfbbfb29d3c64c91aa4467ee3",
+      "verb": "SET",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 2,
+      "executemany_calls": 0,
+      "elapsed_ns": 6215166
+    },
+    {
+      "statement_sha256": "cca88a95f8114a7c91b70cffe8b2c92005d91d18a2c6ed4cc09c512b8335072c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6128582
+    },
+    {
+      "statement_sha256": "cca88a95f8114a7c91b70cffe8b2c92005d91d18a2c6ed4cc09c512b8335072c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 25415876
+    },
+    {
+      "statement_sha256": "cec32835d9915b1ddd9417510fee0409f18dcd78875d0824507c841ac1463d40",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9997752
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "deferred_sql_negatives",
+      "count": 46,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 67875876
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unattributed",
+      "count": 114,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 200423164
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 87638832
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 216,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 313165204
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 675,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1108992129
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 616,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1025788671
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 1190,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2067199920
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 66,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 101230833
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2019666
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 248,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 438277838
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 716,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1370254883
+    },
+    {
+      "statement_sha256": "d08b2ac099360d0d518cd6d780a0fb778d7fcaaeb6f875c9ce5c55eefcce7332",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6716500
+    },
+    {
+      "statement_sha256": "d08b2ac099360d0d518cd6d780a0fb778d7fcaaeb6f875c9ce5c55eefcce7332",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 14,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 120469919
+    },
+    {
+      "statement_sha256": "d3861fdf29838c66c477f0e1fd2d3c70b25cb4f5cab866a9e4cd8b66af118a89",
+      "verb": "UPDATE",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3098166
+    },
+    {
+      "statement_sha256": "d3861fdf29838c66c477f0e1fd2d3c70b25cb4f5cab866a9e4cd8b66af118a89",
+      "verb": "UPDATE",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2789541
+    },
+    {
+      "statement_sha256": "d4ee810a901221ed1005dd968febbf18d99a614da4161eb0249f78fe2fabb53f",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8987875
+    },
+    {
+      "statement_sha256": "d75c31b5a20d2969d4aa5594dfbb0680e6c38841c35baf6988956b668ae8c7cd",
+      "verb": "UPDATE",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2466875
+    },
+    {
+      "statement_sha256": "d75c31b5a20d2969d4aa5594dfbb0680e6c38841c35baf6988956b668ae8c7cd",
+      "verb": "UPDATE",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5498793
+    },
+    {
+      "statement_sha256": "d9f46383c67a551ee6f50c478038aafa4b50b4760826d4ac771eb35c21ca660d",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 40,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 58367669
+    },
+    {
+      "statement_sha256": "d9f46383c67a551ee6f50c478038aafa4b50b4760826d4ac771eb35c21ca660d",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 76,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 208042247
+    },
+    {
+      "statement_sha256": "d9f46383c67a551ee6f50c478038aafa4b50b4760826d4ac771eb35c21ca660d",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5189708
+    },
+    {
+      "statement_sha256": "d9f46383c67a551ee6f50c478038aafa4b50b4760826d4ac771eb35c21ca660d",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11348334
+    },
+    {
+      "statement_sha256": "d9f46383c67a551ee6f50c478038aafa4b50b4760826d4ac771eb35c21ca660d",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 29,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 47170916
+    },
+    {
+      "statement_sha256": "ddd36b6742cd39f90c9bbf11629cd8f0922aca14e11bb6c303bd6f377bdd070e",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 16,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 38449956
+    },
+    {
+      "statement_sha256": "ddd36b6742cd39f90c9bbf11629cd8f0922aca14e11bb6c303bd6f377bdd070e",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 50,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 74403745
+    },
+    {
+      "statement_sha256": "ddd36b6742cd39f90c9bbf11629cd8f0922aca14e11bb6c303bd6f377bdd070e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 240,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 444539373
+    },
+    {
+      "statement_sha256": "ddd36b6742cd39f90c9bbf11629cd8f0922aca14e11bb6c303bd6f377bdd070e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 456,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1109891504
+    },
+    {
+      "statement_sha256": "ddd36b6742cd39f90c9bbf11629cd8f0922aca14e11bb6c303bd6f377bdd070e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 25885500
+    },
+    {
+      "statement_sha256": "ddd36b6742cd39f90c9bbf11629cd8f0922aca14e11bb6c303bd6f377bdd070e",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 52,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 110857704
+    },
+    {
+      "statement_sha256": "ddd36b6742cd39f90c9bbf11629cd8f0922aca14e11bb6c303bd6f377bdd070e",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 158,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 414218711
+    },
+    {
+      "statement_sha256": "df024da3498ea4a711b0f3798188a2d755cd8174424c8f3a6efffd7079cbb80c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4266958
+    },
+    {
+      "statement_sha256": "df024da3498ea4a711b0f3798188a2d755cd8174424c8f3a6efffd7079cbb80c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 14097291
+    },
+    {
+      "statement_sha256": "e4f81d2092b3fb9d9d89ea2e13f6acf206ccee5b44b718fc0211e6a899d3ab47",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3235791
+    },
+    {
+      "statement_sha256": "e713325cb1afd0bb12be9043d6de96740df8bed397397e4bfaeb2ed44b501e7e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 36878914
+    },
+    {
+      "statement_sha256": "e713325cb1afd0bb12be9043d6de96740df8bed397397e4bfaeb2ed44b501e7e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 26,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 33580752
+    },
+    {
+      "statement_sha256": "e713325cb1afd0bb12be9043d6de96740df8bed397397e4bfaeb2ed44b501e7e",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 18,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 26592665
+    },
+    {
+      "statement_sha256": "e713325cb1afd0bb12be9043d6de96740df8bed397397e4bfaeb2ed44b501e7e",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 53,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 85888331
+    },
+    {
+      "statement_sha256": "e9ca5d549f79dbddff2f59a15900753233b1e4b72ff380e21bb1ee1038f8c26c",
+      "verb": "INSERT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11937291
+    },
+    {
+      "statement_sha256": "e9ca5d549f79dbddff2f59a15900753233b1e4b72ff380e21bb1ee1038f8c26c",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8857709
+    },
+    {
+      "statement_sha256": "eb54edf11be67b78d2e91759ea1162501c98db2f3a206cd7c0f9d19de32b27a4",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 32,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 58986583
+    },
+    {
+      "statement_sha256": "eb54edf11be67b78d2e91759ea1162501c98db2f3a206cd7c0f9d19de32b27a4",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 100,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 211718660
+    },
+    {
+      "statement_sha256": "eb54edf11be67b78d2e91759ea1162501c98db2f3a206cd7c0f9d19de32b27a4",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 185336624
+    },
+    {
+      "statement_sha256": "eb54edf11be67b78d2e91759ea1162501c98db2f3a206cd7c0f9d19de32b27a4",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 152,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 219846255
+    },
+    {
+      "statement_sha256": "eb54edf11be67b78d2e91759ea1162501c98db2f3a206cd7c0f9d19de32b27a4",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9178251
+    },
+    {
+      "statement_sha256": "eb54edf11be67b78d2e91759ea1162501c98db2f3a206cd7c0f9d19de32b27a4",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 42,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 57762664
+    },
+    {
+      "statement_sha256": "eb54edf11be67b78d2e91759ea1162501c98db2f3a206cd7c0f9d19de32b27a4",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 123,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 186968086
+    },
+    {
+      "statement_sha256": "ebdd046ee6a8dba1096f8acbee74a02c79d0948611d5450f80ad7f3e6a4f6e67",
+      "verb": "INSERT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3108375
+    },
+    {
+      "statement_sha256": "ebdd046ee6a8dba1096f8acbee74a02c79d0948611d5450f80ad7f3e6a4f6e67",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7680334
+    },
+    {
+      "statement_sha256": "ec181b16698ca9f3e8d2ceaf61186bb3cfbf485115e4f5fde08ded933391fae1",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 20845210
+    },
+    {
+      "statement_sha256": "ec181b16698ca9f3e8d2ceaf61186bb3cfbf485115e4f5fde08ded933391fae1",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 161423417
+    },
+    {
+      "statement_sha256": "ed3ca107cb993b811c88c06544685288cf0b1fe626ba7616bdf54a73b584d0db",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6336000
+    },
+    {
+      "statement_sha256": "edc1c3b8249863393f638fbfb9904e528591e0fc5657c6cf3cd10bd8ba9f76da",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8418374
+    },
+    {
+      "statement_sha256": "ee8a720010e66187542ce236d7fcfb4062351153384b4eb049872402af4eaecb",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 25838293
+    },
+    {
+      "statement_sha256": "eea1eaa6be09643bd4dac6c5e89908e6c2f827ad8dff80c43d00096d086520a0",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1158209
+    },
+    {
+      "statement_sha256": "f29d9c0d7c352d8640540701f72a3bf4f78fc201ec7c43d2029884ff3426f54e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 40,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 69596001
+    },
+    {
+      "statement_sha256": "f29d9c0d7c352d8640540701f72a3bf4f78fc201ec7c43d2029884ff3426f54e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 76,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 217717828
+    },
+    {
+      "statement_sha256": "f29d9c0d7c352d8640540701f72a3bf4f78fc201ec7c43d2029884ff3426f54e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3827582
+    },
+    {
+      "statement_sha256": "f29d9c0d7c352d8640540701f72a3bf4f78fc201ec7c43d2029884ff3426f54e",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 16410665
+    },
+    {
+      "statement_sha256": "f29d9c0d7c352d8640540701f72a3bf4f78fc201ec7c43d2029884ff3426f54e",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 34339712
+    },
+    {
+      "statement_sha256": "f2cd22ccd1bd0d18cb8b253c58eee1be75270e5d84003ea57661b14168cbcb2f",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 40,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 80592874
+    },
+    {
+      "statement_sha256": "f2cd22ccd1bd0d18cb8b253c58eee1be75270e5d84003ea57661b14168cbcb2f",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 125,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 288313625
+    },
+    {
+      "statement_sha256": "f2cd22ccd1bd0d18cb8b253c58eee1be75270e5d84003ea57661b14168cbcb2f",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 100,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 156689753
+    },
+    {
+      "statement_sha256": "f2cd22ccd1bd0d18cb8b253c58eee1be75270e5d84003ea57661b14168cbcb2f",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 190,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 356026500
+    },
+    {
+      "statement_sha256": "f2cd22ccd1bd0d18cb8b253c58eee1be75270e5d84003ea57661b14168cbcb2f",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 17032918
+    },
+    {
+      "statement_sha256": "f2cd22ccd1bd0d18cb8b253c58eee1be75270e5d84003ea57661b14168cbcb2f",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 44,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 86464833
+    },
+    {
+      "statement_sha256": "f2cd22ccd1bd0d18cb8b253c58eee1be75270e5d84003ea57661b14168cbcb2f",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 127,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 231833535
+    },
+    {
+      "statement_sha256": "f31db63d0b9c326b9ad8ea55532520861eca961da4d1436a665af2f25a03cd84",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 3,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3426332
+    },
+    {
+      "statement_sha256": "f31db63d0b9c326b9ad8ea55532520861eca961da4d1436a665af2f25a03cd84",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 7,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10169459
+    },
+    {
+      "statement_sha256": "f4c99c29a31cbe0bafff650fa175f1dcfa094f504340aec3880aec3aa7cb6c17",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 107015335
+    },
+    {
+      "statement_sha256": "f4c99c29a31cbe0bafff650fa175f1dcfa094f504340aec3880aec3aa7cb6c17",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 250,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 620094742
+    },
+    {
+      "statement_sha256": "f4c99c29a31cbe0bafff650fa175f1dcfa094f504340aec3880aec3aa7cb6c17",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 200,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 340078210
+    },
+    {
+      "statement_sha256": "f4c99c29a31cbe0bafff650fa175f1dcfa094f504340aec3880aec3aa7cb6c17",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 380,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 803352085
+    },
+    {
+      "statement_sha256": "f4c99c29a31cbe0bafff650fa175f1dcfa094f504340aec3880aec3aa7cb6c17",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 24608459
+    },
+    {
+      "statement_sha256": "f4c99c29a31cbe0bafff650fa175f1dcfa094f504340aec3880aec3aa7cb6c17",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 88,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 220071838
+    },
+    {
+      "statement_sha256": "f4c99c29a31cbe0bafff650fa175f1dcfa094f504340aec3880aec3aa7cb6c17",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 254,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 551376213
+    },
+    {
+      "statement_sha256": "f59befa131d327b7c23c55e9eb2258c3ea34f7c90fa076948f6768e97df4cbce",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 37129166
+    },
+    {
+      "statement_sha256": "f59befa131d327b7c23c55e9eb2258c3ea34f7c90fa076948f6768e97df4cbce",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 38,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 52030205
+    },
+    {
+      "statement_sha256": "f59befa131d327b7c23c55e9eb2258c3ea34f7c90fa076948f6768e97df4cbce",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2141625
+    },
+    {
+      "statement_sha256": "f9491b8aa317f0b78d86e3a95d3f2dde3056a7eca17df51387274910897e65f9",
+      "verb": "INSERT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2410625
+    },
+    {
+      "statement_sha256": "f9491b8aa317f0b78d86e3a95d3f2dde3056a7eca17df51387274910897e65f9",
+      "verb": "INSERT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6340377
+    },
+    {
+      "statement_sha256": "f94ce510cc42218ad4f12e6571a71dbd63258a867869227c0dd3252380c70cbd",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 35319749
+    },
+    {
+      "statement_sha256": "f94ce510cc42218ad4f12e6571a71dbd63258a867869227c0dd3252380c70cbd",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 51272873
+    },
+    {
+      "statement_sha256": "f94ce510cc42218ad4f12e6571a71dbd63258a867869227c0dd3252380c70cbd",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 209979790
+    },
+    {
+      "statement_sha256": "f94ce510cc42218ad4f12e6571a71dbd63258a867869227c0dd3252380c70cbd",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 40,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 324399708
+    },
+    {
+      "statement_sha256": "f94ce510cc42218ad4f12e6571a71dbd63258a867869227c0dd3252380c70cbd",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 14249332
+    },
+    {
+      "statement_sha256": "f94ce510cc42218ad4f12e6571a71dbd63258a867869227c0dd3252380c70cbd",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 28946750
+    },
+    {
+      "statement_sha256": "f94ce510cc42218ad4f12e6571a71dbd63258a867869227c0dd3252380c70cbd",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 30,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 71466544
+    },
+    {
+      "statement_sha256": "f9de0972bea5420535d1d907decbff70a9fc96badb05ad017e478a331c914a97",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 12,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 17623208
+    },
+    {
+      "statement_sha256": "f9de0972bea5420535d1d907decbff70a9fc96badb05ad017e478a331c914a97",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 39,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 56766290
+    },
+    {
+      "statement_sha256": "fb09d155d0c4c1afa021dac3f44312a9211745b12b7977252da46cf62a6cad81",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10409000
+    },
+    {
+      "statement_sha256": "fb09d155d0c4c1afa021dac3f44312a9211745b12b7977252da46cf62a6cad81",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 25,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 34028752
+    },
+    {
+      "statement_sha256": "fe60d6cae6ee1e4918628b80a4b7116caafdd7f8a04f56e312d2d081cc8eb482",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 12,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 30626998
+    },
+    {
+      "statement_sha256": "fe60d6cae6ee1e4918628b80a4b7116caafdd7f8a04f56e312d2d081cc8eb482",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 33,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 62875043
+    },
+    {
+      "statement_sha256": "ff62378ad1eb517867c3fcce2e0ae1194aabc85c53d13078fb292e40e5417a2b",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "deferred_sql_negatives",
+      "count": 32,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 52077873
+    },
+    {
+      "statement_sha256": "ff62378ad1eb517867c3fcce2e0ae1194aabc85c53d13078fb292e40e5417a2b",
+      "verb": "SELECT",
+      "owner": "physical._inspect",
+      "section": "unattributed",
+      "count": 100,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 135588624
+    },
+    {
+      "statement_sha256": "ff62378ad1eb517867c3fcce2e0ae1194aabc85c53d13078fb292e40e5417a2b",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "deferred_sql_negatives",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 135166419
+    },
+    {
+      "statement_sha256": "ff62378ad1eb517867c3fcce2e0ae1194aabc85c53d13078fb292e40e5417a2b",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unattributed",
+      "count": 152,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 204983296
+    },
+    {
+      "statement_sha256": "ff62378ad1eb517867c3fcce2e0ae1194aabc85c53d13078fb292e40e5417a2b",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11518125
+    },
+    {
+      "statement_sha256": "ff62378ad1eb517867c3fcce2e0ae1194aabc85c53d13078fb292e40e5417a2b",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "deferred_sql_negatives",
+      "count": 42,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 50460456
+    },
+    {
+      "statement_sha256": "ff62378ad1eb517867c3fcce2e0ae1194aabc85c53d13078fb292e40e5417a2b",
+      "verb": "SELECT",
+      "owner": "unattributed",
+      "section": "unattributed",
+      "count": 123,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 172773623
+    }
+  ],
+  "conditions": {
+    "unattributed_worker_section_queries": 71478,
+    "active_owner_calls_at_exit": 0,
+    "observed_threads": 14,
+    "unfinished_queries": 0
+  },
+  "measurement_is_not_qualification_or_execution_permission": true
+}

@@ -1,0 +1,72 @@
+[
+  {
+    "filename": "browser-synthetic.pdf",
+    "parsed": true,
+    "download_exact": true,
+    "locations": [
+      {
+        "location": {
+          "row": null,
+          "cell": null,
+          "kind": "page",
+          "line": null,
+          "page": 1,
+          "sheet": null,
+          "column": null
+        },
+        "value_kind": "text",
+        "derived_line_end": 1,
+        "derived_line_start": 1
+      },
+      {
+        "location": {
+          "row": null,
+          "cell": null,
+          "kind": "page",
+          "line": null,
+          "page": 2,
+          "sheet": null,
+          "column": null
+        },
+        "value_kind": "text",
+        "derived_line_end": 3,
+        "derived_line_start": 3
+      }
+    ]
+  },
+  {
+    "filename": "browser-synthetic.xlsx",
+    "parsed": true,
+    "download_exact": true,
+    "locations": [
+      {
+        "location": {
+          "row": 1,
+          "cell": "A1",
+          "kind": "cell",
+          "line": null,
+          "page": null,
+          "sheet": "合成规格",
+          "column": 1
+        },
+        "value_kind": "text",
+        "derived_line_end": 1,
+        "derived_line_start": 1
+      },
+      {
+        "location": {
+          "row": 1,
+          "cell": "B1",
+          "kind": "cell",
+          "line": null,
+          "page": null,
+          "sheet": "合成规格",
+          "column": 2
+        },
+        "value_kind": "text",
+        "derived_line_end": 2,
+        "derived_line_start": 2
+      }
+    ]
+  }
+]

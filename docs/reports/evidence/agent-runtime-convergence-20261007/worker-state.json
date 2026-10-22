@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-07T16:12:52.558496+00:00",
+  "profile": "local-development",
+  "namespace": "pdos-agent-local",
+  "pollers": {
+    "workflow": 1,
+    "activity": 1
+  },
+  "job_states": {},
+  "running_workflows": 0,
+  "real_business_actions_started_by_check": false,
+  "project_path": "/Users/huhanwei/Desktop/ai-native-R&D-platform",
+  "post_desktop_relocation": true
+}

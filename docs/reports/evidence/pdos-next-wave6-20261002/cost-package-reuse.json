@@ -1,0 +1,15 @@
+{
+  "source_candidate": "docs/reports/evidence/pdos-next-supply-business-20261002/candidate.json",
+  "source_candidate_file_sha256": "571e4c53d077be76231c0adab7635c4eea3aeeb460f096ce0d7fdf486d19f7db",
+  "declared_candidate_sha256": "8876b5bc371bd86fdf2ca9b3afd0311907463b2937aadc2657bf6c7e26274763",
+  "files_checked": 24,
+  "changed": [],
+  "reuse": [
+    "domain cost_candidate and freshness/read mappers",
+    "fixed BOM Decimal cost engine",
+    "CostBreakdown and supply_cost view types"
+  ],
+  "not_reused": [
+    "SupplyCostHandler confirmation/transaction ownership"
+  ]
+}

@@ -1,0 +1,63 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 3 items
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan PASSED [ 33%]
+tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth PASSED [ 66%]
+tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth
+tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth
+tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth
+tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth
+tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution
+tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution
+tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth
+tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth
+tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth
+tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth
+tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth
+tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 3 passed, 27 warnings in 161.59s (0:02:41) ==================

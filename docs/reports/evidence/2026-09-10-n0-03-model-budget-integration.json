@@ -1,0 +1,69 @@
+{
+  "date": "2026-09-10",
+  "scope": "N0-03 explicit Gateway -> per-attempt budget -> provider integration; default runtime factories not adopted",
+  "tests": {
+    "comprehensive_passed": 114,
+    "integration_final_passed": 24,
+    "integration_repeated_tests": 23,
+    "contracts_calendar_passed": 160,
+    "distinct_total": 275
+  },
+  "checks": {
+    "ruff_files": 10,
+    "format_files": 10,
+    "mypy_files": 5,
+    "export_checks": "both passed"
+  },
+  "initial_failures": "57 passed / 10 failed: 9 assertions selected pre-existing seed trace rather than invocation_id; 1 fixture omitted required degraded error code. Corrected; original 16 integrations passed, then expanded to final 24.",
+  "observed_wait": {
+    "cause": "Python import bytecode file read; sampled own pytest/diagnostic processes",
+    "database": "no executing lock wait; container stayed running",
+    "action": "kept original session; no restart, kill, cache deletion or database reset",
+    "result": "114 passed in 423.93s; final focused 24 passed in 29.05s"
+  },
+  "test_database": {
+    "host": "127.0.0.1",
+    "port": 57432,
+    "database": "pdos_test",
+    "migration": "0062_model_budget_evidence"
+  },
+  "qualification": "explicit synthetic fixtures only; no real model qualification or model calls",
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "76308c08917b984177c384e908a1304129ad3d26e8f733c540d2944bcff9b745",
+      "sources_verified": 176,
+      "artifacts_verified": 3,
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "approved_artifacts_unchanged": true
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "35e7c2521ad54cd12bf3c26fcf4273857ddd301a342a12d7e5be6ca0f7800fd9",
+      "sources_verified": 54,
+      "artifacts_verified": 4,
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d",
+      "approved_artifacts_unchanged": true
+    }
+  },
+  "sources": {
+    "server/app/ai/model_budget.py": "163ad462dd6197e80fd83b2926a0d9b3c982f813f465d8b490804694a755f6fe",
+    "server/app/ai/budget_evidence.py": "5385f3419548a170daf23e48aa07d575deb1356e91d078f32e230a671fd20a75",
+    "server/app/ai/budget_ledger.py": "18bc6c729fbe2faa112c2ed8746086e51439f721c53d539c432abff6372e39e1",
+    "server/app/ai/gateway.py": "91b776ddd00405e197925038dab3f6d7c8452ee4ba050d295463da3475425810",
+    "server/app/db/schema.py": "a75c94ae59a3aa1c6636eb334cb38c3149c7cf4b26bcc64febc3f70a1a6a2c8e",
+    "server/migrations/versions/0062_model_budget_evidence.py": "28ed901e3e23a9541435ffd7d32b82a747e06aa5142dc0f760a15f67cdd76e72",
+    "server/tests/test_model_budget_controller.py": "a2fb2676e5271e7fe7b87ce15d2892a35d09ce3eed6ed23f2a4ff4b2c74d5f04",
+    "server/tests/test_budget_ledger.py": "f87cebfd62610c663fd63332c0cae7015f0291ecb434cbb59b64aab0dbf27f52",
+    "server/tests/test_model_gateway_schema.py": "91d546006712cf19bd1a7643f6b6d6f4005d1f94eaafdebe2e53fe48ed6fbd14",
+    "server/tests/test_migrations.py": "de27bada5a33383aae4b0638419a3530542fe47839dc7c55a2c91d3467668c1b",
+    "docs/reports/2026-09-10-n0-03-model-budget-integration-validation.md": "90d69f89a918edc496ab4bd3178ceead82ddb446fa9d313f50f332a0e4c8652f"
+  },
+  "remaining": [
+    "trusted real model input metering and window/output qualification loading",
+    "default factory adoption and stable business call_id/checkpoint lifecycle",
+    "legacy/new usage accounting and unresolved legacy reconciliation",
+    "restricted role budget service port",
+    "active-time/worker leases",
+    "tool call budgeting and loop",
+    "persistent rollout/bundle and current source ACL checks"
+  ]
+}

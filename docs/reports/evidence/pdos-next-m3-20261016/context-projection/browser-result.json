@@ -1,0 +1,9 @@
+{
+  "run_id": "f52924a2-eca8-47fa-aa5f-cb0fabcbc921",
+  "status": "partial",
+  "model_calls": 0,
+  "business_calls": 0,
+  "held_tokens": 0,
+  "omission_recorded": true,
+  "private_value_in_projection": false
+}

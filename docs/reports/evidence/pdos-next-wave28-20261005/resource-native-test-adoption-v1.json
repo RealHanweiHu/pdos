@@ -1,0 +1,25 @@
+{
+  "manifest_sha256": "9f75f5df69ed876fab471ac3ae60d0ae1069f6b9f997bdd40bcd4719c3f78817",
+  "source_binding_all_33_verified": true,
+  "import_order_only_changed_from_stage": true,
+  "non_import_complete_ast_exact": true,
+  "files": {
+    "server/tests/manufacturing_resource_native_transactions/conftest.py": {
+      "staged_sha256": "069830f5e49e28669939bbfa5307c43e4994d009ffda53fe22c66aa7ee4c5d94",
+      "actual_sha256": "069830f5e49e28669939bbfa5307c43e4994d009ffda53fe22c66aa7ee4c5d94"
+    },
+    "server/tests/manufacturing_resource_native_transactions/__init__.py": {
+      "staged_sha256": "3bd37e3e60c7d50d0fe9041db656d31fc403ae716172dbcbd7fe5adebdd984ce",
+      "actual_sha256": "3bd37e3e60c7d50d0fe9041db656d31fc403ae716172dbcbd7fe5adebdd984ce"
+    },
+    "server/tests/manufacturing_resource_native_transactions/test_native_read.py": {
+      "staged_sha256": "2e4feb6a2df8bcc10d2c00e26e4e37c0d198eb6b6d9dbdaf70d9a999a5a3e88c",
+      "actual_sha256": "04d092e9f707f87227e898cd3f58bbf9a2a03eb9c1600125e285be24f0147ed9"
+    },
+    "server/tests/manufacturing_resource_native_transactions/fixtures.py": {
+      "staged_sha256": "a18f685c127afc3529cf4cf71bc43681a1bfed70575358e3c6cbacd2400031ec",
+      "actual_sha256": "cc9e8afc63a2f3f1e8128885cd058dce64deb017185caf3e5e0a9eef2f72e616"
+    }
+  },
+  "pg_not_yet_run": true
+}

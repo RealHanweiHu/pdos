@@ -1,0 +1,90 @@
+{
+  "candidate_sha256": "c6ff76d5d5aa51cd79d11666ee9b67b16697dcb35d4555c7376add53471a421c",
+  "files": [
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/candidate.json",
+      "sha256": "0a18bcff427242acde2b13d1959abbbb6fd79a6624fc93795a16b0ec01c2e769",
+      "bytes": 2401
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/format-final.txt",
+      "sha256": "a3fa1059bfb597d1762b29dd7315f9a978679c51021b3630984cdbdbec7bd8aa",
+      "bytes": 39
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/generate_evidence.py",
+      "sha256": "e795afd54db5fac27bd541f310593c3e1b949b597bee76bfacac77c24732ee3d",
+      "bytes": 9450
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/import-audit.json",
+      "sha256": "7add4529dcda7a25c12af4275792d8d919af28591921c917c039dd2dec17197e",
+      "bytes": 685
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/input-schemas.json",
+      "sha256": "38a3beefde9da25d35399a699ef54ee0f028da0be72879b3173c942bd1c61e3f",
+      "bytes": 37134
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/integration.md",
+      "sha256": "ee6c829ae7cd58d9801aa97b3eca375a33638a71cd217bbfc2c8b1226592b09e",
+      "bytes": 9265
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/output-schemas.json",
+      "sha256": "e17b0cb160d4a6406cf760b668f813d2a0b89d1c3fc2d4dc934eb584515e390a",
+      "bytes": 56708
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/pytest-expanded.txt",
+      "sha256": "7a7e0b2df3af5c3b49865d5215687b6a020339a2979a19e00a50107b3597bbe5",
+      "bytes": 111
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/pytest-final.txt",
+      "sha256": "da58475dad66ef3b923627d85b75ccbd709bc395ed6b02fc550878bf631e8c7c",
+      "bytes": 10744
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/pytest-initial.txt",
+      "sha256": "58c8a28e11ca0717484c5754ffaf75c95bbf6e08ceeaa7b85c6533914f512d17",
+      "bytes": 111
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/result.md",
+      "sha256": "6fcf3e578ec639e95370b1646c3de3d9ee92bf6e49bd90fd0fbfd04fdea149e7",
+      "bytes": 4488
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/ruff-expanded.txt",
+      "sha256": "8cbcf3c06ef5b7afc0ee8e3e8a2699bba86b381681de335c0213c7ec169262e1",
+      "bytes": 31
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/ruff-final.txt",
+      "sha256": "8cbcf3c06ef5b7afc0ee8e3e8a2699bba86b381681de335c0213c7ec169262e1",
+      "bytes": 31
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/ruff-initial.txt",
+      "sha256": "cd3b2b1a16ccadb2bbfc671a515ec3cca5a7e6e2755b4d1bda7e7242d6a6c61e",
+      "bytes": 14680
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/source-summary.json",
+      "sha256": "42062fda1266996ae4d993a71f35c209ff1ee3ecad609570f74d8e4bf3f697a6",
+      "bytes": 5704
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/synthetic-examples.json",
+      "sha256": "dafb85c9eb879bd80ebecf47adfc46f83648fcf134bdd75bd88c4d43352a1ccd",
+      "bytes": 31214
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-supply-cost-20261002/validation.json",
+      "sha256": "4ba59825901c6a1a9627f2811eddb4cae32efa3b558a2a37959d247c9beac33a",
+      "bytes": 524
+    }
+  ]
+}

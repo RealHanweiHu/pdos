@@ -1,0 +1,22 @@
+{
+  "status": "FAIL",
+  "started_at": "2026-10-03T15:50:01.981806+00:00",
+  "action": "context",
+  "target": "127.0.0.1:62513/pdos_test",
+  "steps": [
+    {
+      "step": "current-context",
+      "http_status": 200,
+      "duration_seconds": 49.506,
+      "response_sha256": "c1c14bb811a40d43246b715dcbf20b5ed9e4ca6b5cf419cd36add1a52b4d0681",
+      "error_code": null
+    }
+  ],
+  "model_calls": 0,
+  "source_manifest_sha256": "b828686f2e6e07653702fc36575bd751d215ed15d5b3e63c226ca61fa7c6adaa",
+  "exception_type": "AssertionError",
+  "diagnostic": "",
+  "finished_at": "2026-10-03T15:50:52.141285+00:00",
+  "changed_runtime_sources": [],
+  "source_stable": true
+}

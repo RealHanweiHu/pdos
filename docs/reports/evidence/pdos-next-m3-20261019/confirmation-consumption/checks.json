@@ -1,0 +1,63 @@
+{
+  "head": "b07e5485872383f137a7b8fa50fa603c9265912b",
+  "source_sha256": {
+    "pdos-next/web/src/components/pai/run-candidates.tsx": "c81e7785f4860552797441f9f9c55eb7e63598eb7cb7a84b4ae131c9ca279d9e",
+    "pdos-next/web/src/components/pai/run-candidates.test.mjs": "b5a584d0ecc85c8f3587c025d048d493c3ad8ca02297cff4a3d86e2ec83eeb64",
+    "pdos-next/web/src/lib/domain-candidate.ts": "1684e1203647073f43d91c61bb92ad887367362e0f58dd0328f2e0241ead4e79"
+  },
+  "source_stable_during_final_tests": true,
+  "runtime_change_scope": [
+    "pdos-next/web/src/components/pai/run-candidates.tsx"
+  ],
+  "test_change_scope": [
+    "pdos-next/web/src/components/pai/run-candidates.test.mjs"
+  ],
+  "checks": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "pdos-next/web/src/components/pai/run-candidates.test.mjs",
+        "pdos-next/web/src/lib/domain-candidate.test.mjs"
+      ],
+      "exit_code": 0,
+      "log": "frontend-tests-final.log"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "pdos-next/web/src/components/pai/run-candidates.tsx",
+        "pdos-next/web/src/components/pai/run-candidates.test.mjs"
+      ],
+      "exit_code": 0,
+      "log": "diff-check.log"
+    },
+    {
+      "command": [
+        "pnpm",
+        "typecheck"
+      ],
+      "cwd": "pdos-next/web",
+      "exit_code": 0,
+      "log": "typecheck.log"
+    },
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "eslint",
+        "src/components/pai/run-candidates.tsx"
+      ],
+      "cwd": "pdos-next/web",
+      "exit_code": 0,
+      "log": "lint.log"
+    }
+  ],
+  "synthetic_frontend_transport": true,
+  "browser_or_bff_chain_verified": false,
+  "production_or_external_model_calls": 0,
+  "archived_source_diff": []
+}

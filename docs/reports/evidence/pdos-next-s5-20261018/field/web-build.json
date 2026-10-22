@@ -1,0 +1,17 @@
+{
+  "exit": 0,
+  "output": "▲ Next.js 16.3.3 (webpack)\n✓ Running next.config.ts took 19ms\n\n  Creating an optimized production build ...\n✓ Compiled successfully in 16.0s\n  Running TypeScript ...\n  Finished TypeScript in 12.1s ...\n  Collecting page data using 9 workers ...\n  Generating static pages using 9 workers (0/5) ...\n  Generating static pages using 9 workers (1/5) \n  Generating static pages using 9 workers (2/5) \n  Generating static pages using 9 workers (3/5) \n✓ Generating static pages using 9 workers (5/5) in 706ms\n  Finalizing page optimization ...\n  Collecting build traces ...\n\nRoute (app)\n┌ ○ /\n├ ○ /_not-found\n├ ƒ /api/[...path]\n├ ƒ /api/local-session\n├ ƒ /api/v1/personal/attention\n├ ƒ /categories/[categoryId]/proposals/[proposalId]\n└ ƒ /plan\n\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand\n\n",
+  "snapshot": "/private/tmp/pdos-field-b1ysnd2t",
+  "web_manifest": {
+    "pdos-next/web/src/components/field/field-feedback.tsx": "8f6b11a4b66781849eae8b82c9605bfa8aa61d3cf34b3f1600e82ff1b34c6cd8",
+    "pdos-next/web/src/components/field/field-feedback.module.css": "8c236e58423f36ba7e4044c5da0e45226fdcae093acf82aaa26f8039def9a623",
+    "pdos-next/web/src/components/field/field-feedback.test.mjs": "98c0a994ee960d23d03de3efee6d0652a1a118cada2060303a6c0984296d7d1d",
+    "pdos-next/web/src/lib/field-feedback.test.ts": "e35d16dcb8263fa18cfb7a37c7e2252e12c5cec552e2e9d5980d6f37995f0e71",
+    "pdos-next/web/src/lib/field-feedback.ts": "adc7723e3cdf99f5eab68ece45ff1b0ffa14f514aa0fae141dc60ef7e5927cae",
+    "pdos-next/web/src/app/api/field-feedback-route.test.mjs": "5c44a0e34d588d798095aded0ccf11ab579327f188bd707de9b3ee20799dec86",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "3f7cc1a0a64f07c362a182173d4ed3dc3c39108fb3442f27858f5e22a7d7013f",
+    "pdos-next/web/src/components/workspace.tsx": "0145cb30140d434d2a71f7f7e7b5b4d7d0b4097c11c32667ce5b1e8ec43b76a1",
+    "pdos-next/web/src/lib/workspace-navigation.ts": "fc42b773cc502988ea76fe79559b0ed94e144c2cb6c456b90765bb8c3e31186a"
+  },
+  "network_scope": "public font assets required by the existing Next build"
+}

@@ -1,0 +1,22 @@
+{
+  "recorded_at": "2026-10-07T02:03:12.359254+00:00",
+  "calibration_process_exit_code": 0,
+  "real_model_calls": 4,
+  "automatic_retries": 0,
+  "additional_model_calls": 0,
+  "observations_status": "observed_not_qualified",
+  "candidate_preparation_initial_issue": "Offline packaging helper referred to LoadedGoldenSuite.version; corrected to suite.suite.suite_version and resumed after validating already written assets/evidence. No additional provider request.",
+  "candidate_preparation_final_exit_code": 0,
+  "candidate_preparation_helper_sha256": "9873b33d86911827b8d9b52c78d2c00c52cfbf4afdc7d0eecbe5544552792378",
+  "observations_sha256": "620e8359d31e7ebca5c57275d33ce58be3dc00187a2f22a6944e21dd611b5416",
+  "manual_review_requested": true,
+  "publication_approved": false,
+  "configuration_applied": false,
+  "database_operations_this_turn": 0,
+  "main_preview_ports_listening": [
+    3000,
+    8000
+  ],
+  "new_tests_or_production_build_required": false,
+  "reason": "Only authorized calibration observations and unpublished local review artifacts; application code/schema unchanged."
+}

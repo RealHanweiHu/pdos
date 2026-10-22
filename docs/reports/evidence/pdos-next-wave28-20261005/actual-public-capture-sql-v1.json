@@ -1,0 +1,203 @@
+{
+  "status": "PASSIVE_ACTUAL_PYTEST_TIMING",
+  "pytest_exit": 1,
+  "wall_seconds": 1768.9166177079896,
+  "successful_sql_count": 585493,
+  "successful_sql_wall_seconds": 1061.341531351849,
+  "top_sql_shapes_by_elapsed_time": [
+    {
+      "verb": "SELECT",
+      "query_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "count": 97155,
+      "seconds": 165.81779141532024,
+      "maximum_seconds": 0.11848204099806026
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "count": 78755,
+      "seconds": 135.72816742473515,
+      "maximum_seconds": 0.13298808300169185
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "count": 78936,
+      "seconds": 130.92300143255852,
+      "maximum_seconds": 0.12959033297374845
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "count": 43936,
+      "seconds": 89.78339912259253,
+      "maximum_seconds": 0.12468149996129796
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "count": 48439,
+      "seconds": 83.84119453426683,
+      "maximum_seconds": 0.10767599998507649
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "count": 25951,
+      "seconds": 44.21403481659945,
+      "maximum_seconds": 0.10602095897775143
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "count": 22822,
+      "seconds": 39.15543357550632,
+      "maximum_seconds": 0.11778254195814952
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "count": 22822,
+      "seconds": 38.469601795019116,
+      "maximum_seconds": 0.12432629201794043
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "5a59425c715de5a292f80ba4ffac5714e37ccc44b8226690089bd7aeb297be20",
+      "count": 10400,
+      "seconds": 17.673570128448773,
+      "maximum_seconds": 0.10158212500391528
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "count": 7045,
+      "seconds": 17.477279906685,
+      "maximum_seconds": 0.1259395420202054
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "a34202ba7c1144fdb271e063dc1d0ef9794403d2e2ec851c5c4daa8766aec531",
+      "count": 9101,
+      "seconds": 16.544014882470947,
+      "maximum_seconds": 0.11455766600556672
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "ba995d2420df71b6a5d544f2cc743059e0f4568b1cfe1795cf4d4aef3cf19c58",
+      "count": 9101,
+      "seconds": 16.474801342294086,
+      "maximum_seconds": 0.10999462497420609
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "count": 7125,
+      "seconds": 13.451203142292798,
+      "maximum_seconds": 0.1141173749929294
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "count": 7193,
+      "seconds": 13.138546737434808,
+      "maximum_seconds": 0.10237004200462252
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "count": 7210,
+      "seconds": 12.566820862295572,
+      "maximum_seconds": 0.1057779589900747
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "f4c99c29a31cbe0bafff650fa175f1dcfa094f504340aec3880aec3aa7cb6c17",
+      "count": 6471,
+      "seconds": 11.847982113424223,
+      "maximum_seconds": 0.10892141598742455
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "78d36a184df1cec6c0750a35325a0381da079a4292fd014057c82e004f0b588d",
+      "count": 6516,
+      "seconds": 11.749173057207372,
+      "maximum_seconds": 0.11260545800905675
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "3b295db76c059a76f7dd63aa29b10c87948607a04c6f7aeae5f9d908df1bfbda",
+      "count": 6532,
+      "seconds": 11.385164567851461,
+      "maximum_seconds": 0.1140042920014821
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "b8ef43bb7b849ef77c42751758988e8b33581cf2949bac682edac5acfd5be2d1",
+      "count": 6496,
+      "seconds": 11.302480403450318,
+      "maximum_seconds": 0.10068949998822063
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "0423a738c3f9fd8e3b5495d7feb2cf19bdb14dbc91f1a114688f4a2c60f675e5",
+      "count": 6536,
+      "seconds": 10.8955392591306,
+      "maximum_seconds": 0.10398787498706952
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "2b56b4bcf40d8ce19d7ba1d08d7eaccf340f0f400dc74a2a09bec2443345af5e",
+      "count": 5783,
+      "seconds": 9.717350758321118,
+      "maximum_seconds": 0.09587141702650115
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "b01ff2bfecf68274e378dd06e603902b54ee5133fb8238ff0943d8091ff70670",
+      "count": 5783,
+      "seconds": 9.4525519029703,
+      "maximum_seconds": 0.10256554099032655
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "0f1585c72de7ea507e3af553fc0dddd2848ef0a2ad13a8464a07016e18c54853",
+      "count": 1833,
+      "seconds": 7.469955118256621,
+      "maximum_seconds": 0.10297891602385789
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "count": 1892,
+      "seconds": 6.947307989466935,
+      "maximum_seconds": 0.10506895795697346
+    },
+    {
+      "verb": "SELECT",
+      "query_sha256": "f2cd22ccd1bd0d18cb8b253c58eee1be75270e5d84003ea57661b14168cbcb2f",
+      "count": 3243,
+      "seconds": 6.638938634307124,
+      "maximum_seconds": 0.10050699999555945
+    }
+  ],
+  "test_phases": [
+    {
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 1067.8849736670381
+    },
+    {
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 699.5117572079762
+    },
+    {
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0009952919790521264
+    }
+  ],
+  "sql_text_parameters_credentials_recorded": false,
+  "business_pass_claimed": false
+}

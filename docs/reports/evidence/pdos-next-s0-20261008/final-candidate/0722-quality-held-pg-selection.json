@@ -1,0 +1,12 @@
+[
+  "tests/quality_execution_transactions/test_request_prepare.py::test_inputs_are_rr_readonly_and_each_confirmation_request_prepares_once",
+  "tests/quality_execution_transactions/test_request_prepare.py::test_cached_preparation_still_rechecks_issuer_after_confirmation_review",
+  "tests/quality_execution/test_transactions.py::test_original_bytes_read_runtime_revocation_is_atomic",
+  "tests/quality_execution/test_transactions.py::test_outbox_failure_rolls_back_issue_version_pointer_and_common_confirmation",
+  "tests/quality_execution/test_transactions.py::test_one_result_event_with_two_failures_creates_two_then_merge_retains_recheck_block",
+  "tests/quality_execution/test_transactions.py::test_projection_or_arbitrary_event_cannot_relabel_an_unverified_result_as_failure",
+  "tests/test_retained_execution.py::test_retained_rr_evidence_does_not_survive_source_withdrawal_between_requests",
+  "tests/verification_launch/test_transactions.py::test_inputs_are_readonly_even_when_sentinels_do_not_exist",
+  "tests/verification_launch/test_transactions.py::test_fixed_full_accepted_plan_promise_and_atomic_actual_start_leave_old_history",
+  "tests/test_retained_execution.py::test_retained_held_writer_read_permission_rechecks_untracked_current_after_source_io"
+]

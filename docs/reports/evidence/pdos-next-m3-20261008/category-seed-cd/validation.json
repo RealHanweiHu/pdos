@@ -1,0 +1,33 @@
+{
+  "scope": "C/D business confirmation and static seed consistency; no runtime, database or product certification checks",
+  "source_id_count": 56,
+  "categories": {
+    "auto-tire-inflator": {
+      "parameters_preserved": 31,
+      "template_items_preserved": 31,
+      "regulation_directory_items": 43,
+      "applicability_pending": 43,
+      "compliance_not_assessed": 43,
+      "changed_sections_match_json": true,
+      "original_source_statuses_preserved": true
+    },
+    "bicycle-pump": {
+      "parameters_preserved": 30,
+      "template_items_preserved": 30,
+      "regulation_directory_items": 44,
+      "applicability_pending": 44,
+      "compliance_not_assessed": 44,
+      "changed_sections_match_json": true,
+      "original_source_statuses_preserved": true
+    }
+  },
+  "file_sha256": {
+    "sources.md": "9de1dd2c5006ab562c84e812931ff8ccaff4038778fef2804aa3cf8ced9b58b1",
+    "auto-tire-inflator.json": "88dc3e0971610d65437cfa7133ac61cf61fcaab49d2ca025efdffe7a3f4f402c",
+    "README.md": "8f9804089e35858a59415e3427c0dfd5e318eba0e6493a5189480e4dda44e0e7",
+    "auto-tire-inflator.md": "bb6f8210bb5dbb2c6182ab6a9ebcf4da4468be20d9780f2e0436013862c05639",
+    "bicycle-pump.md": "1ca353551538589a8d6a15fa6c24d8aa237cc9cc7c843b0125fa6d05aa8683ff",
+    "bicycle-pump.json": "47dca028c614014639952d5cce15e53a86e6e1605e2ce3c653447b7e5139b5f6"
+  },
+  "passed": true
+}

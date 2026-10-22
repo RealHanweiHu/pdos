@@ -1,0 +1,69 @@
+.F.....................                                                  [100%]
+=================================== FAILURES ===================================
+_______ test_proposal_history_needs_current_audience_and_category_entry ________
+
+setup = <isolated synthetic test scope>
+
+    def test_proposal_history_needs_current_audience_and_category_entry(setup):
+        identity, _ = create(
+            setup, {"title": "Synthetic private proposal", "entry_kind": "new_product"}
+        )
+        run, _ = start(setup, identity)
+        path = f"/v1/categories/{setup.category}/agent-runs"
+        peer = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
+        assert setup.client.get(path, headers=peer, params={"proposal_id": identity}).status_code == 404
+        assert (
+            setup.client.get(
+                "/v1/personal/agent-runs", headers=setup.headers, params={"proposal_id": identity}
+            ).status_code
+            == 403
+        )
+        assert (
+            setup.client.get(path, headers=setup.headers, params={"proposal_id": "invalid"}).status_code
+            == 422
+        )
+        with Session(setup.admin) as session, session.begin():
+            session.delete(
+                session.scalar(
+                    select(Grant).where(
+                        Grant.category_id == setup.category, Grant.principal_id == setup.human
+                    )
+                )
+            )
+        for suffix in ("/" + run, "/" + run + "/events", "/" + run + "/candidates"):
+            assert setup.client.get(path + suffix, headers=setup.headers).status_code == 403
+>       assert (
+            setup.client.get(path, headers=setup.headers, params={"proposal_id": identity}).status_code
+            == 404
+        )
+E       AssertionError: assert 403 == 404
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+E        +    where <Response [403 Forbidden]> = get('/v1/categories/df142899-7cf3-48a2-9ea4-1ae158331651/agent-runs', headers={'Authorization': 'Bearer [SYNTHETIC_TOKEN_REDACTED]'}, params={'proposal_id': 'd82b3bb0-1c70-47e1-93b8-de527e316bb4'})
+E        +      where get = <starlette.testclient.TestClient object at 0x119d08710>.get
+E        +        where <starlette.testclient.TestClient object at 0x119d08710> = <isolated synthetic test scope>.client
+E        +      and   {'Authorization': 'Bearer [SYNTHETIC_TOKEN_REDACTED]'} = <isolated synthetic test scope>.headers
+
+tests/agent_kernel/test_proposal_runs_pg.py:97: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_runs_pg.py: 3 warnings
+tests/agent_kernel/test_m3_original_binding_pg.py: 4 warnings
+tests/agent_kernel/test_domain_candidates_pg.py: 3 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:689: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_domain_candidates_pg.py::test_confirmation_receipt_resolves_candidate_even_after_run_completion
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:175: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/agent_kernel/test_domain_candidates_pg.py::test_confirmation_receipt_resolves_candidate_even_after_run_completion
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:192: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+tests/agent_kernel/test_domain_candidates_pg.py: 19 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:574: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_proposal_runs_pg.py::test_proposal_history_needs_current_audience_and_category_entry
+1 failed, 22 passed, 31 warnings in 28.41s

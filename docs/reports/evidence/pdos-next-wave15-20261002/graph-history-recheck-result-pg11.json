@@ -1,0 +1,9 @@
+{
+  "nodes": [
+    "tests/change_execution/test_transactions.py::test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualification_aba"
+  ],
+  "candidate": "backend-candidate-v3-source.json",
+  "candidate_sha256": "8f5e7542818773af2d0f341af40896550c2bfb74be246eaa49698f43eba23833",
+  "exit_code": 0,
+  "seconds": 2341.51
+}

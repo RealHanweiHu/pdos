@@ -1,0 +1,125 @@
+{
+  "usesActualDomainApi": true,
+  "responseProxy": false,
+  "ordinaryNonProductManager": true,
+  "checks": {
+    "explicitBuildSelection": true,
+    "nativeScopedWorkbenchNavigation": true,
+    "workbenchSameBuildOption": true,
+    "workbenchRunStillRestricted": true,
+    "returnedAndRefreshed": true
+  },
+  "desktop": {
+    "documentWidth": 1280,
+    "requestVersions": true,
+    "runCurrent": true,
+    "theme": "light",
+    "viewport": 1280
+  },
+  "narrowLight": {
+    "currentRun": true,
+    "documentWidth": 320,
+    "fixedRequest": true,
+    "panels": [
+      {
+        "label": "本项目 Builds",
+        "width": 288
+      },
+      {
+        "label": "已选轮次事实摘要",
+        "width": 288
+      }
+    ],
+    "tables": [
+      {
+        "containerWidth": 286,
+        "scrollWidth": 800,
+        "width": 800
+      },
+      {
+        "containerWidth": 240,
+        "scrollWidth": 550,
+        "width": 550
+      }
+    ],
+    "theme": "light",
+    "viewport": 320
+  },
+  "narrowLightExpanded": {
+    "documentWidth": 320,
+    "hasHistoricalProjection": true,
+    "rawValues": 2,
+    "tables": [
+      {
+        "containerWidth": 286,
+        "scrollLeft": 224,
+        "scrollWidth": 800,
+        "width": 800
+      },
+      {
+        "containerWidth": 240,
+        "scrollLeft": 0,
+        "scrollWidth": 550,
+        "width": 550
+      }
+    ],
+    "theme": "light",
+    "viewport": 320
+  },
+  "narrowDark": {
+    "documentWidth": 320,
+    "runText": true,
+    "theme": "dark",
+    "viewport": 320
+  },
+  "refreshClearsSelection": {
+    "currentRunVisible": false,
+    "documentWidth": 320,
+    "selectedSummaryVisible": false,
+    "theme": "dark"
+  },
+  "screenshotDirectory": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-project-builds-20261017",
+  "finalCountWording": {
+    "dark": {
+      "documentWidth": 320,
+      "fixedRequest": true,
+      "rawValues": 2,
+      "recordCountLabel": true,
+      "tables": [
+        {
+          "containerWidth": 286,
+          "scrollWidth": 800,
+          "width": 800
+        },
+        {
+          "containerWidth": 240,
+          "scrollWidth": 550,
+          "width": 550
+        }
+      ],
+      "theme": "dark",
+      "viewport": 320
+    },
+    "light": {
+      "documentWidth": 320,
+      "rawValues": 2,
+      "recordCountLabel": true,
+      "tables": [
+        {
+          "containerWidth": 286,
+          "scrollWidth": 800,
+          "width": 800
+        },
+        {
+          "containerWidth": 240,
+          "scrollWidth": 550,
+          "width": 550
+        }
+      ],
+      "theme": "light",
+      "viewport": 320
+    },
+    "originalFlowUnchanged": true,
+    "priorScreenshots": "initial-before-count-wording/"
+  }
+}

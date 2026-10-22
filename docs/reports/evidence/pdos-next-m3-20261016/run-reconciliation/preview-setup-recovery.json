@@ -1,0 +1,6 @@
+{
+  "cause": "Preview attempted to change immutable Run goal; transaction correctly rejected.",
+  "recovery": "Reused same actual synthetic Run, retained original goal, expired initial login and issued own replacement login.",
+  "business_writes": 0,
+  "duplicate_runs": 0
+}

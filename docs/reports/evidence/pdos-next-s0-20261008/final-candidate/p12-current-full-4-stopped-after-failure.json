@@ -1,0 +1,12 @@
+{
+  "actual_exit": 2,
+  "child_reaped": true,
+  "source_unchanged": true,
+  "complete_pass": false,
+  "complete_execution": false,
+  "passed_call_count": 3419,
+  "failed_nodes": [
+    "tests/quality_followup_transactions/test_transactions.py::test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution"
+  ],
+  "reason": "Stopped known failing candidate to repair historical promised-start provenance being incorrectly required as current Artifact read; raw failure and partial outcomes retained"
+}

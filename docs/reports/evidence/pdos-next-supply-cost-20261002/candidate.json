@@ -1,0 +1,59 @@
+{
+  "candidate_sha256": "c6ff76d5d5aa51cd79d11666ee9b67b16697dcb35d4555c7376add53471a421c",
+  "date": "2026-10-02",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/__init__.py",
+      "sha256": "9a2929d5c8b965def4c59dd6189244bc029b5f4007ebdb8bc8701b3c34c21fa6"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/bom.py",
+      "sha256": "cdad615b84a349dae4cb3d7c9e447491ed70d9ab7b63b1e95f67112a4649cdf2"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/common.py",
+      "sha256": "cd7f43ffb1c46bf8175fe59da3c76b9aeaf598d03def82aa03b8a10d4dab7379"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/costs.py",
+      "sha256": "6e5af8ec6a13fc9d5309dc9ca9afbb0111882bf686498b45730551fdced0ea36"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/coverage.py",
+      "sha256": "534737cf0117ddc1607d7f56e705ebefb2311e72f25dca1a9ff386cfb6ef7e6d"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/dto.py",
+      "sha256": "14f3cc902abde9ffcf98639a577812ba8577445a532299899cfb63541718a1d8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/units.py",
+      "sha256": "565c193c687a5d9898379bb90e613056a079e5c26387d86bc597cdebc1277c48"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_engine/__init__.py",
+      "sha256": "ed1c615eb2f46a84de3138ad14fb0d115b85213c92dcd6cb23a1ba57109a5fb8"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_engine/conftest.py",
+      "sha256": "83772dcff16770cf66a358505af54c0985e516966384940874b49dbfeb4f676a"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_engine/helpers.py",
+      "sha256": "553852d69c815174517443d43c60bb0ae68a84d8b998ab0d2db987b6f75d2cde"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_engine/test_contract.py",
+      "sha256": "2e09e5c1495b677281975ea77a17dfcb1309f01dbd287c58a0e283819f313e04"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_engine/test_costs.py",
+      "sha256": "a5d51fb65e3957062425087c2e18252c9de927046d75aed822acf61fc9bdd1fe"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_engine/test_coverage.py",
+      "sha256": "6f870a2c4134514f51c4489e5ea258e6bf4ddee9efb3e5e6511cad8574674599"
+    }
+  ],
+  "scope": "engine/test Python sources only; excludes shared tree"
+}

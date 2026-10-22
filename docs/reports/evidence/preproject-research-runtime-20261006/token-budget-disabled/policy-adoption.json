@@ -1,0 +1,71 @@
+{
+  "human_request": "取消token预算限制",
+  "scope": "local original application tenant",
+  "started_at": "2026-10-07T05:45:21.662454+00:00",
+  "actor": {
+    "id": "5aac9a5f-6704-47c3-b81c-8d294e72c4f5",
+    "username": "owner",
+    "role": "owner"
+  },
+  "observed_before_verification": {
+    "eligible_models": [
+      {
+        "provider": "minimax",
+        "model": "MiniMax-M3",
+        "protocol": "openai-compatible"
+      }
+    ],
+    "selection": {
+      "provider": "minimax",
+      "model": "MiniMax-M3",
+      "available": true
+    },
+    "budget": {
+      "daily_token_budget": 2000000,
+      "used_tokens_today": 60035,
+      "remaining_tokens_today": 1939965,
+      "exhausted": false,
+      "token_budget_enforced": false
+    }
+  },
+  "recovery": "Initial Owner PATCH succeeded; recording query failed on an incorrect audit sort column. This verification reads the existing policy without repeating the write.",
+  "readback": {
+    "eligible_models": [
+      {
+        "provider": "minimax",
+        "model": "MiniMax-M3",
+        "protocol": "openai-compatible"
+      }
+    ],
+    "selection": {
+      "provider": "minimax",
+      "model": "MiniMax-M3",
+      "available": true
+    },
+    "budget": {
+      "daily_token_budget": 2000000,
+      "used_tokens_today": 60035,
+      "remaining_tokens_today": 1939965,
+      "exhausted": false,
+      "token_budget_enforced": false
+    }
+  },
+  "audit": {
+    "id": 139,
+    "timestamp": "2026-10-07 05:44:56.299564+00:00",
+    "actor_user_id": "5aac9a5f-6704-47c3-b81c-8d294e72c4f5",
+    "action": "tenant_model_settings.update",
+    "before_snapshot": {
+      "configured": false
+    },
+    "after_snapshot": {
+      "model": "MiniMax-M3",
+      "provider": "minimax",
+      "daily_token_budget": 2000000,
+      "token_budget_enforced": false
+    }
+  },
+  "unknown_journal_digest": "f47638a90957ddc0b856935a707ac8ae7038062e4ffaa1065589bae09bf737ba",
+  "unknown_hold_preserved": 16001,
+  "completed_at": "2026-10-07T05:45:37.001427+00:00"
+}

@@ -1,0 +1,63 @@
+{
+  "schema_version": "staged-candidate-form-source.v2",
+  "previous_manifest": "candidate-form-source-manifest.json",
+  "scope": "Only the same three owned sixth-stage files; all older UI/state source unchanged",
+  "owned_files": [
+    {
+      "path": "pdos-next/staging/wave17/candidate-form-contract.ts",
+      "before_sha256": "3bc6423e8bad1cdb5cb0f373c067976191fc449e617e338dd693bbe44f237ca3",
+      "after_sha256": "f17424c9edebfab91b385491e60dd00219c45c8c5e39e6bb98942b1b6ae817af",
+      "changed": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-form.tsx",
+      "before_sha256": "ab1421e58d030d545fee5d561a1123a28f700e43df66bc4821d1606dfb439c2d",
+      "after_sha256": "dfcd2ad83aadd1126391523d2e77b94e52b8c28961f9c3bff7b82faad43f1140",
+      "changed": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-form-contract.md",
+      "before_sha256": "5cb81af931098db1543039d6a947fb6ea1703396482fcbc53a2b6ea4606896fe",
+      "after_sha256": "77e7cba24462174f9bbb8ff57d71b0f2e4a9f8fa8dac7c48947545ebee657a0d",
+      "changed": true
+    }
+  ],
+  "frozen_ui_files": [
+    {
+      "path": "pdos-next/staging/wave17/ui-view.tsx",
+      "before_sha256": "701ecc42b6d01cdefca73598b2c220b864358c3f6bad36559e70ac7fd929a609",
+      "after_sha256": "701ecc42b6d01cdefca73598b2c220b864358c3f6bad36559e70ac7fd929a609",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-view-contract.md",
+      "before_sha256": "0f1191fd7289dc90798fce1c5fc12ce99658378adf1d0a91f8ad46f1dba7c411",
+      "after_sha256": "0f1191fd7289dc90798fce1c5fc12ce99658378adf1d0a91f8ad46f1dba7c411",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-contract.ts",
+      "before_sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b",
+      "after_sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-state.ts",
+      "before_sha256": "a7983c72185edc561d6c563b9b971dbed4aa11b7013b217d32b085ec17db941e",
+      "after_sha256": "a7983c72185edc561d6c563b9b971dbed4aa11b7013b217d32b085ec17db941e",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-state.test.ts",
+      "before_sha256": "f8cb21508784b1677820921419e16321b8deee0238196628cdc5fdc0359062b7",
+      "after_sha256": "f8cb21508784b1677820921419e16321b8deee0238196628cdc5fdc0359062b7",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-state-contract.md",
+      "before_sha256": "ea4003d79242b803905db0a97520f66e37d69d6af5cc9fa89a3ab0b95bb11cf7",
+      "after_sha256": "ea4003d79242b803905db0a97520f66e37d69d6af5cc9fa89a3ab0b95bb11cf7",
+      "unchanged": true
+    }
+  ]
+}

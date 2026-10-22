@@ -1,0 +1,656 @@
+{
+  "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+  "project": {
+    "id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+    "name": "合成研发项目 · 工程与NPI",
+    "purpose": "验证来源记录与工作恢复，不代表真实产品定义。",
+    "scope": "核对工程设计与制造导入前置工作；不做正式放行或对外承诺。",
+    "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+    "visibility": "private",
+    "revision": 2,
+    "status": "active",
+    "definition": {
+      "id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+      "title": "合成资料演练 · 定义草稿",
+      "revision": 2,
+      "status": "draft",
+      "source_status": "current"
+    },
+    "required_source_read_set": [
+      {
+        "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+        "expected_revision": 1
+      }
+    ],
+    "proposals": [
+      {
+        "id": "83e2ea37-dc2e-4213-a86f-fd86075c1f05",
+        "revision": 1,
+        "reason": "工程先核对设计，NPI工时未知；只记录预测，不作承诺。",
+        "forecast": {
+          "tasks": [
+            {
+              "key": "task-1",
+              "title": "工程设计核对",
+              "blocked_by": [],
+              "depends_on": [],
+              "discipline": "engineering",
+              "calendar_ref": {
+                "key": "manual",
+                "version": "合成工作日历-v1",
+                "timezone": "Asia/Shanghai",
+                "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+              },
+              "latest_start": "2026-10-02T01:00:00Z",
+              "latest_finish": "2026-10-02T03:00:00Z",
+              "earliest_start": "2026-10-02T01:00:00Z",
+              "earliest_finish": "2026-10-02T02:00:00Z",
+              "estimate_source": "合成演练：负责人对首轮核对的区间估计。",
+              "unknown_reasons": [],
+              "duration_max_minutes": 120,
+              "duration_min_minutes": 60
+            },
+            {
+              "key": "task-2",
+              "title": "NPI前置条件核对",
+              "blocked_by": [],
+              "depends_on": [
+                "task-1"
+              ],
+              "discipline": "npi",
+              "calendar_ref": {
+                "key": "manual",
+                "version": "合成工作日历-v1",
+                "timezone": "Asia/Shanghai",
+                "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+              },
+              "latest_start": "2026-10-02T03:00:00Z",
+              "latest_finish": null,
+              "earliest_start": "2026-10-02T02:00:00Z",
+              "earliest_finish": null,
+              "estimate_source": null,
+              "unknown_reasons": [
+                "DURATION_MIN_UNKNOWN",
+                "DURATION_MAX_UNKNOWN"
+              ],
+              "duration_max_minutes": null,
+              "duration_min_minutes": null
+            }
+          ],
+          "warnings": [],
+          "input_start": "2026-10-02T01:00:00Z",
+          "calendar_ref": {
+            "key": "manual",
+            "version": "合成工作日历-v1",
+            "timezone": "Asia/Shanghai",
+            "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+          },
+          "latest_finish": null,
+          "earliest_finish": null,
+          "algorithm_version": "planning.fs-duration-bounds@1"
+        },
+        "input_snapshot": {
+          "start": "2026-10-02T01:00:00Z",
+          "tasks": [
+            {
+              "key": "task-1",
+              "title": "工程设计核对",
+              "depends_on": [],
+              "discipline": "engineering",
+              "estimate_source": "合成演练：负责人对首轮核对的区间估计。",
+              "duration_max_minutes": 120,
+              "duration_min_minutes": 60
+            },
+            {
+              "key": "task-2",
+              "title": "NPI前置条件核对",
+              "depends_on": [
+                "task-1"
+              ],
+              "discipline": "npi",
+              "estimate_source": null,
+              "duration_max_minutes": null,
+              "duration_min_minutes": null
+            }
+          ],
+          "calendar": {
+            "key": "manual",
+            "version": "合成工作日历-v1",
+            "holidays": [],
+            "timezone": "Asia/Shanghai",
+            "intervals": [
+              {
+                "end_minute": 720,
+                "start_minute": 540
+              },
+              {
+                "end_minute": 1020,
+                "start_minute": 780
+              }
+            ],
+            "working_weekdays": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+          }
+        },
+        "project_revision": 1
+      }
+    ],
+    "plan": {
+      "id": "20468913-5559-48e9-95f9-fdf5be7f0a1f",
+      "revision": 1,
+      "status": "applied",
+      "proposal_id": "83e2ea37-dc2e-4213-a86f-fd86075c1f05",
+      "input_snapshot": {
+        "start": "2026-10-02T01:00:00Z",
+        "tasks": [
+          {
+            "key": "task-1",
+            "title": "工程设计核对",
+            "depends_on": [],
+            "discipline": "engineering",
+            "estimate_source": "合成演练：负责人对首轮核对的区间估计。",
+            "duration_max_minutes": 120,
+            "duration_min_minutes": 60
+          },
+          {
+            "key": "task-2",
+            "title": "NPI前置条件核对",
+            "depends_on": [
+              "task-1"
+            ],
+            "discipline": "npi",
+            "estimate_source": null,
+            "duration_max_minutes": null,
+            "duration_min_minutes": null
+          }
+        ],
+        "calendar": {
+          "key": "manual",
+          "version": "合成工作日历-v1",
+          "holidays": [],
+          "timezone": "Asia/Shanghai",
+          "intervals": [
+            {
+              "end_minute": 720,
+              "start_minute": 540
+            },
+            {
+              "end_minute": 1020,
+              "start_minute": 780
+            }
+          ],
+          "working_weekdays": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+        }
+      },
+      "forecast": {
+        "tasks": [
+          {
+            "key": "task-1",
+            "title": "工程设计核对",
+            "blocked_by": [],
+            "depends_on": [],
+            "discipline": "engineering",
+            "calendar_ref": {
+              "key": "manual",
+              "version": "合成工作日历-v1",
+              "timezone": "Asia/Shanghai",
+              "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+            },
+            "latest_start": "2026-10-02T01:00:00Z",
+            "latest_finish": "2026-10-02T03:00:00Z",
+            "earliest_start": "2026-10-02T01:00:00Z",
+            "earliest_finish": "2026-10-02T02:00:00Z",
+            "estimate_source": "合成演练：负责人对首轮核对的区间估计。",
+            "unknown_reasons": [],
+            "duration_max_minutes": 120,
+            "duration_min_minutes": 60
+          },
+          {
+            "key": "task-2",
+            "title": "NPI前置条件核对",
+            "blocked_by": [],
+            "depends_on": [
+              "task-1"
+            ],
+            "discipline": "npi",
+            "calendar_ref": {
+              "key": "manual",
+              "version": "合成工作日历-v1",
+              "timezone": "Asia/Shanghai",
+              "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+            },
+            "latest_start": "2026-10-02T03:00:00Z",
+            "latest_finish": null,
+            "earliest_start": "2026-10-02T02:00:00Z",
+            "earliest_finish": null,
+            "estimate_source": null,
+            "unknown_reasons": [
+              "DURATION_MIN_UNKNOWN",
+              "DURATION_MAX_UNKNOWN"
+            ],
+            "duration_max_minutes": null,
+            "duration_min_minutes": null
+          }
+        ],
+        "warnings": [],
+        "input_start": "2026-10-02T01:00:00Z",
+        "calendar_ref": {
+          "key": "manual",
+          "version": "合成工作日历-v1",
+          "timezone": "Asia/Shanghai",
+          "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+        },
+        "latest_finish": null,
+        "earliest_finish": null,
+        "algorithm_version": "planning.fs-duration-bounds@1"
+      }
+    },
+    "timeline": {
+      "baseline": null,
+      "forecast": {
+        "tasks": [
+          {
+            "key": "task-1",
+            "title": "工程设计核对",
+            "blocked_by": [],
+            "depends_on": [],
+            "discipline": "engineering",
+            "calendar_ref": {
+              "key": "manual",
+              "version": "合成工作日历-v1",
+              "timezone": "Asia/Shanghai",
+              "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+            },
+            "latest_start": "2026-10-02T01:00:00Z",
+            "latest_finish": "2026-10-02T03:00:00Z",
+            "earliest_start": "2026-10-02T01:00:00Z",
+            "earliest_finish": "2026-10-02T02:00:00Z",
+            "estimate_source": "合成演练：负责人对首轮核对的区间估计。",
+            "unknown_reasons": [],
+            "duration_max_minutes": 120,
+            "duration_min_minutes": 60
+          },
+          {
+            "key": "task-2",
+            "title": "NPI前置条件核对",
+            "blocked_by": [],
+            "depends_on": [
+              "task-1"
+            ],
+            "discipline": "npi",
+            "calendar_ref": {
+              "key": "manual",
+              "version": "合成工作日历-v1",
+              "timezone": "Asia/Shanghai",
+              "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+            },
+            "latest_start": "2026-10-02T03:00:00Z",
+            "latest_finish": null,
+            "earliest_start": "2026-10-02T02:00:00Z",
+            "earliest_finish": null,
+            "estimate_source": null,
+            "unknown_reasons": [
+              "DURATION_MIN_UNKNOWN",
+              "DURATION_MAX_UNKNOWN"
+            ],
+            "duration_max_minutes": null,
+            "duration_min_minutes": null
+          }
+        ],
+        "warnings": [],
+        "input_start": "2026-10-02T01:00:00Z",
+        "calendar_ref": {
+          "key": "manual",
+          "version": "合成工作日历-v1",
+          "timezone": "Asia/Shanghai",
+          "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+        },
+        "latest_finish": null,
+        "earliest_finish": null,
+        "algorithm_version": "planning.fs-duration-bounds@1"
+      },
+      "commitment": null,
+      "actual": null
+    },
+    "work_packages": [
+      {
+        "id": "b70392e6-fb0e-4146-b798-a7a00d541fe3",
+        "discipline": "npi"
+      },
+      {
+        "id": "d1eab52a-a248-4505-b763-edb609e2324d",
+        "discipline": "engineering"
+      }
+    ],
+    "tasks": [
+      {
+        "id": "efa5706a-6c27-4338-af2f-0d650582fa37",
+        "key": "task-1",
+        "work_package_id": "d1eab52a-a248-4505-b763-edb609e2324d",
+        "forecast": {
+          "key": "task-1",
+          "title": "工程设计核对",
+          "blocked_by": [],
+          "depends_on": [],
+          "discipline": "engineering",
+          "calendar_ref": {
+            "key": "manual",
+            "version": "合成工作日历-v1",
+            "timezone": "Asia/Shanghai",
+            "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+          },
+          "latest_start": "2026-10-02T01:00:00Z",
+          "latest_finish": "2026-10-02T03:00:00Z",
+          "earliest_start": "2026-10-02T01:00:00Z",
+          "earliest_finish": "2026-10-02T02:00:00Z",
+          "estimate_source": "合成演练：负责人对首轮核对的区间估计。",
+          "unknown_reasons": [],
+          "duration_max_minutes": 120,
+          "duration_min_minutes": 60
+        }
+      },
+      {
+        "id": "14f7b5b9-3848-41fc-8069-ee44de8ef73d",
+        "key": "task-2",
+        "work_package_id": "b70392e6-fb0e-4146-b798-a7a00d541fe3",
+        "forecast": {
+          "key": "task-2",
+          "title": "NPI前置条件核对",
+          "blocked_by": [],
+          "depends_on": [
+            "task-1"
+          ],
+          "discipline": "npi",
+          "calendar_ref": {
+            "key": "manual",
+            "version": "合成工作日历-v1",
+            "timezone": "Asia/Shanghai",
+            "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+          },
+          "latest_start": "2026-10-02T03:00:00Z",
+          "latest_finish": null,
+          "earliest_start": "2026-10-02T02:00:00Z",
+          "earliest_finish": null,
+          "estimate_source": null,
+          "unknown_reasons": [
+            "DURATION_MIN_UNKNOWN",
+            "DURATION_MAX_UNKNOWN"
+          ],
+          "duration_max_minutes": null,
+          "duration_min_minutes": null
+        }
+      }
+    ],
+    "source_status": "current",
+    "created_at": "2026-10-02T11:03:16.096524+00:00"
+  },
+  "variant": {
+    "id": "e859e52c-fcf8-4661-a1e0-cc4a3aaa2d69",
+    "name": "合成地区配置 · A",
+    "kind": "configuration",
+    "visibility": "private",
+    "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+    "revisions": [
+      {
+        "id": "b514f3d2-7b24-49f7-a039-020374bbabcc",
+        "revision": 2,
+        "status": "draft",
+        "parent_definition_id": "0e941106-3eb4-45c1-93f1-f05191c5797b",
+        "parent_revision": 3,
+        "previous_revision_id": "96fb121b-862a-4d67-8830-28a416ba316d",
+        "visibility": "private",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "effective_definition": {
+          "specs": [
+            {
+              "key": "spec-1",
+              "text": null,
+              "unit": null,
+              "lower": null,
+              "state": "needs_confirmation",
+              "upper": null,
+              "value": null,
+              "method": null,
+              "nature": "extracted",
+              "reason": "尚未取得目标数值与测量条件，保持未知",
+              "sources": [
+                {
+                  "line": 2,
+                  "quote": "额定压力：150 PSI，条件待确认。",
+                  "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+                  "expected_revision": 1
+                }
+              ],
+              "owner_id": null,
+              "parameter": "噪声目标",
+              "tolerance": null,
+              "value_type": "number",
+              "availability": "unknown",
+              "test_conditions": [],
+              "acceptance_criterion": null
+            }
+          ],
+          "title": "合成资料演练 · 定义草稿",
+          "purpose": "验证来源记录与工作恢复，不代表真实产品定义。",
+          "sources": [
+            {
+              "line": 2,
+              "quote": "额定压力：150 PSI，条件待确认。",
+              "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+              "expected_revision": 1
+            }
+          ],
+          "unknowns": [
+            "噪声目标及测量条件待确认",
+            "本配置认证要求未知"
+          ],
+          "use_cases": [
+            "合成原件驱动的规格核对"
+          ],
+          "exclusions": [],
+          "visibility": "private",
+          "constraints": [],
+          "requirements": [],
+          "change_reason": "合成三方重核：固定新父版，显式保留本配置未知范围。",
+          "parent_definition_id": "0e941106-3eb4-45c1-93f1-f05191c5797b",
+          "expected_parent_revision": 3
+        },
+        "overrides": {
+          "unknowns": [
+            "噪声目标及测量条件待确认",
+            "本配置认证要求未知"
+          ]
+        },
+        "applicability": [
+          "仅本地合成演练的配置核对"
+        ],
+        "sources": [
+          {
+            "line": 2,
+            "quote": "额定压力：150 PSI，条件待确认。",
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "choices": [
+          {
+            "path": "unknowns",
+            "reason": "本配置保持独立认证未知项，专业责任后续另行确认。",
+            "selection": "child"
+          }
+        ],
+        "reason": "合成三方重核：固定新父版，显式保留本配置未知范围。",
+        "created_at": "2026-10-02T11:07:13.212506+00:00",
+        "source_status": "current"
+      },
+      {
+        "id": "96fb121b-862a-4d67-8830-28a416ba316d",
+        "revision": 1,
+        "status": "draft",
+        "parent_definition_id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+        "parent_revision": 2,
+        "previous_revision_id": null,
+        "visibility": "private",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "effective_definition": {
+          "specs": [
+            {
+              "key": "spec-1",
+              "text": null,
+              "unit": null,
+              "lower": null,
+              "state": "needs_confirmation",
+              "upper": null,
+              "value": null,
+              "method": null,
+              "nature": "extracted",
+              "reason": "尚未取得目标数值与测量条件，保持未知",
+              "sources": [
+                {
+                  "line": 2,
+                  "quote": "额定压力：150 PSI，条件待确认。",
+                  "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+                  "expected_revision": 1
+                }
+              ],
+              "owner_id": null,
+              "parameter": "噪声目标",
+              "tolerance": null,
+              "value_type": "number",
+              "availability": "unknown",
+              "test_conditions": [],
+              "acceptance_criterion": null
+            }
+          ],
+          "title": "合成资料演练 · 定义草稿",
+          "purpose": "验证来源记录与工作恢复，不代表真实产品定义。",
+          "sources": [
+            {
+              "line": 2,
+              "quote": "额定压力：150 PSI，条件待确认。",
+              "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+              "expected_revision": 1
+            }
+          ],
+          "unknowns": [
+            "噪声目标及测量条件待确认",
+            "本配置认证要求未知"
+          ],
+          "use_cases": [
+            "合成原件驱动的规格核对"
+          ],
+          "exclusions": [],
+          "visibility": "private",
+          "constraints": [],
+          "requirements": [],
+          "change_reason": "保留固定父定义，单独核对本配置适用性。",
+          "parent_definition_id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+          "expected_parent_revision": 2
+        },
+        "overrides": {
+          "unknowns": [
+            "噪声目标及测量条件待确认",
+            "本配置认证要求未知"
+          ]
+        },
+        "applicability": [
+          "仅本地合成演练的配置核对"
+        ],
+        "sources": [
+          {
+            "line": 2,
+            "quote": "额定压力：150 PSI，条件待确认。",
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "choices": [],
+        "reason": "保留固定父定义，单独核对本配置适用性。",
+        "created_at": "2026-10-02T11:05:50.834115+00:00",
+        "source_status": "current"
+      }
+    ]
+  },
+  "post_rebase_compare": {
+    "variant_id": "e859e52c-fcf8-4661-a1e0-cc4a3aaa2d69",
+    "name": "合成地区配置 · A",
+    "variant_revision": 2,
+    "old_parent_id": "0e941106-3eb4-45c1-93f1-f05191c5797b",
+    "old_parent_revision": 3,
+    "new_parent_id": "0e941106-3eb4-45c1-93f1-f05191c5797b",
+    "new_parent_revision": 3,
+    "changes": [
+      {
+        "path": "unknowns",
+        "old_parent": [
+          "噪声目标及测量条件待确认",
+          "客户承认尚未取得",
+          "专业负责人尚未确认"
+        ],
+        "new_parent": [
+          "噪声目标及测量条件待确认",
+          "客户承认尚未取得",
+          "专业负责人尚未确认"
+        ],
+        "current_child": [
+          "噪声目标及测量条件待确认",
+          "本配置认证要求未知"
+        ],
+        "category": "child_only"
+      }
+    ],
+    "conflict_count": 0,
+    "sources": [
+      {
+        "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+        "expected_revision": 1,
+        "line": 2,
+        "quote": "额定压力：150 PSI，条件待确认。"
+      }
+    ],
+    "required_source_read_set": [
+      {
+        "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+        "expected_revision": 1
+      }
+    ]
+  },
+  "receipt_ids": [
+    "8a685be7-a032-4ae8-84ab-bae76056e022",
+    "a6917139-85c3-453a-abb1-aa51b4da80f5",
+    "2cd20d84-9883-445e-b1f1-8b672206df26",
+    "b0205b97-f456-404e-b356-24075f787a07",
+    "0cc037cb-7105-4500-b967-423e67461957"
+  ],
+  "audit_outbox_per_receipt": 1,
+  "own_preview_model_calls": 0,
+  "schema_head": "next_0004",
+  "agent_business_writes": 0,
+  "database_port": 62513,
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "backups": [
+    {
+      "path": ".local/wave2-business.dump",
+      "bytes": 1488782,
+      "sha256": "bcdbc67a7d4159d431f47a5335a7edd11f6023b2f49de443c117d0c6797b5079"
+    },
+    {
+      "path": ".local/wave2-checkpoints.dump",
+      "bytes": 26197,
+      "sha256": "9d9404aed94084ce330cc830039e8c824de998719f2084cebb9df26f1eda383d"
+    }
+  ]
+}

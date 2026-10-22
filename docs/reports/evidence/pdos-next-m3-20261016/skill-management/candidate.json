@@ -1,0 +1,31 @@
+{
+  "base_commit": "cc803f33084c39f3ff92c29ac88a81045bbb193c",
+  "alembic_head": "s0_0763",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/agent_kernel/models.py": "175591e22bd3ec18ac79fa9722db4bb3ba2be5672c91f244973a56828a539d01",
+    "pdos-next/server/pdos_next/agent_kernel/skills.py": "b6cd13002c5fcb3da1b463a05dc9eb24640aa1d085cf57fcccadff4f60fabe53",
+    "pdos-next/server/pdos_next/agent_kernel/skill_management.py": "2d66d65419ce45093b77fca39bb8771e57019e58dc61e89cd508c6aa93621b09",
+    "pdos-next/server/pdos_next/agent_kernel/management_api.py": "056b0a065f44975ed7f717f8213968b1e434c1c21664fbb456ec366b94c9235c",
+    "pdos-next/server/pdos_next/command_handlers.py": "4ffa90068dd28c7eb73d8b32813751fb9bc55c0b49b803fe88a2b9c3a1f363cb",
+    "pdos-next/server/pdos_next/contracts.py": "e75314f014e64c7b8491a4e58475cc3539c36be7de202567ec87bcb70be35b63",
+    "pdos-next/server/pdos_next/service.py": "26e55f0a34b6d8221bbd2bbadf9e0239bc6f3596f307890cd6617d9d6603fbd5",
+    "pdos-next/server/migrations/versions/s0_0763_skill_enablement_revision.py": "828eabe94d397719e586f2964dd7f1b6be19407287b17f3bdcdb0d57c228b79d",
+    "pdos-next/server/tests/agent_kernel/test_skill_management.py": "32b7670c684175b4b0a11208b12eeee2b3f3bc63694715ef9e19ce1a2920362e",
+    "pdos-next/web/src/lib/agent-skills.ts": "db4f4702d684b723f1901aae994dbf6490b231397348651a3ea3dabd69221a6a",
+    "pdos-next/web/src/lib/agent-skills.test.ts": "74b0e4469174c7f288e163136031647ff2f96dc6f960a6e9809c2a2ba839e31e",
+    "pdos-next/web/src/components/model_configuration/agent-skills.tsx": "413048de4f55ea46e69ed572aa7d34704be7423838f4cdb26c9d31bf59ec092e",
+    "pdos-next/web/src/components/workspace.tsx": "2dbbedfdb8b4f2a6ee671a65c642487b7d17bc8ef29ef4a248515a2527de71c3",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "e569e695049e3523a406dd0c5c4cdcaf7f38a9dad269ead04bf6c0a2d45b879a",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "c794de7dfab70533952324c8c4b88eb1f566e338d62b1f8338b4e569763b9105",
+    "docs/runbooks/pdos-next-tenant-model-runtime.md": "8e37e9c621abf3858c8e730d9105f3388d2c6dcd0345f02bfd55b45e26e711a3"
+  },
+  "distinct_cases": {
+    "postgres": 19,
+    "pure_execution": 47,
+    "frontend": 50,
+    "total": 116
+  },
+  "real_model_calls": 0,
+  "qualification_grants": 0,
+  "stage_complete": false
+}

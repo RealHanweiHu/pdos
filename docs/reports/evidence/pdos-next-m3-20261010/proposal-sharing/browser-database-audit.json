@@ -1,0 +1,36 @@
+{
+  "environment": "verified 127.0.0.1:64245/pdos_test; synthetic tenant only",
+  "proposal_visibility": "category",
+  "proposal_revision": 4,
+  "owner_withdrawn_claim_status": "withdrawn",
+  "future_reader_proposal_http_status": 200,
+  "future_reader_active_claim_http_status": 200,
+  "future_reader_withdrawn_claim_http_status": 404,
+  "linked_item_content_unchanged": true,
+  "linked_item_version_unchanged": true,
+  "link_reverted_by_withdrawal_receipt": "021650b0-ed23-41a9-9fa5-b369cd9829de",
+  "counts": {
+    "proposal_submissions": 0,
+    "proposal_decisions": 0,
+    "projects": 0,
+    "definition_revisions": 0,
+    "agent_runs": 0,
+    "agent_tool_calls": 0
+  },
+  "receipts": [
+    {
+      "id": "021650b0-ed23-41a9-9fa5-b369cd9829de",
+      "operation": "evidence.claim.withdraw",
+      "command_id": "836dfb8b-c975-41a6-8fd9-9fa8ebf350b9",
+      "subject_id": "5a02e696-c2d9-48e1-8dfb-93a21e3daba9"
+    },
+    {
+      "id": "04016c71-3833-4ed2-a32c-7da83aec3c22",
+      "operation": "proposal.share",
+      "command_id": "794fcb4e-ee37-460a-b9f7-10cd368c507e",
+      "subject_id": "fb568e28-a325-427a-84e6-35c372b93f87"
+    }
+  ],
+  "model_calls": 0,
+  "same_recovery_command_committed_once": true
+}

@@ -1,0 +1,343 @@
+{
+  "npi.tooltrial.create": {
+    "trial_id": "00000000-0000-4000-8000-000000000003",
+    "build": {
+      "kind": "build",
+      "id": "00000000-0000-4000-8000-000000000100",
+      "revision": 1
+    },
+    "tooling": {
+      "kind": "tooling",
+      "id": "00000000-0000-4000-8000-000000000106",
+      "revision": 1
+    },
+    "trial_round": 2,
+    "purpose": "合成探索试模",
+    "cavities": [
+      "A1",
+      "A2"
+    ],
+    "material_lots": [
+      {
+        "kind": "material_lot",
+        "id": "00000000-0000-4000-8000-000000000111",
+        "revision": 1
+      }
+    ],
+    "parameters": [
+      {
+        "key": "压力",
+        "value": "12",
+        "unit": "MPa",
+        "source": {
+          "id": "00000000-0000-4000-8000-000000000001",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "rows 1-20"
+        }
+      }
+    ],
+    "issues": [
+      {
+        "kind": "issue",
+        "id": "00000000-0000-4000-8000-000000000114",
+        "revision": 1
+      }
+    ],
+    "corrective_actions": [
+      {
+        "kind": "corrective_action",
+        "id": "00000000-0000-4000-8000-000000000115",
+        "revision": 1
+      }
+    ],
+    "named_acceptances": [],
+    "verification": {
+      "request_id": "00000000-0000-4000-8000-000000000002",
+      "build_id": "00000000-0000-4000-8000-000000000100",
+      "expected_build_revision": 1,
+      "title": "合成试模品质准备",
+      "purpose": "观察尺寸",
+      "items": [
+        {
+          "id": "dimension",
+          "feature": "关键尺寸",
+          "drawing": {
+            "id": "00000000-0000-4000-8000-000000000001",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "rows 1-20"
+          },
+          "method": {
+            "id": "00000000-0000-4000-8000-000000000001",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "rows 1-20"
+          },
+          "criterion": {
+            "lower": "10",
+            "upper": "12",
+            "source": {
+              "id": "00000000-0000-4000-8000-000000000001",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "rows 1-20"
+            }
+          },
+          "criterion_text": null,
+          "criterion_source": {
+            "id": "00000000-0000-4000-8000-000000000001",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "rows 1-20"
+          },
+          "unit": "mm",
+          "conditions": "室温",
+          "material": "合成树脂",
+          "sample_count": 4,
+          "cavities": [
+            "A1",
+            "A2"
+          ],
+          "destructive": false
+        }
+      ],
+      "documents": [
+        {
+          "id": "drawing",
+          "title": "固定图纸",
+          "item_ids": [
+            "dimension"
+          ],
+          "source": {
+            "id": "00000000-0000-4000-8000-000000000001",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "rows 1-20"
+          },
+          "required": true
+        }
+      ],
+      "expected_at": null,
+      "expected_timezone": null,
+      "return_form": "原值与逐项结论"
+    },
+    "source": {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "revision": 1,
+      "kind": "artifact",
+      "position": "rows 1-20"
+    }
+  },
+  "npi.pilot.create": {
+    "pilot_id": "00000000-0000-4000-8000-000000000004",
+    "basis": {
+      "build": {
+        "kind": "build",
+        "id": "00000000-0000-4000-8000-000000000100",
+        "revision": 1
+      },
+      "lot": {
+        "kind": "build_lot",
+        "id": "00000000-0000-4000-8000-000000000101",
+        "revision": 1
+      },
+      "actual_configuration": {
+        "kind": "actual_configuration",
+        "id": "00000000-0000-4000-8000-000000000102",
+        "revision": 1
+      },
+      "engineering_configuration": {
+        "kind": "engineering_configuration",
+        "id": "00000000-0000-4000-8000-000000000103",
+        "revision": 1
+      },
+      "process_revision": {
+        "kind": "process_revision",
+        "id": "00000000-0000-4000-8000-000000000104",
+        "revision": 1
+      },
+      "unit": "件"
+    },
+    "purpose": "合成试产候选",
+    "manufacturing_baseline": null,
+    "line": {
+      "kind": "line",
+      "id": "00000000-0000-4000-8000-000000000109",
+      "revision": 1
+    },
+    "people": [
+      {
+        "kind": "person",
+        "id": "00000000-0000-4000-8000-000000000110",
+        "revision": 1
+      }
+    ],
+    "material_lots": [
+      {
+        "kind": "material_lot",
+        "id": "00000000-0000-4000-8000-000000000111",
+        "revision": 1
+      }
+    ],
+    "fixtures": [
+      {
+        "kind": "fixture",
+        "id": "00000000-0000-4000-8000-000000000107",
+        "revision": 1
+      }
+    ],
+    "equipment": [
+      {
+        "kind": "equipment",
+        "id": "00000000-0000-4000-8000-000000000108",
+        "revision": 1
+      }
+    ],
+    "instructions": [
+      {
+        "kind": "work_instruction",
+        "id": "00000000-0000-4000-8000-000000000121",
+        "revision": 1
+      }
+    ],
+    "control_plan": {
+      "kind": "control_plan",
+      "id": "00000000-0000-4000-8000-000000000122",
+      "revision": 1
+    },
+    "risk": {
+      "kind": "risk",
+      "id": "00000000-0000-4000-8000-000000000123",
+      "revision": 1
+    },
+    "reservation": null,
+    "first_article": null,
+    "parameters": [
+      {
+        "key": "压力",
+        "value": "12",
+        "unit": "MPa",
+        "source": {
+          "id": "00000000-0000-4000-8000-000000000001",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "rows 1-20"
+        }
+      }
+    ],
+    "source": {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "revision": 1,
+      "kind": "artifact",
+      "position": "rows 1-20"
+    }
+  },
+  "npi.pilot.result.record": {
+    "observation_id": "00000000-0000-4000-8000-000000000005",
+    "expected_pilot_revision": 1,
+    "previous_observation_id": null,
+    "correction_reason": null,
+    "scope": {
+      "basis": {
+        "build": {
+          "kind": "build",
+          "id": "00000000-0000-4000-8000-000000000100",
+          "revision": 1
+        },
+        "lot": {
+          "kind": "build_lot",
+          "id": "00000000-0000-4000-8000-000000000101",
+          "revision": 1
+        },
+        "actual_configuration": {
+          "kind": "actual_configuration",
+          "id": "00000000-0000-4000-8000-000000000102",
+          "revision": 1
+        },
+        "engineering_configuration": {
+          "kind": "engineering_configuration",
+          "id": "00000000-0000-4000-8000-000000000103",
+          "revision": 1
+        },
+        "process_revision": {
+          "kind": "process_revision",
+          "id": "00000000-0000-4000-8000-000000000104",
+          "revision": 1
+        },
+        "unit": "件"
+      },
+      "manufacturing_baseline": null,
+      "line": {
+        "kind": "line",
+        "id": "00000000-0000-4000-8000-000000000109",
+        "revision": 1
+      },
+      "cohort_key": "synthetic-cohort",
+      "window_start": "2026-10-02T08:00:00-07:00",
+      "window_end": "2026-10-02T17:00:00-07:00",
+      "criterion": {
+        "kind": "criterion",
+        "id": "00000000-0000-4000-8000-000000000126",
+        "revision": 1
+      },
+      "nature": "synthetic",
+      "minimum_sample": 30
+    },
+    "counts": {
+      "input_count": 10,
+      "output_count": 10,
+      "first_pass": 6,
+      "first_failed": 4,
+      "first_unknown": 0,
+      "final_good": 8,
+      "reworked_good": 2,
+      "scrap": 1,
+      "rework_pending": 1,
+      "undecided": 0,
+      "unprocessed": 0,
+      "rework_cycles": 5
+    },
+    "units": [],
+    "exceptions": [
+      {
+        "key": "dimension_deviation",
+        "description": "一次加工尺寸偏差",
+        "source": {
+          "id": "00000000-0000-4000-8000-000000000001",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "rows 1-20"
+        },
+        "issue": {
+          "kind": "issue",
+          "id": "00000000-0000-4000-8000-000000000114",
+          "revision": 1
+        },
+        "disposition": {
+          "id": "00000000-0000-4000-8000-000000000001",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "rows 1-20"
+        }
+      }
+    ],
+    "observed": {
+      "occurred_at": "2026-10-02T09:00:00-07:00",
+      "original_timezone": "America/Los_Angeles",
+      "source": {
+        "id": "00000000-0000-4000-8000-000000000001",
+        "revision": 1,
+        "kind": "artifact",
+        "position": "rows 1-20"
+      },
+      "effective_at": null
+    },
+    "source": {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "revision": 1,
+      "kind": "artifact",
+      "position": "rows 1-20"
+    }
+  }
+}

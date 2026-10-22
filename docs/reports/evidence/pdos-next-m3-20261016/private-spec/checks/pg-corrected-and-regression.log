@@ -1,0 +1,46 @@
+..........{"run_id": "5a157f3b-e50f-4cf8-89c8-f0de5306b0a0", "registered_graph": "xiaopai", "tool_version": "4", "synthetic_model_turns": 2, "outcome": "completed", "real_provider_calls": 0}
+.................{"scope": "one synthetic original, outbound watermark read", "elapsed_ms": 127.12, "sql_count": 20, "artifact_body_selects": 0}
+.
+=============================== warnings summary ===============================
+tests/agent_kernel/test_private_spec_compare_pg.py: 11 warnings
+tests/agent_kernel/test_extracted_match_pg.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:512: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_private_spec_compare_pg.py: 11 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:557: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_private_spec_compare_pg.py: 13 warnings
+tests/agent_kernel/test_extracted_match_pg.py: 3 warnings
+tests/agent_kernel/test_proposal_context_pg.py: 14 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_private_spec_compare_pg.py: 76 warnings
+tests/agent_kernel/test_proposal_context_pg.py: 92 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_private_spec_compare_pg.py::test_private_binding_does_not_authorize_another_private_object[private_product]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:863: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/agent_kernel/test_private_spec_compare_pg.py::test_private_binding_does_not_authorize_another_private_object[private_product]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:918: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/agent_kernel/test_private_spec_compare_pg.py::test_private_binding_does_not_authorize_another_private_object[private_product]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/agent_kernel/test_private_spec_compare_pg.py::test_private_binding_does_not_authorize_another_private_object[private_product]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_private_spec_compare_pg.py::test_private_binding_does_not_authorize_another_private_object[private_product]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+28 passed, 229 warnings in 194.29s (0:03:14)

@@ -1,0 +1,61 @@
+{
+  "schema_version": "wave17-staged-paired-final-delta-v1",
+  "recorded_at": "2026-10-03T09:59:33.397396+00:00",
+  "status": "frozen_staged_only",
+  "historical_manifest": "docs/reports/evidence/pdos-next-wave17-20261003/paired-checks.json",
+  "historical_manifest_sha256": "f6cc4cdf8532a30a4d3e3ece95a58ba96d3ca9ed26c38f30b14b5feb1abce0f2",
+  "historical_log": "docs/reports/evidence/pdos-next-wave17-20261003/paired-pure.log",
+  "files": [
+    {
+      "path": "pdos-next/staging/wave17/paired.py",
+      "previous_sha256": "73bff65b00b45e2678a18ad9ff8ea8def12d01aff3c4fb85d60d5d5386c420e3",
+      "current_sha256": "da00ee74196eb5a5165cec97c2ec3d16c57b93b6f23913b619fd796103354141",
+      "changed": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_paired.py",
+      "previous_sha256": "ace61c271112f997f1a93770aee27e1e2346bdd5eeab2231a370fd8ee039020e",
+      "current_sha256": "3358e8b1405738c4b4e12f5e65a065b9122f11a0864f78ab275325a2615b72a9",
+      "changed": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/paired-contract.md",
+      "previous_sha256": "3a597197ae30ebdfc94515c25d5c12f201770a0b2073e086e0e3b5265f5900f1",
+      "current_sha256": "3a597197ae30ebdfc94515c25d5c12f201770a0b2073e086e0e3b5265f5900f1",
+      "changed": false
+    }
+  ],
+  "reason": "Root-authorized exact Plan command-source closure, aligned to existing VerificationHandler._command_fact. No six-operation DTO/registry/public policy change.",
+  "exact_plan_clock": {
+    "kind": "command",
+    "id": "actual Receipt.command_id",
+    "revision": 1,
+    "position": "receipt",
+    "original_timezone": "UTC",
+    "actor_id": "actual Fact/Receipt actor",
+    "occurred_at": "equals received_at; both real server command clock"
+  },
+  "checks": {
+    "pure": {
+      "passed": 57,
+      "failed": 0,
+      "seconds": 0.98,
+      "log": "docs/reports/evidence/pdos-next-wave17-20261003/paired-final-pure.log",
+      "log_sha256": "d5274d8675d95a59a32124807b4556549c55bb5c239d05e9bd05655cd69d20f9",
+      "selection": "--noconftest staging/wave17/test_paired.py"
+    },
+    "ruff_check": "passed_owned_two_python_files",
+    "ruff_format": "passed_owned_two_python_files",
+    "ast_compile": "passed_owned_two_python_files_in_memory"
+  },
+  "coverage_rule": "57 current owned pure cases supersede 51 historical cases for these current hashes; never add 51+57. Original history remains unchanged.",
+  "public_host_reader_installed": false,
+  "structural_positive_is_authorization": false,
+  "database_http_public_build_or_writer_executed": false,
+  "candidate_480": "No server/web/lock/migration source edits in this staged task; no fresh whole-tree hash or public joint claim.",
+  "limitations": [
+    "Real same-Session owner reader, semantic/current/ACL/professional/bytes/retained/runtime gates still not installed",
+    "No public route/writer/Current/Receipt created",
+    "CAPA applicability, independence, observation and effectiveness/closure remain separate unfulfilled gates"
+  ]
+}

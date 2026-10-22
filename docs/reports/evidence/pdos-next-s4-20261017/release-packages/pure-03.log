@@ -1,0 +1,10 @@
+.........................................................F...            [100%]
+=================================== FAILURES ===================================
+_ test_direct_read_set_is_order_independent_but_keeps_exact_versions_and_security _
+tests/release/test_storage_schema.py:104: in test_direct_read_set_is_order_independent_but_keeps_exact_versions_and_security
+    assert "command->'source_read_set' @> v.required_source_read_set" in storage.COMMON
+E   assert "command->'source_read_set' @> v.required_source_read_set" in "\nDECLARE v record; r public.action_receipts; vx xid; rx xid; command jsonb; semantic jsonb; review jsonb; ref jsonb;...PTION 'Release direct original version security or audience changed' USING ERRCODE='23514'; END IF;\n END LOOP;\nEND\n"
+E    +  where "\nDECLARE v record; r public.action_receipts; vx xid; rx xid; command jsonb; semantic jsonb; review jsonb; ref jsonb;...PTION 'Release direct original version security or audience changed' USING ERRCODE='23514'; END IF;\n END LOOP;\nEND\n" = storage.COMMON
+=========================== short test summary info ============================
+FAILED tests/release/test_storage_schema.py::test_direct_read_set_is_order_independent_but_keeps_exact_versions_and_security
+1 failed, 60 passed in 1.77s

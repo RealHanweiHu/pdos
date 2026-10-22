@@ -1,0 +1,45 @@
+{
+  "url": "http://cost-execution.localhost:3040/projects?project=71e82ad8-9319-4e56-8f3f-9be56c05a67c&tab=materials",
+  "scope": "Synthetic cost alternative and document coordination, actual local JWT/BFF/domain services; no physical sample/TestRun/certificate/ERP validation",
+  "chain": [
+    "approved alternative v1",
+    "assigned document task",
+    "actual result submitted by engineer",
+    "named confirmation by independent reviewer in browser",
+    "cost page return and receipt review",
+    "alternative revised to v2 in browser",
+    "old approval and confirmation retained; current source requires recheck"
+  ],
+  "finalCandidate": "output/cost-change-execution-20261001/source-scope.json",
+  "viewports": [
+    {
+      "theme": "light",
+      "width": 1280,
+      "height": 720,
+      "scrollWidth": 1280,
+      "finalCandidate": true
+    },
+    {
+      "theme": "dark",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "finalCandidate": true
+    },
+    {
+      "theme": "light",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "finalCandidate": true
+    }
+  ],
+  "screenshots": [
+    "named-confirmation.jpg",
+    "revision-guard-light-1280.jpg",
+    "revision-guard-dark-390.jpg",
+    "revision-guard-light-390.jpg"
+  ],
+  "excluded": "Physical quality, retest, certification, ERP effectivity and actual cost benefit remain unverified",
+  "viewportOverrideReset": true
+}

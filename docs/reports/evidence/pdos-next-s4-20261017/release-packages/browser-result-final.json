@@ -1,0 +1,113 @@
+{
+  "candidate_backend": "/private/tmp/pdos-s4-release-8vr7p80f",
+  "built_frontend": "/private/tmp/pdos-s4-release-vb2f936l",
+  "actual_browser_and_API": true,
+  "draft_seed_only_before_UI": true,
+  "first_fault_attempt_checked_before_response_event_not_counted": true,
+  "corrected_fault_waited_for_actual_200": {
+    "actual_success_response_lost": true,
+    "events": [
+      {
+        "operation": "release.package.assemble",
+        "status": 200
+      }
+    ],
+    "explicit_replay_visible": true
+  },
+  "preview_package_count": 0,
+  "first_explicit_replay_same_record_and_receipt": true,
+  "revision_explicit_replay_same_records_and_receipts": true,
+  "first_package_immutable_after_revision": true,
+  "current": {
+    "id": "b108cd07-b580-4a80-b0eb-3e8429ef7b0d",
+    "version": {
+      "id": "10a9d7e6-0a4d-40bf-852c-7b9a64f39266",
+      "revision": 2
+    },
+    "epoch": 2
+  },
+  "qualification_granted": false,
+  "professional_decisions": [],
+  "external_received": false,
+  "external_effective": false,
+  "controls": [
+    {
+      "fixed_package_basis_visible": true,
+      "false_unknown_config_cells": 0,
+      "Chinese_policy_visible": true,
+      "diagnostics_collapsed": true,
+      "discipline": "engineering",
+      "actual_package": {
+        "id": "10a9d7e6-0a4d-40bf-852c-7b9a64f39266",
+        "revision": 2
+      },
+      "valid_reason": true,
+      "disabled": true
+    },
+    {
+      "fixed_package_basis_visible": true,
+      "false_unknown_config_cells": 0,
+      "Chinese_policy_visible": true,
+      "diagnostics_collapsed": true,
+      "discipline": "manufacturing",
+      "actual_package": {
+        "id": "10a9d7e6-0a4d-40bf-852c-7b9a64f39266",
+        "revision": 2
+      },
+      "valid_reason": true,
+      "disabled": true
+    }
+  ],
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 1000,
+      "document_width": 1440,
+      "panel_client_width": 1174,
+      "panel_scroll_width": 1174,
+      "theme": "light"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "document_width": 390,
+      "panel_client_width": 356,
+      "panel_scroll_width": 356,
+      "theme": "dark"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "release-package-preview.png",
+      "sha256": "680a3f93faaeee926b743dc6d7021a1202ff22ab0fafcc4ccced103c51c6d343"
+    },
+    {
+      "file": "release-package-recovery.png",
+      "sha256": "bc045126c56df5fbebb1b022037abdc5b399a8892b1b5a97832c8c01c0d9ff88"
+    },
+    {
+      "file": "release-package-complete-light.png",
+      "sha256": "3ada802008c20431be2396dec69fc5cc0d34dcf50ff97ff543516f825ec973f3"
+    },
+    {
+      "file": "release-package-complete-dark-mobile.png",
+      "sha256": "7dd8e2fd9cf068e146fa0ec90c72a080f2cba327a217249d461c6002a8c0a4f0"
+    },
+    {
+      "file": "release-package-final-light.png",
+      "sha256": "ae17d4a7de6a2755b7d62ba543f6730c6c644a01dab1850d568d8da34eaa77d5"
+    },
+    {
+      "file": "release-package-final-dark-mobile.png",
+      "sha256": "510b6d4a9e58d8cd0d7d134c6bedd57f7ccac59b4a4b5f2ad2f21bc8d05a676e"
+    }
+  ],
+  "formal_acceptance": false,
+  "real_external_calls": 0,
+  "final_display_candidate": "/private/tmp/pdos-s4-release-vb2f936l",
+  "command_posts_on_selection": 0,
+  "visual_followup_completed": true,
+  "backend_reuse": "backend-reuse-after-display-fix.json",
+  "final_read": "browser-final-display.json",
+  "screenshots_viewed": true
+}

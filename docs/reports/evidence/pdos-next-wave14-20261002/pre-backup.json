@@ -1,0 +1,6 @@
+{
+  "directory_check": "passed",
+  "sha256": "bf638ad9ed19550dc0f262e62a97873a8a1e72004ba95c4c4e5c9e9b066122f0",
+  "mode": "0o600",
+  "scope": "before Wave14 schema/data; private full instance snapshot; not a restore drill"
+}

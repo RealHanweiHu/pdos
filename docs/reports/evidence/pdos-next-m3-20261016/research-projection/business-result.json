@@ -1,0 +1,104 @@
+{
+  "run_id": "3522b9ba-a361-41a4-8c4c-faca56f53414",
+  "state": "completed",
+  "result_research": {
+    "jobs": [
+      {
+        "job_id": "828def55-78d8-4af1-afe7-1dec34d8e1d3",
+        "ledger": [
+          {
+            "unit": "psi",
+            "brand": "Synthetic",
+            "error": null,
+            "model": "P1",
+            "quote": "Pressure: 20 psi at 25 C.",
+            "value": "20",
+            "row_id": "56c33d72-d292-44ed-aef2-bc791b5ffe66",
+            "status": "ok",
+            "locator": "chars:0:73",
+            "free_key": "pressure",
+            "task_key": "specs",
+            "condition": "25 C",
+            "snapshot_id": "56335beb-a04b-4a88-8f2e-2651e747e7b2",
+            "parameter_id": null,
+            "snapshot_url": "https://maker.example/specs",
+            "parameter_version": null
+          }
+        ],
+        "status": "completed",
+        "coverage": [
+          {
+            "reads": [
+              {
+                "url": "https://maker.example/specs",
+                "error": null,
+                "locator": "chars:0:73",
+                "snapshot_id": "56335beb-a04b-4a88-8f2e-2651e747e7b2"
+              }
+            ],
+            "searches": [
+              {
+                "urls": [
+                  "https://maker.example/specs"
+                ],
+                "error": null,
+                "query": "synthetic pump",
+                "provider": "synthetic-search"
+              }
+            ],
+            "task_key": "specs",
+            "unread_urls": [],
+            "accepted_rows": 1,
+            "rejected_rows": 0,
+            "unread_locations": []
+          }
+        ],
+        "failures": [],
+        "snapshots": [
+          {
+            "id": "56335beb-a04b-4a88-8f2e-2651e747e7b2",
+            "url": "https://maker.example/specs",
+            "title": "Synthetic specs",
+            "status": "ok",
+            "provider": "public-web:maker.example",
+            "final_url": "https://maker.example/specs",
+            "content_hash": "272858a0a6cc613ba3560bbd416d674418b41a9c9ebdfad99c06bd7ccc8c6a7f",
+            "retrieved_at": "2026-10-16T18:56:47.901721+00:00"
+          }
+        ]
+      }
+    ],
+    "version": 1,
+    "row_count": 1,
+    "source_count": 1
+  },
+  "model_calls": 7,
+  "cost_micro_usd": 840,
+  "held_micro_usd": 0,
+  "egress_metadata": [
+    {
+      "type": "egress_checked",
+      "channel": "research",
+      "provider": "synthetic-search",
+      "checked_at": "2026-10-16T18:56:47.102381+00:00",
+      "agreement_id": null,
+      "data_categories": [
+        "public"
+      ],
+      "agreement_revision": null
+    },
+    {
+      "type": "egress_checked",
+      "channel": "research",
+      "provider": "public-web:maker.example",
+      "checked_at": "2026-10-16T18:56:47.876128+00:00",
+      "agreement_id": null,
+      "data_categories": [
+        "public"
+      ],
+      "agreement_revision": null
+    }
+  ],
+  "model_invented_source_count_999_overwritten": true,
+  "external_calls": 0
+}

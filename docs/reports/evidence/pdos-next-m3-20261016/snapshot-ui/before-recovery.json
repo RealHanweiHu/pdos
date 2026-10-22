@@ -1,0 +1,16 @@
+{
+  "browser_success": {
+    "run_id": "8406d046-2bc7-43dc-ad94-46a8710fa84c",
+    "snapshots": 1,
+    "model_calls": 7,
+    "receipt_id": "e752fb03-3ec8-460f-8ee0-42cf089a5340",
+    "human_confirmation": true
+  },
+  "browser_recovery": {
+    "run_id": "de1e34d3-7d3a-409d-8221-91a56acc42b6",
+    "snapshots": 0,
+    "model_calls": 7,
+    "receipt_id": null,
+    "human_confirmation": false
+  }
+}

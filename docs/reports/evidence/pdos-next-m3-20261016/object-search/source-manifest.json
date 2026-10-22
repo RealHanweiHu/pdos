@@ -1,0 +1,55 @@
+{
+  "base_commit": "43fc903dce59ca0f9417e5973b828fca1b4849a6",
+  "candidate": "object-search-20261016",
+  "database_head": "s0_0762",
+  "schema_changed": false,
+  "source_sha256": {
+    "pdos-next/server/pdos_next/personal_search.py": "cbb5972ae94e13449660d299d79e57b8e3a724bf7469ec53f2ebce97984cae1a",
+    "pdos-next/server/pdos_next/personal_views.py": "ea0817f37a257c2bdbf276a0204f25db5e68db0db80a9e41211ba866ff3533e2",
+    "pdos-next/server/tests/test_personal_search.py": "ac7c3f45fee540ac07465da39caf8b233d07a2969e8aa6af3a42b7a4b588d6a7",
+    "pdos-next/web/src/lib/object-search.ts": "13b39a891f9f907bfa38c76ce72ff4f12b79a4a806b3a5cb7a181dea1abe9684",
+    "pdos-next/web/src/lib/object-search.test.mjs": "72b319c83eba3eef0ba201ad53e0feed3909f4b7cc8243000c5412cb7907f7a6",
+    "pdos-next/web/src/components/object-search.tsx": "d1a5adb0008a4461cf5aa01abb37bc3a8c2e064d1cccd84e3673ed195633f138",
+    "pdos-next/web/src/components/app-shell.tsx": "57a49ba5b47b6c0e116cb34a6c4bb48f4b82f1286e0c73f2b3caf8ee01970663",
+    "pdos-next/web/src/components/workspace-experience.tsx": "589b6d36806b835eb2256d4c1a3d3485423a4861768f9b5ff2abb073c756cb2f",
+    "pdos-next/web/src/components/preproject/proposal-document.tsx": "a73138fc25bb54d405c12809a8220818adc3f0a4b1db28a447b827188a75d48f",
+    "pdos-next/web/src/components/preproject/proposal-document.test.mjs": "c2bc19be13acf50475e346f1d5e3b456bb2eb5cd91daaa1927a84a6fca14ec19",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "b6782046e804c869adf806dbe8370d2d7edd11516fc28087486ad039461722f6",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "2873bb451fdf8034c2f422567ddbb6a5cd91285c2cbad9970580f565fe42211e"
+  },
+  "checks": {
+    "distinct_postgres_cases": 11,
+    "distinct_frontend_cases": 80,
+    "frontend_groups": [
+      59,
+      15,
+      6
+    ],
+    "distinct_total": 91,
+    "ruff": "passed",
+    "affected_lint": "passed",
+    "typecheck": "passed; final build includes TypeScript",
+    "production_build": "passed"
+  },
+  "browser": {
+    "desktop_light": [
+      1280,
+      900
+    ],
+    "mobile_dark": [
+      320,
+      900
+    ],
+    "four_metadata_kinds": true,
+    "project_proposal_category_routes": "final build",
+    "product_route": "first build; unchanged mapping and final navigation/type checks",
+    "proposal_page_search": true,
+    "original_query_retry_after_one_synthetic_503": true,
+    "empty_readable_results_explicit": true,
+    "global_and_local_shortcuts": true,
+    "open_dialog_focus_retained": true,
+    "business_posts": 0
+  },
+  "external_model_calls": 0,
+  "golden_case_writes": 0
+}

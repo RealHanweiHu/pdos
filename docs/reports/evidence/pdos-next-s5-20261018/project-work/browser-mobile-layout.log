@@ -1,0 +1,7 @@
+### Result
+{"theme":"dark","width":320,"client":320,"scroll":320}
+### Ran Playwright code
+```js
+await (async page => {await page.setViewportSize({width:320,height:900});await page.getByRole("button",{name:"切换明暗主题",exact:true}).click();const row=page.getByRole("article").filter({has:page.getByRole("heading",{name:"Browser drawing and inspection delivery",exact:true})});await row.screenshot({path:"/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s5-20261018/project-work/browser-completed-mobile-dark.png",style:".workspace-header,.workspace-tabs,.workspace-sections {visibility:hidden!important}"});return await page.evaluate(()=>({theme:document.documentElement.className,width:innerWidth,client:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth}));})(page);
+```
+

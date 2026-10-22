@@ -1,0 +1,321 @@
+{
+  "status": "PASS",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "after_browser": {
+    "head": "next_0026",
+    "retained": {
+      "status": "PASS",
+      "baseline_file": "public-migration-retained-before-v2.json",
+      "baseline_sha256": "d727e9ed4a71ad81d18890366742944a7b69688894da06c88e45723124e80233",
+      "tables": [
+        {
+          "table": "quality_issue_versions",
+          "baseline": {
+            "rows": 175,
+            "sha256": "10e5b76e391911dbeef6e6bd05b41f030390b5782e92589e5bac201bc6c8c545"
+          },
+          "current": {
+            "rows": 175,
+            "sha256": "10e5b76e391911dbeef6e6bd05b41f030390b5782e92589e5bac201bc6c8c545"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "quality_current_issues",
+          "baseline": {
+            "rows": 52,
+            "sha256": "6547b2695235eb1ddfe3d5b05ca8b2972b2e2d9b8b7b603f4a7f81470b1b6742"
+          },
+          "current": {
+            "rows": 52,
+            "sha256": "6547b2695235eb1ddfe3d5b05ca8b2972b2e2d9b8b7b603f4a7f81470b1b6742"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "capa_remediation_links",
+          "baseline": {
+            "rows": 5,
+            "sha256": "749bd43d617122892c49fa3151aef4b47577579b944cb99b6153f6a2d10cea56"
+          },
+          "current": {
+            "rows": 5,
+            "sha256": "749bd43d617122892c49fa3151aef4b47577579b944cb99b6153f6a2d10cea56"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "builds",
+          "baseline": {
+            "rows": 3206,
+            "sha256": "89991a14a2e0de1e528291c839467e39ac1afc627bcf1ac8f8ddf7801f339d6d"
+          },
+          "current": {
+            "rows": 3206,
+            "sha256": "89991a14a2e0de1e528291c839467e39ac1afc627bcf1ac8f8ddf7801f339d6d"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "build_starts",
+          "baseline": {
+            "rows": 276,
+            "sha256": "1184379d715c45c3bcd37456087a177560ac5998cd8ef484d61406568918728e"
+          },
+          "current": {
+            "rows": 276,
+            "sha256": "1184379d715c45c3bcd37456087a177560ac5998cd8ef484d61406568918728e"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "build_current_execution_assessments",
+          "baseline": {
+            "rows": 353,
+            "sha256": "c2eb3c668f46bfa9f404eb68a9ba9939ca6488cf4f04ccccf75f15a1ab3eb798"
+          },
+          "current": {
+            "rows": 353,
+            "sha256": "c2eb3c668f46bfa9f404eb68a9ba9939ca6488cf4f04ccccf75f15a1ab3eb798"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "build_current_authorizations",
+          "baseline": {
+            "rows": 617,
+            "sha256": "da4e2b5158b973c6d05826e8a8ed54ac2d5d948667150acc82797bf95940f98d"
+          },
+          "current": {
+            "rows": 617,
+            "sha256": "da4e2b5158b973c6d05826e8a8ed54ac2d5d948667150acc82797bf95940f98d"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "actual_configurations",
+          "baseline": {
+            "rows": 1401,
+            "sha256": "422afa4dd51b22ff89d21a62b09a92683dd045bb29620b2be0330581ad068a2b"
+          },
+          "current": {
+            "rows": 1401,
+            "sha256": "422afa4dd51b22ff89d21a62b09a92683dd045bb29620b2be0330581ad068a2b"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "build_lots",
+          "baseline": {
+            "rows": 1157,
+            "sha256": "7adbb7bce902431ed7a99a65d18f056a336dcd0bf78d013c986229be2e83e390"
+          },
+          "current": {
+            "rows": 1157,
+            "sha256": "7adbb7bce902431ed7a99a65d18f056a336dcd0bf78d013c986229be2e83e390"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "sample_units",
+          "baseline": {
+            "rows": 1667,
+            "sha256": "675bcac54a6d7c35b05464fd7a59f00a79b10061379e54d6c000faa271763549"
+          },
+          "current": {
+            "rows": 1667,
+            "sha256": "675bcac54a6d7c35b05464fd7a59f00a79b10061379e54d6c000faa271763549"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "verification_formal_requests",
+          "baseline": {
+            "rows": 1165,
+            "sha256": "88e0b4f6d8706bbd431cd393b70173af5fb44b15940a46b419cffb6ec9ce3270"
+          },
+          "current": {
+            "rows": 1165,
+            "sha256": "88e0b4f6d8706bbd431cd393b70173af5fb44b15940a46b419cffb6ec9ce3270"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "verification_current_formal_requests",
+          "baseline": {
+            "rows": 295,
+            "sha256": "3e08c1ffc2475b3d4a8fb59e2b6d432653e77f2f387101c56e11bb0e4ab80c69"
+          },
+          "current": {
+            "rows": 295,
+            "sha256": "3e08c1ffc2475b3d4a8fb59e2b6d432653e77f2f387101c56e11bb0e4ab80c69"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "verification_run_identities",
+          "baseline": {
+            "rows": 123,
+            "sha256": "7b0f624200d056efeeffb75c26552f5e4c71d281f5e8eb521297c4fa2e9f65c5"
+          },
+          "current": {
+            "rows": 123,
+            "sha256": "7b0f624200d056efeeffb75c26552f5e4c71d281f5e8eb521297c4fa2e9f65c5"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "verification_run_versions",
+          "baseline": {
+            "rows": 293,
+            "sha256": "808e5747db786fb81c32262a031862b42f39afbbbe7edb4b8b009383681867f4"
+          },
+          "current": {
+            "rows": 293,
+            "sha256": "808e5747db786fb81c32262a031862b42f39afbbbe7edb4b8b009383681867f4"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "verification_current_runs",
+          "baseline": {
+            "rows": 123,
+            "sha256": "1e973c395318f70c635c1ddab0d15026ff2bac6e84fee527855936fa31fc834f"
+          },
+          "current": {
+            "rows": 123,
+            "sha256": "1e973c395318f70c635c1ddab0d15026ff2bac6e84fee527855936fa31fc834f"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "verification_launch_facts",
+          "baseline": {
+            "rows": 317,
+            "sha256": "204aa16057d337e7a07d446b18a36d64eb42fc2b3704059c2d1af678b38db8e6"
+          },
+          "current": {
+            "rows": 317,
+            "sha256": "204aa16057d337e7a07d446b18a36d64eb42fc2b3704059c2d1af678b38db8e6"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "test_measurements",
+          "baseline": {
+            "rows": 123,
+            "sha256": "493174b4bd6cdbb3be83572e400f993f8d04c21bb137901487ddc7c31f61a7d8"
+          },
+          "current": {
+            "rows": 123,
+            "sha256": "493174b4bd6cdbb3be83572e400f993f8d04c21bb137901487ddc7c31f61a7d8"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "test_result_projections",
+          "baseline": {
+            "rows": 71,
+            "sha256": "57138895f9ad8a82cffdcd22dbc10fb6a344ec6ea4c6ece648c07d3c8bf99cf0"
+          },
+          "current": {
+            "rows": 71,
+            "sha256": "57138895f9ad8a82cffdcd22dbc10fb6a344ec6ea4c6ece648c07d3c8bf99cf0"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "test_result_actions",
+          "baseline": {
+            "rows": 78,
+            "sha256": "fbc295d287ab687b8b5762241c3c306a9a0634673c7d9db26d3208c9d06a0887"
+          },
+          "current": {
+            "rows": 78,
+            "sha256": "fbc295d287ab687b8b5762241c3c306a9a0634673c7d9db26d3208c9d06a0887"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "operational_material_holds",
+          "baseline": {
+            "rows": 276,
+            "sha256": "73b822c4533df7df208cc9514a1509d66a88af3fd7bed9552840b862bf2ff517"
+          },
+          "current": {
+            "rows": 276,
+            "sha256": "73b822c4533df7df208cc9514a1509d66a88af3fd7bed9552840b862bf2ff517"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "operational_resource_occupancies",
+          "baseline": {
+            "rows": 461,
+            "sha256": "457b8d396e5a09e4183094fc3a528f9e865ca5b3a37a6fbd0f4cd9343a437edb"
+          },
+          "current": {
+            "rows": 461,
+            "sha256": "457b8d396e5a09e4183094fc3a528f9e865ca5b3a37a6fbd0f4cd9343a437edb"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "test_resource_reservations",
+          "baseline": {
+            "rows": 92,
+            "sha256": "2b0449319056d1eef832c1e159af5db7ab12916acdfa32533d11b03cfd00ca20"
+          },
+          "current": {
+            "rows": 92,
+            "sha256": "2b0449319056d1eef832c1e159af5db7ab12916acdfa32533d11b03cfd00ca20"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "sample_usage_sentinels",
+          "baseline": {
+            "rows": 166,
+            "sha256": "df148e199002b3c02609209eb506da89da3585080872db85144804dcb539d9ba"
+          },
+          "current": {
+            "rows": 166,
+            "sha256": "df148e199002b3c02609209eb506da89da3585080872db85144804dcb539d9ba"
+          },
+          "unchanged": true
+        },
+        {
+          "table": "sample_run_usages",
+          "baseline": {
+            "rows": 166,
+            "sha256": "59b2b103dd7e3607d63c32b53d70cac689492c07f412d4ae470378c031e940ae"
+          },
+          "current": {
+            "rows": 166,
+            "sha256": "59b2b103dd7e3607d63c32b53d70cac689492c07f412d4ae470378c031e940ae"
+          },
+          "unchanged": true
+        }
+      ],
+      "scope": "listed complete tables via actual wave16_migrate.history; not whole database",
+      "not_compared": [
+        "new candidates",
+        "Confirmation/common receipt/audit/outbox/request keys",
+        "Artifact/Original byte content",
+        "professional/issuer facts and current qualifications",
+        "Product normal reference_epoch",
+        "unlisted tables"
+      ]
+    },
+    "counts": {
+      "capa_verification_evidence": 2,
+      "capa_verification_rule_facts": 1,
+      "capa_observation_facts": 1,
+      "capa_named_verification_reviews": 0,
+      "capa_current_verification_rules": 1,
+      "capa_current_observations": 1
+    }
+  },
+  "matches_actual_http_after": true
+}

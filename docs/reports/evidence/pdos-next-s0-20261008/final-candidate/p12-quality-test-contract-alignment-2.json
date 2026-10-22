@@ -1,0 +1,28 @@
+{
+  "test_only": true,
+  "runtime_and_migration_changes": false,
+  "changes": [
+    {
+      "path": "pdos-next/server/tests/quality_execution/test_transactions.py",
+      "before": "1da531a31e29076c28f92eef0d3ea2178b269b4bf512325584bec4a16d2eb68c",
+      "after": "86faed255202c32e409505d13e85fc5228f5da30fddbdc8e3b124901f3f6f883",
+      "changed_test_functions": [
+        "test_original_bytes_read_runtime_revocation_is_atomic"
+      ],
+      "fixture_definitions_unchanged": true
+    },
+    {
+      "path": "pdos-next/server/tests/quality_execution_transactions/test_read_batch.py",
+      "before": "c1cc2e26ea4b39e86ddbd246f7f2704f4e71278a6f16bd734e743813dbb6bc97",
+      "after": "67f35127bee7deb3efbe0bb2ade59a4cfca169a5ef73a5194d83835f85f138f5",
+      "changed_test_functions": [
+        "test_actual_multi_failure_reading_shares_retained_and_rejects_late_byte_revocation",
+        "test_actual_writer_late_access_io_cannot_revoke_original_run_issuer_and_return_preview",
+        "test_actual_writer_preparation_keeps_record_fresh_and_seals_qualification_after_terminal_io"
+      ],
+      "fixture_definitions_unchanged": true
+    }
+  ],
+  "basis": "T1 quality.issue.merge retains the genuine upstream retained boundary; direct triage/containment keep Current/source-watermark guards. Mixed known/unadmitted result reading preserves retained terminal guards. Existing request raw-bank reuse does not require fresh multi-row IO.",
+  "validation_pending": true
+}

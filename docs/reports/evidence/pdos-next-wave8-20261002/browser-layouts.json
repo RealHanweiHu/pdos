@@ -1,0 +1,38 @@
+[
+  {
+    "pageWidth": 1280,
+    "scrollWidth": 1214,
+    "sectionWidth": 1214,
+    "theme": "light",
+    "viewport": 1280
+  },
+  {
+    "pageWidth": 1280,
+    "scrollWidth": 1214,
+    "sectionWidth": 1214,
+    "theme": "dark",
+    "viewport": 1280
+  },
+  {
+    "pageWidth": 320,
+    "scrollWidth": 286,
+    "sectionWidth": 286,
+    "theme": "dark",
+    "viewport": 320
+  },
+  {
+    "pageWidth": 320,
+    "scrollWidth": 286,
+    "sectionWidth": 286,
+    "theme": "light",
+    "viewport": 320
+  },
+  {
+    "pageWidth": 320,
+    "scrollWidth": 252,
+    "sectionWidth": 252,
+    "theme": "light",
+    "viewport": 320,
+    "scope": "expanded scan receipt"
+  }
+]

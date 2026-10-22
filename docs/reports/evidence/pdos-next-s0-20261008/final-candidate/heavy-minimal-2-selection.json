@@ -1,0 +1,11 @@
+[
+  "tests/change_execution/test_pure.py",
+  "tests/change_execution/test_public_integration.py",
+  "tests/change_execution/test_evidence.py",
+  "tests/change_coverage_owner/test_owner_boundary.py",
+  "tests/change_graph_closure/test_closure.py",
+  "tests/change_execution/test_transactions.py::test_impact_inputs_reuse_current_capture_and_reject_late_source_clock_and_runtime_changes",
+  "tests/change_execution/test_transactions.py::test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualification_aba",
+  "tests/change_execution/test_transactions.py::test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_keeps_capture",
+  "tests/change_coverage_transactions/test_publication.py::test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recovery"
+]

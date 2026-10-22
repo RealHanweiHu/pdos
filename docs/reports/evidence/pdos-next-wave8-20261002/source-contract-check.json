@@ -1,0 +1,18 @@
+{
+  "candidate_source_config_files": 280,
+  "joint_frozen_source_config_files": 279,
+  "changed_during_validation": [],
+  "postfreeze_addition": {
+    "path": "pdos-next/tools/wave8_verify.py",
+    "purpose": "evidence readback only; executed after actual UI withdrawal; no runtime change",
+    "lint": "passed"
+  },
+  "payloads_match_runtime": true,
+  "openapi_matches_runtime": true,
+  "payload_count": 26,
+  "canonical_counts": {
+    "operations": 66,
+    "events": 65,
+    "acceptance": 48
+  }
+}

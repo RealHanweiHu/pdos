@@ -1,0 +1,17 @@
+{
+  "status": "VERIFIED_WAVE26_BASELINE",
+  "recorded_at": "2026-10-04T03:53:30.462587+00:00",
+  "previous_goal_turn_classification": "progress",
+  "previous_authoritative_progress": "actual change/manufacturing integration and next_0028 checkpoint plus configured-Engine retained diagnosis",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "actual_head": "next_0028",
+  "actual_registered_tables": 122,
+  "previous_source_manifest": "../pdos-next-wave25-20261003/actual-core-source-v3.json",
+  "previous_source_manifest_sha256": "b1911543755cb50d9442797e7adce53d83e9d9c3ddae3c37afcee63590bd4eef",
+  "previous_591_source_hashes_unchanged": true,
+  "business_saves": 0,
+  "qualification_imports": 0,
+  "scope": "complete current resource material comparison and strict retained compatibility; separate full pilot result scope kernel",
+  "overall_goal_complete": false
+}

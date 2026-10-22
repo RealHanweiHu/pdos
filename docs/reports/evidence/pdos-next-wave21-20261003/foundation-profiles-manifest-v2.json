@@ -1,0 +1,116 @@
+{
+  "schema_version": "wave21-foundation-profiles-staged-v2",
+  "created_at": "2026-10-03T18:05:23.548242+00:00",
+  "applied_to_runtime": false,
+  "source_package_copy_count": 310,
+  "owned_target_baselines_match": true,
+  "staged_check_source_stable": true,
+  "observed_unowned_actual_drift": [
+    "api.py",
+    "asgi.py",
+    "capa_rule_publisher.py",
+    "domain/professional_authority/service.py",
+    "quality_followup_integration.py"
+  ],
+  "observed_unowned_drift_note": "Root confirmed authorized B/C/Root integration applied-owned-source-v1; not attributed to this staged work",
+  "staged_modified_package_files": [
+    "operational_bootstrap.py",
+    "quality_bootstrap.py",
+    "test_resource_bootstrap.py"
+  ],
+  "files": [
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/pdos_next/operational_bootstrap.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/operational_bootstrap.py",
+      "baseline_sha256": "473cb3f7336b0af28a82b6e5b602bc696fc67a03ba4d8f276799d60089e9cb15",
+      "final_sha256": "fd7ed5585dded9a0896858c5c02dbef7b18ed4ac8d09d3f08b42ec28f2cafb3e",
+      "kind": "modified bootstrap"
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/pdos_next/test_resource_bootstrap.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/test_resource_bootstrap.py",
+      "baseline_sha256": "85eee5d1838689a54688fc64a6998b03a30fa57b7a984a40c654b333dbe31ccf",
+      "final_sha256": "e710c9af00d4c3c08c9c48e8b754a4e3f987713e4b52deada4e39263c5241d21",
+      "kind": "modified bootstrap"
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/pdos_next/quality_bootstrap.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/quality_bootstrap.py",
+      "baseline_sha256": "74de72d1f51352e63152c76d4886092da335b06a64798bb4aa8392e548305fbf",
+      "final_sha256": "1b01049d9b8e6950f9bf80c4517196d3074e1476b9e1bef3839ea7ff82018e6e",
+      "kind": "modified bootstrap"
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/tests/test_operational_bootstrap_profiles.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/test_operational_bootstrap_profiles.py",
+      "baseline_sha256": null,
+      "final_sha256": "cbc6dc4c8ee0f70556f20f750d5e155ea0929b5dc54f5bed2bdcaa01e85c0fb9",
+      "kind": "new owned pure test"
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/tests/test_test_resource_bootstrap_profiles.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/test_test_resource_bootstrap_profiles.py",
+      "baseline_sha256": null,
+      "final_sha256": "1bef7e390abc8363185eda210206a3f0b8e6430564e77c84aa2bdbd13ffabe5e",
+      "kind": "new owned pure test"
+    },
+    {
+      "staged_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/tests/test_quality_bootstrap_profiles.py",
+      "target_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/test_quality_bootstrap_profiles.py",
+      "baseline_sha256": null,
+      "final_sha256": "a2a251106399ca42d2dc11803136a08f825041b63ae4ffb15f983143f7cd6042",
+      "kind": "new owned pure test"
+    }
+  ],
+  "previous_manifest": {
+    "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave21-20261003/foundation-profiles-manifest-v1.json",
+    "sha256": "da8be4eb1045d5398238499ffd993654cbee67fa68dd3cf982e872809637f09d"
+  },
+  "v1_exact_file_archives": [
+    {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/v1-frozen/pdos_next/operational_bootstrap.py",
+      "sha256": "30fd1a30b981d3eebd8e2def6c9ac65f087aa459bd26219188d270ca37fdc961"
+    },
+    {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/v1-frozen/pdos_next/test_resource_bootstrap.py",
+      "sha256": "14bff7bb250af38d1767087e6e8326fa8d71b4a04a4f8e3496294002ba5c47de"
+    },
+    {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/v1-frozen/pdos_next/quality_bootstrap.py",
+      "sha256": "1d81e3f9f668bac455fc79cfe8f99a8db9a0315df7827abd2546cf7468686f27"
+    },
+    {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/v1-frozen/tests/test_operational_bootstrap_profiles.py",
+      "sha256": "9d46d65d89a088401c4749879d0d35bb548204c408a860f78b51bde578934ebf"
+    },
+    {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/v1-frozen/tests/test_test_resource_bootstrap_profiles.py",
+      "sha256": "0f9032422bdb9b2a02279b8220c07add1382db3f47e81446fdaa937e1a45b716"
+    },
+    {
+      "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/v1-frozen/tests/test_quality_bootstrap_profiles.py",
+      "sha256": "60dc4de72be427e95fcf48e451f6d6a9123708851b008c0eab729f292b59680f"
+    }
+  ],
+  "contract": {
+    "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave21-20261003/foundation-profile-contract-v2.md",
+    "sha256": "264d93c4d1799cbabef9fa7b653c3eb5c15aa46b648f089040f5ef783444a1c0"
+  },
+  "checks": {
+    "path": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave21-20261003/foundation-profiles-checks-v2.json",
+    "sha256": "5e5105028d48d24a2fec8ee0134958bc693843fc188485f3b6d999631a6d66b7"
+  },
+  "pure_count": 86,
+  "delta": [
+    "atomic full startup family attribute restoration after actual later factory failure",
+    "strict actual epoch map / opaque issuer / metadata shape reuse checks",
+    "reject epoch-only unrecorded historical registration"
+  ],
+  "limits": [
+    "isolated staged source only; exact 6 files for Root application",
+    "no actual target/source/qualification DB checks; marker boundary substituted",
+    "single explicit reconfiguration retains legacy epoch behavior",
+    "plural is not a runtime issuer update operation or concurrency API",
+    "Root owns application / API / actual validation"
+  ]
+}

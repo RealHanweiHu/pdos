@@ -1,0 +1,30 @@
+{
+  "actual_wait_id": "c74b397e-e4ec-4e56-ab8e-2249605f879d",
+  "receipt_id": "246f3775-09c5-407f-acbf-daca52bfd0d3",
+  "command_id": "3c745364-41ea-464a-b266-ce95f1995ae7",
+  "successful_save_response_replaced_with_503": true,
+  "fulfillment_completed_before_reload": true,
+  "refresh_auto_POSTs": 0,
+  "one_inputs_POST": true,
+  "explicit_replay_same_command_and_key": true,
+  "one_create_version": true,
+  "actual_delivery": null,
+  "response_clock_unknown": true,
+  "adopted_actual_calendar": {
+    "kind": "project_plan",
+    "id": "ff6ec384-2974-4627-b116-5c02f6b7eb1f",
+    "revision": 1,
+    "calendar_key": "default",
+    "calendar_version": "synthetic-workday@1",
+    "resource_id": null
+  },
+  "actual_attention_and_activity": true,
+  "light": {
+    "width": 1440,
+    "overflow": false
+  },
+  "dark": {
+    "width": 320,
+    "overflow": false
+  }
+}

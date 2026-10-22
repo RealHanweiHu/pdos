@@ -1,0 +1,16 @@
+{
+  "stage": "fixture setup before new test body; no Pilot projection export",
+  "initial_error": "DeadlockDetected; AccessShareLock reading professional_authority_facts conflicts with AccessExclusiveLock during concurrent shared migration",
+  "initial_head": "s0_0798",
+  "failed_fixture_prior_synthetic_records": "Some G0/physical prerequisites may have committed before failure; retained, not deleted or counted as successful Pilot case",
+  "conditions_for_retry": "Other owner completes migration; actual head and absence of active migration checked before a single retry",
+  "other_sessions_terminated": false,
+  "database_restarted": false,
+  "migrations_by_this_chat": false,
+  "retry_performed": true,
+  "retry_start_condition_evidence": "migration-state-after-frontend.json",
+  "retry_result": "passed",
+  "retry_exit_code": 0,
+  "retry_duration_seconds": 342.7,
+  "retry_evidence": "backend-tests.log"
+}

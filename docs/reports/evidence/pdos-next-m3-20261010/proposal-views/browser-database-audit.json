@@ -1,0 +1,28 @@
+{
+  "environment": "verified isolated M3 pdos_test; port 64245",
+  "tenant_id": "6afff732-8612-4012-b74f-59ca3ed9ed17",
+  "proposal_id": "cf5249cc-a92d-4dbb-990f-9161f5f9c79d",
+  "counts": {
+    "proposals": 1,
+    "proposal_submissions": 1,
+    "proposal_decisions": 0,
+    "projects": 0,
+    "definition_revisions": 0,
+    "agent_runs": 0,
+    "agent_tool_calls": 0,
+    "claims": 0
+  },
+  "proposal": {
+    "revision": 2,
+    "status": "in_review"
+  },
+  "document_identity": {
+    "proposal_id": "cf5249cc-a92d-4dbb-990f-9161f5f9c79d",
+    "revision": 1,
+    "document_digest": "f02d1a6cbf4af34a3a39fd20f35d608f4f4cd3fc96970c27b1a8338638dcebab",
+    "submission_id": "848940e1-7765-49ea-98ff-eb854816033d",
+    "document_mode": "frozen"
+  },
+  "model_calls": 0,
+  "read_only_audit": true
+}

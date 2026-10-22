@@ -1,0 +1,5 @@
+[
+  "tests/test_resource_dependency/test_saved_owner_v2.py",
+  "tests/test_retained_versioned_fingerprint.py",
+  "tests/verification_launch_v2/test_start_versioned_owner.py"
+]

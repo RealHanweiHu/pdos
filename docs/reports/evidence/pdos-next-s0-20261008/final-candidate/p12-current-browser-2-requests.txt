@@ -1,0 +1,16 @@
+1. [GET] http://localhost:3120/?category=deb1b17e-aa8b-4abf-8372-4a8898b44ced&area=knowledge&view=sources&product=d3cd928a-96ca-4d34-969f-403e177a4fc0 => [200] OK
+2. [GET] http://localhost:3120/_next/static/media/22a5144ee8d83bca-s.p.woff2 => [200] OK
+3. [GET] http://localhost:3120/_next/static/media/7d4881bb7e1bf84d-s.p.woff2 => [200] OK
+4. [GET] http://localhost:3120/_next/static/css/fcb99dd50222e65f.css => [200] OK
+5. [GET] http://localhost:3120/_next/static/chunks/webpack-1845cbfd5810a698.js => [200] OK
+6. [GET] http://localhost:3120/_next/static/chunks/a688e97e-d1b49c3d7b531464.js => [200] OK
+7. [GET] http://localhost:3120/_next/static/chunks/610-a2baa2bd24a883fc.js => [200] OK
+8. [GET] http://localhost:3120/_next/static/chunks/main-app-effe39fd5cd8fe5a.js => [200] OK
+9. [GET] http://localhost:3120/_next/static/chunks/app/layout-edf2784e9a1923ec.js => [200] OK
+10. [GET] http://localhost:3120/_next/static/chunks/6-6acdb2e2238fa366.js => [200] OK
+11. [GET] http://localhost:3120/_next/static/chunks/678-7fca00bb991bcb51.js => [200] OK
+12. [GET] http://localhost:3120/_next/static/chunks/app/page-4be8c804343398cf.js => [200] OK
+13. [GET] http://localhost:3120/api/v1/categories => [200] OK
+14. [GET] http://localhost:3120/api/v1/session => [200] OK
+15. [GET] http://localhost:3120/api/v1/categories/deb1b17e-aa8b-4abf-8372-4a8898b44ced/products => [200] OK
+16. [GET] http://localhost:3120/api/v1/categories/deb1b17e-aa8b-4abf-8372-4a8898b44ced/products/d3cd928a-96ca-4d34-969f-403e177a4fc0/workspace => [200] OK

@@ -1,0 +1,23 @@
+{
+  "status": "PASS_SYNTHETIC_OBSERVATION",
+  "action": "observation",
+  "started_at": "2026-10-03T15:43:18.597348+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "model_calls": 0,
+  "steps": [
+    {
+      "name": "actual-native-partial-observation-source-and-original-request",
+      "source_saved": true,
+      "fact_saved": false,
+      "observed_from": "2026-10-03T15:43:19.675996+00:00",
+      "observed_until": "2026-10-03T15:43:34.454922+00:00",
+      "physical_retest_performed": false,
+      "measurement_invented": false
+    }
+  ],
+  "synthetic_only": true,
+  "review_writes": 0,
+  "effectiveness_writes": 0,
+  "close_writes": 0,
+  "finished_at": "2026-10-03T15:43:34.502693+00:00"
+}

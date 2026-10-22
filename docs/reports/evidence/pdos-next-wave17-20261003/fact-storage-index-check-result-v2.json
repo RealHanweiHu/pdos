@@ -1,0 +1,51 @@
+{
+  "pure": {
+    "command": [
+      "pdos-next/server/.venv/bin/python",
+      "-m",
+      "pytest",
+      "--noconftest",
+      "pdos-next/staging/wave17/test_fact_storage_index_bounds.py",
+      "pdos-next/staging/wave17/test_fact_storage_codec.py",
+      "-q"
+    ],
+    "env": {
+      "PYTHONPATH": "pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "exit_code": 0,
+    "wall_seconds": 3.0873909999936586,
+    "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/fact-storage-index-pure-v2.log"
+  },
+  "ruff": {
+    "command": [
+      "pdos-next/server/.venv/bin/ruff",
+      "check",
+      "pdos-next/staging/wave17/fact_storage_models.py",
+      "pdos-next/staging/wave17/test_fact_storage_index_bounds.py"
+    ],
+    "env": {
+      "PYTHONPATH": "pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "exit_code": 0,
+    "wall_seconds": 0.020015041998703964,
+    "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/fact-storage-index-ruff-v2.log"
+  },
+  "format": {
+    "command": [
+      "pdos-next/server/.venv/bin/ruff",
+      "format",
+      "--check",
+      "pdos-next/staging/wave17/fact_storage_models.py",
+      "pdos-next/staging/wave17/test_fact_storage_index_bounds.py"
+    ],
+    "env": {
+      "PYTHONPATH": "pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "exit_code": 0,
+    "wall_seconds": 0.010698291996959597,
+    "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/fact-storage-index-format-v2.log"
+  }
+}

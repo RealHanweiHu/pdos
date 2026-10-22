@@ -1,0 +1,70 @@
+{
+  "scope": "项目工作区使用流程与按需展示；只包含本次UI增量",
+  "files": [
+    {
+      "path": "web/src/components/projects/project-workspace-view.tsx",
+      "sha256": "a0eb6ff53ce51c6e281f5d1fd646e7ab637d7cf3195a67f43a41bac5699e5b08",
+      "new": false
+    },
+    {
+      "path": "web/src/components/projects/project-workspace.tsx",
+      "sha256": "b0faf76e0de347f8f5dcc98a759b923908fcaf9d9134fdf3fb16e1d2b829561e",
+      "new": false
+    },
+    {
+      "path": "web/src/components/projects/project-workspace.test.tsx",
+      "sha256": "5cb85a6a293017aca471ac682e5dd49ba9b40fcf4103cf7229cf685a8b890afa",
+      "new": false
+    },
+    {
+      "path": "web/src/components/projects/project-management-panel.tsx",
+      "sha256": "262dadfff1e3534826b9085ff8369e5007b4de96c0c84f47aaec70c17bdbd657",
+      "new": false
+    },
+    {
+      "path": "web/src/components/projects/project-gate-panel.tsx",
+      "sha256": "ec8e285d11a4798f43133c9bfcfacae2b543fde294fa414c0bae67c1892c8aa1",
+      "new": false
+    },
+    {
+      "path": "web/src/components/projects/project-overview.tsx",
+      "sha256": "c53c5c30d60561ac0185bc9adef9038393d38e0aa6ab269a8298edc2d7ccceb6",
+      "new": false
+    },
+    {
+      "path": "web/src/components/projects/project-timeline.tsx",
+      "sha256": "3c811f8511f48060e8b6cdeece06893c5c552695349acb550533ed9bbbc30f14",
+      "new": false
+    },
+    {
+      "path": "web/src/components/projects/project-work-items.tsx",
+      "sha256": "f46c8cc9ae9ccc61abe8668e8d3f216d6cb2aa7f2adacdab15cf1be28ee8310f",
+      "new": false
+    },
+    {
+      "path": "web/src/components/projects/ai-issue-event-sources.test.tsx",
+      "sha256": "92814b967b9bbc5efc76d7f91af223443ed306a176fc0e399f389eaee64080d0",
+      "new": false
+    },
+    {
+      "path": "web/src/components/projects/project-stage-board.tsx",
+      "sha256": "a81358568823809688bc706fc8c581dd1a585dbe72de07026afe67bce9b7ce48",
+      "new": false
+    },
+    {
+      "path": "web/src/components/projects/project-work-queue.tsx",
+      "sha256": "86d8d3d81af7c83d29633d4023cd0fe0cac9837459834c62d93e95507af60de7",
+      "new": true
+    }
+  ],
+  "tests": {
+    "files": 4,
+    "passed": 56
+  },
+  "global_types": "passed",
+  "affected_lint": "passed",
+  "production_build": "not_run",
+  "database_operations": "none",
+  "ai_execution": "none",
+  "business_writes": "none"
+}

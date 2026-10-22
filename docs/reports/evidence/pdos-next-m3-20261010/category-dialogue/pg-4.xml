@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="3.311" timestamp="2026-10-11T00:55:22.528732-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_actual_t1_sources_signature_and_replay" time="2.098"><failure message="AssertionError: ({'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}, [... personal-Run candidate confirmation&#10;  CONTEXT:  PL/pgSQL function kernel_category_candidate_guard() line 15 at RAISE'])&#10;assert 422 == 201&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-126/test_personal_candidate_actual0')
+
+    def test_personal_candidate_actual_t1_sources_signature_and_replay(setup, tmp_path):
+        f = personal_fixture(setup, tmp_path)
+        assert f.bootstrap.prepare_candidate(f.scope, f.spec, f.arguments, f.key) == f.candidate
+        before = counts(setup)
+&gt;       receipt, payload = adopted(setup, f)
+                           ^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+f = namespace(scope=RunScope(tenant_id=UUID('54ec166d-b380-47ae-a7c6-e74014e4244b'), requester_id=UUID('82f7e0a5-bd95-4052... 'requires_human': True, 'write_tier': 'T1', 'state': 'candidate', 'event_id': 'fb1bfa0b-b70f-4714-b6c7-65a921814947'})
+omit = ()
+
+    def adopted(setup, f, *, omit=()):
+        payload = deepcopy(f.candidate["payload"])
+        payload["deidentified_confirmed"] = True
+        for group in omit:
+            payload["groups"][group] = []
+        preview = setup.client.post("/v1/categories/preview", headers=setup.headers, json=payload)
+        assert preview.status_code == 200, preview.json()
+        payload["confirmation_token"] = preview.json()["confirmation_token"]
+        diagnostics = []
+    
+        def record_error(context):
+            diagnostics.append(str(context.original_exception))
+    
+        event.listen(setup.engine, "handle_error", record_error)
+        try:
+            response = setup.client.post("/v1/categories", headers=setup.headers, json=payload)
+        finally:
+            event.remove(setup.engine, "handle_error", record_error)
+&gt;       assert response.status_code == 201, (response.json(), diagnostics)
+E       AssertionError: ({'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}, [... personal-Run candidate confirmation
+E         CONTEXT:  PL/pgSQL function kernel_category_candidate_guard() line 15 at RAISE'])
+E       assert 422 == 201
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_category_candidate_transactions.py:246: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_sql_cannot_insert_ai_category_without_actual_receipt_or_change_run_identity" time="0.755"><failure message="AssertionError: ({'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}, [... personal-Run candidate confirmation&#10;  CONTEXT:  PL/pgSQL function kernel_category_candidate_guard() line 15 at RAISE'])&#10;assert 422 == 201&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-126/test_sql_cannot_insert_ai_cate0')
+
+    def test_sql_cannot_insert_ai_category_without_actual_receipt_or_change_run_identity(
+        setup, tmp_path
+    ):
+        f = personal_fixture(setup, tmp_path, sources=False)
+        with pytest.raises(DBAPIError):
+            with tenant_session(setup.engine, setup.tenant, actor_id=setup.human) as session:
+                session.add(
+                    Category(
+                        tenant_id=setup.tenant,
+                        owner_id=setup.human,
+                        key="forged-" + uuid4().hex,
+                        name="forged",
+                        purpose="forged",
+                        created_by_run_id=f.run.id,
+                    )
+                )
+&gt;       receipt, _ = adopted(setup, f)
+                     ^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:384: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+f = namespace(scope=RunScope(tenant_id=UUID('23e9627e-4595-48da-b46c-6d58d44b0a81'), requester_id=UUID('b7e1eb88-b637-4ed0... 'requires_human': True, 'write_tier': 'T1', 'state': 'candidate', 'event_id': 'bf6f44ae-4e67-4ca2-a0f4-4e6bb8710a9c'})
+omit = ()
+
+    def adopted(setup, f, *, omit=()):
+        payload = deepcopy(f.candidate["payload"])
+        payload["deidentified_confirmed"] = True
+        for group in omit:
+            payload["groups"][group] = []
+        preview = setup.client.post("/v1/categories/preview", headers=setup.headers, json=payload)
+        assert preview.status_code == 200, preview.json()
+        payload["confirmation_token"] = preview.json()["confirmation_token"]
+        diagnostics = []
+    
+        def record_error(context):
+            diagnostics.append(str(context.original_exception))
+    
+        event.listen(setup.engine, "handle_error", record_error)
+        try:
+            response = setup.client.post("/v1/categories", headers=setup.headers, json=payload)
+        finally:
+            event.remove(setup.engine, "handle_error", record_error)
+&gt;       assert response.status_code == 201, (response.json(), diagnostics)
+E       AssertionError: ({'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}, [... personal-Run candidate confirmation
+E         CONTEXT:  PL/pgSQL function kernel_category_candidate_guard() line 15 at RAISE'])
+E       assert 422 == 201
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_category_candidate_transactions.py:246: AssertionError</failure></testcase></testsuite></testsuites>

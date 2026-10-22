@@ -1,0 +1,85 @@
+{
+  "work_item": "N0-03",
+  "status": "partial",
+  "date": "2026-09-11",
+  "migration": "0089_application_waiting_input",
+  "tests": {
+    "backend_distinct_passed": 6,
+    "new_business_cases": 5,
+    "existing_review_compatibility": 1,
+    "frontend_distinct_passed": 13,
+    "total_distinct_passed": 19,
+    "first_collection_fixture_errors_excluded": true,
+    "repaired_case": "Rejected review requires a comment; supplied the existing required field and the case passed.",
+    "overlapping_results_excluded": true
+  },
+  "static_checks": {
+    "mypy_files": 4,
+    "ruff_files": 7,
+    "eslint_files": 4,
+    "typescript_full": true,
+    "common_exports": 4,
+    "runtime_exports": 5
+  },
+  "source_sha256": {
+    "server/app/ai/application_waits.py": "e2d6543ae10a7b936e140e0e102c4bb2884f16a910be4d23f57f1b2cb93c9514",
+    "server/app/ai/test_plan_suggestions.py": "bea48714254e5330185de44e62e2ccd9a7a41e22abc7b3df98aac4d9aff2fdb0",
+    "server/app/ai/runtime_contract.py": "a7b4ac501b184841c99195c39f47d548fe541a14ee0f53aff2bf0a4523109823",
+    "server/app/api/ai.py": "f8da9f060f85d279acf227df5cf7b0f53fd7a1c3ca262cf4287dbaec84459acb",
+    "server/app/db/schema.py": "9b978747a711c8b36cc6f9fe947bf1e43c17109c751f3b1dc79189ddcef1247a",
+    "server/migrations/versions/0089_application_waiting_input.py": "46fd246b0e2c656de73dc2714ee5ff856c1cc3da8ed761d53579f33e7b9eebe6",
+    "server/tests/test_application_waits.py": "f6346f4486d47ab2ced785e7cb8e04b6fec71a8e8b13856a48ddec2e1d0c2593",
+    "web/src/components/ai/agent-runs-card.tsx": "60ec713d8bbd69048ab7ee2cdd7b7f98d6a2203cd733f9114b63abe292b9d862",
+    "web/src/components/ai/ai-api.ts": "f370b9958b514a647870dfbd2d6291bd4a8b7c04f989e63e729285d204290ad1",
+    "web/src/components/ai/ai-types.ts": "dbdf5384572752265801a172064d369a7626f31dd4122dbbe8112f2713187b98",
+    "web/src/components/ai/project-ai-chat.test.tsx": "6d5cd3ecc707e528c935b808771badda98d24d449f3dc5092db77547b5256cc8",
+    "docs/runbooks/application-input-waits.md": "deb97d5bbae1cb673e3fdf0b492ef197b948f225ef2332c1b480d0bc396d8330",
+    "docs/reports/2026-09-11-n0-03-input-waits-validation.md": "4c67742bcc821f3d49e7c01dcb5da9a6c24670899574db5d7385510c9764c9f3"
+  },
+  "log_sha256": {
+    "/tmp/pdos-input-waits-tests.log": "633d7ece2a434ff1d3f7a10b9d0439764bbf0ccf864b07c4dfea59eb6a8cb504",
+    "/tmp/pdos-input-waits-focused.log": "66b02e29a6c9151c00a72651c910977579d75e97fc190e038ff0fa679268791c",
+    "/tmp/pdos-input-waits-repair.log": "51838bf78814a2c8582db06eeeabcba9412f91e37ca1aa713d3d0030b0666811",
+    "/tmp/pdos-input-waits-mypy.log": "71144743c83babea384888a735db0c4daba3d4d7b7942b6839984bd5c21b52bb",
+    "/tmp/pdos-input-waits-ruff.log": "0be7adce665690956090205e08186f7efd9939d7fe606e4a0d117c570ab71599",
+    "/tmp/pdos-input-waits-web-tests.log": "b7446b562fddb896ba16780671dc61fb3fa22a9dbc3d02b129393cc1dbf51068",
+    "/tmp/pdos-input-waits-web-types.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/tmp/pdos-input-waits-web-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/tmp/pdos-input-waits-contracts.log": "ee698c6616e06fe161c6d6e085f078101d60fc87323ba50a7a4e606c94cfad65"
+  },
+  "database": {
+    "database": "pdos_test",
+    "head": "0089_application_waiting_input",
+    "functions": {
+      "require_application_publication_lease": "97ea2d0cffb505af9ab8151f5360766c2c07dd7ec807c6a94ffca2b375dddfce",
+      "finish_application_lease": "3b73db16f6ff0cba1bfb2104bc9f221ec7225f2173da7c771572167317c3d5d2",
+      "expire_application_runs": "3365517e09a7d99d60b4c1f448ed167de55608505c6359e8dda545e44a6ce1c7"
+    },
+    "direct_role_access": {
+      "pdos_agent": false,
+      "pdos_worker": false
+    }
+  },
+  "frontend_snapshot": {
+    "files_compared": 318,
+    "source_matches": true,
+    "matching_lockfile_sha256": "4cb2e2e0099c58b7d0b26c4954bb19f57be457629ee63bb76c0c0808aa3fb251"
+  },
+  "approved_manifests": {
+    "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+    "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+  },
+  "active_items": 65,
+  "temporary_source_directory_removed": true,
+  "dependencies_installed": false,
+  "production_operations": false,
+  "real_model_calls": false,
+  "golden_changes": false,
+  "git_push": false,
+  "remaining": [
+    "Other application queues and domain waiting points",
+    "Complete RunControl public interface and generic cancellation/pause",
+    "Stepwise recovery without final model result",
+    "Remaining N0-03 scope and all later work items"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "observed_at": "2026-10-03T06:42:21.922683+00:00",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "current_revision": 2,
+  "versions": [
+    {
+      "id": "5c398f44-ec63-48e3-aba2-e0b9b0ccea0d",
+      "revision": 1,
+      "operation": "quality.issue.create",
+      "status": "open",
+      "policy_snapshot": null,
+      "snapshot_sha256": "23213ee595c4179def1e66af6249f5fb9598413ef0bff42dd81e013d9eea4eeb",
+      "containment_count": 0,
+      "capa_present": false
+    },
+    {
+      "id": "362d451a-1c72-47ec-b766-e9d4a10b7374",
+      "revision": 2,
+      "operation": "quality.issue.triage",
+      "status": "triaged",
+      "policy_snapshot": {
+        "id": "b5a43846-1b2e-4df4-941d-393f61fc3ea7",
+        "risk": "high",
+        "nature": "synthetic",
+        "private": true,
+        "sources": [
+          {
+            "id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:066a7ea38663d4023afe3438c657de8bfeeafd62da4784cea5da9d14f8aa20fe",
+            "revision": 1
+          }
+        ],
+        "revision": 1,
+        "valid_until": "2026-10-04T06:12:10.850721+00:00",
+        "source_basis": [
+          {
+            "id": "b5a43846-1b2e-4df4-941d-393f61fc3ea7",
+            "epoch": 1,
+            "sha256": "7059d8f395f637559b71ca9605f1111409ab1fbcc719076d32b7b382df416638",
+            "revision": 1,
+            "issuer_epoch": 1
+          }
+        ],
+        "facts_revision": "34ef0d414894cba3924c474cdc4ce36c68b9f2ce100e34dba889b70f2dc0003a",
+        "independent_verification": true,
+        "required_source_read_set": [
+          {
+            "artifact_id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+            "expected_revision": 1
+          }
+        ]
+      },
+      "snapshot_sha256": "e9fcf46ef6ab174e4a07cefb7ef1fba9d748593d2df04fcc1a79f1dc9729b536",
+      "containment_count": 0,
+      "capa_present": false
+    }
+  ],
+  "unsubmitted_containment_preview": "cancelled before apply; no Issue v3"
+}

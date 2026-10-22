@@ -1,0 +1,16 @@
+{
+  "issue_current_revision": 4,
+  "issue_current_version_id": "8d8901e6-c051-406e-9db4-8e6c99e4d8e4",
+  "proof_id": "82c4eb4e-5168-4076-acce-ccfd64e5cf22",
+  "proof_consumed": false,
+  "proof_created_at": "2026-10-03T08:31:26.495980+00:00",
+  "proof_expires_at": "2026-10-03T08:41:26.494221+00:00",
+  "rows": 4,
+  "root_receipts": 0,
+  "actual_http_status": 500,
+  "actual_sqlstate": "22P02",
+  "cause": "JSON history arrow/subtraction precedence in require_quality_followup_atom; real common commit rolled back",
+  "no_new_current_version_or_receipt_or_proof_consumption": true,
+  "read_only": true,
+  "old_guard_sha256": "d5b2896d6c68f66466ca07127c021c5db73b2cf24c1ac7bdcf3416e079503059"
+}

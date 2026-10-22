@@ -1,0 +1,10 @@
+{
+  "backend_files": 478,
+  "web_files": 142,
+  "backend_sha256": "aec3e8162f26eaeb6e38aa75dead217ea2fd5f2e609f81d4fb8d72b9400f1a9b",
+  "web_sha256": "691d6fad078748510e5812631b871e3b79cd04af5892de9a86335ebc41cb9c62",
+  "actual_source_stable": true,
+  "scope": "Actual read filter/missing adapter, public routes, UI v4; selected impact validation, no full-tree joint claim",
+  "migration_head": "next_0024",
+  "retained_old_candidate": true
+}

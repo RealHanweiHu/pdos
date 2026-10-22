@@ -1,0 +1,20 @@
+.panel, .stack { display: grid; gap: 1rem; min-width: 0; overflow-wrap: anywhere; }
+.panel { padding: 1rem; border: 1px solid var(--border); border-radius: 8px; }
+.panel h2, .panel h3 { display: flex; align-items: center; gap: .5rem; font-weight: 600; }
+.row { display: flex; align-items: end; flex-wrap: wrap; gap: .75rem; justify-content: space-between; }
+.card { display: grid; gap: .85rem; padding: 1rem; border: 1px solid var(--border); border-radius: 8px; min-width: 0; }
+.card legend { padding-inline: .25rem; font-weight: 600; }
+.grid, .facts { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.facts dt { color: var(--muted-foreground); font-size: .8rem; }
+.facts dd { margin-top: .2rem; font-variant-numeric: tabular-nums; white-space: pre-wrap; }
+.panel label { display: grid; gap: .5rem; font-size: .875rem; min-width: 0; }
+.panel select, .panel input, .panel textarea { width: 100%; min-width: 0; }
+.panel pre, .panel blockquote { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .8rem; max-width: 100%; }
+.panel blockquote { border-left: 2px solid var(--primary); padding-left: .75rem; }
+.panel summary { cursor: pointer; margin-block: .4rem; }
+.panel a { text-decoration: underline; text-underline-offset: 3px; color: var(--primary); }
+.scroll { max-width: 100%; overflow-x: auto; }
+.scroll table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+.scroll td, .scroll th { padding: .5rem; text-align: left; border-bottom: 1px solid var(--border); }
+.dialog { width: min(48rem, calc(100% - 2rem)); max-height: 85vh; overflow-y: auto; padding: 1.25rem; border: 1px solid var(--border); border-radius: 8px; background: var(--background); color: var(--foreground); }
+.dialog::backdrop { background: rgb(0 0 0 / .4); }

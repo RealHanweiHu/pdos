@@ -1,0 +1,6 @@
+{
+  "result": "failed_schema_match",
+  "code_changed": "model partial unique index and sample usage sentinel FK added before business",
+  "failure": "handwritten unique partial index absent from original metadata",
+  "business_writes_started": false
+}

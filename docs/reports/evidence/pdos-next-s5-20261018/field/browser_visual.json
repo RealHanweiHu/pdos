@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "light": 1440,
+  "dark": 320,
+  "narrow_overflow": false,
+  "files": [
+    "field-light-1440.png",
+    "field-dark-320.png"
+  ]
+}

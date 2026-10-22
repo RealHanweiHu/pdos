@@ -1,0 +1,7 @@
+{
+  "container_id": "2ca689154e098511ae4a9701fe696bcd330f17389bb515b2f953e20e936e18c4",
+  "port": 51918,
+  "database": "pdos_test",
+  "owned_new_empty_database": true,
+  "initial_other_connections": 0
+}

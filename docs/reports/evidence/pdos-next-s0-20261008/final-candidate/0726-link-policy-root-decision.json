@@ -1,0 +1,40 @@
+{
+  "root_decision": "implement_link_parent_scope_once_migration",
+  "migration_revision": "s0_0727",
+  "previous_actual_head": "s0_0726",
+  "actual_diagnostic": "0726-link-policy-query-cost-first.json",
+  "actual_diagnostic_sha256": "f655f09b81a6c7249203d04d3a09dd09472c2c0a93a81102d9310cccd9fba031",
+  "process_actual_exit": 0,
+  "process_reaped": true,
+  "equivalence_evidence": "0726-link-policy-rollback-diagnostic.json",
+  "scope": "Only two weaker Projection/Measurement EXISTS removed from USING and WITH CHECK; corresponding complete predicates retained. Frozen other parents, roles, policies, functions, data and schema are unchanged.",
+  "primary_query_diagnostic_medians_seconds": {
+    "OLD": 0.06682258300133981,
+    "NEW": 0.04368691600393504,
+    "RESTORED": 0.06684029100142652
+  },
+  "actual_projection_measurement_scans": {
+    "OLD": {
+      "test_result_projections": 2,
+      "test_measurements": 2
+    },
+    "NEW": {
+      "test_result_projections": 1,
+      "test_measurements": 1
+    },
+    "RESTORED": {
+      "test_result_projections": 2,
+      "test_measurements": 2
+    }
+  },
+  "observed_warm_reduction_fraction": 0.3463984768857056,
+  "basis": "Actual recorded-case equality plus lower query cost with two active duplicate parent scans removed and restored after rollback. One scope/sequential warmed diagnostic is not general causal proof or performance acceptance.",
+  "actual_definers_restored": 43,
+  "source_unchanged": true,
+  "four_state_files_byte_identical": true,
+  "catalog_data_sequence_restored": true,
+  "is_p95_evidence": false,
+  "performance_gate_passed": false,
+  "remaining": "Implement migration, verify actual main/B8/ownedempty chain and affected application guards on the resulting source before full32x30 performance.",
+  "m1_complete": false
+}

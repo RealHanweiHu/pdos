@@ -1,0 +1,372 @@
+- generic [ref=e1]:
+  - alert [ref=e4]
+  - generic [ref=e16]:
+    - link "跳到工作内容" [ref=e17] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e22]: PDOS
+        - button "收起侧栏" [ref=e23]
+      - navigation "工作区导航" [ref=e24]:
+        - link "我的工作" [ref=e25] [cursor=pointer]:
+          - /url: "?area=work&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+        - link "项目驾驶舱" [ref=e29] [cursor=pointer]:
+          - /url: "?area=cockpit&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+        - link "项目列表" [ref=e33] [cursor=pointer]:
+          - /url: "?area=projects&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+        - link "项目集" [ref=e37] [cursor=pointer]:
+          - /url: "?area=programs&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+          - generic [ref=e41]: 尚未接入
+        - link "产品品类工作区" [ref=e42] [cursor=pointer]:
+          - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&bench=projects&view=plan&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+        - link "知识" [ref=e46] [cursor=pointer]:
+          - /url: "?area=knowledge&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+        - generic [ref=e138]:
+          - paragraph [ref=e139]: 当前品类
+          - paragraph [ref=e140]: Synthetic second category
+          - paragraph [ref=e141]: 项目与专业工作按品类范围授权
+      - generic [ref=e50]:
+        - link "计划执行进度" [ref=e51] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=e54]: 计划进度
+        - button "小Pai 工作栏" [ref=e55]:
+          - generic [ref=e58]: 小Pai
+        - link "设置" [ref=e59] [cursor=pointer]:
+          - /url: "?area=settings&category=09abfd74-586b-459f-8b80-b5a4ef7cb484"
+        - generic [ref=e63]:
+          - generic [aria-hidden] [ref=e64]: S
+          - generic [ref=e65]:
+            - paragraph [ref=e66]: Synthetic owner
+            - paragraph [ref=e67]: 本地合成环境
+    - generic [ref=e68]:
+      - banner [ref=e69]:
+        - generic [ref=e70]:
+          - generic [ref=e71]: PDOS
+          - generic [ref=e74]: 产品品类工作区
+          - generic [ref=e204]: Synthetic second category
+        - generic [ref=e75]:
+          - button "小Pai 工作栏" [ref=e76]
+          - button "切换明暗主题" [ref=e77]
+      - main [ref=e78]:
+        - navigation "品类工作台区" [ref=e205]:
+          - link "型号" [ref=e206] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=products&view=overview&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "项目" [ref=e210] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=overview&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "知识" [ref=e214] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=knowledge&view=sources&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "设置" [ref=e218] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=settings&view=preferences&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - button "快速查找入口或型号" [ref=e222] [cursor=pointer]
+          - combobox "当前型号" [ref=e225]:
+            - option "合成便携泵 · 待建计划" [selected]
+        - navigation "项目视图" [ref=e226]:
+          - link "现在" [ref=e227] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=overview&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "工作与计划" [ref=e231] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=plan&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "试制" [ref=e235] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=builds&task=prepare&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "测试与交接" [ref=e239] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=verification&task=prepare&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "问题与变更" [ref=e243] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=issues&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+          - link "评审与交付 尚未接入" [ref=e247] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=reviews&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+            - generic [ref=e250]: 评审与交付
+            - generic "尚未接入" [ref=e251]
+          - link "资料" [ref=e252] [cursor=pointer]:
+            - /url: "?area=category&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766&bench=projects&view=files&product=43d0b282-f550-4e2f-968d-c770f47b6d33"
+        - generic [ref=e256]:
+          - generic [ref=e258]:
+            - heading "工作与计划" [level=1] [ref=e259]
+            - paragraph [ref=e260]: 当前范围：合成便携泵 · 待建计划
+          - region "项目与首版计划" [ref=e262]:
+            - generic [ref=e263]:
+              - generic [ref=e264]:
+                - paragraph [ref=e265]: 固定型号定义，组织真实研发工作
+                - heading "项目与首版计划" [level=2] [ref=e266]
+              - generic [ref=e267]:
+                - button "收起编排" [disabled] [expanded]
+                - button "刷新项目" [disabled]
+            - paragraph [ref=e270]: 项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。当前只办理所选项目。
+            - link "返回项目驾驶舱" [ref=e271] [cursor=pointer]:
+              - /url: "?area=cockpit&category=09abfd74-586b-459f-8b80-b5a4ef7cb484&project=413b59ef-b92d-4f52-8dfb-f36d6ea0f766"
+            - generic [ref=e272]:
+              - region "首版计划输入" [ref=e274]:
+                - heading "准备首版计划候选" [level=3] [ref=e275]
+                - paragraph [ref=e276]: 本机输入按当前用户、型号及项目保留。读取或刷新项目不会覆盖或删除输入。
+                - group [ref=e278]:
+                  - generic [ref=e279]:
+                    - text: 研发项目
+                    - combobox "研发项目" [disabled] [ref=e280]:
+                      - option "选择真实项目" [disabled]
+                      - option "合成便携泵 · 待建计划" [disabled] [selected]
+                  - generic [ref=e399]:
+                    - paragraph [ref=e400]: 固定定义：合成便携泵 · 待建计划 · v1 · 尚未正式发布
+                    - paragraph [ref=e401]: 范围：Build and verify a synthetic design
+                  - group [ref=e284]:
+                    - generic [ref=e285]:
+                      - text: 计划起点（UTC）
+                      - textbox "计划起点（UTC）" [disabled] [ref=e286]: 2026-10-19T01:00
+                    - group [ref=e287]:
+                      - generic "声明本次工作日历" [ref=e288] [cursor=pointer]
+                      - generic [ref=e289]:
+                        - paragraph [ref=e290]: 默认工作日及 09–12 / 13–17 时段是可编辑的初始输入，尚未核验为工厂日历。全部时段和休息日期按下方时区解释。同一项目调整日历时，请明确填写新版本。
+                        - generic [ref=e291]:
+                          - text: 工作日历时区（IANA）
+                          - textbox "工作日历时区（IANA）" [disabled] [ref=e292]:
+                            - /placeholder: 例如 Asia/Shanghai
+                            - text: Asia/Shanghai
+                        - generic [ref=e293]:
+                          - text: 日历版本
+                          - textbox "日历版本" [disabled] [ref=e294]: synthetic-owner-v1
+                        - group "每周工作日" [ref=e295]:
+                          - generic [ref=e297]:
+                            - generic [ref=e298]:
+                              - checkbox "周一" [checked] [disabled] [ref=e299]
+                              - generic [ref=e300]: 周一
+                            - generic [ref=e301]:
+                              - checkbox "周二" [checked] [disabled] [ref=e302]
+                              - generic [ref=e303]: 周二
+                            - generic [ref=e304]:
+                              - checkbox "周三" [checked] [disabled] [ref=e305]
+                              - generic [ref=e306]: 周三
+                            - generic [ref=e307]:
+                              - checkbox "周四" [checked] [disabled] [ref=e308]
+                              - generic [ref=e309]: 周四
+                            - generic [ref=e310]:
+                              - checkbox "周五" [checked] [disabled] [ref=e311]
+                              - generic [ref=e312]: 周五
+                            - generic [ref=e313]:
+                              - checkbox "周六" [disabled] [ref=e314]
+                              - generic [ref=e315]: 周六
+                            - generic [ref=e316]:
+                              - checkbox "周日" [disabled] [ref=e317]
+                              - generic [ref=e318]: 周日
+                        - generic [ref=e319]:
+                          - text: 每日工作时段（每行一段，本地时刻）
+                          - textbox "每日工作时段（每行一段，本地时刻）" [disabled] [ref=e320]:
+                            - /placeholder: "09:00-12:00\n13:00-17:00"
+                            - text: 09:00-12:00 13:00-17:00
+                        - generic [ref=e321]:
+                          - text: 额外休息日期（YYYY-MM-DD，每行一天）
+                          - textbox "额外休息日期（YYYY-MM-DD，每行一天）" [disabled] [ref=e322]:
+                            - /placeholder: 未确认的节假日不会自动补入
+                    - generic [ref=e323]:
+                      - heading "工程 / NPI 任务" [level=4] [ref=e324]
+                      - button "新增任务" [disabled]
+                    - paragraph [ref=e326]: 工时单位为整数分钟。最低、最高工时可分别留空表示未知；未知会传播到依赖任务，不会自动补造估计。无依赖的任务可并行开始。
+                    - generic [ref=e327]:
+                      - article [ref=e328]:
+                        - generic [ref=e329]:
+                          - paragraph [ref=e330]: 任务 1 · task-1
+                          - button "删除任务" [disabled]
+                        - paragraph [ref=e402]: 被其他任务依赖；删除前请先解除对应依赖。
+                        - generic [ref=e331]:
+                          - text: 任务标题
+                          - textbox "任务标题" [disabled] [ref=e332]: 合成工程核对
+                        - generic [ref=e333]:
+                          - text: 工作包
+                          - combobox "工作包" [disabled] [ref=e334]:
+                            - option "工程" [disabled] [selected]
+                            - option "NPI / 制造导入" [disabled]
+                        - generic [ref=e335]:
+                          - generic [ref=e336]:
+                            - text: 最低工时（分钟）
+                            - spinbutton "最低工时（分钟）" [disabled] [ref=e337]: "60"
+                          - generic [ref=e338]:
+                            - text: 最高工时（分钟）
+                            - spinbutton "最高工时（分钟）" [disabled] [ref=e339]: "120"
+                        - generic [ref=e340]:
+                          - text: 工时估计依据
+                          - textbox "工时估计依据" [disabled] [ref=e341]:
+                            - /placeholder: 填写真实估计来源；填写工时后必填
+                            - text: 本次合成演练由负责人填写的估时
+                        - group "前置任务（完成后才能开始）" [ref=e342]:
+                          - generic [ref=e373]:
+                            - checkbox "合成NPI准备 · task-2" [disabled] [ref=e397]
+                            - generic [ref=e375]: 合成NPI准备 · task-2
+                      - article [ref=e376]:
+                        - generic [ref=e377]:
+                          - paragraph [ref=e378]: 任务 2 · task-2
+                          - button "删除任务" [disabled]
+                        - generic [ref=e380]:
+                          - text: 任务标题
+                          - textbox "任务标题" [disabled] [ref=e381]: 合成NPI准备
+                        - generic [ref=e382]:
+                          - text: 工作包
+                          - combobox "工作包" [disabled] [ref=e383]:
+                            - option "工程" [disabled]
+                            - option "NPI / 制造导入" [disabled] [selected]
+                        - generic [ref=e384]:
+                          - generic [ref=e385]:
+                            - text: 最低工时（分钟）
+                            - spinbutton "最低工时（分钟）" [disabled] [ref=e386]
+                          - generic [ref=e387]:
+                            - text: 最高工时（分钟）
+                            - spinbutton "最高工时（分钟）" [disabled] [ref=e388]
+                        - generic [ref=e389]:
+                          - text: 工时估计依据
+                          - textbox "工时估计依据" [disabled] [ref=e390]:
+                            - /placeholder: 填写真实估计来源；填写工时后必填
+                        - group "前置任务（完成后才能开始）" [ref=e391]:
+                          - generic [ref=e394]:
+                            - checkbox "合成工程核对 · task-1" [checked] [disabled] [ref=e395]
+                            - generic [ref=e396]: 合成工程核对 · task-1
+                    - generic [ref=e345]:
+                      - text: 本次计划候选说明
+                      - textbox "本次计划候选说明" [disabled] [ref=e346]:
+                        - /placeholder: 说明当前计划的范围、估计依据及未确定事项
+                        - text: 合成演练：工程核对后安排NPI准备，保留未知估时。
+                    - button "保存候选并计算预测" [disabled]
+              - region "已保存项目与计划" [ref=e348]:
+                - heading "已保存项目" [level=3] [ref=e349]
+                - article [ref=e403]:
+                  - generic [ref=e404]:
+                    - generic [ref=e405]:
+                      - heading "合成便携泵 · 待建计划" [level=4] [ref=e406]
+                      - generic [ref=e407]: 本人负责 · 仅本人
+                    - paragraph [ref=e408]: Build and verify a synthetic design
+                    - paragraph [ref=e409]: 固定定义 v1 · 合成便携泵 · 待建计划 · 尚未正式发布
+                    - group [ref=e410]:
+                      - generic "查看固定研发范围" [ref=e411] [cursor=pointer]
+                  - generic [ref=e412]:
+                    - generic [ref=e413]:
+                      - term [ref=e414]: 批准基线
+                      - definition [ref=e415]: 尚未批准
+                    - generic [ref=e416]:
+                      - term [ref=e417]: 个人承诺
+                      - definition [ref=e418]: 尚未记录
+                    - generic [ref=e419]:
+                      - term [ref=e420]: 实绩
+                      - definition [ref=e421]: 尚未记录
+                  - paragraph [ref=e422]: 首版计划尚未应用，任务尚未正式建立。
+                  - button "为此项目准备首版计划" [disabled]
+                  - group [ref=e425]:
+                    - generic "计划候选 v1" [ref=e426] [cursor=pointer]
+                    - generic [ref=e427]:
+                      - paragraph [ref=e428]: 合成演练：工程核对后安排NPI准备，保留未知估时。
+                      - region "候选实际工作日历" [ref=e429]:
+                        - heading "此候选固定的工作日历" [level=4] [ref=e430]
+                        - generic [ref=e431]:
+                          - generic [ref=e432]:
+                            - term [ref=e433]: UTC 起点
+                            - definition [ref=e434]: 2026-10-19 01:00 UTC
+                          - generic [ref=e435]:
+                            - term [ref=e436]: 本地日历时区与版本
+                            - definition [ref=e437]: Asia/Shanghai · synthetic-owner-v1
+                          - generic [ref=e438]:
+                            - term [ref=e439]: 每周工作日
+                            - definition [ref=e440]: 周一、周二、周三、周四、周五
+                          - generic [ref=e441]:
+                            - term [ref=e442]: 每日工作时段（本地时刻）
+                            - definition [ref=e443]: 09:00–12:00；13:00–17:00
+                          - generic [ref=e444]:
+                            - term [ref=e445]: 额外休息日期（本地日期）
+                            - definition [ref=e446]: 未声明额外休息日期
+                        - paragraph [ref=e447]: 这是本次人工声明的日历，尚未核验为工厂日历。同一项目需调整时段或休息日期时，请明确填写新日历版本。
+                      - generic [ref=e448]:
+                        - generic [ref=e449]:
+                          - paragraph [ref=e450]: 全部任务预测完成区间
+                          - paragraph [ref=e451]: 未知 / 暂不可预测 ～ 未知 / 暂不可预测
+                          - paragraph [ref=e452]: 工作日历：Asia/Shanghai · synthetic-owner-v1。区间上界来自最高工时估计，不代表承诺日期；未考虑资源预约。
+                        - generic [ref=e453]:
+                          - article [ref=e454]:
+                            - paragraph [ref=e455]: 合成工程核对
+                            - paragraph [ref=e456]: 工程 · 60 ～ 120 分钟
+                            - generic [ref=e457]:
+                              - term [ref=e458]: 最低估时下的开始 / 完成
+                              - definition [ref=e459]: 2026-10-19 01:00 UTC / 2026-10-19 02:00 UTC
+                              - term [ref=e460]: 最高估时下的开始 / 完成
+                              - definition [ref=e461]: 2026-10-19 01:00 UTC / 2026-10-19 03:00 UTC
+                              - term [ref=e462]: 估计依据
+                              - definition [ref=e463]: 本次合成演练由负责人填写的估时
+                              - term [ref=e464]: 前置任务
+                              - definition [ref=e465]: 无
+                          - article [ref=e466]:
+                            - paragraph [ref=e467]: 合成NPI准备
+                            - paragraph [ref=e468]: NPI / 制造导入 · 未知 ～ 未知 分钟
+                            - generic [ref=e469]:
+                              - term [ref=e470]: 最低估时下的开始 / 完成
+                              - definition [ref=e471]: 2026-10-19 02:00 UTC / 未知 / 暂不可预测
+                              - term [ref=e472]: 最高估时下的开始 / 完成
+                              - definition [ref=e473]: 2026-10-19 03:00 UTC / 未知 / 暂不可预测
+                              - term [ref=e474]: 估计依据
+                              - definition [ref=e475]: 尚未记录
+                              - term [ref=e476]: 前置任务
+                              - definition [ref=e477]: 合成工程核对
+                            - paragraph [ref=e478]: 暂不可精确预测：最低工时未知；最高工时未知
+                      - button "核对并应用此首版计划" [disabled]
+            - dialog [ref=e480]:
+              - generic [ref=e481]:
+                - heading "确认应用首版计划" [level=2] [ref=e482]
+                - paragraph [ref=e483]: 一次建立工程/NPI工作包、全部任务和依赖；预测不构成批准基线、个人承诺或实绩。
+                - paragraph [ref=e484]: 合成便携泵 · 待建计划
+                - generic [ref=e485]:
+                  - paragraph [ref=e486]: 候选说明
+                  - paragraph [ref=e487]: 合成演练：工程核对后安排NPI准备，保留未知估时。
+                - region "候选实际工作日历" [ref=e488]:
+                  - heading "此候选固定的工作日历" [level=4] [ref=e489]
+                  - generic [ref=e490]:
+                    - generic [ref=e491]:
+                      - term [ref=e492]: UTC 起点
+                      - definition [ref=e493]: 2026-10-19 01:00 UTC
+                    - generic [ref=e494]:
+                      - term [ref=e495]: 本地日历时区与版本
+                      - definition [ref=e496]: Asia/Shanghai · synthetic-owner-v1
+                    - generic [ref=e497]:
+                      - term [ref=e498]: 每周工作日
+                      - definition [ref=e499]: 周一、周二、周三、周四、周五
+                    - generic [ref=e500]:
+                      - term [ref=e501]: 每日工作时段（本地时刻）
+                      - definition [ref=e502]: 09:00–12:00；13:00–17:00
+                    - generic [ref=e503]:
+                      - term [ref=e504]: 额外休息日期（本地日期）
+                      - definition [ref=e505]: 未声明额外休息日期
+                  - paragraph [ref=e506]: 这是本次人工声明的日历，尚未核验为工厂日历。同一项目需调整时段或休息日期时，请明确填写新日历版本。
+                - generic [ref=e507]:
+                  - generic [ref=e508]:
+                    - paragraph [ref=e509]: 全部任务预测完成区间
+                    - paragraph [ref=e510]: 未知 / 暂不可预测 ～ 未知 / 暂不可预测
+                    - paragraph [ref=e511]: 工作日历：Asia/Shanghai · synthetic-owner-v1。区间上界来自最高工时估计，不代表承诺日期；未考虑资源预约。
+                  - generic [ref=e512]:
+                    - article [ref=e513]:
+                      - paragraph [ref=e514]: 合成工程核对
+                      - paragraph [ref=e515]: 工程 · 60 ～ 120 分钟
+                      - generic [ref=e516]:
+                        - term [ref=e517]: 最低估时下的开始 / 完成
+                        - definition [ref=e518]: 2026-10-19 01:00 UTC / 2026-10-19 02:00 UTC
+                        - term [ref=e519]: 最高估时下的开始 / 完成
+                        - definition [ref=e520]: 2026-10-19 01:00 UTC / 2026-10-19 03:00 UTC
+                        - term [ref=e521]: 估计依据
+                        - definition [ref=e522]: 本次合成演练由负责人填写的估时
+                        - term [ref=e523]: 前置任务
+                        - definition [ref=e524]: 无
+                    - article [ref=e525]:
+                      - paragraph [ref=e526]: 合成NPI准备
+                      - paragraph [ref=e527]: NPI / 制造导入 · 未知 ～ 未知 分钟
+                      - generic [ref=e528]:
+                        - term [ref=e529]: 最低估时下的开始 / 完成
+                        - definition [ref=e530]: 2026-10-19 02:00 UTC / 未知 / 暂不可预测
+                        - term [ref=e531]: 最高估时下的开始 / 完成
+                        - definition [ref=e532]: 2026-10-19 03:00 UTC / 未知 / 暂不可预测
+                        - term [ref=e533]: 估计依据
+                        - definition [ref=e534]: 尚未记录
+                        - term [ref=e535]: 前置任务
+                        - definition [ref=e536]: 合成工程核对
+                      - paragraph [ref=e537]: 暂不可精确预测：最低工时未知；最高工时未知
+                - generic [ref=e538]:
+                  - generic [ref=e539]:
+                    - term [ref=e540]: 批准基线
+                    - definition [ref=e541]: 尚未批准
+                  - generic [ref=e542]:
+                    - term [ref=e543]: 个人承诺
+                    - definition [ref=e544]: 尚未记录
+                  - generic [ref=e545]:
+                    - term [ref=e546]: 实绩
+                    - definition [ref=e547]: 尚未记录
+                - paragraph [ref=e548]: 请核对此次范围与预测。确认只应用首版计划，不代替定义发布、批准基线、个人承诺或实绩登记。
+                - generic [ref=e549]:
+                  - button "返回编辑" [active] [ref=e550]
+                  - button "确认应用此首版计划" [ref=e551]

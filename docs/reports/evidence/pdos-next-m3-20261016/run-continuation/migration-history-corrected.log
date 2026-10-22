@@ -1,0 +1,5 @@
+Expected downgrade refusal: continuation history requires s0_0772
+No new upgrade operations detected.
+Historical links retained; head s0_0772; ORM no differences
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/migrations/env.py:19: SAWarning: Cannot correctly sort tables; there are unresolvable cycles between tables "action_receipts, claims, definition_revisions, proposals, runs, work_requests", which is usually caused by mutually dependent foreign key constraints.  Foreign key constraints involving these tables will not be considered; this warning may raise an error in a future release.
+  context.run_migrations()

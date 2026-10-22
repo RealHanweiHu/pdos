@@ -1,0 +1,5 @@
+{
+  "owned_files_match_frozen_candidate": true,
+  "ruff_exit_code": 0,
+  "output": "All checks passed!\n"
+}

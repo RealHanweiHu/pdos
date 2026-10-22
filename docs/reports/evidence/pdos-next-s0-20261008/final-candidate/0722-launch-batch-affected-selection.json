@@ -1,0 +1,5 @@
+[
+  "tests/verification_launch/test_formal_projection_reuse.py",
+  "tests/verification_launch/test_transactions.py::test_inputs_are_readonly_even_when_sentinels_do_not_exist",
+  "tests/verification_launch/test_transactions.py::test_fixed_full_accepted_plan_promise_and_atomic_actual_start_leave_old_history"
+]

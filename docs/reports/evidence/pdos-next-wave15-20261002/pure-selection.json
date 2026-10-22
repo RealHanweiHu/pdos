@@ -1,0 +1,8 @@
+{
+  "root-pure": [
+    "tests/quality_execution/test_pure.py",
+    "tests/change_execution/test_pure.py",
+    "tests/change_execution/test_evidence.py",
+    "tests/change_execution/test_native_evidence.py"
+  ]
+}

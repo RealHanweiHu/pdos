@@ -1,0 +1,11 @@
+{
+  "issue_id": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+  "issue_revision": 4,
+  "capa_id": "3352bbb0-fd50-4b5b-b1ef-2dd87ef79405",
+  "report_artifact_id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+  "report_revision": 1,
+  "report_content_sha256": "a0a60ae82d3209d192b3b75f0ad10548ade9f39a4cbf6f4c7f92ef7cc5e0a3e6",
+  "observed_at": "2026-10-03T08:08:20.788303+00:00",
+  "nature": "synthetic",
+  "observation": "Personally reviewed retained report, fixed failure/CAPA and existing method/sample references; no configuration switch or effectiveness conclusion."
+}

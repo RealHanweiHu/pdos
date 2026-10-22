@@ -1,0 +1,19 @@
+{
+  "database": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0776"
+  },
+  "source_sha256": {
+    "pdos_next/personal_test_start_promises.py": "2bce2548c1305ff595e97358b1bc2cab6bb8a1704feccb38d023a3e5de23843a",
+    "pdos_next/personal_views.py": "0c067a70e68aa30fc4efaad41ed55a15454f05d99d59ce1389953354ca225856",
+    "tests/preproject/test_personal_test_start_promises.py": "844657ca6597c35d53487615ec6bdf39d7a175384af02aa5bc9fb77f7eb1a7e5",
+    "tests/preproject/test_personal_test_start_promises_pg.py": "c734c9b1a8d50c622ece817a330817f1568cb96b23854ba0a3d23ed194b30c91"
+  },
+  "source_changes_during_check": [],
+  "exit_code": 0,
+  "models_called": false,
+  "migrations_executed": false
+}

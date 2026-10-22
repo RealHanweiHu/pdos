@@ -1,0 +1,19 @@
+{
+  "snapshot": "/private/tmp/pdos-s5-work-web-u9c8mgs4",
+  "base_commit": "03904d73a7b15aab41ca0b9fcedfe386a4cf60e7",
+  "frontend_overlay": {
+    "pdos-next/web/src/lib/project-work.ts": "64bd5c26048ed3b0f5e11b005d398b327e855a6df02c808d1438d6e58f6d955b",
+    "pdos-next/web/src/lib/project-work.test.ts": "496fb320cd7b1373add586e5c109da6909cf3059b641d6d5a70d356b6b240c2a",
+    "pdos-next/web/src/components/projects/project-work.tsx": "2304b4cd9c2e2113160ebc42f7a8d6bef28f9e71e5c44cd289e90cdb8e990911",
+    "pdos-next/web/src/components/projects/project-work.module.css": "898c9b6db0ca1622cda65e8d287b0f920334fe7da89ccf91d5d8053fa794993b",
+    "pdos-next/web/src/components/projects/project-work.test.mjs": "f9aa594db95337dd37e766e6335a6a24c084861c177a456a8f942438c5a338b7",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "71a66867fbdd64607dda251758febec1c5f9ee79032bff121e2c5b1bbb5efca9",
+    "pdos-next/web/src/app/api/project-work-route.test.mjs": "375f17c9f250093bcffd54558d7a5255b048260774235680097577fce84d50fb",
+    "pdos-next/web/src/components/workspace.tsx": "e28843433d8e6cb45088ce081f3cdb0b403728ea53a49ec6fe9d6738db7386dd"
+  },
+  "foreign_pending_frontend_removed": true,
+  "started_at": "2026-10-18T00:39:29.377368+00:00",
+  "finished_at": "2026-10-18T00:39:39.502097+00:00",
+  "exit": 1,
+  "real_model_calls": 0
+}

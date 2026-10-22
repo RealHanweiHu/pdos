@@ -1,0 +1,22 @@
+{
+  "differences_from_verified_check_copy": [
+    "src/lib/build-change-orders-view.test.ts",
+    "src/lib/build-change-orders-view.ts",
+    "src/components/builds/build-change-orders.tsx",
+    "src/components/builds/build-change-orders.test.mjs",
+    "src/components/builds/change-source-material.tsx",
+    "src/app/api/[...path]/route.test.ts",
+    "src/app/api/[...path]/route.ts"
+  ],
+  "current_extra_files_excluded": [
+    "src/components/builds/build-change-completion.test.mjs",
+    "src/components/builds/build-change-completion.tsx",
+    "src/components/knowledge/knowledge-native-result-picker.test.mjs",
+    "src/components/knowledge/knowledge-native-result-picker.tsx",
+    "src/lib/build-change-completion-view.test.ts",
+    "src/lib/build-change-completion-view.ts",
+    "src/lib/knowledge-experience-native.test.ts",
+    "src/lib/knowledge-experience-native.ts"
+  ],
+  "scope": "Other native completion / result-picker construction is excluded. Actual source tree preserved; no current whole-tree build pass is claimed."
+}

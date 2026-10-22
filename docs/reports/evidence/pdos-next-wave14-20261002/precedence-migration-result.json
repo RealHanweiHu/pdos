@@ -1,0 +1,7 @@
+{
+  "head": "next_0021",
+  "roundtrip": "0020 \u2192 0021 \u2192 0020 \u2192 0021",
+  "schema_check": "passed",
+  "backup_private_mode": "600",
+  "backup_sha256": "b1ea6628bef101341d99c7618ddb67d2e392fd63a9dd588bba0a89057016d44c"
+}

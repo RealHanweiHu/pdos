@@ -1,0 +1,54 @@
+"""Promote the early G0 candidate to the single actual B8 migration chain."""
+
+from alembic import op
+from sqlalchemy import text
+
+from migrations.schema_s0_0729 import DOWNGRADE_SQL, SCHEMA_SQL, TABLES
+
+revision = "s0_0729"
+down_revision = "s0_0728"
+branch_labels = None
+depends_on = None
+
+
+def ordinary_owner():
+    connection = op.get_bind()
+    role = connection.execute(
+        text(
+            "SELECT rolsuper,rolbypassrls,rolcreaterole,rolcreatedb,rolcanlogin FROM pg_roles "
+            "WHERE rolname='pdos_next_owner'"
+        )
+    ).one_or_none()
+    if role is None or any(role):
+        raise RuntimeError("Pre-provisioned ordinary pdos_next_owner is required")
+    if connection.scalar(
+        text(
+            "SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname IN "
+            "('pdos_next_app','pdos_next_auth','pdos_next_dispatch','pdos_agent') "
+            "AND pg_has_role(rolname,'pdos_next_owner','MEMBER'))"
+        )
+    ):
+        raise RuntimeError("Runtime roles must not inherit the schema owner")
+    op.execute("SET LOCAL ROLE pdos_next_owner")
+
+
+def upgrade():
+    ordinary_owner()
+    for statement in SCHEMA_SQL:
+        op.execute(statement)
+    op.execute("SET LOCAL ROLE NONE")
+
+
+def downgrade():
+    ordinary_owner()
+    connection = op.get_bind()
+    names = ", ".join(f'"{name}"' for name in TABLES)
+    op.execute(f"LOCK TABLE {names} IN ACCESS EXCLUSIVE MODE")
+    for name in TABLES:
+        if connection.scalar(text(f'SELECT EXISTS(SELECT 1 FROM "{name}" LIMIT 1)')):
+            raise RuntimeError(
+                "M3 downgrade requires empty candidate tables; preserve business data"
+            )
+    for statement in DOWNGRADE_SQL:
+        op.execute(statement)
+    op.execute("SET LOCAL ROLE NONE")

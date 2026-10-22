@@ -1,0 +1,19 @@
+{
+  "owner_thread": "01a1001a-92ae-7b91-83b6-6a3ea30a4a32",
+  "owner_title": "优化前端入口与整体体验",
+  "reason": "Later user-authorized frontend work; original Wave14 frozen frontend build/browser proof remains historical, not proof for these new entries.",
+  "files": {
+    "pdos-next/web/src/components/workspace.tsx": {
+      "original_sha256": "c0bd7d61e55e4745d2b880b28581640ef2afa7e69c8c60d1cfff7719c2e1f090",
+      "current_observed_sha256": "9f0469d66d6ffd9bd8128aed67efa7795a409479fda98b0bd6ab4ee198b8a0af"
+    },
+    "pdos-next/web/src/app/globals.css": {
+      "original_sha256": "83927e87630415f8ef70438bcd42f20c036eff1c3469c3e64634175dde9a0e16",
+      "current_observed_sha256": "f5c919707daf97b72199a01c055742f2f874de42d8b5e3cec6bc0ce31f521c23"
+    },
+    "pdos-next/web/src/app/layout.tsx": {
+      "original_sha256": "0cd971eef3b411d6704368949268ef4c3aa8565d638f2a221f5722b0d2df81e6",
+      "current_observed_sha256": "e64529964144489b58fccc9d919c7c8bc34a0b2983dead5154fd07057c18c8f0"
+    }
+  }
+}

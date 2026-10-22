@@ -1,0 +1,12 @@
+[
+  "tests/test_resources/test_transactions.py::test_own_run_proof_rechecked_without_new_effects",
+  "tests/test_resources/test_transactions.py::test_rr_canonical_owned_sets_share_rows_and_reject_wrong_saved_scope_without_effects",
+  "tests/test_retained_execution.py::test_retained_proof_rechecks_source_withdrawal_without_reinterpreting_asset_sample_epochs",
+  "tests/test_retained_execution.py::test_retained_proof_preserves_fixed_issuer_evidence_after_registry_aba",
+  "tests/test_retained_execution.py::test_retained_proof_preserves_fixed_start_after_new_configuration_observation",
+  "tests/test_retained_execution.py::test_retained_held_writer_keeps_fixed_fact_after_late_current_successor",
+  "tests/test_retained_registry_compatibility.py::test_registry_boolean_epoch_cannot_reinterpret_fixed_proof_or_supply_a_valid_saved_epoch",
+  "tests/verification_results/test_guards.py::test_concurrent_imports_same_run_cas_commit_exactly_one_atomic_group",
+  "tests/verification_results/test_runtime_guards.py::test_store_io_rechecks_import_issuer_and_preserves_fixed_start_issuer[professional]",
+  "tests/verification_results/test_runtime_guards.py::test_store_io_rechecks_import_issuer_and_preserves_fixed_start_issuer[resources]"
+]

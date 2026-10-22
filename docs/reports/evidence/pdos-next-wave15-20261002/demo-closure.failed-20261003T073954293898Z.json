@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-03T07:39:52.969600+00:00",
+  "mode": "demo",
+  "read_only": true,
+  "limitations": [
+    "as_of evidence observation is not an execution permit",
+    "existing OriginalStore read gate may acquire/create bounded control locks only",
+    "no production or manual Exit claim"
+  ],
+  "error_code": "RECEIPT_BINDING_MISMATCH",
+  "status": "failed"
+}

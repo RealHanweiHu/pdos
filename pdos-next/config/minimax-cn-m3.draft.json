@@ -1,0 +1,43 @@
+{
+  "format_version": 1,
+  "kms": {
+    "region": "cn-hangzhou",
+    "endpoint": "kms-vpc.cn-hangzhou.aliyuncs.com"
+  },
+  "secrets": [
+    {
+      "tenant_id": "00000000-0000-4000-8000-000000000001",
+      "protocol": "openai-compatible",
+      "reference": "00000000-0000-4000-8000-000000000002",
+      "secret_arn": "acs:kms:cn-hangzhou:000000000000:secret/replace-with-authorized-minimax-key"
+    }
+  ],
+  "research": null,
+  "mcp": null,
+  "models": [
+    {
+      "tenant_id": "00000000-0000-4000-8000-000000000001",
+      "protocol": "openai-compatible",
+      "base_url": "https://api.minimax.cn/v1",
+      "model": "MiniMax-M3",
+      "model_version": "MiniMax-M3",
+      "provider": "minimax",
+      "pricing": {
+        "source": "MiniMax 官方定价页 2026-10-19 复核：标准档、总输入 ≤512k（页面标注\"永久五折\"，以表列价为准）：输入 2.10、输出 8.40、缓存命中 0.42 CNY/百万 token；M3 无单独缓存写入价，新增输入按输入价计。CNY→USD=6.69274（open.er-api.com，2026-10-19；frankfurter.dev 2026-10-16 为 6.6862 交叉核对）。未含账号折扣/订阅/汇率波动，首笔真实账单须复核；总输入 >512k 的对话按官方 >512k 档重新核价。",
+        "verified_at": "2026-10-19T07:07:42Z",
+        "valid_until": "2026-11-18T07:07:42Z",
+        "input_per_million": "0.313773",
+        "output_per_million": "1.255091",
+        "cache_read_per_million": "0.062755",
+        "cache_creation_per_million": "0.313773",
+        "request_fee": "0",
+        "currency": "USD",
+        "text_tokens_per_utf8_byte": "1",
+        "text_framing_tokens": 4096,
+        "text_billing_source": "MiniMax 官方接口文档：输入/输出/缓存命中按百万 token 计费；M3 缓存写入无额外费用（新增输入按输入价计）；多轮工具文档说明 thinking 计入输出长度（2026-10-16 读取）。",
+        "output_cap_covers_all_billing": true,
+        "covers_all_fees": true
+      }
+    }
+  ]
+}

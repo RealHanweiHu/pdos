@@ -1,0 +1,9 @@
+{
+  "node": "tests/quality_followup_transactions/test_transactions.py::test_link_t1_preserves_issue_pointer_and_records_exact_scoped_owner_output",
+  "original_index": 16,
+  "exit_code": 1,
+  "seconds": 2282.29,
+  "source_stable": true,
+  "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+  "log_sha256": "c047b783ccc5e6b61df237a039d465b14c3b53bf2b2590dbc446735d1f310f4a"
+}

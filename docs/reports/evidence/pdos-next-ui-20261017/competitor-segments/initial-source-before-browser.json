@@ -1,0 +1,24 @@
+{
+  "entries": [
+    {
+      "id": "04ef00e3-6c87-4c09-b2fc-98fa84202027",
+      "version": 1,
+      "origin": "human",
+      "content_sha256": "1ddd1d1d80d657235b33e520167336a468c2ec6f29d708ddb18e5dd1aef974a7",
+      "source_sha256": "fb247a2e1d584da7d70ae74f4ee677604536df876f955b3275cffad327737083",
+      "segment_refs": []
+    }
+  ],
+  "receipts": [
+    {
+      "id": "f4902d61-8948-4b26-b15a-323444d1ffeb",
+      "command_id": "53c14100-b00b-47e7-b20e-a15132b64013",
+      "revision": 1
+    }
+  ],
+  "request_key_count": 1,
+  "current": {
+    "id": "04ef00e3-6c87-4c09-b2fc-98fa84202027",
+    "version": 1
+  }
+}

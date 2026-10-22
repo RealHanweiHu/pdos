@@ -1,0 +1,25 @@
+{
+  "base_commit": "c0cfc6a4daea2c67ec86e785348328716ba06456",
+  "started_at": "2026-10-18T01:52:30.493067+00:00",
+  "finished_at": "2026-10-18T01:52:53.563374+00:00",
+  "steps": [
+    {
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "tests/automations_pg",
+        "-x",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "exit": 0
+    }
+  ],
+  "source_changed": [],
+  "real_external_calls": 0,
+  "performance_acceptance": false
+}

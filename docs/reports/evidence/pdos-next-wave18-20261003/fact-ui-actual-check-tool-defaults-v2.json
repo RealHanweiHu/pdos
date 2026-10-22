@@ -1,0 +1,27 @@
+{
+  "schema_version": "pdos-wave18-offline-ui-tool-defaults-v2",
+  "path": "pdos-next/tools/wave18_actual_fact_ui.cjs",
+  "before_sha256": "9673335985b5b9db50993d22ff811cbdad800602bbf9fe05896ababc93f7f3f0",
+  "after_sha256": "1b52c575829b7893896c383a140387e7902712c2f4a8e64ab534dc1417e52d8c",
+  "changes": [
+    "Only four default private response/demo paths now resolve under pdos-next/.local."
+  ],
+  "default_paths": [
+    "pdos-next/.local/wave18-http-context-v1-current-context.json",
+    "pdos-next/.local/wave18-http-prepare-v1-actual-inputs.json",
+    "pdos-next/.local/wave18-http-prepare-v1-actual-preview.json",
+    "pdos-next/.local/wave18-fact-demo.json"
+  ],
+  "actual_checks_rerun": false,
+  "frozen_ui_modified": false,
+  "previous_evidence_retained": [
+    "fact-ui-actual-check-tool-static-v1.json",
+    "fact-ui-actual-contract-check-v1.json",
+    "fact-ui-actual-contract-check-v2.json"
+  ],
+  "check": {
+    "command": "node --check pdos-next/tools/wave18_actual_fact_ui.cjs",
+    "exit_code": 0
+  },
+  "delta_exactly_four_defaults": true
+}

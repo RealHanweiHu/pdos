@@ -1,0 +1,22 @@
+{
+  "final_snapshot": "/private/tmp/pdos-knowledge-k6fm172r",
+  "backend_same_as_2_final_pg_chains": true,
+  "backend_same_as_138_pure_checks": true,
+  "final_web_checks": {
+    "lib": 19,
+    "component": 18,
+    "bff": 8,
+    "typegen": true,
+    "typescript": true,
+    "lint": true
+  },
+  "no_unrelated_dirty_files_in_candidate": true,
+  "public_build_pending": false,
+  "final_build_passed": true,
+  "final_browser_passed": true,
+  "api_snapshot": "/private/tmp/pdos-knowledge-czvnaf_7",
+  "browser_web_snapshot": "/private/tmp/pdos-knowledge-k6fm172r",
+  "screenshots_visually_inspected": true,
+  "partial_failures_retained": true,
+  "all_server_files_match_final_pg_manifest": true
+}

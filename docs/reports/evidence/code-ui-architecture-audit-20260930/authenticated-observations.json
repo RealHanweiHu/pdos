@@ -1,0 +1,123 @@
+{
+  "scope": "Authenticated read-only UI review; no business mutation, upload, model invocation or database operation",
+  "viewports": [
+    {
+      "width": 1366,
+      "height": 900
+    },
+    {
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "steps": [
+    {
+      "step": 3,
+      "screenshot": "03-dashboard-desktop.jpg",
+      "observations": [
+        "A1 project shows stage progress 67%; source formula uses stage sequence divided by stage count",
+        "AI brief presents governance metrics and zero pending review action"
+      ]
+    },
+    {
+      "step": 4,
+      "screenshot": "04-market-directory.jpg",
+      "observations": [
+        "Existing market space can be found and opened; one visible record"
+      ]
+    },
+    {
+      "step": 5,
+      "screenshot": "05-research-workspace.jpg",
+      "observations": [
+        "Existing research task follows configuration and original-file panels below first viewport",
+        "RFQ file area shows generic product unavailable alert; main workspace remains visible"
+      ]
+    },
+    {
+      "step": 6,
+      "screenshot": "06-personal-agent-market.jpg",
+      "observations": [
+        "Market agent claims page context while footer says processing not connected",
+        "No message entered or submitted"
+      ]
+    },
+    {
+      "step": 7,
+      "screenshot": "07-project-overview.jpg",
+      "observations": [
+        "Six primary project tabs",
+        "Three next-work links; selected issue deep link opens matching detail"
+      ]
+    },
+    {
+      "step": 8,
+      "screenshot": "08-issue-agent-context.jpg",
+      "observations": [
+        "Selected issue is expanded; agent context header displays only project",
+        "No current-work-object indicator; no actual model request"
+      ]
+    },
+    {
+      "step": 9,
+      "screenshot": "09-project-mobile.jpg",
+      "observations": [
+        "Page body client and scroll widths both 390",
+        "Project tab container client width 358, scroll width 438",
+        "Switching issue to task leaves original issue entity_id in URL; reload restores issue"
+      ]
+    },
+    {
+      "step": 10,
+      "screenshot": "10-research-mobile.jpg",
+      "observations": [
+        "Page body scroll width 390",
+        "Product tab container client width 358, scroll width 835",
+        "Research target top approximately 1117 pixels with preparation collapsed; viewport height 844"
+      ]
+    },
+    {
+      "step": 11,
+      "screenshot": "11-agent-mobile.jpg",
+      "observations": [
+        "Input and close control visible in 390 by 844 viewport",
+        "Footer still says processing not connected; no soft keyboard simulation"
+      ]
+    },
+    {
+      "step": 12,
+      "screenshot": "12-research-source-error.jpg",
+      "observations": [
+        "Expanded preparation and clicked read-available-sources",
+        "Generic product unavailable alert prevents source selection and verification"
+      ]
+    }
+  ],
+  "keyboard_probe": {
+    "surface": "product tabs",
+    "action": "ArrowRight on focused Research tab",
+    "result": "Focus and selected tab remain Research",
+    "dom": {
+      "tab_count": 11,
+      "aria_controls_missing": 11,
+      "explicit_tabindex_missing": 11,
+      "tabpanel_count": 0
+    }
+  },
+  "request_failures": {
+    "rfq_file_list": "Observed generic alert after automatic read",
+    "research_source_options": "Observed generic alert after explicit read",
+    "http_status": "Not collected",
+    "server_cause": "Not established",
+    "whole_workspace_failure": false
+  },
+  "limitations": [
+    "No authenticated business writes",
+    "No upload",
+    "No model call",
+    "No screen reader audit",
+    "No software keyboard simulation",
+    "No DB test/build/migration/formal exit validation"
+  ],
+  "original_source_hash_changes": []
+}

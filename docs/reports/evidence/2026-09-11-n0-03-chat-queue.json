@@ -1,0 +1,113 @@
+{
+  "work_item": "N0-03",
+  "status": "partial",
+  "date": "2026-09-11",
+  "migrations": [
+    "0087_application_chat_queue",
+    "0088_application_queue_stops"
+  ],
+  "tests": {
+    "backend_distinct_passed": 21,
+    "new_queue_cases": 6,
+    "synchronous_request_regression": 15,
+    "frontend_distinct_passed": 17,
+    "frontend_repair_passed": 6,
+    "frontend_repair_overlap": 6,
+    "total_distinct_passed": 38,
+    "initial_backend_batch": {
+      "passed": 18,
+      "failed": 2
+    },
+    "repairs": "Forward lifecycle correction for unstarted terminal requests; JSON comparator and pre-acquisition failure cleanup corrected; six final queue tests passed.",
+    "failed_or_unstarted_batches_excluded": true
+  },
+  "static_checks": {
+    "mypy_files": 6,
+    "ruff_files": 10,
+    "eslint_files": 4,
+    "typescript_full": true,
+    "common_contracts": 4,
+    "runtime_contracts": 5
+  },
+  "source_sha256": {
+    "server/app/ai/chat_queue.py": "9e4b318de2959e5ded63dd2e71febf094a11a65e7a5085828c24b7da74834ce6",
+    "server/app/ai/chat_runs.py": "524d0cbe3748f4ebc5c278dba346689d16b5794765dc60b07c9f778224946450",
+    "server/app/ai/chat.py": "7a1c8230492fe8e8caddb2112c69bc9575e13f82f154fd6133dec112f0fe87cf",
+    "server/app/ai/run_budget_creation.py": "2336c240d4afa93e487d35077da65e4767fa2d61f2d91adc7d2e8a489c785a6a",
+    "server/app/api/ai.py": "a1d04a3cd8d77b44bafb3bdbb72d71dd29b64dbd75e8a4c2aba2bf29686523d4",
+    "server/app/db/schema.py": "bbae72f76d1eb0a35f3b3a801f1b2c7e79dec5b78d8204a503140df1e7c4807a",
+    "server/scripts/run_application_worker.py": "f78be27a54c7d4060f2e440d17bbae2975b8827c46828e37dc0ad68ce4bd2686",
+    "server/migrations/versions/0087_application_chat_queue.py": "f9bc9a7fa76ce4868ad6243fb51df741171df38b9932ad952dc447a70f15859e",
+    "server/migrations/versions/0088_application_queue_stops.py": "47e24d820cb83277ddccb1f173f7058a220ff93d44c2d46c55ed0da43439a634",
+    "server/tests/test_chat_queue.py": "58c0bc4e89db0056b815fdcd49ed93739619125c09da0242ca34a41cbd67b7c8",
+    "web/src/components/ai/project-ai-chat.tsx": "9af9e0d2f6e33171341c0e10238a4443d28a146e559d860764687a5a8cfed79f",
+    "web/src/components/ai/project-ai-chat.test.tsx": "936c7b7660e781155f5b9bb42b3bc25110256f2e034bd5339c05d74f8a82e281",
+    "web/src/components/ai/ai-api.ts": "c039cd1299089fbc487eb032408403ac1d38bfbbf76389066a13e5634c544fa4",
+    "web/src/components/ai/ai-types.ts": "0f92f491be028eb55874e77a96535a146a442ac7b3e0be5ef7b7848ca647464b",
+    "web/src/app/api/ai/chat/route.ts": "f637eb63b10980abe9a7f087a66185fbcc2812c72bc15065f1af6b89b4a4c2a1",
+    ".env.example": "04ef78353d3049967bef70ec6f41daa71f5bb05245db518073968b16c249ba53",
+    "docs/runbooks/application-chat-queue.md": "330ec5d194cda807fa74d6578ade1d9c04ef01eb2d3b792704c17a7812149879",
+    "docs/reports/2026-09-11-n0-03-chat-queue-validation.md": "552ad8aff53d5978ed4ffbc6931d5ba713820d2a3ea930c5c97ba1fb623ce976"
+  },
+  "log_sha256": {
+    "/tmp/pdos-chat-queue-tests.log": "17becc618fe7bc5616c78dc5799e6ea2d4f8ef4ca4d82a49393e32110641dad8",
+    "/tmp/pdos-chat-queue-repair.log": "5630405dd4d0f4369f67122fae5d4bcf61c7c3f725288be0d1a55bcf51d0047e",
+    "/tmp/pdos-chat-queue-final.log": "fd2d204d61c67a9a3cf95d919f5a3d0a50e06b4aeef9fa1359697d492aa28eb4",
+    "/tmp/pdos-chat-queue-final-repaired.log": "a7f841d47ad509999b0e223345b52042229befc7e2c2d6a30da486dec371cf84",
+    "/tmp/pdos-chat-queue-web-tests-cached.log": "47a96644a929f2b5ac5f99509ee91274b7508ece03e31bb057485644acb66e13",
+    "/tmp/pdos-chat-queue-web-tests-repair.log": "ce6cd207997ef6c0fda2643ddfa6d4d7d32b33ed5b28d4b34cad8d4d073b7ef3",
+    "/tmp/pdos-chat-queue-web-types-repair.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/tmp/pdos-chat-queue-web-lint-repair.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/tmp/pdos-chat-queue-mypy-final.log": "ab35ee42183d4d6d3ba483825ab037d18a5a15622d03be01d82220b1564851ff",
+    "/tmp/pdos-chat-queue-ruff.log": "dbbc151b04b61d60452d8e21226a32e1c497fc1ec16d7f6e70245ef7ea4a6993",
+    "/tmp/pdos-chat-queue-contracts-final.log": "ee698c6616e06fe161c6d6e085f078101d60fc87323ba50a7a4e606c94cfad65"
+  },
+  "database": {
+    "database": "pdos_test",
+    "head": "0088_application_queue_stops",
+    "constraints": {
+      "ck_agent_runs_event_bounds_consistent": "CHECK (((((((agent_key)::text = 'ai_chat'::text) OR (((agent_key)::text = 'quality_intelligence'::text) AND ((context_version)::text = 'report-mapping-request-v1'::text))) AND (subscription_id IS NULL) AND (first_event_row_id IS NULL) AND (last_event_row_id IS NULL) AND (event_count = 0) AND (event_row_ids = '[]'::jsonb) AND (request_id IS NOT NULL) AND (btrim((request_id)::text) <> ''::text) AND (requested_by_user_id IS NOT NULL) AND (((status)::text = ANY ((ARRAY['running'::character varying, 'succeeded'::character varying, 'degraded'::character varying, 'failed'::character varying])::text[])) OR (((agent_key)::text = 'ai_chat'::text) AND ((status)::text = 'queued'::text)))) OR (((agent_key)::text <> 'ai_chat'::text) AND (subscription_id IS NOT NULL) AND (request_id IS NULL) AND (requested_by_user_id IS NULL) AND (first_event_row_id IS NOT NULL) AND (last_event_row_id IS NOT NULL) AND\nCASE\n    WHEN (jsonb_typeof(event_row_ids) = 'array'::text) THEN ((event_count > 0) AND (first_event_row_id > 0) AND (last_event_row_id >= first_event_row_id) AND (jsonb_array_length(event_row_ids) = event_count) AND (((event_row_ids ->> 0))::bigint = first_event_row_id) AND (((event_row_ids ->> (event_count - 1)))::bigint = last_event_row_id))\n    ELSE false\nEND)) IS TRUE))",
+      "ck_agent_runs_lifecycle_consistent": "CHECK (((((status)::text = ANY ((ARRAY['debouncing'::character varying, 'queued'::character varying])::text[])) AND (started_at IS NULL) AND (completed_at IS NULL)) OR (((status)::text = 'running'::text) AND (started_at IS NOT NULL) AND (completed_at IS NULL)) OR (((status)::text = ANY ((ARRAY['succeeded'::character varying, 'degraded'::character varying, 'failed'::character varying])::text[])) AND (started_at IS NOT NULL) AND (completed_at IS NOT NULL)) OR ((((status)::text = 'failed'::text) AND (started_at IS NULL) AND (completed_at IS NOT NULL) AND ((((dispatch_policy)::text = 'milestone.v1'::text) AND (dispatch_deadline IS NOT NULL) AND ((error_code)::text = 'AGENT_TRIGGER_DEADLINE_EXCEEDED'::text)) OR ((error_code)::text = ANY ((ARRAY['BUDGET_LINEAGE_EXPIRED'::character varying, 'AGENT_AUTHORIZATION_CHANGED'::character varying])::text[])) OR (((agent_key)::text = 'ai_chat'::text) AND ((run_context ->> 'application_queue_version'::text) = '1'::text)))) IS TRUE)))"
+    },
+    "index": "CREATE INDEX ix_application_chat_queue ON cehub_ai.agent_runs USING btree (created_at, id) WHERE (((agent_key)::text = 'ai_chat'::text) AND ((status)::text = 'queued'::text))"
+  },
+  "frontend_snapshot": {
+    "files_compared": 318,
+    "current_source_matches_test_snapshot": true,
+    "dependency_versions": {
+      "typescript": "5.9.3",
+      "eslint": "9.39.5",
+      "vitest": "4.1.10",
+      "react": "19.2.8",
+      "next": "16.3.0",
+      "@testing-library/react": "16.3.2",
+      "@phosphor-icons/react": "2.1.10"
+    },
+    "project_lock_sha256": "4cb2e2e0099c58b7d0b26c4954bb19f57be457629ee63bb76c0c0808aa3fb251",
+    "cached_lock_sha256": "4cb2e2e0099c58b7d0b26c4954bb19f57be457629ee63bb76c0c0808aa3fb251",
+    "lockfiles_match": true
+  },
+  "approved_manifests": {
+    "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+    "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+  },
+  "activity_items": 65,
+  "temporary_source_directory_removed": true,
+  "dependencies_installed": false,
+  "production_operations": false,
+  "real_model_calls": false,
+  "golden_changes": false,
+  "git_push": false,
+  "queue_default_enabled": false,
+  "remaining": [
+    "Other three application queues",
+    "Persistent waiting_input",
+    "Stepwise recovery without final result",
+    "Unified conversation history and remaining N0-03 scope"
+  ],
+  "automatic_review": {
+    "rejected": "Shared test database downgrade",
+    "performed": false,
+    "resolution": "Non-destructive forward migration 0088; no rollback or data deletion"
+  }
+}

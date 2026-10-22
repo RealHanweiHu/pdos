@@ -1,0 +1,90 @@
+{
+  "date": "2026-09-10",
+  "scope": "approved milestone and frequent-edit scheduling, immutable trigger deadlines, Agent queue priority, lease/recovery fences and authenticated run API",
+  "tests": {
+    "distinct_passed": 102,
+    "new_cases": 18,
+    "regression_cases": 84,
+    "original_batch": {
+      "passed": 63,
+      "repaired_and_retested": 1
+    },
+    "expanded_trigger_and_runtime_schema_dispatcher_passed": 22,
+    "chat_passed": 15,
+    "adoption_contract_passed": 7,
+    "authenticated_api_passed": 1,
+    "final_trigger_batch_passed": 17,
+    "distinct_formula": "54 old runtime regressions + 17 new trigger cases + 8 schema/dispatcher regressions + 15 Chat regressions + 7 adoption regressions + 1 new API case",
+    "initial_issues_resolved": [
+      "three Worker INSERT column grants missing",
+      "test inventory keys and imported fixture naming",
+      "unnecessary first-event UPDATE exceeded Worker privileges",
+      "prestart timeout lifecycle required a specific nullable-start exception with IS TRUE",
+      "fixture security cleanup removed expiry function before empty-history downgrade; DROP IF EXISTS repair",
+      "API URL-versus-Engine fixture and selection of wrong first run"
+    ]
+  },
+  "checks": {
+    "ruff_files": 10,
+    "format_files": 10,
+    "mypy_files": 6,
+    "dba_sql_groups": 4,
+    "exports": "common 4 and runtime 5 passed",
+    "approved_manifests": "unchanged",
+    "scoped_diff_check": "passed"
+  },
+  "databases": [
+    "127.0.0.1:57432/pdos_test",
+    "127.0.0.1:57433/pdos_test"
+  ],
+  "migration_head": "0075_event_trigger_scheduling",
+  "isolated_container": "pdos-trigger-test",
+  "isolated_container_removed": true,
+  "shared_role_changes": false,
+  "approval_review": "API retry initially rejected for possible DATABASE_URL ambiguity; fixture binding/cache clearing verified and both URLs explicitly set to pdos_test; revised test approved and passed",
+  "real_model_calls": 0,
+  "synthetic": [
+    "HTTP model transport and meter qualification",
+    "controlled PostgreSQL delay for lease expiration/publication boundary"
+  ],
+  "production_operations": false,
+  "default_budget_mode": "legacy",
+  "worker_entrypoint_scheduling": "approved",
+  "legacy_constructor_compatibility": true,
+  "goal_item_status": "N0-03 partial",
+  "sources": {
+    "server/app/worker/dispatcher.py": "0fa86fd8fbcd849069de52e522097a57117502780cc58bb1f301820356ed07c5",
+    "server/app/worker/trigger_policy.py": "482be02f938449279c34b835e7c4997669055b843e8706da8c78c48ed8b6b154",
+    "server/app/db/schema.py": "eb8d450ce2a461277a5956021601b76bd0b7d6e2c320c83806115692401c32db",
+    "server/app/api/ai.py": "4307b82224bbc56afdf9292ba91e8acd1746f38bdf87ecfe71dd2abeb863aef3",
+    "server/scripts/run_dispatcher.py": "8cfa7c819947d857f8abd11906fcd745c154b0daa654babc16c842490e209c73",
+    "server/scripts/runtime_adoption_inventory.py": "3bba7ddd47745f31618b4ab678ca5f07992cf3b8fa057ded5e7be16e91f6df1b",
+    "server/migrations/versions/0075_event_trigger_scheduling.py": "20f9ea43f2867224d2e3af07c1cc2289f3b5715af554440da80e5099b6e81b13",
+    "server/tests/test_event_trigger_scheduling.py": "c5f7f7a462ae77d170392534fa3d472217dce6e74c70979c197a6b477da56aba",
+    "server/tests/test_event_trigger_api.py": "d162d6d846c7b345dda331b5c6bc3eb37eedb903192188f604864feeb0ff0e18",
+    "server/tests/test_agent_runtime_schema.py": "e05ef2a4a558db25cb0ed0dc1187f2aba39f637d4381bfa20f5ace531ae159b3",
+    "infra/postgres/security/agent-runtime.sql": "e40026359494fac0cb017518aeae874f252c9617c9a444abc9c400a8c09001c7",
+    "infra/postgres/security/agent-runtime-revert.sql": "587ef43f3519b54d19ecdd85a96dd0599e9f1a3b7920f61c168d6889b00b6bab",
+    "docs/contracts/pdos-runtime-v1/authorization-and-adoption.md": "3c3032ca7675407e12fef41b1628c738f735e831205bcd64e8118b2dfee23c8f",
+    "docs/reports/2026-09-10-n0-03-event-trigger-scheduling-validation.md": "7cad7c3e493ba65201519ae44632fb18f80a45bbd2db0316512f5c121a7d1799",
+    "docs/runbooks/event-trigger-scheduling.md": "1965cbafd0388a8edf6709495da1adffbef3ec367eb49b119ac491ac2b11985b"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "4a77360313329f86f898e7dfaf0b49deb6bee81d8dbdc68ce58d58ae0b93ca42",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "f2e86b4120e60a9e22e3385b09ac9584f944872fbc596b1bab461555d038f7a1",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "remaining": [
+    "sustained-load trigger-to-visible and successful-outcome SLA evidence",
+    "Owner request leases and unified interactive queue",
+    "full typed scopes and runtime generation/version bundle",
+    "persistent tool observations, waiting_input and step checkpoints",
+    "in-flight request cancellation and model-tool loop",
+    "real model qualifications and approved production adoption"
+  ]
+}

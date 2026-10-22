@@ -1,0 +1,779 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "快速查找入口或产品":
+    - generic: 快速查找
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work&view=overview&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+      - generic: 我的工作
+    - paragraph: 工作区
+    - link "产品":
+      - /url: "?area=products&view=overview&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+      - generic: 产品
+    - link "项目":
+      - /url: "?area=projects&view=overview&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+      - generic: 项目
+    - link "组合与资源":
+      - /url: "?area=resources&view=overview&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+      - generic: 组合与资源
+    - link "知识":
+      - /url: "?area=knowledge&view=sources&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+      - generic: 知识
+    - paragraph: 当前产品
+    - paragraph: 合成资料演练
+    - paragraph: 专业工作按此产品范围读取
+  - link "小Pai 工作":
+    - /url: "?area=work&view=overview&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+    - generic: 小Pai
+    - generic: 待配置
+  - link "设置":
+    - /url: "?area=settings&view=preferences&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+    - generic: 设置
+  - generic: W
+  - paragraph: Wave15 独立具名合成人员
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 项目
+  - generic: 问题与变更
+  - combobox "当前产品":
+    - option "合成资料演练" [selected]
+  - button "切换明暗主题":
+- navigation "项目视图":
+  - link "现在":
+    - /url: "?area=projects&view=overview&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+    - generic: 现在
+  - link "工作与计划":
+    - /url: "?area=projects&view=plan&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+    - generic: 工作与计划
+  - link "试制":
+    - /url: "?area=projects&view=builds&task=prepare&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+    - generic: 试制
+  - link "测试与交接":
+    - /url: "?area=projects&view=verification&task=prepare&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+    - generic: 测试与交接
+  - link "问题与变更":
+    - /url: "?area=projects&view=issues&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+    - generic: 问题与变更
+  - link "评审与交付 尚未接入":
+    - /url: "?area=projects&view=reviews&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+    - generic: 评审与交付
+    - generic "尚未接入"
+  - link "资料":
+    - /url: "?area=projects&view=files&product=b1e23421-6c70-4fc5-a87f-96744baab2e8"
+    - generic: 资料
+- main:
+  - heading "问题与变更" [level=1]
+  - paragraph: 当前范围：合成资料演练
+  - heading "失败调查、措施与双线变更" [level=2]:
+    - text: 失败调查、措施与双线变更
+  - paragraph: 固定原报告与判定 → 具名问题办理 → 有来源的措施草稿与变更影响核对。工程和制造分别保留历史，未知范围保持未知。
+  - button "刷新当前事实":
+    - text: 刷新当前事实
+  - paragraph: 本地合成演练：问题、措施与变更用于验证流程，不代表真实生产资格、正式放行或人工出口通过。
+  - text: 明确选择试制轮次
+  - combobox "质量闭环试制轮次" [disabled]:
+    - option "请选择当前可读轮次"
+    - option "Wave15 独立单模穴A轮次 · v1" [selected]
+  - text: 固定测试运行
+  - combobox "质量闭环测试运行" [disabled]:
+    - option "请选择运行，不按时间猜选"
+    - option "固定运行 · 当前 v3 · 保留执行与结果历史" [selected]
+  - heading "固定原运行与判定" [level=3]
+  - paragraph: Wave15 独立单模穴A轮次 · Run v3。结果与原值由原报告、结果入口读取；本入口不会覆盖原测量、配置、实际开测或样件消费。
+  - paragraph: 固定范围数值判定未通过
+  - generic "原运行保留的开测、占用与消费来源"
+  - heading "1 · 从确定失败建立问题" [level=3]
+  - text: 精确测量 / 样件 / 测试项
+  - combobox "精确测量 / 样件 / 测试项" [disabled]:
+    - option "请选择服务器核验的固定失败"
+    - option "固定失败 1 · wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-sample-A · Dimension" [selected]
+  - region "精确失败 服务器核验的稳定失败":
+    - paragraph:
+      - text: Dimension
+      - generic: 明确合成输入
+    - paragraph: 原值 11.0000 mm；条件 23 C, dry；结果 fail；执行状态 results_pending
+    - paragraph: 固定判据：固定判据，详见来源
+    - term: TestRun
+    - definition: 固定测试运行 · v3
+    - term: 样件
+    - definition: wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-sample-A · v1
+    - term: 实际配置
+    - definition: 实际配置 · v1
+    - term: 工程配置
+    - definition: 固定工程配置 · v1
+    - term: 制造配置
+    - definition: 固定制造配置 · v1
+    - term: Measurement
+    - definition: 固定原测量 · 固定于上述 Run 版本
+    - term: 方法出处
+    - definition: artifact Wave15 · independent-input · v1 · 第 3 行，整行摘要已固定 · current
+    - term: 判据出处
+    - definition: artifact Wave15 · independent-input · v1 · 第 2 行，整行摘要已固定 · current
+    - term: 稳定失败身份
+    - definition: 服务器核验的稳定失败
+    - term: 原值出处
+    - definition: artifact Wave15 独立合成11.0000原生报告 · v1 · 第 1 行，整行摘要已固定 · current
+  - paragraph: 当前具名职责
+  - paragraph: 品质
+  - paragraph: 本操作授权 / 本用途资格
+  - paragraph: 授权已由服务器核对；资格已核对
+  - paragraph: 本地合成演练：问题、措施与变更用于验证流程，不代表真实生产资格、正式放行或人工出口通过。
+  - text: 固定结果事件
+  - combobox "固定结果事件" [disabled]:
+    - option "明确选择已验证的结果事件" [disabled] [selected]
+    - option "服务器验证的结果事件 1" [disabled]
+    - option "服务器验证的结果事件 2" [disabled]
+  - text: 可见范围（不能扩大私人依据）
+  - combobox "可见范围（不能扩大私人依据）" [disabled]:
+    - option "仅本人" [disabled] [selected]
+    - option "产品内当前授权人员" [disabled]
+  - text: 问题标题
+  - textbox "问题标题" [disabled]
+  - button "核对固定失败并建立问题" [disabled]:
+    - text: 核对固定失败并建立问题
+  - heading "2 · 当前问题与独立历史" [level=3]
+  - text: 真实问题
+  - combobox "真实问题" [disabled]:
+    - option "请选择已有问题"
+    - option "Wave15 独立单模穴A尺寸确定失败调查 · 当前 v2" [selected]
+  - text: 问题版本
+  - combobox "问题版本" [disabled]:
+    - option "v2 · 已具名分诊 · 当前" [selected]
+    - option "v1 · 待具名分诊 · 历史只读"
+  - article "问题与 CAPA 记录":
+    - heading "Wave15 独立单模穴A尺寸确定失败调查" [level=2]
+    - paragraph: Wave15 独立单模穴A尺寸确定失败调查 · 固定问题 · v2 · 已分诊
+    - region "固定失败范围":
+      - heading "固定失败范围" [level=3]
+      - region "精确失败 服务器核验的稳定失败":
+        - paragraph:
+          - text: Dimension
+          - generic: 明确合成输入
+        - paragraph: 原值 11.0000 mm；条件 23 C, dry；结果 fail；执行状态 results_pending
+        - paragraph: 固定判据：固定判据，详见来源
+        - term: TestRun
+        - definition: 固定测试运行 · v3
+        - term: 样件
+        - definition: wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-sample-A · v1
+        - term: 实际配置
+        - definition: 实际配置 · v1
+        - term: 工程配置
+        - definition: 固定工程配置 · v1
+        - term: 制造配置
+        - definition: 固定制造配置 · v1
+        - term: Measurement
+        - definition: 固定原测量 · 固定于上述 Run 版本
+        - term: 方法出处
+        - definition: artifact Wave15 · independent-input · v1 · 第 3 行，整行摘要已固定 · current
+        - term: 判据出处
+        - definition: artifact Wave15 · independent-input · v1 · 第 2 行，整行摘要已固定 · current
+        - term: 稳定失败身份
+        - definition: 服务器核验的稳定失败
+        - term: 原值出处
+        - definition: artifact Wave15 独立合成11.0000原生报告 · v1 · 第 1 行，整行摘要已固定 · current
+    - region "归并保留记录":
+      - heading "归并保留记录与别名" [level=3]
+      - paragraph: 别名：无
+      - paragraph: 归并按实质范围一次确认；相似标题只作为线索。
+    - heading "遏制行动" [level=3]
+    - paragraph: 尚未记录遏制行动。
+    - heading "根因假设与具名结论" [level=3]
+    - paragraph: 尚无具名根因结论；假设不能充当专业判断。
+    - region "CAPA 与独立有效性":
+      - heading "CAPA 与独立有效性" [level=3]
+      - paragraph: 尚无 CAPA 草稿。
+    - heading "后续稳定引用" [level=3]
+    - paragraph: 新变更、Build 和 Run 由各自权威模块办理。
+    - generic "历史（2）"
+  - paragraph: 当前风险与独立验证政策
+  - term: 服务器政策风险
+  - definition:
+    - paragraph: 高风险（服务器政策）
+  - term: 当前精确项目与用途政策
+  - definition:
+    - term: 固定核对内容
+    - definition:
+      - paragraph: 固定身份，当前名称待核对
+    - term: 固定版本
+    - definition:
+      - paragraph: "1"
+    - term: 服务器政策风险
+    - definition:
+      - paragraph: 高风险（服务器政策）
+    - term: 是否须独立有效性验证
+    - definition:
+      - paragraph: 是
+    - term: 事实性质
+    - definition:
+      - paragraph: 本地合成演练
+    - term: 固定核对内容
+    - definition:
+      - paragraph: 2026-10-04T06:12:10.850721+00:00
+    - term: 来源依据
+    - definition:
+      - blockquote:
+        - paragraph: Wave15 · policy-source · v1 · 第 1 行
+        - paragraph: "{\"approval\":{\"approved_by\":\"合成具名政策发布，不是真实政策\",\"external_id\":\"wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-policy-approval\",\"issued_at\":\"2026-10-03T06:12:10.850721+00:00\",\"system\":\"explicit-local-synthetic-wave15\",\"version\":\"v1\"},\"external_id\":\"wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-quality-policy\",\"independent_verification\":true,\"purpose\":\"内部问题调查：独立单模穴A尺寸复测（合成）\",\"risk\":\"high\",\"state\":\"active\",\"valid_from\":\"2026-10-03T06:11:10.850721+00:00\",\"valid_until\":\"2026-10-04T06:12:10.850721+00:00\"}"
+    - term: 完整来源依据
+    - definition:
+      - term: 固定核对内容
+      - definition:
+        - paragraph: 固定身份，当前名称待核对
+      - term: 固定版本
+      - definition:
+        - paragraph: "1"
+      - term: 固定核对内容
+      - definition:
+        - paragraph: "1"
+      - term: 固定核对内容
+      - definition:
+        - paragraph: "1"
+    - term: 固定核对内容
+    - definition:
+      - paragraph: 是
+  - paragraph: 风险与独立性要求取当前服务器政策，不由本页选低风险或免除验证。
+  - generic "具名分诊与问题归并"
+  - generic "记录已经发生的遏制行动"
+  - paragraph: 当前具名职责
+  - paragraph: 品质
+  - paragraph: 本操作授权 / 本用途资格
+  - paragraph: 授权已由服务器核对；资格已核对
+  - paragraph: 本地合成演练：问题、措施与变更用于验证流程，不代表真实生产资格、正式放行或人工出口通过。
+  - text: 实际执行内容（执行人固定当前本人）
+  - textbox "实际执行内容（执行人固定当前本人）" [disabled]: 独立合成样件仅保留内部调查，非释放/关闭
+  - text: 实际发生时点，带 UTC 偏移
+  - textbox "实际发生时点，带 UTC 偏移" [disabled]:
+    - /placeholder: 2026-10-02T10:15:00-07:00
+    - text: 2026-10-03T06:25:03.160086+00:00
+  - text: 原 IANA 时区
+  - textbox "原 IANA 时区" [disabled]:
+    - /placeholder: America/Los_Angeles
+    - text: UTC
+  - text: 独立事件出处
+  - combobox "独立事件出处" [disabled]:
+    - option "从下方已选行动证据明确选择" [disabled]
+    - option "Wave15 · independent-input · 第 4 行" [disabled]
+    - option "Wave15 · independent-input · 第 5 行" [disabled]
+    - option "Wave15 · event-containment · 第 1 行" [disabled] [selected]
+  - paragraph: 事件时间由本人具名引用证据，接收时间由服务器记录；草稿措施、当前时钟或计划日期不当作实际完成。
+  - button "预览实际遏制，一次确认" [disabled]
+  - generic "纠正与预防措施草稿"
+  - paragraph: 当前具名职责
+  - paragraph: 品质
+  - paragraph: 本操作授权 / 本用途资格
+  - paragraph: 授权已由服务器核对；资格已核对
+  - paragraph: 本地合成演练：问题、措施与变更用于验证流程，不代表真实生产资格、正式放行或人工出口通过。
+  - generic: 根因假设 1（不是具名根因结论）
+  - textbox "根因假设 1（不是具名根因结论）" [disabled]: 核对固定工况下尺寸偏差的可能原因，尚未认定根因。
+  - group "此条内容的精确依据（至少一项）":
+    - generic: 此条内容的精确依据（至少一项）
+    - checkbox "Wave15 · independent-input · v1 · 第 4 行" [disabled]
+    - generic: Wave15 · independent-input · v1 · 第 4 行
+    - checkbox "Wave15 · independent-input · v1 · 第 5 行" [checked] [disabled]
+    - generic: Wave15 · independent-input · v1 · 第 5 行
+    - checkbox "Wave15 · event-containment · v1 · 第 1 行" [disabled]
+    - generic: Wave15 · event-containment · v1 · 第 1 行
+  - button "移除此假设" [disabled]:
+    - text: 移除此假设
+  - button "增加有来源的假设" [disabled]:
+    - text: 增加有来源的假设
+  - text: 措施类型
+  - combobox "措施类型" [disabled]:
+    - option "纠正" [disabled] [selected]
+    - option "预防" [disabled]
+  - text: 具名责任人（不授专业资格）
+  - combobox "具名责任人（不授专业资格）" [disabled]:
+    - option "明确选择责任人" [disabled]
+    - option "Wave15 独立具名合成人员" [disabled] [selected]
+  - text: 计划措施内容，尚未执行
+  - textbox "计划措施内容，尚未执行" [disabled]: 调查固定工况下的尺寸偏差，补齐方法与样件依据；尚未执行正式配置切换。
+  - button "移除此措施" [disabled]:
+    - text: 移除此措施
+  - button "增加具名措施草稿" [disabled]:
+    - text: 增加具名措施草稿
+  - text: 后续有效性验证方法
+  - textbox "后续有效性验证方法" [disabled]: 由独立具名人员形成新请求与新运行，核对配置、方法、工况和原报告后复验。
+  - text: 有效性验收要求
+  - textbox "有效性验收要求" [disabled]: 尺寸在9.5至10.5 mm范围内，工况23 C、dry；覆盖固定原失败及独立观察要求。
+  - text: 独立观察截止时间，带 UTC 偏移
+  - textbox "独立观察截止时间，带 UTC 偏移" [disabled]:
+    - /placeholder: 2026-10-16T17:00:00-07:00
+    - text: 2026-10-04T06:00:00+00:00
+  - paragraph: 保存时必须覆盖本问题全部固定失败；不会宣称措施完成、独立有效性、根因决定或问题关闭。
+  - button "核对并保存 CAPA 草稿" [disabled]:
+    - text: 核对并保存 CAPA 草稿
+  - heading "3 · 工程与制造双线提案" [level=3]
+  - paragraph: 当前具名职责
+  - paragraph: 品质
+  - paragraph: 本操作授权 / 本用途资格
+  - paragraph: 授权已由服务器核对；资格已核对
+  - paragraph: 本地合成演练：问题、措施与变更用于验证流程，不代表真实生产资格、正式放行或人工出口通过。
+  - text: 变更提案标题
+  - textbox "变更提案标题" [disabled]
+  - text: 提案原因（两条线分别核对，不是批准或生效）
+  - textbox "提案原因（两条线分别核对，不是批准或生效）" [disabled]
+  - text: 提案可见范围
+  - combobox "提案可见范围" [disabled]:
+    - option "仅本人" [disabled] [selected]
+    - option "产品内当前授权人员" [disabled]
+  - paragraph: 选择真实影响根与引用
+  - paragraph: Wave15 独立单模穴A尺寸确定失败调查
+  - checkbox "作为影响根" [disabled]
+  - text: 作为影响根
+  - checkbox "作为固定引用" [disabled]
+  - text: 作为固定引用
+  - paragraph: 至少固定本问题或其 CAPA。只能选择可读真实对象；图谱、工装、在制品、切换或培训缺失保持未知。
+  - button "核对来源并建立变更提案" [disabled]:
+    - text: 核对来源并建立变更提案
+  - text: 真实变更提案
+  - combobox "真实变更提案" [disabled]:
+    - option "请选择已有变更" [selected]
+  - text: 变更版本
+  - combobox "变更版本" [disabled]
+  - heading "本次人工内容的精确原文依据" [level=3]
+  - text: 当前可读原文
+  - combobox "当前可读原文" [disabled]:
+    - option "请选择有效原文" [selected]
+    - option "Wave15 · independent-input · v1"
+    - option "Wave15 · event-build-start · v1"
+    - option "Wave15 · event-sample-ready · v1"
+    - option "Wave15 · event-offer · v1"
+    - option "Wave15 · event-accept · v1"
+    - option "Wave15 · event-promise · v1"
+    - option "Wave15 · event-run-start · v1"
+    - option "Wave15 独立合成11.0000原生报告 · v1"
+    - option "Wave15 · event-end · v1"
+    - option "Wave15 · event-results · v1"
+    - option "Wave15 · policy-source · v1"
+    - option "Wave15 · event-containment · v1"
+  - text: 完整原文行
+  - combobox "完整原文行" [disabled]
+  - button "加入完整行依据" [disabled]:
+    - text: 加入完整行依据
+  - paragraph: Wave15 独立合成11.0000原生报告 · v1
+  - paragraph: "{\"actual_configuration\":{\"id\":\"06cea8e8-0de7-4419-91be-f681b92c53fc\",\"revision\":1},\"calibration\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314\",\"revision\":1},\"cavity\":\"A\",\"conditions\":\"23 C, dry\",\"environment\":\"Explicit synthetic local lab\",\"equipment\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:2;quote_sha256:15491158ce0395acb0e5ae0db1da190d55e370b33e0fc51ebb7ae336cb790eaa\",\"revision\":1},\"equipment_label\":\"独立合成设备，不是真实仪器\",\"executor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"format\":\"pdos-measurement-jsonl-v1\",\"item_id\":\"dimension\",\"method\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314\",\"revision\":1},\"note\":\"Explicit synthetic observation; exact uploaded bytes, not real instrument data\",\"observed_at\":\"2026-10-03T06:07:54.344529+00:00\",\"observed_timezone\":\"UTC\",\"raw_value\":\"11.0000\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\",\"sample_id\":\"1672638f-6bb0-4e51-84a4-4573afb32ebb\",\"sample_revision\":1,\"unit\":\"mm\"}"
+  - button "加入服务器固定依据 1" [disabled]
+  - blockquote:
+    - paragraph: Wave15 · independent-input · v1 · 第 4 行
+    - paragraph: Synthetic containment observed by the named person.
+  - blockquote:
+    - paragraph: Wave15 · independent-input · v1 · 第 5 行
+    - paragraph: Synthetic hypothesis only, not a root cause.
+  - blockquote:
+    - paragraph: Wave15 · event-containment · v1 · 第 1 行
+    - paragraph: "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"issue_id\":\"16ff0607-08f8-5e3c-9b74-b48999791b00\",\"occurred_at\":\"2026-10-03T06:25:03.160086+00:00\",\"operation\":\"quality.issue.containment.record\",\"purpose\":\"内部问题调查：独立单模穴A尺寸复测（合成）\",\"text\":\"独立合成样件仅保留内部调查，非释放/关闭\"}"
+  - button "移除 Wave15 · independent-input 第 4 行" [disabled]:
+    - text: 移除 Wave15 · independent-input 第 4 行
+  - button "移除 Wave15 · independent-input 第 5 行" [disabled]:
+    - text: 移除 Wave15 · independent-input 第 5 行
+  - button "移除 Wave15 · event-containment 第 1 行" [disabled]:
+    - text: 移除 Wave15 · event-containment 第 1 行
+  - generic "最近一次服务器固定范围与政策核对"
+  - heading "下一轮回到已有权威入口" [level=3]:
+    - text: 下一轮回到已有权威入口
+  - paragraph: 保留本问题与 CAPA 固定版 → 在产品定义 / 工程与制造配置入口准备独立新版 → 在 Build 准备与具名授权入口建立下一轮 → 在验证准备 / 交接 / 开测入口形成新 Run，独立复验。
+  - paragraph: 这是办理需求，尚未创建新配置、Build、样件或 Run。本轮不以数值通过替代独立有效性或具名关闭。
+  - dialog:
+    - heading "记录实际遏制行动 · 一次实质确认" [level=3]
+    - paragraph: 核对固定问题、版本、独立失败、实际时间、来源与真实影响。此确认不构成根因批准、有效性决定、正式发布或关闭。
+    - paragraph: 保存固定失败/问题与草稿；不认定根因、有效性或关闭，不改原测试与配置。
+    - paragraph: 当前具名职责
+    - paragraph: 品质
+    - paragraph: 本操作授权 / 本用途资格
+    - paragraph: 授权已由服务器核对；资格已核对
+    - paragraph: 本地合成演练：问题、措施与变更用于验证流程，不代表真实生产资格、正式放行或人工出口通过。
+    - heading "保存前" [level=4]
+    - term: 固定核对内容
+    - definition:
+      - term: 固定核对内容
+      - definition:
+        - paragraph: Wave15 独立单模穴A尺寸确定失败调查
+      - term: 固定版本
+      - definition:
+        - paragraph: "2"
+      - term: 标题
+      - definition:
+        - paragraph: Wave15 独立单模穴A尺寸确定失败调查
+      - term: 状态
+      - definition:
+        - paragraph: 已具名分诊
+      - term: 服务器政策风险
+      - definition:
+        - paragraph: 高风险（服务器政策）
+      - term: 完整失败范围
+      - definition:
+        - term: 固定核对内容
+        - definition:
+          - term: 固定核对内容
+          - definition:
+            - paragraph: 固定测试运行
+          - term: 固定版本
+          - definition:
+            - paragraph: "3"
+        - term: 固定关联对象
+        - definition:
+          - paragraph: 固定身份，当前名称待核对
+        - term: 责任人
+        - definition:
+          - paragraph: 当前具名办理人
+        - term: 范围核对
+        - definition:
+          - term: 固定样件
+          - definition:
+            - paragraph: wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-sample-A
+          - term: 固定测试项
+          - definition:
+            - paragraph: Dimension
+        - term: 固定核对内容
+        - definition:
+          - term: 固定核对内容
+          - definition:
+            - paragraph: Wave15 独立单模穴A轮次
+          - term: 固定版本
+          - definition:
+            - paragraph: "1"
+          - term: 固定关联对象
+          - definition:
+            - paragraph: 固定身份，当前名称待核对
+          - term: 固定关联对象
+          - definition:
+            - paragraph: 固定身份，当前名称待核对
+          - term: 固定核对内容
+          - definition:
+            - term: 固定核对内容
+            - definition:
+              - paragraph: 固定身份，当前名称待核对
+            - term: 固定版本
+            - definition:
+              - paragraph: "1"
+          - term: 固定核对内容
+          - definition:
+            - term: 固定核对内容
+            - definition:
+              - paragraph: 固定身份，当前名称待核对
+            - term: 固定版本
+            - definition:
+              - paragraph: "1"
+        - term: 固定核对内容
+        - definition:
+          - term: 固定核对内容
+          - definition:
+            - paragraph: wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-sample-A
+          - term: 固定版本
+          - definition:
+            - paragraph: "1"
+          - term: 固定关联对象
+          - definition:
+            - paragraph: Wave15 独立单模穴A轮次
+          - term: 固定核对内容
+          - definition:
+            - term: 固定核对内容
+            - definition:
+              - paragraph: 固定身份，当前名称待核对
+            - term: 固定版本
+            - definition:
+              - paragraph: "1"
+          - term: 固定核对内容
+          - definition:
+            - paragraph: A
+        - term: 固定判据
+        - definition:
+          - blockquote:
+            - paragraph: Wave15 · independent-input · v1 · 第 2 行
+            - paragraph: Synthetic drawing, dimension in mm; numeric limits 9.5 to 10.5 at 23 C, dry.
+        - term: 方法与核对方式
+        - definition:
+          - blockquote:
+            - paragraph: Wave15 · independent-input · v1 · 第 3 行
+            - paragraph: Synthetic method and material information; no production qualification.
+        - term: 精确出处
+        - definition:
+          - blockquote:
+            - paragraph: Wave15 独立合成11.0000原生报告 · v1 · 第 1 行
+            - paragraph: "{\"actual_configuration\":{\"id\":\"06cea8e8-0de7-4419-91be-f681b92c53fc\",\"revision\":1},\"calibration\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314\",\"revision\":1},\"cavity\":\"A\",\"conditions\":\"23 C, dry\",\"environment\":\"Explicit synthetic local lab\",\"equipment\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:2;quote_sha256:15491158ce0395acb0e5ae0db1da190d55e370b33e0fc51ebb7ae336cb790eaa\",\"revision\":1},\"equipment_label\":\"独立合成设备，不是真实仪器\",\"executor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"format\":\"pdos-measurement-jsonl-v1\",\"item_id\":\"dimension\",\"method\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314\",\"revision\":1},\"note\":\"Explicit synthetic observation; exact uploaded bytes, not real instrument data\",\"observed_at\":\"2026-10-03T06:07:54.344529+00:00\",\"observed_timezone\":\"UTC\",\"raw_value\":\"11.0000\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\",\"sample_id\":\"1672638f-6bb0-4e51-84a4-4573afb32ebb\",\"sample_revision\":1,\"unit\":\"mm\"}"
+        - term: 事实性质
+        - definition:
+          - paragraph: 本地合成演练
+      - term: 保留的原问题
+      - definition:
+        - paragraph: 本固定记录未列出此项。
+      - term: 归并目标
+      - definition:
+        - paragraph: 尚未记录或核对，不能补造
+      - term: 已发生遏制行动
+      - definition:
+        - paragraph: 本固定记录未列出此项。
+      - term: 具名根因决定
+      - definition:
+        - paragraph: 尚未记录或核对，不能补造
+      - term: 纠正与预防措施草稿
+      - definition:
+        - paragraph: 尚未记录或核对，不能补造
+      - term: 当前是否需重核
+      - definition:
+        - paragraph: 否
+      - term: 重核原因
+      - definition:
+        - paragraph: 本固定记录未列出此项。
+      - term: 保留历史
+      - definition:
+        - term: 固定核对内容
+        - definition:
+          - paragraph: 建立固定失败问题
+        - term: 固定关联对象
+        - definition:
+          - paragraph: 当前具名办理人
+        - term: 固定核对内容
+        - definition:
+          - paragraph: human
+        - term: 独立事件时间
+        - definition:
+          - paragraph: 2026-10-03T06:17:21.947271Z
+        - term: 说明
+        - definition:
+          - paragraph: 固定实测失败建单。
+        - term: 固定核对内容
+        - definition:
+          - paragraph: 具名分诊
+        - term: 固定关联对象
+        - definition:
+          - paragraph: 当前具名办理人
+        - term: 固定核对内容
+        - definition:
+          - paragraph: human
+        - term: 独立事件时间
+        - definition:
+          - paragraph: 2026-10-03T06:23:34.131953Z
+        - term: 说明
+        - definition:
+          - paragraph: 具名核对固定11.0000 mm超出9.5至10.5 mm判据，按当前高风险政策进入内部调查。
+      - term: 固定核对内容
+      - definition:
+        - paragraph: 尚未记录或核对，不能补造
+    - heading "将保存" [level=4]
+    - term: 固定核对内容
+    - definition:
+      - term: 固定核对内容
+      - definition:
+        - paragraph: Wave15 独立单模穴A尺寸确定失败调查
+      - term: 固定版本
+      - definition:
+        - paragraph: "3"
+      - term: 标题
+      - definition:
+        - paragraph: Wave15 独立单模穴A尺寸确定失败调查
+      - term: 状态
+      - definition:
+        - paragraph: 措施办理中
+      - term: 服务器政策风险
+      - definition:
+        - paragraph: 高风险（服务器政策）
+      - term: 完整失败范围
+      - definition:
+        - term: 固定核对内容
+        - definition:
+          - term: 固定核对内容
+          - definition:
+            - paragraph: 固定测试运行
+          - term: 固定版本
+          - definition:
+            - paragraph: "3"
+        - term: 固定关联对象
+        - definition:
+          - paragraph: 固定身份，当前名称待核对
+        - term: 责任人
+        - definition:
+          - paragraph: 当前具名办理人
+        - term: 范围核对
+        - definition:
+          - term: 固定样件
+          - definition:
+            - paragraph: wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-sample-A
+          - term: 固定测试项
+          - definition:
+            - paragraph: Dimension
+        - term: 固定核对内容
+        - definition:
+          - term: 固定核对内容
+          - definition:
+            - paragraph: Wave15 独立单模穴A轮次
+          - term: 固定版本
+          - definition:
+            - paragraph: "1"
+          - term: 固定关联对象
+          - definition:
+            - paragraph: 固定身份，当前名称待核对
+          - term: 固定关联对象
+          - definition:
+            - paragraph: 固定身份，当前名称待核对
+          - term: 固定核对内容
+          - definition:
+            - term: 固定核对内容
+            - definition:
+              - paragraph: 固定身份，当前名称待核对
+            - term: 固定版本
+            - definition:
+              - paragraph: "1"
+          - term: 固定核对内容
+          - definition:
+            - term: 固定核对内容
+            - definition:
+              - paragraph: 固定身份，当前名称待核对
+            - term: 固定版本
+            - definition:
+              - paragraph: "1"
+        - term: 固定核对内容
+        - definition:
+          - term: 固定核对内容
+          - definition:
+            - paragraph: wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-sample-A
+          - term: 固定版本
+          - definition:
+            - paragraph: "1"
+          - term: 固定关联对象
+          - definition:
+            - paragraph: Wave15 独立单模穴A轮次
+          - term: 固定核对内容
+          - definition:
+            - term: 固定核对内容
+            - definition:
+              - paragraph: 固定身份，当前名称待核对
+            - term: 固定版本
+            - definition:
+              - paragraph: "1"
+          - term: 固定核对内容
+          - definition:
+            - paragraph: A
+        - term: 固定判据
+        - definition:
+          - blockquote:
+            - paragraph: Wave15 · independent-input · v1 · 第 2 行
+            - paragraph: Synthetic drawing, dimension in mm; numeric limits 9.5 to 10.5 at 23 C, dry.
+        - term: 方法与核对方式
+        - definition:
+          - blockquote:
+            - paragraph: Wave15 · independent-input · v1 · 第 3 行
+            - paragraph: Synthetic method and material information; no production qualification.
+        - term: 精确出处
+        - definition:
+          - blockquote:
+            - paragraph: Wave15 独立合成11.0000原生报告 · v1 · 第 1 行
+            - paragraph: "{\"actual_configuration\":{\"id\":\"06cea8e8-0de7-4419-91be-f681b92c53fc\",\"revision\":1},\"calibration\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314\",\"revision\":1},\"cavity\":\"A\",\"conditions\":\"23 C, dry\",\"environment\":\"Explicit synthetic local lab\",\"equipment\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:2;quote_sha256:15491158ce0395acb0e5ae0db1da190d55e370b33e0fc51ebb7ae336cb790eaa\",\"revision\":1},\"equipment_label\":\"独立合成设备，不是真实仪器\",\"executor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"format\":\"pdos-measurement-jsonl-v1\",\"item_id\":\"dimension\",\"method\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314\",\"revision\":1},\"note\":\"Explicit synthetic observation; exact uploaded bytes, not real instrument data\",\"observed_at\":\"2026-10-03T06:07:54.344529+00:00\",\"observed_timezone\":\"UTC\",\"raw_value\":\"11.0000\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\",\"sample_id\":\"1672638f-6bb0-4e51-84a4-4573afb32ebb\",\"sample_revision\":1,\"unit\":\"mm\"}"
+        - term: 事实性质
+        - definition:
+          - paragraph: 本地合成演练
+      - term: 保留的原问题
+      - definition:
+        - paragraph: 本固定记录未列出此项。
+      - term: 归并目标
+      - definition:
+        - paragraph: 尚未记录或核对，不能补造
+      - term: 已发生遏制行动
+      - definition:
+        - term: 固定核对内容
+        - definition:
+          - paragraph: 固定身份，当前名称待核对
+        - term: 内容
+        - definition:
+          - paragraph: 独立合成样件仅保留内部调查，非释放/关闭
+        - term: 责任人
+        - definition:
+          - paragraph: 当前具名办理人
+        - term: 行动证据
+        - definition:
+          - blockquote:
+            - paragraph: Wave15 · independent-input · v1 · 第 4 行
+            - paragraph: Synthetic containment observed by the named person.
+          - blockquote:
+            - paragraph: Wave15 · independent-input · v1 · 第 5 行
+            - paragraph: Synthetic hypothesis only, not a root cause.
+          - blockquote:
+            - paragraph: Wave15 · event-containment · v1 · 第 1 行
+            - paragraph: "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"issue_id\":\"16ff0607-08f8-5e3c-9b74-b48999791b00\",\"occurred_at\":\"2026-10-03T06:25:03.160086+00:00\",\"operation\":\"quality.issue.containment.record\",\"purpose\":\"内部问题调查：独立单模穴A尺寸复测（合成）\",\"text\":\"独立合成样件仅保留内部调查，非释放/关闭\"}"
+        - term: 独立事件时间
+        - definition:
+          - term: 实际发生时间
+          - definition:
+            - paragraph: 2026-10-03T06:25:03.160086Z
+          - term: 原 IANA 时区
+          - definition:
+            - paragraph: UTC
+          - term: 精确出处
+          - definition:
+            - blockquote:
+              - paragraph: Wave15 · event-containment · v1 · 第 1 行
+              - paragraph: "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"issue_id\":\"16ff0607-08f8-5e3c-9b74-b48999791b00\",\"occurred_at\":\"2026-10-03T06:25:03.160086+00:00\",\"operation\":\"quality.issue.containment.record\",\"purpose\":\"内部问题调查：独立单模穴A尺寸复测（合成）\",\"text\":\"独立合成样件仅保留内部调查，非释放/关闭\"}"
+          - term: 独立生效时间
+          - definition:
+            - paragraph: 尚未记录或核对，不能补造
+      - term: 具名根因决定
+      - definition:
+        - paragraph: 尚未记录或核对，不能补造
+      - term: 纠正与预防措施草稿
+      - definition:
+        - paragraph: 尚未记录或核对，不能补造
+      - term: 当前是否需重核
+      - definition:
+        - paragraph: 否
+      - term: 重核原因
+      - definition:
+        - paragraph: 本固定记录未列出此项。
+      - term: 保留历史
+      - definition:
+        - term: 固定核对内容
+        - definition:
+          - paragraph: 建立固定失败问题
+        - term: 固定关联对象
+        - definition:
+          - paragraph: 当前具名办理人
+        - term: 固定核对内容
+        - definition:
+          - paragraph: human
+        - term: 独立事件时间
+        - definition:
+          - paragraph: 2026-10-03T06:17:21.947271Z
+        - term: 说明
+        - definition:
+          - paragraph: 固定实测失败建单。
+        - term: 固定核对内容
+        - definition:
+          - paragraph: 具名分诊
+        - term: 固定关联对象
+        - definition:
+          - paragraph: 当前具名办理人
+        - term: 固定核对内容
+        - definition:
+          - paragraph: human
+        - term: 独立事件时间
+        - definition:
+          - paragraph: 2026-10-03T06:23:34.131953Z
+        - term: 说明
+        - definition:
+          - paragraph: 具名核对固定11.0000 mm超出9.5至10.5 mm判据，按当前高风险政策进入内部调查。
+        - term: 固定核对内容
+        - definition:
+          - paragraph: 记录实际遏制行动
+        - term: 固定关联对象
+        - definition:
+          - paragraph: 当前具名办理人
+        - term: 固定核对内容
+        - definition:
+          - paragraph: human
+        - term: 独立事件时间
+        - definition:
+          - paragraph: 尚未记录或核对，不能补造
+        - term: 说明
+        - definition:
+          - paragraph: quality.issue.containment.record
+      - term: 固定核对内容
+      - definition:
+        - paragraph: 尚未记录或核对，不能补造
+    - paragraph: 预览有效至 2026-10-03T06:53:49.466239+00:00；提交时服务器重新核对当前来源、政策和职责。
+    - button "确认并提交本次固定内容":
+      - text: 确认并提交本次固定内容
+    - button "返回核对"

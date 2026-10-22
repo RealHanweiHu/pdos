@@ -1,0 +1,53 @@
+{
+  "date": "2026-09-10",
+  "scope": "model mapping outside project write transaction; authenticated final writes and content dedup preserved",
+  "tests": {
+    "existing": 13,
+    "new": 3,
+    "distinct_passed": 16
+  },
+  "checks": {
+    "mypy_files": 2,
+    "ruff_files": 3,
+    "format_files": 3,
+    "exports": "common 4 and runtime 5 passed",
+    "full_web_typecheck": "passed",
+    "vitest": "10 passed: Chat and AI API frontend follow-up"
+  },
+  "database": "127.0.0.1:57432/pdos_test",
+  "migration_added": false,
+  "role_password_changes": false,
+  "real_model_calls": 0,
+  "sources": {
+    "server/app/domain/test_report_import.py": "c507c3f9e77bc366c650a07fa5fb8daaa943cb7789997ef6ba6c1b1dd5421648",
+    "server/app/api/npi_execution.py": "701532132e597db4a74d20de08fcc7273e45c75b4e16ec6a0d2b09aec1491a07",
+    "server/tests/test_test_report_import_api.py": "3463fec3879a68159920344ff44af5092f1dd158cfbe8d453d81ef49e1118d17",
+    "web/tsconfig.json": "3dd23061d2fe379ebac37ba21dcff5b80eed44efbc00ba9212187f425690973e",
+    "docs/reports/2026-09-10-n0-03-import-model-lock-validation.md": "41b28bddb0b238f11908669cf56af9e10f809a97d23f4c580e426ec2bf0b3205"
+  },
+  "remaining": [
+    "persistent mapping run and stable call identity",
+    "unknown receipt recovery and durable replay",
+    "real metering qualification and adoption"
+  ],
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "d38f00f5f364cdc6d372c82876e45813e26f2e0fc189ea0b71e56bc691e0b877",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "96c7eb9058f93b4d26152e3efd4130901f03c4ff2b8b718ee359179dda2d038c",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "follow_up": {
+    "report": "docs/reports/2026-09-10-n0-03-import-mapping-runs-validation.md",
+    "current_sources_sha256": {
+      "server/app/domain/test_report_import.py": "48832c626f9005f4c5415528ca9d5ec93e407ba22706769683611992e51c3cb2",
+      "server/app/api/npi_execution.py": "ada0744a091e643957b2c9f564b92ec8fe6b242203053aeba6f4e9c0c8e57e5a",
+      "server/tests/test_test_report_import_api.py": "d7eca63a879f1be9f17d8333c777efc2cf78669a4093eb47ca8cd9c05444debe",
+      "web/tsconfig.json": "3dd23061d2fe379ebac37ba21dcff5b80eed44efbc00ba9212187f425690973e",
+      "docs/reports/2026-09-10-n0-03-import-model-lock-validation.md": "477683de9e6c0b8b8dd300d41694bd6c09cb8a5003106c0ea23901853c5e8dbc"
+    }
+  }
+}

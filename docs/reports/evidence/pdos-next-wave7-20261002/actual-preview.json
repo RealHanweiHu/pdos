@@ -1,0 +1,1312 @@
+{
+  "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+  "schema_head": "next_0009",
+  "business_marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "business_port": 62513,
+  "business_table_count": 52,
+  "plan_unchanged": true,
+  "sample_supply_and_cost_history_preserved": true,
+  "verification": {
+    "preparations": [
+      {
+        "id": "535ff2f5-01b8-44b0-b919-3a699f1dc8b9",
+        "request_id": "de04a174-c48a-4cfc-9f37-b613402e5807",
+        "revision": 2,
+        "previous_preparation_id": "2ce534bb-f090-4911-b8c7-5fc467f91a42",
+        "previous_revision": 1,
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "build_revision": 1,
+        "build": {
+          "id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "revision": 1,
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+          "engineering_configuration": {
+            "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+            "revision": 1
+          },
+          "manufacturing_configuration": {
+            "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+            "revision": 1
+          }
+        },
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "status": "prepared",
+        "request_state": "draft",
+        "reason": "合成续版：补充压力图纸和方法候选出处，期望返回调整为10月6日；资格材料和噪声要求仍未齐，不授权接样或开测。",
+        "created_at": "2026-10-02T13:50:40.988126+00:00",
+        "first_prepared_at": "2026-10-02T13:49:26.936266+00:00",
+        "title": "合成品质验证准备 · 压力与噪声",
+        "purpose": "固定两项验证准备，保留资料与资格缺项。",
+        "return_form": "逐项数据与未完成说明",
+        "items": [
+          {
+            "id": "noise",
+            "unit": null,
+            "method": null,
+            "drawing": null,
+            "feature": "合成噪声检查",
+            "cavities": [],
+            "material": null,
+            "criterion": null,
+            "conditions": null,
+            "destructive": false,
+            "sample_count": 1,
+            "criterion_text": null,
+            "criterion_source": null
+          },
+          {
+            "id": "pressure",
+            "unit": "PSI",
+            "method": {
+              "line": 4,
+              "quote": "合成方法候选：按SYN-METHOD-01记录稳定后读数；属于方法草稿，未确认设备、执行人及方法适用资格。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            "drawing": {
+              "line": 3,
+              "quote": "合成图纸候选：装配检查图SYN-DRAWING-01，版本v1，仅用于准备资料定位，尚待专业适用性核对。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            "feature": "合成压力检查",
+            "cavities": [
+              "A",
+              "B"
+            ],
+            "material": "合成电机及壳体装配体",
+            "criterion": {
+              "lower": null,
+              "upper": "150",
+              "source": {
+                "line": 5,
+                "quote": "合成压力候选判据：数值上限150 PSI，下限未规定；此判据仅用于准备演练，不证明安全要求或测试通过。",
+                "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+                "expected_revision": 1
+              }
+            },
+            "conditions": "20至25°C合成稳态",
+            "destructive": false,
+            "sample_count": 2,
+            "criterion_text": null,
+            "criterion_source": null
+          }
+        ],
+        "documents": [
+          {
+            "id": "qualification",
+            "title": "设备校准与人员资格材料",
+            "source": null,
+            "item_ids": [
+              "noise",
+              "pressure"
+            ],
+            "required": true
+          }
+        ],
+        "expected_at": "2026-10-06T16:00:00Z",
+        "expected_timezone": "America/Los_Angeles",
+        "tentative_at": "2026-10-04T16:00:00Z",
+        "tentative_timezone": "America/Los_Angeles",
+        "input_snapshot": {
+          "items": [
+            {
+              "id": "noise",
+              "unit": null,
+              "method": null,
+              "drawing": null,
+              "feature": "合成噪声检查",
+              "cavities": [],
+              "material": null,
+              "criterion": null,
+              "conditions": null,
+              "destructive": false,
+              "sample_count": 1,
+              "criterion_text": null,
+              "criterion_source": null
+            },
+            {
+              "id": "pressure",
+              "unit": "PSI",
+              "method": {
+                "line": 4,
+                "quote": "合成方法候选：按SYN-METHOD-01记录稳定后读数；属于方法草稿，未确认设备、执行人及方法适用资格。",
+                "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+                "expected_revision": 1
+              },
+              "drawing": {
+                "line": 3,
+                "quote": "合成图纸候选：装配检查图SYN-DRAWING-01，版本v1，仅用于准备资料定位，尚待专业适用性核对。",
+                "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+                "expected_revision": 1
+              },
+              "feature": "合成压力检查",
+              "cavities": [
+                "A",
+                "B"
+              ],
+              "material": "合成电机及壳体装配体",
+              "criterion": {
+                "lower": null,
+                "upper": "150",
+                "source": {
+                  "line": 5,
+                  "quote": "合成压力候选判据：数值上限150 PSI，下限未规定；此判据仅用于准备演练，不证明安全要求或测试通过。",
+                  "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+                  "expected_revision": 1
+                }
+              },
+              "conditions": "20至25°C合成稳态",
+              "destructive": false,
+              "sample_count": 2,
+              "criterion_text": null,
+              "criterion_source": null
+            }
+          ],
+          "title": "合成品质验证准备 · 压力与噪声",
+          "reason": "合成续版：补充压力图纸和方法候选出处，期望返回调整为10月6日；资格材料和噪声要求仍未齐，不授权接样或开测。",
+          "purpose": "固定两项验证准备，保留资料与资格缺项。",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "本资料仅用于验证准备草稿与历史续版，不证明人员资格、样件就绪、接收、资源预约或已开测。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 2,
+              "quote": "合成压力检查候选：需2件样件，模穴A和B；单位PSI，工况20至25°C合成稳态，材料为合成电机及壳体装配体。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 3,
+              "quote": "合成图纸候选：装配检查图SYN-DRAWING-01，版本v1，仅用于准备资料定位，尚待专业适用性核对。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 4,
+              "quote": "合成方法候选：按SYN-METHOD-01记录稳定后读数；属于方法草稿，未确认设备、执行人及方法适用资格。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 5,
+              "quote": "合成压力候选判据：数值上限150 PSI，下限未规定；此判据仅用于准备演练，不证明安全要求或测试通过。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 6,
+              "quote": "设备校准与人员资格材料尚未取得，作为压力及噪声测试的必需缺项保留。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 7,
+              "quote": "合成噪声检查候选：需1件样件，单位、工况、方法和判据未知，保持待补齐。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 8,
+              "quote": "合成期望返回：首版2026-10-05T09:00:00 America/Los_Angeles；续版调整为2026-10-06T09:00:00 America/Los_Angeles，返回逐项数据与未完成说明。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 9,
+              "quote": "合成暂定时间提议：2026-10-04T09:00:00 America/Los_Angeles，不是品质承诺或正式资源预约。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            }
+          ],
+          "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "documents": [
+            {
+              "id": "qualification",
+              "title": "设备校准与人员资格材料",
+              "source": null,
+              "item_ids": [
+                "noise",
+                "pressure"
+              ],
+              "required": true
+            }
+          ],
+          "request_id": "de04a174-c48a-4cfc-9f37-b613402e5807",
+          "expected_at": "2026-10-06T16:00:00Z",
+          "return_form": "逐项数据与未完成说明",
+          "tentative_at": "2026-10-04T16:00:00Z",
+          "expected_timezone": "America/Los_Angeles",
+          "tentative_timezone": "America/Los_Angeles",
+          "expected_build_revision": 1,
+          "expected_request_revision": 1
+        },
+        "request_snapshot": {
+          "id": "de04a174-c48a-4cfc-9f37-b613402e5807",
+          "revision": 2,
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393"
+          },
+          "build": {
+            "id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+            "revision": 1,
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+            "engineering_configuration": {
+              "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+              "revision": 1
+            },
+            "manufacturing_configuration": {
+              "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+              "revision": 1
+            }
+          },
+          "title": "合成品质验证准备 · 压力与噪声",
+          "purpose": "固定两项验证准备，保留资料与资格缺项。",
+          "items": [
+            {
+              "id": "noise",
+              "feature": "合成噪声检查",
+              "drawing": null,
+              "method": null,
+              "criterion": null,
+              "criterion_text": null,
+              "criterion_source": null,
+              "unit": null,
+              "conditions": null,
+              "material": null,
+              "sample_count": 1,
+              "cavities": [],
+              "destructive": false
+            },
+            {
+              "id": "pressure",
+              "feature": "合成压力检查",
+              "drawing": {
+                "id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:3;quote_sha256:873f849cda42ca9529ce8bc5bc10322e760b96b1170501b015b545b6e1af3e4a"
+              },
+              "method": {
+                "id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:4;quote_sha256:48ab8d544b163b9c9b362ec7a224bfbe99cd8c2c4539eca08453611e9b98a88b"
+              },
+              "criterion": {
+                "lower": null,
+                "upper": "150",
+                "source": {
+                  "id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+                  "revision": 1,
+                  "kind": "artifact",
+                  "position": "line:5;quote_sha256:c208c64623b95a1f8cc3395b6ffd9a6e7f32420d3ca1bbb353bbb84d4650aae0"
+                }
+              },
+              "criterion_text": null,
+              "criterion_source": null,
+              "unit": "PSI",
+              "conditions": "20至25°C合成稳态",
+              "material": "合成电机及壳体装配体",
+              "sample_count": 2,
+              "cavities": [
+                "A",
+                "B"
+              ],
+              "destructive": false
+            }
+          ],
+          "documents": [
+            {
+              "id": "qualification",
+              "title": "设备校准与人员资格材料",
+              "item_ids": [
+                "noise",
+                "pressure"
+              ],
+              "source": null,
+              "required": true
+            }
+          ],
+          "expected_at": "2026-10-06T16:00:00Z",
+          "expected_timezone": "America/Los_Angeles",
+          "return_form": "逐项数据与未完成说明",
+          "status": "draft",
+          "samples": [],
+          "offered_coverage": [],
+          "acceptances": [],
+          "returns": [],
+          "timeline": {
+            "request_created": {
+              "occurred_at": "2026-10-02T13:49:26.936266Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "c99e1491-3574-49fa-9019-74568a31cce3",
+                "revision": 1,
+                "kind": "command",
+                "position": "receipt"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-02T13:49:26.936266Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "sample_ready": null,
+            "documents_complete": null,
+            "offered": null,
+            "accepted": null,
+            "promised_start": null,
+            "actual_start": null,
+            "preliminary_result": null,
+            "final_result": null,
+            "disposed": null
+          },
+          "tentative_start": {
+            "occurred_at": "2026-10-04T16:00:00Z",
+            "original_timezone": "America/Los_Angeles",
+            "source": {
+              "id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:23ea4df4fad8689ee5650bb423ada66644c2e5775854cd2360e669ded3c2100a"
+            },
+            "effective_at": null
+          }
+        },
+        "sha256": "1bb7e2e02629104a8ef69a328e23c10ce40fc8b5fadeb29a1e901044a15704d9",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "本资料仅用于验证准备草稿与历史续版，不证明人员资格、样件就绪、接收、资源预约或已开测。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 2,
+            "quote": "合成压力检查候选：需2件样件，模穴A和B；单位PSI，工况20至25°C合成稳态，材料为合成电机及壳体装配体。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 3,
+            "quote": "合成图纸候选：装配检查图SYN-DRAWING-01，版本v1，仅用于准备资料定位，尚待专业适用性核对。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 4,
+            "quote": "合成方法候选：按SYN-METHOD-01记录稳定后读数；属于方法草稿，未确认设备、执行人及方法适用资格。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 5,
+            "quote": "合成压力候选判据：数值上限150 PSI，下限未规定；此判据仅用于准备演练，不证明安全要求或测试通过。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 6,
+            "quote": "设备校准与人员资格材料尚未取得，作为压力及噪声测试的必需缺项保留。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 7,
+            "quote": "合成噪声检查候选：需1件样件，单位、工况、方法和判据未知，保持待补齐。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 8,
+            "quote": "合成期望返回：首版2026-10-05T09:00:00 America/Los_Angeles；续版调整为2026-10-06T09:00:00 America/Los_Angeles，返回逐项数据与未完成说明。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 9,
+            "quote": "合成暂定时间提议：2026-10-04T09:00:00 America/Los_Angeles，不是品质承诺或正式资源预约。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "source_status": "current",
+        "is_current": true,
+        "freshness": "current",
+        "document_gaps": [
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 drawing",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 method",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 unit",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 conditions",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 material",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 criterion",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 设备校准与人员资格材料",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 设备校准与人员资格材料",
+            "item_id": "pressure",
+            "sample_id": null
+          }
+        ],
+        "coverage_gaps": [
+          {
+            "code": "PARTIAL_SAMPLE_COUNT",
+            "detail": "已覆盖 0/1 件",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "PARTIAL_SAMPLE_COUNT",
+            "detail": "已覆盖 0/2 件",
+            "item_id": "pressure",
+            "sample_id": null
+          },
+          {
+            "code": "UNCOVERED_CAVITY",
+            "detail": "未覆盖模穴 A",
+            "item_id": "pressure",
+            "sample_id": null
+          },
+          {
+            "code": "UNCOVERED_CAVITY",
+            "detail": "未覆盖模穴 B",
+            "item_id": "pressure",
+            "sample_id": null
+          }
+        ],
+        "capabilities": {
+          "preparation_record": true,
+          "request_create": false,
+          "handoff_offer": false,
+          "handoff_accept": false,
+          "schedule_promise": false,
+          "run_plan": false,
+          "run_start": false,
+          "results_import": false,
+          "professional_review": false,
+          "disposition_decide": false
+        },
+        "blockers": [
+          {
+            "code": "BUILD_NOT_EXECUTING",
+            "detail": "本轮Build仍为计划，外部产出观察不证明已获授权开工。",
+            "sample_id": null
+          },
+          {
+            "code": "PROFESSIONAL_QUALIFICATION_UNCONNECTED",
+            "detail": "品质/测试职责和专业资格接口尚未接通。",
+            "sample_id": null
+          },
+          {
+            "code": "RESOURCE_QUALIFICATION_UNCONNECTED",
+            "detail": "设备校准、治具适用、人员与资源预约核对尚未接通。",
+            "sample_id": null
+          },
+          {
+            "code": "SAMPLE_CONSUMPTION_UNCONNECTED",
+            "detail": "样件预约、破坏性消耗及并发复查接口尚未接通。",
+            "sample_id": null
+          },
+          {
+            "code": "SAMPLE_ON_HOLD",
+            "detail": "参考样件处于暂缓状态，不能据此接收或开测。",
+            "sample_id": "d9bbdee3-b3c1-4cab-a519-c45128614ca0"
+          },
+          {
+            "code": "SAMPLE_AVAILABILITY_UNKNOWN",
+            "detail": "参考样件可用性未知，未成为已交接或接收范围。",
+            "sample_id": "1983cafd-87e4-4892-98a5-4a9566e19ee3"
+          }
+        ],
+        "time_policy": "server_recorded",
+        "method_applicability": "unknown",
+        "qualification_status": "unknown",
+        "reference_samples_are_accepted": false
+      },
+      {
+        "id": "2ce534bb-f090-4911-b8c7-5fc467f91a42",
+        "request_id": "de04a174-c48a-4cfc-9f37-b613402e5807",
+        "revision": 1,
+        "previous_preparation_id": null,
+        "previous_revision": null,
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "build_revision": 1,
+        "build": {
+          "id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "revision": 1,
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+          "engineering_configuration": {
+            "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+            "revision": 1
+          },
+          "manufacturing_configuration": {
+            "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+            "revision": 1
+          }
+        },
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "status": "prepared",
+        "request_state": "draft",
+        "reason": "合成首版准备：明确压力和噪声要求，图纸、方法及资格材料缺项保留，不授权接样或开测。",
+        "created_at": "2026-10-02T13:49:26.936266+00:00",
+        "first_prepared_at": "2026-10-02T13:49:26.936266+00:00",
+        "title": "合成品质验证准备 · 压力与噪声",
+        "purpose": "固定两项验证准备，保留资料与资格缺项。",
+        "return_form": "逐项数据与未完成说明",
+        "items": [
+          {
+            "id": "noise",
+            "unit": null,
+            "method": null,
+            "drawing": null,
+            "feature": "合成噪声检查",
+            "cavities": [],
+            "material": null,
+            "criterion": null,
+            "conditions": null,
+            "destructive": false,
+            "sample_count": 1,
+            "criterion_text": null,
+            "criterion_source": null
+          },
+          {
+            "id": "pressure",
+            "unit": "PSI",
+            "method": null,
+            "drawing": null,
+            "feature": "合成压力检查",
+            "cavities": [
+              "A",
+              "B"
+            ],
+            "material": "合成电机及壳体装配体",
+            "criterion": {
+              "lower": null,
+              "upper": "150",
+              "source": {
+                "line": 5,
+                "quote": "合成压力候选判据：数值上限150 PSI，下限未规定；此判据仅用于准备演练，不证明安全要求或测试通过。",
+                "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+                "expected_revision": 1
+              }
+            },
+            "conditions": "20至25°C合成稳态",
+            "destructive": false,
+            "sample_count": 2,
+            "criterion_text": null,
+            "criterion_source": null
+          }
+        ],
+        "documents": [
+          {
+            "id": "qualification",
+            "title": "设备校准与人员资格材料",
+            "source": null,
+            "item_ids": [
+              "noise",
+              "pressure"
+            ],
+            "required": true
+          }
+        ],
+        "expected_at": "2026-10-05T16:00:00Z",
+        "expected_timezone": "America/Los_Angeles",
+        "tentative_at": "2026-10-04T16:00:00Z",
+        "tentative_timezone": "America/Los_Angeles",
+        "input_snapshot": {
+          "items": [
+            {
+              "id": "noise",
+              "unit": null,
+              "method": null,
+              "drawing": null,
+              "feature": "合成噪声检查",
+              "cavities": [],
+              "material": null,
+              "criterion": null,
+              "conditions": null,
+              "destructive": false,
+              "sample_count": 1,
+              "criterion_text": null,
+              "criterion_source": null
+            },
+            {
+              "id": "pressure",
+              "unit": "PSI",
+              "method": null,
+              "drawing": null,
+              "feature": "合成压力检查",
+              "cavities": [
+                "A",
+                "B"
+              ],
+              "material": "合成电机及壳体装配体",
+              "criterion": {
+                "lower": null,
+                "upper": "150",
+                "source": {
+                  "line": 5,
+                  "quote": "合成压力候选判据：数值上限150 PSI，下限未规定；此判据仅用于准备演练，不证明安全要求或测试通过。",
+                  "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+                  "expected_revision": 1
+                }
+              },
+              "conditions": "20至25°C合成稳态",
+              "destructive": false,
+              "sample_count": 2,
+              "criterion_text": null,
+              "criterion_source": null
+            }
+          ],
+          "title": "合成品质验证准备 · 压力与噪声",
+          "reason": "合成首版准备：明确压力和噪声要求，图纸、方法及资格材料缺项保留，不授权接样或开测。",
+          "purpose": "固定两项验证准备，保留资料与资格缺项。",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "本资料仅用于验证准备草稿与历史续版，不证明人员资格、样件就绪、接收、资源预约或已开测。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 2,
+              "quote": "合成压力检查候选：需2件样件，模穴A和B；单位PSI，工况20至25°C合成稳态，材料为合成电机及壳体装配体。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 5,
+              "quote": "合成压力候选判据：数值上限150 PSI，下限未规定；此判据仅用于准备演练，不证明安全要求或测试通过。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 6,
+              "quote": "设备校准与人员资格材料尚未取得，作为压力及噪声测试的必需缺项保留。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 7,
+              "quote": "合成噪声检查候选：需1件样件，单位、工况、方法和判据未知，保持待补齐。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 8,
+              "quote": "合成期望返回：首版2026-10-05T09:00:00 America/Los_Angeles；续版调整为2026-10-06T09:00:00 America/Los_Angeles，返回逐项数据与未完成说明。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            },
+            {
+              "line": 9,
+              "quote": "合成暂定时间提议：2026-10-04T09:00:00 America/Los_Angeles，不是品质承诺或正式资源预约。",
+              "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "expected_revision": 1
+            }
+          ],
+          "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+          "documents": [
+            {
+              "id": "qualification",
+              "title": "设备校准与人员资格材料",
+              "source": null,
+              "item_ids": [
+                "noise",
+                "pressure"
+              ],
+              "required": true
+            }
+          ],
+          "request_id": "de04a174-c48a-4cfc-9f37-b613402e5807",
+          "expected_at": "2026-10-05T16:00:00Z",
+          "return_form": "逐项数据与未完成说明",
+          "tentative_at": "2026-10-04T16:00:00Z",
+          "expected_timezone": "America/Los_Angeles",
+          "tentative_timezone": "America/Los_Angeles",
+          "expected_build_revision": 1,
+          "expected_request_revision": 0
+        },
+        "request_snapshot": {
+          "id": "de04a174-c48a-4cfc-9f37-b613402e5807",
+          "revision": 1,
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393"
+          },
+          "build": {
+            "id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+            "revision": 1,
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+            "engineering_configuration": {
+              "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+              "revision": 1
+            },
+            "manufacturing_configuration": {
+              "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+              "revision": 1
+            }
+          },
+          "title": "合成品质验证准备 · 压力与噪声",
+          "purpose": "固定两项验证准备，保留资料与资格缺项。",
+          "items": [
+            {
+              "id": "noise",
+              "feature": "合成噪声检查",
+              "drawing": null,
+              "method": null,
+              "criterion": null,
+              "criterion_text": null,
+              "criterion_source": null,
+              "unit": null,
+              "conditions": null,
+              "material": null,
+              "sample_count": 1,
+              "cavities": [],
+              "destructive": false
+            },
+            {
+              "id": "pressure",
+              "feature": "合成压力检查",
+              "drawing": null,
+              "method": null,
+              "criterion": {
+                "lower": null,
+                "upper": "150",
+                "source": {
+                  "id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+                  "revision": 1,
+                  "kind": "artifact",
+                  "position": "line:5;quote_sha256:c208c64623b95a1f8cc3395b6ffd9a6e7f32420d3ca1bbb353bbb84d4650aae0"
+                }
+              },
+              "criterion_text": null,
+              "criterion_source": null,
+              "unit": "PSI",
+              "conditions": "20至25°C合成稳态",
+              "material": "合成电机及壳体装配体",
+              "sample_count": 2,
+              "cavities": [
+                "A",
+                "B"
+              ],
+              "destructive": false
+            }
+          ],
+          "documents": [
+            {
+              "id": "qualification",
+              "title": "设备校准与人员资格材料",
+              "item_ids": [
+                "noise",
+                "pressure"
+              ],
+              "source": null,
+              "required": true
+            }
+          ],
+          "expected_at": "2026-10-05T16:00:00Z",
+          "expected_timezone": "America/Los_Angeles",
+          "return_form": "逐项数据与未完成说明",
+          "status": "draft",
+          "samples": [],
+          "offered_coverage": [],
+          "acceptances": [],
+          "returns": [],
+          "timeline": {
+            "request_created": {
+              "occurred_at": "2026-10-02T13:49:26.936266Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "c99e1491-3574-49fa-9019-74568a31cce3",
+                "revision": 1,
+                "kind": "command",
+                "position": "receipt"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-02T13:49:26.936266Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "sample_ready": null,
+            "documents_complete": null,
+            "offered": null,
+            "accepted": null,
+            "promised_start": null,
+            "actual_start": null,
+            "preliminary_result": null,
+            "final_result": null,
+            "disposed": null
+          },
+          "tentative_start": {
+            "occurred_at": "2026-10-04T16:00:00Z",
+            "original_timezone": "America/Los_Angeles",
+            "source": {
+              "id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:23ea4df4fad8689ee5650bb423ada66644c2e5775854cd2360e669ded3c2100a"
+            },
+            "effective_at": null
+          }
+        },
+        "sha256": "11590fee5e544982795a2a2113975da90e32647c3ec07c64cf01cda6c24e37b0",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "本资料仅用于验证准备草稿与历史续版，不证明人员资格、样件就绪、接收、资源预约或已开测。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 2,
+            "quote": "合成压力检查候选：需2件样件，模穴A和B；单位PSI，工况20至25°C合成稳态，材料为合成电机及壳体装配体。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 5,
+            "quote": "合成压力候选判据：数值上限150 PSI，下限未规定；此判据仅用于准备演练，不证明安全要求或测试通过。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 6,
+            "quote": "设备校准与人员资格材料尚未取得，作为压力及噪声测试的必需缺项保留。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 7,
+            "quote": "合成噪声检查候选：需1件样件，单位、工况、方法和判据未知，保持待补齐。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 8,
+            "quote": "合成期望返回：首版2026-10-05T09:00:00 America/Los_Angeles；续版调整为2026-10-06T09:00:00 America/Los_Angeles，返回逐项数据与未完成说明。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "line": 9,
+            "quote": "合成暂定时间提议：2026-10-04T09:00:00 America/Los_Angeles，不是品质承诺或正式资源预约。",
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "03e7012f-9ccd-4d5f-b29e-cb922505be9a",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "source_status": "current",
+        "is_current": false,
+        "freshness": "historical",
+        "document_gaps": [
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 drawing",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 method",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 unit",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 conditions",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 material",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 criterion",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 drawing",
+            "item_id": "pressure",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 method",
+            "item_id": "pressure",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 设备校准与人员资格材料",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "DOCUMENT_MISSING",
+            "detail": "缺少 设备校准与人员资格材料",
+            "item_id": "pressure",
+            "sample_id": null
+          }
+        ],
+        "coverage_gaps": [
+          {
+            "code": "PARTIAL_SAMPLE_COUNT",
+            "detail": "已覆盖 0/1 件",
+            "item_id": "noise",
+            "sample_id": null
+          },
+          {
+            "code": "PARTIAL_SAMPLE_COUNT",
+            "detail": "已覆盖 0/2 件",
+            "item_id": "pressure",
+            "sample_id": null
+          },
+          {
+            "code": "UNCOVERED_CAVITY",
+            "detail": "未覆盖模穴 A",
+            "item_id": "pressure",
+            "sample_id": null
+          },
+          {
+            "code": "UNCOVERED_CAVITY",
+            "detail": "未覆盖模穴 B",
+            "item_id": "pressure",
+            "sample_id": null
+          }
+        ],
+        "capabilities": {
+          "preparation_record": true,
+          "request_create": false,
+          "handoff_offer": false,
+          "handoff_accept": false,
+          "schedule_promise": false,
+          "run_plan": false,
+          "run_start": false,
+          "results_import": false,
+          "professional_review": false,
+          "disposition_decide": false
+        },
+        "blockers": [
+          {
+            "code": "BUILD_NOT_EXECUTING",
+            "detail": "本轮Build仍为计划，外部产出观察不证明已获授权开工。",
+            "sample_id": null
+          },
+          {
+            "code": "PROFESSIONAL_QUALIFICATION_UNCONNECTED",
+            "detail": "品质/测试职责和专业资格接口尚未接通。",
+            "sample_id": null
+          },
+          {
+            "code": "RESOURCE_QUALIFICATION_UNCONNECTED",
+            "detail": "设备校准、治具适用、人员与资源预约核对尚未接通。",
+            "sample_id": null
+          },
+          {
+            "code": "SAMPLE_CONSUMPTION_UNCONNECTED",
+            "detail": "样件预约、破坏性消耗及并发复查接口尚未接通。",
+            "sample_id": null
+          },
+          {
+            "code": "SAMPLE_ON_HOLD",
+            "detail": "参考样件处于暂缓状态，不能据此接收或开测。",
+            "sample_id": "d9bbdee3-b3c1-4cab-a519-c45128614ca0"
+          },
+          {
+            "code": "SAMPLE_AVAILABILITY_UNKNOWN",
+            "detail": "参考样件可用性未知，未成为已交接或接收范围。",
+            "sample_id": "1983cafd-87e4-4892-98a5-4a9566e19ee3"
+          }
+        ],
+        "time_policy": "server_recorded",
+        "method_applicability": "unknown",
+        "qualification_status": "unknown",
+        "reference_samples_are_accepted": false
+      }
+    ],
+    "current_by_request": {
+      "de04a174-c48a-4cfc-9f37-b613402e5807": {
+        "preparation_id": "535ff2f5-01b8-44b0-b919-3a699f1dc8b9",
+        "revision": 2
+      }
+    },
+    "runs": [],
+    "reference_samples": [
+      {
+        "id": "d9bbdee3-b3c1-4cab-a519-c45128614ca0",
+        "revision": 1,
+        "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "build_revision": 1,
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "status": "identified",
+        "created_at": "2026-10-02T12:20:26.624286+00:00",
+        "reason": "合成身份演练：从3台批次分配2件，保留1件未分配，不代表可测试或已消耗。",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "合成演练：2026-10-02 11:55 UTC 核对本轮计划工程配置及制造配置，实际采用同一固定版本。",
+            "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+            "expected_revision": 1
+          },
+          {
+            "line": 2,
+            "quote": "合成演练：2026-10-02 12:00 UTC 外部记录 W4-OUTPUT-001 产出3台；本次登记 PDOS-W4-S01 和 PDOS-W4-S02，其中S02待隔离核对。",
+            "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "source_status": "current",
+        "qualification_status": "unknown",
+        "authorization_status": "not_authorized",
+        "observation_route": "external_observation",
+        "verification_status": "not_checked",
+        "label": "PDOS-W4-S02",
+        "lot_id": "1bf6dc3f-333e-42c4-90d8-f492f9e941b1",
+        "allocation_id": "0958ca38-bd50-4cc4-a2f5-4b32e73ca488",
+        "actual_configuration_id": "340681fc-ac4b-46ab-a42c-fe59f44d67ba",
+        "actual_configuration_revision": 1,
+        "operation_key": null,
+        "cavity": "合成-A2",
+        "custodian_label": null,
+        "location": "合成隔离区",
+        "destination": "等待品质处置",
+        "availability": "hold",
+        "custodian_id": null,
+        "reservation": null,
+        "consumption": null,
+        "observation_nature": "synthetic"
+      },
+      {
+        "id": "1983cafd-87e4-4892-98a5-4a9566e19ee3",
+        "revision": 1,
+        "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+        "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+        "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+        "build_revision": 1,
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "status": "identified",
+        "created_at": "2026-10-02T12:20:26.624284+00:00",
+        "reason": "合成身份演练：从3台批次分配2件，保留1件未分配，不代表可测试或已消耗。",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "合成演练：2026-10-02 11:55 UTC 核对本轮计划工程配置及制造配置，实际采用同一固定版本。",
+            "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+            "expected_revision": 1
+          },
+          {
+            "line": 2,
+            "quote": "合成演练：2026-10-02 12:00 UTC 外部记录 W4-OUTPUT-001 产出3台；本次登记 PDOS-W4-S01 和 PDOS-W4-S02，其中S02待隔离核对。",
+            "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "source_status": "current",
+        "qualification_status": "unknown",
+        "authorization_status": "not_authorized",
+        "observation_route": "external_observation",
+        "verification_status": "not_checked",
+        "label": "PDOS-W4-S01",
+        "lot_id": "1bf6dc3f-333e-42c4-90d8-f492f9e941b1",
+        "allocation_id": "0958ca38-bd50-4cc4-a2f5-4b32e73ca488",
+        "actual_configuration_id": "340681fc-ac4b-46ab-a42c-fe59f44d67ba",
+        "actual_configuration_revision": 1,
+        "operation_key": "assembly",
+        "cavity": "合成-A1",
+        "custodian_label": null,
+        "location": "合成留样区",
+        "destination": "等待品质核对",
+        "availability": "unknown",
+        "custodian_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "reservation": null,
+        "consumption": null,
+        "observation_nature": "synthetic"
+      }
+    ],
+    "capabilities": {
+      "preparation_record": true,
+      "request_create": false,
+      "handoff_offer": false,
+      "handoff_accept": false,
+      "schedule_promise": false,
+      "run_plan": false,
+      "run_start": false,
+      "results_import": false,
+      "professional_review": false,
+      "disposition_decide": false
+    },
+    "blockers": [
+      {
+        "code": "BUILD_NOT_EXECUTING",
+        "detail": "可见Build仍为计划；参考样件不证明已获授权开工。",
+        "sample_id": null
+      },
+      {
+        "code": "PROFESSIONAL_QUALIFICATION_UNCONNECTED",
+        "detail": "品质/测试职责和专业资格接口尚未接通。",
+        "sample_id": null
+      },
+      {
+        "code": "RESOURCE_QUALIFICATION_UNCONNECTED",
+        "detail": "设备校准、治具适用、人员与资源预约核对尚未接通。",
+        "sample_id": null
+      },
+      {
+        "code": "SAMPLE_CONSUMPTION_UNCONNECTED",
+        "detail": "样件预约、破坏性消耗及并发复查接口尚未接通。",
+        "sample_id": null
+      },
+      {
+        "code": "SAMPLE_ON_HOLD",
+        "detail": "参考样件处于暂缓状态，不能据此接收或开测。",
+        "sample_id": "d9bbdee3-b3c1-4cab-a519-c45128614ca0"
+      },
+      {
+        "code": "SAMPLE_AVAILABILITY_UNKNOWN",
+        "detail": "参考样件可用性未知，未成为已交接或接收范围。",
+        "sample_id": "1983cafd-87e4-4892-98a5-4a9566e19ee3"
+      }
+    ],
+    "has_more": false,
+    "unavailable_count": 0
+  },
+  "receipt_ids": [
+    "bac2a33b-8a9d-4d74-9ef3-46221e3b279f",
+    "5455ac04-4c86-44fd-a221-694c2f75748b"
+  ],
+  "audit_and_outbox_each_once": true,
+  "model_calls": 0,
+  "agent_business_write_privileges": 0,
+  "backups": {
+    "pre-wave7-next_0008.dump": {
+      "bytes": 10624731,
+      "sha256": "b5a2018c67fd6f82ae8f8352df934fc7d87c557721ea134cea82876c6bf3b947",
+      "mode": "0o600"
+    },
+    "wave7-business.dump": {
+      "bytes": 13631405,
+      "sha256": "4ad76e6be9760a527f22561cd8ed74554c00cf0fd3824bd6318a672811d7eb8a",
+      "mode": "0o600"
+    }
+  },
+  "limitations": "Synthetic human preparation versions only; no qualification, acceptance, reservation, physical readiness, TestRun, measurements or formal Exit."
+}

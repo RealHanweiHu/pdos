@@ -1,0 +1,5 @@
+# B7 全入口收口
+
+B7 功能批完成，B8 未完成。实际隔离主库 `127.0.0.1:53502/pdos_test`（已核对 marker），head `s0_0719`；M2 迁移与公共领域接线已实际汇合，141 表生命周期登记覆盖通过。真实鉴权 HTTP→本地 Temporal→Activity→独立 PostgreSQL checkpoint 的 LangGraph→共同命令通过；T0 自动执行和无资格时人工 T1 预览/确认均写入真实 Claim/Receipt，保留 AI 署名与原运行，重复启动不增加模型调用。配置保存使用共同 T1/Receipt/Audit/Outbox，实际存储、当前秘密绑定、轮换拒绝、原回执恢复和终端回滚通过。范围/来源撤权、取消、整次撤回、持久恢复、排队补送及旧 SourceWork 停用有受影响回归；内核与配置 **330 项通过**、BFF **68 项通过**，受影响类型检查通过，先前业务集合 UI 195 项通过。只使用合成模型/材料/审阅记录，真实模型调用 0 次，未授予正式资格；未配置的外部端口仍明确失能。B8 尚需旧执行路径/旧合同清理、完整回归、迁移往返和恢复、浏览器整链以及最终计时/SQL 比较；此结果不代表 S0/M1、M2 正式出口或 M3/S1 通过。
+
+必要证据：[实际 schema](0719-actual-schema.json)、[本批内核与配置](0719-b7-final-affected.log)、[BFF](0719-b7-final-bff.log)、[页面类型](0719-b7-final-types.log)、[页面 lint](0719-b7-final-ui-lint.log)、[真实配置与 Temporal](0719-actual-configuration-temporal.log)、[T0/T1 实际领域链](0719-actual-t0-t1-temporal.log)、[候选原子性及整次撤回](0719-human-candidate-atomic-revert.log)、[真实原件安全来源](0719-configuration-and-originals.log)、[来源撤权](0719-source-revocation-bound-final.log)。原件组合初次 7/8 通过、余下预览错误码断言随后在 330 项中通过；保留中间失败日志，不将它冒充全部通过。

@@ -1,0 +1,26 @@
+ENOENT: no such file or directory, open '/private/tmp/pdos-s3-orders-ar3xvnjk/src/app/api/[...path]/route.ts'
+✔ project Change index and context reject another project and malformed provenance (2.447833ms)
+✔ empty or excluded Change does not deep-read all formal history and late project reads are discarded (0.498208ms)
+✔ one explicitly returned Change alone permits its scoped formal context read (0.163334ms)
+✔ registered selection material must bind the exact source, real action and named decider (9.503083ms)
+✔ unknown, not applicable, stale, expired or incomplete Selection cannot become a plan item (0.3995ms)
+✔ prepare uses the selected immutable item and stable draft plan identity without changing owner material (0.417125ms)
+✔ every actual known object needs explicit rationale and exact evidence; default unknown is retained honestly (0.185166ms)
+✔ T2 selection preview must be named and preserve exact command, action and decision material (1.021166ms)
+✔ T1 preparation preview binds the whole plan, current assessment and a new unapproved Order (0.58725ms)
+✔ inputs only fills the server read-set while original identifiers and semantic scope stay fixed (0.389917ms)
+✔ unknown execute recovery preserves exact command key token and project while other projects cannot restore it (0.439875ms)
+✔ different Change drafts retain stable plan identities and exact material candidates separately (0.159292ms)
+✔ receipts bind their actual operation and subject family without inventing formal approval (0.119417ms)
+✔ plan reading preserves exact unit tokens and unknown dispositions without implying actual new objects (0.15675ms)
+✔ domain or command graph provenance keeps every real object and never becomes default disposition evidence (0.224625ms)
+✔ a stale Selection with an unavailable receipt remains readable with explicit gaps and grants no plan eligibility (0.097875ms)
+✔ a real PlanItem keeps its owner-verified domain sources while the original Selection and disposition still need exact artifacts (0.183ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 69.980667

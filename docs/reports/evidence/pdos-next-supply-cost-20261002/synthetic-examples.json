@@ -1,0 +1,943 @@
+{
+  "examples": {
+    "complete_materials_estimate": {
+      "algorithm": "fixed-bom-process-decimal.v1",
+      "build_candidate": "1.00",
+      "complete_in_selected_scope": true,
+      "currency": "USD",
+      "decimal_precision": 38,
+      "including_amortized_nre": null,
+      "input_sha256": "919da0739772b0bd9238ede47d12ffea437a20b43a4309e9d83b0a7a68a9d83f",
+      "input_snapshot": {
+        "as_of": "2026-01-02T00:00:00Z",
+        "basis": {
+          "bom": {
+            "engineering_configuration": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "configuration",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "items": [
+              {
+                "critical": true,
+                "item_id": "a",
+                "loss_rate": "0",
+                "material_id": "part",
+                "parent_item_id": null,
+                "quantity_per_parent": "2",
+                "supply_required": true,
+                "unit": "ea"
+              }
+            ],
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "bom",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            }
+          },
+          "build": {
+            "build_id": "build",
+            "product_unit": "ea",
+            "quantity": "5",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "build",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            }
+          },
+          "schema_version": "supply-cost-input.v1"
+        },
+        "material_prices": [
+          {
+            "bom_item_id": "a",
+            "price_id": "price"
+          }
+        ],
+        "nre_price_ids": [],
+        "prices": [
+          {
+            "amount": "0.10",
+            "basis": "unit",
+            "currency": "USD",
+            "freight_basis": "included",
+            "maximum_quantity": null,
+            "minimum_quantity": null,
+            "price_id": "price",
+            "price_quantity": "1",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "price",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "scope_assumption": "Supplier estimate, materials only; no official ERP cost",
+            "stage": "estimate",
+            "subject_id": "part",
+            "subject_kind": "material",
+            "tax_basis": "exclusive",
+            "tax_rate": null,
+            "unit": "ea",
+            "valid_from": null,
+            "valid_until": null
+          }
+        ],
+        "process": null,
+        "rates": [],
+        "scope": {
+          "assumptions": [
+            "Synthetic materials-only estimate"
+          ],
+          "coverage": "materials_only",
+          "currency": "USD",
+          "freight_basis": "included",
+          "max_rate_age_days": 7,
+          "nre_policy": "excluded",
+          "nre_volume": null,
+          "rate_purpose": "budget",
+          "tax_basis": "exclusive"
+        }
+      },
+      "issues": [],
+      "known_build_subtotal": "1.00",
+      "known_nre_subtotal": "0",
+      "lines": [
+        {
+          "build_candidate": "1.00",
+          "category": "material",
+          "demand_unit": "ea",
+          "issues": [],
+          "line_id": "material:a",
+          "original_build_amount": "1.00",
+          "original_currency": "USD",
+          "per_product_candidate": "0.20",
+          "price_id": "price",
+          "quantity_for_build": "10",
+          "quantity_in_price_unit": "10",
+          "quantity_per_product": "2",
+          "rate_id": null
+        }
+      ],
+      "notice": "Selected-scope estimate candidate; not ERP actual cost, approval or proven saving",
+      "nre_candidate": null,
+      "per_product_candidate": "0.20",
+      "rounding": "ROUND_HALF_EVEN at precision 38; no currency display quantization",
+      "schema_version": "cost-estimate-result.v1",
+      "sensitive_items": []
+    },
+    "missing_fx_no_total": {
+      "algorithm": "fixed-bom-process-decimal.v1",
+      "build_candidate": null,
+      "complete_in_selected_scope": false,
+      "currency": "USD",
+      "decimal_precision": 38,
+      "including_amortized_nre": null,
+      "input_sha256": "6f6d3fc48034b42f390a128d6f3bcb0d019c4bbbfa3df160321825233dcebd96",
+      "input_snapshot": {
+        "as_of": "2026-01-02T00:00:00Z",
+        "basis": {
+          "bom": {
+            "engineering_configuration": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "configuration",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "items": [
+              {
+                "critical": true,
+                "item_id": "a",
+                "loss_rate": "0",
+                "material_id": "part",
+                "parent_item_id": null,
+                "quantity_per_parent": "2",
+                "supply_required": true,
+                "unit": "ea"
+              }
+            ],
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "bom",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            }
+          },
+          "build": {
+            "build_id": "build",
+            "product_unit": "ea",
+            "quantity": "5",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "build",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            }
+          },
+          "schema_version": "supply-cost-input.v1"
+        },
+        "material_prices": [
+          {
+            "bom_item_id": "a",
+            "price_id": "price"
+          }
+        ],
+        "nre_price_ids": [],
+        "prices": [
+          {
+            "amount": "0.10",
+            "basis": "unit",
+            "currency": "EUR",
+            "freight_basis": "included",
+            "maximum_quantity": null,
+            "minimum_quantity": null,
+            "price_id": "price",
+            "price_quantity": "1",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "price",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "scope_assumption": "Supplier estimate, materials only; no official ERP cost",
+            "stage": "estimate",
+            "subject_id": "part",
+            "subject_kind": "material",
+            "tax_basis": "exclusive",
+            "tax_rate": null,
+            "unit": "ea",
+            "valid_from": null,
+            "valid_until": null
+          }
+        ],
+        "process": null,
+        "rates": [],
+        "scope": {
+          "assumptions": [
+            "Synthetic materials-only estimate"
+          ],
+          "coverage": "materials_only",
+          "currency": "USD",
+          "freight_basis": "included",
+          "max_rate_age_days": 7,
+          "nre_policy": "excluded",
+          "nre_volume": null,
+          "rate_purpose": "budget",
+          "tax_basis": "exclusive"
+        }
+      },
+      "issues": [
+        {
+          "code": "exchange_rate_missing_or_ambiguous",
+          "kind": "missing",
+          "message": "Select one explicit direct exchange rate for this currency",
+          "path": "material:a"
+        }
+      ],
+      "known_build_subtotal": "0",
+      "known_nre_subtotal": "0",
+      "lines": [
+        {
+          "build_candidate": null,
+          "category": "material",
+          "demand_unit": "ea",
+          "issues": [
+            {
+              "code": "exchange_rate_missing_or_ambiguous",
+              "kind": "missing",
+              "message": "Select one explicit direct exchange rate for this currency",
+              "path": "material:a"
+            }
+          ],
+          "line_id": "material:a",
+          "original_build_amount": null,
+          "original_currency": "EUR",
+          "per_product_candidate": null,
+          "price_id": "price",
+          "quantity_for_build": "10",
+          "quantity_in_price_unit": "10",
+          "quantity_per_product": "2",
+          "rate_id": null
+        }
+      ],
+      "notice": "Selected-scope estimate candidate; not ERP actual cost, approval or proven saving",
+      "nre_candidate": null,
+      "per_product_candidate": null,
+      "rounding": "ROUND_HALF_EVEN at precision 38; no currency display quantization",
+      "schema_version": "cost-estimate-result.v1",
+      "sensitive_items": []
+    },
+    "promise_not_arrival": {
+      "algorithm": "fixed-bom-shared-pool.v1",
+      "candidate_policy": "critical-then-item-primary-then-alternate.v1",
+      "critical_secured_ready": false,
+      "input_sha256": "cc56c72a43d49e21b70dda4818786418a0bb8367bb07f8bfb0b281c0df5291bd",
+      "input_snapshot": {
+        "alternates": [],
+        "as_of": "2026-01-02T00:00:00Z",
+        "basis": {
+          "bom": {
+            "engineering_configuration": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "configuration",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "items": [
+              {
+                "critical": true,
+                "item_id": "a",
+                "loss_rate": "0",
+                "material_id": "part",
+                "parent_item_id": null,
+                "quantity_per_parent": "2",
+                "supply_required": true,
+                "unit": "ea"
+              }
+            ],
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "bom",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            }
+          },
+          "build": {
+            "build_id": "build",
+            "product_unit": "ea",
+            "quantity": "5",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "build",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            }
+          },
+          "schema_version": "supply-cost-input.v1"
+        },
+        "pools": [
+          {
+            "availability": "available",
+            "expected_at": null,
+            "key": {
+              "material_id": "part",
+              "pool_id": "stock",
+              "source_system": "ERP"
+            },
+            "quality": "released",
+            "quantity": "10",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "stock",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "stage": "commitment",
+            "unit": "ea"
+          }
+        ],
+        "reservations": [],
+        "supply_scope_complete": true,
+        "supply_snapshot": {
+          "captured_at": "2026-01-01T00:00:00Z",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "source_id": "availability",
+          "state": "current",
+          "valid_until": null,
+          "version": "v1"
+        }
+      },
+      "issues": [
+        {
+          "code": "not_actual_stock",
+          "kind": "restriction",
+          "message": "commitment is not receipt or usable stock",
+          "path": "stock"
+        }
+      ],
+      "lines": [
+        {
+          "demand": {
+            "ancestry": [],
+            "critical": true,
+            "issues": [],
+            "item_id": "a",
+            "material_id": "part",
+            "quantity_per_product": "2",
+            "required_quantity": "10",
+            "unit": "ea"
+          },
+          "issues": [
+            {
+              "code": "not_actual_stock",
+              "kind": "restriction",
+              "message": "commitment is not receipt or usable stock",
+              "path": "stock"
+            }
+          ],
+          "known_potential_quantity": "0",
+          "known_secured_quantity": "0",
+          "potential_gap": "10",
+          "potential_ready": false,
+          "secured_gap": "10",
+          "secured_ready": false,
+          "uses": []
+        }
+      ],
+      "notice": "Snapshot calculation only; candidates do not reserve stock or approve a Build. Potential readiness/gaps describe this greedy candidate, not optimal substitution feasibility",
+      "pools": [
+        {
+          "issues": [
+            {
+              "code": "not_actual_stock",
+              "kind": "restriction",
+              "message": "commitment is not receipt or usable stock",
+              "path": "stock"
+            }
+          ],
+          "key": {
+            "material_id": "part",
+            "pool_id": "stock",
+            "source_system": "ERP"
+          },
+          "own_secured_quantity": "0",
+          "quantity": "10",
+          "reserved_quantity": "0",
+          "source": {
+            "captured_at": "2026-01-01T00:00:00Z",
+            "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "source_id": "stock",
+            "state": "current",
+            "valid_until": null,
+            "version": "v1"
+          },
+          "stage": "commitment",
+          "unit": "ea",
+          "unreserved_usable_quantity": "0"
+        }
+      ],
+      "potential_is_feasibility_proof": false,
+      "potential_ready": false,
+      "schema_version": "supply-coverage-result.v1",
+      "secured_ready": false
+    },
+    "secured_actual_stock": {
+      "algorithm": "fixed-bom-shared-pool.v1",
+      "candidate_policy": "critical-then-item-primary-then-alternate.v1",
+      "critical_secured_ready": true,
+      "input_sha256": "6d4b329cd99d2647f4a156224795a4fc467e5adcdc793c9151d3056f64e46d42",
+      "input_snapshot": {
+        "alternates": [],
+        "as_of": "2026-01-02T00:00:00Z",
+        "basis": {
+          "bom": {
+            "engineering_configuration": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "configuration",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "items": [
+              {
+                "critical": true,
+                "item_id": "a",
+                "loss_rate": "0",
+                "material_id": "part",
+                "parent_item_id": null,
+                "quantity_per_parent": "2",
+                "supply_required": true,
+                "unit": "ea"
+              }
+            ],
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "bom",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            }
+          },
+          "build": {
+            "build_id": "build",
+            "product_unit": "ea",
+            "quantity": "5",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "build",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            }
+          },
+          "schema_version": "supply-cost-input.v1"
+        },
+        "pools": [
+          {
+            "availability": "available",
+            "expected_at": null,
+            "key": {
+              "material_id": "part",
+              "pool_id": "stock",
+              "source_system": "ERP"
+            },
+            "quality": "released",
+            "quantity": "10",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "stock",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "stage": "on_hand",
+            "unit": "ea"
+          }
+        ],
+        "reservations": [
+          {
+            "bom_item_id": "a",
+            "build_id": "build",
+            "pool": {
+              "material_id": "part",
+              "pool_id": "stock",
+              "source_system": "ERP"
+            },
+            "quantity": "10",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "reservation",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "reservation_id": "reservation",
+            "unit": "ea"
+          }
+        ],
+        "supply_scope_complete": true,
+        "supply_snapshot": {
+          "captured_at": "2026-01-01T00:00:00Z",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "source_id": "availability",
+          "state": "current",
+          "valid_until": null,
+          "version": "v1"
+        }
+      },
+      "issues": [],
+      "lines": [
+        {
+          "demand": {
+            "ancestry": [],
+            "critical": true,
+            "issues": [],
+            "item_id": "a",
+            "material_id": "part",
+            "quantity_per_product": "2",
+            "required_quantity": "10",
+            "unit": "ea"
+          },
+          "issues": [],
+          "known_potential_quantity": "10",
+          "known_secured_quantity": "10",
+          "potential_gap": "0",
+          "potential_ready": true,
+          "secured_gap": "0",
+          "secured_ready": true,
+          "uses": [
+            {
+              "kind": "secured",
+              "pool": {
+                "material_id": "part",
+                "pool_id": "stock",
+                "source_system": "ERP"
+              },
+              "qualification_id": null,
+              "quantity_in_demand_unit": "10",
+              "quantity_in_pool_unit": "10",
+              "reservation_id": "reservation"
+            }
+          ]
+        }
+      ],
+      "notice": "Snapshot calculation only; candidates do not reserve stock or approve a Build. Potential readiness/gaps describe this greedy candidate, not optimal substitution feasibility",
+      "pools": [
+        {
+          "issues": [],
+          "key": {
+            "material_id": "part",
+            "pool_id": "stock",
+            "source_system": "ERP"
+          },
+          "own_secured_quantity": "10",
+          "quantity": "10",
+          "reserved_quantity": "10",
+          "source": {
+            "captured_at": "2026-01-01T00:00:00Z",
+            "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "source_id": "stock",
+            "state": "current",
+            "valid_until": null,
+            "version": "v1"
+          },
+          "stage": "on_hand",
+          "unit": "ea",
+          "unreserved_usable_quantity": "0"
+        }
+      ],
+      "potential_is_feasibility_proof": false,
+      "potential_ready": true,
+      "schema_version": "supply-coverage-result.v1",
+      "secured_ready": true
+    },
+    "unknown_quality": {
+      "algorithm": "fixed-bom-shared-pool.v1",
+      "candidate_policy": "critical-then-item-primary-then-alternate.v1",
+      "critical_secured_ready": null,
+      "input_sha256": "45c3bc5493522d94de3d362ff31e5e22b8eb7b4607504b7010232e01d064f983",
+      "input_snapshot": {
+        "alternates": [],
+        "as_of": "2026-01-02T00:00:00Z",
+        "basis": {
+          "bom": {
+            "engineering_configuration": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "configuration",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "items": [
+              {
+                "critical": true,
+                "item_id": "a",
+                "loss_rate": "0",
+                "material_id": "part",
+                "parent_item_id": null,
+                "quantity_per_parent": "2",
+                "supply_required": true,
+                "unit": "ea"
+              }
+            ],
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "bom",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            }
+          },
+          "build": {
+            "build_id": "build",
+            "product_unit": "ea",
+            "quantity": "5",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "build",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            }
+          },
+          "schema_version": "supply-cost-input.v1"
+        },
+        "pools": [
+          {
+            "availability": "available",
+            "expected_at": null,
+            "key": {
+              "material_id": "part",
+              "pool_id": "stock",
+              "source_system": "ERP"
+            },
+            "quality": "unknown",
+            "quantity": "10",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "stock",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "stage": "on_hand",
+            "unit": "ea"
+          }
+        ],
+        "reservations": [],
+        "supply_scope_complete": true,
+        "supply_snapshot": {
+          "captured_at": "2026-01-01T00:00:00Z",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "source_id": "availability",
+          "state": "current",
+          "valid_until": null,
+          "version": "v1"
+        }
+      },
+      "issues": [
+        {
+          "code": "quality_unknown",
+          "kind": "missing",
+          "message": "Quality release is unknown",
+          "path": "stock"
+        }
+      ],
+      "lines": [
+        {
+          "demand": {
+            "ancestry": [],
+            "critical": true,
+            "issues": [],
+            "item_id": "a",
+            "material_id": "part",
+            "quantity_per_product": "2",
+            "required_quantity": "10",
+            "unit": "ea"
+          },
+          "issues": [
+            {
+              "code": "quality_unknown",
+              "kind": "missing",
+              "message": "Quality release is unknown",
+              "path": "stock"
+            }
+          ],
+          "known_potential_quantity": "0",
+          "known_secured_quantity": "0",
+          "potential_gap": null,
+          "potential_ready": null,
+          "secured_gap": null,
+          "secured_ready": null,
+          "uses": []
+        }
+      ],
+      "notice": "Snapshot calculation only; candidates do not reserve stock or approve a Build. Potential readiness/gaps describe this greedy candidate, not optimal substitution feasibility",
+      "pools": [
+        {
+          "issues": [
+            {
+              "code": "quality_unknown",
+              "kind": "missing",
+              "message": "Quality release is unknown",
+              "path": "stock"
+            }
+          ],
+          "key": {
+            "material_id": "part",
+            "pool_id": "stock",
+            "source_system": "ERP"
+          },
+          "own_secured_quantity": null,
+          "quantity": "10",
+          "reserved_quantity": null,
+          "source": {
+            "captured_at": "2026-01-01T00:00:00Z",
+            "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "source_id": "stock",
+            "state": "current",
+            "valid_until": null,
+            "version": "v1"
+          },
+          "stage": "on_hand",
+          "unit": "ea",
+          "unreserved_usable_quantity": null
+        }
+      ],
+      "potential_is_feasibility_proof": false,
+      "potential_ready": null,
+      "schema_version": "supply-coverage-result.v1",
+      "secured_ready": null
+    },
+    "unreserved_stock_candidate": {
+      "algorithm": "fixed-bom-shared-pool.v1",
+      "candidate_policy": "critical-then-item-primary-then-alternate.v1",
+      "critical_secured_ready": false,
+      "input_sha256": "2f939e9cf359fbc90377c5c63699f485cb334ca6f2874d93ec385076ba95340f",
+      "input_snapshot": {
+        "alternates": [],
+        "as_of": "2026-01-02T00:00:00Z",
+        "basis": {
+          "bom": {
+            "engineering_configuration": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "configuration",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "items": [
+              {
+                "critical": true,
+                "item_id": "a",
+                "loss_rate": "0",
+                "material_id": "part",
+                "parent_item_id": null,
+                "quantity_per_parent": "2",
+                "supply_required": true,
+                "unit": "ea"
+              }
+            ],
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "bom",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            }
+          },
+          "build": {
+            "build_id": "build",
+            "product_unit": "ea",
+            "quantity": "5",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "build",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            }
+          },
+          "schema_version": "supply-cost-input.v1"
+        },
+        "pools": [
+          {
+            "availability": "available",
+            "expected_at": null,
+            "key": {
+              "material_id": "part",
+              "pool_id": "stock",
+              "source_system": "ERP"
+            },
+            "quality": "released",
+            "quantity": "10",
+            "ref": {
+              "captured_at": "2026-01-01T00:00:00Z",
+              "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source_id": "stock",
+              "state": "current",
+              "valid_until": null,
+              "version": "v1"
+            },
+            "stage": "on_hand",
+            "unit": "ea"
+          }
+        ],
+        "reservations": [],
+        "supply_scope_complete": true,
+        "supply_snapshot": {
+          "captured_at": "2026-01-01T00:00:00Z",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "source_id": "availability",
+          "state": "current",
+          "valid_until": null,
+          "version": "v1"
+        }
+      },
+      "issues": [],
+      "lines": [
+        {
+          "demand": {
+            "ancestry": [],
+            "critical": true,
+            "issues": [],
+            "item_id": "a",
+            "material_id": "part",
+            "quantity_per_product": "2",
+            "required_quantity": "10",
+            "unit": "ea"
+          },
+          "issues": [],
+          "known_potential_quantity": "10",
+          "known_secured_quantity": "0",
+          "potential_gap": "0",
+          "potential_ready": true,
+          "secured_gap": "10",
+          "secured_ready": false,
+          "uses": [
+            {
+              "kind": "unreserved_candidate",
+              "pool": {
+                "material_id": "part",
+                "pool_id": "stock",
+                "source_system": "ERP"
+              },
+              "qualification_id": null,
+              "quantity_in_demand_unit": "10",
+              "quantity_in_pool_unit": "10",
+              "reservation_id": null
+            }
+          ]
+        }
+      ],
+      "notice": "Snapshot calculation only; candidates do not reserve stock or approve a Build. Potential readiness/gaps describe this greedy candidate, not optimal substitution feasibility",
+      "pools": [
+        {
+          "issues": [],
+          "key": {
+            "material_id": "part",
+            "pool_id": "stock",
+            "source_system": "ERP"
+          },
+          "own_secured_quantity": "0",
+          "quantity": "10",
+          "reserved_quantity": "0",
+          "source": {
+            "captured_at": "2026-01-01T00:00:00Z",
+            "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "source_id": "stock",
+            "state": "current",
+            "valid_until": null,
+            "version": "v1"
+          },
+          "stage": "on_hand",
+          "unit": "ea",
+          "unreserved_usable_quantity": "10"
+        }
+      ],
+      "potential_is_feasibility_proof": false,
+      "potential_ready": true,
+      "schema_version": "supply-coverage-result.v1",
+      "secured_ready": false
+    }
+  },
+  "source_hashes_are_fixture_markers": true,
+  "synthetic_only": true
+}

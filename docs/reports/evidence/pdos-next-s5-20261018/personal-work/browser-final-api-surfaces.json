@@ -1,0 +1,194 @@
+{
+  "api": {
+    "first": {
+      "version": "personal-project-work/v1",
+      "principal_id": "852f0a38-fadc-4d01-900f-2bcff0233809",
+      "as_of": "2026-10-18T01:23:33.146503+00:00",
+      "queue": "commitments",
+      "total_records": 2,
+      "items": [
+        {
+          "id": "5bacc61e-b7ec-4433-abc1-497fd1c4c635",
+          "category": {
+            "id": "67a1eca2-8b18-4140-8856-da3349f474df",
+            "name": "汽车充气泵"
+          },
+          "product": {
+            "id": "7dfb0467-2ece-4a72-b3b5-1befa0a0ae59",
+            "name": "Synthetic named work loop"
+          },
+          "project": {
+            "id": "8722e74e-22f6-4144-92cc-8cff27502ab0",
+            "name": "Synthetic named work loop"
+          },
+          "task": {
+            "id": "46784aa3-eb28-4fe5-b379-ea52eaf88ff0",
+            "version_id": "ccbb0a30-026e-4bae-b178-89c200ae588b",
+            "revision": 8,
+            "state": "completed",
+            "title": "Personal core work"
+          },
+          "assignee": {
+            "id": "852f0a38-fadc-4d01-900f-2bcff0233809",
+            "name": "Synthetic peer"
+          },
+          "recipient": {
+            "id": "852f0a38-fadc-4d01-900f-2bcff0233809",
+            "name": "Synthetic peer"
+          },
+          "recorded_at": "2026-10-18T01:15:10.240089+00:00",
+          "commitment": {
+            "id": "5bacc61e-b7ec-4433-abc1-497fd1c4c635",
+            "revision": 1,
+            "task_revision": 3,
+            "promisor_id": "852f0a38-fadc-4d01-900f-2bcff0233809",
+            "recipient_id": "852f0a38-fadc-4d01-900f-2bcff0233809",
+            "outcome_keys": [
+              "drawing",
+              "inspection"
+            ],
+            "promised_at": "2026-10-19T01:15:07.885499+00:00",
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null
+          },
+          "timing": "pending"
+        }
+      ],
+      "next_cursor": "5bacc61e-b7ec-4433-abc1-497fd1c4c635"
+    },
+    "second": {
+      "version": "personal-project-work/v1",
+      "principal_id": "852f0a38-fadc-4d01-900f-2bcff0233809",
+      "as_of": "2026-10-18T01:23:33.440142+00:00",
+      "queue": "commitments",
+      "total_records": 2,
+      "items": [
+        {
+          "id": "6fd2e053-7784-4ceb-8a35-fec1b775b928",
+          "category": {
+            "id": "67a1eca2-8b18-4140-8856-da3349f474df",
+            "name": "汽车充气泵"
+          },
+          "product": {
+            "id": "7dfb0467-2ece-4a72-b3b5-1befa0a0ae59",
+            "name": "Synthetic named work loop"
+          },
+          "project": {
+            "id": "8722e74e-22f6-4144-92cc-8cff27502ab0",
+            "name": "Synthetic named work loop"
+          },
+          "task": {
+            "id": "46784aa3-eb28-4fe5-b379-ea52eaf88ff0",
+            "version_id": "ccbb0a30-026e-4bae-b178-89c200ae588b",
+            "revision": 8,
+            "state": "completed",
+            "title": "Personal core work"
+          },
+          "assignee": {
+            "id": "852f0a38-fadc-4d01-900f-2bcff0233809",
+            "name": "Synthetic peer"
+          },
+          "recipient": {
+            "id": "31fbe031-0778-40c9-ac5d-d5bc005ca5cf",
+            "name": "Synthetic owner"
+          },
+          "recorded_at": "2026-10-18T01:15:08.372589+00:00",
+          "commitment": {
+            "id": "6fd2e053-7784-4ceb-8a35-fec1b775b928",
+            "revision": 1,
+            "task_revision": 3,
+            "promisor_id": "852f0a38-fadc-4d01-900f-2bcff0233809",
+            "recipient_id": "31fbe031-0778-40c9-ac5d-d5bc005ca5cf",
+            "outcome_keys": [
+              "drawing",
+              "inspection"
+            ],
+            "promised_at": null,
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null
+          },
+          "timing": "unknown"
+        }
+      ],
+      "next_cursor": null
+    },
+    "project": {
+      "items": [
+        {
+          "category": {
+            "id": "67a1eca2-8b18-4140-8856-da3349f474df",
+            "name": "汽车充气泵",
+            "purpose": "隔离合成品类"
+          },
+          "product": {
+            "id": "7dfb0467-2ece-4a72-b3b5-1befa0a0ae59",
+            "name": "Synthetic named work loop",
+            "purpose": "Actual work acceptance with bounded independent commitments"
+          },
+          "project": {
+            "id": "8722e74e-22f6-4144-92cc-8cff27502ab0",
+            "name": "Synthetic named work loop",
+            "purpose": "Actual work acceptance with bounded independent commitments",
+            "scope": "Actual work acceptance with bounded independent commitments",
+            "owner_id": "31fbe031-0778-40c9-ac5d-d5bc005ca5cf",
+            "owner_name": "Synthetic owner",
+            "visibility": "category",
+            "revision": 1,
+            "status": "active",
+            "created_at": "2026-10-18T01:14:48.726396+00:00",
+            "latest_status_update": {
+              "id": "0d979c1b-fdc5-429d-adab-58dc8841c07d",
+              "revision": 1,
+              "actor": {
+                "id": "31fbe031-0778-40c9-ac5d-d5bc005ca5cf",
+                "name": "Synthetic owner"
+              },
+              "fact_summary": "A later named update keeps the same fixed task revision",
+              "next_steps": "Prepare the next separately authorized action",
+              "task_refs": [
+                {
+                  "id": "46784aa3-eb28-4fe5-b379-ea52eaf88ff0",
+                  "revision": 8
+                }
+              ],
+              "created_at": "2026-10-18T01:15:30.247288+00:00",
+              "receipt_id": "3aa81516-ee07-4c72-9fb9-ad5db9a17fcb"
+            },
+            "source_status": "current",
+            "definition": {
+              "id": "dc04fb77-2393-4c03-af24-661b2632466a",
+              "title": "Synthetic named work loop",
+              "revision": 1,
+              "status": "draft",
+              "source_status": "current"
+            },
+            "plan": null,
+            "plan_state": "not_created",
+            "work_packages": [],
+            "task_count": null
+          },
+          "openItems": [],
+          "openItemsError": ""
+        }
+      ],
+      "next_cursor": null,
+      "unavailable_count": 0,
+      "as_of": "2026-10-18T01:23:33.836080+00:00"
+    }
+  },
+  "surfaces": [
+    {
+      "url": "http://127.0.0.1:59783/?area=projects",
+      "text": "A later named update keeps the same fixed task revision\n\nSynthetic owner\n10/17/2026, 6:15:30 PM\n\n下一步与固定引用"
+    },
+    {
+      "url": "http://127.0.0.1:59783/?area=cockpit",
+      "text": "A later named update keeps the same fixed task revision\n\nSynthetic owner\n10/17/2026, 6:15:30 PM\n\n下一步与固定引用"
+    },
+    {
+      "url": "http://127.0.0.1:59783/?area=cockpit&category=67a1eca2-8b18-4140-8856-da3349f474df&project=8722e74e-22f6-4144-92cc-8cff27502ab0",
+      "text": "A later named update keeps the same fixed task revision\n\nSynthetic owner\n10/17/2026, 6:15:30 PM\n\n下一步与固定引用"
+    }
+  ],
+  "commandPosts": []
+}

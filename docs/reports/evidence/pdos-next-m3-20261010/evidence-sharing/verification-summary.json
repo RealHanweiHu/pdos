@@ -1,0 +1,14 @@
+{
+  "head": "s0_0737",
+  "source_digest": "fd64f7cf32c765a81cbca47717e60636eb68de48405d9442a19fa7a197c29f57",
+  "source_count": 1395,
+  "unique_passed_cases": 370,
+  "unresolved_selected_failures": [],
+  "evidence_files": [
+    "pure-final.xml",
+    "commands-6.xml",
+    "regression-2.xml",
+    "effective-audience-1.xml"
+  ],
+  "real_llm_calls": 0
+}

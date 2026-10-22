@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-03T19:15:54.226484+00:00",
+  "pid": 19131,
+  "command_verified": true,
+  "server_cwd_verified": true,
+  "listening_port": 8898,
+  "reason": "Apply explicitly imported second test-resource scope; old first scope retained",
+  "business_commands": 0,
+  "worker_changed": false
+}

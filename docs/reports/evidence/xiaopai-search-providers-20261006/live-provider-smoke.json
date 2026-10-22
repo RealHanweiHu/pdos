@@ -1,0 +1,24 @@
+{
+  "tavily": {
+    "http_status": 200,
+    "success": null,
+    "candidate_count": 2
+  },
+  "firecrawl_search": {
+    "http_status": 200,
+    "success": true,
+    "candidate_count": 2
+  },
+  "firecrawl_scrape": {
+    "http_status": 200,
+    "success": true,
+    "html_chars": 1516,
+    "source_url": "https://example.com",
+    "final_url": "https://example.com/",
+    "page_status": 200
+  },
+  "public_source_dns": {
+    "all_globally_routable": false,
+    "address_count": 1
+  }
+}

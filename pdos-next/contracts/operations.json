@@ -1,0 +1,829 @@
+{
+  "provenance": {
+    "kind": "derived_from_consolidated_markdown",
+    "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
+    "sha256": "eb9f156e46cc77a4653e4b823aca92e41bb58831a03731817002c08415ccb64d",
+    "original_contract_package_received": false,
+    "revision": "v1.1 (approved 2026-10-08)",
+    "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
+    "stage_note": "Build stages renamed G0-G5 -> S0-S5 (same order); G0/G1 are now business gates (G0 立项评审, G1 计划基线)."
+  },
+  "pending_code_alignment": [],
+  "items": [
+    {
+      "operation": "evidence.artifact.register",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "artifact.registered",
+      "stage": "S0",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "evidence.claim.record",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "claim.recorded",
+      "stage": "S0",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "evidence.claim.withdraw",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "claim.withdrawn",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "note": "确认稿 P9；M3 单条 Claim 撤回，不由 S0 整次运行撤回替代。",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "evidence.link.create",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "evidence.linked",
+      "stage": "S0",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "evidence.source.withdraw",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "source.withdrawn",
+      "stage": "S0",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "product.definition.draft",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "definition.draft_created",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "product.definition.update",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "definition.updated",
+      "stage": "S1",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "product.definition.publish",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "definition.published",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "note": "= 规格冻结（T2）"
+    },
+    {
+      "operation": "product.variant.derive",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "variant.derived",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "project.create",
+      "write_tier": "T2",
+      "ai_execution": "随 proposal.g0.decide，仅准备/不可代决定",
+      "event": "project.created",
+      "stage": "S1",
+      "implementation": "g0_atomic_materialization_only",
+      "note": "Only proposal.g0.decide creates a project atomically with the named Human G0 decision. No independent executable command; Xiaopai may prepare materials."
+    },
+    {
+      "operation": "work.task.create",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "task.created",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "work.task.assign",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "task.assigned",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "work.commitment.accept",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "commitment.accepted",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "work.plan.propose",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "plan.proposed",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "work.plan.apply",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "plan.applied",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "work.baseline.approve",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "baseline.approved",
+      "stage": "S1",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "work.forecast.refresh",
+      "write_tier": "T0",
+      "ai_execution": "确定性引擎",
+      "event": "forecast.refreshed",
+      "stage": "S1",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "work.external_wait.record",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "external_wait.recorded",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "work.status_update.create",
+      "write_tier": "T1",
+      "ai_execution": "AI 可起草，一次确认后由具名人发布；不自动发布",
+      "event": "project.status_updated",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added (确认稿 P18)",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "engineering.configuration.create",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "configuration.created",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "engineering.interface.update",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "interface.updated",
+      "stage": "S2",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "engineering.bom.revise",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "bom.revised",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "build.create",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "build.created",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "build.readiness.compute",
+      "write_tier": "T0",
+      "ai_execution": "确定性引擎",
+      "event": "readiness.computed",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "build.start",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "build.started",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "build.output.record",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "build.output_recorded",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "build.sample.allocate",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "sample.allocated",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "build.configuration.actual.record",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "actual_configuration.recorded",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "verification.request.create",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "verification.requested",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "verification.handoff.offer",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "handoff.offered",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "verification.handoff.accept",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "handoff.accepted",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "verification.schedule.propose",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "verification.schedule_proposed",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "test.results.import",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "test.results_imported",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "test.result.compute",
+      "write_tier": "T0",
+      "ai_execution": "确定性引擎",
+      "event": "test.result_computed",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "test.disposition.decide",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "test.disposition_decided",
+      "stage": "S2",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "quality.issue.create",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "issue.created",
+      "stage": "S3",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "quality.issue.merge",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "issues.merged",
+      "stage": "S3",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "quality.capa.draft",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "capa.drafted",
+      "stage": "S3",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "quality.capa.effectiveness.decide",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "capa.effectiveness_decided",
+      "stage": "S3",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "npi.process.revise",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "process.revised",
+      "stage": "S4",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "npi.tooltrial.create",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "tooltrial.created",
+      "stage": "S2",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "npi.fixture.accept",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "fixture.accepted",
+      "stage": "S2",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "npi.pilot.create",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "pilot.created",
+      "stage": "S4",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "npi.pilot.result.record",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "pilot.results_recorded",
+      "stage": "S4",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "change.request.create",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "change.requested",
+      "stage": "S3",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "change.impact.compute",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "change.impact_created",
+      "stage": "S3",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "change.order.approve",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "change.approved",
+      "stage": "S3",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "change.implementation.record",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "change.implementation_recorded",
+      "stage": "S3",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "release.package.assemble",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "release.package_assembled",
+      "stage": "S4",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json",
+      "note": "Actual release policy and scoped exception owners are connected. Missing, unknown or unsupported evidence stays explicit; a positive decision requires applicable fixed material and the current named T2 professional authority. A bounded exception preserves original checks and permits only conditions."
+    },
+    {
+      "operation": "release.engineering.approve",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "release.engineering_approved",
+      "stage": "S4",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json",
+      "note": "Actual release policy and scoped exception owners are connected. Missing, unknown or unsupported evidence stays explicit; a positive decision requires applicable fixed material and the current named T2 professional authority. A bounded exception preserves original checks and permits only conditions."
+    },
+    {
+      "operation": "release.manufacturing.approve",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "release.manufacturing_approved",
+      "stage": "S4",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json",
+      "note": "Actual release policy and scoped exception owners are connected. Missing, unknown or unsupported evidence stays explicit; a positive decision requires applicable fixed material and the current named T2 professional authority. A bounded exception preserves original checks and permits only conditions."
+    },
+    {
+      "operation": "customer.sample.send",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "customer.sample_send_authorized",
+      "stage": "S4",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "customer.acceptance.record",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "customer.acceptance_recorded",
+      "stage": "S4",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "supply.commitment.record",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "supply.commitment_recorded",
+      "stage": "S4",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "supply.kit.compute",
+      "write_tier": "T0",
+      "ai_execution": "确定性引擎",
+      "event": "kit.computed",
+      "stage": "S4",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "supply.alternate.approve",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "alternate.approved",
+      "stage": "S4",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "cost.estimate.compute",
+      "write_tier": "T0",
+      "ai_execution": "确定性引擎",
+      "event": "cost.estimated",
+      "stage": "S4",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "integration.handoff.authorize",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "external_handoff.authorized",
+      "stage": "S4",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "integration.receipt.record",
+      "write_tier": "T0",
+      "ai_execution": "可信连接器",
+      "event": "external_receipt.recorded",
+      "stage": "S4",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "knowledge.candidate.create",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "knowledge.candidate_created",
+      "stage": "S5",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "knowledge.rule.publish",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "knowledge.rule_published",
+      "stage": "S5",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "ai.work.start",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "ai.work_started",
+      "stage": "S0",
+      "implementation": "implemented_local_endpoint",
+      "payload_schema": "openapi.json",
+      "api_binding": {
+        "method": "POST",
+        "path": "/v1/categories/{category_id}/agent-runs"
+      },
+      "note": "Current Xiaopai durable run endpoint, with AgentEvent trace; retired SourceWork command payload is not callable. AI domain writes still require current qualification and authorization."
+    },
+    {
+      "operation": "ai.run.cancel",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "ai.run_cancelled",
+      "stage": "S0",
+      "implementation": "implemented_local_endpoint",
+      "payload_schema": "openapi.json",
+      "api_binding": {
+        "method": "POST",
+        "path": "/v1/categories/{category_id}/agent-runs/{run_id}/cancel"
+      },
+      "note": "Current Xiaopai durable run endpoint, with AgentEvent trace; retired SourceWork command payload is not callable. AI domain writes still require current qualification and authorization."
+    },
+    {
+      "operation": "ai.run.revert",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "ai.run_reverted",
+      "stage": "S0",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "ai.automation.activate",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "ai.automation_activated",
+      "stage": "S5",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json",
+      "note": "Read-only rules support human manual admission and named service authorization for schedule, registered domain event and actual relative milestone triggers. Network, MCP and business writes remain disabled; formal S5 acceptance is pending."
+    },
+    {
+      "operation": "ai.automation.pause",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "ai.automation_paused",
+      "stage": "S5",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json",
+      "note": "Read-only rules support human manual admission and named service authorization for schedule, registered domain event and actual relative milestone triggers. Network, MCP and business writes remain disabled; formal S5 acceptance is pending."
+    },
+    {
+      "operation": "my_work.query",
+      "write_tier": "READ",
+      "ai_execution": "授权读取",
+      "event": null,
+      "stage": "S0",
+      "implementation": "not_implemented"
+    },
+    {
+      "operation": "research.snapshot.register",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权",
+      "event": "research.snapshot_registered",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "category.create",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "category.created",
+      "stage": "S1",
+      "implementation": "implemented_local_endpoint",
+      "v1_1": "added",
+      "payload_schema": "openapi.json",
+      "api_binding": {
+        "method": "POST",
+        "path": "/v1/categories"
+      }
+    },
+    {
+      "operation": "category.member.grant",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "category.member_granted",
+      "stage": "S1",
+      "implementation": "implemented_local_endpoint",
+      "v1_1": "added",
+      "payload_schema": "openapi.json",
+      "api_binding": {
+        "method": "POST",
+        "path": "/v1/categories/{category_id}/members"
+      }
+    },
+    {
+      "operation": "category.knowledge.add",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权；AI 来源标 ai_draft",
+      "event": "category.knowledge_added",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "category.knowledge.promote",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后，须人工确认已去标识",
+      "event": "category.knowledge_promoted",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "category.knowledge.withdraw",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "category.knowledge_withdrawn",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "category.parameter.publish",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "category.parameter_published",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "proposal.create",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后；默认私有",
+      "event": "proposal.created",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "proposal.item.patch",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权；署 AI 名、可按运行撤回、不覆盖人工值",
+      "event": "proposal.item_patched",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "proposal.question.create",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "proposal.question_created",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "proposal.share",
+      "write_tier": "T1",
+      "ai_execution": "仅人工",
+      "event": "proposal.shared",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "proposal.g0.submit",
+      "write_tier": "T1",
+      "ai_execution": "仅提案负责人本人",
+      "event": "proposal.g0_submitted",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "proposal.g0.decide",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定；评审人不得为负责人",
+      "event": "proposal.g0_decided",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "platform.link.create",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "platform.linked",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "product.definition.item.patch",
+      "write_tier": "T0",
+      "ai_execution": "需资格与授权；署 AI 名、可撤回",
+      "event": "definition.item_patched",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "ai.skill.enable",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "ai.skill_enabled",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "ai.skill.qualify",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "ai.skill_qualified",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "provider.agreement.register",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "provider.agreement_registered",
+      "stage": "S1",
+      "implementation": "not_implemented",
+      "v1_1": "added"
+    },
+    {
+      "operation": "mcp.connector.allow",
+      "write_tier": "T2",
+      "ai_execution": "仅准备/不可代决定",
+      "event": "mcp.connector_allowed",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "mcp.tool.grant",
+      "write_tier": "T1",
+      "ai_execution": "一次确认后",
+      "event": "mcp.tool_granted",
+      "stage": "S1",
+      "implementation": "implemented_local_slice",
+      "v1_1": "added",
+      "payload_schema": "payloads.schema.json"
+    }
+  ]
+}

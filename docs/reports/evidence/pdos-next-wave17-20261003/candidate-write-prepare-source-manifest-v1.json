@@ -1,0 +1,95 @@
+{
+  "schema_version": "pdos-candidate-write-prepare-source-v1",
+  "recorded_at": "2026-10-03T12:42:45.306232+00:00",
+  "source_files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+      "sha256": "66b4169d848f3b348eaf8bf1c65d515eacd0f0fd58314b6f7e7f0743ff81712c",
+      "bytes": 29519
+    },
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_candidate_write_prepare.py",
+      "sha256": "d1a5a7bb4dd01adc481a51da29b1c110ce538ce8907584da050e5eaed7bfe697",
+      "bytes": 26031
+    }
+  ],
+  "contract": {
+    "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-contract-v1.md",
+    "sha256": "d009817d41113c39c88f68ba64b3447ae553d2e28ef8ceccc433c2a639247033"
+  },
+  "prior_staged_frozen_files": [
+    {
+      "path": "pdos-next/staging/wave17/candidate_anchor_restore.py",
+      "expected_sha256": "5dd333f70e45a1345da71d63b9b3d4c5da0dc427107c5ebffb50bbda624c1985",
+      "sha256": "5dd333f70e45a1345da71d63b9b3d4c5da0dc427107c5ebffb50bbda624c1985",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_candidate_anchor_restore.py",
+      "expected_sha256": "6dc6a06511fdbdc3baacb0db0e694fba84208584a67b783ee171d630bd33c5c4",
+      "sha256": "6dc6a06511fdbdc3baacb0db0e694fba84208584a67b783ee171d630bd33c5c4",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-anchor-restore-contract.md",
+      "expected_sha256": "1218d3dbf6199ba957f8870b4caa5bead6f5a2ad7648a143dacda03501452d8c",
+      "sha256": "1218d3dbf6199ba957f8870b4caa5bead6f5a2ad7648a143dacda03501452d8c",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate_prepare.py",
+      "expected_sha256": "89fe3375c97d0fd674ddbd93b7615fa6723a7209ac0f40184511010b80ca46eb",
+      "sha256": "89fe3375c97d0fd674ddbd93b7615fa6723a7209ac0f40184511010b80ca46eb",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_candidate_prepare.py",
+      "expected_sha256": "e3d5e736dd4c6c376ff404275a87e3fe4a1860a445c123272be5e1fa99c3baaa",
+      "sha256": "e3d5e736dd4c6c376ff404275a87e3fe4a1860a445c123272be5e1fa99c3baaa",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-prepare-contract.md",
+      "expected_sha256": "54f1750d3e43e0d8b9137f58f4d29e0c4fe1eef13b3eb5dfba2b2d974ec45172",
+      "sha256": "54f1750d3e43e0d8b9137f58f4d29e0c4fe1eef13b3eb5dfba2b2d974ec45172",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate_commands.py",
+      "expected_sha256": "1cb7b82f9a187d20ee44ba5193f8b3c327e12e54ae4bf02356b49e46960ce8ac",
+      "sha256": "1cb7b82f9a187d20ee44ba5193f8b3c327e12e54ae4bf02356b49e46960ce8ac",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_candidate_commands.py",
+      "expected_sha256": "0d019f44ceeb992ba0825325f2debbb96595ad096ff88b31f1f6d2707bda3b64",
+      "sha256": "0d019f44ceeb992ba0825325f2debbb96595ad096ff88b31f1f6d2707bda3b64",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-command-contract.md",
+      "expected_sha256": "98df984ae8d27f53d6ea547f8a5a6b9c4876b54eaeae12a3332d047eaa53b76b",
+      "sha256": "98df984ae8d27f53d6ea547f8a5a6b9c4876b54eaeae12a3332d047eaa53b76b",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate_storage.py",
+      "expected_sha256": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+      "sha256": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_candidate_storage.py",
+      "expected_sha256": "3aaeeadd5f6b5c537e6bd58314b8b4cd69345537fb241201111d993d6a97aa07",
+      "sha256": "3aaeeadd5f6b5c537e6bd58314b8b4cd69345537fb241201111d993d6a97aa07",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-storage-contract.md",
+      "expected_sha256": "ac3c89e55a0115f6d5b8d2ed9ea11d5b6b6ee8c88bff3fe421d9006f5b85e4b7",
+      "sha256": "ac3c89e55a0115f6d5b8d2ed9ea11d5b6b6ee8c88bff3fe421d9006f5b85e4b7",
+      "matches": true
+    }
+  ],
+  "scope": "one exclusively assigned public prepare module plus own new pure test; no shared/public other modifications"
+}

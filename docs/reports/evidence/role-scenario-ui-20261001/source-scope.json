@@ -1,0 +1,196 @@
+{
+  "primary_count": 30,
+  "primary": [
+    {
+      "path": "web/src/app/page.tsx",
+      "sha256": "7c4dc34f80661043403d4d43ee2318f7400a9734ebfda5761db3fb71e8c5fe1f",
+      "candidate_sha256": "7c4dc34f80661043403d4d43ee2318f7400a9734ebfda5761db3fb71e8c5fe1f",
+      "matches": true
+    },
+    {
+      "path": "web/src/app/dashboard/page.tsx",
+      "sha256": "6bd8b1296e2b11537ee42d9e39585be7a909f6554d93492d862412cbf2f3d686",
+      "candidate_sha256": "6bd8b1296e2b11537ee42d9e39585be7a909f6554d93492d862412cbf2f3d686",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/workspace-shell.tsx",
+      "sha256": "7722fd3bdd641c1be32eaa9c6950306398f28320fb404209985420db4d86b166",
+      "candidate_sha256": "7722fd3bdd641c1be32eaa9c6950306398f28320fb404209985420db4d86b166",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/workspace-shell.test.tsx",
+      "sha256": "702f7f6ba3de4dd9d7870dfcfc8f96a6965291c266b2e9fad98dcf1ed8d3d24b",
+      "candidate_sha256": "702f7f6ba3de4dd9d7870dfcfc8f96a6965291c266b2e9fad98dcf1ed8d3d24b",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/workspace-experience.ts",
+      "sha256": "b2eea0958a6901efd54efcc3e703c2a9285891f70152089733bf6446c25e938f",
+      "candidate_sha256": "b2eea0958a6901efd54efcc3e703c2a9285891f70152089733bf6446c25e938f",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/workspace-experience.test.ts",
+      "sha256": "7d064e57272917097ded53ace632deccda3568e1f4ced7ee73c2203d7ed6ba37",
+      "candidate_sha256": "7d064e57272917097ded53ace632deccda3568e1f4ced7ee73c2203d7ed6ba37",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/work-perspective-picker.tsx",
+      "sha256": "508dea36c6eb23b3c9ff57137aed108a1778896cb041293b48c2d2c5d54f34a6",
+      "candidate_sha256": "508dea36c6eb23b3c9ff57137aed108a1778896cb041293b48c2d2c5d54f34a6",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/workspace-home.tsx",
+      "sha256": "8e422a21e2829e9377947be85a6f0eac44e7c3b8e3e5d28c314f3841eaed065b",
+      "candidate_sha256": "8e422a21e2829e9377947be85a6f0eac44e7c3b8e3e5d28c314f3841eaed065b",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/workspace-home.test.tsx",
+      "sha256": "5036f889f9dbb433ee7374fd6561d87ce7ebe728c3d91779fbb2f5f5383890d8",
+      "candidate_sha256": "5036f889f9dbb433ee7374fd6561d87ce7ebe728c3d91779fbb2f5f5383890d8",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/workspace-journey.tsx",
+      "sha256": "d7643af11f3f4613ed0c968f189329c1e1ee7f334d123a4958eef3b2c1930d1d",
+      "candidate_sha256": "d7643af11f3f4613ed0c968f189329c1e1ee7f334d123a4958eef3b2c1930d1d",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/dashboard/dashboard.tsx",
+      "sha256": "ad7111e66efef4b0ab32550ac716c1319684739d9f8320ea4911562441a79f9f",
+      "candidate_sha256": "ad7111e66efef4b0ab32550ac716c1319684739d9f8320ea4911562441a79f9f",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/dashboard/dashboard.test.tsx",
+      "sha256": "10d6f2a0cf9b449a2b1a3e08a81cf3e444eed2fe45d2364b2e6a34df0c571a2d",
+      "candidate_sha256": "10d6f2a0cf9b449a2b1a3e08a81cf3e444eed2fe45d2364b2e6a34df0c571a2d",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/portfolio/portfolio.tsx",
+      "sha256": "60c9892aac3663b85e33a9d93c11d053959631e83771f86547060002575b8150",
+      "candidate_sha256": "60c9892aac3663b85e33a9d93c11d053959631e83771f86547060002575b8150",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/projects/project-task-workspace.tsx",
+      "sha256": "0d9965ac6520dc4269189b9f9c7a6d31b57243946335c5e53ae3f93dd04b66c5",
+      "candidate_sha256": "0d9965ac6520dc4269189b9f9c7a6d31b57243946335c5e53ae3f93dd04b66c5",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/projects/project-task-workspace.test.tsx",
+      "sha256": "80bf01e08895c4ccebf931bc72a783a4e30015cf9272056c1a7b0b4d09142f59",
+      "candidate_sha256": "80bf01e08895c4ccebf931bc72a783a4e30015cf9272056c1a7b0b4d09142f59",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/projects/project-workspace.tsx",
+      "sha256": "a161dbfe12e381c31710478dc7fa8e9617b6c34566bb75b2ccf920ae0a794ebe",
+      "candidate_sha256": "a161dbfe12e381c31710478dc7fa8e9617b6c34566bb75b2ccf920ae0a794ebe",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/projects/project-workspace-view.tsx",
+      "sha256": "2901b38fd824721df3a8bebf63504cbd1a31a928020bf7cd2b0bf4d10317d855",
+      "candidate_sha256": "2901b38fd824721df3a8bebf63504cbd1a31a928020bf7cd2b0bf4d10317d855",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/projects/project-workspace.test.tsx",
+      "sha256": "27468ee46ee585661309b66c1a061e287783e8fc7721de95086d443ffa18466c",
+      "candidate_sha256": "27468ee46ee585661309b66c1a061e287783e8fc7721de95086d443ffa18466c",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/projects/project-workspace-tabs.test.ts",
+      "sha256": "fee175bc0f97877d00d5fe50dec5d99df2da437e35209e065feb4e0b6d4444bb",
+      "candidate_sha256": "fee175bc0f97877d00d5fe50dec5d99df2da437e35209e065feb4e0b6d4444bb",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/projects/project-plan-panel.tsx",
+      "sha256": "372543bac8b8fac443b33ed3031b6514a4beba7ff4915ae9cac060eef2fc8726",
+      "candidate_sha256": "372543bac8b8fac443b33ed3031b6514a4beba7ff4915ae9cac060eef2fc8726",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/projects/project-npi-panel.tsx",
+      "sha256": "81badf920617b9626263ebd9de1942cb551da0f61240efddef0db6c80812c6a5",
+      "candidate_sha256": "81badf920617b9626263ebd9de1942cb551da0f61240efddef0db6c80812c6a5",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/projects/project-npi-panel.test.tsx",
+      "sha256": "33dbb98cf25d608a01656f0dccdc5712130e1acced067e07882614e3a8518a03",
+      "candidate_sha256": "33dbb98cf25d608a01656f0dccdc5712130e1acced067e07882614e3a8518a03",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/projects/external-project-responses.tsx",
+      "sha256": "bff0294679098597e7470e1e1225967968ebcf4b405852e116e208b3eabba933",
+      "candidate_sha256": "bff0294679098597e7470e1e1225967968ebcf4b405852e116e208b3eabba933",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/projects/external-project-responses.test.tsx",
+      "sha256": "0b17b444da00c80c63f424817507ae1534fc29ee79aa79f745a698d179d29aa8",
+      "candidate_sha256": "0b17b444da00c80c63f424817507ae1534fc29ee79aa79f745a698d179d29aa8",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/my-work/my-work-view.tsx",
+      "sha256": "5a960c660822743cbde629ace94ed4d931cf990b1cb4d2d1e1f1efcc1d2ccf13",
+      "candidate_sha256": "5a960c660822743cbde629ace94ed4d931cf990b1cb4d2d1e1f1efcc1d2ccf13",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/my-work/my-work-scenario.ts",
+      "sha256": "1775b6409991df4d2f8af7df0e830a58019e4b1ef1308f879e5fe7aa58e553e8",
+      "candidate_sha256": "1775b6409991df4d2f8af7df0e830a58019e4b1ef1308f879e5fe7aa58e553e8",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/my-work/my-work-scenario.test.tsx",
+      "sha256": "8e22753c21660f5dc08a87754bcfd9bdef696886c22f922e0f953f571980ad2a",
+      "candidate_sha256": "8e22753c21660f5dc08a87754bcfd9bdef696886c22f922e0f953f571980ad2a",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/my-work/my-work.test.tsx",
+      "sha256": "689820c18f9537553fcd8b5eefd38834eaff5427f88531f7253064131118cb78",
+      "candidate_sha256": "689820c18f9537553fcd8b5eefd38834eaff5427f88531f7253064131118cb78",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/my-work/work-priority-index.tsx",
+      "sha256": "bec1dd5dc7691b020b8b9fb7cad81673355fd9837469bbe3dc9f5d88b53a1d38",
+      "candidate_sha256": "bec1dd5dc7691b020b8b9fb7cad81673355fd9837469bbe3dc9f5d88b53a1d38",
+      "matches": true
+    },
+    {
+      "path": "web/src/components/my-work/gate-signoff-work-card.tsx",
+      "sha256": "0a5e50e63bb135204645d4e7d05684292db3c7f6090311d0f5bae4a5eed9c6c2",
+      "candidate_sha256": "0a5e50e63bb135204645d4e7d05684292db3c7f6090311d0f5bae4a5eed9c6c2",
+      "matches": true
+    }
+  ],
+  "post_capture_other_changes": [
+    "src/components/product-work/competitors.tsx",
+    "src/components/product-work/opportunities.tsx",
+    "src/components/product-work/product-candidate-card.test.tsx",
+    "src/components/product-work/product-candidate-card.tsx",
+    "src/components/product-work/product-reading-charts.tsx",
+    "src/components/product-work/product-research-entries.tsx",
+    "src/components/product-work/product-space-overview.tsx",
+    "src/components/product-work/product-workspace.tsx"
+  ],
+  "verified_at_utc": "2026-10-02T04:33:06.756914+00:00"
+}

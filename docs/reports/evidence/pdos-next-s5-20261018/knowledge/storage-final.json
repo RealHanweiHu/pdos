@@ -1,0 +1,9 @@
+{
+  "metadata": {
+    "knowledge_metadata_diff": [],
+    "actual_head": "s0_0800"
+  },
+  "history_downgrade_refused": true,
+  "head_preserved": "s0_0800",
+  "output": "psycopg/cursor.py\", line 117, in execute\n    raise ex.with_traceback(None)\nsqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Knowledge named confirmation history retained; downgrade refused\nCONTEXT:  PL/pgSQL function inline_code_block line 1 at RAISE\n[SQL: DO $knowledge$ BEGIN IF EXISTS(SELECT 1 FROM public.confirmations WHERE operation='knowledge.rule.publish' AND expires_at IS NULL) THEN RAISE EXCEPTION 'Knowledge named confirmation history retained; downgrade refused' USING ERRCODE='23514'; END IF; END; $knowledge$]\n(Background on this error at: https://sqlalche.me/e/21/gkpj)\n"
+}

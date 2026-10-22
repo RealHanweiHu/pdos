@@ -1,0 +1,59 @@
+{
+  "run_id": "2dcc3669-9de3-4cdb-ac19-8d504b2f1994",
+  "state": "completed",
+  "used_tokens": 210,
+  "held_tokens": 0,
+  "snapshot": {
+    "id": "75d8aa43-5ba6-4c2b-b1b0-ea09c04e8843",
+    "status": "ok",
+    "visibility": "category",
+    "body_hash": "272858a0a6cc613ba3560bbd416d674418b41a9c9ebdfad99c06bd7ccc8c6a7f",
+    "receipt_id": "9cf2922f-af94-4279-ad1c-3206c8f0ec7c",
+    "receipt_run_matches": true
+  },
+  "fanout": {
+    "job_id": "34ecc235-f1db-440e-b24c-f4e46d2deec3",
+    "status": "completed",
+    "ledger_rows": 1,
+    "read_refs": [
+      {
+        "call_id": "65a0501c-aeb9-4c33-b867-0ef4348fc1cd",
+        "locator": "chars:0:73",
+        "snapshot_id": "75d8aa43-5ba6-4c2b-b1b0-ea09c04e8843",
+        "content_hash": "272858a0a6cc613ba3560bbd416d674418b41a9c9ebdfad99c06bd7ccc8c6a7f"
+      }
+    ],
+    "failures": []
+  },
+  "model_calls": 7,
+  "wallet": {
+    "calls": 7,
+    "spent_micro_usd": 840,
+    "held_micro_usd": 0
+  },
+  "research_egress_metadata": [
+    {
+      "type": "egress_checked",
+      "channel": "research",
+      "provider": "synthetic-search",
+      "checked_at": "2026-10-16T18:46:04.497499+00:00",
+      "agreement_id": "858efbd4-4604-4f7f-af43-0bb410602071",
+      "data_categories": [
+        "internal"
+      ],
+      "agreement_revision": 1
+    },
+    {
+      "type": "egress_checked",
+      "channel": "research",
+      "provider": "public-web:maker.example",
+      "checked_at": "2026-10-16T18:46:05.493108+00:00",
+      "agreement_id": "0ae71637-4052-4455-815c-2e967d0cf6fc",
+      "data_categories": [
+        "internal"
+      ],
+      "agreement_revision": 1
+    }
+  ],
+  "synthetic_transports_only": true
+}

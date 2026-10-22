@@ -1,0 +1,606 @@
+{
+  "target": "127.0.0.1:59418/pdos_test",
+  "marker": "bfcfb45f-4eaa-4a65-a038-c1da6b98f8af",
+  "alembic_heads": [
+    "s0_0719"
+  ],
+  "definer_count": 52,
+  "definers": [
+    {
+      "signature": "advance_change_dependency_clock()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "advance_product_change_dependencies()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "assert_category_source_consumer()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "assert_optional_source_parent()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "build_actual_count(uuid,uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "business_audience_collect(uuid,uuid,uuid,text,jsonb,text[])",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "business_audience_summary_visible(uuid,uuid,uuid,jsonb)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "category_access(uuid,uuid,boolean)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "category_bootstrap(uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "category_lifecycle_clock()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "category_owner(uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "claim_domain_events(uuid,integer)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "definition_sources_visible(uuid,uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "direct_source_set_visible(uuid,uuid,uuid,jsonb)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "finish_domain_delivery(uuid,uuid,uuid,character varying,boolean)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "initialize_change_dependency_clock()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_admin_authorized()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_agreement_atom()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_cost_settled()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_model_configuration_access(uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_model_configuration_atom()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_model_configuration_lock(uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_model_configuration_provision()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_pending_runs(uuid,integer)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_read_set_visible(uuid,uuid,jsonb)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_record_cost(uuid,uuid,integer,integer,integer)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_release_call(uuid,uuid,text,boolean,integer,text)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_run_receipt_ids(uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_scope_failed(uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_source_reference_clock()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "kernel_source_reference_gate()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "lifecycle_reference_summary(uuid,uuid,uuid,uuid[])",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "lock_change_dependency_clock(uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "lock_qualification(uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_atom_guard()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_audience_member(uuid,uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_decision_actor(uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_owner(uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_proposal_reader(uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_result_access(uuid,uuid,text,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_reviewer(uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_review_source_access(uuid,uuid,text,uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "m3_writer(uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "maintain_business_audience_summary()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "physical_capacity_summary(uuid,uuid,uuid,text,uuid[],uuid,text)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "professional_current_summary()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "professional_summary_visible(uuid,uuid,uuid,jsonb)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "project_definition_visible(uuid,uuid,uuid,uuid)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "require_test_launch_atom()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "require_test_resource_dependency_atom()",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "revert_subjects_consumed(uuid,uuid,jsonb,uuid[])",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    },
+    {
+      "signature": "source_object_audience(uuid,uuid,text,uuid,uuid,text)",
+      "owner": "pdos_next_owner",
+      "superuser": false,
+      "bypassrls": false,
+      "settings": [
+        "search_path=pg_catalog, public, pg_temp"
+      ]
+    }
+  ],
+  "owned_tables": [
+    {
+      "name": "category_knowledge_current",
+      "owner": "pdos_next_owner",
+      "rls": true,
+      "force_rls": true
+    },
+    {
+      "name": "category_knowledge_entries",
+      "owner": "pdos_next_owner",
+      "rls": true,
+      "force_rls": true
+    },
+    {
+      "name": "product_target_segments",
+      "owner": "pdos_next_owner",
+      "rls": true,
+      "force_rls": true
+    },
+    {
+      "name": "project_open_items",
+      "owner": "pdos_next_owner",
+      "rls": true,
+      "force_rls": true
+    },
+    {
+      "name": "proposal_decisions",
+      "owner": "pdos_next_owner",
+      "rls": true,
+      "force_rls": true
+    },
+    {
+      "name": "proposal_item_versions",
+      "owner": "pdos_next_owner",
+      "rls": true,
+      "force_rls": true
+    },
+    {
+      "name": "proposal_items",
+      "owner": "pdos_next_owner",
+      "rls": true,
+      "force_rls": true
+    },
+    {
+      "name": "proposal_prepared_candidates",
+      "owner": "pdos_next_owner",
+      "rls": true,
+      "force_rls": true
+    },
+    {
+      "name": "proposal_revisions",
+      "owner": "pdos_next_owner",
+      "rls": true,
+      "force_rls": true
+    },
+    {
+      "name": "proposal_sources",
+      "owner": "pdos_next_owner",
+      "rls": true,
+      "force_rls": true
+    },
+    {
+      "name": "proposal_submissions",
+      "owner": "pdos_next_owner",
+      "rls": true,
+      "force_rls": true
+    },
+    {
+      "name": "proposals",
+      "owner": "pdos_next_owner",
+      "rls": true,
+      "force_rls": true
+    }
+  ],
+  "roles": [
+    {
+      "rolname": "pdos_next_app",
+      "rolsuper": false,
+      "rolbypassrls": false,
+      "rolcanlogin": true,
+      "owner_member": false,
+      "schema_create": false
+    },
+    {
+      "rolname": "pdos_next_auth",
+      "rolsuper": false,
+      "rolbypassrls": false,
+      "rolcanlogin": true,
+      "owner_member": false,
+      "schema_create": false
+    },
+    {
+      "rolname": "pdos_next_dispatch",
+      "rolsuper": false,
+      "rolbypassrls": false,
+      "rolcanlogin": true,
+      "owner_member": false,
+      "schema_create": false
+    },
+    {
+      "rolname": "pdos_agent",
+      "rolsuper": false,
+      "rolbypassrls": false,
+      "rolcanlogin": false,
+      "owner_member": false,
+      "schema_create": false
+    },
+    {
+      "rolname": "pdos_next_owner",
+      "rolsuper": false,
+      "rolbypassrls": false,
+      "rolcanlogin": true,
+      "owner_member": true,
+      "schema_create": true
+    }
+  ],
+  "agent_direct_write_tables": [],
+  "active_schema_files_containing_definers": [
+    "migrations/schema_s0_0001.py",
+    "migrations/schema_s0_0404.py",
+    "migrations/schema_s0_0406.py",
+    "migrations/schema_s0_0407.py",
+    "migrations/schema_s0_0408.py",
+    "migrations/schema_s0_0410.py",
+    "migrations/schema_s0_0713.py",
+    "migrations/schema_s0_0718.py"
+  ],
+  "production_changed": false
+}

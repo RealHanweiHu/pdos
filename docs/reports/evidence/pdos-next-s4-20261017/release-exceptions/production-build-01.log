@@ -1,0 +1,13 @@
+
+> pdos-next-web@0.1.0 build
+> next build --webpack
+
+▲ Next.js 16.3.3 (webpack)
+✓ Running next.config.ts took 19ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 15.7s
+  Running TypeScript ...
+src/app/api/[...path]/route.ts(110,114): error TS18046: 'value.payload' is of type 'unknown'.
+Failed to type check.
+

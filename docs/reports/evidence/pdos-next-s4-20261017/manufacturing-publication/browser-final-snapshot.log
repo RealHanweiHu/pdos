@@ -1,0 +1,72 @@
+### Page
+- Page URL: http://127.0.0.1:63559/?area=category&category=30f1ff30-2617-4edd-ae9c-710c8fc840e8&bench=projects&view=builds&task=prepare&product=d6f554d2-fb6b-4f38-a0dc-c55b207b31fe&project=ce956c9a-5c72-4135-a9e4-d07262d2350d
+- Page Title: PDOS · 研发工作区
+- Console: 2 errors, 0 warnings
+### Snapshot
+```yaml
+- region "制造基线正式发布" [ref=f3e5]:
+  - generic [ref=f3e6]:
+    - generic [ref=f3e7]:
+      - heading "制造基线发布" [level=2] [ref=f3e8]
+      - paragraph [ref=f3e11]: 固定本轮工艺和资料，由有权本人核对并具名发布。
+    - button "刷新发布资料" [ref=f3e12]
+  - paragraph [ref=f3e13]:
+    - text: 已取得第2版发布回执。
+    - generic [ref=f3e16]: a07aa646-3c6c-465f-b0ff-9802ce47c61c
+  - generic [ref=f3e17]:
+    - generic [ref=f3e18]:
+      - text: 项目
+      - combobox "项目" [disabled] [ref=f3e19]:
+        - option "请选择项目"
+        - option "Approved revision fixture" [selected]
+    - generic [ref=f3e20]:
+      - text: 固定制造基线
+      - combobox "固定制造基线" [ref=f3e21]:
+        - option "请选择已保存的基线"
+        - option "Synthetic manufacturing_baseline documentation · v1" [selected]
+  - generic [ref=f3e22]:
+    - text: 本次发布说明
+    - textbox "本次发布说明" [ref=f3e23]: 本地合成页面续版v2：明确续接首版，保留原版固定内容与各自说明。
+  - paragraph [ref=f3e24]: 已续接固定发布 v1，成功发布 v2。
+  - paragraph [ref=f3e25]: 本入口沿用所选基线的固定用途、地点和来源。尚未声明的资源要求、包装及反应计划保留为缺项，发布时会一并显示。
+  - button "核对具名发布" [disabled]
+  - generic [ref=f3e26]:
+    - heading "已发布的固定版本" [level=3] [ref=f3e27]
+    - generic [ref=f3e28]:
+      - generic [ref=f3e29]: 固定发布 v2 · 当前版 · 来源已核对
+      - generic [ref=f3e30]:
+        - button "从此版续接" [ref=f3e31]
+        - button "回读固定内容" [ref=f3e32]
+    - generic [ref=f3e33]:
+      - generic [ref=f3e34]: 固定发布 v1 · 历史版 · 来源已核对
+      - button "回读固定内容" [ref=f3e36]
+  - generic [ref=f3e37]:
+    - heading "固定发布 v2" [level=3] [ref=f3e38]
+    - generic [ref=f3e39]:
+      - paragraph [ref=f3e40]: 发布说明：本地合成页面续版v2：明确续接首版，保留原版固定内容与各自说明。
+      - generic [ref=f3e41]:
+        - generic [ref=f3e42]:
+          - term [ref=f3e43]: 基线内容
+          - definition [ref=f3e44]: Synthetic manufacturing_baseline documentation
+        - generic [ref=f3e45]:
+          - term [ref=f3e46]: 固定制造配置
+          - definition [ref=f3e47]: Synthetic original motor assembly process · v1
+        - generic [ref=f3e48]:
+          - term [ref=f3e49]: 地点
+          - definition [ref=f3e50]: SYN-INTERNAL-LAB
+        - generic [ref=f3e51]:
+          - term [ref=f3e52]: 产线
+          - definition [ref=f3e53]: SYN-LINE
+      - group [ref=f3e54]:
+        - generic "本版固定工序资料（2份）" [ref=f3e55]
+      - paragraph [ref=f3e56]: 发布固定本版内容。资源资格、本轮准备度及制造放行分别核对；未知项会保留。
+    - paragraph [ref=f3e57]: 过程风险依据未知。
+    - paragraph [ref=f3e58]: 包装标识依据未知。
+    - paragraph [ref=f3e59]: 反应计划依据未知。
+    - paragraph [ref=f3e60]: 实际适用产线范围未知。
+    - paragraph [ref=f3e61]: tooling要求依据未知。
+    - paragraph [ref=f3e62]: fixture要求依据未知。
+    - paragraph [ref=f3e63]: equipment要求依据未知。
+    - paragraph [ref=f3e64]: line要求依据未知。
+    - paragraph [ref=f3e65]: person要求依据未知。
+```

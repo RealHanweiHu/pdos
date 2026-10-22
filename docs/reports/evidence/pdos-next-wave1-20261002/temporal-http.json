@@ -1,0 +1,15 @@
+{
+  "synthetic_only": true,
+  "model_calls": 0,
+  "temporal_storage": "local-sqlite-development",
+  "upload_download_exact": true,
+  "upload_replay_one_receipt": true,
+  "definition_replay_one_revision": true,
+  "unknown_spec_unfilled": true,
+  "resume_replay_one_event": true,
+  "parse_workflow_status": "COMPLETED",
+  "waiting_workflow_status": "RUNNING",
+  "work_id": "5afba21a-5b9e-4892-a28b-ce8b050a23e5",
+  "product_id": "4aa43b94-29f0-4115-8952-09e5c2e02ca8",
+  "original_id": "489492b2-511c-4666-9eb2-25673088d4ee"
+}

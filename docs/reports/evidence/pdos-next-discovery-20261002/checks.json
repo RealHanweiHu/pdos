@@ -1,0 +1,30 @@
+{
+  "scope": "isolated discovery package; no DB/HTTP/browser/real model or joint gate",
+  "checks": [
+    {
+      "name": "pytest.txt",
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pdos-next/server/.venv/bin/python -m pytest -q --confcutdir=pdos-next/server/tests/discovery -p no:cacheprovider pdos-next/server/tests/discovery",
+      "exit_code": 0
+    },
+    {
+      "name": "ruff.txt",
+      "command": "pdos-next/server/.venv/bin/ruff check --no-cache pdos-next/server/pdos_next/domain/discovery pdos-next/server/pdos_next/schemas/discovery pdos-next/server/tests/discovery",
+      "exit_code": 0
+    },
+    {
+      "name": "typescript.txt",
+      "command": "node_modules/.bin/tsc -p src/components/discovery/tsconfig.check.json --incremental false --noEmit",
+      "exit_code": 0
+    },
+    {
+      "name": "eslint.txt",
+      "command": "node_modules/.bin/eslint src/components/discovery",
+      "exit_code": 0
+    },
+    {
+      "name": "components.txt",
+      "command": "node --test src/components/discovery/components.test.mjs",
+      "exit_code": 0
+    }
+  ]
+}

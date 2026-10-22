@@ -1,0 +1,25 @@
+{
+  "ruff": "passed on affected production/migration/test files",
+  "mypy": "passed for six new production modules with follow-imports=silent",
+  "frontend_eslint": "passed on affected components and BFF routes",
+  "frontend_tsc": "passed",
+  "webpack_frozen_build": "passed",
+  "diff_check": "passed",
+  "source_hashes": {
+    "server/app/contracts/product_proposals.py": "afd4d544d5ea8357f655dbbff366901ea90de8770013aa04ba5f92fc9f2dc472",
+    "server/app/domain/product_proposals.py": "ca7cabf59dc81ed8669081ee24f9c62204fabcf05d84d535f3efaad7109868f6",
+    "server/app/domain/product_workspace.py": "fc4721ef58a6d52790e1c1225b35dafa60e4d914df794db802f4814296cdcc11",
+    "server/app/domain/office_documents.py": "f829ca841aa274d3610556dc05acd154534966b03ca925f71c4d879ef530d2b7",
+    "server/app/ai/product_proposal.py": "5156f8cc1cd16a4072d3c1a67e744230851b6798f41a31f781cebf94e22dcc43",
+    "server/app/ai/prompts/product_proposal_v1.json": "3d3e7c3efc728cd0eb2c5a546a1c8f1a1d33f8cabcd07cda307ce879b0b13285",
+    "server/app/api/product_proposals.py": "efd9f2dd977896d2ebe09dd3a99c68783c97cff92d60b9d83d0217f6b4e0b2e3",
+    "server/app/db/product_proposal_schema.py": "d840607f4ef7ca5fee6dbbeb9db2b10d14452d21ed28ddef2b6d4d4ce2219dfd",
+    "server/migrations/versions/0424_product_proposals.py": "e5e79685d5100aa224e4374849c8aaad44c94fe1e91248e4820ce3f3d08f1086",
+    "web/src/components/product-work/product-proposals.tsx": "47eb126b3433be848a54eb92699f43cb2e57c9f04e034a2dc6a7f03e3c846e89",
+    "web/src/components/product-work/proposal-entry.tsx": "3a33ccfb050533488d47d218fabc3a853de31b6bb8b46818a87280da6e3f9bcf",
+    "web/src/components/product-work/proposal-document.tsx": "2c322d155b091963bae6ed84945ee3996fdab55030ee79610a647656f7d9fcbf",
+    "web/src/components/product-work/proposal-types.ts": "c79e1476e14641ecdd2a0ad43d54e0cec41bfa6914508bfebb323459bf610e68",
+    "web/src/components/product-work/product-workspace.tsx": "13afb5aaa7748ae16041b724306f61b8aed4ec734a1e47ffb4e310ecaa926ce6",
+    "web/src/app/api/product-work/[[...workPath]]/route.ts": "e55061bbdaa305dd1116c185e2d8ad4fe52c664eaa11176f662ffea37d77ce5c"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "actual_task_id": "8e1e3937-0e6d-41c8-9637-bf81f9044c3f",
+  "original_command_id": "not collected from aborted harness; reconcile through one actual retained fact",
+  "receipt_id": "1906853b-0018-4bd2-848a-3e6bcc00dcdd",
+  "one_create_version": true,
+  "actual_native_item_id": "8cc7df1d-5987-4c9e-a008-4eb0662815ae",
+  "actual_fixed_decision_id": "f3fb914e-3b6f-4503-855a-809dc91a11d1",
+  "task_state": "proposed",
+  "assignee_id": null,
+  "recipient_id": null,
+  "pending_at_followup": null,
+  "final_reload_POSTs": [],
+  "no_duplicate_create_CTA": true,
+  "risk_still_independent": true,
+  "light": {
+    "width": 1440,
+    "overflow": false
+  },
+  "dark": {
+    "width": 320,
+    "overflow": false
+  },
+  "initial_503_injection_not_claimed": true
+}

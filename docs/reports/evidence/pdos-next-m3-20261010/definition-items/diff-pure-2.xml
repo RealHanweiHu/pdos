@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="13" time="1.074" timestamp="2026-10-11T06:10:05.876501-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_strict_modes_and_legacy_proposal" time="0.001" /><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_two_way_uses_only_existing_engine" time="0.002" /><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_three_way_conflict_and_parent_version_guard" time="0.001" /><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_full_input_digest_changes_without_definition_revision_change" time="0.002" /><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_restore_reauthorizes_before_digest_and_rejects_changed_content" time="0.000" /><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_definition_scope_and_privacy_precede_body" time="0.000" /><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_item_versions_are_in_digest_but_not_engine_business_fields" time="0.002" /><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_host_prebody_guard_and_final_authority" time="0.000"><failure message="AttributeError: 'types.SimpleNamespace' object has no attribute 'execute'">host = namespace(port=&lt;pdos_next.agent_kernel.m3_definition_diff.DefinitionDiffReads object at 0x11ca771a0&gt;, scope=namespace(..., definition_revision=1, variant_id=None), three_way=None, areas=['specification', 'bom', 'certification', 'tooling']))
+
+    def test_host_prebody_guard_and_final_authority(host):
+&gt;       host.port.call(host.scope, host.payload.model_dump(mode="json"))
+
+tests/agent_kernel/test_m3_definition_diff.py:239: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/m3_definition_diff.py:250: in call
+    head = _head(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = namespace(get=&lt;function host.&lt;locals&gt;.&lt;lambda&gt; at 0x11ca9a020&gt;)
+ctx = namespace(category_id='f0a394d9-0697-4ed3-937a-e85233db2c47', tenant_id=UUID('e9c8d6fa-42cc-4298-a1f1-84186f05a270'), ..._id=UUID('9356a63e-d3d5-4468-8722-e70805a20ae1'), run_id=UUID('950692c4-e606-4843-9871-8996dd784375'), product_id=None)
+model = &lt;class 'pdos_next.domain.products.models.DefinitionRevision'&gt;
+identity = UUID('6136e3d2-6e95-4edc-a60f-5d45da8909b2')
+fields = ('product_id', 'variant_id', 'revision')
+
+    def _head(s, ctx, model, identity, *fields):
+        """Only privacy/identity metadata is selected before an object's body is read."""
+        columns = ("id", "tenant_id", "category_id", *fields)
+        row = (
+&gt;           s.execute(
+            ^^^^^^^^^
+                select(*(getattr(model, field) for field in columns)).where(
+                    model.id == identity,
+                    model.tenant_id == ctx.tenant_id,
+                    model.category_id == ctx.category_id,
+                )
+            )
+            .mappings()
+            .first()
+        )
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'execute'
+
+pdos_next/agent_kernel/m3_spec_compare.py:39: AttributeError</failure></testcase><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_host_private_context_fails_before_body[private_context]" time="0.001" /><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_host_private_context_fails_before_body[customer_identities]" time="0.000" /><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_host_private_context_fails_before_body[data_categories]" time="0.000" /><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_host_wrong_session_fails_before_body" time="0.000" /><testcase classname="tests.agent_kernel.test_m3_definition_diff" name="test_proposal_mode_delegates_original_payload_and_preserves_result" time="0.000" /></testsuite></testsuites>

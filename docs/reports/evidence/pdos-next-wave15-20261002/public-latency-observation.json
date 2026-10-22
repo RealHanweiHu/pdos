@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-03T06:43:28.802617+00:00",
+  "port": 62513,
+  "activity_counts": [
+    {
+      "state": "active",
+      "wait_event_type": null,
+      "wait_event": null,
+      "connections": 1
+    },
+    {
+      "state": "idle",
+      "wait_event_type": "Client",
+      "wait_event": "ClientRead",
+      "connections": 13
+    },
+    {
+      "state": "idle in transaction",
+      "wait_event_type": "Client",
+      "wait_event": "ClientRead",
+      "connections": 3
+    }
+  ],
+  "scope": "One readonly activity snapshot; no query text or credentials; no business mutation"
+}

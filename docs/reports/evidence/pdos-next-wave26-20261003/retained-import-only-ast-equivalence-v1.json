@@ -1,0 +1,23 @@
+{
+  "status": "PASS_IMPORT_ONLY_ADAPTATION",
+  "files": {
+    "server/pdos_next/domain/test_resources/fingerprint_compatibility.py": {
+      "before_sha256": "8f4935f7c53c06ac2abf7e00666902ca5aa3cd13cd37ec5d44e2c5e9634792e3",
+      "after_sha256": "736d2b59b1e39aa740400a8f590e47dd359bcce5cff865b8a10b459aa02d9f7f"
+    },
+    "server/pdos_next/domain/test_resources/retained.py": {
+      "before_sha256": "480d6b2bae305f3f883dc29ea7f16acdfe583a7aaa8b7d5b0fa8606db6aa1b14",
+      "after_sha256": "e37b959c6f9d1ffbadafef0323f2a094adea87992fcde8051bd93975151261d1"
+    },
+    "server/tests/test_fingerprint_compatibility.py": {
+      "before_sha256": "286a3796c0f0ba6c02a1e0699605880a623220017dd7299f0ae3e89b2c44d244",
+      "after_sha256": "dac7d5cfb46b77e89a48e2263cb49d75dd465fee2ae3d5132c22b66762f162aa"
+    },
+    "server/tests/test_retained_fingerprint_compatibility.py": {
+      "before_sha256": "b915d7978b9847af30aa5f432c57d8f4ec6ac41b1e5bed29cccc0e39f42a8157",
+      "after_sha256": "1e3416a855abd78476642b3859f7943823111709819373bbc0d3c33076603052"
+    }
+  },
+  "function_class_and_statement_AST_unchanged": true,
+  "running_pg_process_not_restarted": true
+}

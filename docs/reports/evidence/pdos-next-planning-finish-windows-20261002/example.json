@@ -1,0 +1,212 @@
+{
+  "dto_version": "planning.v1",
+  "algorithm_version": "planning.minute_forecast.v2",
+  "time_kind": "Forecast",
+  "disposition": "candidate",
+  "input_sha256": "c8927eb7c4297fcf93a4bab3d14138bc62622bbd63651ff496a31040057383ae",
+  "candidate_sha256": "1b7b95c4aac5d310871063514d9b0f2b7c6255f0729506d5748989823a80d12d",
+  "input_snapshot": {
+    "dto_version": "planning.v1",
+    "snapshot_id": "finish-window-example",
+    "version": "v1",
+    "as_of": "2026-10-02T09:00:00Z",
+    "horizon_days": 366,
+    "calendars": [
+      {
+        "calendar_id": "factory",
+        "version": "v1",
+        "timezone": "UTC",
+        "weekly": [
+          {
+            "weekday": 0,
+            "intervals": [
+              {
+                "start_minute": 540,
+                "end_minute": 1020
+              }
+            ]
+          },
+          {
+            "weekday": 1,
+            "intervals": [
+              {
+                "start_minute": 540,
+                "end_minute": 1020
+              }
+            ]
+          },
+          {
+            "weekday": 2,
+            "intervals": [
+              {
+                "start_minute": 540,
+                "end_minute": 1020
+              }
+            ]
+          },
+          {
+            "weekday": 3,
+            "intervals": [
+              {
+                "start_minute": 540,
+                "end_minute": 1020
+              }
+            ]
+          },
+          {
+            "weekday": 4,
+            "intervals": [
+              {
+                "start_minute": 540,
+                "end_minute": 1020
+              }
+            ]
+          }
+        ],
+        "exceptions": [],
+        "ambiguous_time": "reject",
+        "timezone_rules_sha256": null
+      }
+    ],
+    "nodes": [
+      {
+        "node_id": "B",
+        "calendar_id": "factory",
+        "work": {
+          "minimum": "60",
+          "maximum": "120",
+          "measure": "total",
+          "source": {
+            "source_id": "synthetic-finish-input",
+            "version": "v1"
+          },
+          "confidence": "unknown"
+        },
+        "waiting": {
+          "minimum": "0",
+          "maximum": "0",
+          "measure": "total",
+          "source": {
+            "source_id": "synthetic-finish-input",
+            "version": "v1"
+          },
+          "confidence": "unknown"
+        },
+        "waiting_clock": "elapsed",
+        "parallel_units": "1",
+        "divisible_work": false,
+        "allocation_basis": "Explicit synthetic allocation",
+        "not_before": null,
+        "external_waits": [
+          {
+            "wait_id": "readiness",
+            "version": "v1",
+            "source": {
+              "source_id": "synthetic-finish-input",
+              "version": "v1"
+            },
+            "original_timezone": "UTC",
+            "target": "finish",
+            "blocking": true,
+            "ready": {
+              "earliest": "2026-10-02T12:00:00Z",
+              "latest": "2026-10-02T14:00:00Z"
+            }
+          }
+        ],
+        "resources": [],
+        "time_records": []
+      }
+    ],
+    "dependencies": [],
+    "resources": []
+  },
+  "timezone_rule_digests": [
+    [
+      "factory",
+      "fddce1e648a1732ac29afd9a16151b2973cdf082e7ec0c690f7e42be6b598b93"
+    ]
+  ],
+  "status": "complete",
+  "project_finish": {
+    "earliest": "2026-10-02T12:00:00Z",
+    "latest": "2026-10-02T15:00:00Z"
+  },
+  "nodes": [
+    {
+      "node_id": "B",
+      "calendar_id": "factory",
+      "calendar_version": "v1",
+      "original_timezone": "UTC",
+      "start": {
+        "earliest": "2026-10-02T10:00:00Z",
+        "latest": "2026-10-02T13:00:00Z"
+      },
+      "finish": {
+        "earliest": "2026-10-02T12:00:00Z",
+        "latest": "2026-10-02T15:00:00Z"
+      },
+      "remaining_work_start": {
+        "earliest": "2026-10-02T10:00:00Z",
+        "latest": "2026-10-02T13:00:00Z"
+      },
+      "remaining_work_finish": {
+        "earliest": "2026-10-02T11:00:00Z",
+        "latest": "2026-10-02T15:00:00Z"
+      },
+      "status": "range",
+      "origin": "estimate",
+      "issues": [
+        {
+          "code": "external_wait_uncertain",
+          "message": "External readiness is a range or unknown",
+          "node_ids": [
+            "B"
+          ],
+          "source_ids": [
+            "synthetic-finish-input"
+          ],
+          "blocking": false
+        },
+        {
+          "code": "finish_constraint_envelope",
+          "message": "Coupled finish/duration bounds are conservative, not jointly attainable dates",
+          "node_ids": [
+            "B"
+          ],
+          "source_ids": [],
+          "blocking": false
+        }
+      ],
+      "latest_start": null,
+      "latest_finish": null,
+      "float_minutes": null,
+      "working_float_minutes": null,
+      "critical": null
+    }
+  ],
+  "issues": [
+    {
+      "code": "external_wait_uncertain",
+      "message": "External readiness is a range or unknown",
+      "node_ids": [
+        "B"
+      ],
+      "source_ids": [
+        "synthetic-finish-input"
+      ],
+      "blocking": false
+    },
+    {
+      "code": "finish_constraint_envelope",
+      "message": "Coupled finish/duration bounds are conservative, not jointly attainable dates",
+      "node_ids": [
+        "B"
+      ],
+      "source_ids": [],
+      "blocking": false
+    }
+  ],
+  "capacity_status": "not_requested",
+  "float_status": "not_calculated"
+}

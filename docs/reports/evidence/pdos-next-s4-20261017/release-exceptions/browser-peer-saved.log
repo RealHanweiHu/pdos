@@ -1,0 +1,7 @@
+### Result
+"- region \"具名例外决定与撤回\":\n  - heading \"具名例外决定与撤回\" [level=2]\n  - paragraph: 固定政策、双配置和检查范围，由本人一次确认；小Pai不能代签。\n  - button \"刷新例外\" [disabled]:\n    - img\n    - text: 刷新例外\n  - status: 已保存本人具名撤回；原批准及历史签署记录保留。\n  - paragraph: 正在读取本项目具名例外。"
+### Ran Playwright code
+```js
+await (async page => { await page.getByRole("dialog").getByRole("button",{name:"本人具名确认撤回",exact:true}).click(); const p=page.getByRole("region",{name:"具名例外决定与撤回",exact:true}); await p.getByText("已保存本人具名撤回；原批准及历史签署记录保留。",{exact:true}).waitFor(); return await p.ariaSnapshot(); })(page);
+```
+

@@ -1,0 +1,78 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 6 items
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan PASSED [ 16%]
+tests/verification_launch/test_transactions.py::test_complete_accepted_scope_and_fixed_resource_binding_cannot_be_shrunk_or_replaced PASSED [ 33%]
+tests/verification_launch/test_transactions.py::test_plan_cas_concurrency_creates_one_identity_and_one_run_receipt PASSED [ 50%]
+tests/verification_launch/test_transactions.py::test_end_of_common_audit_outbox_failure_rolls_back_start_occupancy_usage_and_token PASSED [ 66%]
+tests/verification_launch/test_transactions.py::test_immutable_run_identity_versions_and_cross_tenant_rls PASSED [ 83%]
+tests/test_resources/test_transactions.py::test_destructive_actual_start_consumes_once_and_new_use_remains_blocked PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_launch/test_transactions.py::test_complete_accepted_scope_and_fixed_resource_binding_cannot_be_shrunk_or_replaced
+tests/verification_launch/test_transactions.py::test_plan_cas_concurrency_creates_one_identity_and_one_run_receipt
+tests/verification_launch/test_transactions.py::test_end_of_common_audit_outbox_failure_rolls_back_start_occupancy_usage_and_token
+tests/verification_launch/test_transactions.py::test_immutable_run_identity_versions_and_cross_tenant_rls
+tests/test_resources/test_transactions.py::test_destructive_actual_start_consumes_once_and_new_use_remains_blocked
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/test_build_execution.py: 3 warnings
+tests/verification_launch/test_transactions.py: 12 warnings
+tests/test_resources/test_transactions.py: 3 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_launch/test_transactions.py::test_complete_accepted_scope_and_fixed_resource_binding_cannot_be_shrunk_or_replaced
+tests/verification_launch/test_transactions.py::test_plan_cas_concurrency_creates_one_identity_and_one_run_receipt
+tests/verification_launch/test_transactions.py::test_end_of_common_audit_outbox_failure_rolls_back_start_occupancy_usage_and_token
+tests/verification_launch/test_transactions.py::test_immutable_run_identity_versions_and_cross_tenant_rls
+tests/test_resources/test_transactions.py::test_destructive_actual_start_consumes_once_and_new_use_remains_blocked
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_launch/test_transactions.py::test_complete_accepted_scope_and_fixed_resource_binding_cannot_be_shrunk_or_replaced
+tests/verification_launch/test_transactions.py::test_plan_cas_concurrency_creates_one_identity_and_one_run_receipt
+tests/verification_launch/test_transactions.py::test_end_of_common_audit_outbox_failure_rolls_back_start_occupancy_usage_and_token
+tests/verification_launch/test_transactions.py::test_immutable_run_identity_versions_and_cross_tenant_rls
+tests/test_resources/test_transactions.py::test_destructive_actual_start_consumes_once_and_new_use_remains_blocked
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_launch/test_transactions.py::test_complete_accepted_scope_and_fixed_resource_binding_cannot_be_shrunk_or_replaced
+tests/verification_launch/test_transactions.py::test_plan_cas_concurrency_creates_one_identity_and_one_run_receipt
+tests/verification_launch/test_transactions.py::test_end_of_common_audit_outbox_failure_rolls_back_start_occupancy_usage_and_token
+tests/verification_launch/test_transactions.py::test_immutable_run_identity_versions_and_cross_tenant_rls
+tests/test_resources/test_transactions.py::test_destructive_actual_start_consumes_once_and_new_use_remains_blocked
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_launch/test_transactions.py::test_complete_accepted_scope_and_fixed_resource_binding_cannot_be_shrunk_or_replaced
+tests/verification_launch/test_transactions.py::test_plan_cas_concurrency_creates_one_identity_and_one_run_receipt
+tests/verification_launch/test_transactions.py::test_end_of_common_audit_outbox_failure_rolls_back_start_occupancy_usage_and_token
+tests/verification_launch/test_transactions.py::test_immutable_run_identity_versions_and_cross_tenant_rls
+tests/test_resources/test_transactions.py::test_destructive_actual_start_consumes_once_and_new_use_remains_blocked
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/test_build_execution.py::test_changed_actual_configuration_and_two_lots_never_average_or_rewrite_plan
+tests/verification_launch/test_transactions.py::test_complete_accepted_scope_and_fixed_resource_binding_cannot_be_shrunk_or_replaced
+tests/verification_launch/test_transactions.py::test_plan_cas_concurrency_creates_one_identity_and_one_run_receipt
+tests/verification_launch/test_transactions.py::test_end_of_common_audit_outbox_failure_rolls_back_start_occupancy_usage_and_token
+tests/verification_launch/test_transactions.py::test_immutable_run_identity_versions_and_cross_tenant_rls
+tests/test_resources/test_transactions.py::test_destructive_actual_start_consumes_once_and_new_use_remains_blocked
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 6 passed, 54 warnings in 475.25s (0:07:55) ==================

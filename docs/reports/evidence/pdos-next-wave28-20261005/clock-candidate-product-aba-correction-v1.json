@@ -1,0 +1,8 @@
+{
+  "status": "INSTALLED_IN_INDEPENDENT_CANDIDATE_ONLY",
+  "host": "127.0.0.1",
+  "port": 62158,
+  "shared_head29_untouched": true,
+  "why": "Product business ABA must advance dependency clock while common lifecycle-only changes do not",
+  "subsequent_numbered_roundtrip_required": true
+}

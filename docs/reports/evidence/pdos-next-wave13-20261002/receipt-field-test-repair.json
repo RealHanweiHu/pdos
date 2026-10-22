@@ -1,0 +1,20 @@
+{
+  "files": {
+    "pdos-next/server/tests/test_resources/test_transactions.py": {
+      "before": "32e215ee8e510deef34102aa5a090f95ecffe7b1b8b85e4a25a544e8620a6ed6",
+      "after": "5026c03156f6ab3c7ed3ac093df66e2f6a39b78120771d09b58ef686f48959d9"
+    },
+    "pdos-next/server/tests/verification_launch/test_transactions.py": {
+      "before": "c1102f042b30315f0e86507e8902ab2feb6b82c916e3cf499fd81d838d97dbf4",
+      "after": "f2437243378a6d78768afaac15334961563006e08c6a7d637c139ef4591caee8"
+    }
+  },
+  "server_production_unchanged": true,
+  "test_only": "Common API Receipt id replaces mistaken receipt_id access; SQL/FK names unchanged.",
+  "required_rechecks": [
+    "test_same_key_and_cross_key_same_intent_replay_do_not_duplicate_truth (three parameters)",
+    "test_destructive_actual_start_consumes_once_and_new_use_remains_blocked"
+  ],
+  "prior_running_processes_loaded_old_test_bytecode": true,
+  "original_test_source_preserved_with_verified_hash": true
+}

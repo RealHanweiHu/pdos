@@ -1,0 +1,40 @@
+........F............................................................... [ 37%]
+........................................................................ [ 75%]
+..............................................                           [100%]
+=================================== FAILURES ===================================
+_____ test_malformed_or_out_of_scope_read_ledger_fails_closed[bad_reads2] ______
+
+bound = namespace(scope=RunScope(tenant_id=UUID('abfb1f8e-0b06-48a5-9c63-7717e5dac878'), requester_id=UUID('cf220f11-2b71-4569...rySession object at 0x10ee585c0>, adapter=<pdos_next.agent_kernel.domain_adapter.DomainCommands object at 0x10ee5bbf0>)
+bad_reads = [{'artifact_id': 'ed5869e5-57e1-4dbd-9e37-2c675de98e71', 'expected_revision': 1, 'product_id': 'fd5ac42d-37f1-4bf9-969e-f0b4bce23985'}]
+
+    @pytest.mark.parametrize(
+        "bad_reads",
+        [
+            [{}],
+            [{"artifact_id": "not-a-uuid", "expected_revision": 1}],
+            [{"artifact_id": str(uuid4()), "expected_revision": 1, "product_id": str(uuid4())}],
+        ],
+    )
+    def test_malformed_or_out_of_scope_read_ledger_fails_closed(bound, bad_reads):
+        bound.run.read_sources = bad_reads
+        with pytest.raises(DomainError) as error:
+            command(bound, canonical(uuid4()))
+>       assert_reason(error, "SOURCE_UNAVAILABLE", "run_source_binding_invalid")
+
+tests/agent_kernel/test_evidence_adapter_unit.py:157:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+error = <ExceptionInfo DomainError('运行未绑定此来源的明确版本。') tblen=5>
+code = 'SOURCE_UNAVAILABLE', reason = 'run_source_binding_invalid'
+
+    def assert_reason(error, code, reason):
+>       assert error.value.code == code and error.value.detail["reason"] == reason
+E       AssertionError: assert ('MISSING_REQUIRED_EVIDENCE' == 'SOURCE_UNAVAILABLE'
+E
+E         - SOURCE_UNAVAILABLE
+E         + MISSING_REQUIRED_EVIDENCE)
+
+tests/agent_kernel/test_evidence_adapter_unit.py:94: AssertionError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_evidence_adapter_unit.py::test_malformed_or_out_of_scope_read_ledger_fails_closed[bad_reads2]
+1 failed, 189 passed, 10 deselected in 10.93s

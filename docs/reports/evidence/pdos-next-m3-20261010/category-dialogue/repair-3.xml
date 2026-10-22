@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="6" time="4.876" timestamp="2026-10-11T01:32:33.498014-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_public_run_revert" name="test_actual_whole_run_preview_and_human_t1_command_revert_all_drafts_once" time="1.480"><failure message="sqlalchemy.orm.exc.DetachedInstanceError: Instance &lt;AgentToolCall at 0x12570a060&gt; is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/21/bhk3)">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_actual_whole_run_preview_and_human_t1_command_revert_all_drafts_once(setup):
+&gt;       scope, artifact, claim = history(setup)
+                                 ^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_public_run_revert.py:147: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_public_run_revert.py:126: in history
+    execution_key(scope.run_id, f.model.id, 0), source=f.source,
+                                ^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:575: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1091: in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1121: in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:833: in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mapper = &lt;Mapper at 0x117925310; AgentToolCall&gt;
+state = &lt;sqlalchemy.orm.state.InstanceState object at 0x1258c0530&gt;
+attribute_names = {'actual_input_tokens', 'actual_output_tokens', 'call_key', 'charged_tokens', 'cost_charged_micro_usd', 'cost_pricing', ...}
+passive = symbol('PASSIVE_OFF')
+
+    def _load_scalar_attributes(mapper, state, attribute_names, passive):
+        """initiate a column-based attribute refresh operation."""
+    
+        # assert mapper is _state_mapper(state)
+        session = state.session
+        if not session:
+&gt;           raise orm_exc.DetachedInstanceError(
+                "Instance %s is not bound to a Session; "
+                "attribute refresh operation cannot proceed" % (state_str(state))
+            )
+E           sqlalchemy.orm.exc.DetachedInstanceError: Instance &lt;AgentToolCall at 0x12570a060&gt; is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/21/bhk3)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/loading.py:1633: DetachedInstanceError</failure></testcase><testcase classname="tests.agent_kernel.test_public_run_revert" name="test_category_only_run_reverts_category_artifact_through_public_human_owner" time="0.939" /><testcase classname="tests.agent_kernel.test_public_run_revert" name="test_public_revert_refuses_external_consumption_and_changes_nothing" time="0.509"><failure message="sqlalchemy.orm.exc.DetachedInstanceError: Instance &lt;AgentToolCall at 0x125d23740&gt; is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/21/bhk3)">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_public_revert_refuses_external_consumption_and_changes_nothing(setup):
+&gt;       scope, artifact, claim = history(setup)
+                                 ^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_public_run_revert.py:189: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_public_run_revert.py:126: in history
+    execution_key(scope.run_id, f.model.id, 0), source=f.source,
+                                ^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:575: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1091: in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1121: in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:833: in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mapper = &lt;Mapper at 0x117925310; AgentToolCall&gt;
+state = &lt;sqlalchemy.orm.state.InstanceState object at 0x125d16810&gt;
+attribute_names = {'actual_input_tokens', 'actual_output_tokens', 'call_key', 'charged_tokens', 'cost_charged_micro_usd', 'cost_pricing', ...}
+passive = symbol('PASSIVE_OFF')
+
+    def _load_scalar_attributes(mapper, state, attribute_names, passive):
+        """initiate a column-based attribute refresh operation."""
+    
+        # assert mapper is _state_mapper(state)
+        session = state.session
+        if not session:
+&gt;           raise orm_exc.DetachedInstanceError(
+                "Instance %s is not bound to a Session; "
+                "attribute refresh operation cannot proceed" % (state_str(state))
+            )
+E           sqlalchemy.orm.exc.DetachedInstanceError: Instance &lt;AgentToolCall at 0x125d23740&gt; is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/21/bhk3)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/loading.py:1633: DetachedInstanceError</failure></testcase><testcase classname="tests.agent_kernel.test_public_run_revert" name="test_public_revert_tail_failure_rolls_back_every_business_and_technical_effect[finish]" time="0.428"><failure message="sqlalchemy.orm.exc.DetachedInstanceError: Instance &lt;AgentToolCall at 0x1257f6750&gt; is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/21/bhk3)">setup = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1258d9d00&gt;
+stage = 'finish'
+
+    @pytest.mark.parametrize("stage", ["finish", "outbox"])
+    def test_public_revert_tail_failure_rolls_back_every_business_and_technical_effect(
+        setup, monkeypatch, stage
+    ):
+&gt;       scope, artifact, claim = history(setup)
+                                 ^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_public_run_revert.py:207: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_public_run_revert.py:126: in history
+    execution_key(scope.run_id, f.model.id, 0), source=f.source,
+                                ^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:575: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1091: in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1121: in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:833: in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mapper = &lt;Mapper at 0x117925310; AgentToolCall&gt;
+state = &lt;sqlalchemy.orm.state.InstanceState object at 0x125687d10&gt;
+attribute_names = {'actual_input_tokens', 'actual_output_tokens', 'call_key', 'charged_tokens', 'cost_charged_micro_usd', 'cost_pricing', ...}
+passive = symbol('PASSIVE_OFF')
+
+    def _load_scalar_attributes(mapper, state, attribute_names, passive):
+        """initiate a column-based attribute refresh operation."""
+    
+        # assert mapper is _state_mapper(state)
+        session = state.session
+        if not session:
+&gt;           raise orm_exc.DetachedInstanceError(
+                "Instance %s is not bound to a Session; "
+                "attribute refresh operation cannot proceed" % (state_str(state))
+            )
+E           sqlalchemy.orm.exc.DetachedInstanceError: Instance &lt;AgentToolCall at 0x1257f6750&gt; is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/21/bhk3)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/loading.py:1633: DetachedInstanceError</failure></testcase><testcase classname="tests.agent_kernel.test_public_run_revert" name="test_public_revert_tail_failure_rolls_back_every_business_and_technical_effect[outbox]" time="0.377"><failure message="sqlalchemy.orm.exc.DetachedInstanceError: Instance &lt;AgentToolCall at 0x126b7ec30&gt; is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/21/bhk3)">setup = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x126acefc0&gt;
+stage = 'outbox'
+
+    @pytest.mark.parametrize("stage", ["finish", "outbox"])
+    def test_public_revert_tail_failure_rolls_back_every_business_and_technical_effect(
+        setup, monkeypatch, stage
+    ):
+&gt;       scope, artifact, claim = history(setup)
+                                 ^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_public_run_revert.py:207: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_public_run_revert.py:126: in history
+    execution_key(scope.run_id, f.model.id, 0), source=f.source,
+                                ^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:575: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1091: in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1121: in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:833: in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mapper = &lt;Mapper at 0x117925310; AgentToolCall&gt;
+state = &lt;sqlalchemy.orm.state.InstanceState object at 0x126a270b0&gt;
+attribute_names = {'actual_input_tokens', 'actual_output_tokens', 'call_key', 'charged_tokens', 'cost_charged_micro_usd', 'cost_pricing', ...}
+passive = symbol('PASSIVE_OFF')
+
+    def _load_scalar_attributes(mapper, state, attribute_names, passive):
+        """initiate a column-based attribute refresh operation."""
+    
+        # assert mapper is _state_mapper(state)
+        session = state.session
+        if not session:
+&gt;           raise orm_exc.DetachedInstanceError(
+                "Instance %s is not bound to a Session; "
+                "attribute refresh operation cannot proceed" % (state_str(state))
+            )
+E           sqlalchemy.orm.exc.DetachedInstanceError: Instance &lt;AgentToolCall at 0x126b7ec30&gt; is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/21/bhk3)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/loading.py:1633: DetachedInstanceError</failure></testcase><testcase classname="tests.agent_kernel.test_public_run_revert" name="test_private_external_definition_consumption_is_opaque_but_blocks_whole_run" time="0.385"><failure message="sqlalchemy.orm.exc.DetachedInstanceError: Instance &lt;AgentToolCall at 0x1268757c0&gt; is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/21/bhk3)">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_private_external_definition_consumption_is_opaque_but_blocks_whole_run(setup):
+&gt;       scope, artifact, claim = history(setup)
+                                 ^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_public_run_revert.py:253: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_public_run_revert.py:126: in history
+    execution_key(scope.run_id, f.model.id, 0), source=f.source,
+                                ^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:575: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1091: in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1121: in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:833: in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mapper = &lt;Mapper at 0x117925310; AgentToolCall&gt;
+state = &lt;sqlalchemy.orm.state.InstanceState object at 0x126c5a930&gt;
+attribute_names = {'actual_input_tokens', 'actual_output_tokens', 'call_key', 'charged_tokens', 'cost_charged_micro_usd', 'cost_pricing', ...}
+passive = symbol('PASSIVE_OFF')
+
+    def _load_scalar_attributes(mapper, state, attribute_names, passive):
+        """initiate a column-based attribute refresh operation."""
+    
+        # assert mapper is _state_mapper(state)
+        session = state.session
+        if not session:
+&gt;           raise orm_exc.DetachedInstanceError(
+                "Instance %s is not bound to a Session; "
+                "attribute refresh operation cannot proceed" % (state_str(state))
+            )
+E           sqlalchemy.orm.exc.DetachedInstanceError: Instance &lt;AgentToolCall at 0x1268757c0&gt; is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/21/bhk3)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/loading.py:1633: DetachedInstanceError</failure></testcase></testsuite></testsuites>

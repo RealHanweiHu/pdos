@@ -1,0 +1,124 @@
+{
+  "schema_version": "pdos-wave17-candidate-anchor-restore-source-v1",
+  "recorded_at": "2026-10-03T12:28:03.118029+00:00",
+  "scope": "three new staged files; no public registration/DB/HTTP",
+  "source_files": [
+    {
+      "path": "pdos-next/staging/wave17/candidate_anchor_restore.py",
+      "sha256": "5dd333f70e45a1345da71d63b9b3d4c5da0dc427107c5ebffb50bbda624c1985",
+      "bytes": 20670
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_candidate_anchor_restore.py",
+      "sha256": "6dc6a06511fdbdc3baacb0db0e694fba84208584a67b783ee171d630bd33c5c4",
+      "bytes": 16753
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-anchor-restore-contract.md",
+      "sha256": "1218d3dbf6199ba957f8870b4caa5bead6f5a2ad7648a143dacda03501452d8c",
+      "bytes": 8057
+    }
+  ],
+  "dependencies_read": [
+    {
+      "path": "pdos-next/staging/wave17/anchor.py",
+      "sha256": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e"
+    },
+    {
+      "path": "pdos-next/staging/wave17/anchor_owner.py",
+      "sha256": "02048fa237fa085149151a8277aea8c8fa23763f473df2a34887964787cb05c3"
+    },
+    {
+      "path": "pdos-next/staging/wave17/anchor_storage.py",
+      "sha256": "b3d71c70e076d1f77ee9a9b95fe0300b54ace14ba48fe0ca59334b832c9b325c"
+    },
+    {
+      "path": "pdos-next/staging/wave17/fact_atom_storage.py",
+      "sha256": "b3794750da19f6394dc12cce062489e1aad7022619f4aac7dccb7e7246b9e604"
+    },
+    {
+      "path": "pdos-next/staging/wave17/fact_consumption.py",
+      "sha256": "4bbc52ff7423fa4cf389ff12b21f7c64201a0566b6296580399561bfade50458"
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate_write.py",
+      "sha256": "c7911c5341aa0c30427577de0fd5fc476740b72e00719bbe25866d4a260dc235"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/service.py",
+      "sha256": "91c72ff1d49a794561af28c9a5dfcdef52d717588b46aa9390a00abd816798af"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/quality_execution/evidence.py",
+      "sha256": "f9b128b0cff62607415d16824bd6a8c1a7e9b30c397b1252991f1ec76bd98903"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "sha256": "a710834b172d33de60f713333fd63a5d2d6bab3c39d5a7002b03c7d3d2982686"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/models.py",
+      "sha256": "6397c986d170c5ea7d3b31ad3030990c18d4b31811393334dea209e0d6c570d3"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/quality_result_bridge.py",
+      "sha256": "28eef312b51350f1085329c59a45d3dd28efafbda0b25a466dc0ce6c791d3077"
+    }
+  ],
+  "prior_frozen_own_files": [
+    {
+      "path": "pdos-next/staging/wave17/candidate_prepare.py",
+      "expected_sha256": "89fe3375c97d0fd674ddbd93b7615fa6723a7209ac0f40184511010b80ca46eb",
+      "sha256": "89fe3375c97d0fd674ddbd93b7615fa6723a7209ac0f40184511010b80ca46eb",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_candidate_prepare.py",
+      "expected_sha256": "e3d5e736dd4c6c376ff404275a87e3fe4a1860a445c123272be5e1fa99c3baaa",
+      "sha256": "e3d5e736dd4c6c376ff404275a87e3fe4a1860a445c123272be5e1fa99c3baaa",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-prepare-contract.md",
+      "expected_sha256": "54f1750d3e43e0d8b9137f58f4d29e0c4fe1eef13b3eb5dfba2b2d974ec45172",
+      "sha256": "54f1750d3e43e0d8b9137f58f4d29e0c4fe1eef13b3eb5dfba2b2d974ec45172",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate_commands.py",
+      "expected_sha256": "1cb7b82f9a187d20ee44ba5193f8b3c327e12e54ae4bf02356b49e46960ce8ac",
+      "sha256": "1cb7b82f9a187d20ee44ba5193f8b3c327e12e54ae4bf02356b49e46960ce8ac",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_candidate_commands.py",
+      "expected_sha256": "0d019f44ceeb992ba0825325f2debbb96595ad096ff88b31f1f6d2707bda3b64",
+      "sha256": "0d019f44ceeb992ba0825325f2debbb96595ad096ff88b31f1f6d2707bda3b64",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-command-contract.md",
+      "expected_sha256": "98df984ae8d27f53d6ea547f8a5a6b9c4876b54eaeae12a3332d047eaa53b76b",
+      "sha256": "98df984ae8d27f53d6ea547f8a5a6b9c4876b54eaeae12a3332d047eaa53b76b",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate_storage.py",
+      "expected_sha256": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+      "sha256": "2f23a27435fd77092676c13ef7c4c052fcec01d2ce7c5f92b0a844d3398d388c",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_candidate_storage.py",
+      "expected_sha256": "3aaeeadd5f6b5c537e6bd58314b8b4cd69345537fb241201111d993d6a97aa07",
+      "sha256": "3aaeeadd5f6b5c537e6bd58314b8b4cd69345537fb241201111d993d6a97aa07",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/candidate-storage-contract.md",
+      "expected_sha256": "ac3c89e55a0115f6d5b8d2ed9ea11d5b6b6ee8c88bff3fe421d9006f5b85e4b7",
+      "sha256": "ac3c89e55a0115f6d5b8d2ed9ea11d5b6b6ee8c88bff3fe421d9006f5b85e4b7",
+      "matches": true
+    }
+  ]
+}

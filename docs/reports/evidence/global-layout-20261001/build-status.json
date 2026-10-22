@@ -1,0 +1,6 @@
+{
+  "exit_code": 0,
+  "workspace": "/private/tmp/pdos-global-layout-20261001-pbkq9d27/web",
+  "command": "local node next build --webpack",
+  "network": "public font fetch"
+}

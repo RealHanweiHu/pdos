@@ -1,0 +1,135 @@
+{
+  "schema_version": "wave22-authority-readback-staged-v1",
+  "created_at": "2026-10-03T18:44:55.652062+00:00",
+  "files": [
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/wave22_authority_readback.py",
+      "sha256": "7283735feca083d403d37c3cdb0059d1aaca31d58248390ae5204025c0169f86"
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/test_wave22_authority_readback.py",
+      "sha256": "01f3fd337f248dd2ef2939c373f3b40607303e6294d95fcfda2bf48f2237819c"
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/authority-readback-contract-v1.md",
+      "sha256": "a7d1e05d6bc381a47391e645970377aaa0270656342ee2dd4b0cb100bb1d4782"
+    }
+  ],
+  "future_tool_target": "pdos-next/tools/wave22_authority_readback.py",
+  "original_authority_tool_sha256": "d44f92e26353b6a8a02e5a11e4faf2ef7e772e22457bc4dbd12742fca4487e71",
+  "pure_count": 27,
+  "only_own_noconftest_tests": true,
+  "source_stable": true,
+  "private_checkpoint_profiles_read": false,
+  "db_http_restart_execution": false,
+  "production_qualification": false,
+  "root_actual_readback_pending": true,
+  "checks": [
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/readback-ast-cold-import-04-result.json",
+      "sha256": "3c9a86955a0bb137671822e38baf3cfb1bcafc98727de118f48f46f0f19972c4",
+      "argv": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-c",
+        "import ast; from pathlib import Path; [ast.parse(Path(p).read_text(), filename=p) for p in (\"wave22_authority_readback.py\",\"test_wave22_authority_readback.py\")]; import wave22_authority_readback; print(\"2 in-memory AST + cold import: PASS; no instantiation/configuration/execution\")"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.055,
+      "no_db_http": true
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/readback-format-04-result.json",
+      "sha256": "fb5d6ea915945eb949779a173b248f0fd1a64fb4f0efde52dcec6e1d957facb8",
+      "argv": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--config",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+        "wave22_authority_readback.py",
+        "test_wave22_authority_readback.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.043,
+      "no_db_http": true
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/readback-format-check-04-result.json",
+      "sha256": "0e7f42b1f9b97afa9a6c385c47ce23f53de8d892b3570145d6e0eab820b6d399",
+      "argv": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "--config",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+        "wave22_authority_readback.py",
+        "test_wave22_authority_readback.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.012,
+      "no_db_http": true
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/readback-lint-04-result.json",
+      "sha256": "ff22936003c38af4526de92ccbaab82450aa4f5df7f6e892a4bb9a4fd9e81917",
+      "argv": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "--config",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+        "wave22_authority_readback.py",
+        "test_wave22_authority_readback.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.017,
+      "no_db_http": true
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/readback-pure-04-result.json",
+      "sha256": "6c51279b28706b7073747a9ec9c185be54df93a8a00dd130395cc96150c2890b",
+      "argv": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-p",
+        "no:cacheprovider",
+        "-q",
+        "-o",
+        "addopts=",
+        "--rootdir",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave22-authority-staged",
+        "test_wave22_authority_readback.py"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 1.551,
+      "no_db_http": true
+    }
+  ],
+  "raw_logs": [
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/readback-ast-cold-import-04.log",
+      "sha256": "a11d6a5b123526376c86516e709e53e36d716a6dec0359477ddd8c758b90dfcf"
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/readback-format-04.log",
+      "sha256": "96a977f329ec3c59092d40e041a019b49dcf03ca04055e177aa0ccb8c27234df"
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/readback-format-check-04.log",
+      "sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/readback-lint-04.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "pdos-next/.local/wave22-authority-staged/logs/readback-pure-04.log",
+      "sha256": "8c513aae6531cd694c131566701d35ef0b0e5f23a2c1e12c3109d03b9135bf9f"
+    }
+  ],
+  "historical_checks_retained": [
+    "logs/readback-lint-01.log",
+    "logs/readback-lint-02.log",
+    "logs/readback-pure-03.log"
+  ]
+}

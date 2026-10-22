@@ -1,0 +1,12 @@
+[
+  {
+    "antipattern": "side-tab",
+    "name": "Side-tab accent border",
+    "description": "Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.",
+    "severity": "warning",
+    "category": "slop",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/app/globals.css",
+    "line": 17,
+    "snippet": "border-left: 2px solid var(--primary)"
+  }
+]

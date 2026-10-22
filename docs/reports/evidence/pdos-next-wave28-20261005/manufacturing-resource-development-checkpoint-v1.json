@@ -1,0 +1,70 @@
+{
+  "status": "ACTUAL_READ_ONLY_RESOURCE_DEVELOPMENT_CHECKPOINT",
+  "head": "next_0032",
+  "synthetic_only": true,
+  "actual_files_sha256": {
+    "server/pdos_next/change_order_service.py": "63da224473a809bba621c2a188aea0ef405279d59189b96f04abed9f772a03d6",
+    "server/pdos_next/domain/change_coverage_owner/owner.py": "1c60ed7d5c61a753a429f6fb64111d150dbf7364f9015da4b8585b6fa363f5b0",
+    "server/pdos_next/domain/manufacturing_resource_owner/__init__.py": "f90d61a7f4e14d1db51ec87c6a394e6efb1f668a722516e6232707da4db6b6f4",
+    "server/pdos_next/domain/manufacturing_resource_owner/owner.py": "dc15b39b5b2d0cb1da430dca3577630f709001490a55acfc56a133210fab073f",
+    "server/pdos_next/domain/manufacturing_resource_owner/relations.py": "2bbd56239d7344c768487f999c43d869bfbb4763c5ec08fa8b91d4627662b524",
+    "server/pdos_next/domain/manufacturing_resource_owner/schemas.py": "50dfc4ce69be05feba80cd6cb3e27e0099de7d0867f066922f833845369df0c6",
+    "server/tests/manufacturing_resource_owner/conftest.py": "cdac73e3f5d0efefe4fe9fc09bb5ed541f04f940686933743c23ea9fdf9ce19e",
+    "server/tests/manufacturing_resource_owner/test_owner.py": "a79d9f14a801fa092f90ff190c06801a7bd549a361e055599277981f00a73c80",
+    "server/tests/manufacturing_resource_transactions/test_locks.py": "ddf104a941b685a9ea7ecc59e33adb96f7f2438a04509241d8ac1b8856553371"
+  },
+  "pure_regression": {
+    "passed": 658,
+    "seconds": 14.96,
+    "log": "actual-manufacturing-resource-pure-v1.log",
+    "new_owner_cases": 46,
+    "sql_source_clock_replaced_in_new_pures": true
+  },
+  "real_pg": {
+    "passed": 4,
+    "seconds": 1.07,
+    "source_snapshot": "manufacturing-resource-locks-actual-source-v2.json",
+    "run_report": "actual-manufacturing-resource-locks-run-v2.json",
+    "log": "actual-manufacturing-resource-locks-pg-v2.log",
+    "scope": [
+      "MVCC prior Asset while all-tenant clock fences actual writer commit",
+      "NOWAIT real people conflict exits whole transaction and releases waiting writer",
+      "business mirror value ABA with monotonic revision/occupancy and clock +2",
+      "occupancy reset actual DB refusal and whole UOW Asset/clock rollback"
+    ],
+    "qualified_fact_source_owner_positive_not_tested": true
+  },
+  "v1_failure": {
+    "log": "actual-manufacturing-resource-locks-pg-v1.log",
+    "passed": 2,
+    "failed": 1,
+    "cause": "Test attempted occupancy epoch decrement rejected by existing monotonic DB constraint; no business guard relaxed"
+  },
+  "post_pg_formatting_only": {
+    "file": "server/tests/manufacturing_resource_transactions/test_locks.py",
+    "tested_sha256": "d3c99b3544f23f5dfddc16d01252c049f142f98e3e9aa100f73cff523a2a8a6e",
+    "formatted_sha256": "ddf104a941b685a9ea7ecc59e33adb96f7f2438a04509241d8ac1b8856553371",
+    "complete_ast_unchanged_verified": true,
+    "ast_sha256": "70c4ebb56df0fc4c0b768f8de9a5bf37f399b7658e3d15b16abae7978b36a15b"
+  },
+  "stage_manifest_sha256": "c9947223c29c07b6d9c8cb71dec9a8e6b3724489bab63915416ad08c0aad3761",
+  "independent_review_manifest_sha256": "539b39e1afbe6b29bbc90595579c3ad12202243a902b2ce23f692962f5842d97",
+  "shared_patch_sha256": "3dab577b3c906740b6c7726322cf0127b5ca2c5e553e03abd762af667d7f40ef",
+  "actual_import_order_only_changed_from_stage": true,
+  "statics_log": "actual-manufacturing-resource-statics-v1.log",
+  "new_schema_or_permissions_or_registered_issuer": false,
+  "no_execution_or_t2_rights": true,
+  "acceptance_calibration_qualification": "unknown",
+  "public_api_and_graph_registration": "not_yet_connected",
+  "requirements": [
+    "effective 0030 all tenant Asset clocks and 0014 immutable asset identity/DDL ACL",
+    "outer graph clock callers canonically hold the same tenant/Product first",
+    "all new people locks nowait; 55P03 must escape whole UOW"
+  ],
+  "remaining": [
+    "full native-source fixed operational Fact/Current owner PG positive",
+    "public readonly API and explicit Build/Process/operation relation graph wiring",
+    "native acceptance/calibration/qualification owners",
+    "Pilot/Release/real materials/manual exits"
+  ]
+}

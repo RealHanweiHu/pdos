@@ -1,0 +1,14 @@
+{
+  "web_source_files": 1098,
+  "backend_source_files": 723,
+  "web_drift": [
+    "next-env.d.ts",
+    "src/components/ai/xiaopai-session.tsx",
+    "src/components/ai/xiaopai-session.test.tsx"
+  ],
+  "server_drift": [
+    "app/api/conversations.py"
+  ],
+  "owned_web_drift": [],
+  "owned_server_drift": []
+}

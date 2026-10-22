@@ -1,0 +1,53 @@
+{
+  "date": "2026-09-10",
+  "scope": "explicit application gateway budget adoption; legacy remains default",
+  "tests": {
+    "new_configuration": 12,
+    "new_factory": 4,
+    "existing_meter_controller": 27,
+    "existing_api": 26,
+    "distinct_total": 69
+  },
+  "checks": {
+    "ruff_files": 4,
+    "format_files": 4,
+    "mypy_files": 2,
+    "exports": "common 4 and runtime 5 passed"
+  },
+  "test_database": {
+    "host": "127.0.0.1",
+    "port": 57432,
+    "database": "pdos_test",
+    "migration_added": false,
+    "runtime_role_passwords_changed": false
+  },
+  "sources": {
+    "server/app/ai/budget_adoption.py": "0c57ab42ca6b4d7c419d4feeb34a31ff10e11017861d184d4cb34c2b77da6db9",
+    "server/app/ai/policies/run-budget-v1.json": "fd4b8f5c7a9d367480c48359137f539b7f6a60218617ec90d285d884e0b61974",
+    "server/app/ai/application_gateway.py": "7cdaef9ac9ef96894fe1cac8fa20546f85e214c1ef81d1aafa23ccc920ad100f",
+    "server/tests/test_budget_adoption.py": "8a58b03cdc7562d8941e1a238e9b662e52a2e7582a23d5ed62ec5bcad7741b95",
+    "server/tests/test_application_budget_factory.py": "ee09a685f446e31b84e0d7239573cfa766050076a9c89b9d52be7c5e3d4a59f6",
+    ".env.example": "5fd707a20b5cd5e958906ada584254b9442a8a92482b18dad7dab15b5e0f739d",
+    "docs/runbooks/application-budget-adoption.md": "e31a1729aea79cc8d71d619c9293f5aa863cd5ec7d43b870a7e9112879158cc9",
+    "docs/reports/2026-09-10-n0-03-application-budget-adoption-validation.md": "c5f46c8bad4d26939a3bb4c6b3e328cd5cd569aed42984ed900cfa1ab84fed29"
+  },
+  "real_model_calls": 0,
+  "default_budgeted_enabled": false,
+  "remaining": [
+    "run creation time freezing and linked lineage accounting",
+    "persistent Chat/import identity",
+    "restricted Agent auto provisioning and factory adoption",
+    "real input metering qualification",
+    "complete rollout and recovery"
+  ],
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "88ab4788842ad227e9e9685cd60ec0340f3db13804491486eb64149e1f9c585b",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "bacb038dd1ed30e161274a9a54acd2256cca761e41f4d9c6910274bf4d283066",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  }
+}

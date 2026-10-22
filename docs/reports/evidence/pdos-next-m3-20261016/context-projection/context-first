@@ -1,0 +1,116 @@
+.........F                                                               [100%]
+=================================== FAILURES ===================================
+_ test_registered_graph_progressively_adds_context_and_replay_never_calls_provider _
+
+setup = <isolated synthetic test scope>
+
+    def test_registered_graph_progressively_adds_context_and_replay_never_calls_provider(setup):
+        owner, scope, host = host_for(setup)
+        with Session(setup.admin) as session, session.begin():
+            session.add(TenantAdministrator(tenant_id=setup.tenant, principal_id=setup.human))
+            session.get(AgentRun, scope.run_id).token_limit = 500000
+        with human_session(setup) as session:
+            register_agreement(session, setup.ctx, agreement(setup))  # Synthetic-only contract fixture.
+        class Client:
+            def __init__(self):
+                self.requests = []
+            def turn(self, route, **kwargs):
+                self.requests.append(deepcopy(kwargs))
+                if len(self.requests) == 1:
+                    assert "proposal" not in json.loads(kwargs["messages"][0]["content"])["context"]
+                    return ModelTurn(usage=ProviderUsage(20, 10), calls=(
+                        ToolCall(id="load-drafting", name="skill.load", arguments={"name": "proposal_drafting"}),
+                    ))
+                latest = json.loads(kwargs["messages"][-1]["content"])
+                assert latest["context"]["proposal"]["id"] == str(scope.proposal_id)
+                return ModelTurn(usage=ProviderUsage(20, 10), structured={
+                    "status": "completed", "summary": "Synthetic projected context", "result": {},
+                })
+            def close(self):
+                pass
+        client = Client()
+        host = BoundHost(owner.store, replace(host.adapters, route_for=lambda _: configured_route(),
+            provider_for=lambda *_: "synthetic-provider", cost_required=False, provider_client=client))
+        saver = InMemorySaver()
+>       result = AgentKernel(host, default_registry()).execute(scope, goal="Synthetic progressive context",
+            checkpointer=saver, preload=("public_research",))
+
+tests/agent_kernel/test_context_projection_pg.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/graph.py:653: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:237: in model
+    turn = ports.model(
+pdos_next/agent_kernel/host.py:111: in model
+    return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/gateway.py:105: in turn
+    decision = egress(session, scope, provider_key, text=str(request))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x10f8b2ff0>
+scope = RunScope(tenant_id=UUID('d5134f8f-d87f-49d4-b643-fd5db2fab656'), requester_id=UUID('58d6efe7-8cd2-4580-b097-04a1f84da0...text=True, data_categories=frozenset({'internal'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+provider = 'synthetic-provider', data_categories = None
+text = "{'system': 'You are 小Pai, the single PDOS assistant.\\nUse registered tools and loaded skills. Authority, scope, priv...88a0944cd5f7e92c63c4d8e7471671e1e03eb6dc8d6842595fd3a3c1', 'load_event_id': 'bca1c306-3c8c-4ac5-8803-2bf84aae0885'}]}}"
+
+    def egress(session, scope, provider, *, data_categories=None, text=None):
+        # data_categories is supplied by the host from projected fields, not by a tool payload.
+        categories = frozenset(data_categories or scope.data_categories)
+        if not categories:
+            raise DomainError("FORBIDDEN_SCOPE", "出站资料性质未登记。")
+        agreement = session.scalar(
+            select(ProviderDataAgreement)
+            .where(
+                ProviderDataAgreement.tenant_id == scope.tenant_id,
+                ProviderDataAgreement.provider == provider,
+            )
+            .order_by(ProviderDataAgreement.revision.desc())
+            .limit(1)
+        )
+        valid = bool(
+            agreement
+            and agreement.active
+            and agreement.signed_on <= now()
+            and agreement.expires_at > now()
+            and categories <= set(agreement.data_categories)
+        )
+        if categories - PUBLIC and not valid:
+>           raise DomainError(
+                "FORBIDDEN_SCOPE",
+                "服务商尚无当前资料类别的签约协议。",
+                detail={"reason_key": "provider_agreement_required"},
+            )
+E           pdos_next.errors.DomainError: 服务商尚无当前资料类别的签约协议。
+E           During task with name 'model' and id '2003cffe-80eb-0356-10c9-d15c5c656a0a'
+
+pdos_next/agent_kernel/policy.py:47: DomainError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_context_projection_pg.py::test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[development]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[test]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[production]
+tests/agent_kernel/test_context_projection_pg.py::test_registered_graph_progressively_adds_context_and_replay_never_calls_provider
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_context_projection_pg.py::test_registered_graph_progressively_adds_context_and_replay_never_calls_provider
+1 failed, 9 passed, 5 warnings in 15.95s

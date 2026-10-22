@@ -1,0 +1,87 @@
+{
+  "candidate": "parallel-schedule-20260930-feedback-r1",
+  "files": [
+    {
+      "path": "server/app/domain/formal_schedule.py",
+      "change": "modified",
+      "baseline_sha256": "1ecd4e263727b575a29b7f680631f3e83d46d3fa679c0fbf0a286ea583e208bd",
+      "sha256": "3f1c0e036a0b8a30f81cc3ec8407cf0cb5f74fc0325875e5853c6f184bd2d362"
+    },
+    {
+      "path": "server/app/domain/resource_reallocations.py",
+      "change": "modified",
+      "baseline_sha256": "7949ba5cdd88739f9263e161dcb2733d568b5d18b8c309134d9f974b924d4ebf",
+      "sha256": "09249b74f514457975cfd02bc6f6067c7e9ca5c2300fec5b33e4250a97dea17b"
+    },
+    {
+      "path": "server/app/domain/schedule_forecast_engine.py",
+      "change": "modified",
+      "baseline_sha256": "359866403de14c32298f0d733f74ee24803773b68e60e2060f705376b69c60ef",
+      "sha256": "c5ec20463073de7776d6a4eba669e389d1394028b37c7cff87ad9b239b1c18fa"
+    },
+    {
+      "path": "server/app/domain/schedule_forecasts.py",
+      "change": "modified",
+      "baseline_sha256": "4196c56516263512666ddefc617f41d831cc93c01be725164250633f09749449",
+      "sha256": "0d98e9b1a62edf2e128c091a24d8fb85de547d285c19000c9a58fb0547f01366"
+    },
+    {
+      "path": "server/app/domain/schedule_network.py",
+      "change": "modified",
+      "baseline_sha256": "aceea90a5c8d3e6ab47c5bc2a2fa6f114fa50bbafb54581ab40167c8b96092eb",
+      "sha256": "3692ae66578d98c12713780caaddcb0e3d2e396bb172f815643d6a831f2178bc"
+    },
+    {
+      "path": "server/app/domain/schedule_resource_feedback.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "sha256": "d55a916509810c36b31157ad79b05cb811630e591764b45b0ff787a690dc316c"
+    },
+    {
+      "path": "server/tests/test_schedule_feedback.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "sha256": "59bb9d83d3e88672f7ae3fba7b5035daf1c4a5219774f7a53523bf92a10fdb58"
+    },
+    {
+      "path": "server/tests/test_schedule_feedback_postgres.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "sha256": "a1ad397c07f281e938bc4fac29642b12188833056acbaabdda23bff12e6983b8"
+    },
+    {
+      "path": "web/src/components/projects/project-source-actual-corrections.tsx",
+      "change": "modified",
+      "baseline_sha256": "30d62dcbeee9f1388526bd765c7b1e221472829e77ff129b14aacf5211fdef5e",
+      "sha256": "56c57c8cf8b8c5c5ccd19c816f51e02d240093e7f88dd262b45c5b373ccd098e"
+    },
+    {
+      "path": "web/src/components/projects/resource-reallocations.tsx",
+      "change": "modified",
+      "baseline_sha256": "335b76dde41217f7d555e4f3521b3cc232322d737b0245e40e2d192a97c3f0c2",
+      "sha256": "90c65564e2e1db29d5b3dea9d836cc5cab35381ef85de6f9022252cb2285dfaa"
+    },
+    {
+      "path": "web/src/components/projects/schedule-actual-corrections.tsx",
+      "change": "modified",
+      "baseline_sha256": "09cf2397875381cbbf8c51abc568d278055f67cbb87d6447872bf927d5fd1c00",
+      "sha256": "5881f6354bc9514861089d22f013eeaf2cfca5390f98c12f2bd7562af0be9c27"
+    },
+    {
+      "path": "web/src/components/projects/schedule-forecast-panel.tsx",
+      "change": "modified",
+      "baseline_sha256": "b4305bb7856b39fc1032a3daad5706dfcb53175a9682d65496a833c284cd3487",
+      "sha256": "1ccbfb57f6fc54de97f3ba39619888ee7b1435fdd25f5c1bcb00398fc4cfb414"
+    },
+    {
+      "path": "web/src/components/projects/schedule-feedback.test.tsx",
+      "change": "added",
+      "baseline_sha256": null,
+      "sha256": "446c7547aad7ce8ea9d891d6f1a884f5f649289f613c091c59105cc38d9227ea"
+    }
+  ],
+  "files_digest": "68cbf6e2c12ea7f756ff19a0750ad83e97bf6055918255540083092d200123f4",
+  "baseline_count": 46,
+  "database_validation": "pending coordinator-only isolated PostgreSQL; no database accessed",
+  "formal_exit": "not claimed"
+}

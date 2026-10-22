@@ -1,0 +1,18 @@
+{
+  "unpublished_own_commit_replaced": "7e190fbd952f6e4151961ea30b58fbf012acf458",
+  "reason": "Unused extra project profile arrived in shared context config during candidate refresh; exclude from this closure",
+  "selected_existing_profiles": [
+    "navigation",
+    "category",
+    "proposal"
+  ],
+  "selected_profile_definitions_unchanged": true,
+  "shared_defs_unchanged": true,
+  "foreign_working_file_written": false,
+  "push": false,
+  "final_profile_checks": {
+    "exit": 0,
+    "tests": 12,
+    "output": "12 passed in 2.43s"
+  }
+}

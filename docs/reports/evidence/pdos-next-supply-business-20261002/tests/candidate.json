@@ -1,0 +1,98 @@
+{
+  "candidate": "supply-business-pure-domain-tests-20261002",
+  "scope": "98 pure rules, participant-port and read-model checks; synthetic source data only",
+  "python": "3.12.10",
+  "pytest": "9.1.1",
+  "pydantic": "2.13.5",
+  "consumed_files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/__init__.py",
+      "sha256": "58b0363a4dbce0cf71b9eb57775e70d620b2d443a1fdae9f5c74f7c7521214b4"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/adapters.py",
+      "sha256": "740299f0cf78635c68a05d430522d9587693154ee8335169d71826ff08951b80"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/errors.py",
+      "sha256": "b391821b1020acf5a4207144cf59121bc4d7ac4e115ebd0805f2759bd8cdf28f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/handlers.py",
+      "sha256": "f99e23b19ec7981e35d7bd21885ed377f5a85fd661f7d83ca8c5dddcae9fe6a4"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/ports.py",
+      "sha256": "18a3fffaf852bd497fe012ccfed390dd4f6e19013811c9b622f9db279c4f92c3"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+      "sha256": "c9e5ddfb4cf5406829f51eb985c2086cc2e2a2e2a111c70f4dbece680be3e650"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+      "sha256": "2ad889a16534c11f6ea01fe7f2dbe7f9d4dafec572a825263ea07a93c3413880"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/__init__.py",
+      "sha256": "9a2929d5c8b965def4c59dd6189244bc029b5f4007ebdb8bc8701b3c34c21fa6"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/bom.py",
+      "sha256": "cdad615b84a349dae4cb3d7c9e447491ed70d9ab7b63b1e95f67112a4649cdf2"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/common.py",
+      "sha256": "cd7f43ffb1c46bf8175fe59da3c76b9aeaf598d03def82aa03b8a10d4dab7379"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/costs.py",
+      "sha256": "6e5af8ec6a13fc9d5309dc9ca9afbb0111882bf686498b45730551fdced0ea36"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/coverage.py",
+      "sha256": "534737cf0117ddc1607d7f56e705ebefb2311e72f25dca1a9ff386cfb6ef7e6d"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/dto.py",
+      "sha256": "14f3cc902abde9ffcf98639a577812ba8577445a532299899cfb63541718a1d8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/units.py",
+      "sha256": "565c193c687a5d9898379bb90e613056a079e5c26387d86bc597cdebc1277c48"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/supply_cost/__init__.py",
+      "sha256": "44abfc6833aa379358f095310a038b38451e3f48e7d7c37b0dc5981314d77a5f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/supply_cost/dto.py",
+      "sha256": "539f725a0c39df2ebea96ec32c6af8ac332ab99d45f54219c086cdad9c04f3e3"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/__init__.py",
+      "sha256": "5ffb64472c30f00b2e803bd898b9ddcb8aeb624314bd8503dfb1c320a8a16ee6"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/conftest.py",
+      "sha256": "6c8213a11efd39ab3658320a87ac4b2d0b9b0a04edae7ef7b512f7d082295b98"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/helpers.py",
+      "sha256": "8b8df2ae8bafb789c4cffac1488cc789ce0a0cc0955c7a41afe1eb9167b1dae6"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+      "sha256": "664edc868237ed5ef93dd381ef664009a504d0394ee9247229c54559b4c11bcb"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/test_read_models.py",
+      "sha256": "371f5e59244da4348a218a7c545339f3c78398fe037025baee4e93a80383f9fc"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+      "sha256": "b4f0e150e061ebd0a3a3a18c31a42d3aa45025c4ecb882ee839af6c394385737"
+    }
+  ],
+  "aggregate_sha256": "ba02482987e00605c51d358f87172e4ee3c2fa7f89914a9f04dfefd3239f1ea9"
+}

@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-10-02T12:01:08.709644+00:00",
+  "method": "Codex wait_threads timeoutMs=0 per completed task",
+  "deliveries": [
+    {
+      "thread_id": "01a0fc5f-3974-79c1-a945-bca40ca02567",
+      "title": "PDOS Next：品质验证与交接",
+      "status": "completed/idle",
+      "own_checks": {
+        "backend": 156,
+        "frontend": 23
+      },
+      "integration": "docs/reports/evidence/pdos-next-verification-20261002/integration.md"
+    },
+    {
+      "thread_id": "01a0fc5f-5f63-7f73-8676-62982da76b03",
+      "title": "PDOS Next：供应与成本业务接入",
+      "status": "completed/idle",
+      "own_checks": {
+        "domain": 106,
+        "components": 15
+      },
+      "integration": "docs/reports/evidence/pdos-next-supply-business-20261002/integration.md"
+    },
+    {
+      "thread_id": "01a0fc5f-6336-7753-913c-2f6be216c4cd",
+      "title": "PDOS Next：文件安全与原件生命周期",
+      "status": "completed/idle",
+      "own_checks": {
+        "scanner": 80,
+        "lifecycle": 75
+      },
+      "integration": "docs/reports/evidence/pdos-next-evidence-security-20261002/integration.md"
+    }
+  ],
+  "scope": "Separate module candidates only; no aggregation into mainline joint acceptance; no follow-up messages sent."
+}

@@ -1,0 +1,10 @@
+{
+  "pids": [
+    5526,
+    5529,
+    6921
+  ],
+  "reason": "Known next_0020 inherited JSON containment SQL precedence defect reproduced by both retained setup tests; stopped dependent initial checks before monotonic repair.",
+  "status": "cancelled_not_passed",
+  "data": "Only synthetic per-test tenants on marked owned target; no destructive cleanup."
+}

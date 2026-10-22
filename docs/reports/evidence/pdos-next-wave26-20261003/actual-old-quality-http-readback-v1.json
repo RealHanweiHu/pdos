@@ -1,0 +1,14 @@
+{
+  "recorded_at": "2026-10-05T18:39:02.825483+00:00",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "target": "127.0.0.1:62513/pdos_test",
+  "head": "next_0028",
+  "scope": "actual original actor/token and fixed old Build/Run; HTTP GET only",
+  "business_commands": 0,
+  "qualification_imports": 0,
+  "model_calls": 0,
+  "status": "HTTP_READ_FAILED",
+  "error_type": "ReadTimeout",
+  "all_122_tenant_tables_unchanged": true,
+  "registered_tables": 122
+}

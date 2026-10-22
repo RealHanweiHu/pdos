@@ -1,0 +1,38 @@
+{
+  "target": "verified independent 64245/pdos_test",
+  "head": "s0_0771",
+  "run_id": "4e90b7bf-6e8f-4f3f-a475-83790672538e",
+  "state": "failed",
+  "cancel_epoch": 1,
+  "held_tokens": 0,
+  "call_state": "failed",
+  "cost_state": "estimated_unknown",
+  "estimated_micro_usd": 1600,
+  "reconciliation_event": {
+    "mode": "administrator",
+    "type": "run_reconciled",
+    "event_id": "fcc02aec-8394-4515-bbe3-c34076c12110",
+    "closed_at": "2026-10-16T22:56:42.705911+00:00",
+    "held_tokens": 0,
+    "initiated_by": "9fb37fe6-3a72-4d18-8bd4-1ce99d7887ce",
+    "failed_call_ids": [
+      "7e2c9c30-a29e-40d9-b3ea-17092e7eee4a"
+    ],
+    "failed_call_count": 1,
+    "recovered_call_ids": [],
+    "estimated_micro_usd": 1600,
+    "business_receipt_ids": [],
+    "recovered_call_count": 0,
+    "may_start_new_request": true,
+    "original_cancel_epoch": 0,
+    "business_receipt_count": 0,
+    "external_effect_unknown": false
+  },
+  "browser_post_count": 1,
+  "response_loss_injected": true,
+  "real_model_calls": 0,
+  "real_external_calls": 0,
+  "credentials_resolved": 0,
+  "synthetic_session_expired": true,
+  "synthetic_administrator_disabled": true
+}

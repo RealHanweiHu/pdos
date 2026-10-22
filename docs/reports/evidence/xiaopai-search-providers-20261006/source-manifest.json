@@ -1,0 +1,23 @@
+{
+  "scope": "Touched candidate files; excludes unrelated workspace changes and private .env",
+  "sha256": {
+    ".env.example": "edbf2cc7bc0a61e7b0f7d14ca6ed1a336e59cd1371519045b5dbb1501b3474da",
+    "compose.yaml": "19e03b8e5a62d7736bc51c1dc3a8c9344ffc490a18e6764025f804a2fbc57991",
+    "infra/searxng/settings.yml": "3335158d6e99ea42a46658db45775f144eb5401cb08d7a623878ed6e2cd1139e",
+    "server/app/settings.py": "5be752ac7f9721b3c201b354cce57e66521e3a6ff3399234f318fc43b3ed8ad4",
+    "server/app/ai/research_search.py": "e2c6e3f20bb5306f5bac0ea7f099cba2fcecd0ce3145baf29d005190c80d757c",
+    "server/app/ai/firecrawl.py": "8267ae3a49f02f7596b54932048deb43acb09cbb895347e39f508f054090fc3a",
+    "server/app/ai/conversation_research.py": "46025ce33c2ad198671386d84b0cd06e544de104469092de609bd9d093026e2d",
+    "server/app/domain/research_search.py": "47e722367300da0ad1115e8b7be3b411c19c18b7699c9cf9c1223e82c27a77da",
+    "server/app/api/product_research.py": "5314b1b07db04400258d895e85ba075cc78a645e0329737119ab8c8139b25046",
+    "server/app/ai/discussion_research_tools.py": "e7a2a9153541a737b8332c4d90019dbe0d5ddc6a75bbf6a7f3fed664612c44aa",
+    "server/tests/test_research_search_fallback.py": "3557b0f92403fed1c6e4e1b365e52ab0056e6cb57161ebb8480209887405c252",
+    "server/tests/test_research_search_tavily.py": "46ef3e9e0e309ac61645b3d23db4975f97fd5fa690fd688923b5a70c2aa3d251",
+    "server/tests/test_xiaopai_conversation_search.py": "e3830db8cd003d449ce69e9f22e80365a47c98cadac2bfa99fb029bed295184a",
+    "server/tests/test_product_conversations_api.py": "14c10d52f7f266edc3a529983c4ce8879d2d2b2d85d3b7e7e01f00a919a77cfc",
+    "server/tests/test_product_research_entry_api.py": "73f114656f345f4293d9663f7f52ba194739499c4efadca1b1b5bfedbcf63a28",
+    "server/tests/test_test_runs_api.py": "bce1c2fd0611cad28243c341f3f97a74dd2d2928b6336a0220562c09708e3fe7",
+    "web/src/components/product-work/research-search.tsx": "efdc3cb792d21ecc56dfa03df6969817a0dfbb78c20e213415ac4e6ee52274ec",
+    "web/src/components/ai/xiaopai-session.tsx": "6c5748c95862c6e8251dc7c7ee61ad2d92864cf9f4993e63a9c9d6f3422060ff"
+  }
+}

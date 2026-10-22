@@ -1,0 +1,7 @@
+{
+  "path": "pdos-next/server/pdos_next/change_implementation_owner.py",
+  "before": "ed48436285b1440a4988474d055fc5bc659f9ddb53777dadf78e645d8ec7117e",
+  "after": "4afe04cdc9f73ed63485bee40799880339075e37731a9d85bb85bb9c36ebca83",
+  "ast_equal": true,
+  "reason": "Ruff condenses the same conditional expression; no semantic change."
+}

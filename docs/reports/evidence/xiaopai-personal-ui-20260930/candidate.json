@@ -1,0 +1,19 @@
+{
+  "files": {
+    "web/next.config.ts": "06b1ca47442780d314580822f2ded3d4e6171df9c6ba63eca1e3aa6528093dab",
+    "web/src/components/ai/xiaopai-provider.tsx": "2c7e81c151c71ac913b9c5ce3e7371611197478c51741d8db8638747ed643d4d",
+    "web/src/components/ai/project-conversation.tsx": "f30a6584138b3a9f116d997f2208029e5cece8994183ce45ceaeaf371c79bdb0",
+    "web/src/components/ai/xiaopai-provider.test.tsx": "4b3a06b80479f8086846ae2c9e7d9e27782da2080b8f728eeec864f491966bf7",
+    "web/src/app/ask/page.tsx": "e78ba542f55c1e90dc38db6892f146f96b599f8f43377a301eec16e6e2757a88",
+    "web/src/components/ai/ask-workspace.tsx": "c54e5a8cd2621047c4f5f1087daaaa900d71f0804b0b21544ef7773a7b460953",
+    "web/src/components/ai/xiaopai-page-context.ts": "78bf93e6c67aecf2ec419c2b1ad633f00642eb27593d4c86709fee1b3879ef12",
+    "web/src/components/ai/project-conversation-personal.test.tsx": "36972007be81c9d1e7e353d4df6ca5bdeb1d02a11cae17d45837237f08564c03"
+  },
+  "tests": {
+    "files": 3,
+    "passed": 11
+  },
+  "database_tests": false,
+  "model_calls": false,
+  "full_build": false
+}

@@ -1,0 +1,28 @@
+{
+  "staged_manifest_sha256": "d1ac838d8c0ced710797ffac6609fcad3c5e6b1f0873d59c68c5a786cd4439e4",
+  "actual_four_files_unchanged_from_stage": true,
+  "all_actual_source_dependencies_unchanged": true,
+  "applied": [
+    {
+      "staged": "manufacturing_preparation_transactions/__init__.py",
+      "target": "server/tests/manufacturing_preparation_transactions/__init__.py",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "staged": "manufacturing_preparation_transactions/conftest.py",
+      "target": "server/tests/manufacturing_preparation_transactions/conftest.py",
+      "sha256": "c8043f33c4379c0848c7a8c6de29915f79cdca0baad0611c03f3419d6bc68068"
+    },
+    {
+      "staged": "manufacturing_preparation_transactions/fixtures.py",
+      "target": "server/tests/manufacturing_preparation_transactions/fixtures.py",
+      "sha256": "92f2bae9991809117016869338ef67cc2f5ffc5eab2508f1466e2fd68ece9a6b"
+    },
+    {
+      "staged": "manufacturing_preparation_transactions/test_transactions.py",
+      "target": "server/tests/manufacturing_preparation_transactions/test_transactions.py",
+      "sha256": "18fe0045b6aa5fcd3a12ebefa7d4f06806a5c45dc1eddeb7096295b3280ae4ca"
+    }
+  ],
+  "database_test_executed": false
+}

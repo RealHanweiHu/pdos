@@ -1,0 +1,16 @@
+{
+  "scope": "Root private manufacturing runner preflight before any test body; no grant changes",
+  "preflight_failures": [
+    {
+      "reason": "verify_test_target lacked the explicit isolated marker environment",
+      "recovery": "Pass existing guard.env(state) before guarded SQLA checks"
+    },
+    {
+      "reason": "App role intentionally cannot read alembic_version",
+      "recovery": "Admin alone checks schema head; Admin and App still independently verify actual environment_guard marker; Auth endpoint and principal verified without granting marker access"
+    }
+  ],
+  "actual_test_bodies_before_recovery": 0,
+  "roles_or_permissions_changed": false,
+  "later_actual_manufacturing_test_exit_code": 0
+}

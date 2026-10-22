@@ -1,0 +1,14 @@
+{
+  "changed": {
+    "pdos-next/server/pdos_next/domain/verification_launch/service.py": {
+      "before": "acc3adefeafac1005c9b945756d69bd57070c08ae693a9202fff452f6207f804",
+      "after": "8ae634c811c1a8232c8deba165040151f689ee71d0b752bc88461434ec2e1557"
+    },
+    "pdos-next/server/tests/verification_launch/test_pure.py": {
+      "before": "c1f75f89cfc032aaa8cac3ba41f7df9770870a08c6d663be690403809e3e1786",
+      "after": "ea79adbd6a39d49d437013c668775ec2d8fedcae933f8b8665777ce698bb8ae5"
+    }
+  },
+  "scope": "Prospective request preview metadata only; actual apply/reservation unchanged; three pure projection regressions added.",
+  "old_browser_confirmation_abandoned": true
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "review_digest": "b6f6eb999def1c189642514ccc27c02e5f8899ca9818ef4d378b97b6b2d47098",
+  "sources": 10,
+  "new_resource_bound": true,
+  "frozen_window_exact": true,
+  "planned_not_started": true,
+  "prior_checker_bad_count_and_key_retained": true
+}

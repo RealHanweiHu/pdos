@@ -1,0 +1,45 @@
+{
+  "status": "PASS_prestart_only",
+  "generation": "19ee5abb-ec6d-47f4-a46f-9ea74af05d23",
+  "future_window_start": "2026-10-03T19:49:52.958567Z",
+  "plan_and_promise_saved": true,
+  "actual_start_saved": false,
+  "occupancy_count": 0,
+  "sample_usage_count": 0,
+  "old_materials_retained": true,
+  "core_544_scoped_unchanged": true,
+  "evidence": {
+    "test-resource-generation-actual-import-v1.json": {
+      "bytes": 24108,
+      "sha256": "3f003822409d968168811db5a52f53060da3d8e141149ddc2f72dc49d4628c30"
+    },
+    "test-generation-api-reload-v1.json": {
+      "bytes": 252,
+      "sha256": "0b68d92a5cd989b7986e7be70fdb3fe8cb478a438db405c644c09a2503bc4436"
+    },
+    "test-generation-api-health-v1.json": {
+      "bytes": 472,
+      "sha256": "86406c6fa4fd405d11e4e26f98d89d3114f207f54d2743641bb4c2112d2067b5"
+    },
+    "test-generation-plan-reviewed-v1.json": {
+      "bytes": 95817,
+      "sha256": "fe72edbcee01957db57581e9685ea840f7e0fb7788bac39876c771940e68fa3d"
+    },
+    "test-generation-promise-reviewed-v1.json": {
+      "bytes": 116118,
+      "sha256": "a60ac6108c5d30e0670621d0c8ccbe899268d796b13019dd85a8d777be124714"
+    },
+    "test-generation-planned-actual-readback-v1.json": {
+      "bytes": 50541,
+      "sha256": "683fa0c9af3ebb4ded23a2d586d6c5f4ffc43918d9cc3836149d03fcc42b5a74"
+    },
+    "control-candidate-source-v2.json": {
+      "bytes": 3084,
+      "sha256": "03e52b2b4c24e4f89a0481564736c608993929b4fea0b755802401cc88ad0cf4"
+    },
+    "retained-case-exclusion-v3.json": {
+      "bytes": 7301,
+      "sha256": "15a96dc0d9a11f4ae220e95aecdd4970633cf5fac3cd7f14616a278adcce7751"
+    }
+  }
+}

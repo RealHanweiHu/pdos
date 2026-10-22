@@ -1,0 +1,103 @@
+{
+  "functional_passed": true,
+  "all_required_groups_complete": true,
+  "all_thresholds_passed": true,
+  "summary": {
+    "draft_save": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.03915016700193519,
+      "p95_seconds": 0.09878029099490959,
+      "sql_range": [
+        10,
+        10
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "draft_create": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.06961099999898579,
+      "p95_seconds": 0.1280641250050394,
+      "sql_range": [
+        19,
+        19
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "t1_preview": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.05795175000093877,
+      "p95_seconds": 0.0997364579961868,
+      "sql_range": [
+        15,
+        15
+      ],
+      "limit_seconds": 2,
+      "passed": true
+    },
+    "t1_confirmation": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.08771812499617226,
+      "p95_seconds": 0.13295570800255518,
+      "sql_range": [
+        24,
+        24
+      ],
+      "limit_seconds": 2,
+      "passed": true
+    },
+    "same_key_replay": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.026208916002360638,
+      "p95_seconds": 0.046203000005334616,
+      "sql_range": [
+        8,
+        8
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "workspace_read": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.1115856670003268,
+      "p95_seconds": 0.13662170900352066,
+      "sql_range": [
+        12,
+        12
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "readiness_read": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.045740249996015336,
+      "p95_seconds": 0.09644120799930533,
+      "sql_range": [
+        12,
+        12
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "configuration_read_21_sources": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.1683562499965774,
+      "p95_seconds": 0.20337054199626436,
+      "sql_range": [
+        25,
+        25
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    }
+  }
+}

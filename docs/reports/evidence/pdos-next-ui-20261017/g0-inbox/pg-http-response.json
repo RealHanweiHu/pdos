@@ -1,0 +1,1407 @@
+{
+  "inbox": {
+    "version": "personal-g0-reviews/v1",
+    "principal_id": "c5017137-a6ba-46da-a378-ea852401487a",
+    "as_of": "2026-10-17T15:51:27.691900+00:00",
+    "total_pending": 2,
+    "items": [
+      {
+        "proposal_id": "283a5ad3-afff-45e6-94ff-ec5dc55dc393",
+        "title": "合成自行车充气泵立项评审",
+        "proposal_revision": 2,
+        "status": "in_review",
+        "category": {
+          "id": "afe3b45d-0a04-4516-8f60-a66ebc9b63f0",
+          "name": "汽车充气泵"
+        },
+        "owner": {
+          "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+          "name": "Synthetic owner"
+        },
+        "reviewer_id": "c5017137-a6ba-46da-a378-ea852401487a",
+        "submission": {
+          "id": "ab5b011c-a1bd-4a75-a557-eb3a3dc60fb2",
+          "revision": 1,
+          "submitted_at": "2026-10-17T15:51:25.391989+00:00",
+          "document_digest": "5ff0a4084dabf637b0b45e0228b5ed59b4b84f924e38c8dd015cd8a1762fc135"
+        }
+      },
+      {
+        "proposal_id": "1216e9c5-18d6-4f9f-a723-fb1da41e9747",
+        "title": "合成便携充气泵立项评审",
+        "proposal_revision": 2,
+        "status": "in_review",
+        "category": {
+          "id": "afe3b45d-0a04-4516-8f60-a66ebc9b63f0",
+          "name": "汽车充气泵"
+        },
+        "owner": {
+          "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+          "name": "Synthetic owner"
+        },
+        "reviewer_id": "c5017137-a6ba-46da-a378-ea852401487a",
+        "submission": {
+          "id": "a80dae6f-7733-47c0-b0d8-a0e366217a08",
+          "revision": 1,
+          "submitted_at": "2026-10-17T15:51:23.064097+00:00",
+          "document_digest": "ef4e9f5fe568d802bd48da8a8c22217c00b61bdcd381153ee0161e6a63025af0"
+        }
+      }
+    ],
+    "next_cursor": null
+  },
+  "session": {
+    "name": "Synthetic peer",
+    "principal_id": "c5017137-a6ba-46da-a378-ea852401487a",
+    "model_available": false
+  },
+  "categories": [
+    {
+      "id": "afe3b45d-0a04-4516-8f60-a66ebc9b63f0",
+      "key": "category-6c10facda1ed41689006e7076b76a041",
+      "name": "汽车充气泵",
+      "purpose": "隔离合成品类",
+      "revision": 1,
+      "status": "active",
+      "capabilities": {
+        "product_management": true
+      }
+    }
+  ],
+  "proposals": [
+    {
+      "category_id": "afe3b45d-0a04-4516-8f60-a66ebc9b63f0",
+      "proposal": {
+        "id": "1216e9c5-18d6-4f9f-a723-fb1da41e9747",
+        "category_id": "afe3b45d-0a04-4516-8f60-a66ebc9b63f0",
+        "owner_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+        "revision": 2,
+        "status": "in_review",
+        "visibility": "private",
+        "private_source_count": 0,
+        "context_hint": false,
+        "context_changes": [],
+        "title": "合成便携充气泵立项评审",
+        "brief": "合成新品评审",
+        "entry_kind": "new_product",
+        "target_kind": "new_product",
+        "baseline_product_id": null,
+        "baseline_definition_id": null,
+        "baseline_definition_revision": null,
+        "items": [
+          {
+            "item_id": "b9b6bb33-feb4-466b-8b30-188c7bef4468",
+            "version": 1,
+            "kind": "section",
+            "content": {
+              "key": "worth_it",
+              "text": "解决便携充气需求"
+            },
+            "source_refs": [],
+            "origin": "human",
+            "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "run_id": null,
+            "confirmed_by": null,
+            "human_value": true,
+            "removed": false
+          },
+          {
+            "item_id": "7538f730-3405-4bef-be58-1fe0f056a7e2",
+            "version": 1,
+            "kind": "option",
+            "content": {
+              "kind": "new",
+              "name": "开发便携款"
+            },
+            "source_refs": [],
+            "origin": "human",
+            "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "run_id": null,
+            "confirmed_by": null,
+            "human_value": true,
+            "removed": false
+          },
+          {
+            "item_id": "4acdb474-918b-470a-86a6-8c43fa2e0901",
+            "version": 1,
+            "kind": "option",
+            "content": {
+              "kind": "do_nothing",
+              "name": "保持现状"
+            },
+            "source_refs": [],
+            "origin": "human",
+            "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "run_id": null,
+            "confirmed_by": null,
+            "human_value": true,
+            "removed": false
+          },
+          {
+            "item_id": "93fcbfd2-fe9d-48f5-bcc2-6fe201f2607c",
+            "version": 1,
+            "kind": "spec",
+            "content": {
+              "key": "noise",
+              "unit": null,
+              "lower": null,
+              "upper": null,
+              "value": null,
+              "nature": "decided",
+              "reason": null,
+              "modality": null,
+              "owner_id": null,
+              "parameter": "噪声",
+              "tolerance": null,
+              "exceptions": [],
+              "text_value": null,
+              "value_type": "number",
+              "item_status": "unknown",
+              "availability": "unknown",
+              "parameter_id": null,
+              "condition_note": null,
+              "test_conditions": [],
+              "parameter_version": null,
+              "applicable_variants": [],
+              "verification_method": null,
+              "acceptance_criterion": null
+            },
+            "source_refs": [],
+            "origin": "human",
+            "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "run_id": null,
+            "confirmed_by": null,
+            "human_value": true,
+            "removed": false
+          },
+          {
+            "item_id": "d5294249-a6d9-44e5-adc7-ece797d1b062",
+            "version": 1,
+            "kind": "spec",
+            "content": {
+              "key": "display",
+              "unit": null,
+              "lower": null,
+              "upper": null,
+              "value": null,
+              "nature": "decided",
+              "reason": null,
+              "modality": null,
+              "owner_id": null,
+              "parameter": "压力显示",
+              "tolerance": null,
+              "exceptions": [],
+              "text_value": "true",
+              "value_type": "boolean",
+              "item_status": "confirmed",
+              "availability": "known",
+              "parameter_id": null,
+              "condition_note": null,
+              "test_conditions": [],
+              "parameter_version": null,
+              "applicable_variants": [],
+              "verification_method": null,
+              "acceptance_criterion": null
+            },
+            "source_refs": [
+              {
+                "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "line": null,
+                "type": "human",
+                "quote": null,
+                "version": 1,
+                "statement": "具名产品决定"
+              }
+            ],
+            "origin": "human",
+            "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "run_id": null,
+            "confirmed_by": null,
+            "human_value": true,
+            "removed": false
+          },
+          {
+            "item_id": "2078a8b0-d74a-417c-a5c6-77ffc20d11a7",
+            "version": 1,
+            "kind": "question",
+            "content": {
+              "answer": null,
+              "status": "open",
+              "due_date": "2026-10-20",
+              "owner_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "question": "噪声条件待确定",
+              "related_item_ids": [],
+              "supersedes_item_id": null
+            },
+            "source_refs": [],
+            "origin": "human",
+            "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "run_id": null,
+            "confirmed_by": null,
+            "human_value": true,
+            "removed": false
+          }
+        ],
+        "source_refs": [],
+        "context_refs": [],
+        "maturity": {
+          "spec_count": 2,
+          "option_count": 2,
+          "item_status_counts": {
+            "unknown": 1,
+            "confirmed": 1
+          },
+          "availability_counts": {
+            "unknown": 1,
+            "known": 1
+          },
+          "required_dispositions": [
+            {
+              "subject_type": "spec_item",
+              "subject_id": "93fcbfd2-fe9d-48f5-bcc2-6fe201f2607c",
+              "title": "噪声",
+              "content": {
+                "key": "noise",
+                "unit": null,
+                "lower": null,
+                "upper": null,
+                "value": null,
+                "nature": "decided",
+                "reason": null,
+                "modality": null,
+                "owner_id": null,
+                "parameter": "噪声",
+                "tolerance": null,
+                "exceptions": [],
+                "text_value": null,
+                "value_type": "number",
+                "item_status": "unknown",
+                "availability": "unknown",
+                "parameter_id": null,
+                "condition_note": null,
+                "test_conditions": [],
+                "parameter_version": null,
+                "applicable_variants": [],
+                "verification_method": null,
+                "acceptance_criterion": null
+              }
+            },
+            {
+              "subject_type": "question",
+              "subject_id": "2078a8b0-d74a-417c-a5c6-77ffc20d11a7",
+              "title": "噪声条件待确定",
+              "content": {
+                "answer": null,
+                "status": "open",
+                "due_date": "2026-10-20",
+                "owner_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "question": "噪声条件待确定",
+                "related_item_ids": [],
+                "supersedes_item_id": null
+              }
+            }
+          ],
+          "submission_checks": {
+            "worth_it_present": true,
+            "alternative_or_reason_required": false
+          },
+          "freeze_blockers": [
+            {
+              "kind": "spec",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "key": "noise",
+                "unit": null,
+                "lower": null,
+                "upper": null,
+                "value": null,
+                "nature": "decided",
+                "reason": null,
+                "modality": null,
+                "owner_id": null,
+                "parameter": "噪声",
+                "tolerance": null,
+                "exceptions": [],
+                "text_value": null,
+                "value_type": "number",
+                "item_status": "unknown",
+                "availability": "unknown",
+                "parameter_id": null,
+                "condition_note": null,
+                "test_conditions": [],
+                "parameter_version": null,
+                "applicable_variants": [],
+                "verification_method": null,
+                "acceptance_criterion": null
+              },
+              "item_id": "93fcbfd2-fe9d-48f5-bcc2-6fe201f2607c",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [],
+              "confirmed_by": null
+            }
+          ],
+          "guidance": "10–20 条关键规格仅作提示；未知项可带入 G0 并逐条处置。"
+        },
+        "submission": {
+          "id": "a80dae6f-7733-47c0-b0d8-a0e366217a08",
+          "revision": 1,
+          "reviewer_id": "c5017137-a6ba-46da-a378-ea852401487a",
+          "document_digest": "ef4e9f5fe568d802bd48da8a8c22217c00b61bdcd381153ee0161e6a63025af0",
+          "context_refs": [],
+          "frozen_document": {
+            "brief": "合成新品评审",
+            "items": [
+              {
+                "kind": "section",
+                "origin": "human",
+                "run_id": null,
+                "content": {
+                  "key": "worth_it",
+                  "text": "解决便携充气需求"
+                },
+                "item_id": "b9b6bb33-feb4-466b-8b30-188c7bef4468",
+                "removed": false,
+                "version": 1,
+                "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "human_value": true,
+                "source_refs": [],
+                "confirmed_by": null
+              },
+              {
+                "kind": "option",
+                "origin": "human",
+                "run_id": null,
+                "content": {
+                  "kind": "new",
+                  "name": "开发便携款"
+                },
+                "item_id": "7538f730-3405-4bef-be58-1fe0f056a7e2",
+                "removed": false,
+                "version": 1,
+                "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "human_value": true,
+                "source_refs": [],
+                "confirmed_by": null
+              },
+              {
+                "kind": "option",
+                "origin": "human",
+                "run_id": null,
+                "content": {
+                  "kind": "do_nothing",
+                  "name": "保持现状"
+                },
+                "item_id": "4acdb474-918b-470a-86a6-8c43fa2e0901",
+                "removed": false,
+                "version": 1,
+                "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "human_value": true,
+                "source_refs": [],
+                "confirmed_by": null
+              },
+              {
+                "kind": "spec",
+                "origin": "human",
+                "run_id": null,
+                "content": {
+                  "key": "noise",
+                  "unit": null,
+                  "lower": null,
+                  "upper": null,
+                  "value": null,
+                  "nature": "decided",
+                  "reason": null,
+                  "modality": null,
+                  "owner_id": null,
+                  "parameter": "噪声",
+                  "tolerance": null,
+                  "exceptions": [],
+                  "text_value": null,
+                  "value_type": "number",
+                  "item_status": "unknown",
+                  "availability": "unknown",
+                  "parameter_id": null,
+                  "condition_note": null,
+                  "test_conditions": [],
+                  "parameter_version": null,
+                  "applicable_variants": [],
+                  "verification_method": null,
+                  "acceptance_criterion": null
+                },
+                "item_id": "93fcbfd2-fe9d-48f5-bcc2-6fe201f2607c",
+                "removed": false,
+                "version": 1,
+                "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "human_value": true,
+                "source_refs": [],
+                "confirmed_by": null
+              },
+              {
+                "kind": "spec",
+                "origin": "human",
+                "run_id": null,
+                "content": {
+                  "key": "display",
+                  "unit": null,
+                  "lower": null,
+                  "upper": null,
+                  "value": null,
+                  "nature": "decided",
+                  "reason": null,
+                  "modality": null,
+                  "owner_id": null,
+                  "parameter": "压力显示",
+                  "tolerance": null,
+                  "exceptions": [],
+                  "text_value": "true",
+                  "value_type": "boolean",
+                  "item_status": "confirmed",
+                  "availability": "known",
+                  "parameter_id": null,
+                  "condition_note": null,
+                  "test_conditions": [],
+                  "parameter_version": null,
+                  "applicable_variants": [],
+                  "verification_method": null,
+                  "acceptance_criterion": null
+                },
+                "item_id": "d5294249-a6d9-44e5-adc7-ece797d1b062",
+                "removed": false,
+                "version": 1,
+                "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "human_value": true,
+                "source_refs": [
+                  {
+                    "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                    "line": null,
+                    "type": "human",
+                    "quote": null,
+                    "version": 1,
+                    "statement": "具名产品决定"
+                  }
+                ],
+                "confirmed_by": null
+              },
+              {
+                "kind": "question",
+                "origin": "human",
+                "run_id": null,
+                "content": {
+                  "answer": null,
+                  "status": "open",
+                  "due_date": "2026-10-20",
+                  "owner_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                  "question": "噪声条件待确定",
+                  "related_item_ids": [],
+                  "supersedes_item_id": null
+                },
+                "item_id": "2078a8b0-d74a-417c-a5c6-77ffc20d11a7",
+                "removed": false,
+                "version": 1,
+                "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "human_value": true,
+                "source_refs": [],
+                "confirmed_by": null
+              }
+            ],
+            "title": "合成便携充气泵立项评审",
+            "entry_kind": "new_product",
+            "source_refs": [
+              {
+                "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "line": null,
+                "type": "human",
+                "quote": null,
+                "version": 1,
+                "statement": "具名产品决定"
+              }
+            ],
+            "target_kind": "new_product",
+            "context_refs": [],
+            "direct_source_refs": [],
+            "baseline_product_id": null,
+            "baseline_definition_id": null,
+            "baseline_definition_revision": null
+          },
+          "frozen_document_available": true
+        },
+        "decision": null,
+        "display_document": {
+          "brief": "合成新品评审",
+          "items": [
+            {
+              "kind": "section",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "key": "worth_it",
+                "text": "解决便携充气需求"
+              },
+              "item_id": "b9b6bb33-feb4-466b-8b30-188c7bef4468",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [],
+              "confirmed_by": null
+            },
+            {
+              "kind": "option",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "kind": "new",
+                "name": "开发便携款"
+              },
+              "item_id": "7538f730-3405-4bef-be58-1fe0f056a7e2",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [],
+              "confirmed_by": null
+            },
+            {
+              "kind": "option",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "kind": "do_nothing",
+                "name": "保持现状"
+              },
+              "item_id": "4acdb474-918b-470a-86a6-8c43fa2e0901",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [],
+              "confirmed_by": null
+            },
+            {
+              "kind": "spec",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "key": "noise",
+                "unit": null,
+                "lower": null,
+                "upper": null,
+                "value": null,
+                "nature": "decided",
+                "reason": null,
+                "modality": null,
+                "owner_id": null,
+                "parameter": "噪声",
+                "tolerance": null,
+                "exceptions": [],
+                "text_value": null,
+                "value_type": "number",
+                "item_status": "unknown",
+                "availability": "unknown",
+                "parameter_id": null,
+                "condition_note": null,
+                "test_conditions": [],
+                "parameter_version": null,
+                "applicable_variants": [],
+                "verification_method": null,
+                "acceptance_criterion": null
+              },
+              "item_id": "93fcbfd2-fe9d-48f5-bcc2-6fe201f2607c",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [],
+              "confirmed_by": null
+            },
+            {
+              "kind": "spec",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "key": "display",
+                "unit": null,
+                "lower": null,
+                "upper": null,
+                "value": null,
+                "nature": "decided",
+                "reason": null,
+                "modality": null,
+                "owner_id": null,
+                "parameter": "压力显示",
+                "tolerance": null,
+                "exceptions": [],
+                "text_value": "true",
+                "value_type": "boolean",
+                "item_status": "confirmed",
+                "availability": "known",
+                "parameter_id": null,
+                "condition_note": null,
+                "test_conditions": [],
+                "parameter_version": null,
+                "applicable_variants": [],
+                "verification_method": null,
+                "acceptance_criterion": null
+              },
+              "item_id": "d5294249-a6d9-44e5-adc7-ece797d1b062",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [
+                {
+                  "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                  "line": null,
+                  "type": "human",
+                  "quote": null,
+                  "version": 1,
+                  "statement": "具名产品决定"
+                }
+              ],
+              "confirmed_by": null
+            },
+            {
+              "kind": "question",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "answer": null,
+                "status": "open",
+                "due_date": "2026-10-20",
+                "owner_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "question": "噪声条件待确定",
+                "related_item_ids": [],
+                "supersedes_item_id": null
+              },
+              "item_id": "2078a8b0-d74a-417c-a5c6-77ffc20d11a7",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [],
+              "confirmed_by": null
+            }
+          ],
+          "title": "合成便携充气泵立项评审",
+          "entry_kind": "new_product",
+          "source_refs": [
+            {
+              "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "line": null,
+              "type": "human",
+              "quote": null,
+              "version": 1,
+              "statement": "具名产品决定"
+            }
+          ],
+          "target_kind": "new_product",
+          "context_refs": [],
+          "direct_source_refs": [],
+          "baseline_product_id": null,
+          "baseline_definition_id": null,
+          "baseline_definition_revision": null
+        },
+        "document_identity": {
+          "proposal_id": "1216e9c5-18d6-4f9f-a723-fb1da41e9747",
+          "revision": 1,
+          "document_digest": "ef4e9f5fe568d802bd48da8a8c22217c00b61bdcd381153ee0161e6a63025af0",
+          "submission_id": "a80dae6f-7733-47c0-b0d8-a0e366217a08",
+          "document_mode": "frozen"
+        }
+      },
+      "participants": {
+        "items": [
+          {
+            "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "name": "Synthetic owner",
+            "can_write": true,
+            "reviewer_eligible": false
+          },
+          {
+            "id": "88ee3ce2-5c8d-4c1a-bf44-9cd08083985c",
+            "name": "合成工程专家",
+            "can_write": false,
+            "reviewer_eligible": false
+          },
+          {
+            "id": "c5017137-a6ba-46da-a378-ea852401487a",
+            "name": "Synthetic peer",
+            "can_write": false,
+            "reviewer_eligible": true
+          }
+        ]
+      }
+    },
+    {
+      "category_id": "afe3b45d-0a04-4516-8f60-a66ebc9b63f0",
+      "proposal": {
+        "id": "283a5ad3-afff-45e6-94ff-ec5dc55dc393",
+        "category_id": "afe3b45d-0a04-4516-8f60-a66ebc9b63f0",
+        "owner_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+        "revision": 2,
+        "status": "in_review",
+        "visibility": "private",
+        "private_source_count": 0,
+        "context_hint": false,
+        "context_changes": [],
+        "title": "合成自行车充气泵立项评审",
+        "brief": "合成新品评审",
+        "entry_kind": "new_product",
+        "target_kind": "new_product",
+        "baseline_product_id": null,
+        "baseline_definition_id": null,
+        "baseline_definition_revision": null,
+        "items": [
+          {
+            "item_id": "e417d1c7-14d9-40a7-8dd5-d2a57aa78cdb",
+            "version": 1,
+            "kind": "section",
+            "content": {
+              "key": "worth_it",
+              "text": "解决便携充气需求"
+            },
+            "source_refs": [],
+            "origin": "human",
+            "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "run_id": null,
+            "confirmed_by": null,
+            "human_value": true,
+            "removed": false
+          },
+          {
+            "item_id": "c52d70ad-2f67-4448-abdc-8a5a7945c4f8",
+            "version": 1,
+            "kind": "option",
+            "content": {
+              "kind": "new",
+              "name": "开发便携款"
+            },
+            "source_refs": [],
+            "origin": "human",
+            "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "run_id": null,
+            "confirmed_by": null,
+            "human_value": true,
+            "removed": false
+          },
+          {
+            "item_id": "11da2a1c-ff69-447c-93f4-1f9329842ed9",
+            "version": 1,
+            "kind": "option",
+            "content": {
+              "kind": "do_nothing",
+              "name": "保持现状"
+            },
+            "source_refs": [],
+            "origin": "human",
+            "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "run_id": null,
+            "confirmed_by": null,
+            "human_value": true,
+            "removed": false
+          },
+          {
+            "item_id": "e98e106c-98b4-43f6-bb51-ba204264f567",
+            "version": 1,
+            "kind": "spec",
+            "content": {
+              "key": "noise",
+              "unit": null,
+              "lower": null,
+              "upper": null,
+              "value": null,
+              "nature": "decided",
+              "reason": null,
+              "modality": null,
+              "owner_id": null,
+              "parameter": "噪声",
+              "tolerance": null,
+              "exceptions": [],
+              "text_value": null,
+              "value_type": "number",
+              "item_status": "unknown",
+              "availability": "unknown",
+              "parameter_id": null,
+              "condition_note": null,
+              "test_conditions": [],
+              "parameter_version": null,
+              "applicable_variants": [],
+              "verification_method": null,
+              "acceptance_criterion": null
+            },
+            "source_refs": [],
+            "origin": "human",
+            "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "run_id": null,
+            "confirmed_by": null,
+            "human_value": true,
+            "removed": false
+          },
+          {
+            "item_id": "86e6efb1-9b39-4d0d-a5a9-1b52c0a7f9e3",
+            "version": 1,
+            "kind": "spec",
+            "content": {
+              "key": "display",
+              "unit": null,
+              "lower": null,
+              "upper": null,
+              "value": null,
+              "nature": "decided",
+              "reason": null,
+              "modality": null,
+              "owner_id": null,
+              "parameter": "压力显示",
+              "tolerance": null,
+              "exceptions": [],
+              "text_value": "true",
+              "value_type": "boolean",
+              "item_status": "confirmed",
+              "availability": "known",
+              "parameter_id": null,
+              "condition_note": null,
+              "test_conditions": [],
+              "parameter_version": null,
+              "applicable_variants": [],
+              "verification_method": null,
+              "acceptance_criterion": null
+            },
+            "source_refs": [
+              {
+                "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "line": null,
+                "type": "human",
+                "quote": null,
+                "version": 1,
+                "statement": "具名产品决定"
+              }
+            ],
+            "origin": "human",
+            "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "run_id": null,
+            "confirmed_by": null,
+            "human_value": true,
+            "removed": false
+          },
+          {
+            "item_id": "d146f12a-2b17-4ecc-886f-3823d2dc98ec",
+            "version": 1,
+            "kind": "question",
+            "content": {
+              "answer": null,
+              "status": "open",
+              "due_date": "2026-10-20",
+              "owner_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "question": "噪声条件待确定",
+              "related_item_ids": [],
+              "supersedes_item_id": null
+            },
+            "source_refs": [],
+            "origin": "human",
+            "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "run_id": null,
+            "confirmed_by": null,
+            "human_value": true,
+            "removed": false
+          }
+        ],
+        "source_refs": [],
+        "context_refs": [],
+        "maturity": {
+          "spec_count": 2,
+          "option_count": 2,
+          "item_status_counts": {
+            "unknown": 1,
+            "confirmed": 1
+          },
+          "availability_counts": {
+            "unknown": 1,
+            "known": 1
+          },
+          "required_dispositions": [
+            {
+              "subject_type": "spec_item",
+              "subject_id": "e98e106c-98b4-43f6-bb51-ba204264f567",
+              "title": "噪声",
+              "content": {
+                "key": "noise",
+                "unit": null,
+                "lower": null,
+                "upper": null,
+                "value": null,
+                "nature": "decided",
+                "reason": null,
+                "modality": null,
+                "owner_id": null,
+                "parameter": "噪声",
+                "tolerance": null,
+                "exceptions": [],
+                "text_value": null,
+                "value_type": "number",
+                "item_status": "unknown",
+                "availability": "unknown",
+                "parameter_id": null,
+                "condition_note": null,
+                "test_conditions": [],
+                "parameter_version": null,
+                "applicable_variants": [],
+                "verification_method": null,
+                "acceptance_criterion": null
+              }
+            },
+            {
+              "subject_type": "question",
+              "subject_id": "d146f12a-2b17-4ecc-886f-3823d2dc98ec",
+              "title": "噪声条件待确定",
+              "content": {
+                "answer": null,
+                "status": "open",
+                "due_date": "2026-10-20",
+                "owner_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "question": "噪声条件待确定",
+                "related_item_ids": [],
+                "supersedes_item_id": null
+              }
+            }
+          ],
+          "submission_checks": {
+            "worth_it_present": true,
+            "alternative_or_reason_required": false
+          },
+          "freeze_blockers": [
+            {
+              "kind": "spec",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "key": "noise",
+                "unit": null,
+                "lower": null,
+                "upper": null,
+                "value": null,
+                "nature": "decided",
+                "reason": null,
+                "modality": null,
+                "owner_id": null,
+                "parameter": "噪声",
+                "tolerance": null,
+                "exceptions": [],
+                "text_value": null,
+                "value_type": "number",
+                "item_status": "unknown",
+                "availability": "unknown",
+                "parameter_id": null,
+                "condition_note": null,
+                "test_conditions": [],
+                "parameter_version": null,
+                "applicable_variants": [],
+                "verification_method": null,
+                "acceptance_criterion": null
+              },
+              "item_id": "e98e106c-98b4-43f6-bb51-ba204264f567",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [],
+              "confirmed_by": null
+            }
+          ],
+          "guidance": "10–20 条关键规格仅作提示；未知项可带入 G0 并逐条处置。"
+        },
+        "submission": {
+          "id": "ab5b011c-a1bd-4a75-a557-eb3a3dc60fb2",
+          "revision": 1,
+          "reviewer_id": "c5017137-a6ba-46da-a378-ea852401487a",
+          "document_digest": "5ff0a4084dabf637b0b45e0228b5ed59b4b84f924e38c8dd015cd8a1762fc135",
+          "context_refs": [],
+          "frozen_document": {
+            "brief": "合成新品评审",
+            "items": [
+              {
+                "kind": "section",
+                "origin": "human",
+                "run_id": null,
+                "content": {
+                  "key": "worth_it",
+                  "text": "解决便携充气需求"
+                },
+                "item_id": "e417d1c7-14d9-40a7-8dd5-d2a57aa78cdb",
+                "removed": false,
+                "version": 1,
+                "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "human_value": true,
+                "source_refs": [],
+                "confirmed_by": null
+              },
+              {
+                "kind": "option",
+                "origin": "human",
+                "run_id": null,
+                "content": {
+                  "kind": "new",
+                  "name": "开发便携款"
+                },
+                "item_id": "c52d70ad-2f67-4448-abdc-8a5a7945c4f8",
+                "removed": false,
+                "version": 1,
+                "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "human_value": true,
+                "source_refs": [],
+                "confirmed_by": null
+              },
+              {
+                "kind": "option",
+                "origin": "human",
+                "run_id": null,
+                "content": {
+                  "kind": "do_nothing",
+                  "name": "保持现状"
+                },
+                "item_id": "11da2a1c-ff69-447c-93f4-1f9329842ed9",
+                "removed": false,
+                "version": 1,
+                "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "human_value": true,
+                "source_refs": [],
+                "confirmed_by": null
+              },
+              {
+                "kind": "spec",
+                "origin": "human",
+                "run_id": null,
+                "content": {
+                  "key": "noise",
+                  "unit": null,
+                  "lower": null,
+                  "upper": null,
+                  "value": null,
+                  "nature": "decided",
+                  "reason": null,
+                  "modality": null,
+                  "owner_id": null,
+                  "parameter": "噪声",
+                  "tolerance": null,
+                  "exceptions": [],
+                  "text_value": null,
+                  "value_type": "number",
+                  "item_status": "unknown",
+                  "availability": "unknown",
+                  "parameter_id": null,
+                  "condition_note": null,
+                  "test_conditions": [],
+                  "parameter_version": null,
+                  "applicable_variants": [],
+                  "verification_method": null,
+                  "acceptance_criterion": null
+                },
+                "item_id": "e98e106c-98b4-43f6-bb51-ba204264f567",
+                "removed": false,
+                "version": 1,
+                "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "human_value": true,
+                "source_refs": [],
+                "confirmed_by": null
+              },
+              {
+                "kind": "spec",
+                "origin": "human",
+                "run_id": null,
+                "content": {
+                  "key": "display",
+                  "unit": null,
+                  "lower": null,
+                  "upper": null,
+                  "value": null,
+                  "nature": "decided",
+                  "reason": null,
+                  "modality": null,
+                  "owner_id": null,
+                  "parameter": "压力显示",
+                  "tolerance": null,
+                  "exceptions": [],
+                  "text_value": "true",
+                  "value_type": "boolean",
+                  "item_status": "confirmed",
+                  "availability": "known",
+                  "parameter_id": null,
+                  "condition_note": null,
+                  "test_conditions": [],
+                  "parameter_version": null,
+                  "applicable_variants": [],
+                  "verification_method": null,
+                  "acceptance_criterion": null
+                },
+                "item_id": "86e6efb1-9b39-4d0d-a5a9-1b52c0a7f9e3",
+                "removed": false,
+                "version": 1,
+                "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "human_value": true,
+                "source_refs": [
+                  {
+                    "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                    "line": null,
+                    "type": "human",
+                    "quote": null,
+                    "version": 1,
+                    "statement": "具名产品决定"
+                  }
+                ],
+                "confirmed_by": null
+              },
+              {
+                "kind": "question",
+                "origin": "human",
+                "run_id": null,
+                "content": {
+                  "answer": null,
+                  "status": "open",
+                  "due_date": "2026-10-20",
+                  "owner_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                  "question": "噪声条件待确定",
+                  "related_item_ids": [],
+                  "supersedes_item_id": null
+                },
+                "item_id": "d146f12a-2b17-4ecc-886f-3823d2dc98ec",
+                "removed": false,
+                "version": 1,
+                "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "human_value": true,
+                "source_refs": [],
+                "confirmed_by": null
+              }
+            ],
+            "title": "合成自行车充气泵立项评审",
+            "entry_kind": "new_product",
+            "source_refs": [
+              {
+                "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "line": null,
+                "type": "human",
+                "quote": null,
+                "version": 1,
+                "statement": "具名产品决定"
+              }
+            ],
+            "target_kind": "new_product",
+            "context_refs": [],
+            "direct_source_refs": [],
+            "baseline_product_id": null,
+            "baseline_definition_id": null,
+            "baseline_definition_revision": null
+          },
+          "frozen_document_available": true
+        },
+        "decision": null,
+        "display_document": {
+          "brief": "合成新品评审",
+          "items": [
+            {
+              "kind": "section",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "key": "worth_it",
+                "text": "解决便携充气需求"
+              },
+              "item_id": "e417d1c7-14d9-40a7-8dd5-d2a57aa78cdb",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [],
+              "confirmed_by": null
+            },
+            {
+              "kind": "option",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "kind": "new",
+                "name": "开发便携款"
+              },
+              "item_id": "c52d70ad-2f67-4448-abdc-8a5a7945c4f8",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [],
+              "confirmed_by": null
+            },
+            {
+              "kind": "option",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "kind": "do_nothing",
+                "name": "保持现状"
+              },
+              "item_id": "11da2a1c-ff69-447c-93f4-1f9329842ed9",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [],
+              "confirmed_by": null
+            },
+            {
+              "kind": "spec",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "key": "noise",
+                "unit": null,
+                "lower": null,
+                "upper": null,
+                "value": null,
+                "nature": "decided",
+                "reason": null,
+                "modality": null,
+                "owner_id": null,
+                "parameter": "噪声",
+                "tolerance": null,
+                "exceptions": [],
+                "text_value": null,
+                "value_type": "number",
+                "item_status": "unknown",
+                "availability": "unknown",
+                "parameter_id": null,
+                "condition_note": null,
+                "test_conditions": [],
+                "parameter_version": null,
+                "applicable_variants": [],
+                "verification_method": null,
+                "acceptance_criterion": null
+              },
+              "item_id": "e98e106c-98b4-43f6-bb51-ba204264f567",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [],
+              "confirmed_by": null
+            },
+            {
+              "kind": "spec",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "key": "display",
+                "unit": null,
+                "lower": null,
+                "upper": null,
+                "value": null,
+                "nature": "decided",
+                "reason": null,
+                "modality": null,
+                "owner_id": null,
+                "parameter": "压力显示",
+                "tolerance": null,
+                "exceptions": [],
+                "text_value": "true",
+                "value_type": "boolean",
+                "item_status": "confirmed",
+                "availability": "known",
+                "parameter_id": null,
+                "condition_note": null,
+                "test_conditions": [],
+                "parameter_version": null,
+                "applicable_variants": [],
+                "verification_method": null,
+                "acceptance_criterion": null
+              },
+              "item_id": "86e6efb1-9b39-4d0d-a5a9-1b52c0a7f9e3",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [
+                {
+                  "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                  "line": null,
+                  "type": "human",
+                  "quote": null,
+                  "version": 1,
+                  "statement": "具名产品决定"
+                }
+              ],
+              "confirmed_by": null
+            },
+            {
+              "kind": "question",
+              "origin": "human",
+              "run_id": null,
+              "content": {
+                "answer": null,
+                "status": "open",
+                "due_date": "2026-10-20",
+                "owner_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+                "question": "噪声条件待确定",
+                "related_item_ids": [],
+                "supersedes_item_id": null
+              },
+              "item_id": "d146f12a-2b17-4ecc-886f-3823d2dc98ec",
+              "removed": false,
+              "version": 1,
+              "writer_id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "human_value": true,
+              "source_refs": [],
+              "confirmed_by": null
+            }
+          ],
+          "title": "合成自行车充气泵立项评审",
+          "entry_kind": "new_product",
+          "source_refs": [
+            {
+              "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+              "line": null,
+              "type": "human",
+              "quote": null,
+              "version": 1,
+              "statement": "具名产品决定"
+            }
+          ],
+          "target_kind": "new_product",
+          "context_refs": [],
+          "direct_source_refs": [],
+          "baseline_product_id": null,
+          "baseline_definition_id": null,
+          "baseline_definition_revision": null
+        },
+        "document_identity": {
+          "proposal_id": "283a5ad3-afff-45e6-94ff-ec5dc55dc393",
+          "revision": 1,
+          "document_digest": "5ff0a4084dabf637b0b45e0228b5ed59b4b84f924e38c8dd015cd8a1762fc135",
+          "submission_id": "ab5b011c-a1bd-4a75-a557-eb3a3dc60fb2",
+          "document_mode": "frozen"
+        }
+      },
+      "participants": {
+        "items": [
+          {
+            "id": "88b83f40-574d-4b2f-a372-25639e3c19d9",
+            "name": "Synthetic owner",
+            "can_write": true,
+            "reviewer_eligible": false
+          },
+          {
+            "id": "88ee3ce2-5c8d-4c1a-bf44-9cd08083985c",
+            "name": "合成工程专家",
+            "can_write": false,
+            "reviewer_eligible": false
+          },
+          {
+            "id": "c5017137-a6ba-46da-a378-ea852401487a",
+            "name": "Synthetic peer",
+            "can_write": false,
+            "reviewer_eligible": true
+          }
+        ]
+      }
+    }
+  ]
+}

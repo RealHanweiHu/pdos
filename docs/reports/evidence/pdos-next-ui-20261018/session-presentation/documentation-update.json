@@ -1,0 +1,10 @@
+{
+  "unique_queue_only_ui_row_changed": true,
+  "other_M_rows_preserved": true,
+  "files": [
+    "tasks/ai-native-integrated-todo.md",
+    "docs/reports/evidence/pdos-next-ui-20261017/html-match/result.md",
+    "pdos-next/web/design-qa.md"
+  ],
+  "result_sha256": "c07eaf9612e9be33a7e394fd05c690609a96ec17efcf81c56fea5d98513be4f8"
+}

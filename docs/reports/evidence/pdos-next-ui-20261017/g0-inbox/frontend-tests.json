@@ -1,0 +1,20 @@
+{
+  "command": "node --test src/components/my-work.test.mjs src/components/my-work-g0.test.mjs src/app/api/route-personal-g0-reviews.test.mjs",
+  "passed": 21,
+  "failed": 0,
+  "components_and_contract": 16,
+  "bff": 5,
+  "exit_code": 0,
+  "captured_tool_chunk_id": "d89652",
+  "source_sha256": {
+    "src/components/my-work.tsx": "bcdae71d836bb2b7a920081f07741746b2a5106e96d86be4b5aa2443d44660e4",
+    "src/components/my-work-g0.tsx": "3a5b649dd83eeeccbb89275d69c0a972e7765f226f0e407da7c7afe383342fc4",
+    "src/lib/personal-g0-reviews.ts": "b10cdd76f4dd68bb9180abc04fe760ca1c943a3799a110743c5b416b29e83375",
+    "src/components/my-work.module.css": "7a766c54ae82f0467bb3156dc3ea658bf6ce27801bdfab15f51a055adb1b0c06",
+    "src/components/my-work.test.mjs": "c95cbd56e890aa2a5632889ec9670a339abf1a82d84df1874a8950a2630ecb69",
+    "src/components/my-work-g0.test.mjs": "095d07fe30f7bbcefedd4834db52063f34efbb9987e19b3af8b5d0a3d1693123",
+    "src/app/api/v1/personal/g0-reviews/route.ts": "4f15e262d08ce287abecc3271fe23c0bad203073715886d1b4294c4afe1114b5",
+    "src/app/api/route-personal-g0-reviews.test.mjs": "f2efc3deb861d3159a065fe1a45d73074097106d23eacf4d9f213def8d7b0b12"
+  },
+  "ruff": "4 backend files passed; chunk ffe3b0"
+}

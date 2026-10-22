@@ -1,0 +1,13 @@
+{
+  "recorded_at": "2026-10-18T01:15:39.005404+00:00",
+  "working_context": true,
+  "files": {
+    "pdos-next/web/src/components/my-work.tsx": "94d14309bdb1542f5f81cbbd30b0855220dbe1f91e40594aa357f5d6ac7e648f",
+    "pdos-next/web/src/components/projects/project-list.tsx": "1b8c3261f6d661333fc72321291e1f87234a326526790a7c8beb41caafa8524a",
+    "pdos-next/web/src/components/projects/project-cockpit.tsx": "802e6115c38e767898021ca669ec8cfb4f066431d4ec64ac732621300863910d",
+    "pdos-next/web/src/components/projects/project-workspace.tsx": "b1e7d2fc86a7090d94e2b6c17d3f1f067223a21363cf4a8f8dcbe9108baaf2f0"
+  },
+  "eslint_owned_integrations_exit": 0,
+  "working_typescript_noEmit_exit": 0,
+  "note": "Observed completed owned integrations lint and whole working frontend noEmit. Pending UI context retained; this is not its production-build or business acceptance claim."
+}

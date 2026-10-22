@@ -1,0 +1,19 @@
+{
+  "web/src/components/my-work/my-work.tsx": "6e762dc9e1ff22d244d9066a48d0c1d8f9c51c3c42e0a53b5f7ff01b538aacbb",
+  "web/src/components/my-work/my-work-view.tsx": "f62a6861148da0624378fd857cb66f30cd52598bb6e84431d8d04e5aba0fe6e2",
+  "web/src/components/my-work/my-work.test.tsx": "4444c7d2efb4ebe9f4795a9d62407742fd5ddf9cfe332c38af0a4cce1935efd7",
+  "web/src/components/projects/project-api.ts": "41e2d0f60b9ce2840907f3da12d1122f83a3b4fe7cdc715b69f2960483f655b3",
+  "web/src/components/projects/project-workspace.tsx": "7e8dd84eadfb1122abcf544d55ffbfde10f9f51f064beecc551e26a2dafeb3fa",
+  "web/src/components/projects/project-workspace-view.tsx": "7eb229139a3619604af908eb53448d4716cec0659220514dfcb2b61b6be628c2",
+  "web/src/components/projects/project-workspace.test.tsx": "815e76c09f907b987d7ef18f0e2b038f148fac9d54d25f8a616b5ad36452b482",
+  "web/src/components/projects/project-timeline.tsx": "b5047dd4bc2bf57c80ef4e90d8a056fb142955b6e3a8d5a5d0b87e6c314662bd",
+  "web/src/components/ai/ai-api.ts": "f619e8d932021a1cb567c6ad493177370c9e4153c87acb3c621082b3c22be99a",
+  "web/src/components/ai/ai-review-inbox.tsx": "0a9a5845b06dbfd5c49618d28166c011ffb1c88a87cefed9bdba2cb9ac3e616d",
+  "web/src/components/ai/ai-review-inbox-view.tsx": "9b2a6e0a41da26033bfecc461f42de92b6258453eac0d55bbd31be7e488d9d3b",
+  "web/src/components/ai/ai-review-inbox.test.tsx": "bdde77a7bc82ae0d19a73d1738a53560424f22d712637bb3605481e4b9f52800",
+  "web/src/components/ai/review-inbox-extras.tsx": "977d10c4eeb7f1070ae73c39c6a1034fb18557b426804d5f749c914cbd25f4bb",
+  "web/src/components/ai/review-inbox-extras.test.tsx": "de1eca4aa208c5efc7c614bc1631657554dc5e09142a8e9453832d120b110d06",
+  "web/src/components/ai/ai-risk-candidates-api.test.ts": "cec301cc3ad9c6c21e70cc7adadd6cf92788c5a84e2bc49a1e4c614991bdd07c",
+  "web/src/components/workspace-shell.tsx": "87ec198c1aad5aa7fe9deacbe2b7019555951e088b63b94ed0ca05298a412be4",
+  "web/src/components/workspace-shell.test.tsx": "79bbc381d8be71924ab00a2599be569a10c7fd00f5932e28a12c69313a703c83"
+}

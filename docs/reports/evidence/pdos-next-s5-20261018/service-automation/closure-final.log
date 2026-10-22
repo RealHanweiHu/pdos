@@ -1,0 +1,28 @@
+....                                                                     [100%]
+=============================== warnings summary ===============================
+tests/automations_pg/test_service_automation_pg.py::test_actual_t1_schedule_grant_single_tick_and_pause_keep_original_ai_run
+tests/automations_pg/test_service_automation_pg.py::test_actual_t1_schedule_grant_single_tick_and_pause_keep_original_ai_run
+tests/automations_pg/test_service_automation_pg.py::test_actual_t1_schedule_grant_single_tick_and_pause_keep_original_ai_run
+tests/automations_pg/test_service_automation_pg.py::test_actual_expired_schedule_stays_draft_without_new_confirmation_grant_or_run
+tests/automations_pg/test_service_automation_pg.py::test_actual_original_event_lease_is_retained_suppressed_and_never_admitted
+tests/automations_pg/test_service_automation_pg.py::test_actual_original_event_lease_is_retained_suppressed_and_never_admitted
+tests/automations_pg/test_service_temporal_pg.py::test_actual_schedule_timer_survives_own_worker_restart_and_http_pause
+tests/automations_pg/test_service_temporal_pg.py::test_actual_schedule_timer_survives_own_worker_restart_and_http_pause
+tests/automations_pg/test_service_temporal_pg.py::test_actual_schedule_timer_survives_own_worker_restart_and_http_pause
+  /private/tmp/pdos-s5-service-delivery-c1a960m3/pdos-next/server/pdos_next/domain/automations/service.py:242: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/automations_pg/test_service_automation_pg.py::test_actual_t1_schedule_grant_single_tick_and_pause_keep_original_ai_run
+tests/automations_pg/test_service_automation_pg.py::test_actual_original_event_lease_is_retained_suppressed_and_never_admitted
+tests/automations_pg/test_service_temporal_pg.py::test_actual_schedule_timer_survives_own_worker_restart_and_http_pause
+  /private/tmp/pdos-s5-service-delivery-c1a960m3/pdos-next/server/pdos_next/domain/automations/service_runtime.py:170: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([chain])
+
+tests/automations_pg/test_service_automation_pg.py::test_actual_t1_schedule_grant_single_tick_and_pause_keep_original_ai_run
+tests/automations_pg/test_service_automation_pg.py::test_actual_original_event_lease_is_retained_suppressed_and_never_admitted
+tests/automations_pg/test_service_temporal_pg.py::test_actual_schedule_timer_survives_own_worker_restart_and_http_pause
+  /private/tmp/pdos-s5-service-delivery-c1a960m3/pdos-next/server/pdos_next/domain/automations/service_runtime.py:195: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([attempt])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 15 warnings in 31.93s

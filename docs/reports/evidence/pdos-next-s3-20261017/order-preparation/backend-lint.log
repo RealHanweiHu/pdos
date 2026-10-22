@@ -1,0 +1,14 @@
+All checks passed!
+
+unformatted: File would be reformatted
+   --> pdos-next/server/pdos_next/change_implementation_owner.py:249:17
+    |
+248 |         and proof_deadline_current(
+    -             "T2"
+    -             if atom.operation in {"change.order.approve", "change.selection.decide"}
+    -             else "T1",
+249 +             "T2" if atom.operation in {"change.order.approve", "change.selection.decide"} else "T1",
+250 |             proof.expires_at,
+    |
+
+1 file would be reformatted, 13 files already formatted

@@ -1,0 +1,323 @@
+F
+=================================== FAILURES ===================================
+_ test_real_coverage_independent_approvals_then_two_actual_configuration_implementations _
+
+self = <sqlalchemy.engine.base.Connection object at 0x131ddb2c0>
+
+    def _commit_impl(self) -> None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+>           self.engine.dialect.do_commit(self.connection)
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x122a3f6e0>
+command = b'COMMIT', result_format = <Format.TEXT: 0>
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -> PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+>               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.RaiseException: coverage material/header mismatch
+E               CONTEXT:  PL/pgSQL function assert_change_coverage_atom(uuid,uuid) line 36 at RAISE
+E               SQL statement "SELECT public.assert_change_coverage_atom((payload->>'tenant_id')::uuid,target)"
+E               PL/pgSQL function require_change_coverage_atom() line 18 at PERFORM
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: RaiseException
+
+The above exception was the direct cause of the following exception:
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': '01eef19b-4a00-46dd-80d1-c241c74b9dad', 'project': ...-a78f-bf926b60b740', 'issue_revision': 4, 'capa_id': '36366472-c9af-472b-a0f5-5ed5aab5fb91', 'created_output': None}]})
+
+    def test_real_coverage_independent_approvals_then_two_actual_configuration_implementations(
+        quality_work,
+    ):
+        work = quality_work
+        helper.declare_people(work)
+        basis = helper.issue_and_actions(work)
+        created, create_input = change.command(
+            work, "change.request.create", {**change.create_payload(work), "visibility": "category"}
+        )
+        response = post(work.quality, created)
+        assert response.status_code == 200, response.text
+        change_id = create_input["change_id"]
+        until = now() + timedelta(minutes=20)
+        scope, policy_source, selections = helper.policy_and_items(work, change_id, basis, until)
+        items = tuple(material.item for material, _ in selections)
+        config_source = helper.original(
+            work.setup,
+            {
+                "purpose": basis.purpose,
+                "issue_id": str(basis.issue_id),
+                "capa_id": str(basis.capa_id),
+                "executor_id": str(work.setup.human),
+                "engineering_action_id": str(basis.actions[0].action_id),
+                "manufacturing_action_id": str(basis.actions[1].action_id),
+                "instruction": (
+                    "After both independent approvals, save a mechanical mount design revision and "
+                    "then a manufacturing revision bound to that exact new engineering configuration. "
+                    "Preserve the motor BOM and retain all existing sample/Run evidence."
+                ),
+                "manufacturing": (
+                    "Manual assembly, motor BOM line; cycle time 1.5 minutes with a named alignment "
+                    "check. No production switch, new fixture or tooling is specified."
+                ),
+            },
+            "Synthetic proposed configuration revision instructions",
+        )
+        unknown, _ = change.capture(work, change_id)
+        graph = GraphSnapshot.model_validate(unknown["capture"]["graph"])
+        assert all(value.status == "unknown" for value in graph.coverage)
+        assert any(
+            edge.origin.kind == "part" and edge.target.kind == "operation" for edge in graph.edges
+        )
+        disposition_rows = []
+        for node in graph.nodes:
+            linked = tuple(
+                item.id
+                for item in items
+                if node.ref in item.selection.objects
+                or (node.ref.kind == "operation" and item.discipline == "manufacturing")
+            )
+            disposition_rows.append(
+                {
+                    "object": node.ref.model_dump(mode="json"),
+                    "handling": "covered_by_plan" if linked else "reviewed_no_change",
+                    "item_ids": [str(identity) for identity in linked],
+                    "rationale": (
+                        "Revise this fixed configuration/assembly through the named plan item"
+                        if linked
+                        else "Retain this exact existing prototype, failure or design reference; "
+                        "this bounded internal revision preserves its history and disposition"
+                    ),
+                }
+            )
+        reviewed = helper.original(
+            work.quality,
+            {
+                "change_id": change_id,
+                "purpose": basis.purpose,
+                "dispositions": disposition_rows,
+                "scope": (
+                    "Synthetic internal prototype configuration revision only; no PilotRun, "
+                    "production switching, customer delivery, ERP effectivity or release"
+                ),
+            },
+            "Synthetic named exact per-object dispositions",
+        )
+        paths, facet_states = coverage_declarations(graph)
+>       helper.publish_coverage(
+            work, scope, change_id, graph, until, paths=paths, facet_states=facet_states
+        )
+
+tests/change_execution/test_approved_configuration_implementation_chain.py:409: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/change_execution/approved_configuration_helpers.py:488: in publish_coverage
+    with session(work) as stored:
+         ^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+<sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit>:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x122a3f6e0>
+command = b'COMMIT', result_format = <Format.TEXT: 0>
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -> PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+>               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.ProgrammingError: (psycopg.errors.RaiseException) coverage material/header mismatch
+E               CONTEXT:  PL/pgSQL function assert_change_coverage_atom(uuid,uuid) line 36 at RAISE
+E               SQL statement "SELECT public.assert_change_coverage_atom((payload->>'tenant_id')::uuid,target)"
+E               PL/pgSQL function require_change_coverage_atom() line 18 at PERFORM
+E               (Background on this error at: https://sqlalche.me/e/21/f405)
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: ProgrammingError
+=============================== warnings summary ===============================
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-9njo0ef7/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-9njo0ef7/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-9njo0ef7/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-9njo0ef7/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-9njo0ef7/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-9njo0ef7/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-9njo0ef7/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-9njo0ef7/pdos-next/server/pdos_next/change_controlled_owner.py:768: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # BEFORE Current target guard, never a commit/second Receipt.
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-9njo0ef7/pdos-next/server/pdos_next/domain/change_coverage_owner/importer.py:368: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([fact])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 11 warnings in 137.43s (0:02:17)

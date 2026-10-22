@@ -1,0 +1,112 @@
+{
+  "status": "PASS_SCOPED_FIXED_STATE_PRESERVATION",
+  "head": "next_0028",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "target": "127.0.0.1:62513/pdos_test",
+  "selected_shared_tables": {
+    "operational_resource_occupancies": {
+      "rows": 3,
+      "sha256": "8c4a76f740659c92f4a13671c2946341a332b40d3328ac95ac3a1aba736d854a"
+    },
+    "test_resource_reservations": {
+      "rows": 1,
+      "sha256": "ed51e8403e8749c978df9c6d8bec1cb02190c4d2d63628b59da40997e88c5bf5"
+    },
+    "verification_run_versions": {
+      "rows": 5,
+      "sha256": "940aab7d71a85dd6469e295573a6655abba63fd2593823cea3833f45968dcb44",
+      "a2_planned_1_no_additional_versions": true
+    },
+    "verification_current_runs": {
+      "rows": 3,
+      "sha256": "966cd7cae09d0d4a29295e3450a7c80765ce070b879638f215112eff2884a46f",
+      "pointers": [
+        {
+          "run_id": "ccba4377-c158-5d34-a554-958652296f64",
+          "request_id": "03b3408f-a7f3-5e33-82bb-f7d7fa3d1094",
+          "run_revision": 1,
+          "run_version_id": "9c6bf54b-f232-4287-9314-4a331d0100e8"
+        },
+        {
+          "run_id": "6af03fe7-7456-57bf-8486-3dc058d1ebce",
+          "request_id": "23b1df2e-b2f7-5c29-a7d0-d25212bbe880",
+          "run_revision": 3,
+          "run_version_id": "2093789f-198b-43df-af1d-b14d8c88535a"
+        },
+        {
+          "run_id": "15711a12-4321-53a6-9a64-71109075a8f2",
+          "request_id": "97d6fd21-237a-533e-8ad6-ecb229da4c09",
+          "run_revision": 1,
+          "run_version_id": "01e26d6b-c868-41b9-b32f-e6a21f058e5a"
+        }
+      ]
+    },
+    "verification_launch_facts": {
+      "rows": 6,
+      "sha256": "c2ec3659cfefd81ba84d830110bf3070c41d52c6435b37017366b95c016c5b79"
+    },
+    "capa_remediation_links": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "capa_verification_evidence": {
+      "rows": 1,
+      "sha256": "63310f78ce285a68a045a7a95d98f252c559407b73b0b39e585527b02505e94a"
+    },
+    "quality_issue_versions": {
+      "rows": 6,
+      "sha256": "ab833e99096deeabe847697e1f7264f46033394ad5f2bff57837f24a0b72751e",
+      "fixed_current_issue_6": true
+    },
+    "quality_current_issues": {
+      "rows": 1,
+      "sha256": "e0464f7251dabe8a760e87bc04a62df1217cc832e817eed47317a4ac41cf8a72",
+      "pointers": [
+        {
+          "issue_id": "f42a3f5c-688e-56d6-87ad-cec2e5522f66",
+          "issue_revision": 6,
+          "issue_version_id": "3483e3c5-08e0-4156-a293-31f3b1217d9e"
+        }
+      ]
+    },
+    "capa_verification_rule_facts": {
+      "rows": 1,
+      "sha256": "c9e48b2566a0db4a380a3d44b1564c5d49e1990deeaa8a5717f772ade4d72b01"
+    },
+    "capa_current_verification_rules": {
+      "rows": 1,
+      "sha256": "ac34d35c92cb31f971da04001d77f53251d11c45a7b8b12a719245c31e522d53"
+    },
+    "capa_observation_facts": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "capa_current_observations": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "capa_named_verification_reviews": {
+      "rows": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "new_eleven_shared_table_counts": {
+    "change_order_records": 0,
+    "change_approval_records": 0,
+    "change_implementation_records": 0,
+    "change_implementation_captures": 0,
+    "controlled_change_policy_facts": 0,
+    "controlled_change_policy_currents": 0,
+    "controlled_change_selection_facts": 0,
+    "controlled_change_selection_currents": 0,
+    "manufacturing_preparation_versions": 0,
+    "manufacturing_preparation_currents": 0,
+    "manufacturing_baseline_document_links": 0
+  },
+  "business_commands": 0,
+  "qualification_imports": 0,
+  "original_issue_6_and_A2_planned_1_unchanged": true,
+  "scope": "selected actual shared state only; history preservation is not professional source-currentness or permission",
+  "original_planned_window_not_changed": true,
+  "model_calls_in_selected_product": 0
+}

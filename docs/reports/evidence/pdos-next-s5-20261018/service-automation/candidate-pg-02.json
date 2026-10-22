@@ -1,0 +1,157 @@
+{
+  "base_commit": "0a760ae05258573290ea40e1bc09f6e9d7861ba4",
+  "files": [
+    {
+      "path": "pdos-next/contracts/auxiliary-operations.json",
+      "sha256": "65c31f8a9684be00cc9dda50071a3a96a88d8f2ac394233a69d8ae6b8d6bc8ee"
+    },
+    {
+      "path": "pdos-next/contracts/operations.json",
+      "sha256": "39d1ecef87b420bbaa6d35d4a4f01c7024ac914136229495ce74420672202957"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0787.py",
+      "sha256": "fbb413d1f061e1aad2a6553d14e9d0467048018eca3c1137ddfa7efc9941ee7f"
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0787_service_automation.py",
+      "sha256": "35d1b73648bd2664584a8a402bf16d6404f1f5ba54b80048efd8bd3c4788ba2c"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/activities.py",
+      "sha256": "0bca121538c66072f69d0a69d936945d4710c3ee434533ae33fea3999ee17546"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/execution.py",
+      "sha256": "b5aa91695bd5ff82fe8a367cea263f0e74089e3c15371a0dd2f51d29b77139f4"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/persistence.py",
+      "sha256": "03515bee4e8749682781b68b59654ff4b95a81dbbd84f0623f2749935fe2b186"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/run_reconciliation.py",
+      "sha256": "ace0f85f24ef65666b6ecb7299b32f78b8de7b3410e7ebe99f6fb8666634d05a"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/temporal_port.py",
+      "sha256": "e3b37c5dbcf51923de3bc6d68d0ba36d7204d1278f02ebc5d631acc8383d1ddb"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/runtime.py",
+      "sha256": "7629ddac790a813d94a211ddd2e406863b7873d9aabcc7d28c5c73ba05c39677"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/schemas.py",
+      "sha256": "000317e334f891accdb4b9ad2134e03293f787f1df3a6ca7b7f56cb74d6698c7"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/service.py",
+      "sha256": "195add4523a213c4077f90e3b6245ee44a89544528e43c0292e20bdbcb1c2bce"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/service_commands_sql.py",
+      "sha256": "39a41fd2a1508fafdf6870c5213e7008caab7796496ea2269f9ae23437a60302"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/service_models.py",
+      "sha256": "33477ed5a664e34b2a77926616eff1802f20805498823dd1914615c9d1d3f1b8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/service_runtime.py",
+      "sha256": "a363f0d44b8acfc79611bf61e79aed91a549c53194e2fb2f6e910770af6d7d58"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/service_storage.py",
+      "sha256": "352d6c2517af53acef1822916fc2a173529f0faa5674d8926d690bc6fec09dc3"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/service_support_sql.py",
+      "sha256": "c09ba41b69dccedc0250d9bf6da53ee5e80a5a020981f0b11862e60aaae56402"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/transport.py",
+      "sha256": "df38741f19f9f6d83293e5149ab3b1988d2702885a7f05d9e862854abbd06301"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/trigger_sources.py",
+      "sha256": "ddbe93e0b081a14cd7ad10cd85484cdeff561c6bfb595175309879088408ac65"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/trigger_time.py",
+      "sha256": "81f0ea13c759601fbd526170d8c2cc5d45cb4f27335ea5b16bddb91fe12b0305"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/models.py",
+      "sha256": "cdfd33da46573486931f07bea6109c1185402f7cd4c4f538e91c4c2f648ffe47"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/workflows/automation.py",
+      "sha256": "66cbfac544ed11ea6ab369c478c27c12bfe5a5abf965a544926e4ea6d98800cc"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/workflows/transport.py",
+      "sha256": "c3311a8de229e707a0b4622b7fb77d02b76e317a3fbce0d4d2b5b75434f6d62e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/workflows/worker.py",
+      "sha256": "e84266a9bc75a71da192eb1ed4d07a3a572f82ea9df4395a2c2697d0c632cca2"
+    },
+    {
+      "path": "pdos-next/server/tests/automations/test_automation_workflow.py",
+      "sha256": "e7b421e64bf8b9b714619bd03b75ddddcdbaac2bd2ade29182d4cc39aa8b920c"
+    },
+    {
+      "path": "pdos-next/server/tests/automations/test_service_commands_sql.py",
+      "sha256": "11e36e55374569e1071d8e4df56b12c1a3897daa0737538572aa55b1f8f65347"
+    },
+    {
+      "path": "pdos-next/server/tests/automations/test_service_storage.py",
+      "sha256": "b904426ae51837cb896111367870249fc21d54318631c2c4b2110d553d683bb7"
+    },
+    {
+      "path": "pdos-next/server/tests/automations/test_service_transport.py",
+      "sha256": "e95927e3c974aa8b80b186f783f975092eb09f277607013bea9d0d340ad77a7d"
+    },
+    {
+      "path": "pdos-next/server/tests/automations/test_trigger_sources.py",
+      "sha256": "f3d4c5a453eab498bc062367ae60ae4d075e4aba1db1da67fd6b70b3a3da83c6"
+    },
+    {
+      "path": "pdos-next/server/tests/automations/test_trigger_time.py",
+      "sha256": "312ca64d1a7315d14a28bc752a9d9788ebfec065da8bc61fdb26592c9656310a"
+    },
+    {
+      "path": "pdos-next/server/tests/automations_pg/test_service_automation_pg.py",
+      "sha256": "7a7d8096d72b492aa6aed2792dde9a140a985ef3e926bb79e30e6dd26626f51e"
+    },
+    {
+      "path": "pdos-next/server/tests/automations_pg/test_service_budget_pg.py",
+      "sha256": "322000579aaf190fc6c282285ff3fda8ae510c8a8ade2caa339171df5cb24e45"
+    },
+    {
+      "path": "pdos-next/server/tests/automations_pg/test_service_relative_pg.py",
+      "sha256": "b557f65dcad035f8c50f45ac19e8254c47f1cf6dea3310cec12152e73c1b847f"
+    },
+    {
+      "path": "pdos-next/server/tests/automations_pg/test_service_temporal_pg.py",
+      "sha256": "ace008def505b069defc2c3a473d551e4ea7386f7cf10139545718c354a140e3"
+    },
+    {
+      "path": "pdos-next/web/src/components/automation-rules.test.mjs",
+      "sha256": "aab2590045dd336292265cdd694bfbacd40dd2afd0bc33ba3b31fc387c8ce868"
+    },
+    {
+      "path": "pdos-next/web/src/components/automation-rules.tsx",
+      "sha256": "17d5b4b90a074c2a130297033faba54d743b272a99fe187f9ae094fa4c0e8b4f"
+    },
+    {
+      "path": "pdos-next/web/src/lib/automation-rules.test.mjs",
+      "sha256": "7e0582e148605b085e8beedacdfcf5beaf2cb4eb11bb4cc19eb3f0cd35d22bc2"
+    },
+    {
+      "path": "pdos-next/web/src/lib/automation-rules.ts",
+      "sha256": "0f68ab87d7ba61a36723614132454a300a8176c436af2f9430094fb548f90a60"
+    }
+  ]
+}

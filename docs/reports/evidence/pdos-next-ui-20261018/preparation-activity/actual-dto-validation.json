@@ -1,0 +1,1080 @@
+{
+  "version": "project-manufacturing-preparation-actual-dto-validation/v1",
+  "validation": "Frozen real reader and shared parser over original public HTTP bodies; no field supplementation",
+  "network": false,
+  "database": false,
+  "browser": false,
+  "component_ssr": "not_run",
+  "input": "docs/reports/evidence/pdos-next-ui-20261018/preparation-activity/pg-http-responses.json",
+  "source_sha256": {
+    "reader": "d1c2912363163a00b49f1492144d7edc12ff85a4cea1346a53ccfc24ac59344f",
+    "contract": "2fc6fa24f90012a1fabd14b88442ad95bb90fe0aa5f10ccc77eb4fa2fae370fc"
+  },
+  "input_sha256": "9145c715e0522127706d070534d464873f1e1b65e73c7687636b450f273deaf9",
+  "checks": [
+    {
+      "check": "original_export_contains_two_recorded_phases",
+      "passed": true
+    },
+    {
+      "check": "frozen_reader_and_shared_parser_match",
+      "passed": true
+    },
+    {
+      "check": "recorded_project_only_list_reads_present_baseline_fixed_to_wi_v1",
+      "passed": true
+    },
+    {
+      "check": "whole_original_versions_partition_preserved_baseline_fixed_to_wi_v1/project_preparations",
+      "passed": true
+    },
+    {
+      "check": "all_series_heads_remain_separate_baseline_fixed_to_wi_v1/project_preparations",
+      "passed": true
+    },
+    {
+      "check": "fixed_bindings_saved_gaps_nulls_decimals_instants_unchanged_baseline_fixed_to_wi_v1/project_preparations",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_response_identity_or_denial_baseline_fixed_to_wi_v1/fixed_wi_v1",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_response_identity_or_denial_baseline_fixed_to_wi_v1/fixed_baseline",
+      "passed": true
+    },
+    {
+      "check": "actual_pg_export_business_counts_unchanged_baseline_fixed_to_wi_v1",
+      "passed": true
+    },
+    {
+      "check": "recorded_project_only_list_reads_present_wi_series_advanced_baseline_retains_v1",
+      "passed": true
+    },
+    {
+      "check": "whole_original_versions_partition_preserved_wi_series_advanced_baseline_retains_v1/project_preparations",
+      "passed": true
+    },
+    {
+      "check": "all_series_heads_remain_separate_wi_series_advanced_baseline_retains_v1/project_preparations",
+      "passed": true
+    },
+    {
+      "check": "fixed_bindings_saved_gaps_nulls_decimals_instants_unchanged_wi_series_advanced_baseline_retains_v1/project_preparations",
+      "passed": true
+    },
+    {
+      "check": "whole_original_versions_partition_preserved_wi_series_advanced_baseline_retains_v1/other_project_preparations",
+      "passed": true
+    },
+    {
+      "check": "all_series_heads_remain_separate_wi_series_advanced_baseline_retains_v1/other_project_preparations",
+      "passed": true
+    },
+    {
+      "check": "fixed_bindings_saved_gaps_nulls_decimals_instants_unchanged_wi_series_advanced_baseline_retains_v1/other_project_preparations",
+      "passed": true
+    },
+    {
+      "check": "whole_original_versions_partition_preserved_wi_series_advanced_baseline_retains_v1/peer_preparations",
+      "passed": true
+    },
+    {
+      "check": "all_series_heads_remain_separate_wi_series_advanced_baseline_retains_v1/peer_preparations",
+      "passed": true
+    },
+    {
+      "check": "fixed_bindings_saved_gaps_nulls_decimals_instants_unchanged_wi_series_advanced_baseline_retains_v1/peer_preparations",
+      "passed": true
+    },
+    {
+      "check": "permission_or_domain_failure_preserved_wi_series_advanced_baseline_retains_v1/missing_project",
+      "passed": true
+    },
+    {
+      "check": "permission_or_domain_failure_preserved_wi_series_advanced_baseline_retains_v1/foreign_tenant_preparations",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_response_identity_or_denial_wi_series_advanced_baseline_retains_v1/fixed_wi_v1",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_response_identity_or_denial_wi_series_advanced_baseline_retains_v1/fixed_wi_v2",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_response_identity_or_denial_wi_series_advanced_baseline_retains_v1/fixed_baseline",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_response_identity_or_denial_wi_series_advanced_baseline_retains_v1/peer_fixed_wi_v1",
+      "passed": true
+    },
+    {
+      "check": "original_fixed_response_identity_or_denial_wi_series_advanced_baseline_retains_v1/foreign_tenant_fixed_baseline",
+      "passed": true
+    },
+    {
+      "check": "actual_pg_export_business_counts_unchanged_wi_series_advanced_baseline_retains_v1",
+      "passed": true
+    },
+    {
+      "check": "actual_fixture_exercises_current_history_and_fixed_baseline_material",
+      "passed": true
+    },
+    {
+      "check": "baseline_keeps_fixed_wi_v1_after_series_current_advances",
+      "passed": true
+    },
+    {
+      "check": "original_fixture_and_product_sources_unchanged",
+      "passed": true
+    }
+  ],
+  "calls": [
+    {
+      "scenario": "baseline_fixed_to_wi_v1/project_preparations",
+      "method": "GET",
+      "path": "v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations?project_id=1a40cb53-458d-4883-b93c-6f717208b367",
+      "status": 200,
+      "original_body_sha256": "77cf6c686281d705c6b43a1f31810377e5386e091db554f59a02379c154f813c"
+    },
+    {
+      "scenario": "wi_series_advanced_baseline_retains_v1/project_preparations",
+      "method": "GET",
+      "path": "v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations?project_id=1a40cb53-458d-4883-b93c-6f717208b367",
+      "status": 200,
+      "original_body_sha256": "24013d2a5dab3af562e2d40e11371ad932df545bf16115d0172453bf604d39d6"
+    },
+    {
+      "scenario": "wi_series_advanced_baseline_retains_v1/other_project_preparations",
+      "method": "GET",
+      "path": "v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations?project_id=3af5795d-bf80-4e26-85f2-514020658e43",
+      "status": 200,
+      "original_body_sha256": "38f98b6bf2efb77815931a862e5f049e706b1a4d3aa91e1407eb46e4846e101d"
+    },
+    {
+      "scenario": "wi_series_advanced_baseline_retains_v1/peer_preparations",
+      "method": "GET",
+      "path": "v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations?project_id=1a40cb53-458d-4883-b93c-6f717208b367",
+      "status": 200,
+      "original_body_sha256": "38f98b6bf2efb77815931a862e5f049e706b1a4d3aa91e1407eb46e4846e101d"
+    },
+    {
+      "scenario": "wi_series_advanced_baseline_retains_v1/missing_project",
+      "method": "GET",
+      "path": "v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations?project_id=4ae5d193-7abe-45fd-9871-31585375ae83",
+      "status": 403,
+      "original_body_sha256": "b7735634d9bcb44081cc516d3d7c6a644244a02b692ac1c6a223176bff0764ff"
+    },
+    {
+      "scenario": "wi_series_advanced_baseline_retains_v1/foreign_tenant_preparations",
+      "method": "GET",
+      "path": "v1/categories/a53c51aa-4c05-4f3c-978e-4817dcc73ba3/products/ed6a5f60-32ac-4260-a331-f4fffa0906b5/manufacturing-preparations?project_id=1a40cb53-458d-4883-b93c-6f717208b367",
+      "status": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "baseline_fixed_to_wi_v1/project_preparations",
+      "scope": {
+        "categoryId": "a53c51aa-4c05-4f3c-978e-4817dcc73ba3",
+        "productId": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+        "projectId": "1a40cb53-458d-4883-b93c-6f717208b367"
+      },
+      "status": 200,
+      "current_count": 4,
+      "returned_history_count": 0,
+      "has_more": false,
+      "unavailable_count": 0,
+      "qualification": "unknown",
+      "manufacturing_release": null,
+      "current": [
+        {
+          "kind": "manufacturing_baseline",
+          "id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+          "series_id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+          "revision": 1,
+          "is_current": true,
+          "previous_id": null,
+          "previous_revision": null,
+          "created_at": "2026-10-18T19:05:31.446428+00:00",
+          "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+          "process": {
+            "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+            "revision": 1
+          },
+          "status": "draft",
+          "source_status": "current",
+          "document_bindings": [
+            {
+              "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+              "kind": "work_instruction",
+              "revision": 1,
+              "body_sha256": "c94271aff18cb13fcc9b5985c20028a08183e8644fd293f24fedebfa339ca321",
+              "operation_key": "assembly"
+            },
+            {
+              "id": "bab832f5-744e-486d-a533-d6831adf271e",
+              "kind": "control_plan",
+              "revision": 1,
+              "body_sha256": "e84354d6d9a92f35be8ebfdb05d5814d4aeec2a72257c44519096007c858877e",
+              "operation_key": "assembly"
+            }
+          ],
+          "stored_gap_count": 6,
+          "stored_gap_codes": [
+            "PROCESS_RISK_UNKNOWN",
+            "PACKAGING_LABEL_UNKNOWN",
+            "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+            "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+            "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+            "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+          ],
+          "inventory": {
+            "null_paths": [
+              "$.risk_notes",
+              "$.previous_id",
+              "$.packaging_label_basis",
+              "$.expected_previous_revision"
+            ],
+            "decimals": [],
+            "timestamps": []
+          }
+        },
+        {
+          "kind": "work_instruction",
+          "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+          "series_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+          "revision": 1,
+          "is_current": true,
+          "previous_id": null,
+          "previous_revision": null,
+          "created_at": "2026-10-18T19:05:06.308008+00:00",
+          "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+          "process": {
+            "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+            "revision": 1
+          },
+          "status": "draft",
+          "source_status": "current",
+          "document_bindings": [],
+          "stored_gap_count": 5,
+          "stored_gap_codes": [
+            "INSTRUCTION_CONDITIONS_UNKNOWN",
+            "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+            "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+            "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+            "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+          ],
+          "inventory": {
+            "null_paths": [
+              "$.steps[0].parameters[0].unit",
+              "$.steps[0].parameters[0].lower",
+              "$.steps[0].parameters[0].upper",
+              "$.steps[0].parameters[0].nominal",
+              "$.steps[0].safety_notes",
+              "$.conditions",
+              "$.previous_id",
+              "$.expected_previous_revision"
+            ],
+            "decimals": [],
+            "timestamps": []
+          }
+        },
+        {
+          "kind": "control_plan",
+          "id": "bab832f5-744e-486d-a533-d6831adf271e",
+          "series_id": "bab832f5-744e-486d-a533-d6831adf271e",
+          "revision": 1,
+          "is_current": true,
+          "previous_id": null,
+          "previous_revision": null,
+          "created_at": "2026-10-18T19:05:13.610571+00:00",
+          "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+          "process": {
+            "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+            "revision": 1
+          },
+          "status": "draft",
+          "source_status": "current",
+          "document_bindings": [],
+          "stored_gap_count": 5,
+          "stored_gap_codes": [
+            "CONTROL_CHECK_INCOMPLETE",
+            "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+            "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+            "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+            "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+          ],
+          "inventory": {
+            "null_paths": [
+              "$.checks[0].method",
+              "$.checks[0].criterion",
+              "$.checks[0].frequency",
+              "$.checks[0].reaction_plan",
+              "$.checks[0].sampling_method",
+              "$.checks[0].responsible_role",
+              "$.previous_id",
+              "$.expected_previous_revision"
+            ],
+            "decimals": [],
+            "timestamps": []
+          }
+        },
+        {
+          "kind": "work_instruction",
+          "id": "c17f2e1d-bf2b-48a0-8694-ac65ccf59b4a",
+          "series_id": "c17f2e1d-bf2b-48a0-8694-ac65ccf59b4a",
+          "revision": 1,
+          "is_current": true,
+          "previous_id": null,
+          "previous_revision": null,
+          "created_at": "2026-10-18T19:05:20.607630+00:00",
+          "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+          "process": {
+            "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+            "revision": 1
+          },
+          "status": "draft",
+          "source_status": "current",
+          "document_bindings": [],
+          "stored_gap_count": 5,
+          "stored_gap_codes": [
+            "INSTRUCTION_CONDITIONS_UNKNOWN",
+            "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+            "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+            "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+            "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+          ],
+          "inventory": {
+            "null_paths": [
+              "$.steps[0].parameters[0].unit",
+              "$.steps[0].parameters[0].lower",
+              "$.steps[0].parameters[0].upper",
+              "$.steps[0].parameters[0].nominal",
+              "$.steps[0].safety_notes",
+              "$.conditions",
+              "$.previous_id",
+              "$.expected_previous_revision"
+            ],
+            "decimals": [],
+            "timestamps": []
+          }
+        }
+      ],
+      "returned_history": []
+    },
+    {
+      "name": "baseline_fixed_to_wi_v1/fixed_wi_v1",
+      "validation": "original fixed DTO parsed without invoking an additional API call",
+      "status": 200,
+      "code": null,
+      "fixed": {
+        "kind": "work_instruction",
+        "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+        "series_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+        "revision": 1,
+        "is_current": true,
+        "previous_id": null,
+        "previous_revision": null,
+        "created_at": "2026-10-18T19:05:06.308008+00:00",
+        "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+        "process": {
+          "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+          "revision": 1
+        },
+        "status": "draft",
+        "source_status": "current",
+        "document_bindings": [],
+        "stored_gap_count": 5,
+        "stored_gap_codes": [
+          "INSTRUCTION_CONDITIONS_UNKNOWN",
+          "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+          "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+          "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+          "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+        ],
+        "inventory": {
+          "null_paths": [
+            "$.steps[0].parameters[0].unit",
+            "$.steps[0].parameters[0].lower",
+            "$.steps[0].parameters[0].upper",
+            "$.steps[0].parameters[0].nominal",
+            "$.steps[0].safety_notes",
+            "$.conditions",
+            "$.previous_id",
+            "$.expected_previous_revision"
+          ],
+          "decimals": [],
+          "timestamps": []
+        }
+      }
+    },
+    {
+      "name": "baseline_fixed_to_wi_v1/fixed_baseline",
+      "validation": "original fixed DTO parsed without invoking an additional API call",
+      "status": 200,
+      "code": null,
+      "fixed": {
+        "kind": "manufacturing_baseline",
+        "id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+        "series_id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+        "revision": 1,
+        "is_current": true,
+        "previous_id": null,
+        "previous_revision": null,
+        "created_at": "2026-10-18T19:05:31.446428+00:00",
+        "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+        "process": {
+          "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+          "revision": 1
+        },
+        "status": "draft",
+        "source_status": "current",
+        "document_bindings": [
+          {
+            "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+            "kind": "work_instruction",
+            "revision": 1,
+            "body_sha256": "c94271aff18cb13fcc9b5985c20028a08183e8644fd293f24fedebfa339ca321",
+            "operation_key": "assembly"
+          },
+          {
+            "id": "bab832f5-744e-486d-a533-d6831adf271e",
+            "kind": "control_plan",
+            "revision": 1,
+            "body_sha256": "e84354d6d9a92f35be8ebfdb05d5814d4aeec2a72257c44519096007c858877e",
+            "operation_key": "assembly"
+          }
+        ],
+        "stored_gap_count": 6,
+        "stored_gap_codes": [
+          "PROCESS_RISK_UNKNOWN",
+          "PACKAGING_LABEL_UNKNOWN",
+          "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+          "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+          "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+          "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+        ],
+        "inventory": {
+          "null_paths": [
+            "$.risk_notes",
+            "$.previous_id",
+            "$.packaging_label_basis",
+            "$.expected_previous_revision"
+          ],
+          "decimals": [],
+          "timestamps": []
+        }
+      }
+    },
+    {
+      "name": "wi_series_advanced_baseline_retains_v1/project_preparations",
+      "scope": {
+        "categoryId": "a53c51aa-4c05-4f3c-978e-4817dcc73ba3",
+        "productId": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+        "projectId": "1a40cb53-458d-4883-b93c-6f717208b367"
+      },
+      "status": 200,
+      "current_count": 4,
+      "returned_history_count": 1,
+      "has_more": false,
+      "unavailable_count": 0,
+      "qualification": "unknown",
+      "manufacturing_release": null,
+      "current": [
+        {
+          "kind": "work_instruction",
+          "id": "309fab90-b9f8-49c1-8b09-d9ae4c5eb725",
+          "series_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+          "revision": 2,
+          "is_current": true,
+          "previous_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+          "previous_revision": 1,
+          "created_at": "2026-10-18T19:05:42.457051+00:00",
+          "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+          "process": {
+            "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+            "revision": 1
+          },
+          "status": "draft",
+          "source_status": "current",
+          "document_bindings": [],
+          "stored_gap_count": 5,
+          "stored_gap_codes": [
+            "INSTRUCTION_CONDITIONS_UNKNOWN",
+            "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+            "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+            "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+            "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+          ],
+          "inventory": {
+            "null_paths": [
+              "$.steps[0].parameters[0].unit",
+              "$.steps[0].parameters[0].lower",
+              "$.steps[0].parameters[0].upper",
+              "$.steps[0].parameters[0].nominal",
+              "$.steps[0].safety_notes",
+              "$.conditions"
+            ],
+            "decimals": [],
+            "timestamps": []
+          }
+        },
+        {
+          "kind": "manufacturing_baseline",
+          "id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+          "series_id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+          "revision": 1,
+          "is_current": true,
+          "previous_id": null,
+          "previous_revision": null,
+          "created_at": "2026-10-18T19:05:31.446428+00:00",
+          "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+          "process": {
+            "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+            "revision": 1
+          },
+          "status": "draft",
+          "source_status": "needs_recheck",
+          "document_bindings": [
+            {
+              "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+              "kind": "work_instruction",
+              "revision": 1,
+              "body_sha256": "c94271aff18cb13fcc9b5985c20028a08183e8644fd293f24fedebfa339ca321",
+              "operation_key": "assembly"
+            },
+            {
+              "id": "bab832f5-744e-486d-a533-d6831adf271e",
+              "kind": "control_plan",
+              "revision": 1,
+              "body_sha256": "e84354d6d9a92f35be8ebfdb05d5814d4aeec2a72257c44519096007c858877e",
+              "operation_key": "assembly"
+            }
+          ],
+          "stored_gap_count": 6,
+          "stored_gap_codes": [
+            "PROCESS_RISK_UNKNOWN",
+            "PACKAGING_LABEL_UNKNOWN",
+            "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+            "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+            "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+            "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+          ],
+          "inventory": {
+            "null_paths": [
+              "$.risk_notes",
+              "$.previous_id",
+              "$.packaging_label_basis",
+              "$.expected_previous_revision"
+            ],
+            "decimals": [],
+            "timestamps": []
+          }
+        },
+        {
+          "kind": "control_plan",
+          "id": "bab832f5-744e-486d-a533-d6831adf271e",
+          "series_id": "bab832f5-744e-486d-a533-d6831adf271e",
+          "revision": 1,
+          "is_current": true,
+          "previous_id": null,
+          "previous_revision": null,
+          "created_at": "2026-10-18T19:05:13.610571+00:00",
+          "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+          "process": {
+            "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+            "revision": 1
+          },
+          "status": "draft",
+          "source_status": "current",
+          "document_bindings": [],
+          "stored_gap_count": 5,
+          "stored_gap_codes": [
+            "CONTROL_CHECK_INCOMPLETE",
+            "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+            "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+            "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+            "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+          ],
+          "inventory": {
+            "null_paths": [
+              "$.checks[0].method",
+              "$.checks[0].criterion",
+              "$.checks[0].frequency",
+              "$.checks[0].reaction_plan",
+              "$.checks[0].sampling_method",
+              "$.checks[0].responsible_role",
+              "$.previous_id",
+              "$.expected_previous_revision"
+            ],
+            "decimals": [],
+            "timestamps": []
+          }
+        },
+        {
+          "kind": "work_instruction",
+          "id": "c17f2e1d-bf2b-48a0-8694-ac65ccf59b4a",
+          "series_id": "c17f2e1d-bf2b-48a0-8694-ac65ccf59b4a",
+          "revision": 1,
+          "is_current": true,
+          "previous_id": null,
+          "previous_revision": null,
+          "created_at": "2026-10-18T19:05:20.607630+00:00",
+          "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+          "process": {
+            "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+            "revision": 1
+          },
+          "status": "draft",
+          "source_status": "current",
+          "document_bindings": [],
+          "stored_gap_count": 5,
+          "stored_gap_codes": [
+            "INSTRUCTION_CONDITIONS_UNKNOWN",
+            "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+            "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+            "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+            "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+          ],
+          "inventory": {
+            "null_paths": [
+              "$.steps[0].parameters[0].unit",
+              "$.steps[0].parameters[0].lower",
+              "$.steps[0].parameters[0].upper",
+              "$.steps[0].parameters[0].nominal",
+              "$.steps[0].safety_notes",
+              "$.conditions",
+              "$.previous_id",
+              "$.expected_previous_revision"
+            ],
+            "decimals": [],
+            "timestamps": []
+          }
+        }
+      ],
+      "returned_history": [
+        {
+          "kind": "work_instruction",
+          "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+          "series_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+          "revision": 1,
+          "is_current": false,
+          "previous_id": null,
+          "previous_revision": null,
+          "created_at": "2026-10-18T19:05:06.308008+00:00",
+          "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+          "process": {
+            "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+            "revision": 1
+          },
+          "status": "draft",
+          "source_status": "current",
+          "document_bindings": [],
+          "stored_gap_count": 5,
+          "stored_gap_codes": [
+            "INSTRUCTION_CONDITIONS_UNKNOWN",
+            "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+            "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+            "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+            "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+          ],
+          "inventory": {
+            "null_paths": [
+              "$.steps[0].parameters[0].unit",
+              "$.steps[0].parameters[0].lower",
+              "$.steps[0].parameters[0].upper",
+              "$.steps[0].parameters[0].nominal",
+              "$.steps[0].safety_notes",
+              "$.conditions",
+              "$.previous_id",
+              "$.expected_previous_revision"
+            ],
+            "decimals": [],
+            "timestamps": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "wi_series_advanced_baseline_retains_v1/other_project_preparations",
+      "scope": {
+        "categoryId": "a53c51aa-4c05-4f3c-978e-4817dcc73ba3",
+        "productId": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+        "projectId": "3af5795d-bf80-4e26-85f2-514020658e43"
+      },
+      "status": 200,
+      "current_count": 0,
+      "returned_history_count": 0,
+      "has_more": false,
+      "unavailable_count": 0,
+      "qualification": "unknown",
+      "manufacturing_release": null,
+      "current": [],
+      "returned_history": []
+    },
+    {
+      "name": "wi_series_advanced_baseline_retains_v1/peer_preparations",
+      "scope": {
+        "categoryId": "a53c51aa-4c05-4f3c-978e-4817dcc73ba3",
+        "productId": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+        "projectId": "1a40cb53-458d-4883-b93c-6f717208b367"
+      },
+      "status": 200,
+      "current_count": 0,
+      "returned_history_count": 0,
+      "has_more": false,
+      "unavailable_count": 0,
+      "qualification": "unknown",
+      "manufacturing_release": null,
+      "current": [],
+      "returned_history": []
+    },
+    {
+      "name": "wi_series_advanced_baseline_retains_v1/missing_project",
+      "scope": {
+        "categoryId": "a53c51aa-4c05-4f3c-978e-4817dcc73ba3",
+        "productId": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+        "projectId": "4ae5d193-7abe-45fd-9871-31585375ae83"
+      },
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "fallback": false
+    },
+    {
+      "name": "wi_series_advanced_baseline_retains_v1/foreign_tenant_preparations",
+      "scope": {
+        "categoryId": "a53c51aa-4c05-4f3c-978e-4817dcc73ba3",
+        "productId": "ed6a5f60-32ac-4260-a331-f4fffa0906b5",
+        "projectId": "1a40cb53-458d-4883-b93c-6f717208b367"
+      },
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "fallback": false
+    },
+    {
+      "name": "wi_series_advanced_baseline_retains_v1/fixed_wi_v1",
+      "validation": "original fixed DTO parsed without invoking an additional API call",
+      "status": 200,
+      "code": null,
+      "fixed": {
+        "kind": "work_instruction",
+        "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+        "series_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+        "revision": 1,
+        "is_current": false,
+        "previous_id": null,
+        "previous_revision": null,
+        "created_at": "2026-10-18T19:05:06.308008+00:00",
+        "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+        "process": {
+          "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+          "revision": 1
+        },
+        "status": "draft",
+        "source_status": "current",
+        "document_bindings": [],
+        "stored_gap_count": 5,
+        "stored_gap_codes": [
+          "INSTRUCTION_CONDITIONS_UNKNOWN",
+          "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+          "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+          "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+          "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+        ],
+        "inventory": {
+          "null_paths": [
+            "$.steps[0].parameters[0].unit",
+            "$.steps[0].parameters[0].lower",
+            "$.steps[0].parameters[0].upper",
+            "$.steps[0].parameters[0].nominal",
+            "$.steps[0].safety_notes",
+            "$.conditions",
+            "$.previous_id",
+            "$.expected_previous_revision"
+          ],
+          "decimals": [],
+          "timestamps": []
+        }
+      }
+    },
+    {
+      "name": "wi_series_advanced_baseline_retains_v1/fixed_wi_v2",
+      "validation": "original fixed DTO parsed without invoking an additional API call",
+      "status": 200,
+      "code": null,
+      "fixed": {
+        "kind": "work_instruction",
+        "id": "309fab90-b9f8-49c1-8b09-d9ae4c5eb725",
+        "series_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+        "revision": 2,
+        "is_current": true,
+        "previous_id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+        "previous_revision": 1,
+        "created_at": "2026-10-18T19:05:42.457051+00:00",
+        "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+        "process": {
+          "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+          "revision": 1
+        },
+        "status": "draft",
+        "source_status": "current",
+        "document_bindings": [],
+        "stored_gap_count": 5,
+        "stored_gap_codes": [
+          "INSTRUCTION_CONDITIONS_UNKNOWN",
+          "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+          "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+          "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+          "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+        ],
+        "inventory": {
+          "null_paths": [
+            "$.steps[0].parameters[0].unit",
+            "$.steps[0].parameters[0].lower",
+            "$.steps[0].parameters[0].upper",
+            "$.steps[0].parameters[0].nominal",
+            "$.steps[0].safety_notes",
+            "$.conditions"
+          ],
+          "decimals": [],
+          "timestamps": []
+        }
+      }
+    },
+    {
+      "name": "wi_series_advanced_baseline_retains_v1/fixed_baseline",
+      "validation": "original fixed DTO parsed without invoking an additional API call",
+      "status": 200,
+      "code": null,
+      "fixed": {
+        "kind": "manufacturing_baseline",
+        "id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+        "series_id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+        "revision": 1,
+        "is_current": true,
+        "previous_id": null,
+        "previous_revision": null,
+        "created_at": "2026-10-18T19:05:31.446428+00:00",
+        "project_id": "1a40cb53-458d-4883-b93c-6f717208b367",
+        "process": {
+          "id": "7b4b7ba1-be63-4030-b904-22cd7bdf2ca2",
+          "revision": 1
+        },
+        "status": "draft",
+        "source_status": "needs_recheck",
+        "document_bindings": [
+          {
+            "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+            "kind": "work_instruction",
+            "revision": 1,
+            "body_sha256": "c94271aff18cb13fcc9b5985c20028a08183e8644fd293f24fedebfa339ca321",
+            "operation_key": "assembly"
+          },
+          {
+            "id": "bab832f5-744e-486d-a533-d6831adf271e",
+            "kind": "control_plan",
+            "revision": 1,
+            "body_sha256": "e84354d6d9a92f35be8ebfdb05d5814d4aeec2a72257c44519096007c858877e",
+            "operation_key": "assembly"
+          }
+        ],
+        "stored_gap_count": 6,
+        "stored_gap_codes": [
+          "PROCESS_RISK_UNKNOWN",
+          "PACKAGING_LABEL_UNKNOWN",
+          "TOOLING_ACCEPTANCE_OWNER_NOT_CONFIGURED",
+          "FIXTURE_QUALIFICATION_OWNER_NOT_CONFIGURED",
+          "MANUFACTURING_BASELINE_RELEASE_NOT_CONFIGURED",
+          "MANUFACTURING_SCOPE_ENUMERATION_NOT_CONFIGURED"
+        ],
+        "inventory": {
+          "null_paths": [
+            "$.risk_notes",
+            "$.previous_id",
+            "$.packaging_label_basis",
+            "$.expected_previous_revision"
+          ],
+          "decimals": [],
+          "timestamps": []
+        }
+      }
+    },
+    {
+      "name": "wi_series_advanced_baseline_retains_v1/peer_fixed_wi_v1",
+      "validation": "original fixed DTO parsed without invoking an additional API call",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "fixed": null
+    },
+    {
+      "name": "wi_series_advanced_baseline_retains_v1/foreign_tenant_fixed_baseline",
+      "validation": "original fixed DTO parsed without invoking an additional API call",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "fixed": null
+    }
+  ],
+  "passed": true,
+  "boundaries": [
+    "One project-filtered list GET per recorded scenario; no historical cursor or fixed-child GET is followed",
+    "Current is per kind and series; historical rows never replace current series heads",
+    "Stored gaps, fixed bindings, nulls and timestamps are compared with the original response, not recomputed; decimal-string coverage is separately counted",
+    "Draft status, unknown qualification and null release do not establish manufacturing eligibility or publication status",
+    "source_status needs_recheck is preserved; its cause is not inferred as source withdrawal",
+    "unavailable_count and has_more describe the individual response, not a complete project or aggregated total",
+    "Recorded permission failures and count equality are evidence from the PG export; this script performs no authorization or database operation",
+    "No component, browser, BFF, activity projection or write behavior is exercised"
+  ],
+  "fixture_version": "project-manufacturing-preparation-projection-qa/v1",
+  "helper_sha256": "66b1c954fd23ab19ac60dd79530e44c00008bd292c3f98b3cbb101f737720dae",
+  "fixed_binding_transition": {
+    "original_wi": {
+      "id": "68191e4f-b77f-4f19-a243-9da1f4eda39f",
+      "revision": 1
+    },
+    "current_wi": {
+      "id": "309fab90-b9f8-49c1-8b09-d9ae4c5eb725",
+      "revision": 2
+    },
+    "baseline": {
+      "id": "43cd204c-6fe9-4822-9c79-aa03ec915c2c",
+      "revision": 1
+    },
+    "baseline_body_unchanged": true,
+    "original_wi_body_and_created_at_unchanged": true
+  },
+  "read_only_counts": {
+    "phases": [
+      {
+        "phase": "baseline_fixed_to_wi_v1",
+        "before": {
+          "products": 2,
+          "projects": 2,
+          "project_product_links": 2,
+          "definition_revisions": 3,
+          "definition_sources": 0,
+          "definition_specs": 0,
+          "parts": 2,
+          "bom_revisions": 1,
+          "bom_lines": 2,
+          "engineering_configurations": 2,
+          "process_revisions": 2,
+          "manufacturing_preparation_versions": 4,
+          "manufacturing_preparation_currents": 4,
+          "manufacturing_baseline_document_links": 2,
+          "action_receipts": 21,
+          "audit_entries": 20,
+          "outbox_events": 22,
+          "request_keys": 20,
+          "artifact_versions": 3,
+          "confirmations": 15,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 16
+        },
+        "after": {
+          "products": 2,
+          "projects": 2,
+          "project_product_links": 2,
+          "definition_revisions": 3,
+          "definition_sources": 0,
+          "definition_specs": 0,
+          "parts": 2,
+          "bom_revisions": 1,
+          "bom_lines": 2,
+          "engineering_configurations": 2,
+          "process_revisions": 2,
+          "manufacturing_preparation_versions": 4,
+          "manufacturing_preparation_currents": 4,
+          "manufacturing_baseline_document_links": 2,
+          "action_receipts": 21,
+          "audit_entries": 20,
+          "outbox_events": 22,
+          "request_keys": 20,
+          "artifact_versions": 3,
+          "confirmations": 15,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 16
+        },
+        "unchanged": true,
+        "model_count": 23
+      },
+      {
+        "phase": "wi_series_advanced_baseline_retains_v1",
+        "before": {
+          "products": 2,
+          "projects": 2,
+          "project_product_links": 2,
+          "definition_revisions": 3,
+          "definition_sources": 0,
+          "definition_specs": 0,
+          "parts": 2,
+          "bom_revisions": 1,
+          "bom_lines": 2,
+          "engineering_configurations": 2,
+          "process_revisions": 2,
+          "manufacturing_preparation_versions": 5,
+          "manufacturing_preparation_currents": 4,
+          "manufacturing_baseline_document_links": 2,
+          "action_receipts": 22,
+          "audit_entries": 21,
+          "outbox_events": 23,
+          "request_keys": 21,
+          "artifact_versions": 3,
+          "confirmations": 16,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 16
+        },
+        "after": {
+          "products": 2,
+          "projects": 2,
+          "project_product_links": 2,
+          "definition_revisions": 3,
+          "definition_sources": 0,
+          "definition_specs": 0,
+          "parts": 2,
+          "bom_revisions": 1,
+          "bom_lines": 2,
+          "engineering_configurations": 2,
+          "process_revisions": 2,
+          "manufacturing_preparation_versions": 5,
+          "manufacturing_preparation_currents": 4,
+          "manufacturing_baseline_document_links": 2,
+          "action_receipts": 22,
+          "audit_entries": 21,
+          "outbox_events": 23,
+          "request_keys": 21,
+          "artifact_versions": 3,
+          "confirmations": 16,
+          "professional_authority_facts": 2,
+          "grants": 3,
+          "object_audiences": 16
+        },
+        "unchanged": true,
+        "model_count": 23
+      }
+    ],
+    "origin": "Actual PG export; this script has no database connection"
+  },
+  "summary": {
+    "successful_lists": 4,
+    "recorded_denials": 2,
+    "old_wi_current_pairs": 1,
+    "fixed_baseline_bindings": 4,
+    "preserved_null_fields": 62,
+    "preserved_decimal_strings": 0,
+    "decimal_string_coverage": "not exercised: this actual fixture stores null numeric parameters",
+    "original_created_at_fields": 9,
+    "stored_gap_count": 47,
+    "offline_get_calls": 6,
+    "fixed_dtos_checked_without_additional_get": 5
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "candidate": "parallel-schedule-20260930-r1",
+  "user_date": "2026-09-30",
+  "recorded_at_utc": "2026-09-30T14:43:55.254900+00:00",
+  "git_head": "9fab424c4a3dfc4909499aea11862b3cb0bc50ba",
+  "basis": "existing dirty working tree; per-file baseline, not a whole-repository freeze",
+  "files": [
+    {
+      "path": "server/app/domain/resource_reallocation_inputs.py",
+      "change": "modified",
+      "baseline_sha256": "aa2993bcb79eebc12bb81ffe803e59cdc92494d415cdc93aa71329854085b033",
+      "sha256": "eb7c6e9a480e60322ab8f68feeb3ce84e25fe6599e03470b301c515baa5aae47"
+    },
+    {
+      "path": "server/app/domain/resource_reallocations.py",
+      "change": "modified",
+      "baseline_sha256": "73a17a98e580a6699588fe434b7e71a5bd324efc7387b521bbd47f419a09b3a0",
+      "sha256": "7949ba5cdd88739f9263e161dcb2733d568b5d18b8c309134d9f974b924d4ebf"
+    },
+    {
+      "path": "server/app/api/plan_scenarios.py",
+      "change": "modified",
+      "baseline_sha256": "3aec466ce20c9fbe25e510647b61be9d69174d5c3b44caddc14b7c24b7368964",
+      "sha256": "44c5344447368deb62153a9917ca84e3f1a157770f7345f01a3de1790c7b39e5"
+    },
+    {
+      "path": "web/src/components/projects/resource-reallocations.tsx",
+      "change": "modified",
+      "baseline_sha256": "11d8ccfe8eca3148096387049d8ccceee24bc483ee24da84898b2228a39784cd",
+      "sha256": "335b76dde41217f7d555e4f3521b3cc232322d737b0245e40e2d192a97c3f0c2"
+    },
+    {
+      "path": "server/tests/test_resource_reallocations.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "sha256": "4db574f1615010113812ca40f181f97f04cc362f7100bdcedf17d7a57f5a4a5e"
+    },
+    {
+      "path": "server/tests/test_resource_reallocations_api.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "sha256": "bb071d758085f6af2f5b0e12ca9742ba26086de1c558a48972cd680657b4d506"
+    },
+    {
+      "path": "server/tests/test_resource_schedule_preparations.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "sha256": "c74654d40bcd34ca3fdb70d40867a7e019a31eea44f71ea0a5374cda4ac62017"
+    },
+    {
+      "path": "server/tests/test_resource_schedule_solver.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "sha256": "f15f69e4256b2aef43a063b089ecd781b53d31058298b5b975dba60892ed0595"
+    },
+    {
+      "path": "server/tests/test_schedule_forecast_engine.py",
+      "change": "added",
+      "baseline_sha256": null,
+      "sha256": "23acab4149a05a945c131e1417a885caf0415c2b6e5d210330e258f9410d8c0a"
+    },
+    {
+      "path": "web/src/components/projects/resource-reallocations.test.tsx",
+      "change": "added",
+      "baseline_sha256": null,
+      "sha256": "7319769d789d1b6f1d7cd49911ede8be97cb534a3cef072b4873def2748a83d1"
+    }
+  ],
+  "database_validation": "pending coordinator-assigned explicit isolated TEST_DATABASE_URL; no database accessed",
+  "formal_exit": "not claimed",
+  "files_digest": "5f5dccc7e1bc7213eef61fd70d2a07c7cc2c9c06178192f148daffeb491dc091"
+}

@@ -1,0 +1,35 @@
+{
+  "synthetic_tooling_shapes_only": true,
+  "actual_performance_measured": false,
+  "database_calls": 0,
+  "checks": [
+    {
+      "case": "complete",
+      "result": "complete"
+    },
+    {
+      "case": "pytest_exit_failure",
+      "result": "rejected"
+    },
+    {
+      "case": "missing_inputs",
+      "result": "rejected"
+    },
+    {
+      "case": "failed_sample",
+      "result": "rejected"
+    },
+    {
+      "case": "twenty_nine_samples",
+      "result": "rejected"
+    },
+    {
+      "case": "missing_b4_commit",
+      "result": "rejected"
+    },
+    {
+      "case": "above_read_limit",
+      "result": "threshold_failed"
+    }
+  ]
+}

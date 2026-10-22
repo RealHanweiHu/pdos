@@ -1,0 +1,5 @@
+{
+  "pdos-next/server/pdos_next/api.py": "91bc116a6237de8c2d545566369818aaf186f40d3e542aa4d5b49705366b8550",
+  "pdos-next/server/pdos_next/category_capabilities.py": "0189dc6a6a386001e037576e9d99b71e174de05305db88d2f021c727ae04ae12",
+  "pdos-next/server/tests/test_category_capabilities_projection.py": "02161ae4080d8cdbd7c3bdb32c52cdaf6fe5aad7cdf048401659768ee3c2a065"
+}

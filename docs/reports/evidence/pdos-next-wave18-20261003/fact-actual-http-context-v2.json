@@ -1,0 +1,16 @@
+{
+  "status": "FAIL",
+  "started_at": "2026-10-03T15:52:21.836784+00:00",
+  "action": "context",
+  "target": "127.0.0.1:62513/pdos_test",
+  "steps": [],
+  "model_calls": 0,
+  "source_manifest_sha256": "59964d1e50c34aaad649e398b29cf8f4680ae445534c9a8852f05a92c5b13e66",
+  "exception_type": "URLError",
+  "diagnostic": "Private diagnostic withheld",
+  "finished_at": "2026-10-03T15:52:22.335226+00:00",
+  "added_runtime_sources": [],
+  "removed_runtime_sources": [],
+  "changed_runtime_sources": [],
+  "source_stable": true
+}

@@ -1,0 +1,71 @@
+{
+  "web_candidate": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/pai-upload-web-1792274238193464000",
+  "candidate_inputs": 367,
+  "checks": [
+    {
+      "name": "lint",
+      "exit_code": 0
+    },
+    {
+      "name": "build",
+      "exit_code": 0
+    },
+    {
+      "name": "typecheck",
+      "exit_code": 0
+    }
+  ],
+  "changed_since_web_candidate": [
+    "src/components/workspace.tsx",
+    "src/components/my-work.tsx",
+    "src/components/app-shell.tsx",
+    "src/lib/portfolio-reads.ts",
+    "src/components/projects/project-list.tsx",
+    "src/components/projects/project-cockpit.tsx",
+    "src/components/projects/project-workspace.tsx",
+    "src/components/manufacturing/release-packages.tsx",
+    "src/components/manufacturing/release-packages.test.mjs",
+    "src/app/api/[...path]/route.ts"
+  ],
+  "owned_changed_since_web_candidate": [],
+  "backend_initial_head": "s0_0778",
+  "backend_fault_case_recheck_head": "s0_0783",
+  "backend_fault_case_exit": 0,
+  "upload_reader_unchanged": true,
+  "shared_runtime_changes_since_initial_pg": [
+    "pdos_next/service.py",
+    "pdos_next/models.py",
+    "pdos_next/api.py",
+    "pdos_next/lifecycle_catalog.py",
+    "pdos_next/personal_views.py",
+    "pdos_next/contracts.py",
+    "pdos_next/command_handlers.py",
+    "pdos_next/workflows/worker.py",
+    "pdos_next/workflows/transport.py",
+    "pdos_next/agent_kernel/activities.py",
+    "pdos_next/agent_kernel/persistence.py",
+    "pdos_next/agent_kernel/execution.py",
+    "pdos_next/agent_kernel/host.py",
+    "pdos_next/agent_kernel/temporal_port.py",
+    "pdos_next/agent_kernel/run_reconciliation.py",
+    "pdos_next/domain/professional_authority/service.py",
+    "pdos_next/domain/release/models.py",
+    "pdos_next/domain/release/rules.py",
+    "pdos_next/domain/release/schemas.py",
+    "pdos_next/domain/release/storage_schema.py",
+    "pdos_next/domain/release/material_owner.py",
+    "pdos_next/domain/manufacturing_baseline/consumption.py"
+  ],
+  "browser_final_remaining": [
+    "parsed receipt browser refresh",
+    "manual source selection and new Run from this uploaded file",
+    "320px/light/dark/full-identifier inspection"
+  ],
+  "browser_gate": {
+    "denied": true,
+    "origin": "http://127.0.0.1:55210",
+    "reason": "user declined permission",
+    "no_browser_workaround": true
+  },
+  "full_integrated_candidate_pass_claimed": false
+}

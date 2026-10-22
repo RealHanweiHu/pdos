@@ -1,0 +1,26 @@
+{
+  "scope": "3 new public candidate adapter/schema/test files only",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/service.py",
+      "sha256": "33b7343e50e551d681a289d8d61f073a3b0ef1dce05d5f61aa16997dbca55223"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/schemas.py",
+      "sha256": "ad5648c0ef1d049a2234255f29570e9cb525485456a3797d4b6927ca0d0ae637"
+    },
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_candidate_service.py",
+      "sha256": "cc1693338c6dbac83ecd5fcaa6fa63faea915b78da8c4275d5c200d4d74bc271"
+    }
+  ],
+  "stage_edited": false,
+  "public_common_edited": false,
+  "db_http_checks": false,
+  "separately_owned_dependency": {
+    "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "sha256": "66b4169d848f3b348eaf8bf1c65d515eacd0f0fd58314b6f7e7f0743ff81712c",
+    "owner": "reuse_foundation",
+    "status": "frozen signature confirmed; no test rerun claimed by B"
+  }
+}

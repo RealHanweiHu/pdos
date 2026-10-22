@@ -1,0 +1,39 @@
+{
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "operation": "build.sample.readiness.record",
+  "command_id": "953ba1a6-f53e-4c67-865e-eb388e590208",
+  "counts": {
+    "receipt": 0,
+    "key": 0,
+    "confirmation": 0
+  },
+  "database_mutation": false,
+  "payload_and_command_key_preserved": true,
+  "source": "Actual scoped sample-handoff capability required_source_read_set",
+  "before_read_set": [
+    {
+      "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+      "expected_revision": 1
+    }
+  ],
+  "after_read_set": [
+    {
+      "artifact_id": "33fa986c-bb30-44db-b7ef-3ab36a0344b8",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+      "expected_revision": 1
+    }
+  ],
+  "old_checkpoint_sha256": "bef66e6fd0fc23905fc8420c97fa45c0e1aff5a7fd9aaab8f04dfdaac76c69f4",
+  "new_checkpoint_sha256": "63d194816c82491451b56e1db19df535f626c0397e3c9bdef047b615aa283d0c"
+}

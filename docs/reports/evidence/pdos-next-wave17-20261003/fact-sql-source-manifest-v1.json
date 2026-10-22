@@ -1,0 +1,14 @@
+{
+  "scope": "Only two newly owned staged files; not public source or installed SQL",
+  "observed_at": "2026-10-03T11:45:32.764338+00:00",
+  "files": [
+    {
+      "path": "pdos-next/staging/wave17/fact_sql_guards.py",
+      "sha256": "2a10c092daa00ee3c2bd7a8ffce0d2d7d2545b7bcc4224f866240c1842286267"
+    },
+    {
+      "path": "pdos-next/staging/wave17/fact-sql-guards-contract.md",
+      "sha256": "3b4c56190be38474559866b424681e87700a9f684323260c92a7f604c2f38176"
+    }
+  ]
+}

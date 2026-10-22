@@ -1,0 +1,51 @@
+- generic [active] [ref=f3e1]:
+  - alert [ref=f3e4]
+  - generic [ref=f3e5]:
+    - link "跳到工作内容" [ref=f3e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - generic [ref=f3e7]:
+      - banner [ref=f3e8]:
+        - button "打开导航" [ref=f3e9]
+        - generic [ref=f3e10]: PDOS
+        - generic [ref=f3e12]:
+          - button "小Pai 工作栏" [ref=f3e13]
+          - button "切换明暗主题" [ref=f3e14]
+      - main [ref=f3e15]:
+        - generic [ref=f3e16]:
+          - generic [ref=f3e17]:
+            - heading "项目列表" [level=1] [ref=f3e18]
+            - paragraph [ref=f3e19]: 本人可见的研发项目，按品类与型号归属，继续查看计划、风险与未决事项。
+          - button "刷新" [ref=f3e20]
+        - paragraph [ref=f3e21]:
+          - text: 项目资料读取于
+          - time [ref=f3e22]: 10/16/2026, 10:49:59 AM
+        - region "Synthetic second category的项目" [ref=f3e23]:
+          - generic [ref=f3e24]:
+            - heading "Synthetic second category" [level=2] [ref=f3e25]
+            - generic [ref=f3e26]: 1 个项目
+          - generic [ref=f3e27]:
+            - paragraph [ref=f3e28]: 合成便携泵 · 待建计划
+            - generic [ref=f3e29]:
+              - generic [ref=f3e33]:
+                - paragraph [ref=f3e34]: 合成便携泵 · 待建计划
+                - paragraph [ref=f3e35]: 合成便携泵 · 待建计划 · 固定 v1 · 私有
+              - generic [ref=f3e36]:
+                - generic [ref=f3e37]: 待建计划
+                - generic [ref=f3e38]: v1
+                - button "驾驶舱" [ref=f3e39]
+                - button "工作台" [ref=f3e40]
+        - region "汽车充气泵的项目" [ref=f3e41]:
+          - generic [ref=f3e42]:
+            - heading "汽车充气泵" [level=2] [ref=f3e43]
+            - generic [ref=f3e44]: 1 个项目
+          - generic [ref=f3e45]:
+            - paragraph [ref=f3e46]: 合成充气泵 · 已立项
+            - generic [ref=f3e47]:
+              - generic [ref=f3e51]:
+                - paragraph [ref=f3e52]: 合成充气泵 · 开发验证
+                - paragraph [ref=f3e53]: 合成充气泵 · 已立项 · 固定 v1 · 私有
+              - generic [ref=f3e54]:
+                - generic [ref=f3e55]: 已有计划
+                - generic [ref=f3e56]: v2
+                - button "驾驶舱" [ref=f3e57]
+                - button "工作台" [ref=f3e58]

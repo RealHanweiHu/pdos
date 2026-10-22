@@ -1,0 +1,27 @@
+{
+  "status": "FAIL",
+  "started_at": "2026-10-03T13:01:38.330367+00:00",
+  "steps": [
+    {
+      "step": "current-context",
+      "http_status": 200,
+      "duration_seconds": 129.844,
+      "response_sha256": "759c69feefef177f1219ea77c39bc607052a1c4de41c1ccc58f0f163442486d9",
+      "error_code": null
+    }
+  ],
+  "source_manifest_sha256": "4b97337f85d50f803e9cecac2ab97739024f4484aeb4423117564db34d3aa1cc",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "model_calls": 0,
+  "exception_type": "AssertionError",
+  "diagnostic": "",
+  "frames": [
+    {
+      "file": "wave17_candidate_http.py",
+      "line": 123
+    }
+  ],
+  "finished_at": "2026-10-03T13:03:48.697478+00:00",
+  "source_stable": true
+}

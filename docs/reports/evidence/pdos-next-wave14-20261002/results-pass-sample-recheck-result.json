@@ -1,0 +1,30 @@
+{
+  "results-pass-sample-recheck-03": {
+    "nodes": [
+      "tests/verification_results/test_guards.py::test_quality_current_role_and_exact_scope_cannot_be_supplied_by_client_or_agent"
+    ],
+    "exit_code": 0,
+    "seconds": 770.47
+  },
+  "results-pass-sample-recheck-02": {
+    "nodes": [
+      "tests/verification_results/test_guards.py::test_capture_stable_key_and_unknown_original_value_remain_explicit"
+    ],
+    "exit_code": 0,
+    "seconds": 860.64
+  },
+  "results-pass-sample-recheck-01": {
+    "nodes": [
+      "tests/verification_results/test_guards.py::test_full_previously_returned_values_support_final_empty_batch_without_consuming_again"
+    ],
+    "exit_code": 0,
+    "seconds": 964.19
+  },
+  "results-pass-sample-recheck-00": {
+    "nodes": [
+      "tests/verification_results/test_transactions.py::test_partial_final_compute_review_disposition_same_chain_retains_prior_execution"
+    ],
+    "exit_code": 1,
+    "seconds": 1199.98
+  }
+}

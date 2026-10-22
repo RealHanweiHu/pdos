@@ -1,0 +1,47 @@
+{
+  "completed_at_utc": "2026-10-02T10:49:45.664480+00:00",
+  "python": "3.12.10 | packaged by conda-forge | (main, Apr 10 2025, 22:19:24) [Clang 18.1.8 ]",
+  "isolation": "confcutdir; no pytest plugins, bytecode or shared caches",
+  "results": {
+    "ruff": {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "--no-cache",
+        "pdos_next/engines/planning",
+        "tests/planning_engine"
+      ],
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server",
+      "returncode": 0,
+      "log": "ruff.log"
+    },
+    "format": {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "--no-cache",
+        "pdos_next/engines/planning",
+        "tests/planning_engine"
+      ],
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server",
+      "returncode": 0,
+      "log": "format.log"
+    },
+    "pytest": {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-p",
+        "no:cacheprovider",
+        "--confcutdir=tests/planning_engine",
+        "tests/planning_engine",
+        "-q"
+      ],
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server",
+      "returncode": 0,
+      "log": "pytest.log"
+    }
+  }
+}

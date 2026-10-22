@@ -1,0 +1,21 @@
+{
+  "checked_against": "/private/tmp/pdos-s4-native-pilot-ik91a0if",
+  "web_build_snapshot": "/private/tmp/pdos-s4-native-pilot-u_u2_mfd",
+  "owned_web_inputs": [
+    "pdos-next/web/src/app/api/[...path]/route.ts",
+    "pdos-next/web/src/app/api/native-pilot-route.test.mjs",
+    "pdos-next/web/src/components/manufacturing/native-pilots.module.css",
+    "pdos-next/web/src/components/manufacturing/native-pilots.test.mjs",
+    "pdos-next/web/src/components/manufacturing/native-pilots.tsx",
+    "pdos-next/web/src/components/workspace.tsx",
+    "pdos-next/web/src/lib/native-pilots.test.ts",
+    "pdos-next/web/src/lib/native-pilots.ts"
+  ],
+  "all_owned_web_inputs_identical": true,
+  "foreign_web_context_changes": [
+    "pdos-next/web/src/components/xiaopai.test.mjs",
+    "pdos-next/web/src/components/xiaopai.tsx"
+  ],
+  "reuse_scope": "only this native Pilot delivery; no claim about foreign M2/UI updates",
+  "applied_migration_inputs_unchanged": true
+}

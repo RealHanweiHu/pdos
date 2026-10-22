@@ -1,0 +1,61 @@
+{
+  "work_item": "N0-03",
+  "status": "partial",
+  "date": "2026-09-11",
+  "migration": "0090_agent_loop_checkpoints",
+  "tests": {
+    "backend_distinct_passed": 23,
+    "new_recovery_cases": 3,
+    "existing_loop_cases": 20,
+    "first_run_passed": true
+  },
+  "static_checks": {
+    "mypy_files": 2,
+    "ruff_files": 4,
+    "common_exports": 4,
+    "runtime_exports": 5
+  },
+  "database": {
+    "database": "pdos_test",
+    "head": "0090_agent_loop_checkpoints",
+    "functions": {
+      "save_agent_loop_checkpoint": true,
+      "load_agent_loop_checkpoint": true,
+      "recover_expired_agent_runs": true
+    },
+    "direct_table_privileges": {
+      "pdos_agent": false,
+      "pdos_worker": false
+    }
+  },
+  "source_sha256": {
+    "server/app/ai/executor.py": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+    "server/app/db/schema.py": "37c874f159bf24a4b437cc6cde22967f33d8b4bbfde5c219efa8afa3e99077eb",
+    "server/migrations/versions/0090_agent_loop_checkpoints.py": "58a4d5f357e9459646294a2729fd3788f5890548a04f524a0fe86f11a8a6baf3",
+    "infra/postgres/security/agent-runtime.sql": "2de5e3b7e36765a0f508c3e814a62ef4829d05c9d1d8ebf1d1b6dc0de6870c9d",
+    "infra/postgres/security/agent-runtime-revert.sql": "325f526ea53a99d14f0946110ec1a7838e1295bd2113151a21c35d04139d5770",
+    "server/tests/test_agent_loop_checkpoints.py": "e6a9d62cbcc0cfbb4431d17910c4a18e59dc72f6802375ff89c5719c49b19f09",
+    "docs/runbooks/agent-loop-checkpoints.md": "60b02b16a4ed90bb9ab2bc24d8da2fd5716afeda300ab60f226ee0b9ce773f5f",
+    "docs/reports/2026-09-11-n0-03-loop-checkpoints-validation.md": "d01a48055549f0b1472f8fd4c392e2b2d13dc04a814254b114719a11bb89d2a5"
+  },
+  "log_sha256": {
+    "/tmp/pdos-loop-checkpoint-tests.log": "96ded0e8a61be35b0de46407ac743824c63cedbc97c966eef266acd7fe3f923b",
+    "/tmp/pdos-loop-checkpoint-mypy.log": "f9b031e5c45aa702cd4fef028d465551cb20a2c4698e0913c7b00766b20ac4d8",
+    "/tmp/pdos-loop-checkpoint-ruff.log": "4bd8248f4985e327cd636d5b563aa46d1d34db2021498c8d8b37613b35f181d1",
+    "/tmp/pdos-loop-checkpoint-migration.log": "23b697190d3a770c878b97244137516cc685888399c18dcb0a779196c55b11d7"
+  },
+  "approved_manifest_sha256": {
+    "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+    "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+  },
+  "temporary_container_removed": "pdos-loop-checkpoint-test",
+  "active_items": 65,
+  "remaining": [
+    "Other application queues and wait points",
+    "Other application step execution",
+    "Complete RunControl and remaining N0-03 acceptance"
+  ],
+  "production_changed": false,
+  "real_provider_calls": false,
+  "goal_complete": false
+}

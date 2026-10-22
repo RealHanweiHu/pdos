@@ -1,0 +1,20 @@
+{
+  "base_commit": "d06f202146e83fbeeaeb117f7d93b7079e889250",
+  "web_build_id": "S6URS8LKEkLJZQZpFxDBX",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/domain/preproject/api.py": "45b1120c502921d61819cdfbe7a5a06c6d53cff211fc1644b3d1ac672cda6c11",
+    "pdos-next/server/pdos_next/domain/preproject/service.py": "7fa0fce0dd17ece78213cd1d36d46bff7bd58cf10fbfdecdb128238a18ea0263",
+    "pdos-next/server/pdos_next/domain/preproject/views.py": "09a85349ffd0c870b5105e6b5ba5aafdb2b06325fab0f9f6de3763b363dcb453",
+    "pdos-next/server/pdos_next/domain/preproject/handoff.py": "cfa315bd469afb12d605df2f34d5e700e76b68aea340eb0e50cf18030068eccb",
+    "pdos-next/server/tests/preproject/test_g0_handoff_pg.py": "fa4aee15bdf5dfa80887804010b5b921825bebf494fe703bb9389b259aa62b6e",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "056efb161ded8ec7e1781cde41ad47c8997a0c648a62b273cbe257dd97fd9e63",
+    "pdos-next/web/src/app/api/route-proposal-views.test.mjs": "c438537404d1d2522ea93a79ee3251b8e2bbced8e668fbd1e625249dfae1afec",
+    "pdos-next/web/src/components/preproject/proposal-document.tsx": "98302a7ff28a3335d84f6424be6100562b9a45d6533f1e1a66d8f4a3d2d943d4",
+    "pdos-next/web/src/components/preproject/proposal-document.test.mjs": "749c948e326699cbc8b28905293653ac4c40aefbb8d149609fb75c4062f9d316",
+    "pdos-next/web/src/components/preproject/proposal-handoff.tsx": "564a7b86a9a7497bcca55716a52b67644755cffec50d3faf4c6ebac6cc6d8473",
+    "pdos-next/web/src/lib/proposal-handoff.ts": "f836e2db4a05ed24dd772bf314cb6588acb6a7565f8f9e21839919dcdbc0b8da",
+    "pdos-next/web/src/lib/proposal-handoff.test.mjs": "7b954a2694a0cc3606931cae25ba70e61dd841dd99c64d6584b4638327742fdd"
+  },
+  "database_head": "s0_0760",
+  "scope": "G0 three-entry project handoff; final localized status display after initial flow checks; no migration, provider call or production action"
+}

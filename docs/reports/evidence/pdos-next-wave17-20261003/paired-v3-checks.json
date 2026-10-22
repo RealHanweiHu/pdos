@@ -1,0 +1,51 @@
+{
+  "schema_version": "wave17-staged-paired-v3-checks",
+  "recorded_at": "2026-10-03T10:04:07.745008+00:00",
+  "status": "frozen_staged_only",
+  "previous_manifest": "docs/reports/evidence/pdos-next-wave17-20261003/paired-final-delta.json",
+  "previous_manifest_sha256": "be94b8ee04e7127d2858fc97618c758a9584774a94a4f5c892ad45ff986b9a44",
+  "original_51_and_57_manifests_and_logs_preserved": true,
+  "files": [
+    {
+      "path": "pdos-next/staging/wave17/paired.py",
+      "previous_sha256": "da00ee74196eb5a5165cec97c2ec3d16c57b93b6f23913b619fd796103354141",
+      "current_sha256": "3cff4b1534533b2797f201faceede7e2a9514d84240ca06c6953b1de20dce750",
+      "changed": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_paired.py",
+      "previous_sha256": "3358e8b1405738c4b4e12f5e65a065b9122f11a0864f78ab275325a2615b72a9",
+      "current_sha256": "8da00ea85c90fb6694a911351623821ab69c6289f4e5868b71bc3486e8a60987",
+      "changed": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/paired-contract.md",
+      "previous_sha256": "3a597197ae30ebdfc94515c25d5c12f201770a0b2073e086e0e3b5265f5900f1",
+      "current_sha256": "3a597197ae30ebdfc94515c25d5c12f201770a0b2073e086e0e3b5265f5900f1",
+      "changed": false
+    }
+  ],
+  "authorized_delta": "Only Plan kernel command TimeFact.effective_at must be None, matching actual VerificationHandler._command_fact; add re-sealed aware effective_at negative case. No other DTO/host/six-operation changes.",
+  "checks": {
+    "pure": {
+      "passed": 58,
+      "failed": 0,
+      "seconds": 0.99,
+      "selection": "--noconftest staging/wave17/test_paired.py",
+      "log": "docs/reports/evidence/pdos-next-wave17-20261003/paired-v3-pure.log",
+      "log_sha256": "0452faf086b6cf5e271de044e0bdd65c15902a5aaca12f6932f1b71c9fc519f1"
+    },
+    "ruff_check": "passed_owned_two_python_files",
+    "ruff_format": "passed_owned_two_python_files",
+    "ast_compile": "passed_owned_two_python_files_in_memory_no_bytecode"
+  },
+  "coverage_rule": "58 current pure cases supersede 57 historical cases for the current hashes; do not sum with either 57 or 51.",
+  "public_host_reader_installed": false,
+  "structural_positive_is_authorization": false,
+  "server_web_database_http_public_checks_modified_or_run": false,
+  "remaining": [
+    "Real paired owner same-UOW reader and current gate callbacks",
+    "Public transaction/page checks",
+    "Separate CAPA applicability, independent review, observation and T2 effectiveness/close gates"
+  ]
+}

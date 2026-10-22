@@ -1,0 +1,7 @@
+{
+  "status": 403,
+  "code": "FORBIDDEN_SCOPE",
+  "message": "选择的失败运行与构建不一致。",
+  "response_sha256": "cc71d1a4890cf5fb736be326efa1b29c843695fdfc3527bd75cb938391bdd0df",
+  "scope": "existing browser Wave15 synthetic person; unchanged auth; read only"
+}

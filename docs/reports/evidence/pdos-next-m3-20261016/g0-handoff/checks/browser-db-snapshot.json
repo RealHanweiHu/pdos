@@ -1,0 +1,159 @@
+{
+  "verified_target": "isolated pdos_test:64245",
+  "head": "s0_0760",
+  "scope": "one independently seeded synthetic tenant",
+  "cases": [
+    {
+      "entry": "customer_request",
+      "proposal_id": "f83517d4-a72e-4803-8d35-aff5f8aea64e",
+      "decision_id": "464bca95-2c94-4335-b9f4-9170360e96da",
+      "signer_id": "3d8d201b-ec04-44c7-8637-50fae8f31877",
+      "receipt_id": "a68c3566-2545-4435-b0fb-a6ff9d6d455a",
+      "project_id": "9b0d7325-8faf-4d7b-b094-22bbe3d851b6",
+      "project_name": "合成客户需求项目",
+      "product_id": "ff844fa8-72d2-4097-a464-cf756533d0f9",
+      "variant_id": null,
+      "variant_name": null,
+      "definition_id": "1d34b478-a7a7-41fd-99f7-a4fd1d55ccdc",
+      "definition_revision": 1,
+      "definition_sealed": true,
+      "definition_status": "draft",
+      "project_links": 1,
+      "open_items": [
+        {
+          "id": "c0f2c184-9791-4d6c-8db5-46d965f2a396",
+          "kind": "risk",
+          "status": "open",
+          "owner_id": "c2da0c15-8732-4494-b8ab-15043dfee911",
+          "due_date": "2026-10-30"
+        },
+        {
+          "id": "9bd68647-6f54-46b5-8eb1-6fc68ea1e9af",
+          "kind": "task",
+          "status": "assigned",
+          "owner_id": "c2da0c15-8732-4494-b8ab-15043dfee911",
+          "due_date": "2026-10-30"
+        }
+      ]
+    },
+    {
+      "entry": "new_product",
+      "proposal_id": "2c5f617e-f626-473b-97eb-a6f97ed02d04",
+      "decision_id": "b6478d74-234f-4c7c-9f25-78ca1f41fa17",
+      "signer_id": "3d8d201b-ec04-44c7-8637-50fae8f31877",
+      "receipt_id": "bed589f9-5587-4c38-8276-88eb67f68f10",
+      "project_id": "ad5ca245-1b9d-4a18-8654-d777b520b89e",
+      "project_name": "合成自主新品项目",
+      "product_id": "290a8f11-09f1-4d3d-9212-1658911b0af1",
+      "variant_id": null,
+      "variant_name": null,
+      "definition_id": "6a161a4b-1434-4486-b9f0-afd1db6cef21",
+      "definition_revision": 1,
+      "definition_sealed": true,
+      "definition_status": "draft",
+      "project_links": 1,
+      "open_items": [
+        {
+          "id": "0cd3a905-1897-4e02-a926-91bda101d68f",
+          "kind": "risk",
+          "status": "open",
+          "owner_id": "c2da0c15-8732-4494-b8ab-15043dfee911",
+          "due_date": "2026-10-30"
+        },
+        {
+          "id": "6d5a8a63-81a9-44dd-9b8d-1c3d99797786",
+          "kind": "task",
+          "status": "assigned",
+          "owner_id": "c2da0c15-8732-4494-b8ab-15043dfee911",
+          "due_date": "2026-10-30"
+        }
+      ]
+    },
+    {
+      "entry": "derivative",
+      "proposal_id": "116529fe-6964-4812-a63f-2e70414bfa07",
+      "decision_id": "f4a5ac46-e5f5-4a7e-b35d-6c7d6c9e8730",
+      "signer_id": "3d8d201b-ec04-44c7-8637-50fae8f31877",
+      "receipt_id": "269480cf-8f16-4bb2-ae7c-91629000b10a",
+      "project_id": "69b70d95-4041-43d3-8b24-b476e8c162e9",
+      "project_name": "合成客户变体项目",
+      "product_id": "454ef5bf-9411-4581-94f2-55917b4566f8",
+      "variant_id": "a26c0341-ea6c-492b-85d1-c282776f35ae",
+      "variant_name": "合成客户专属变体",
+      "definition_id": "6a13ffad-d6a8-4532-92e9-10defa7cb036",
+      "definition_revision": 1,
+      "definition_sealed": true,
+      "definition_status": "draft",
+      "project_links": 1,
+      "open_items": [
+        {
+          "id": "74c88b51-dafd-4848-8b98-58397b352f19",
+          "kind": "risk",
+          "status": "open",
+          "owner_id": "c2da0c15-8732-4494-b8ab-15043dfee911",
+          "due_date": "2026-10-30"
+        },
+        {
+          "id": "052d47f2-f893-4bb9-83b2-b6384eafe215",
+          "kind": "task",
+          "status": "assigned",
+          "owner_id": "c2da0c15-8732-4494-b8ab-15043dfee911",
+          "due_date": "2026-10-30"
+        },
+        {
+          "id": "b3f6b5df-9088-4f2f-aab8-86c02975c5f0",
+          "kind": "task",
+          "status": "assigned",
+          "owner_id": "c2da0c15-8732-4494-b8ab-15043dfee911",
+          "due_date": "2026-10-30"
+        },
+        {
+          "id": "6b544c2b-25c5-4d43-9d8e-1180134a4308",
+          "kind": "task",
+          "status": "assigned",
+          "owner_id": "c2da0c15-8732-4494-b8ab-15043dfee911",
+          "due_date": "2026-10-30"
+        },
+        {
+          "id": "fa5897a9-5cc4-45dd-a7d7-17914b3ff57f",
+          "kind": "task",
+          "status": "assigned",
+          "owner_id": "c2da0c15-8732-4494-b8ab-15043dfee911",
+          "due_date": "2026-10-30"
+        },
+        {
+          "id": "d6b93088-f34a-4501-90fc-61c21189fa0e",
+          "kind": "task",
+          "status": "assigned",
+          "owner_id": "c2da0c15-8732-4494-b8ab-15043dfee911",
+          "due_date": "2026-10-30"
+        },
+        {
+          "id": "67bf10cb-a88b-4e53-87c8-69e4ec13c814",
+          "kind": "task",
+          "status": "assigned",
+          "owner_id": "c2da0c15-8732-4494-b8ab-15043dfee911",
+          "due_date": "2026-10-30"
+        },
+        {
+          "id": "ae04cad6-9192-4171-ab59-fc90124f99fb",
+          "kind": "task",
+          "status": "assigned",
+          "owner_id": "c2da0c15-8732-4494-b8ab-15043dfee911",
+          "due_date": "2026-10-30"
+        }
+      ]
+    }
+  ],
+  "tenant_counts_including_synthetic_parent": {
+    "products": 3,
+    "product_variants": 1,
+    "definition_revisions": 4,
+    "projects": 3,
+    "project_product_links": 3,
+    "project_open_items": 12,
+    "proposal_decisions": 3
+  },
+  "model_calls": 0,
+  "workflows_enabled": false
+}

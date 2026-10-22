@@ -1,0 +1,31 @@
+{
+  "head": "s0_0786",
+  "database": "pdos_test",
+  "port": 64245,
+  "tables": [
+    {
+      "table": "automation_rule_versions",
+      "columns": 22,
+      "foreign_keys": 7,
+      "ordinary_owner": true,
+      "force_rls": true
+    },
+    {
+      "table": "automation_rule_currents",
+      "columns": 13,
+      "foreign_keys": 5,
+      "ordinary_owner": true,
+      "force_rls": true
+    },
+    {
+      "table": "automation_trigger_occurrences",
+      "columns": 11,
+      "foreign_keys": 5,
+      "ordinary_owner": true,
+      "force_rls": true
+    }
+  ],
+  "history_downgrade_refused": true,
+  "head_unchanged": true,
+  "backup_retained": true
+}

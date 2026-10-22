@@ -1,0 +1,54 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+  /private/tmp/pdos-s4-release-policy-9faizwbc/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+  /private/tmp/pdos-s4-release-policy-9faizwbc/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+  /private/tmp/pdos-s4-release-policy-9faizwbc/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+  /private/tmp/pdos-s4-release-policy-9faizwbc/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+  /private/tmp/pdos-s4-release-policy-9faizwbc/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+  /private/tmp/pdos-s4-release-policy-9faizwbc/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+  /private/tmp/pdos-s4-release-policy-9faizwbc/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+  /private/tmp/pdos-s4-release-policy-9faizwbc/pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py:1036: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Root's deferred common atom must complete or all rolls back.
+
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+  /private/tmp/pdos-s4-release-policy-9faizwbc/pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_service.py:975: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+  /private/tmp/pdos-s4-release-policy-9faizwbc/pdos-next/server/pdos_next/domain/release/service.py:548: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+tests/release_policy_transactions/test_decisions.py::test_controlled_policy_and_independent_named_decisions
+  /private/tmp/pdos-s4-release-policy-9faizwbc/pdos-next/server/pdos_next/domain/release/policy_owner.py:792: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 17 warnings in 67.69s (0:01:07)

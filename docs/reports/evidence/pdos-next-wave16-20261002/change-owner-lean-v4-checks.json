@@ -1,0 +1,119 @@
+{
+  "status": "frozen_local_only_public_pg_pending",
+  "recorded_at": "2026-10-03T07:27:47.352156+00:00",
+  "base_candidate": "docs/reports/evidence/pdos-next-wave15-20261002/backend-candidate-v3-source.json",
+  "base_candidate_sha256": "8f5e7542818773af2d0f341af40896550c2bfb74be246eaa49698f43eba23833",
+  "authorized_files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/quality_execution/service.py",
+      "before_sha256": "4808a93ec42468f5d29cd1fcd6783f0fc98463d1d505a849a59eb79d29773d3f",
+      "current_sha256": "131edca7957a49ef5de63f8addfbca47444adbd3694551c42ed9404d1dcffa99",
+      "ast": "passed"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/change_execution/service.py",
+      "before_sha256": "40448bde0b3cae0bb944e4e68ad41a4d5ec3047b137917794741c1bed04cc69f",
+      "current_sha256": "85781f6e73eab4763ff1f54af56185457bf5863a80f65b6ee16318520e3409bd",
+      "ast": "passed"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/change_execution/graph.py",
+      "before_sha256": "3fe9b7988ee504f4310858754082baf565914457e1ca7518a5ccc00c7eb0b6bb",
+      "current_sha256": "184a3d097eeb21d2080167ccd4516dea50abb4521e4694efcc5b0b724a697846",
+      "ast": "passed"
+    },
+    {
+      "path": "pdos-next/server/tests/change_execution/test_pure.py",
+      "before_sha256": "daa6705911eb68bbbff6981305dfd4220df389a7b6ce1a7dbb50c60504c52422",
+      "current_sha256": "3196598d265147ea4a6cc6f87cabebed452f7530dfe3faf6dd4db07e44055b32",
+      "ast": "passed"
+    }
+  ],
+  "observed_base_manifest_comparison": {
+    "scope": "exact previously frozen 303 paths; no wider old-tree claim",
+    "paths": 303,
+    "unchanged": 299,
+    "changed": [
+      {
+        "path": "pdos-next/server/pdos_next/domain/change_execution/graph.py",
+        "before_sha256": "3fe9b7988ee504f4310858754082baf565914457e1ca7518a5ccc00c7eb0b6bb",
+        "current_sha256": "184a3d097eeb21d2080167ccd4516dea50abb4521e4694efcc5b0b724a697846"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/change_execution/service.py",
+        "before_sha256": "40448bde0b3cae0bb944e4e68ad41a4d5ec3047b137917794741c1bed04cc69f",
+        "current_sha256": "85781f6e73eab4763ff1f54af56185457bf5863a80f65b6ee16318520e3409bd"
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/quality_execution/service.py",
+        "before_sha256": "4808a93ec42468f5d29cd1fcd6783f0fc98463d1d505a849a59eb79d29773d3f",
+        "current_sha256": "131edca7957a49ef5de63f8addfbca47444adbd3694551c42ed9404d1dcffa99"
+      },
+      {
+        "path": "pdos-next/server/tests/change_execution/test_pure.py",
+        "before_sha256": "daa6705911eb68bbbff6981305dfd4220df389a7b6ce1a7dbb50c60504c52422",
+        "current_sha256": "3196598d265147ea4a6cc6f87cabebed452f7530dfe3faf6dd4db07e44055b32"
+      }
+    ]
+  },
+  "checks": {
+    "pure": {
+      "selection": "tests/change_execution/test_pure.py",
+      "noconftest": true,
+      "passed": 43,
+      "failed": 0,
+      "seconds": 0.91,
+      "log": "docs/reports/evidence/pdos-next-wave16-20261002/change-owner-lean-v4-pure.log",
+      "log_sha256": "d548706bea67b2546a07fb02cf6b4ce192bbfc27e349a679c6e615697a7630b0"
+    },
+    "ruff_check": "passed",
+    "ruff_format_check": "4 files already formatted",
+    "ast": "4 files passed"
+  },
+  "history_preserved": {
+    "v3_pg11": {
+      "exit_code": 0,
+      "seconds": 2341.51,
+      "result": "docs/reports/evidence/pdos-next-wave15-20261002/graph-history-recheck-result-pg11.json"
+    },
+    "v3_pg12": {
+      "exit_code": 1,
+      "seconds": 2234.64,
+      "reason": "GRAPH_CAPTURE_EXPIRED",
+      "result": "docs/reports/evidence/pdos-next-wave15-20261002/graph-history-recheck-result-pg12.json"
+    },
+    "local_attempt_1": {
+      "passed": 38,
+      "failed": 5,
+      "reason": "New pure fixture referenced unavailable TestRun.executor_id; repaired by real FailureRef.executor_id. No production guard was relaxed.",
+      "log": "docs/reports/evidence/pdos-next-wave16-20261002/change-owner-lean-pure-attempt-1.log"
+    },
+    "local_attempt_2": {
+      "passed": 43,
+      "failed": 0,
+      "seconds": 0.99,
+      "log": "docs/reports/evidence/pdos-next-wave16-20261002/change-owner-lean-pure-attempt-2.log"
+    }
+  },
+  "changes": [
+    "Lean get_issue_for_change retains current fixed failure bridge, Current, ACL, exact sources and risk-policy proofs, omitting only unrelated quality command capability assessments.",
+    "_seed memo is per invocation and OwnerReader Issue/CAPA memo is per reader, keyed by logical identity and fixed revision; exact Issue/CAPA key guards remain.",
+    "Current complete policy is added to Issue/CAPA graph source_basis; all policy issuer/epoch/current/negative facts are retained. This is a safety binding repair as well as performance work.",
+    "Post-IO owner Reader remains independent and fresh; TTL remains 10 minutes with exact-boundary rejection; neither policy nor authority is cached across phases."
+  ],
+  "v3_captures": "Saved history retained. Their graph digest uses the old source_basis shape; v4 requires a newly prepared capture and review. No recapture extends an old exact-key expiry.",
+  "root_reverification_required": [
+    "tests/change_execution/test_transactions.py::test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualification_aba",
+    "tests/change_execution/test_transactions.py::test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_keeps_capture"
+  ],
+  "not_executed": [
+    "DB",
+    "PG",
+    "HTTP",
+    "browser",
+    "public build",
+    "migration",
+    "registration"
+  ],
+  "no_performance_claim": "Only pure/static checks run here. Runtime latency and end-to-end eligibility remain for root actual v4 checks."
+}

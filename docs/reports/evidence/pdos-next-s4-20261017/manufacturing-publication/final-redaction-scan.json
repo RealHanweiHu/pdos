@@ -1,0 +1,10 @@
+{
+  "scanned_text_files": 108,
+  "patterns": [
+    "database_dsn",
+    "raw_bearer",
+    "raw_decision_token"
+  ],
+  "hits": [],
+  "binary_originals_or_backups_in_public_evidence": false
+}

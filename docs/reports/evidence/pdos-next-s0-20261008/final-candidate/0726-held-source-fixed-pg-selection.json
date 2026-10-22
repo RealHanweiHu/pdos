@@ -1,0 +1,9 @@
+[
+  "tests/quality_execution_transactions/test_read_batch.py::test_actual_multi_failure_reading_shares_retained_and_rejects_late_byte_revocation",
+  "tests/quality_execution_transactions/test_read_batch.py::test_actual_writer_preparation_keeps_record_fresh_and_seals_qualification_after_terminal_io",
+  "tests/quality_execution_transactions/test_read_batch.py::test_actual_writer_late_access_io_cannot_revoke_original_run_issuer_and_return_preview",
+  "tests/test_retained_execution.py::test_retained_rr_evidence_does_not_survive_source_withdrawal_between_requests",
+  "tests/test_retained_execution.py::test_retained_held_writer_read_permission_rechecks_untracked_current_after_source_io",
+  "tests/test_resources/test_transactions.py::test_own_run_proof_rechecked_without_new_effects",
+  "tests/quality_execution_transactions/test_request_prepare.py::test_inputs_are_rr_readonly_and_each_confirmation_request_prepares_once"
+]

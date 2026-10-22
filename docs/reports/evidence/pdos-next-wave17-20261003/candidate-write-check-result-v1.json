@@ -1,0 +1,95 @@
+{
+  "status": "passed",
+  "scope": "owned --noconftest pure/static only; explicit no-DB SELECT/source/authority fixtures; actual Session and ORM history; no public consumption/DDL/PG/HTTP/authorization claim",
+  "checks": [
+    {
+      "command": [
+        "pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-p",
+        "no:cacheprovider",
+        "pdos-next/staging/wave17/test_candidate_write.py",
+        "-q"
+      ],
+      "exit_code": 0,
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-pure-final-v7.log",
+      "log_sha256": "83f4686a1864c8efba24adbea63edd7e1c0e9a881ed8e1d9b84c45c1c484e020"
+    },
+    {
+      "command": [
+        "pdos-next/server/.venv/bin/ruff",
+        "check",
+        "pdos-next/staging/wave17/candidate_write.py",
+        "pdos-next/staging/wave17/test_candidate_write.py"
+      ],
+      "exit_code": 0,
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-ruff-final-v2.log",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "command": [
+        "pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "pdos-next/staging/wave17/candidate_write.py",
+        "pdos-next/staging/wave17/test_candidate_write.py"
+      ],
+      "exit_code": 0,
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-format-final-v2.log",
+      "log_sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    },
+    {
+      "command": [
+        "pdos-next/server/.venv/bin/python",
+        "-c",
+        "import candidate_write; print(\"candidate_write import passed; no database or public mount\")"
+      ],
+      "exit_code": 0,
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-import-final-v1.log",
+      "log_sha256": "e674a3c4bae481ec1ee93ea08374d06f972f5db63de9ae3ede5153bfcaadd48c"
+    }
+  ],
+  "ast_files": [
+    "pdos-next/staging/wave17/candidate_write.py",
+    "pdos-next/staging/wave17/test_candidate_write.py"
+  ],
+  "ast_exit_code": 0,
+  "pure_final_cases": 43,
+  "previous_attempts": [
+    {
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-pure-v1.log",
+      "summary": "33 setup errors: pure clock isinstance fixture"
+    },
+    {
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-pure-v2.log",
+      "summary": "22 passed / 11 failed: loaded Product fixture, actual error codes, invalid sparse source key"
+    },
+    {
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-pure-v3.log",
+      "summary": "31 passed / 2 failed: Current epoch-only invalid scenario and raw hash field"
+    },
+    {
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-pure-v4.log",
+      "summary": "33 passed; earlier owned selection"
+    },
+    {
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-pure-v5.log",
+      "summary": "39 passed / 1 failed: removed runtime port correctly SOURCE_STALE, prior expected code wrong"
+    },
+    {
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-pure-v6.log",
+      "summary": "43 passed; superseded same 43 nodes by final v7 import order freeze"
+    }
+  ],
+  "dedup_rule": "final v7 replaces earlier same-node runs; never sum repeated cases",
+  "manifest_file": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-source-manifest-v1.json",
+  "limitations": [
+    "persistent preview anchor restore seam missing=>503",
+    "public registry/common writer/proof consumption/deferred atom not mounted",
+    "source/byte/qualification callbacks are explicit pure substitutes",
+    "no COMMIT-clock TTL guarantee",
+    "no effectiveness or close"
+  ]
+}

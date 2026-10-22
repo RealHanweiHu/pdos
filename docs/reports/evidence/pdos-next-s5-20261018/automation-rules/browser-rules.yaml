@@ -1,0 +1,192 @@
+- generic [active] [ref=f1e1]:
+  - alert [ref=f1e4]
+  - generic [ref=f1e5]:
+    - link "跳到工作内容" [ref=f1e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f1e7]:
+      - generic [ref=f1e8]:
+        - generic [ref=f1e11]: PDOS
+        - button "收起侧栏" [ref=f1e12]
+      - navigation "工作区导航" [ref=f1e13]:
+        - link "我的工作" [ref=f1e14] [cursor=pointer]:
+          - /url: "?area=work&category=4e5bb70f-cc55-44c6-9d58-0efcd4726ab4"
+        - link "项目驾驶舱" [ref=f1e18] [cursor=pointer]:
+          - /url: "?area=cockpit&category=4e5bb70f-cc55-44c6-9d58-0efcd4726ab4"
+        - link "项目列表" [ref=f1e22] [cursor=pointer]:
+          - /url: "?area=projects&category=4e5bb70f-cc55-44c6-9d58-0efcd4726ab4"
+        - link "项目集" [ref=f1e26] [cursor=pointer]:
+          - /url: "?area=programs&category=4e5bb70f-cc55-44c6-9d58-0efcd4726ab4"
+          - generic [ref=f1e30]: 尚未接入
+        - link "产品品类工作区" [ref=f1e31] [cursor=pointer]:
+          - /url: "?area=category&category=4e5bb70f-cc55-44c6-9d58-0efcd4726ab4"
+        - link "知识" [ref=f1e35] [cursor=pointer]:
+          - /url: "?area=knowledge&category=4e5bb70f-cc55-44c6-9d58-0efcd4726ab4"
+        - generic [ref=f1e39]:
+          - paragraph [ref=f1e40]: 当前品类
+          - paragraph [ref=f1e41]: 汽车充气泵
+          - paragraph [ref=f1e42]: 项目与专业工作按品类范围授权
+      - generic [ref=f1e43]:
+        - link "计划执行进度" [ref=f1e44] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=f1e47]: 计划进度
+        - button "小Pai 工作栏" [ref=f1e48]:
+          - generic [ref=f1e51]: 小Pai
+        - link "设置" [ref=f1e52] [cursor=pointer]:
+          - /url: "?area=settings&category=4e5bb70f-cc55-44c6-9d58-0efcd4726ab4"
+        - generic [ref=f1e56]:
+          - generic [aria-hidden] [ref=f1e57]: S
+          - generic [ref=f1e58]:
+            - paragraph [ref=f1e59]: Synthetic owner
+            - paragraph [ref=f1e60]: 本地合成环境
+    - generic [ref=f1e61]:
+      - banner [ref=f1e62]:
+        - generic [ref=f1e63]:
+          - generic [ref=f1e64]: PDOS
+          - generic [ref=f1e67]: 设置
+        - generic [ref=f1e68]:
+          - button "搜索对象" [ref=f1e69]:
+            - generic [ref=f1e70]: 搜索
+          - button "小Pai 工作栏" [ref=f1e71]
+          - button "切换明暗主题" [ref=f1e72]
+      - main [ref=f1e73]:
+        - generic [ref=f1e74]:
+          - generic [ref=f1e76]:
+            - heading "设置" [level=1] [ref=f1e77]
+            - paragraph [ref=f1e78]: 个人外观与低频运行管理。模型与原件保留设置位于品类工作台的设置区。
+          - heading "界面外观" [level=2] [ref=f1e79]
+          - generic [ref=f1e80]:
+            - generic [ref=f1e81]:
+              - paragraph [ref=f1e82]: 主题
+              - paragraph [ref=f1e83]: 选择适合当前工作环境的显示方式
+            - generic [ref=f1e84]:
+              - button "亮色" [ref=f1e85]
+              - button "暗色" [ref=f1e86]
+              - button "跟随系统" [pressed] [ref=f1e87]
+          - generic [ref=f1e88]:
+            - generic [ref=f1e89]:
+              - paragraph [ref=f1e90]: 侧栏
+              - paragraph [ref=f1e91]: 按当前用户记住展开或收起状态
+            - button "收起侧栏" [ref=f1e92]
+          - generic [ref=f1e93]:
+            - generic [ref=f1e94]:
+              - paragraph [ref=f1e95]: 小Pai 工作栏
+              - paragraph [ref=f1e96]: 按当前用户记住右侧工作栏开关
+            - button "打开小Pai 工作栏" [ref=f1e97]
+          - region "手动自动化规则" [ref=f1e99]:
+            - generic [ref=f1e100]:
+              - generic [ref=f1e101]:
+                - heading "自动化规则" [level=2] [ref=f1e102]
+                - paragraph [ref=f1e103]: 先固定目标、停止条件和预算，再由本人手动触发只读小Pai工作。
+              - button "刷新规则" [ref=f1e104]
+            - paragraph [ref=f1e105]: 本轮仅 manual。定时、领域事件和相对里程碑触发待建设；外部来源触发关闭。联网、MCP 和业务写入未开放，仅处理触发范围内的只读工作。模型调用仍可能产生费用，实际服务授权、资格、协议和预算由服务器逐次核对。
+            - generic [ref=f1e106]:
+              - paragraph [ref=f1e107]: 当前品类 4e5bb70f-cc55-44c6-9d58-0efcd4726ab4 · 本人 396b0663-3b81-4ea2-84dd-e2e0df56346b · 读取时点 2026-10-18T01:53:23.617352+00:00
+              - article [ref=f1e109]:
+                - heading "Synthetic bounded local inspection" [level=3] [ref=f1e110]
+                - paragraph [ref=f1e111]: 已启用 · 当前 v5 · 已受理 2 次
+                - paragraph [ref=f1e112]: 规则 66a30fd5-3908-4a71-85ad-960f2f7a150d最近受理 2026-10-18T01:48:08.771133+00:00
+                - button "读取规则与运行历史" [ref=f1e113]
+              - button "新建手动规则草稿" [ref=f1e114]
+            - region "所选固定规则" [ref=f1e185]:
+              - heading "Synthetic bounded local inspection · 已启用" [level=3] [ref=f1e186]
+              - paragraph [ref=f1e187]: 已发布范围：固定型号 6e7ab4b0-d5bf-4c90-b42f-d770eb6fb01b
+              - paragraph [ref=f1e188]: 草稿 尚无已发布 v5 · 4c0e5817-b21d-467b-a99a-5c6a6e4822af
+              - generic [ref=f1e189]:
+                - button "编辑新草稿" [ref=f1e190]
+                - button "预览暂停新运行" [ref=f1e191]
+                - button "本人手动触发（可能产生模型费用）" [ref=f1e192]
+              - group [ref=f1e193]:
+                - generic "读取已发布的目标、服务范围和预算声明" [ref=f1e194]
+              - group [ref=f1e195]:
+                - generic "规则版本与办理回执" [ref=f1e196]
+              - heading "实际运行历史" [level=4] [ref=f1e197]
+              - article [ref=f1e198]:
+                - paragraph [ref=f1e199]: queued · 2026-10-18T01:48:08.771133+00:00固定规则版本 4c0e5817-b21d-467b-a99a-5c6a6e4822af原运行 ce6b5df2-5f94-42f7-be00-15f418bdaf2a
+                - button "打开原运行并接续" [ref=f1e200]
+              - article [ref=f1e201]:
+                - paragraph [ref=f1e202]: queued · 2026-10-18T01:48:05.592575+00:00固定规则版本 f6b55831-afea-4ea3-8e6a-24aa3a6a12a6原运行 2472541c-e001-4d3b-b37c-12213af2de3e
+                - button "打开原运行并接续" [ref=f1e203]
+            - generic [ref=f1e115]:
+              - heading "新手动规则草稿" [level=3] [ref=f1e116]
+              - group [ref=f1e117]:
+                - generic [ref=f1e118]:
+                  - text: 规则固定范围
+                  - textbox "规则固定范围" [ref=f1e119]: 当前品类 4e5bb70f-cc55-44c6-9d58-0efcd4726ab4
+                - generic [ref=f1e120]:
+                  - text: 规则名称
+                  - textbox "规则名称" [ref=f1e121]
+                - generic [ref=f1e122]:
+                  - text: 工作目标
+                  - textbox "工作目标" [ref=f1e123]
+                - generic [ref=f1e124]:
+                  - text: 用途
+                  - textbox "用途" [ref=f1e125]
+                - generic [ref=f1e126]:
+                  - text: 停止条件
+                  - textbox "停止条件" [ref=f1e127]
+                - group "固定使用的技能版本" [ref=f1e128]:
+                  - generic [ref=f1e130]:
+                    - checkbox "按依赖顺序追问（每次最多三问、推荐答案不预选）确定品类边界，未明确项作为显式假设，起草可一次确认的品类候选。 · 0.2.2-draft" [ref=f1e131]
+                    - generic [ref=f1e132]: 按依赖顺序追问（每次最多三问、推荐答案不预选）确定品类边界，未明确项作为显式假设，起草可一次确认的品类候选。 · 0.2.2-draft
+                  - generic [ref=f1e133]:
+                    - checkbox "按规格字典参数版本做竞品与我方现款/目标的同口径对比，区分实测、宣传、推断、未知，口径不同就分组标注，数值比较交给 calc.spec_compare。 · 0.2.1-draft" [ref=f1e134]
+                    - generic [ref=f1e135]: 按规格字典参数版本做竞品与我方现款/目标的同口径对比，区分实测、宣传、推断、未知，口径不同就分组标注，数值比较交给 calc.spec_compare。 · 0.2.1-draft
+                  - generic [ref=f1e136]:
+                    - checkbox "以原型号已发布定义为基线，把改动说明拆成规格、BOM、认证、模具、成本及其他差异，区分直接差异与推断的传导影响，写明沿用范围和待专家项，作为派生提案的立项版定义草稿。 · 0.2.1-draft" [ref=f1e137]
+                    - generic [ref=f1e138]: 以原型号已发布定义为基线，把改动说明拆成规格、BOM、认证、模具、成本及其他差异，区分直接差异与推断的传导影响，写明沿用范围和待专家项，作为派生提案的立项版定义草稿。 · 0.2.1-draft
+                  - generic [ref=f1e139]:
+                    - checkbox "检查立项提案或型号定义的缺项、冲突与口径问题（缺单位/工况/方法、未映射参数、来源缺失、方案不足、未知项没有待决问题等），按严重度排序，并把需要人处理的项整理成待决问题候选。 · 0.2.1-draft" [ref=f1e140]
+                    - generic [ref=f1e141]: 检查立项提案或型号定义的缺项、冲突与口径问题（缺单位/工况/方法、未映射参数、来源缺失、方案不足、未知项没有待决问题等），按严重度排序，并把需要人处理的项整理成待决问题候选。 · 0.2.1-draft
+                  - generic [ref=f1e142]:
+                    - checkbox "从用户声音、场景与研究证据中整理目标用户要完成的工作（JTBD）、完整使用路径与购买标准，区分有证据的发现和待验证假设。 · 0.2.1-draft" [ref=f1e143]
+                    - generic [ref=f1e144]: 从用户声音、场景与研究证据中整理目标用户要完成的工作（JTBD）、完整使用路径与购买标准，区分有证据的发现和待验证假设。 · 0.2.1-draft
+                  - generic [ref=f1e145]:
+                    - checkbox "收集机会评分与市场规模所需的输入并逐项注明来源、区间和性质，调用计算工具得到结果，再解释驱动因素与不确定性；模型不自报任何规模或分数。 · 0.2.1-draft" [ref=f1e146]
+                    - generic [ref=f1e147]: 收集机会评分与市场规模所需的输入并逐项注明来源、区间和性质，调用计算工具得到结果，再解释驱动因素与不确定性；模型不自报任何规模或分数。 · 0.2.1-draft
+                  - generic [ref=f1e148]:
+                    - checkbox "为立项提案起草 2–3 个在决策上真正不同的方案（可含\"沿用现款\"或\"不做\"），按同一组维度写定位、关键差异、大致成本与周期和取舍；成本由计算工具给出，选择留给人。 · 0.2.1-draft" [ref=f1e149]
+                    - generic [ref=f1e150]: 为立项提案起草 2–3 个在决策上真正不同的方案（可含"沿用现款"或"不做"），按同一组维度写定位、关键差异、大致成本与周期和取舍；成本由计算工具给出，选择留给人。 · 0.2.1-draft
+                  - generic [ref=f1e151]:
+                    - checkbox "在统一价格口径（币种、日期、地区、渠道、零售或促销、含税运、配置）下整理竞品与我方价格点，用 calc.price_band 得到价格带分布与目标价位置；分组、分档、分位和换汇都交计算工具。 · 0.2.1-draft" [ref=f1e152]
+                    - generic [ref=f1e153]: 在统一价格口径（币种、日期、地区、渠道、零售或促销、含税运、配置）下整理竞品与我方价格点，用 calc.price_band 得到价格带分布与目标价位置；分组、分档、分位和换汇都交计算工具。 · 0.2.1-draft
+                  - generic [ref=f1e154]:
+                    - checkbox "在当前品类内按客户需求、自主新品、派生迭代三个入口起草或修订立项提案，以条目级补丁写入草稿，标明来源、状态与未知，并只提少量关键问题。 · 0.2.3-draft" [ref=f1e155]
+                    - generic [ref=f1e156]: 在当前品类内按客户需求、自主新品、派生迭代三个入口起草或修订立项提案，以条目级补丁写入草稿，标明来源、状态与未知，并只提少量关键问题。 · 0.2.3-draft
+                  - generic [ref=f1e157]:
+                    - checkbox "把研究问题拆成并行的公开来源子任务，交回带可核原文片段的台账、发现和未答问题；只研究，不替用户下结论或写提案。 · 0.2.2-draft" [ref=f1e158]
+                    - generic [ref=f1e159]: 把研究问题拆成并行的公开来源子任务，交回带可核原文片段的台账、发现和未答问题；只研究，不替用户下结论或写提案。 · 0.2.2-draft
+                  - generic [ref=f1e160]:
+                    - checkbox "把评论、退货原因等用户声音按痛点归类，每类给可核原文片段，样本量与占比由代码计算，并按型号、渠道、时间区分。 · 0.2.1-draft" [ref=f1e161]
+                    - generic [ref=f1e162]: 把评论、退货原因等用户声音按痛点归类，每类给可核原文片段，样本量与占比由代码计算，并按型号、渠道、时间区分。 · 0.2.1-draft
+                  - generic [ref=f1e163]:
+                    - checkbox "经隔离子任务从客户 RFQ、规格书、图纸说明和邮件中逐条抽取需求，保留原文位置、数值、单位、工况、否定与例外，映射到规格字典并登记为证据，列出冲突、未知、差距和待问客户/专家的问题。 · 0.4.1-draft" [ref=f1e164]
+                    - generic [ref=f1e165]: 经隔离子任务从客户 RFQ、规格书、图纸说明和邮件中逐条抽取需求，保留原文位置、数值、单位、工况、否定与例外，映射到规格字典并登记为证据，列出冲突、未知、差距和待问客户/专家的问题。 · 0.4.1-draft
+                - generic [ref=f1e166]:
+                  - text: 本人实际预算
+                  - combobox "本人实际预算" [ref=f1e167]:
+                    - option "请选择实际预算" [selected]
+                    - option "062c5673-9137-4cce-8edb-33d9385a06c3 · 2 USD"
+                - paragraph [ref=f1e168]: 规则声明的上限与本人实际预算共同约束新运行；选择预算不会充值或授予服务权限。
+                - generic [ref=f1e169]:
+                  - generic [ref=f1e170]:
+                    - text: 本规则费用上限（USD）
+                    - spinbutton "本规则费用上限（USD）" [ref=f1e171]
+                  - generic [ref=f1e172]:
+                    - text: 输入 token 上限
+                    - spinbutton "输入 token 上限" [ref=f1e173]
+                  - generic [ref=f1e174]:
+                    - text: 输出 token 上限
+                    - spinbutton "输出 token 上限" [ref=f1e175]
+                  - generic [ref=f1e176]:
+                    - text: 模型调用次数上限
+                    - spinbutton "模型调用次数上限" [ref=f1e177]
+                  - generic [ref=f1e178]:
+                    - text: 单次工作 token 上限
+                    - spinbutton "单次工作 token 上限" [ref=f1e179]: "10000"
+                  - generic [ref=f1e180]:
+                    - text: 两次受理冷却秒数
+                    - spinbutton "两次受理冷却秒数" [ref=f1e181]: "0"
+                  - generic [ref=f1e182]:
+                    - text: 最多受理运行数
+                    - spinbutton "最多受理运行数" [ref=f1e183]: "1"
+              - button "保存手动规则草稿" [ref=f1e184]

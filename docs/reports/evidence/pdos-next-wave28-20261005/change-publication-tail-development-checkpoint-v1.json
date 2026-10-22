@@ -1,0 +1,32 @@
+{
+  "status": "PASS_ACTUAL_PURE_AND_STATIC_CHECKPOINT",
+  "actual_source_files": {
+    "server/pdos_next/service.py": "dffe0a7a39d57bbdbbd1b1cbddaf7e1ece167b91411dc487d0932519993e93c6",
+    "server/pdos_next/change_order_service.py": "83b7f623556f627738a7319c0078342d7b0c1a447a0058c451e030c331554891",
+    "server/pdos_next/change_publication_finalization.py": "75eba32c202241f298deaa5ea7df60ba5910b69e85e91c8469872a9bdb0424f8",
+    "server/pdos_next/domain/change_execution/service.py": "51ab45d8a501a6ff9c6d041d16234425165ab76eb93567d2646b9aa7300fb4a3",
+    "server/tests/test_change_capture_deadline.py": "977747b8d2a8ddb1de0a4135c08e1d4853a428c40960d6e2bd6a1f24d73ea975",
+    "server/tests/change_coverage_transactions/test_public_capture_minimal.py": "ae74d2bf2fb85a67735a5006adff9fb1f946296d9fe0913e3e1acdfc935c4021",
+    "server/tests/change_publication_finalization/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "server/tests/change_publication_finalization/conftest.py": "3565bc975283dc384bd6fe4337cfb3d6508b494aa8a540db5dd4b5aadd19bbf2",
+    "server/tests/change_publication_finalization/helpers.py": "77c9f3d8e9f243b7ddb3d70e9221c2ba63d7d2cbbc2f434b4a23bf916d4b7260",
+    "server/tests/change_publication_finalization/test_finalization.py": "4e586e5b1a50d60b869b2bd064e78518a7e73b1a33fe734789a288e350321019"
+  },
+  "affected_pure_checks_passed": 612,
+  "pure_elapsed_seconds": 14.52,
+  "new_tail_and_capture_pure_checks_passed": 78,
+  "all_sql_and_domain_truth_in_new_tail_checks_are_substitutes": true,
+  "affected_ruff_and_format_exit": 0,
+  "fixed_operations": [
+    "change.impact.compute",
+    "change.order.prepare",
+    "change.order.approve",
+    "change.implementation.record"
+  ],
+  "last_flush_ordering": "exact closure then actual coverage access then whole runtime/host/material/UOW then actual clock",
+  "no_saved_json_token_reconstruction": true,
+  "captured_prepare_ast_sha256": "b4196dedf1c0c0e15e92c72ae828e550ce5728f2d493d4241bf9322f0b221b76",
+  "postgresql_whole_transaction_and_public_api_positive": false,
+  "schema_head": "next_0032",
+  "schema_migration_changed": false
+}

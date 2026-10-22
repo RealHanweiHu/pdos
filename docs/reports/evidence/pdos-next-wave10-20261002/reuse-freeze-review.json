@@ -1,0 +1,733 @@
+{
+  "schema_version": 1,
+  "reviewer": "reuse_engineering",
+  "reviewed_at": "2026-10-02T17:02:33.496543+00:00",
+  "method": {
+    "action": "Read-only SHA-256 comparison of the exact Wave9 explicit 57 legacy, 25 verification kernel, and 7 object-lifecycle runtime sets against current bytes and their original referenced baselines; repeat reads verify stability.",
+    "source_of_baselines": "docs/reports/evidence/pdos-next-wave9-20261002/reuse-freeze-review.json",
+    "tests_run": false,
+    "database_access": false,
+    "runtime_configuration_read": false,
+    "business_files_modified": false,
+    "output_only": "docs/reports/evidence/pdos-next-wave10-20261002/reuse-freeze-review.json"
+  },
+  "result": {
+    "status": "pass",
+    "scope": "Explicit 57/25/7 source and asset sets only; no whole old tree, full Wave8/Wave9 candidate, or complete active application preservation claim.",
+    "expected_counts": {
+      "legacy_frozen": 57,
+      "verification_package_frozen": 25,
+      "runtime_frozen": 7
+    },
+    "counts_match": true,
+    "all_listed_source_hashes_match": true,
+    "referenced_baseline_manifest_hashes_match_wave9": true,
+    "source_hashes_agree_with_original_baselines": true,
+    "legacy_and_verification_hashes_agree_with_wave8": true,
+    "baseline_manifests_stable_during_review": true,
+    "source_bytes_stable_during_review": true,
+    "distinct_source_files_checked": 89
+  },
+  "baseline_manifests": {
+    "docs/reports/evidence/pdos-next-wave9-20261002/reuse-freeze-review.json": {
+      "path": "docs/reports/evidence/pdos-next-wave9-20261002/reuse-freeze-review.json",
+      "sha256": "35a27b5d9cc730051d7ae91d606e363003f894fcfc48ef78da9a1378dadfbd86",
+      "size_bytes": 33163
+    },
+    "docs/reports/evidence/pdos-next-wave8-20261002/reuse-freeze-review.json": {
+      "path": "docs/reports/evidence/pdos-next-wave8-20261002/reuse-freeze-review.json",
+      "sha256": "08f8c7a0acb4b0031c23d5600374da403d522efa068277792f7c23bad6651624",
+      "size_bytes": 73137,
+      "expected_sha256": "08f8c7a0acb4b0031c23d5600374da403d522efa068277792f7c23bad6651624",
+      "matches_wave9": true
+    },
+    "docs/reports/evidence/pdos-next-wave9-20261002/runtime-checks.json": {
+      "path": "docs/reports/evidence/pdos-next-wave9-20261002/runtime-checks.json",
+      "sha256": "74bfde1148c3c95d9154f3e4900264601753bdb6e9e4eb59053e23e61387032a",
+      "size_bytes": 2454,
+      "expected_sha256": "74bfde1148c3c95d9154f3e4900264601753bdb6e9e4eb59053e23e61387032a",
+      "matches_wave9": true
+    },
+    "docs/reports/evidence/pdos-next-reuse-parallel-20261002/source-inventory.json": {
+      "path": "docs/reports/evidence/pdos-next-reuse-parallel-20261002/source-inventory.json",
+      "sha256": "a13146346df961347a95dedfa40f7ba85f91e6c9497415fd3542e7479bda6f2a",
+      "size_bytes": 13959,
+      "expected_sha256": "a13146346df961347a95dedfa40f7ba85f91e6c9497415fd3542e7479bda6f2a",
+      "matches_wave9": true
+    },
+    "docs/reports/evidence/pdos-next-verification-20261002/candidate.json": {
+      "path": "docs/reports/evidence/pdos-next-verification-20261002/candidate.json",
+      "sha256": "c078bd8c8ed0605145794e3c1d7974939efc0833f6aef1b618ecd2071a4c28f3",
+      "size_bytes": 4556,
+      "expected_sha256": "c078bd8c8ed0605145794e3c1d7974939efc0833f6aef1b618ecd2071a4c28f3",
+      "matches_wave9": true
+    }
+  },
+  "legacy_frozen": {
+    "listed_files": 57,
+    "matching_files": 57,
+    "changed_files": [],
+    "missing_files": [],
+    "files": [
+      {
+        "path": "assets/cehub/deliverable-guide-manifest.json",
+        "expected_sha256": "1c98e124e24121736fe5f5afca847221c2ee4474140500b6db605805c44dec27",
+        "current_sha256": "1c98e124e24121736fe5f5afca847221c2ee4474140500b6db605805c44dec27",
+        "matches": true,
+        "size_bytes": 688534
+      },
+      {
+        "path": "certs/ApsaraDB-CA-Chain.pem",
+        "expected_sha256": "cd9337e1dfd610888f265096990d76edf1606753b6c551f803e0465dc6cee22c",
+        "current_sha256": "cd9337e1dfd610888f265096990d76edf1606753b6c551f803e0465dc6cee22c",
+        "matches": true,
+        "size_bytes": 157450
+      },
+      {
+        "path": "server/app/ai/application_checkpoints.py",
+        "expected_sha256": "c59ada31f25afc0d87d5f0f6daf521bb8dd3d759e5a47d359dfcfaedc348c36a",
+        "current_sha256": "c59ada31f25afc0d87d5f0f6daf521bb8dd3d759e5a47d359dfcfaedc348c36a",
+        "matches": true,
+        "size_bytes": 6062
+      },
+      {
+        "path": "server/app/ai/budget_ledger.py",
+        "expected_sha256": "f12ebb27c65e0e80f167fd9dd4c542a0eac56ab7ae263550cda46424137655ed",
+        "current_sha256": "f12ebb27c65e0e80f167fd9dd4c542a0eac56ab7ae263550cda46424137655ed",
+        "matches": true,
+        "size_bytes": 21921
+      },
+      {
+        "path": "server/app/ai/checkpoints.py",
+        "expected_sha256": "981704f5e05fb76a37392f0405dab864ad1d13518c6ec0d744086acbf056d612",
+        "current_sha256": "981704f5e05fb76a37392f0405dab864ad1d13518c6ec0d744086acbf056d612",
+        "matches": true,
+        "size_bytes": 1847
+      },
+      {
+        "path": "server/app/ai/egress.py",
+        "expected_sha256": "0fce9cc42426d73f023500eb862d4ba6cb8773aa77d1a84c3e6969199df4fdd8",
+        "current_sha256": "0fce9cc42426d73f023500eb862d4ba6cb8773aa77d1a84c3e6969199df4fdd8",
+        "matches": true,
+        "size_bytes": 4252
+      },
+      {
+        "path": "server/app/ai/golden_suite.py",
+        "expected_sha256": "16e2f1ef6faded937d5e98bf1377477f162f453f1520bd97c077182e7d920f82",
+        "current_sha256": "16e2f1ef6faded937d5e98bf1377477f162f453f1520bd97c077182e7d920f82",
+        "matches": true,
+        "size_bytes": 2025
+      },
+      {
+        "path": "server/app/ai/model_budget.py",
+        "expected_sha256": "08f8875936ec451ba405c95f2a8c5fa2ac82df032a59ad7edbd5983fa36ff1e9",
+        "current_sha256": "08f8875936ec451ba405c95f2a8c5fa2ac82df032a59ad7edbd5983fa36ff1e9",
+        "matches": true,
+        "size_bytes": 14450
+      },
+      {
+        "path": "server/app/ai/model_call_fence.py",
+        "expected_sha256": "a385cb182f57de664db9415becb5e638116baa0785202c41601b4ef3adf5199f",
+        "current_sha256": "a385cb182f57de664db9415becb5e638116baa0785202c41601b4ef3adf5199f",
+        "matches": true,
+        "size_bytes": 8973
+      },
+      {
+        "path": "server/app/ai/provider_adapters.py",
+        "expected_sha256": "68299f0dd50621cec7aeb9885c96cba90f6b6a4cba039f0548d7dc134e6cdc88",
+        "current_sha256": "68299f0dd50621cec7aeb9885c96cba90f6b6a4cba039f0548d7dc134e6cdc88",
+        "matches": true,
+        "size_bytes": 14246
+      },
+      {
+        "path": "server/app/ai/qualifications.py",
+        "expected_sha256": "381a59b8d92519fb2958d3f73b21f5defce6e3902252fdbe5a31f6d333fd9bcd",
+        "current_sha256": "381a59b8d92519fb2958d3f73b21f5defce6e3902252fdbe5a31f6d333fd9bcd",
+        "matches": true,
+        "size_bytes": 2303
+      },
+      {
+        "path": "server/app/auth/passwords.py",
+        "expected_sha256": "281c8cd89de32404435b41353be723828fdf8b59868341f4e6d195c56fd4fc02",
+        "current_sha256": "281c8cd89de32404435b41353be723828fdf8b59868341f4e6d195c56fd4fc02",
+        "matches": true,
+        "size_bytes": 857
+      },
+      {
+        "path": "server/app/db/test_safety.py",
+        "expected_sha256": "deb75d386d4d3f9c068e237e945bfb3c49fd89aa3cf1b1fdcf77a6cde116a754",
+        "current_sha256": "deb75d386d4d3f9c068e237e945bfb3c49fd89aa3cf1b1fdcf77a6cde116a754",
+        "matches": true,
+        "size_bytes": 2295
+      },
+      {
+        "path": "server/app/domain/build_materials.py",
+        "expected_sha256": "234444bf2ff3ff0f0bf720aa3691cc9b76a340ca4a45a78898346af6b8b84a37",
+        "current_sha256": "234444bf2ff3ff0f0bf720aa3691cc9b76a340ca4a45a78898346af6b8b84a37",
+        "matches": true,
+        "size_bytes": 16874
+      },
+      {
+        "path": "server/app/domain/capa_actions.py",
+        "expected_sha256": "e972141b7f0ebdb602b3ee50bd193b61f7897d66508bd5fca9c2579bfae84536",
+        "current_sha256": "e972141b7f0ebdb602b3ee50bd193b61f7897d66508bd5fca9c2579bfae84536",
+        "matches": true,
+        "size_bytes": 11482
+      },
+      {
+        "path": "server/app/domain/change_execution_evidence.py",
+        "expected_sha256": "6ce6d397c71dd8fdb2a7555e4a938391eff275e7290e1cbd261adc8979017584",
+        "current_sha256": "6ce6d397c71dd8fdb2a7555e4a938391eff275e7290e1cbd261adc8979017584",
+        "matches": true,
+        "size_bytes": 10775
+      },
+      {
+        "path": "server/app/domain/change_execution_results.py",
+        "expected_sha256": "9c70b5e8190d9e1d471d99dc882e736934dfe88741e89c99080cfa2e308c481a",
+        "current_sha256": "9c70b5e8190d9e1d471d99dc882e736934dfe88741e89c99080cfa2e308c481a",
+        "matches": true,
+        "size_bytes": 27983
+      },
+      {
+        "path": "server/app/domain/change_impact_graph.py",
+        "expected_sha256": "ed9a3c056ae41405961ca20ef003eebfa833eb4eba3dcb8bf11d833776dc578f",
+        "current_sha256": "ed9a3c056ae41405961ca20ef003eebfa833eb4eba3dcb8bf11d833776dc578f",
+        "matches": true,
+        "size_bytes": 19741
+      },
+      {
+        "path": "server/app/domain/cost_freezes.py",
+        "expected_sha256": "2f623c30395a2ee89141e938ef3e7f6e9ea41cb34d9fff05f60f2cf807dbee71",
+        "current_sha256": "2f623c30395a2ee89141e938ef3e7f6e9ea41cb34d9fff05f60f2cf807dbee71",
+        "matches": true,
+        "size_bytes": 20646
+      },
+      {
+        "path": "server/app/domain/cost_inputs.py",
+        "expected_sha256": "ae3b6ed8682475bcbd369b2cc5fb06fb18c2b658c13994cbdbcb1eb604102013",
+        "current_sha256": "ae3b6ed8682475bcbd369b2cc5fb06fb18c2b658c13994cbdbcb1eb604102013",
+        "matches": true,
+        "size_bytes": 20318
+      },
+      {
+        "path": "server/app/domain/cost_rollups.py",
+        "expected_sha256": "cbcbf5193cdacb8bc1bd4b9ed3adbb19a42f62254b68537f095cfc6389d95059",
+        "current_sha256": "cbcbf5193cdacb8bc1bd4b9ed3adbb19a42f62254b68537f095cfc6389d95059",
+        "matches": true,
+        "size_bytes": 26095
+      },
+      {
+        "path": "server/app/domain/definition_inheritance.py",
+        "expected_sha256": "bd4ab5e8e7ae55357fe25b9a6618055b33cc2bbf481986003a7284c54229cb7c",
+        "current_sha256": "bd4ab5e8e7ae55357fe25b9a6618055b33cc2bbf481986003a7284c54229cb7c",
+        "matches": true,
+        "size_bytes": 4087
+      },
+      {
+        "path": "server/app/domain/documents.py",
+        "expected_sha256": "93d4f3bae636d3682fb78fe32290d39190b1607500d74ce0b6f5d7078837aecf",
+        "current_sha256": "93d4f3bae636d3682fb78fe32290d39190b1607500d74ce0b6f5d7078837aecf",
+        "matches": true,
+        "size_bytes": 16014
+      },
+      {
+        "path": "server/app/domain/email_documents.py",
+        "expected_sha256": "b715db921fe90c5bc3b5f9ee23e5351fcbfa5a5195bb888e3653e5ca68d43fd0",
+        "current_sha256": "b715db921fe90c5bc3b5f9ee23e5351fcbfa5a5195bb888e3653e5ca68d43fd0",
+        "matches": true,
+        "size_bytes": 8524
+      },
+      {
+        "path": "server/app/domain/fmea_design_rules.py",
+        "expected_sha256": "222a067fdba70d879fad3453d58724e81e2fd0abe52fda0a905bec598b8d1a9d",
+        "current_sha256": "222a067fdba70d879fad3453d58724e81e2fd0abe52fda0a905bec598b8d1a9d",
+        "matches": true,
+        "size_bytes": 7517
+      },
+      {
+        "path": "server/app/domain/market_analysis.py",
+        "expected_sha256": "33b7f1eee2e96a710f8d00a2a6c59e26498a51de9ca3559141b8c29c07176969",
+        "current_sha256": "33b7f1eee2e96a710f8d00a2a6c59e26498a51de9ca3559141b8c29c07176969",
+        "matches": true,
+        "size_bytes": 15529
+      },
+      {
+        "path": "server/app/domain/material_allocations.py",
+        "expected_sha256": "38e13159966889a90d1ab4810f7c236d7b98dc37ac1d159ced5da9bdc859aa66",
+        "current_sha256": "38e13159966889a90d1ab4810f7c236d7b98dc37ac1d159ced5da9bdc859aa66",
+        "matches": true,
+        "size_bytes": 30697
+      },
+      {
+        "path": "server/app/domain/material_coverage.py",
+        "expected_sha256": "c264df235feaf3e461dbe60bf65e74a9dfc2b2f2d1108ee695fc795188ed5dcf",
+        "current_sha256": "c264df235feaf3e461dbe60bf65e74a9dfc2b2f2d1108ee695fc795188ed5dcf",
+        "matches": true,
+        "size_bytes": 21566
+      },
+      {
+        "path": "server/app/domain/material_supply_pools.py",
+        "expected_sha256": "af8b1fa5b3f02d6af4cc3b0779435fbdeb116648579d71bec2cb690c40f1ca93",
+        "current_sha256": "af8b1fa5b3f02d6af4cc3b0779435fbdeb116648579d71bec2cb690c40f1ca93",
+        "matches": true,
+        "size_bytes": 725
+      },
+      {
+        "path": "server/app/domain/plan_scheduling.py",
+        "expected_sha256": "3647d9a3aead6bd478edcfb97da160a35cadd0980487a83b29fe26b6bcfea185",
+        "current_sha256": "3647d9a3aead6bd478edcfb97da160a35cadd0980487a83b29fe26b6bcfea185",
+        "matches": true,
+        "size_bytes": 8431
+      },
+      {
+        "path": "server/app/domain/portfolio_scoring.py",
+        "expected_sha256": "705804cf7c937d856e3669510f964ea16e6ba18b4dc6150e0427c27168ab6628",
+        "current_sha256": "705804cf7c937d856e3669510f964ea16e6ba18b4dc6150e0427c27168ab6628",
+        "matches": true,
+        "size_bytes": 12551
+      },
+      {
+        "path": "server/app/domain/product_definitions.py",
+        "expected_sha256": "91726768a18f4e61a771f36a14e841ac7775a92e7191fe49c7f1da8a3144bd8b",
+        "current_sha256": "91726768a18f4e61a771f36a14e841ac7775a92e7191fe49c7f1da8a3144bd8b",
+        "matches": true,
+        "size_bytes": 35269
+      },
+      {
+        "path": "server/app/domain/product_evidence_items.py",
+        "expected_sha256": "c053f63977ddc1e19d3c0abaf228f1d0389f625c36f5243ddf8660643630c2a0",
+        "current_sha256": "c053f63977ddc1e19d3c0abaf228f1d0389f625c36f5243ddf8660643630c2a0",
+        "matches": true,
+        "size_bytes": 9358
+      },
+      {
+        "path": "server/app/domain/project_completion.py",
+        "expected_sha256": "c81b64544ae6f9b47370945f29a0ab0858c3db77d066c27199ac2c971a080a4b",
+        "current_sha256": "c81b64544ae6f9b47370945f29a0ab0858c3db77d066c27199ac2c971a080a4b",
+        "matches": true,
+        "size_bytes": 28976
+      },
+      {
+        "path": "server/app/domain/project_handoff_sources.py",
+        "expected_sha256": "c6426c5f694f4065f8a2fef44e4a73aa006f7495a7386af6db03becbb6a3355f",
+        "current_sha256": "c6426c5f694f4065f8a2fef44e4a73aa006f7495a7386af6db03becbb6a3355f",
+        "matches": true,
+        "size_bytes": 4590
+      },
+      {
+        "path": "server/app/domain/quality_issue_links.py",
+        "expected_sha256": "d10c563e86c0f0fb9d7fc5be31324caa4563910cd69576e4196a4a1e1890286e",
+        "current_sha256": "d10c563e86c0f0fb9d7fc5be31324caa4563910cd69576e4196a4a1e1890286e",
+        "matches": true,
+        "size_bytes": 21020
+      },
+      {
+        "path": "server/app/domain/resource_schedule_solver.py",
+        "expected_sha256": "ae247477a4167a263aa3faa1b64091fd1a078c9363a0eecb6154c67f2828238d",
+        "current_sha256": "ae247477a4167a263aa3faa1b64091fd1a078c9363a0eecb6154c67f2828238d",
+        "matches": true,
+        "size_bytes": 14922
+      },
+      {
+        "path": "server/app/domain/sample_configuration_comparison.py",
+        "expected_sha256": "a8bca35e62b6766eb3bf319980b261746f8afb5bd524633b6aef3b9a98bdadcf",
+        "current_sha256": "a8bca35e62b6766eb3bf319980b261746f8afb5bd524633b6aef3b9a98bdadcf",
+        "matches": true,
+        "size_bytes": 15751
+      },
+      {
+        "path": "server/app/domain/sample_configuration_revisions.py",
+        "expected_sha256": "4ba0e6724b7865d2ab410d9b817ebebf215f5d163cf2420b6a367fdbea7a87cc",
+        "current_sha256": "4ba0e6724b7865d2ab410d9b817ebebf215f5d163cf2420b6a367fdbea7a87cc",
+        "matches": true,
+        "size_bytes": 7554
+      },
+      {
+        "path": "server/app/domain/schedule_forecast_engine.py",
+        "expected_sha256": "c5ec20463073de7776d6a4eba669e389d1394028b37c7cff87ad9b239b1c18fa",
+        "current_sha256": "c5ec20463073de7776d6a4eba669e389d1394028b37c7cff87ad9b239b1c18fa",
+        "matches": true,
+        "size_bytes": 25406
+      },
+      {
+        "path": "server/app/domain/test_import_preview.py",
+        "expected_sha256": "2bdf8bc205733b67872caa955ec74d86a7ad1b028c3141fe89d9a7648806f71b",
+        "current_sha256": "2bdf8bc205733b67872caa955ec74d86a7ad1b028c3141fe89d9a7648806f71b",
+        "matches": true,
+        "size_bytes": 16285
+      },
+      {
+        "path": "server/app/domain/test_report_workbook.py",
+        "expected_sha256": "9c82ef91aca2e45930f08751a7d1a5856199d3f9f992ce666f117860ebd37a67",
+        "current_sha256": "9c82ef91aca2e45930f08751a7d1a5856199d3f9f992ce666f117860ebd37a67",
+        "matches": true,
+        "size_bytes": 11917
+      },
+      {
+        "path": "server/app/domain/test_runs.py",
+        "expected_sha256": "86e1516332a3de2479a4b4c2c37b0b947460e451be5df4d4a20e7259452340ae",
+        "current_sha256": "86e1516332a3de2479a4b4c2c37b0b947460e451be5df4d4a20e7259452340ae",
+        "matches": true,
+        "size_bytes": 32319
+      },
+      {
+        "path": "server/app/domain/tooling_rounds.py",
+        "expected_sha256": "00cc4d6cd2eff169c4bd70df582b159c1ab079b61f10226309a18eb38a42b940",
+        "current_sha256": "00cc4d6cd2eff169c4bd70df582b159c1ab079b61f10226309a18eb38a42b940",
+        "matches": true,
+        "size_bytes": 20437
+      },
+      {
+        "path": "server/app/domain/work_calendars.py",
+        "expected_sha256": "b7e76a9c24e9d4fbc9458c457580cc162d6a7022a8d3fb16802790eaf0e866b9",
+        "current_sha256": "b7e76a9c24e9d4fbc9458c457580cc162d6a7022a8d3fb16802790eaf0e866b9",
+        "matches": true,
+        "size_bytes": 9700
+      },
+      {
+        "path": "server/app/domain/working_time.py",
+        "expected_sha256": "2503b572f4fea610ddb691072c9e0e00d079d64ccd1ad9c82a1d13ec54254a4c",
+        "current_sha256": "2503b572f4fea610ddb691072c9e0e00d079d64ccd1ad9c82a1d13ec54254a4c",
+        "matches": true,
+        "size_bytes": 6514
+      },
+      {
+        "path": "server/app/events/writer.py",
+        "expected_sha256": "d37ff343bf69dac21730c2dddff15b729646d8d0a6c6dbf51fc891cfd20aa42c",
+        "current_sha256": "d37ff343bf69dac21730c2dddff15b729646d8d0a6c6dbf51fc891cfd20aa42c",
+        "matches": true,
+        "size_bytes": 9798
+      },
+      {
+        "path": "server/app/exports/definition_documents.py",
+        "expected_sha256": "ff31b80f957b1885549b480c36715dc1dd4ba0f6f01a0c4ec603d3e468099f5d",
+        "current_sha256": "ff31b80f957b1885549b480c36715dc1dd4ba0f6f01a0c4ec603d3e468099f5d",
+        "matches": true,
+        "size_bytes": 15356
+      },
+      {
+        "path": "server/app/integrations/dingtalk_outbox.py",
+        "expected_sha256": "146075106f2231437e22d7ca37c69004ad257ea24b6c88e9a8f8084bc950dcb7",
+        "current_sha256": "146075106f2231437e22d7ca37c69004ad257ea24b6c88e9a8f8084bc950dcb7",
+        "matches": true,
+        "size_bytes": 53658
+      },
+      {
+        "path": "server/app/storage/documents.py",
+        "expected_sha256": "a664d647fde0ed10d4e2b2d3e519822a954e9e80883652a3cae4b3866d6f55b4",
+        "current_sha256": "a664d647fde0ed10d4e2b2d3e519822a954e9e80883652a3cae4b3866d6f55b4",
+        "matches": true,
+        "size_bytes": 2553
+      },
+      {
+        "path": "web/src/components/my-work/my-work-scenario.ts",
+        "expected_sha256": "1775b6409991df4d2f8af7df0e830a58019e4b1ef1308f879e5fe7aa58e553e8",
+        "current_sha256": "1775b6409991df4d2f8af7df0e830a58019e4b1ef1308f879e5fe7aa58e553e8",
+        "matches": true,
+        "size_bytes": 5439
+      },
+      {
+        "path": "web/src/components/product-work/product-reading-ui.tsx",
+        "expected_sha256": "8e546ecaae0ca908b9c5aab46e4b4106659b85dfd7631693f3e38bbacbc27eb1",
+        "current_sha256": "8e546ecaae0ca908b9c5aab46e4b4106659b85dfd7631693f3e38bbacbc27eb1",
+        "matches": true,
+        "size_bytes": 2618
+      },
+      {
+        "path": "web/src/components/projects/project-task-workspace.tsx",
+        "expected_sha256": "0d9965ac6520dc4269189b9f9c7a6d31b57243946335c5e53ae3f93dd04b66c5",
+        "current_sha256": "0d9965ac6520dc4269189b9f9c7a6d31b57243946335c5e53ae3f93dd04b66c5",
+        "matches": true,
+        "size_bytes": 8775
+      },
+      {
+        "path": "web/src/components/ui/button.tsx",
+        "expected_sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24",
+        "current_sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24",
+        "matches": true,
+        "size_bytes": 3466
+      },
+      {
+        "path": "web/src/components/workspace-experience.ts",
+        "expected_sha256": "b2eea0958a6901efd54efcc3e703c2a9285891f70152089733bf6446c25e938f",
+        "current_sha256": "b2eea0958a6901efd54efcc3e703c2a9285891f70152089733bf6446c25e938f",
+        "matches": true,
+        "size_bytes": 15170
+      },
+      {
+        "path": "web/src/lib/decimal.ts",
+        "expected_sha256": "1c9384a3bb753fef840b56c336eabc1fda4c540c1b6a2a16f6a5c5a1d344fc0b",
+        "current_sha256": "1c9384a3bb753fef840b56c336eabc1fda4c540c1b6a2a16f6a5c5a1d344fc0b",
+        "matches": true,
+        "size_bytes": 1512
+      },
+      {
+        "path": "web/src/lib/utils.ts",
+        "expected_sha256": "7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+        "current_sha256": "7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d",
+        "matches": true,
+        "size_bytes": 166
+      }
+    ]
+  },
+  "verification_package_frozen": {
+    "listed_files": 25,
+    "matching_files": 25,
+    "changed_files": [],
+    "missing_files": [],
+    "files": [
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification/__init__.py",
+        "expected_sha256": "d6c8524892875ab4826535adf0db845d973e29cb8d0a82a6346a1b389f9b99ea",
+        "current_sha256": "d6c8524892875ab4826535adf0db845d973e29cb8d0a82a6346a1b389f9b99ea",
+        "matches": true,
+        "size_bytes": 78
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification/handlers.py",
+        "expected_sha256": "d4c762cc786b7d46ae488da2ff0832c46191eedb0a2d89e20d993717b6349e48",
+        "current_sha256": "d4c762cc786b7d46ae488da2ff0832c46191eedb0a2d89e20d993717b6349e48",
+        "matches": true,
+        "size_bytes": 38439
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification/ports.py",
+        "expected_sha256": "6661a1dd3f13ec071bc842781a48357ea8d4787cf5701f93245fbb13dd738c39",
+        "current_sha256": "6661a1dd3f13ec071bc842781a48357ea8d4787cf5701f93245fbb13dd738c39",
+        "matches": true,
+        "size_bytes": 6672
+      },
+      {
+        "path": "pdos-next/server/pdos_next/domain/verification/rules.py",
+        "expected_sha256": "17c094742a07eed64ee5dbf9c9a628b611d5feeb2b157e52d0371f335ef280c7",
+        "current_sha256": "17c094742a07eed64ee5dbf9c9a628b611d5feeb2b157e52d0371f335ef280c7",
+        "matches": true,
+        "size_bytes": 7389
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/verification/__init__.py",
+        "expected_sha256": "9c5d73deba86ef0ba3535f8f8ac6b350382e0c0a4a323283e80a4b401f89a504",
+        "current_sha256": "9c5d73deba86ef0ba3535f8f8ac6b350382e0c0a4a323283e80a4b401f89a504",
+        "matches": true,
+        "size_bytes": 82
+      },
+      {
+        "path": "pdos-next/server/pdos_next/schemas/verification/contracts.py",
+        "expected_sha256": "5262b95c950a20625da5abb54b4c47dc5e77bb790f97518ca21cd3c422039734",
+        "current_sha256": "5262b95c950a20625da5abb54b4c47dc5e77bb790f97518ca21cd3c422039734",
+        "matches": true,
+        "size_bytes": 12103
+      },
+      {
+        "path": "pdos-next/server/tests/verification/__init__.py",
+        "expected_sha256": "2a2ebf0b3528de6f42e6856f7993e457b9e7d13d9758c004c8fa9c4769abf1f4",
+        "current_sha256": "2a2ebf0b3528de6f42e6856f7993e457b9e7d13d9758c004c8fa9c4769abf1f4",
+        "matches": true,
+        "size_bytes": 81
+      },
+      {
+        "path": "pdos-next/server/tests/verification/conftest.py",
+        "expected_sha256": "1d6c9e8fab06ba603d42486ff05c8e079b447acde1e21f6e6ae09b566583ec26",
+        "current_sha256": "1d6c9e8fab06ba603d42486ff05c8e079b447acde1e21f6e6ae09b566583ec26",
+        "matches": true,
+        "size_bytes": 394
+      },
+      {
+        "path": "pdos-next/server/tests/verification/helpers.py",
+        "expected_sha256": "9bc5736ac16610f48eeb21b27f3e88d03351bc08d4ffa1fce9a4765e29da461c",
+        "current_sha256": "9bc5736ac16610f48eeb21b27f3e88d03351bc08d4ffa1fce9a4765e29da461c",
+        "matches": true,
+        "size_bytes": 13720
+      },
+      {
+        "path": "pdos-next/server/tests/verification/test_contracts.py",
+        "expected_sha256": "279443de02bb10303cd09834d73f2d68da300d5958a54c7bd85b4c81189da932",
+        "current_sha256": "279443de02bb10303cd09834d73f2d68da300d5958a54c7bd85b4c81189da932",
+        "matches": true,
+        "size_bytes": 4707
+      },
+      {
+        "path": "pdos-next/server/tests/verification/test_handlers.py",
+        "expected_sha256": "fa1580acab40b5bba19cdf588492313f1a1bad6701b650084f1a5be1673955aa",
+        "current_sha256": "fa1580acab40b5bba19cdf588492313f1a1bad6701b650084f1a5be1673955aa",
+        "matches": true,
+        "size_bytes": 45540
+      },
+      {
+        "path": "pdos-next/server/tests/verification/test_partial_result_responsibility.py",
+        "expected_sha256": "1412f4aa3804737928e19e0655bfe723e1884599b241238d859468253d97481b",
+        "current_sha256": "1412f4aa3804737928e19e0655bfe723e1884599b241238d859468253d97481b",
+        "matches": true,
+        "size_bytes": 1623
+      },
+      {
+        "path": "pdos-next/server/tests/verification/test_preview_order.py",
+        "expected_sha256": "3dd0611f8a28fc110b481c83a75ae4379bc4a0dc9cd7f9236127cfb6f76ca101",
+        "current_sha256": "3dd0611f8a28fc110b481c83a75ae4379bc4a0dc9cd7f9236127cfb6f76ca101",
+        "matches": true,
+        "size_bytes": 1379
+      },
+      {
+        "path": "pdos-next/server/tests/verification/test_rules.py",
+        "expected_sha256": "bfd6f332c4b083a7cf7cba53163068e5f3995832ae5b97ee426189e1b4db3fd1",
+        "current_sha256": "bfd6f332c4b083a7cf7cba53163068e5f3995832ae5b97ee426189e1b4db3fd1",
+        "matches": true,
+        "size_bytes": 9159
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/__tests__/fixtures.ts",
+        "expected_sha256": "0f734c9e64016e91fdcb2b3b396eedf5c594d5c93cf8187233e6df95fa035495",
+        "current_sha256": "0f734c9e64016e91fdcb2b3b396eedf5c594d5c93cf8187233e6df95fa035495",
+        "matches": true,
+        "size_bytes": 4759
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/contracts.test.ts",
+        "expected_sha256": "2482c901d5cea394235d4c3250211f9702655f7461cbcad3be98a041b2dc7c58",
+        "current_sha256": "2482c901d5cea394235d4c3250211f9702655f7461cbcad3be98a041b2dc7c58",
+        "matches": true,
+        "size_bytes": 10233
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/contracts.ts",
+        "expected_sha256": "33725420bdc10f8560366b7a879f25be1b2d96f43058398b4d3e3fa10816da3a",
+        "current_sha256": "33725420bdc10f8560366b7a879f25be1b2d96f43058398b4d3e3fa10816da3a",
+        "matches": true,
+        "size_bytes": 20039
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/event-time.tsx",
+        "expected_sha256": "714000f68e7eea724edcf98eda0c59830b25169f2cdc1bbf91db53aa8578ba92",
+        "current_sha256": "714000f68e7eea724edcf98eda0c59830b25169f2cdc1bbf91db53aa8578ba92",
+        "matches": true,
+        "size_bytes": 1854
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/handoff.tsx",
+        "expected_sha256": "60aefcc89f057fc3cf3fbeffd3106dfd7a91cb63826a84bbaae561124d9ecd12",
+        "current_sha256": "60aefcc89f057fc3cf3fbeffd3106dfd7a91cb63826a84bbaae561124d9ecd12",
+        "matches": true,
+        "size_bytes": 12029
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/index.ts",
+        "expected_sha256": "d4f9e2830486c6b85767d2bf880871cbce659daba628190ee45099294f273f0c",
+        "current_sha256": "d4f9e2830486c6b85767d2bf880871cbce659daba628190ee45099294f273f0c",
+        "matches": true,
+        "size_bytes": 213
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/preview.tsx",
+        "expected_sha256": "6b9ab998151c70d70e7c9454fe6fa9c06a68c5b97de57f01de60c3a998a706d6",
+        "current_sha256": "6b9ab998151c70d70e7c9454fe6fa9c06a68c5b97de57f01de60c3a998a706d6",
+        "matches": true,
+        "size_bytes": 7832
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/render.test.mjs",
+        "expected_sha256": "05e6974534252843b2da99d22523d2bd4aaa5d6efa095e2b7e5a15b30a708e38",
+        "current_sha256": "05e6974534252843b2da99d22523d2bd4aaa5d6efa095e2b7e5a15b30a708e38",
+        "matches": true,
+        "size_bytes": 4840
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/request-reading.tsx",
+        "expected_sha256": "735379e3d12e70013b2eb9162c1b5f51f5718d85fce1d9089c81374541461b41",
+        "current_sha256": "735379e3d12e70013b2eb9162c1b5f51f5718d85fce1d9089c81374541461b41",
+        "matches": true,
+        "size_bytes": 6785
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/test-runs.tsx",
+        "expected_sha256": "46bd1b988fee91690b40f4de40922b3cba60f9e82815cb78f58a6a08678b0d6e",
+        "current_sha256": "46bd1b988fee91690b40f4de40922b3cba60f9e82815cb78f58a6a08678b0d6e",
+        "matches": true,
+        "size_bytes": 26034
+      },
+      {
+        "path": "pdos-next/web/src/components/verification/tsconfig.check.json",
+        "expected_sha256": "b8da5d8c4a19b50ef51fafcd5658a855f998c5d1b8f73afcaa68b598986adbaf",
+        "current_sha256": "b8da5d8c4a19b50ef51fafcd5658a855f998c5d1b8f73afcaa68b598986adbaf",
+        "matches": true,
+        "size_bytes": 210
+      }
+    ]
+  },
+  "runtime_frozen": {
+    "listed_files": 7,
+    "matching_files": 7,
+    "changed_files": [],
+    "missing_files": [],
+    "files": [
+      {
+        "path": "pdos-next/server/pdos_next/object_lifecycle_runtime/__init__.py",
+        "expected_sha256": "1459ea87797f8f2cb47c88a97401056471f53b6163ea60dc6e277ebdf6f58e45",
+        "current_sha256": "1459ea87797f8f2cb47c88a97401056471f53b6163ea60dc6e277ebdf6f58e45",
+        "matches": true,
+        "size_bytes": 102
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_lifecycle_runtime/effects.py",
+        "expected_sha256": "4830234c6a8e7597cb145fc047f74e2847fc8d72ab1fae9c323b4f0501a1609a",
+        "current_sha256": "4830234c6a8e7597cb145fc047f74e2847fc8d72ab1fae9c323b4f0501a1609a",
+        "matches": true,
+        "size_bytes": 21482
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_lifecycle_runtime/files.py",
+        "expected_sha256": "dafd4cc5070b07852c5d68687923cbf9a6a0a73d062c3cca1f098d4f05058b90",
+        "current_sha256": "dafd4cc5070b07852c5d68687923cbf9a6a0a73d062c3cca1f098d4f05058b90",
+        "matches": true,
+        "size_bytes": 7421
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_lifecycle_runtime/protocol.py",
+        "expected_sha256": "95773a8a741c7104f979486e65bb66a5c8e4b66365a25ff91998a4df53fabfa5",
+        "current_sha256": "95773a8a741c7104f979486e65bb66a5c8e4b66365a25ff91998a4df53fabfa5",
+        "matches": true,
+        "size_bytes": 1134
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_lifecycle_runtime/transport.py",
+        "expected_sha256": "22b5ff8c43b5456e48b6dccb121628789faa557d434c3fc2c7f6e0e525e16860",
+        "current_sha256": "22b5ff8c43b5456e48b6dccb121628789faa557d434c3fc2c7f6e0e525e16860",
+        "matches": true,
+        "size_bytes": 10391
+      },
+      {
+        "path": "pdos-next/server/pdos_next/object_lifecycle_runtime/worker.py",
+        "expected_sha256": "4f660b414f2c3bd60ea3cfb2d235283eaf796d74125b321988deb14af6ffb13d",
+        "current_sha256": "4f660b414f2c3bd60ea3cfb2d235283eaf796d74125b321988deb14af6ffb13d",
+        "matches": true,
+        "size_bytes": 1278
+      },
+      {
+        "path": "pdos-next/server/tests/object_lifecycle_runtime/test_runtime.py",
+        "expected_sha256": "b07470da53ba2a9c20a713d28ee9fcd42ee933f831ebf533c71d8f9ff04f0411",
+        "current_sha256": "b07470da53ba2a9c20a713d28ee9fcd42ee933f831ebf533c71d8f9ff04f0411",
+        "matches": true,
+        "size_bytes": 18853
+      }
+    ]
+  },
+  "membership_and_omissions": {
+    "legacy_original_manifest_entries": 61,
+    "legacy_original_membership_verified": true,
+    "legacy_inventory_excluded_new_project_paths": [
+      "pdos-next/server/pdos_next/runtime.py",
+      "pdos-next/server/pdos_next/safety.py",
+      "pdos-next/server/pdos_next/service.py",
+      "pdos-next/tools/local_environment.py"
+    ],
+    "verification_original_membership_verified": true,
+    "runtime_original_membership_verified": true,
+    "verification_candidate_declared_sha256": "44588c11212888059b0a4061e36046dcbe5aad536ed6c9ef5dd4d335955062a9",
+    "verification_declared_source_file_count": 25,
+    "interpretation": "The four new-project paths from the original reuse inventory remain outside the legacy 57-file freeze. Object-lifecycle runtime coverage preserves exactly the seven previously recorded files; later package markers and other files are outside this set."
+  },
+  "limitations": [
+    "Hash equality does not rerun tests or establish lifecycle authorization, actual sample availability/consumption, qualified professional approval, scanner production qualification, production readiness, or formal human Exit.",
+    "The old 57-file boundary does not certify the entire old worktree; earlier recovery/data-loss limits remain unchanged.",
+    "No database, credential, runtime configuration or service was accessed. Only this new evidence output was written; historical evidence and source bytes remained unchanged."
+  ]
+}

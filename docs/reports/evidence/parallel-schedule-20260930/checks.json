@@ -1,0 +1,73 @@
+{
+  "candidate": "parallel-schedule-20260930-r1",
+  "files_digest": "5f5dccc7e1bc7213eef61fd70d2a07c7cc2c9c06178192f148daffeb491dc091",
+  "database_connections": 0,
+  "checks": [
+    {
+      "name": "server-tests",
+      "command": ".venv/bin/pytest -q tests/test_resource_reallocations.py tests/test_resource_reallocations_api.py tests/test_resource_schedule_preparations.py tests/test_resource_schedule_solver.py tests/test_schedule_forecast_engine.py tests/test_work_calendar_calculations.py tests/test_xiaopai_schedule.py",
+      "cwd": "server",
+      "exit_code": 0,
+      "passed": 62,
+      "log": "server-tests.log",
+      "capture": "exact complete tool-output transcript saved without rerunning",
+      "log_sha256": "bed9cf5f8b4f9e7643b6c44b9c3b7a3d88ffc1db879257f51b56e0076fdceebd"
+    },
+    {
+      "name": "server-typecheck",
+      "command": ".venv/bin/mypy --follow-imports=silent app/domain/resource_reallocation_inputs.py app/domain/resource_reallocations.py app/api/plan_scenarios.py tests/test_resource_reallocations.py tests/test_resource_reallocations_api.py tests/test_resource_schedule_preparations.py tests/test_resource_schedule_solver.py tests/test_schedule_forecast_engine.py",
+      "cwd": "server",
+      "exit_code": 0,
+      "files": 8,
+      "log": "server-typecheck.log",
+      "capture": "exact complete tool-output transcript saved without rerunning",
+      "log_sha256": "157a09cfcdfdfb5977479c5a1c08345149263a3e990a2ec976ef28aaeec9cae6"
+    },
+    {
+      "name": "server-lint",
+      "command": ".venv/bin/ruff check app/domain/resource_reallocation_inputs.py app/domain/resource_reallocations.py app/api/plan_scenarios.py tests/test_resource_reallocations.py tests/test_resource_reallocations_api.py tests/test_schedule_forecast_engine.py tests/test_resource_schedule_solver.py tests/test_resource_schedule_preparations.py",
+      "cwd": "server",
+      "exit_code": 0,
+      "log": "server-lint.log",
+      "capture": "exact complete tool-output transcript saved without rerunning",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "name": "web-tests",
+      "command": "TZ=America/Los_Angeles node_modules/.bin/vitest run src/components/projects/resource-reallocations.test.tsx",
+      "cwd": "web",
+      "exit_code": 0,
+      "passed": 6,
+      "log": "web-tests.log",
+      "capture": "direct stdout/stderr redirect",
+      "log_sha256": "97d51f3aef30db5965e8ceaaff6ce11d2c2c8fd9b18f778ca6853d4f0ac05b54"
+    },
+    {
+      "name": "web-typecheck",
+      "command": "node_modules/.bin/tsc --noEmit --incremental false",
+      "cwd": "web",
+      "exit_code": 0,
+      "log": "web-typecheck.log",
+      "capture": "direct stdout/stderr redirect",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "web-lint",
+      "command": "node_modules/.bin/eslint src/components/projects/resource-reallocations.tsx src/components/projects/resource-reallocations.test.tsx",
+      "cwd": "web",
+      "exit_code": 0,
+      "log": "web-lint.log",
+      "capture": "direct stdout/stderr redirect",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "diff-check",
+      "command": "git diff --check -- server/app/domain/resource_reallocation_inputs.py server/app/domain/resource_reallocations.py server/app/api/plan_scenarios.py web/src/components/projects/resource-reallocations.tsx",
+      "cwd": ".",
+      "exit_code": 0,
+      "log": "diff-check.log",
+      "capture": "direct stdout/stderr redirect",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

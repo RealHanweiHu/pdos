@@ -1,0 +1,9 @@
+{
+  "node": "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[policy_epoch]",
+  "original_index": 15,
+  "exit_code": 0,
+  "seconds": 1730.9,
+  "source_stable": true,
+  "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+  "log_sha256": "d95c1dbe5156d1e9b2aa8d35a45cd3c1d53ab230ccd8a1954b023a14b7808406"
+}

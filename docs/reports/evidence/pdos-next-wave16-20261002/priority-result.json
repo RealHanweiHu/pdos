@@ -1,0 +1,38 @@
+{
+  "priority-02": {
+    "node": "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.capa.actions.complete-capa.actions_completed]",
+    "exit_code": -15,
+    "seconds": 1020.24,
+    "source_stable": true,
+    "candidate_sha256": "8845f7b89bdfa2c122a426819689e4f3fbc34e86255d0499e47b66afd77b97c1",
+    "log_file": "priority-02.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "priority-01": {
+    "node": "tests/quality_followup_transactions/test_transactions.py::test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution",
+    "exit_code": -15,
+    "seconds": 1020.25,
+    "source_stable": true,
+    "candidate_sha256": "8845f7b89bdfa2c122a426819689e4f3fbc34e86255d0499e47b66afd77b97c1",
+    "log_file": "priority-01.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "priority-00": {
+    "node": "tests/quality_followup_transactions/test_transactions.py::test_t2_named_root_cause_uses_actual_common_uuid_and_atomic_shared_receipt",
+    "exit_code": -15,
+    "seconds": 1020.24,
+    "source_stable": true,
+    "candidate_sha256": "8845f7b89bdfa2c122a426819689e4f3fbc34e86255d0499e47b66afd77b97c1",
+    "log_file": "priority-00.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "priority-03": {
+    "node": "tests/quality_followup_root/test_savepoint.py::test_actual_followup_savepoint_commits_and_orphan_consumption_rolls_back",
+    "exit_code": -15,
+    "seconds": 1020.25,
+    "source_stable": true,
+    "candidate_sha256": "8845f7b89bdfa2c122a426819689e4f3fbc34e86255d0499e47b66afd77b97c1",
+    "log_file": "priority-03.log",
+    "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "scope": "Exact synthetic task-owned instance after the current business RunStart was committed; prior to completion of isolated tenant checks.",
+  "current_business_candidate": "candidate.json",
+  "no_live_business_changes_after_snapshot_planned": true,
+  "test_tenant_effects_may_continue": true,
+  "full_restore_drill_performed": false
+}

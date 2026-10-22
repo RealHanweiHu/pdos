@@ -1,0 +1,53 @@
+{
+  "environment": "synthetic PostgreSQL 55211/pdos_test; API 8846; frozen production frontend localhost:3046",
+  "cookie_isolation": "localhost QA hostname differs from user preview 127.0.0.1; original preview session was not used for QA login",
+  "checks": [
+    {
+      "case": "category isolation",
+      "observed": "car dictionary has 3 parameters; bicycle dictionary empty; headings remain each category name"
+    },
+    {
+      "case": "canonical comparison",
+      "observed": "noise dB(A), same v1 conditions: A30 target65 versus competitor claimed70; price USD59; unmapped values remain excluded"
+    },
+    {
+      "case": "computed matrix",
+      "observed": "A30 and one competitor in 轿车日常补气 × 50–<70 USD; private ODM absent"
+    },
+    {
+      "case": "platform independent",
+      "observed": "P2 linked to A10 and B10 in distinct categories; Pro系列 is optional model tag"
+    },
+    {
+      "case": "category test skeleton",
+      "observed": "3 dictionary v1 items retain conditions, methods and criteria; project confirmation still required"
+    },
+    {
+      "case": "new proposal",
+      "observed": "created synthetic browser proposal from car category; 3 unknown specs with readonly canonical label/unit/conditions and pinned sources"
+    },
+    {
+      "case": "human edit",
+      "observed": "noise target66 and expert_pending saved as proposal v2; category name and all 3 parameter sources visible"
+    },
+    {
+      "case": "unqualified model",
+      "observed": "MODEL_NOT_AVAILABLE shown; proposal remains editable; no real provider invocation"
+    },
+    {
+      "case": "themes/responsive",
+      "observed": "normal 1280×720 dark and light;390×844 light with wrapping tabs/stacked fields/table horizontal container; temporary viewport reset"
+    }
+  ],
+  "synthetic_browser_proposal": "776803d3-3696-5d78-b1d3-0b686abffa5d",
+  "screenshots": [
+    "category-matrix-result.png",
+    "category-matrix-light.png",
+    "category-matrix-mobile.png",
+    "cross-category-platform.png",
+    "proposal-inherited-saved.png",
+    "proposal-category-sources.png"
+  ],
+  "temporary_tab_closed": true,
+  "real_model_or_external_egress": false
+}

@@ -1,0 +1,98 @@
+{
+  "database": "127.0.0.1:57440/pdos_test",
+  "head": "0416_product_evidence_item_decisions",
+  "receipts": [
+    {
+      "entry": "project",
+      "tenant_id": "6285c36d-ed0b-4dff-b8ca-c5c283fe29fd",
+      "project_id": "e1b28238-9b88-492c-a156-761a7d5039f0",
+      "issue_id": "3fd023a2-800d-41ca-8bb6-258305beb65f",
+      "status": "closed",
+      "verifier_user_id": "436d38ae-04e6-4482-a571-8639f666149d",
+      "owner_user_id": "6c790096-9afa-4949-bd9a-db1cc9cc4d74",
+      "closure_evidence_ref": "合成联验：目标5、最新成本4及原件版本经独立核对，满足原关闭条件。",
+      "closed_at": "2026-10-02T04:24:43.523839+00:00",
+      "audit_id": 2461,
+      "event_id": "issue:3fd023a2-800d-41ca-8bb6-258305beb65f:status:closed:9fe25add-b8c3-448b-ba62-a19883ec8e37",
+      "event_type": "ISSUE_STATUS_CHANGED",
+      "cost_closure": {
+        "policy": "cost.issue_closure.current_cost.v1",
+        "sources": [
+          {
+            "case_id": "60458915-4a02-4de5-ab65-0b4ab4331fcd",
+            "currency": "CNY",
+            "comparison": {
+              "gap": "-1.000000",
+              "total": "4.000000",
+              "target": {
+                "value": "5",
+                "missing": [],
+                "input_id": "f1565eee-edde-4b9d-9f8f-dc4a05833a5f",
+                "rate_input_id": null
+              },
+              "known_subtotal": "4.000000"
+            },
+            "source_digest": "c887649d278332ab9e15a691ded8b66fa1988eb4221c20457424a0630f96d5c3",
+            "observation_id": "ff1f3d2d-d7a6-4de0-8760-59773c685200",
+            "observation_version": 2
+          }
+        ]
+      }
+    },
+    {
+      "entry": "my_work",
+      "tenant_id": "fe31a55c-acb8-44c5-a6c4-bf605e60c3a9",
+      "project_id": "c235fb31-a31d-4023-bbca-d8e3e4126376",
+      "issue_id": "791b8cbe-cfe2-45e5-8d90-9190174d6b32",
+      "status": "closed",
+      "verifier_user_id": "fff0da99-0503-4973-912e-e77334f07268",
+      "owner_user_id": "1838cc19-7bd6-4e08-84cc-30806caac34e",
+      "closure_evidence_ref": "合成联验：从我的工作核对同口径成本恢复、全部来源和原关闭条件，独立验证通过。",
+      "closed_at": "2026-10-02T04:25:26.757277+00:00",
+      "audit_id": 2464,
+      "event_id": "issue:791b8cbe-cfe2-45e5-8d90-9190174d6b32:status:closed:51f487df-e8b6-4a1e-b0d4-c0de73d39d31",
+      "event_type": "ISSUE_STATUS_CHANGED",
+      "cost_closure": {
+        "policy": "cost.issue_closure.current_cost.v1",
+        "sources": [
+          {
+            "case_id": "e197c4e9-2f01-4bbd-acfa-7b84f6dcc81a",
+            "currency": "CNY",
+            "comparison": {
+              "gap": "-1.000000",
+              "total": "4.000000",
+              "target": {
+                "value": "5",
+                "missing": [],
+                "input_id": "d1db8009-2cb6-43e9-ba16-5a6e0644666c",
+                "rate_input_id": null
+              },
+              "known_subtotal": "4.000000"
+            },
+            "source_digest": "cf5f617935d6736a46d58fe0c342b7e1439f6986a251221b4660ef0f549275f8",
+            "observation_id": "ecbc0159-2250-4afb-959d-64356f294d8d",
+            "observation_version": 2
+          }
+        ]
+      }
+    }
+  ],
+  "source_scope_unchanged": {
+    "server/app/domain/cost_issue_closure.py": true,
+    "server/app/domain/cost_gaps.py": true,
+    "server/app/domain/issues.py": true,
+    "server/app/api/issue_risks.py": true,
+    "server/tests/test_cost_recovery_postgres.py": true,
+    "server/tests/test_material_issue_closure_api.py": true,
+    "web/src/components/projects/cost-gaps.tsx": true,
+    "web/src/components/projects/cost-issue-closure-review.tsx": true,
+    "web/src/components/projects/cost-issue-closure-review.test.tsx": true,
+    "web/src/components/projects/material-issue-closure-review.tsx": true,
+    "web/src/components/projects/material-issue-closure-review.test.tsx": true,
+    "web/src/components/projects/project-work-item-api.ts": true,
+    "web/src/components/projects/project-work-item-types.ts": true,
+    "web/src/components/projects/project-issue-material-closure.test.tsx": true,
+    "web/src/components/my-work/issue-risk-work-card.tsx": true,
+    "web/src/components/my-work/issue-risk-material-closure.test.tsx": true
+  }
+}

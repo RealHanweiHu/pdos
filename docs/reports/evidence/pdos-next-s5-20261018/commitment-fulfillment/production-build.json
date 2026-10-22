@@ -1,0 +1,15 @@
+{
+  "snapshot": "/private/tmp/pdos-s5-fulfillment-3o22_b4e",
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "exit": 0,
+  "compiled_seconds": 19.2,
+  "typescript_passed": true,
+  "static_generation_passed": true,
+  "route_count": 6,
+  "web_runtime_changes_after_build": false,
+  "real_external_calls": 0
+}

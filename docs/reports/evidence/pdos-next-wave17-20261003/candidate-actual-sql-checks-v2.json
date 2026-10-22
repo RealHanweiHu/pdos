@@ -1,0 +1,233 @@
+{
+  "status": "PASS",
+  "scope": "actual PG constraints; copied SQL fixtures all rolled back",
+  "cases": [
+    {
+      "name": "legal-complete-SQL-fixture",
+      "status": "PASS",
+      "expected_sqlstate": null,
+      "expected_message_fragment": null,
+      "rejection": null,
+      "executed_in_this_run": false,
+      "reused_from": "candidate-actual-sql-checks-v1.json"
+    },
+    {
+      "name": "missing-receipt",
+      "status": "PASS",
+      "expected_sqlstate": "P0001",
+      "expected_message_fragment": "receipt",
+      "rejection": {
+        "sqlstate": "P0001",
+        "message": "Quality/change write requires exactly one named receipt, audit and event",
+        "constraint": null
+      },
+      "executed_in_this_run": false,
+      "reused_from": "candidate-actual-sql-checks-v1.json"
+    },
+    {
+      "name": "missing-audit",
+      "status": "PASS",
+      "expected_sqlstate": "P0001",
+      "expected_message_fragment": "audit",
+      "rejection": {
+        "sqlstate": "P0001",
+        "message": "Quality/change write requires exactly one named receipt, audit and event",
+        "constraint": null
+      },
+      "executed_in_this_run": false,
+      "reused_from": "candidate-actual-sql-checks-v1.json"
+    },
+    {
+      "name": "missing-outbox",
+      "status": "PASS",
+      "expected_sqlstate": "P0001",
+      "expected_message_fragment": "event",
+      "rejection": {
+        "sqlstate": "P0001",
+        "message": "Quality/change write requires exactly one named receipt, audit and event",
+        "constraint": null
+      }
+    },
+    {
+      "name": "receipt-binding-hash",
+      "status": "PASS",
+      "expected_sqlstate": "P0001",
+      "expected_message_fragment": "hash",
+      "rejection": {
+        "sqlstate": "P0001",
+        "message": "Candidate receipt binds actual non-cyclic binding and inspection hashes",
+        "constraint": null
+      }
+    },
+    {
+      "name": "consumption-clock-before-proof",
+      "status": "PASS",
+      "expected_sqlstate": "P0001",
+      "expected_message_fragment": "clock",
+      "rejection": {
+        "sqlstate": "P0001",
+        "message": "Candidate retains actual consumed and saved clocks",
+        "constraint": null
+      }
+    },
+    {
+      "name": "consumption-clock-after-save",
+      "status": "PASS",
+      "expected_sqlstate": "P0001",
+      "expected_message_fragment": "clock",
+      "rejection": {
+        "sqlstate": "P0001",
+        "message": "Candidate retains actual consumed and saved clocks",
+        "constraint": null
+      }
+    },
+    {
+      "name": "save-at-expiry",
+      "status": "PASS",
+      "expected_sqlstate": "P0001",
+      "expected_message_fragment": "proof",
+      "rejection": {
+        "sqlstate": "P0001",
+        "message": "Followup requires a consumed current Product proof by the named human",
+        "constraint": null
+      }
+    },
+    {
+      "name": "column-null-applicable",
+      "status": "PASS",
+      "expected_sqlstate": "23514",
+      "expected_message_fragment": null,
+      "rejection": {
+        "sqlstate": "23514",
+        "message": "new row for relation \"capa_verification_evidence\" violates check constraint \"capa_verification_evidence_check2\"",
+        "constraint": "capa_verification_evidence_check2"
+      }
+    },
+    {
+      "name": "snapshot-null-applicable",
+      "status": "PASS",
+      "expected_sqlstate": "23514",
+      "expected_message_fragment": null,
+      "rejection": {
+        "sqlstate": "23514",
+        "message": "new row for relation \"capa_verification_evidence\" violates check constraint \"capa_verification_evidence_candidate_snapshot_check\"",
+        "constraint": "capa_verification_evidence_candidate_snapshot_check"
+      }
+    },
+    {
+      "name": "column-null-independently_verified",
+      "status": "PASS",
+      "expected_sqlstate": "23514",
+      "expected_message_fragment": null,
+      "rejection": {
+        "sqlstate": "23514",
+        "message": "new row for relation \"capa_verification_evidence\" violates check constraint \"capa_verification_evidence_check2\"",
+        "constraint": "capa_verification_evidence_check2"
+      }
+    },
+    {
+      "name": "snapshot-null-independently_verified",
+      "status": "PASS",
+      "expected_sqlstate": "23514",
+      "expected_message_fragment": null,
+      "rejection": {
+        "sqlstate": "23514",
+        "message": "new row for relation \"capa_verification_evidence\" violates check constraint \"capa_verification_evidence_candidate_snapshot_check\"",
+        "constraint": "capa_verification_evidence_candidate_snapshot_check"
+      }
+    },
+    {
+      "name": "column-null-observation_complete",
+      "status": "PASS",
+      "expected_sqlstate": "23514",
+      "expected_message_fragment": null,
+      "rejection": {
+        "sqlstate": "23514",
+        "message": "new row for relation \"capa_verification_evidence\" violates check constraint \"capa_verification_evidence_check2\"",
+        "constraint": "capa_verification_evidence_check2"
+      }
+    },
+    {
+      "name": "snapshot-null-observation_complete",
+      "status": "PASS",
+      "expected_sqlstate": "23514",
+      "expected_message_fragment": null,
+      "rejection": {
+        "sqlstate": "23514",
+        "message": "new row for relation \"capa_verification_evidence\" violates check constraint \"capa_verification_evidence_candidate_snapshot_check\"",
+        "constraint": "capa_verification_evidence_candidate_snapshot_check"
+      }
+    },
+    {
+      "name": "agent-direct-insert",
+      "status": "PASS",
+      "expected_sqlstate": "42501",
+      "expected_message_fragment": null,
+      "rejection": {
+        "sqlstate": "42501",
+        "message": "permission denied for table capa_verification_evidence",
+        "constraint": null
+      }
+    },
+    {
+      "name": "pdos_next_app-update",
+      "status": "PASS",
+      "expected_sqlstate": "42501",
+      "expected_message_fragment": null,
+      "rejection": {
+        "sqlstate": "42501",
+        "message": "permission denied for table capa_verification_evidence",
+        "constraint": null
+      }
+    },
+    {
+      "name": "pdos_next_app-delete",
+      "status": "PASS",
+      "expected_sqlstate": "42501",
+      "expected_message_fragment": null,
+      "rejection": {
+        "sqlstate": "42501",
+        "message": "permission denied for table capa_verification_evidence",
+        "constraint": null
+      }
+    },
+    {
+      "name": "postgres-update",
+      "status": "PASS",
+      "expected_sqlstate": "P0001",
+      "expected_message_fragment": null,
+      "rejection": {
+        "sqlstate": "P0001",
+        "message": "fixed business snapshots are immutable",
+        "constraint": null
+      }
+    },
+    {
+      "name": "postgres-delete",
+      "status": "PASS",
+      "expected_sqlstate": "P0001",
+      "expected_message_fragment": null,
+      "rejection": {
+        "sqlstate": "P0001",
+        "message": "fixed business snapshots are immutable",
+        "constraint": null
+      }
+    }
+  ],
+  "model_calls": 0,
+  "reused_passes_from_v1": [
+    "legal-complete-SQL-fixture",
+    "missing-audit",
+    "missing-receipt"
+  ],
+  "tool_sha256": "5ca3a40c35477b99b3ce98076da68b4244f556c9add12b529d7f97166da73578",
+  "expiry_preflight": {
+    "status": "PASS",
+    "condition": "Exact named writer Grant must remain writable past proof expiry",
+    "proof_expires_at": "2026-10-03T13:58:03.566104+00:00",
+    "grant_expires_at": "2026-10-05T05:37:28.541795+00:00",
+    "can_write": true
+  },
+  "all_111_tables_unchanged_after_rollback": true,
+  "finished_at": "2026-10-03T14:08:35.112597+00:00"
+}

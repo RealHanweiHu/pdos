@@ -1,0 +1,20 @@
+{
+  "projectId": "2463833c-3b0e-4eda-8f54-9a8e4ab608fe",
+  "parentRunId": "203a1328-fe8d-4734-ba5b-bb76e79508d2",
+  "childRunId": "152f140a-8b80-4f4e-acdf-b3197db9eae5",
+  "sameSession": true,
+  "actualProjectInherited": true,
+  "privateGoalNotInActivity": true,
+  "runEventSequence": true,
+  "noInventedReceipt": true,
+  "reloadNonGet": 0,
+  "uiStarts": 2,
+  "uiCancels": 2,
+  "mobile": {
+    "width": 288,
+    "overflow": false,
+    "pageOverflow": false
+  },
+  "realModelCalls": 0,
+  "performanceAcceptance": false
+}

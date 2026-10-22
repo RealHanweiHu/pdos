@@ -1,0 +1,112 @@
+{
+  "date": "2026-09-11",
+  "scope": "successful actual Chat evidence collection, output contract and admitted ContextManifest; other application adapters unfinished",
+  "tests": {
+    "distinct_passed": 156,
+    "new_cases": 12,
+    "regression_cases": 144,
+    "shared_batch_passed": 97,
+    "independent_role_batch_passed": 57,
+    "extra_database_cases_passed": 2,
+    "formula": "97 + 57 + 2 = 156; focused repeats excluded",
+    "first_api_bundle_representation_failure": 1,
+    "first_focused": {
+      "passed": 18,
+      "synthetic_meter_coverage_failures": 6
+    },
+    "premature_role_batch": {
+      "local_only_passed": 1,
+      "database_connection_errors": 56
+    }
+  },
+  "checks": {
+    "mypy_files": 4,
+    "ruff_files": 9,
+    "common_contract_artifacts": 4,
+    "runtime_contract_artifacts": 5,
+    "approved_manifests_unchanged": {
+      "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "source_sha256": {
+    "server/app/ai/application_context.py": "6f38416b36b598232a66ea2b8dd64742e8ae081c1105c287f7ffb428c6d50de4",
+    "server/app/ai/chat.py": "addf5011d91af78d37edc0e115c7af69e5979ec2b588daefa93d4bf9e9276003",
+    "server/app/ai/gateway.py": "855c46c81bb9e730f3a900e947f3fef4518ec3b9d121eb07dbb073c03b564c35",
+    "server/app/db/schema.py": "25243740b029723a7c66372990ca560bf0c056703dfe33d9dca362520e407e88",
+    "server/migrations/versions/0082_application_context.py": "e9b48175681abef62b4386951e38ac312ce88164834c3083650311d8586ba300",
+    "server/tests/test_application_context.py": "b8b4e422d22f7ea44017ad2761a935e82b9605bbe1c82c3462b4b1e76a186079",
+    "server/tests/test_application_authorization.py": "091376826b03def7dc8ab913ac2afe6d19cc06dbbf76916b86a2f1f0223868aa",
+    "server/tests/test_application_authorization_security.py": "67c808eb5026f23855dbb7e64880c45345dd0779216780ba904cf6795946e9be",
+    "server/tests/test_agent_runtime_schema.py": "2f1a7227dc77b697ab67e9590db426cee1bb568f6c9f28506f16af3193f03832"
+  },
+  "log_sha256": {
+    "pdos-chat-manifest-first.log": "f1c6dfc55bc6805b323dcda3c2c2e75136dbeb748afb116c20f550e2fd49e538",
+    "pdos-chat-manifest-second.log": "07e03b714d10ca8c27a57414c1fdc1537a460fcedf9804a16f9cc9bf20bfc684",
+    "pdos-chat-manifest-focused.log": "26632e9a8eaf938d8cbab9e9c5401d95e58febb90f824342b96cf7b1cb00077d",
+    "pdos-chat-manifest-final.log": "ac27d78e768970f348b3cc9275c974bbeb6e3c2612c0bccb9905a2acb8017bb3",
+    "pdos-chat-manifest-extra.log": "f30f9f0420f8920b956ccd24a301d6473e8cf43b4b57cf2fc01ca1b87e2e5af2",
+    "pdos-chat-manifest-roles.log": "815dbf8973356a44bb34e714d3b75417329c912bed14582d60b2e8781e4a3655",
+    "pdos-chat-manifest-roles-final.log": "da20cb0db10368bc267809305583aa9d70511c574e015e40a7e5ca98a009edbf"
+  },
+  "database_verification": {
+    "57432": {
+      "database": "pdos_test",
+      "head": "0082_application_context",
+      "dispatch_guard_sha256": "8d233554883fadd817833437e2e53936b1d2b4ffe8160a6faa9848ad3d734201",
+      "tables": {
+        "application_context_observations": {
+          "scoped_foreign_keys": 1,
+          "restricted_role_direct_access": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "application_context_manifests": {
+          "scoped_foreign_keys": 4,
+          "restricted_role_direct_access": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        }
+      }
+    },
+    "57433": {
+      "database": "pdos_test",
+      "head": "0082_application_context",
+      "dispatch_guard_sha256": "8d233554883fadd817833437e2e53936b1d2b4ffe8160a6faa9848ad3d734201",
+      "tables": {
+        "application_context_observations": {
+          "scoped_foreign_keys": 1,
+          "restricted_role_direct_access": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        "application_context_manifests": {
+          "scoped_foreign_keys": 4,
+          "restricted_role_direct_access": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        }
+      }
+    }
+  },
+  "dedicated_test_container": "pdos-chat-context-test",
+  "dedicated_test_container_removed": true,
+  "test_image": "pgvector/pgvector:0.8.6-pg16-bookworm",
+  "missing_floating_image_pull_stopped": true,
+  "no_external_model_or_embedding_calls": true,
+  "no_golden_writes": true,
+  "no_push_or_production_actions": true,
+  "n0_03_complete": false,
+  "limits": [
+    "remaining risk, test-plan and report-mapping context adapters",
+    "initial failed collection Observation",
+    "derived source ACL and atomic source checks at database dispatch",
+    "application trace-specific database guard",
+    "Owner lease, durable tool dispatch, waiting and intermediate recovery",
+    "local content bundle is not production release or full environment qualification"
+  ]
+}

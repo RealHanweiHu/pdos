@@ -1,0 +1,9 @@
+{
+  "verification": "0418 Operations roundtrip, independent of concurrent 0419",
+  "empty_roundtrip_constraint_and_comments_equal": true,
+  "actual_head": "0419_user_work_modules",
+  "agent_direct_write": [
+    false,
+    false
+  ]
+}

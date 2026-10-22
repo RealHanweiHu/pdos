@@ -1,0 +1,45 @@
+{
+  "status": "owned pure/static checks; no PG/HTTP/public verification",
+  "source_files": {
+    "pdos-next/server/pdos_next/domain/change_execution/__init__.py": "309159b43dd6eab34812aa4c2fe9f8e9dea30e335107c7b2393b9136bd3370cd",
+    "pdos-next/server/pdos_next/domain/change_execution/adapters.py": "875b2172d4876205a5b743ed5375fc54078e89668589cc6c80a3240bffeeca40",
+    "pdos-next/server/pdos_next/domain/change_execution/graph.py": "5e42fb2ba4a953901cd15d8ffa14d9bc7e44ad73979b1a0de85742471cbebe1f",
+    "pdos-next/server/pdos_next/domain/change_execution/models.py": "cf0961f9ac8160430b6075e3dfecbfa7bad1493486c052b81e93165218607679",
+    "pdos-next/server/pdos_next/domain/change_execution/schemas.py": "af449f47ff19887a7e9c6d02529960fbad4de1b69e98f370fcfdfc83edbb349e",
+    "pdos-next/server/pdos_next/domain/change_execution/service.py": "3567d2935650fe23352446cbdd120a11aab334aa0b2a99b7f8ac4c68ec2a3961",
+    "pdos-next/server/tests/change_execution/__init__.py": "2da8ec8fef564aa4bce15deaa57da711311e2f82229158f440638c4d6bbc9261",
+    "pdos-next/server/tests/change_execution/test_evidence.py": "5043c925445355c5ec06dba51fff4123a3a2d688683175948627e53b93db0a7f",
+    "pdos-next/server/tests/change_execution/test_pure.py": "e185ec9f2945de53202595814377d2196c5a6ad706798964d9e6e66afd88f400"
+  },
+  "checks": {
+    "pure": {
+      "command": "server/.venv/bin/pytest --noconftest tests/change_execution -q",
+      "result": "37 passed in 0.72s",
+      "database": false
+    },
+    "ruff": "passed",
+    "compile": "passed"
+  },
+  "scope": {
+    "tables": [
+      "change_request_versions",
+      "change_request_currents",
+      "change_graph_captures"
+    ],
+    "operations": [
+      "change.request.create",
+      "change.impact.compute"
+    ],
+    "graph_facets": "all eight UNKNOWN; known fixed owner edges only",
+    "current_issue_required": true,
+    "capture_lifetime_max_minutes": 10,
+    "source_read_set_max": 20
+  },
+  "pending": [
+    "public registration/DDL/API and professional mappings by root",
+    "configured real OriginalStore",
+    "A fixed Issue/CAPA current proof",
+    "root PG transaction/rollback/source-revocation/CAS coverage",
+    "real manufacturing/ERP/complete graph/Order/implementation/effectivity/closure ports"
+  ]
+}

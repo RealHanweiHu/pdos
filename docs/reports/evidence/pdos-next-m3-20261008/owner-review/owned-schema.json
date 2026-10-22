@@ -1,0 +1,10 @@
+{
+  "owned_tables": 12,
+  "differences": "[]",
+  "supplement_fields_present": true,
+  "deferred_atoms": 4,
+  "functions_checked": 16,
+  "function_mismatches": [],
+  "sealed_guards": 3,
+  "active_alembic_heads_changed": false
+}

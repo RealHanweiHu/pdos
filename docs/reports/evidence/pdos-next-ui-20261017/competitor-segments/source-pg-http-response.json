@@ -1,0 +1,139 @@
+{
+  "assignment": {
+    "version": "competitor-segment-assignment/v1",
+    "category_id": "4dae6335-a080-4c2e-9939-2f7574de49c9",
+    "principal_id": "6fe1571a-a865-44e5-9706-46281f47f295",
+    "as_of": "2026-10-17T18:15:11.544043+00:00",
+    "competitor": {
+      "id": "e916cc84-d318-42ad-9ac2-9096bb8dd1a6",
+      "lineage_id": "9c49a349-04e8-442c-9fcd-d5d4249def59",
+      "version": 1,
+      "origin": "human",
+      "writer_id": "6fe1571a-a865-44e5-9706-46281f47f295",
+      "run_id": null,
+      "confirmed_by": null,
+      "content": {
+        "brand": "合成品牌",
+        "model": "合成待关联竞品",
+        "metrics": [],
+        "features": [],
+        "prices": [
+          {
+            "amount": "150.000000000001",
+            "currency": "CNY",
+            "observed_on": "2026-10-17",
+            "price_type": "retail",
+            "includes_tax": true,
+            "includes_shipping": null,
+            "channel": null,
+            "region": null,
+            "source_ref": {
+              "type": "human",
+              "id": "6fe1571a-a865-44e5-9706-46281f47f295",
+              "version": 1,
+              "line": null,
+              "quote": null,
+              "statement": "Synthetic named target and measurement statement"
+            }
+          }
+        ]
+      },
+      "regions": [],
+      "source_refs": []
+    },
+    "can_edit": true,
+    "blockers": [],
+    "selected_segments": [],
+    "segments": [
+      {
+        "entry_id": "35468d98-9093-4991-9047-ffd04c91677b",
+        "version": 1,
+        "lineage_id": "4d1f69c0-a5f2-46c3-b613-57af84bb49df",
+        "label": "合成自行车便携",
+        "source_refs": []
+      },
+      {
+        "entry_id": "8faed337-95e2-4df2-9f69-0963b9dea0f6",
+        "version": 1,
+        "lineage_id": "6ef85c6f-744c-41e8-8916-a879dcd72c5b",
+        "label": "合成汽车应急",
+        "source_refs": []
+      }
+    ],
+    "unavailable_segment_count": 0
+  },
+  "session": {
+    "name": "Synthetic owner",
+    "principal_id": "6fe1571a-a865-44e5-9706-46281f47f295",
+    "model_available": false
+  },
+  "categories": [
+    {
+      "id": "4dae6335-a080-4c2e-9939-2f7574de49c9",
+      "key": "category-0cf97259033540779c2f72f894d6ed34",
+      "name": "汽车充气泵",
+      "purpose": "隔离合成品类",
+      "revision": 1,
+      "status": "active",
+      "capabilities": {
+        "product_management": false
+      }
+    }
+  ],
+  "competitor": {
+    "id": "e916cc84-d318-42ad-9ac2-9096bb8dd1a6",
+    "lineage_id": "9c49a349-04e8-442c-9fcd-d5d4249def59",
+    "version": 1,
+    "origin": "human",
+    "writer_id": "6fe1571a-a865-44e5-9706-46281f47f295",
+    "run_id": null,
+    "confirmed_by": null,
+    "content": {
+      "brand": "合成品牌",
+      "model": "合成待关联竞品",
+      "metrics": [],
+      "features": [],
+      "prices": [
+        {
+          "amount": "150.000000000001",
+          "currency": "CNY",
+          "observed_on": "2026-10-17",
+          "price_type": "retail",
+          "includes_tax": true,
+          "includes_shipping": null,
+          "channel": null,
+          "region": null,
+          "source_ref": {
+            "type": "human",
+            "id": "6fe1571a-a865-44e5-9706-46281f47f295",
+            "version": 1,
+            "line": null,
+            "quote": null,
+            "statement": "Synthetic named target and measurement statement"
+          }
+        }
+      ]
+    },
+    "regions": [],
+    "source_refs": []
+  },
+  "segments": [
+    {
+      "entry_id": "35468d98-9093-4991-9047-ffd04c91677b",
+      "version": 1,
+      "lineage_id": "4d1f69c0-a5f2-46c3-b613-57af84bb49df",
+      "label": "合成自行车便携",
+      "source_refs": []
+    },
+    {
+      "entry_id": "8faed337-95e2-4df2-9f69-0963b9dea0f6",
+      "version": 1,
+      "lineage_id": "6ef85c6f-744c-41e8-8916-a879dcd72c5b",
+      "label": "合成汽车应急",
+      "source_refs": []
+    }
+  ],
+  "preview": {
+    "token_present": true
+  }
+}

@@ -1,0 +1,63 @@
+F
+=================================== FAILURES ===================================
+_ test_actual_personal_queues_follow_named_work_across_categories_and_current_grants _
+tests/work_management_pg/test_personal_projection.py:251: in test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+    setup, other = work.setup, _second_category(work)
+                               ^^^^^^^^^^^^^^^^^^^^^^
+tests/work_management_pg/test_personal_projection.py:181: in _second_category
+    g0 = create_g0_project(setup, visibility="category", name="Synthetic second work project")
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/g0_fixture.py:70: in create_g0_project
+    created, _ = save(
+tests/g0_fixture.py:53: in save
+    assert preview.status_code == 200, preview.text
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: {"code":"VERSION_CONFLICT","message":"品类范围版本已变化。","detail":{"reason":"category_revision_moved"}}
+=============================== warnings summary ===============================
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/category_creation.py:515: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([category])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/category_creation.py:524: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([grant])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/category_creation.py:661: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([receipt])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 12 warnings in 9.60s

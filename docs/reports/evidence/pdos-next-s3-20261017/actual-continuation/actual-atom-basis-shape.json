@@ -1,0 +1,45 @@
+{
+  "same_prior_failed_synthetic_scope": true,
+  "business_writes": 0,
+  "saved_order_and_approval_shapes": [
+    {
+      "model": "ChangeOrderRecord",
+      "source_basis_keys": [
+        "artifacts",
+        "closure",
+        "coverage",
+        "outputs",
+        "owners",
+        "verified_sources"
+      ],
+      "artifact_metadata_entries": 18,
+      "wrapper_is_not_artifact_projection": true
+    },
+    {
+      "model": "ChangeApprovalRecord",
+      "source_basis_keys": [
+        "artifacts",
+        "closure",
+        "coverage",
+        "outputs",
+        "owners",
+        "verified_sources"
+      ],
+      "artifact_metadata_entries": 18,
+      "wrapper_is_not_artifact_projection": true
+    },
+    {
+      "model": "ChangeApprovalRecord",
+      "source_basis_keys": [
+        "artifacts",
+        "closure",
+        "coverage",
+        "outputs",
+        "owners",
+        "verified_sources"
+      ],
+      "artifact_metadata_entries": 18,
+      "wrapper_is_not_artifact_projection": true
+    }
+  ]
+}

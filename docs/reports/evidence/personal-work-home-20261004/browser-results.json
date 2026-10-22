@@ -1,0 +1,145 @@
+[
+  {
+    "role": "product_manager",
+    "heading": "林晓的产品工作台",
+    "task": "核对便携充气设备的使用场景",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 1440,
+    "document": 1440,
+    "dark": false,
+    "synthetic": true
+  },
+  {
+    "role": "product_manager",
+    "heading": "林晓的产品工作台",
+    "task": "核对便携充气设备的使用场景",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 320,
+    "document": 320,
+    "dark": false,
+    "synthetic": true
+  },
+  {
+    "role": "product_manager",
+    "heading": "林晓的产品工作台",
+    "task": "核对便携充气设备的使用场景",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 320,
+    "document": 320,
+    "dark": true,
+    "synthetic": true
+  },
+  {
+    "role": "product_manager",
+    "heading": "林晓的产品工作台",
+    "task": "核对便携充气设备的使用场景",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 320,
+    "document": 320,
+    "dark": true,
+    "synthetic": true
+  },
+  {
+    "role": "engineer",
+    "heading": "陈工的工程工作台",
+    "task": "确认壳体接口尺寸",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 320,
+    "document": 320,
+    "dark": false,
+    "synthetic": true
+  },
+  {
+    "role": "quality",
+    "heading": "周敏的品质工作台",
+    "task": "核对新配置复测结果",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 320,
+    "document": 320,
+    "dark": false,
+    "synthetic": true
+  },
+  {
+    "role": "project_manager",
+    "heading": "吴经理的项目工作台",
+    "task": "确认项目计划与交接责任",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 320,
+    "document": 320,
+    "dark": false,
+    "synthetic": true
+  },
+  {
+    "role": "owner",
+    "heading": "郑总的管理工作台",
+    "task": "核对投入决策资料",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 320,
+    "document": 320,
+    "dark": false,
+    "synthetic": true
+  },
+  {
+    "role": "admin",
+    "heading": "王管理员的系统工作台",
+    "task": "核对新成员的访问范围",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 320,
+    "document": 320,
+    "dark": false,
+    "synthetic": true
+  },
+  {
+    "role": "customer",
+    "path": "/projects",
+    "synthetic": true
+  },
+  {
+    "role": "engineer",
+    "heading": "陈工的工程工作台",
+    "task": "确认壳体接口尺寸",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 1440,
+    "document": 1440,
+    "dark": false,
+    "synthetic": true
+  },
+  {
+    "role": "quality",
+    "heading": "周敏的品质工作台",
+    "task": "核对新配置复测结果",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 1440,
+    "document": 1440,
+    "dark": false,
+    "synthetic": true
+  },
+  {
+    "role": "product_manager",
+    "heading": "林晓的产品工作台",
+    "task": "核对便携充气设备的使用场景",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 1440,
+    "document": 1440,
+    "dark": false,
+    "synthetic": true
+  },
+  {
+    "role": "product_manager",
+    "heading": "林晓的产品工作台",
+    "task": "核对便携充气设备的使用场景",
+    "url": "http://127.0.0.1:3031/my-work",
+    "viewport": 1440,
+    "document": 1440,
+    "dark": true,
+    "synthetic": true
+  },
+  {
+    "mobileNavigation": "passed",
+    "width": 320
+  },
+  {
+    "personalAssistant": "visible",
+    "url": "http://127.0.0.1:3031/my-work"
+  }
+]

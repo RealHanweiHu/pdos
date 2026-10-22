@@ -1,0 +1,46 @@
+{
+  "schema_version": "wave21-completion-profiles-staged-source-v2",
+  "recorded_at": "2026-10-03T17:59:10.481591+00:00",
+  "supersedes_source_manifest": "docs/reports/evidence/pdos-next-wave21-20261003/completion-profiles-source-v1.json",
+  "supersedes_source_manifest_sha256": "5ddf820687082462fda8d11bd640dde2739e29f5885242c92efda5838491b1e5",
+  "baseline_source": {
+    "path": "pdos-next/server/pdos_next/quality_followup_integration.py",
+    "sha256": "3e645ba35aaed5504a3ee9f2e1f237d46e4dc87ac01f1044d2105b255038f850",
+    "current_sha256": "3e645ba35aaed5504a3ee9f2e1f237d46e4dc87ac01f1044d2105b255038f850",
+    "unchanged": true
+  },
+  "files": [
+    {
+      "staged_path": "pdos-next/.local/wave21-completion-staged/pdos_next/quality_followup_integration.py",
+      "intended_path": "pdos-next/server/pdos_next/quality_followup_integration.py",
+      "sha256": "b3b18c2b2c592d55d45564262ce08fa801f51e94d87e3df5d792c78470cb68ee",
+      "previous_sha256": "641e4a5f734e4cb2a7052143e05b3d429995084c29fe11b8f634720b2c0945a6",
+      "changed_from_v1": true
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-completion-staged/tests/quality_followup_root/test_completion_profiles.py",
+      "intended_path": "pdos-next/server/tests/quality_followup_root/test_completion_profiles.py",
+      "sha256": "2cb5f068a0bbb154777d5d514ee0788650a2b7a198926242ad4e72b9bc44bb63",
+      "previous_sha256": "cafd1417cd1af39b050810de5f11d1a526a9f683ddc3d420ff6f15c2afa09fe6",
+      "changed_from_v1": true
+    }
+  ],
+  "isolation": {
+    "copied_python_files": 310,
+    "other_staged_python_files_unchanged": 309,
+    "symlinks_used": false,
+    "real_source_modified": false,
+    "real_test_created": false
+  },
+  "delta": {
+    "source": "Whole plural startup registration restores the actual original registry and epoch map objects or absent attributes on any target/registrar/post-registration verification failure. Existing callback and Runtime are untouched because publication of the new Runtime follows successful registration.",
+    "tests": "Seven additional parameterized cases: second new scope real registrar target failure with an existing old profile/runtime; four original attribute-presence combinations; registrar exception or invalid registered result after actual publication.",
+    "bootstrap_config_attributes": [
+      "_pdos_quality_completion_profiles",
+      "_pdos_quality_completion_profile_epochs"
+    ],
+    "bootstrap_unchanged": true,
+    "safety_verify_test_target_config_mutations": []
+  },
+  "api_hook": "Root may add synthetic_completion_profiles=None to create_app and pass it unchanged as configure_integration(...,synthetic_completion_profiles=...). Both single/plural non-None are rejected; no public route/payload field added."
+}

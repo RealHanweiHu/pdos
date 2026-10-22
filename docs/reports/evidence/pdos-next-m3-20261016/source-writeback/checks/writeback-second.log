@@ -1,0 +1,38 @@
+....F
+=================================== FAILURES ===================================
+_ test_readable_but_unbound_product_artifact_cannot_expand_run_on_write[evidence.claim.record] _
+
+work = <isolated synthetic test scope>, tool = 'evidence.claim.record'
+
+    @pytest.mark.parametrize("tool", ["evidence.claim.record", "proposal.item.patch"])
+    def test_readable_but_unbound_product_artifact_cannot_expand_run_on_write(work, tool):
+        f = bound(work)
+        other = product_source(work)
+        args = claim_args(f, other) if tool == "evidence.claim.record" else patch_args(f, uuid4())
+        if tool == "proposal.item.patch":
+            args["ops"][0]["source_refs"] = [{"type": "artifact", "id": other, "version": 1}]
+        perform, _ = prepared(f, tool, args)
+        before = current(f), counts(work)
+>       with pytest.raises(DomainError) as caught:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DomainError
+
+tests/agent_kernel/test_category_source_writeback_pg.py:266: Failed
+=============================== warnings summary ===============================
+tests/agent_kernel/test_category_source_writeback_pg.py::test_category_run_records_adopts_reads_and_replays_product_source[False]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_category_run_records_adopts_reads_and_replays_product_source[True]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_product_source_write_tail_failure_is_atomic_and_same_request_recovers[False]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_product_source_write_tail_failure_is_atomic_and_same_request_recovers[True]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_readable_but_unbound_product_artifact_cannot_expand_run_on_write[evidence.claim.record]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_source_writeback_pg.py: 32 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_category_source_writeback_pg.py::test_readable_but_unbound_product_artifact_cannot_expand_run_on_write[evidence.claim.record]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 4 passed, 37 warnings in 12.88s

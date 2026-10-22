@@ -1,0 +1,14 @@
+{
+  "exit_code": 0,
+  "static_pages": 98,
+  "candidate": "/private/tmp/pdos-role-scenario-ui-20261001-_npy8ks1/web",
+  "manifest": "build-candidate.json",
+  "test_files": 181,
+  "tests_passed": 1136,
+  "test_exit_code": 0,
+  "full_src_lint_exit": 0,
+  "final_adjustment_lint_exit": 0,
+  "browser_shortcut_lint_exit": 0,
+  "typescript": "passed in final production build",
+  "primary_files_match_current": true
+}

@@ -1,0 +1,79 @@
+### Page
+- Page URL: http://127.0.0.1:3051/product-work?category=494d44bc-5b27-4799-af61-2d81b7b2e3a5
+- Page Title: 产品管理工作台 · PDOS
+- Console: 0 errors, 6 warnings
+### Snapshot
+```yaml
+- generic [ref=f4e1]:
+  - alert [ref=f4e3]
+  - generic [ref=f4e4]:
+    - link "跳到主要内容" [ref=f4e5] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=f4e6]:
+      - banner [ref=f4e7]:
+        - generic [ref=f4e8]:
+          - generic [aria-hidden] [ref=f4e9]: P
+          - generic [ref=f4e10]: PDOS
+        - generic [ref=f4e11]:
+          - link "搜索" [ref=f4e12] [cursor=pointer]:
+            - /url: /search
+          - link "现场采集" [ref=f4e15] [cursor=pointer]:
+            - /url: /capture
+          - button "切换为浅色主题" [ref=f4e18] [cursor=pointer]
+          - button "退出登录" [ref=f4e19] [cursor=pointer]
+      - navigation "移动端主导航" [ref=f4e20]:
+        - generic [ref=f4e21]:
+          - generic [ref=f4e22]: 产品管理工作台
+          - button "展开导航" [ref=f4e23] [cursor=pointer]
+      - main [ref=f4e26]:
+        - generic [ref=f4e28]:
+          - generic [ref=f4e29]:
+            - generic [ref=f4e31]:
+              - button "品类" [ref=f4e32] [cursor=pointer]
+              - generic [aria-hidden] [ref=f4e33]: /
+              - generic [ref=f4e34]: 删除验证·汽车充气泵
+            - generic [ref=f4e35]:
+              - generic [ref=f4e36]:
+                - heading "删除验证·汽车充气泵" [level=1] [ref=f4e37]
+                - paragraph [ref=f4e38]: 合成验证用户 · TEST
+              - generic [ref=f4e39]:
+                - button "立项提案" [ref=f4e40] [cursor=pointer]
+                - group [ref=f4e41]:
+                  - generic "更多操作" [active] [ref=f4e42] [cursor=pointer]
+                  - generic [ref=f4e77]:
+                    - button "品类设置" [ref=f4e78] [cursor=pointer]
+                    - button "布局与路线图" [ref=f4e79] [cursor=pointer]
+                    - button "专业资料" [ref=f4e80] [cursor=pointer]
+                    - button "删除品类 删除验证·汽车充气泵" [ref=f4e81] [cursor=pointer]: 删除品类
+                    - button "刷新工作与来源" [ref=f4e82] [cursor=pointer]: 重新读取
+          - generic [ref=f4e45]:
+            - generic [ref=f4e46]:
+              - heading "品类资料" [level=2] [ref=f4e47]
+              - paragraph [ref=f4e48]: 本品类研究供所有型号和提案复用，新提案自动带入共用资料与规格骨架。
+            - navigation "品类资料视图" [ref=f4e49]:
+              - button "规格字典" [ref=f4e50] [cursor=pointer]
+              - button "用户与场景" [ref=f4e51] [cursor=pointer]
+              - button "竞品对标" [ref=f4e52] [cursor=pointer]
+              - button "场景 × 价格带" [ref=f4e53] [cursor=pointer]
+              - button "用户声音" [ref=f4e54] [cursor=pointer]
+              - button "法规认证" [ref=f4e55] [cursor=pointer]
+              - button "测试模板" [ref=f4e56] [cursor=pointer]
+              - button "产品与平台" [ref=f4e57] [cursor=pointer]
+            - generic [ref=f4e58]:
+              - generic [ref=f4e59]:
+                - paragraph [ref=f4e60]: 竞品、提案规格和测试项引用同一个参数及版本。
+                - button "添加参数" [ref=f4e61] [cursor=pointer]
+              - generic [ref=f4e62]:
+                - table [ref=f4e63]:
+                  - rowgroup [ref=f4e64]:
+                    - row [ref=f4e65]:
+                      - columnheader "参数" [ref=f4e66]
+                      - columnheader "单位" [ref=f4e67]
+                      - columnheader "标准测试条件" [ref=f4e68]
+                      - columnheader "方向" [ref=f4e69]
+                      - columnheader "版本" [ref=f4e70]
+                      - columnheader [ref=f4e71]
+                  - rowgroup
+                - paragraph [ref=f4e72]: 字典尚未定义。先确定要比较的参数、单位和测试条件，提案就能自动生成骨架。
+  - button "打开小Pai" [ref=f4e73] [cursor=pointer]
+```

@@ -1,0 +1,37 @@
+{
+  "captured_at": "2026-09-08T20:07:50.730044+00:00",
+  "git_head": "8d2ec5c75b9296b86e552582cdc44e69e9bc7d68",
+  "python": "3.12.10",
+  "full_test_started_at": "2026-09-08T20:03:06.572653+00:00",
+  "concurrent_python_changes": [
+    "server/app/ai/provider_adapters.py",
+    "server/app/ai/application_gateway.py",
+    "server/app/api/ai.py",
+    "server/tests/test_test_plan_sources.py",
+    "server/tests/test_model_provider_adapters.py"
+  ],
+  "files": {
+    ".env.example": "67cb8de0c88a83c0f79f294af37a2187fd6808bfb9a3e03e47c680e46574f900",
+    ".env.production.example": "7d21fe256d428692482878531615ac81352549cd454ebfb427c3b702c0e5d0d6",
+    "compose.production.yaml": "bbe593544722b05f5af44a1bfd392a3980cb2190db0eac4083111223c5101ab6",
+    "compose.production-smoke.yaml": "553e4a0b5b0f3240f1861f46a20c298327a01002ee3defa178e6f8dfc29b36f4",
+    "scripts/dev.sh": "85362a085d519dc4eb97cacaf7b05ec820e7cab9f32571c398f96e23584a9eb6",
+    "scripts/deploy-ecs.sh": "d848c101e2bc1baa6a504aee679fdd87f92d0b8fd01fe4e24efeefe85d71fd26",
+    "server/app/automation/__init__.py": "eb7e45efc176faf8d59f9ea2ab52899a743ed8f427c4dc3239e79205455035e9",
+    "server/app/automation/reminders.py": "74d2f38f3cd0ed389e5a632894d7ed43e907aa4513c569f247b6fbcb1e56643c",
+    "server/app/domain/reminders.py": "debf7a825f82c76330c2d04e09e0f0ed4eda6cccb9f18058f2dd807299ee65bb",
+    "server/app/domain/risk_candidates.py": "1bfd0d893f5da22b9cd02eccd3a480f996d01398b3c59c53b734b55af06a7cc4",
+    "server/app/integrations/reminder_delivery.py": "7686252cd0b6436550476141aa2d607fb5edf1d17f09ad6292cf4d0d3f7710b3",
+    "server/app/integrations/dingtalk_outbox.py": "decb4128d9af391f0ba7788293a79e61ef6b5100fbcec09ad2061b1a16d6eecc",
+    "server/app/settings.py": "21a3ed644bfa8511701303a5947a00267f92b8106b240bd884251c0cc67d7082",
+    "server/scripts/run_reminder_scheduler.py": "bcdc048ef3849eee82e51ec0ae5ac665f60be3fea5f0c83a36fd797a13bd9457",
+    "server/tests/test_reminder_scheduler.py": "79235da19593bc28fccb623bb82e435e3bef587e37e25004ff1f05b09c70f2fa",
+    "server/tests/test_reminders_api.py": "02a999aa1d8ca70960f1266e66fdb9c3caaddcd166952d6602c4314ad7218e2b",
+    "server/tests/test_reminder_delivery.py": "66696a366aae7f6f542bec3a5c6366b948f4c39720ff3f39666515144a22047c",
+    "server/tests/test_production_deployment_contract.py": "7c7b8bfa4fad96f6006598e07615124e563cc1ca53e5e70320c25de571151859",
+    "server/tests/test_dev_runtime_contract.py": "f97ea194171293ab36efcf32127343a69d158c5a409ca9258f8983cd2a3837fc",
+    "docs/runbooks/v1-reminder-scheduler.md": "0c5af15f6f652c1ac2d45d43851c44f70d6574190c59397a533c4d7e9a5d5a6b"
+  },
+  "verified_at": "2026-09-08T20:13:54.765390+00:00",
+  "scope_changed_during_final_verification": false
+}

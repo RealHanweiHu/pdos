@@ -1,0 +1,40 @@
+### Result
+{"failure":{"text":"立项结果与项目承接\n\n连接中断，请重新读取立项结果。\n\n重新读取立项结果","resultLinkCount":0},"recovered":"立项结果与项目承接\n\n新型号：合成客户需求型号\n\n立项定义 v1 · 已封存立项副本\n\n立项保留未知与草稿状态，后续规格冻结在项目内办理。\n\n项目：合成客户需求项目\n\n负责人：Synthetic owner\n\n进入项目驾驶舱\n带入项目的任务与风险 · 2 项\n\n任务 · 噪声条件待确定\n\nSynthetic owner · 2026-10-30 · 已分派\n\n风险 · 噪声\n\nSynthetic owner · 2026-10-30 · 待办理\n\n具名决定与回执","writes":0,"mobile":{"width":320,"scrollWidth":320,"dark":true}}
+### Ran Playwright code
+```js
+await (async(page)=>{
+ await page.setViewportSize({width:1440,height:1000});
+ await page.goto("http://127.0.0.1:3036/categories/acfb7c01-e339-4030-a780-0e4caf6c96aa/proposals/f83517d4-a72e-4803-8d35-aff5f8aea64e");
+ await page.getByRole("region",{name:"G0立项结果",exact:true}).getByRole("link").waitFor({timeout:20000});
+ let writes=0;const onRequest=r=>{if(r.method()==="POST")writes++;};page.on("request",onRequest);
+ await page.evaluate(()=>{
+  window.__g0NativeFetch=window.fetch;
+  let fail=true;
+  window.fetch=(input,init)=>{
+   if(fail&&String(input).endsWith("/handoff")){fail=false;return Promise.reject(new TypeError("Failed to fetch"));}
+   return window.__g0NativeFetch(input,init);
+  };
+ });
+ await page.getByRole("button",{name:"刷新文档与视图",exact:true}).click();
+ const handoff=page.getByRole("region",{name:"G0立项结果",exact:true});
+ await handoff.getByRole("button",{name:"重新读取立项结果",exact:true}).waitFor({timeout:20000});
+ const failure={text:await handoff.innerText(),resultLinkCount:await handoff.getByRole("link").count()};
+ await handoff.scrollIntoViewIfNeeded();
+ await page.screenshot({path:"docs/reports/evidence/pdos-next-m3-20261016/g0-handoff/browser/handoff-read-failure.png"});
+ await page.evaluate(()=>{window.fetch=window.__g0NativeFetch;delete window.__g0NativeFetch;});
+ await handoff.getByRole("button",{name:"重新读取立项结果",exact:true}).click();
+ await handoff.getByRole("link").waitFor({timeout:20000});
+ await handoff.scrollIntoViewIfNeeded();
+ await page.screenshot({path:"docs/reports/evidence/pdos-next-m3-20261016/g0-handoff/browser/customer-handoff-final-desktop-light.png"});
+ await page.setViewportSize({width:320,height:900});
+ await page.evaluate(async()=>{document.documentElement.classList.add("dark");await document.fonts.ready;});
+ await handoff.evaluate(el=>el.scrollIntoView({block:"start"}));
+ await page.screenshot({path:"docs/reports/evidence/pdos-next-m3-20261016/g0-handoff/browser/customer-handoff-final-mobile-dark.png"});
+ const mobile=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains("dark")}));
+ const recovered=await handoff.innerText();page.off("request",onRequest);
+ return {failure,recovered,writes,mobile};
+})(page);
+```
+### Page
+- Page URL: http://127.0.0.1:3036/categories/acfb7c01-e339-4030-a780-0e4caf6c96aa/proposals/f83517d4-a72e-4803-8d35-aff5f8aea64e
+- Page Title: PDOS · 研发工作区

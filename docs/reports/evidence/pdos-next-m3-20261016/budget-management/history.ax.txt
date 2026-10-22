@@ -1,0 +1,274 @@
+Browser tab: 8, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3049/?area=category&category=9286d5ca-462e-47ba-9097-747d40a8db00&bench=settings&view=models&product=f47c3767-2800-42d8-8d69-4fe6bb1d0501".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3049/?area=category&category=9286d5ca-462e-47ba-9097-747d40a8db00&bench=settings&view=models&product=f47c3767-2800-42d8-8d69-4fe6bb1d0501
+	2 container
+		3 link Description: 跳到工作内容, Value: 127.0.0.1:3049/?area=category&category=9286d5ca-462e-47ba-9097-747d40a8db00&bench=settings&view=models&product=f47c3767-2800-42d8-8d69-4fe6bb1d0501#workspace-content
+		4 button 打开导航
+			5 image
+		6 text PDOS
+		7 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			8 image
+		9 checkbox Description: 小Pai 工作栏, Value: 0
+			10 image
+		11 button 切换明暗主题
+			12 image
+		13 container workspace-content
+			14 container 品类工作台区
+				15 link Description: 型号, Value: 127.0.0.1:3049/?area=category&category=9286d5ca-462e-47ba-9097-747d40a8db00&bench=products&view=overview&product=f47c3767-2800-42d8-8d69-4fe6bb1d0501
+				16 link Description: 项目, Value: 127.0.0.1:3049/?area=category&category=9286d5ca-462e-47ba-9097-747d40a8db00&bench=projects&view=overview&product=f47c3767-2800-42d8-8d69-4fe6bb1d0501
+				17 link Description: 知识, Value: 127.0.0.1:3049/?area=category&category=9286d5ca-462e-47ba-9097-747d40a8db00&bench=knowledge&view=sources&product=f47c3767-2800-42d8-8d69-4fe6bb1d0501
+				18 link Description: 设置, Value: 127.0.0.1:3049/?area=category&category=9286d5ca-462e-47ba-9097-747d40a8db00&bench=settings&view=preferences&product=f47c3767-2800-42d8-8d69-4fe6bb1d0501
+				19 button Description: 快速查找入口或型号, Help: 当前品类快速查找 · ⌘ / Ctrl Shift K
+				20 pop up button (collapsed, settable) Description: 当前型号, Value: 合成预算型号, Secondary Actions: Expand
+					21 menu
+						22 (selected) 合成预算型号
+			23 container 设置视图
+				24 link Description: 外观, Value: 127.0.0.1:3049/?area=category&category=9286d5ca-462e-47ba-9097-747d40a8db00&bench=settings&view=preferences&product=f47c3767-2800-42d8-8d69-4fe6bb1d0501
+				25 link Description: AI 运行与费用, Value: 127.0.0.1:3049/?area=category&category=9286d5ca-462e-47ba-9097-747d40a8db00&bench=settings&view=models&product=f47c3767-2800-42d8-8d69-4fe6bb1d0501
+				26 link Description: 原件保留与隔离, Value: 127.0.0.1:3049/?area=category&category=9286d5ca-462e-47ba-9097-747d40a8db00&bench=settings&view=originals&product=f47c3767-2800-42d8-8d69-4fe6bb1d0501
+			27 container
+				28 heading AI 运行与费用, Value: 1
+					29 text AI 运行与费用
+				30 text 个人外观与低频运行管理。
+				31 button 读取当前模型设置
+				32 container 租户模型配置
+					33 heading 模型设置, Value: 2
+						34 text 模型设置
+					35 text 配置用于当前租户。保存或启用后，仍须核对用途资格、本次材料授权与预算。
+					36 text 尚未保存模型配置。
+					37 text 尚未配置模型
+					38 container
+						39 container
+							40 text 协议
+							41 pop up button (collapsed, settable) 协议, Value: OpenAI 兼容, Secondary Actions: Expand
+								42 menu
+									43 (selected) OpenAI 兼容
+									44 Anthropic 原生
+						45 container
+							46 text 服务端点（基础 URL）
+							47 text field (settable) 服务端点（基础 URL）
+						48 container
+							49 text 模型
+							50 text field (settable) 模型
+						51 container
+							52 text 模型版本
+							53 text field (settable) 模型版本
+						54 container
+							55 text 最大输出 tokens
+							56 stepper (settable, integer) 最大输出 tokens, Value: 2048
+						57 container
+							58 text OpenAI 输出参数
+							59 pop up button (collapsed, settable) OpenAI 输出参数, Value: max_completion_tokens, Secondary Actions: Expand
+								60 menu
+									61 (selected) max_completion_tokens
+									62 max_tokens
+						63 container
+							64 text 超时（秒）
+							65 stepper (settable, integer) 超时（秒）, Value: 30
+						66 container
+							67 text 响应上限（字节）
+							68 stepper (settable, integer) 响应上限（字节）, Value: 1048576
+						69 checkbox (settable, integer) Description: 启用此配置, Value: 0
+						70 text 密钥由服务端安全绑定，此处仅显示掩码。任何配置或密钥版本变更都需重新核对资格。
+						71 button 核对并预览
+				72 container 服务商数据协议
+					73 heading 服务商数据协议, Value: 2
+						74 text 服务商数据协议
+					75 button 刷新协议登记
+					76 text 按已签约协议登记允许接收的数据和条款，由租户管理员本人批准。登记在当前租户的所有品类共用；服务商标识须与服务端模型、搜索或读取配置一致。
+					77 text 当前租户尚无服务商协议登记。未签约服务商仅可接收公开或合成资料。
+					78 container
+						79 heading 登记或变更协议, Value: 3
+							80 text 登记或变更协议
+						81 container
+							82 text 服务商标识
+							83 text field (settable) 服务商标识
+						84 container
+							85 text 签约时间（本地时区）
+							86 date field (settable) 签约时间（本地时区）
+								87 container
+									88 stepper
+									89 stepper
+									90 stepper
+									91 stepper
+									92 stepper
+									93 stepper
+								94 pop up button Show local date and time picker Show local date and time picker
+						95 container
+							96 text 到期时间（本地时区）
+							97 date field (settable) 到期时间（本地时区）
+								98 container
+									99 stepper
+									100 stepper
+									101 stepper
+									102 stepper
+									103 stepper
+									104 stepper
+								105 pop up button Show local date and time picker Show local date and time picker
+						106 text 协议允许的数据类别
+						107 checkbox (settable, integer) Description: 公开资料, Value: 0
+						108 checkbox (settable, integer) Description: 合成资料, Value: 0
+						109 checkbox (settable, integer) Description: 内部资料, Value: 0
+						110 checkbox (settable, integer) Description: 客户身份与资料, Value: 0
+						111 checkbox (settable, integer) Description: 客户原件全文, Value: 0
+						112 container
+							113 text 留存条款
+							114 text entry area (settable) 留存条款
+						115 container
+							116 text 训练条款
+							117 text entry area (settable) 训练条款
+						118 checkbox (settable, integer) Description: 启用此协议登记（取消勾选以停用）, Value: 1
+						119 button 核对协议并预览
+				120 container 我的模型预算
+					121 heading 我的模型预算, Value: 2
+						122 text 我的模型预算
+					123 button 刷新预算与用量
+					124 text 本人预算在当前租户跨品类、跨运行累计。配置额度不会充值或发起模型调用；实际调用仍核对协议、资格与当前权限。
+					246 text 新预算已建立 · 回执 e1aa1f25-54a3-454b-be11-f94b9dcb08fd
+					127 container
+						128 text 本人预算配置 · 第  3  版
+					129 container
+						130 heading 新工作将绑定此预算 · 第 3 版, Value: 3
+							131 text 新工作将绑定此预算  · 第   版
+						132 text 费用：已计  0  · 占用  0  · 额度  1.250001  USD 调用  0  /  20  次 输入：已用  0  · 占用  0  /  100000  tokens 输出：已用  0  · 占用  0  /  10000  tokens 预算  0dbf2dcc-e341-4359-96c5-cc3bf32e9e48
+					133 button 核对并停用全部活动预算
+					134 container
+						135 heading 建立新预算, Value: 3
+							136 text 建立新预算
+						137 text 确认后更换本人活动预算，旧用量和占用保留。已发出的调用继续归原预算结算。
+						138 container
+							139 text 费用额度（USD）
+							140 text field (settable) 费用额度（USD）
+						141 container
+							142 text 调用次数额度
+							143 stepper (settable) 调用次数额度
+						144 container
+							145 text 输入 tokens 额度
+							146 stepper (settable) 输入 tokens 额度
+						147 container
+							148 text 输出 tokens 额度
+							149 stepper (settable) 输出 tokens 额度
+						150 button 核对新预算并预览
+					247 container
+						248 button (expanded) 查看本人预算历史, Secondary Actions: Collapse
+							249 text 查看本人预算历史
+						250 container
+							251 text 活动  ·  2026/10/16 13:47:39  · 第  3  版
+						252 container
+							253 text 费用：已计  0  · 占用  0  · 额度  1.250001  USD
+						254 container
+							255 text 调用  0  /  20  次
+						256 container
+							257 text 输入：已用  0  · 占用  0  /  100000  tokens
+						258 container
+							259 text 输出：已用  0  · 占用  0  /  10000  tokens
+						260 container
+							261 text 预算  0dbf2dcc-e341-4359-96c5-cc3bf32e9e48
+							262 text 变更回执： e1aa1f25-54a3-454b-be11-f94b9dcb08fd
+						263 container
+							264 text 已停用  ·  2026/10/16 13:47:00  · 第  2  版
+						265 container
+							266 text 费用：已计  0  · 占用  0  · 额度  1.250001  USD
+						267 container
+							268 text 调用  0  /  20  次
+						269 container
+							270 text 输入：已用  0  · 占用  0  /  100000  tokens
+						271 container
+							272 text 输出：已用  0  · 占用  0  /  10000  tokens
+						273 container
+							274 text 预算  d53c5913-7995-400c-9bf8-54b74f9cb3cb
+							275 text 变更回执： 3f1f5d90-bcfc-4cc2-9d57-fa159a3fc83a
+				153 container 租户技能包
+					154 heading 租户技能包, Value: 2
+						155 text 租户技能包
+					156 button 刷新技能状态
+					157 text 技能启用状态在当前租户所有品类共用，由管理员核对后一次确认。启用只开放该能力，不授予自动写入资格；实际调用仍核对当前权限、协议、资格和预算。
+					158 content list
+						159 container
+							160 heading 品类边界澄清, Value: 3
+								161 text 品类边界澄清
+							162 text 未启用 按依赖顺序追问（每次最多三问、推荐答案不预选）确定品类边界，未明确项作为显式假设，起草可一次确认的品类候选。 配置  0.2.1-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							163 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								164 text 查看领域动作与回执
+							165 button 启用品类边界澄清
+						166 container
+							167 heading 竞品比较, Value: 3
+								168 text 竞品比较
+							169 text 未启用 按规格字典参数版本做竞品与我方现款/目标的同口径对比，区分实测、宣传、推断、未知，口径不同就分组标注，数值比较交给 calc.spec_compare。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							170 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								171 text 查看领域动作与回执
+							172 button 启用竞品比较
+						173 container
+							174 heading 派生差异分析, Value: 3
+								175 text 派生差异分析
+							176 text 未启用 以原型号已发布定义为基线，把改动说明拆成规格、BOM、认证、模具、成本及其他差异，区分直接差异与推断的传导影响，写明沿用范围和待专家项，作为派生提案的立项版定义草稿。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							177 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								178 text 查看领域动作与回执
+							179 button 启用派生差异分析
+						180 container
+							181 heading 资料查漏, Value: 3
+								182 text 资料查漏
+							183 text 未启用 检查立项提案或型号定义的缺项、冲突与口径问题（缺单位/工况/方法、未映射参数、来源缺失、方案不足、未知项没有待决问题等），按严重度排序，并把需要人处理的项整理成待决问题候选。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							184 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								185 text 查看领域动作与回执
+							186 button 启用资料查漏
+						187 container
+							188 heading 用户任务分析, Value: 3
+								189 text 用户任务分析
+							190 text 未启用 从用户声音、场景与研究证据中整理目标用户要完成的工作（JTBD）、完整使用路径与购买标准，区分有证据的发现和待验证假设。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							191 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								192 text 查看领域动作与回执
+							193 button 启用用户任务分析
+						194 container
+							195 heading 机会评估, Value: 3
+								196 text 机会评估
+							197 text 未启用 收集机会评分与市场规模所需的输入并逐项注明来源、区间和性质，调用计算工具得到结果，再解释驱动因素与不确定性；模型不自报任何规模或分数。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							198 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								199 text 查看领域动作与回执
+							200 button 启用机会评估
+						201 container
+							202 heading 方案比较, Value: 3
+								203 text 方案比较
+							204 text 未启用 为立项提案起草 2–3 个在决策上真正不同的方案（可含"沿用现款"或"不做"），按同一组维度写定位、关键差异、大致成本与周期和取舍；成本由计算工具给出，选择留给人。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							205 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								206 text 查看领域动作与回执
+							207 button 启用方案比较
+						208 container
+							209 heading 价格带分析, Value: 3
+								210 text 价格带分析
+							211 text 未启用 在统一价格口径（币种、日期、地区、渠道、零售或促销、含税运、配置）下整理竞品与我方价格点，用 calc.price_band 得到价格带分布与目标价位置；分组、分档、分位和换汇都交计算工具。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							212 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								213 text 查看领域动作与回执
+							214 button 启用价格带分析
+						215 container
+							216 heading 立项提案起草, Value: 3
+								217 text 立项提案起草
+							218 text 未启用 在当前品类内按客户需求、自主新品、派生迭代三个入口起草或修订立项提案，以条目级补丁写入草稿，标明来源、状态与未知，并只提少量关键问题。 配置  0.2.2-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							219 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								220 text 查看领域动作与回执
+							221 button 启用立项提案起草
+						222 container
+							223 heading 公开研究, Value: 3
+								224 text 公开研究
+							225 text 未启用 把研究问题拆成并行的公开来源子任务，交回带可核原文片段的台账、发现和未答问题；只研究，不替用户下结论或写提案。 配置  0.2.1-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							226 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								227 text 查看领域动作与回执
+							228 button 启用公开研究
+						229 container
+							230 heading 用户痛点归类, Value: 3
+								231 text 用户痛点归类
+							232 text 未启用 把评论、退货原因等用户声音按痛点归类，每类给可核原文片段，样本量与占比由代码计算，并按型号、渠道、时间区分。 配置  0.2.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							233 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								234 text 查看领域动作与回执
+							235 button 启用用户痛点归类
+						236 container
+							237 heading 客户要求抽取, Value: 3
+								238 text 客户要求抽取
+							239 text 未启用 经隔离子任务从客户 RFQ、规格书、图纸说明和邮件中逐条抽取需求，保留原文位置、数值、单位、工况、否定与例外，映射到规格字典并登记为证据，列出冲突、未知、差距和待问客户/专家的问题。 配置  0.4.0-draft  · 状态第  0  版 尚无 T0 审阅记录。
+							240 button (collapsed) 查看领域动作与回执, Secondary Actions: Expand
+								241 text 查看领域动作与回执
+							242 button 启用客户要求抽取
+				243 heading 调用与费用核对, Value: 2
+					244 text 调用与费用核对
+				245 text 当前没有已登记的模型调用。可在模型设置中核对配置与权限。
+
+The focused UI element is 248 button (expanded) 查看本人预算历史, Secondary Actions: Collapse

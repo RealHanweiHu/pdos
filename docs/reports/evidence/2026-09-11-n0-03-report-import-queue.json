@@ -1,0 +1,69 @@
+{
+  "work_item": "N0-03",
+  "status": "partial",
+  "date": "2026-09-11",
+  "migration": "0094_report_import_queue",
+  "tests": {
+    "backend_first_pass": 33,
+    "backend_final_targeted_pass": 7,
+    "backend_distinct_passed": 35,
+    "new_queue_cases": 6,
+    "frontend_distinct_passed": 15,
+    "total_distinct_passed": 50,
+    "overlapping_results_excluded": true
+  },
+  "static_checks": {
+    "mypy_files": 7,
+    "ruff_files": 10,
+    "eslint_files": 5,
+    "typescript_full": true,
+    "common_exports": 4,
+    "runtime_exports": 5
+  },
+  "database": {
+    "database": "pdos_test",
+    "head": "0094_report_import_queue",
+    "constraints": {
+      "application_import_inputs_pkey": "PRIMARY KEY (id)",
+      "application_import_inputs_tenant_id_batch_id_fkey": "FOREIGN KEY (tenant_id, batch_id) REFERENCES cehub_quality.test_report_import_batches(tenant_id, id) ON DELETE RESTRICT",
+      "application_import_inputs_tenant_id_plan_id_fkey": "FOREIGN KEY (tenant_id, plan_id) REFERENCES cehub_quality.test_plans(tenant_id, id) ON DELETE RESTRICT",
+      "application_import_inputs_tenant_id_project_id_fkey": "FOREIGN KEY (tenant_id, project_id) REFERENCES cehub_project.projects(tenant_id, id) ON DELETE RESTRICT",
+      "application_import_inputs_tenant_id_run_id_fkey": "FOREIGN KEY (tenant_id, run_id) REFERENCES cehub_ai.agent_runs(tenant_id, id) ON DELETE RESTRICT",
+      "ck_application_import_inputs_resolution": "CHECK ((((resolved_at IS NULL) AND (batch_id IS NULL) AND (error_code IS NULL)) OR ((resolved_at IS NOT NULL) AND (resolved_at >= created_at) AND (((batch_id IS NOT NULL) AND (error_code IS NULL)) OR ((batch_id IS NULL) AND (error_code IS NOT NULL))))))",
+      "ck_application_import_inputs_size": "CHECK ((((byte_size >= 1) AND (byte_size <= 20971520)) AND (length((content_sha256)::text) = 64)))",
+      "uq_application_import_input_run": "UNIQUE (tenant_id, run_id)"
+    },
+    "restricted_roles": [
+      {
+        "rolname": "pdos_worker",
+        "can_read": false,
+        "can_insert": false
+      },
+      {
+        "rolname": "pdos_agent",
+        "can_read": false,
+        "can_insert": false
+      }
+    ],
+    "protect_trigger": [
+      "protect_application_import_input"
+    ]
+  },
+  "frontend_copy": {
+    "source_files_identical": 319,
+    "matching_lockfile": true,
+    "temporary_directory_removed": true
+  },
+  "scope": {
+    "async_enabled_by_default": false,
+    "real_model_calls": false,
+    "production_changed": false,
+    "git_push": false,
+    "exit_approved": false
+  },
+  "approved_manifest_sha256": {
+    "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+    "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+  },
+  "temporary_test_container_removed": true
+}

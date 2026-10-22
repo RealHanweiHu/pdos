@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="11" skipped="0" tests="11" time="5.449" timestamp="2026-10-11T00:52:33.893911-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_actual_t1_sources_signature_and_replay" time="1.104"><failure message="AttributeError: 'KernelStore' object has no attribute 'assert_current'">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_personal_candidate_actual0')
+
+    def test_personal_candidate_actual_t1_sources_signature_and_replay(setup, tmp_path):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_personal_candidate_actual0')
+sources = True
+
+    def personal_fixture(setup, tmp_path, *, sources=True):
+        f = ledger()
+        f.scope = replace(f.scope, tenant_id=setup.tenant, requester_id=setup.human,
+                          writer_id=setup.agent, category_id=None, product_id=None, proposal_id=None)
+        for name in ("tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id"):
+            setattr(f.run, name, getattr(f.scope, name))
+        f.run.trigger, f.run.goal = "dialogue", "合成个人新品类研究"
+        f.run.intent_key, f.run.intent_digest = str(uuid4()), digest(str(uuid4()))
+        f.run.read_sources = []
+        skill = f.catalog._skills["category_framing"]
+        bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
+                             load_event_id=uuid4())
+        binding = ModelBinding(
+            model_version=f.route.version, model_route_digest=f.route.digest,
+            tool_definitions_digest=digest(f.registry.definitions()), prompt_digest=digest("prefix"),
+            isolation="main", cancel_epoch=0, loaded_skills=(bound,),
+        )
+        f.run.versions = {
+            "model_version": f.route.version, "model_route_digest": f.route.digest,
+            "tool_definitions": {"main": binding.tool_definitions_digest,
+                                 "research": digest("research tools")},
+            "prompt_prefixes": {"main": binding.prompt_digest, "research": digest("research prefix")},
+        }
+        with tenant_session(setup.admin, setup.tenant, actor_id=setup.human) as session:
+            session.expire_on_commit = False
+            session.add(AgentSession(id=f.scope.session_id, tenant_id=setup.tenant,
+                                     owner_id=setup.human, category_id=None))
+            session.flush()
+            session.add(f.run)
+            session.flush()
+            session.add_all([
+                TenantSkillEnablement(tenant_id=setup.tenant, skill_key=skill.key,
+                                      enabled=True, pilot=False, qualification_revoked=True),
+                AgentEvent(id=bound.load_event_id, tenant_id=setup.tenant, run_id=f.run.id,
+                           sequence=1, body={"type": "skill_loaded", "key": bound.key,
+                                             "version": bound.version, "digest": bound.digest,
+                                             "isolation": "main"}),
+            ])
+        f.store = KernelStore(setup.engine)
+&gt;       f.artifacts = ResearchArtifacts(tmp_path / "research", current=f.store.assert_current)
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'KernelStore' object has no attribute 'assert_current'
+
+tests/agent_kernel/test_category_candidate_transactions.py:72: AttributeError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_whole_groups_may_be_omitted[omit0]" time="0.393"><failure message="AttributeError: 'KernelStore' object has no attribute 'assert_current'">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_personal_candidate_whole_0')
+omit = ('knowledge',)
+
+    @pytest.mark.parametrize("omit", [("knowledge",), ("parameters",),
+                                       ("knowledge", "parameters", "snapshot_refs")])
+    def test_personal_candidate_whole_groups_may_be_omitted(setup, tmp_path, omit):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:174: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_personal_candidate_whole_0')
+sources = True
+
+    def personal_fixture(setup, tmp_path, *, sources=True):
+        f = ledger()
+        f.scope = replace(f.scope, tenant_id=setup.tenant, requester_id=setup.human,
+                          writer_id=setup.agent, category_id=None, product_id=None, proposal_id=None)
+        for name in ("tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id"):
+            setattr(f.run, name, getattr(f.scope, name))
+        f.run.trigger, f.run.goal = "dialogue", "合成个人新品类研究"
+        f.run.intent_key, f.run.intent_digest = str(uuid4()), digest(str(uuid4()))
+        f.run.read_sources = []
+        skill = f.catalog._skills["category_framing"]
+        bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
+                             load_event_id=uuid4())
+        binding = ModelBinding(
+            model_version=f.route.version, model_route_digest=f.route.digest,
+            tool_definitions_digest=digest(f.registry.definitions()), prompt_digest=digest("prefix"),
+            isolation="main", cancel_epoch=0, loaded_skills=(bound,),
+        )
+        f.run.versions = {
+            "model_version": f.route.version, "model_route_digest": f.route.digest,
+            "tool_definitions": {"main": binding.tool_definitions_digest,
+                                 "research": digest("research tools")},
+            "prompt_prefixes": {"main": binding.prompt_digest, "research": digest("research prefix")},
+        }
+        with tenant_session(setup.admin, setup.tenant, actor_id=setup.human) as session:
+            session.expire_on_commit = False
+            session.add(AgentSession(id=f.scope.session_id, tenant_id=setup.tenant,
+                                     owner_id=setup.human, category_id=None))
+            session.flush()
+            session.add(f.run)
+            session.flush()
+            session.add_all([
+                TenantSkillEnablement(tenant_id=setup.tenant, skill_key=skill.key,
+                                      enabled=True, pilot=False, qualification_revoked=True),
+                AgentEvent(id=bound.load_event_id, tenant_id=setup.tenant, run_id=f.run.id,
+                           sequence=1, body={"type": "skill_loaded", "key": bound.key,
+                                             "version": bound.version, "digest": bound.digest,
+                                             "isolation": "main"}),
+            ])
+        f.store = KernelStore(setup.engine)
+&gt;       f.artifacts = ResearchArtifacts(tmp_path / "research", current=f.store.assert_current)
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'KernelStore' object has no attribute 'assert_current'
+
+tests/agent_kernel/test_category_candidate_transactions.py:72: AttributeError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_whole_groups_may_be_omitted[omit1]" time="0.360"><failure message="AttributeError: 'KernelStore' object has no attribute 'assert_current'">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_personal_candidate_whole_1')
+omit = ('parameters',)
+
+    @pytest.mark.parametrize("omit", [("knowledge",), ("parameters",),
+                                       ("knowledge", "parameters", "snapshot_refs")])
+    def test_personal_candidate_whole_groups_may_be_omitted(setup, tmp_path, omit):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:174: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_personal_candidate_whole_1')
+sources = True
+
+    def personal_fixture(setup, tmp_path, *, sources=True):
+        f = ledger()
+        f.scope = replace(f.scope, tenant_id=setup.tenant, requester_id=setup.human,
+                          writer_id=setup.agent, category_id=None, product_id=None, proposal_id=None)
+        for name in ("tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id"):
+            setattr(f.run, name, getattr(f.scope, name))
+        f.run.trigger, f.run.goal = "dialogue", "合成个人新品类研究"
+        f.run.intent_key, f.run.intent_digest = str(uuid4()), digest(str(uuid4()))
+        f.run.read_sources = []
+        skill = f.catalog._skills["category_framing"]
+        bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
+                             load_event_id=uuid4())
+        binding = ModelBinding(
+            model_version=f.route.version, model_route_digest=f.route.digest,
+            tool_definitions_digest=digest(f.registry.definitions()), prompt_digest=digest("prefix"),
+            isolation="main", cancel_epoch=0, loaded_skills=(bound,),
+        )
+        f.run.versions = {
+            "model_version": f.route.version, "model_route_digest": f.route.digest,
+            "tool_definitions": {"main": binding.tool_definitions_digest,
+                                 "research": digest("research tools")},
+            "prompt_prefixes": {"main": binding.prompt_digest, "research": digest("research prefix")},
+        }
+        with tenant_session(setup.admin, setup.tenant, actor_id=setup.human) as session:
+            session.expire_on_commit = False
+            session.add(AgentSession(id=f.scope.session_id, tenant_id=setup.tenant,
+                                     owner_id=setup.human, category_id=None))
+            session.flush()
+            session.add(f.run)
+            session.flush()
+            session.add_all([
+                TenantSkillEnablement(tenant_id=setup.tenant, skill_key=skill.key,
+                                      enabled=True, pilot=False, qualification_revoked=True),
+                AgentEvent(id=bound.load_event_id, tenant_id=setup.tenant, run_id=f.run.id,
+                           sequence=1, body={"type": "skill_loaded", "key": bound.key,
+                                             "version": bound.version, "digest": bound.digest,
+                                             "isolation": "main"}),
+            ])
+        f.store = KernelStore(setup.engine)
+&gt;       f.artifacts = ResearchArtifacts(tmp_path / "research", current=f.store.assert_current)
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'KernelStore' object has no attribute 'assert_current'
+
+tests/agent_kernel/test_category_candidate_transactions.py:72: AttributeError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_whole_groups_may_be_omitted[omit2]" time="0.457"><failure message="AttributeError: 'KernelStore' object has no attribute 'assert_current'">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_personal_candidate_whole_2')
+omit = ('knowledge', 'parameters', 'snapshot_refs')
+
+    @pytest.mark.parametrize("omit", [("knowledge",), ("parameters",),
+                                       ("knowledge", "parameters", "snapshot_refs")])
+    def test_personal_candidate_whole_groups_may_be_omitted(setup, tmp_path, omit):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:174: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_personal_candidate_whole_2')
+sources = True
+
+    def personal_fixture(setup, tmp_path, *, sources=True):
+        f = ledger()
+        f.scope = replace(f.scope, tenant_id=setup.tenant, requester_id=setup.human,
+                          writer_id=setup.agent, category_id=None, product_id=None, proposal_id=None)
+        for name in ("tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id"):
+            setattr(f.run, name, getattr(f.scope, name))
+        f.run.trigger, f.run.goal = "dialogue", "合成个人新品类研究"
+        f.run.intent_key, f.run.intent_digest = str(uuid4()), digest(str(uuid4()))
+        f.run.read_sources = []
+        skill = f.catalog._skills["category_framing"]
+        bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
+                             load_event_id=uuid4())
+        binding = ModelBinding(
+            model_version=f.route.version, model_route_digest=f.route.digest,
+            tool_definitions_digest=digest(f.registry.definitions()), prompt_digest=digest("prefix"),
+            isolation="main", cancel_epoch=0, loaded_skills=(bound,),
+        )
+        f.run.versions = {
+            "model_version": f.route.version, "model_route_digest": f.route.digest,
+            "tool_definitions": {"main": binding.tool_definitions_digest,
+                                 "research": digest("research tools")},
+            "prompt_prefixes": {"main": binding.prompt_digest, "research": digest("research prefix")},
+        }
+        with tenant_session(setup.admin, setup.tenant, actor_id=setup.human) as session:
+            session.expire_on_commit = False
+            session.add(AgentSession(id=f.scope.session_id, tenant_id=setup.tenant,
+                                     owner_id=setup.human, category_id=None))
+            session.flush()
+            session.add(f.run)
+            session.flush()
+            session.add_all([
+                TenantSkillEnablement(tenant_id=setup.tenant, skill_key=skill.key,
+                                      enabled=True, pilot=False, qualification_revoked=True),
+                AgentEvent(id=bound.load_event_id, tenant_id=setup.tenant, run_id=f.run.id,
+                           sequence=1, body={"type": "skill_loaded", "key": bound.key,
+                                             "version": bound.version, "digest": bound.digest,
+                                             "isolation": "main"}),
+            ])
+        f.store = KernelStore(setup.engine)
+&gt;       f.artifacts = ResearchArtifacts(tmp_path / "research", current=f.store.assert_current)
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'KernelStore' object has no attribute 'assert_current'
+
+tests/agent_kernel/test_category_candidate_transactions.py:72: AttributeError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[wrong_person]" time="0.449"><failure message="AttributeError: 'KernelStore' object has no attribute 'assert_current'">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_actual_candidate_rejects_0')
+change = 'wrong_person'
+
+    @pytest.mark.parametrize("change", ["wrong_person", "name", "partial_group", "unread_quote", "cancelled"])
+    def test_actual_candidate_rejects_changed_identity_content_or_sources(setup, tmp_path, change):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_actual_candidate_rejects_0')
+sources = True
+
+    def personal_fixture(setup, tmp_path, *, sources=True):
+        f = ledger()
+        f.scope = replace(f.scope, tenant_id=setup.tenant, requester_id=setup.human,
+                          writer_id=setup.agent, category_id=None, product_id=None, proposal_id=None)
+        for name in ("tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id"):
+            setattr(f.run, name, getattr(f.scope, name))
+        f.run.trigger, f.run.goal = "dialogue", "合成个人新品类研究"
+        f.run.intent_key, f.run.intent_digest = str(uuid4()), digest(str(uuid4()))
+        f.run.read_sources = []
+        skill = f.catalog._skills["category_framing"]
+        bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
+                             load_event_id=uuid4())
+        binding = ModelBinding(
+            model_version=f.route.version, model_route_digest=f.route.digest,
+            tool_definitions_digest=digest(f.registry.definitions()), prompt_digest=digest("prefix"),
+            isolation="main", cancel_epoch=0, loaded_skills=(bound,),
+        )
+        f.run.versions = {
+            "model_version": f.route.version, "model_route_digest": f.route.digest,
+            "tool_definitions": {"main": binding.tool_definitions_digest,
+                                 "research": digest("research tools")},
+            "prompt_prefixes": {"main": binding.prompt_digest, "research": digest("research prefix")},
+        }
+        with tenant_session(setup.admin, setup.tenant, actor_id=setup.human) as session:
+            session.expire_on_commit = False
+            session.add(AgentSession(id=f.scope.session_id, tenant_id=setup.tenant,
+                                     owner_id=setup.human, category_id=None))
+            session.flush()
+            session.add(f.run)
+            session.flush()
+            session.add_all([
+                TenantSkillEnablement(tenant_id=setup.tenant, skill_key=skill.key,
+                                      enabled=True, pilot=False, qualification_revoked=True),
+                AgentEvent(id=bound.load_event_id, tenant_id=setup.tenant, run_id=f.run.id,
+                           sequence=1, body={"type": "skill_loaded", "key": bound.key,
+                                             "version": bound.version, "digest": bound.digest,
+                                             "isolation": "main"}),
+            ])
+        f.store = KernelStore(setup.engine)
+&gt;       f.artifacts = ResearchArtifacts(tmp_path / "research", current=f.store.assert_current)
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'KernelStore' object has no attribute 'assert_current'
+
+tests/agent_kernel/test_category_candidate_transactions.py:72: AttributeError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[name]" time="0.337"><failure message="AttributeError: 'KernelStore' object has no attribute 'assert_current'">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_actual_candidate_rejects_1')
+change = 'name'
+
+    @pytest.mark.parametrize("change", ["wrong_person", "name", "partial_group", "unread_quote", "cancelled"])
+    def test_actual_candidate_rejects_changed_identity_content_or_sources(setup, tmp_path, change):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_actual_candidate_rejects_1')
+sources = True
+
+    def personal_fixture(setup, tmp_path, *, sources=True):
+        f = ledger()
+        f.scope = replace(f.scope, tenant_id=setup.tenant, requester_id=setup.human,
+                          writer_id=setup.agent, category_id=None, product_id=None, proposal_id=None)
+        for name in ("tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id"):
+            setattr(f.run, name, getattr(f.scope, name))
+        f.run.trigger, f.run.goal = "dialogue", "合成个人新品类研究"
+        f.run.intent_key, f.run.intent_digest = str(uuid4()), digest(str(uuid4()))
+        f.run.read_sources = []
+        skill = f.catalog._skills["category_framing"]
+        bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
+                             load_event_id=uuid4())
+        binding = ModelBinding(
+            model_version=f.route.version, model_route_digest=f.route.digest,
+            tool_definitions_digest=digest(f.registry.definitions()), prompt_digest=digest("prefix"),
+            isolation="main", cancel_epoch=0, loaded_skills=(bound,),
+        )
+        f.run.versions = {
+            "model_version": f.route.version, "model_route_digest": f.route.digest,
+            "tool_definitions": {"main": binding.tool_definitions_digest,
+                                 "research": digest("research tools")},
+            "prompt_prefixes": {"main": binding.prompt_digest, "research": digest("research prefix")},
+        }
+        with tenant_session(setup.admin, setup.tenant, actor_id=setup.human) as session:
+            session.expire_on_commit = False
+            session.add(AgentSession(id=f.scope.session_id, tenant_id=setup.tenant,
+                                     owner_id=setup.human, category_id=None))
+            session.flush()
+            session.add(f.run)
+            session.flush()
+            session.add_all([
+                TenantSkillEnablement(tenant_id=setup.tenant, skill_key=skill.key,
+                                      enabled=True, pilot=False, qualification_revoked=True),
+                AgentEvent(id=bound.load_event_id, tenant_id=setup.tenant, run_id=f.run.id,
+                           sequence=1, body={"type": "skill_loaded", "key": bound.key,
+                                             "version": bound.version, "digest": bound.digest,
+                                             "isolation": "main"}),
+            ])
+        f.store = KernelStore(setup.engine)
+&gt;       f.artifacts = ResearchArtifacts(tmp_path / "research", current=f.store.assert_current)
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'KernelStore' object has no attribute 'assert_current'
+
+tests/agent_kernel/test_category_candidate_transactions.py:72: AttributeError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[partial_group]" time="0.352"><failure message="AttributeError: 'KernelStore' object has no attribute 'assert_current'">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_actual_candidate_rejects_2')
+change = 'partial_group'
+
+    @pytest.mark.parametrize("change", ["wrong_person", "name", "partial_group", "unread_quote", "cancelled"])
+    def test_actual_candidate_rejects_changed_identity_content_or_sources(setup, tmp_path, change):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_actual_candidate_rejects_2')
+sources = True
+
+    def personal_fixture(setup, tmp_path, *, sources=True):
+        f = ledger()
+        f.scope = replace(f.scope, tenant_id=setup.tenant, requester_id=setup.human,
+                          writer_id=setup.agent, category_id=None, product_id=None, proposal_id=None)
+        for name in ("tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id"):
+            setattr(f.run, name, getattr(f.scope, name))
+        f.run.trigger, f.run.goal = "dialogue", "合成个人新品类研究"
+        f.run.intent_key, f.run.intent_digest = str(uuid4()), digest(str(uuid4()))
+        f.run.read_sources = []
+        skill = f.catalog._skills["category_framing"]
+        bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
+                             load_event_id=uuid4())
+        binding = ModelBinding(
+            model_version=f.route.version, model_route_digest=f.route.digest,
+            tool_definitions_digest=digest(f.registry.definitions()), prompt_digest=digest("prefix"),
+            isolation="main", cancel_epoch=0, loaded_skills=(bound,),
+        )
+        f.run.versions = {
+            "model_version": f.route.version, "model_route_digest": f.route.digest,
+            "tool_definitions": {"main": binding.tool_definitions_digest,
+                                 "research": digest("research tools")},
+            "prompt_prefixes": {"main": binding.prompt_digest, "research": digest("research prefix")},
+        }
+        with tenant_session(setup.admin, setup.tenant, actor_id=setup.human) as session:
+            session.expire_on_commit = False
+            session.add(AgentSession(id=f.scope.session_id, tenant_id=setup.tenant,
+                                     owner_id=setup.human, category_id=None))
+            session.flush()
+            session.add(f.run)
+            session.flush()
+            session.add_all([
+                TenantSkillEnablement(tenant_id=setup.tenant, skill_key=skill.key,
+                                      enabled=True, pilot=False, qualification_revoked=True),
+                AgentEvent(id=bound.load_event_id, tenant_id=setup.tenant, run_id=f.run.id,
+                           sequence=1, body={"type": "skill_loaded", "key": bound.key,
+                                             "version": bound.version, "digest": bound.digest,
+                                             "isolation": "main"}),
+            ])
+        f.store = KernelStore(setup.engine)
+&gt;       f.artifacts = ResearchArtifacts(tmp_path / "research", current=f.store.assert_current)
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'KernelStore' object has no attribute 'assert_current'
+
+tests/agent_kernel/test_category_candidate_transactions.py:72: AttributeError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[unread_quote]" time="0.329"><failure message="AttributeError: 'KernelStore' object has no attribute 'assert_current'">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_actual_candidate_rejects_3')
+change = 'unread_quote'
+
+    @pytest.mark.parametrize("change", ["wrong_person", "name", "partial_group", "unread_quote", "cancelled"])
+    def test_actual_candidate_rejects_changed_identity_content_or_sources(setup, tmp_path, change):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_actual_candidate_rejects_3')
+sources = True
+
+    def personal_fixture(setup, tmp_path, *, sources=True):
+        f = ledger()
+        f.scope = replace(f.scope, tenant_id=setup.tenant, requester_id=setup.human,
+                          writer_id=setup.agent, category_id=None, product_id=None, proposal_id=None)
+        for name in ("tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id"):
+            setattr(f.run, name, getattr(f.scope, name))
+        f.run.trigger, f.run.goal = "dialogue", "合成个人新品类研究"
+        f.run.intent_key, f.run.intent_digest = str(uuid4()), digest(str(uuid4()))
+        f.run.read_sources = []
+        skill = f.catalog._skills["category_framing"]
+        bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
+                             load_event_id=uuid4())
+        binding = ModelBinding(
+            model_version=f.route.version, model_route_digest=f.route.digest,
+            tool_definitions_digest=digest(f.registry.definitions()), prompt_digest=digest("prefix"),
+            isolation="main", cancel_epoch=0, loaded_skills=(bound,),
+        )
+        f.run.versions = {
+            "model_version": f.route.version, "model_route_digest": f.route.digest,
+            "tool_definitions": {"main": binding.tool_definitions_digest,
+                                 "research": digest("research tools")},
+            "prompt_prefixes": {"main": binding.prompt_digest, "research": digest("research prefix")},
+        }
+        with tenant_session(setup.admin, setup.tenant, actor_id=setup.human) as session:
+            session.expire_on_commit = False
+            session.add(AgentSession(id=f.scope.session_id, tenant_id=setup.tenant,
+                                     owner_id=setup.human, category_id=None))
+            session.flush()
+            session.add(f.run)
+            session.flush()
+            session.add_all([
+                TenantSkillEnablement(tenant_id=setup.tenant, skill_key=skill.key,
+                                      enabled=True, pilot=False, qualification_revoked=True),
+                AgentEvent(id=bound.load_event_id, tenant_id=setup.tenant, run_id=f.run.id,
+                           sequence=1, body={"type": "skill_loaded", "key": bound.key,
+                                             "version": bound.version, "digest": bound.digest,
+                                             "isolation": "main"}),
+            ])
+        f.store = KernelStore(setup.engine)
+&gt;       f.artifacts = ResearchArtifacts(tmp_path / "research", current=f.store.assert_current)
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'KernelStore' object has no attribute 'assert_current'
+
+tests/agent_kernel/test_category_candidate_transactions.py:72: AttributeError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[cancelled]" time="0.341"><failure message="AttributeError: 'KernelStore' object has no attribute 'assert_current'">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_actual_candidate_rejects_4')
+change = 'cancelled'
+
+    @pytest.mark.parametrize("change", ["wrong_person", "name", "partial_group", "unread_quote", "cancelled"])
+    def test_actual_candidate_rejects_changed_identity_content_or_sources(setup, tmp_path, change):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_actual_candidate_rejects_4')
+sources = True
+
+    def personal_fixture(setup, tmp_path, *, sources=True):
+        f = ledger()
+        f.scope = replace(f.scope, tenant_id=setup.tenant, requester_id=setup.human,
+                          writer_id=setup.agent, category_id=None, product_id=None, proposal_id=None)
+        for name in ("tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id"):
+            setattr(f.run, name, getattr(f.scope, name))
+        f.run.trigger, f.run.goal = "dialogue", "合成个人新品类研究"
+        f.run.intent_key, f.run.intent_digest = str(uuid4()), digest(str(uuid4()))
+        f.run.read_sources = []
+        skill = f.catalog._skills["category_framing"]
+        bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
+                             load_event_id=uuid4())
+        binding = ModelBinding(
+            model_version=f.route.version, model_route_digest=f.route.digest,
+            tool_definitions_digest=digest(f.registry.definitions()), prompt_digest=digest("prefix"),
+            isolation="main", cancel_epoch=0, loaded_skills=(bound,),
+        )
+        f.run.versions = {
+            "model_version": f.route.version, "model_route_digest": f.route.digest,
+            "tool_definitions": {"main": binding.tool_definitions_digest,
+                                 "research": digest("research tools")},
+            "prompt_prefixes": {"main": binding.prompt_digest, "research": digest("research prefix")},
+        }
+        with tenant_session(setup.admin, setup.tenant, actor_id=setup.human) as session:
+            session.expire_on_commit = False
+            session.add(AgentSession(id=f.scope.session_id, tenant_id=setup.tenant,
+                                     owner_id=setup.human, category_id=None))
+            session.flush()
+            session.add(f.run)
+            session.flush()
+            session.add_all([
+                TenantSkillEnablement(tenant_id=setup.tenant, skill_key=skill.key,
+                                      enabled=True, pilot=False, qualification_revoked=True),
+                AgentEvent(id=bound.load_event_id, tenant_id=setup.tenant, run_id=f.run.id,
+                           sequence=1, body={"type": "skill_loaded", "key": bound.key,
+                                             "version": bound.version, "digest": bound.digest,
+                                             "isolation": "main"}),
+            ])
+        f.store = KernelStore(setup.engine)
+&gt;       f.artifacts = ResearchArtifacts(tmp_path / "research", current=f.store.assert_current)
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'KernelStore' object has no attribute 'assert_current'
+
+tests/agent_kernel/test_category_candidate_transactions.py:72: AttributeError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_category_transaction_failure_rolls_back_every_fact_and_confirmation" time="0.348"><failure message="AttributeError: 'KernelStore' object has no attribute 'assert_current'">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_category_transaction_fail0')
+
+    def test_category_transaction_failure_rolls_back_every_fact_and_confirmation(setup, tmp_path):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:203: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_category_transaction_fail0')
+sources = True
+
+    def personal_fixture(setup, tmp_path, *, sources=True):
+        f = ledger()
+        f.scope = replace(f.scope, tenant_id=setup.tenant, requester_id=setup.human,
+                          writer_id=setup.agent, category_id=None, product_id=None, proposal_id=None)
+        for name in ("tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id"):
+            setattr(f.run, name, getattr(f.scope, name))
+        f.run.trigger, f.run.goal = "dialogue", "合成个人新品类研究"
+        f.run.intent_key, f.run.intent_digest = str(uuid4()), digest(str(uuid4()))
+        f.run.read_sources = []
+        skill = f.catalog._skills["category_framing"]
+        bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
+                             load_event_id=uuid4())
+        binding = ModelBinding(
+            model_version=f.route.version, model_route_digest=f.route.digest,
+            tool_definitions_digest=digest(f.registry.definitions()), prompt_digest=digest("prefix"),
+            isolation="main", cancel_epoch=0, loaded_skills=(bound,),
+        )
+        f.run.versions = {
+            "model_version": f.route.version, "model_route_digest": f.route.digest,
+            "tool_definitions": {"main": binding.tool_definitions_digest,
+                                 "research": digest("research tools")},
+            "prompt_prefixes": {"main": binding.prompt_digest, "research": digest("research prefix")},
+        }
+        with tenant_session(setup.admin, setup.tenant, actor_id=setup.human) as session:
+            session.expire_on_commit = False
+            session.add(AgentSession(id=f.scope.session_id, tenant_id=setup.tenant,
+                                     owner_id=setup.human, category_id=None))
+            session.flush()
+            session.add(f.run)
+            session.flush()
+            session.add_all([
+                TenantSkillEnablement(tenant_id=setup.tenant, skill_key=skill.key,
+                                      enabled=True, pilot=False, qualification_revoked=True),
+                AgentEvent(id=bound.load_event_id, tenant_id=setup.tenant, run_id=f.run.id,
+                           sequence=1, body={"type": "skill_loaded", "key": bound.key,
+                                             "version": bound.version, "digest": bound.digest,
+                                             "isolation": "main"}),
+            ])
+        f.store = KernelStore(setup.engine)
+&gt;       f.artifacts = ResearchArtifacts(tmp_path / "research", current=f.store.assert_current)
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'KernelStore' object has no attribute 'assert_current'
+
+tests/agent_kernel/test_category_candidate_transactions.py:72: AttributeError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_sql_cannot_insert_ai_category_without_actual_receipt_or_change_run_identity" time="0.453"><failure message="AttributeError: 'KernelStore' object has no attribute 'assert_current'">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_sql_cannot_insert_ai_cate0')
+
+    def test_sql_cannot_insert_ai_category_without_actual_receipt_or_change_run_identity(setup, tmp_path):
+&gt;       f = personal_fixture(setup, tmp_path, sources=False)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:230: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-123/test_sql_cannot_insert_ai_cate0')
+sources = False
+
+    def personal_fixture(setup, tmp_path, *, sources=True):
+        f = ledger()
+        f.scope = replace(f.scope, tenant_id=setup.tenant, requester_id=setup.human,
+                          writer_id=setup.agent, category_id=None, product_id=None, proposal_id=None)
+        for name in ("tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id"):
+            setattr(f.run, name, getattr(f.scope, name))
+        f.run.trigger, f.run.goal = "dialogue", "合成个人新品类研究"
+        f.run.intent_key, f.run.intent_digest = str(uuid4()), digest(str(uuid4()))
+        f.run.read_sources = []
+        skill = f.catalog._skills["category_framing"]
+        bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
+                             load_event_id=uuid4())
+        binding = ModelBinding(
+            model_version=f.route.version, model_route_digest=f.route.digest,
+            tool_definitions_digest=digest(f.registry.definitions()), prompt_digest=digest("prefix"),
+            isolation="main", cancel_epoch=0, loaded_skills=(bound,),
+        )
+        f.run.versions = {
+            "model_version": f.route.version, "model_route_digest": f.route.digest,
+            "tool_definitions": {"main": binding.tool_definitions_digest,
+                                 "research": digest("research tools")},
+            "prompt_prefixes": {"main": binding.prompt_digest, "research": digest("research prefix")},
+        }
+        with tenant_session(setup.admin, setup.tenant, actor_id=setup.human) as session:
+            session.expire_on_commit = False
+            session.add(AgentSession(id=f.scope.session_id, tenant_id=setup.tenant,
+                                     owner_id=setup.human, category_id=None))
+            session.flush()
+            session.add(f.run)
+            session.flush()
+            session.add_all([
+                TenantSkillEnablement(tenant_id=setup.tenant, skill_key=skill.key,
+                                      enabled=True, pilot=False, qualification_revoked=True),
+                AgentEvent(id=bound.load_event_id, tenant_id=setup.tenant, run_id=f.run.id,
+                           sequence=1, body={"type": "skill_loaded", "key": bound.key,
+                                             "version": bound.version, "digest": bound.digest,
+                                             "isolation": "main"}),
+            ])
+        f.store = KernelStore(setup.engine)
+&gt;       f.artifacts = ResearchArtifacts(tmp_path / "research", current=f.store.assert_current)
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'KernelStore' object has no attribute 'assert_current'
+
+tests/agent_kernel/test_category_candidate_transactions.py:72: AttributeError</failure></testcase></testsuite></testsuites>

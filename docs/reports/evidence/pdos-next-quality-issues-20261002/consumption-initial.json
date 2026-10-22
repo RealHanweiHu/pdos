@@ -1,0 +1,18 @@
+{
+  "AGENTS.md": "908eac11bb376e34ad204907dfdb8da748c3141e70ca10e22cfe67f8a36a4156",
+  "tasks/ai-native-integrated-todo.md": "2a1cd1eef2e75fe9b1f097601bbc91e85b65169ff813f29221ff27defb3cee90",
+  "docs/design/2026-10-02-pdos-next-execution-plan.md": "3fa2bc7c35da22f66459e405da812ef76394987de055ee2ec32f70e0d60a959a",
+  "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md": "87954bc03f8556a74b0d24a32a268f131717ce3797ead13fcfb92025302a75e6",
+  "pdos-next/server/pdos_next/schemas/verification/contracts.py": "5262b95c950a20625da5abb54b4c47dc5e77bb790f97518ca21cd3c422039734",
+  "pdos-next/server/pdos_next/domain/verification/ports.py": "6661a1dd3f13ec071bc842781a48357ea8d4787cf5701f93245fbb13dd738c39",
+  "pdos-next/server/pdos_next/domain/verification/handlers.py": "d4c762cc786b7d46ae488da2ff0832c46191eedb0a2d89e20d993717b6349e48",
+  "pdos-next/server/pdos_next/domain/verification/rules.py": "17c094742a07eed64ee5dbf9c9a628b611d5feeb2b157e52d0371f335ef280c7",
+  "docs/reports/evidence/pdos-next-verification-20261002/integration.md": "d330b4773a05ecae6a4c71a6f7a75cf363ac55f07ae5f22c70463dbe96a3dd41",
+  "pdos-next/server/pdos_next/domain/build_execution/models.py": "87560e4c5836f8f956249c6d2aad98fffb6659e97079365542ab5ddf9aeb4413",
+  "pdos-next/server/pdos_next/domain/build_execution/schemas.py": "6570827c0c286e57a3264cd190ce731ae0e1950daccbf6caf297073bdedd8b81",
+  "pdos-next/server/pdos_next/domain/configurations/models.py": "7d366adab2fd2e9cf04a570f7b5821a1efe0a60ead9894954d11fb4c0d2606b4",
+  "pdos-next/web/src/components/ui/button.tsx": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24",
+  "pdos-next/web/src/lib/utils.ts": "64fc84c1be627f0d586fb4ba64d824a1604f44282381f5bae68cdf86e10bb6ec",
+  "pdos-next/web/tsconfig.json": "ce638cf8d45d1b4718fa3943a514811886830e0f9d9f14e9f4ebcdfa15e93f3e",
+  "pdos-next/web/package.json": "efaf6569960e954d39d6a7f2ddefc2d87c61d1fbac447f1ebb47d20abe62c9e8"
+}

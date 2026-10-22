@@ -1,0 +1,80 @@
+{
+  "scenario": "one_actual_approved_configuration_implementation_chain",
+  "attempts": [
+    {
+      "name": "actual-implementation-01",
+      "outcome": "failed",
+      "cause": "Test material helper checked only direct Spec/BOM edge; production supports the actual Spec/EngineeringConfiguration/BOM path. Corrected helper without adding Spec NA."
+    },
+    {
+      "name": "actual-implementation-02",
+      "outcome": "failed",
+      "cause": "Existing DB publication atom supported v1 material only. Added reviewed monotonic s0_0775, strict v2 field checks and protected downgrade; predecessor guard and publication group retained."
+    },
+    {
+      "name": "actual-implementation-03",
+      "outcome": "failed",
+      "cause": "Test expected internal SELF_APPROVAL_FORBIDDEN as public code; actual registered mapping returns FORBIDDEN_SCOPE plus detail.reason. Corrected both exact assertions; self-approval still rejected and no state change."
+    },
+    {
+      "name": "actual-implementation-04",
+      "outcome": "failed",
+      "cause": "Cross-reader original_authority constructed the publisher Context inside the peer reader transaction; professional.recheck_snapshot correctly rejected the context mismatch. Fixed retained reads to keep actual reader ctx and separately bind frozen subject_id to original actor, including ApprovedImplementationOwner retained reads. require_context remains unchanged."
+    },
+    {
+      "name": "actual-implementation-05",
+      "outcome": "failed",
+      "cause": "Peer could read shared receipt but own-actor RequestKey RLS correctly hid publisher keys. Added narrow scoped read-only attestation s0_0776; retained group verification uses its boolean result only for a readable peer receipt. Own-key RLS unchanged."
+    },
+    {
+      "name": "actual-implementation-06",
+      "outcome": "interrupted",
+      "cause": "Stopped diagnostic observer run after detecting omitted default guard argument in the observer wrapper; corrected only private diagnostics before next immutable capture. Does not count as a passed scenario."
+    },
+    {
+      "name": "actual-implementation-07",
+      "outcome": "failed",
+      "passed_before_failure": "Actual private receipt negative, whole coverage and plan, both independent professional T2 approvals; no implementation claimed",
+      "cause": "Test configuration successor command supplied only new source and omitted real inherited predecessor/definition/BOM reads. Production guard correctly rejected MISSING_REQUIRED_EVIDENCE. Test now merges exact predecessor reads and, for manufacturing, the actual new engineering configuration reads; production guard unchanged."
+    },
+    {
+      "name": "actual-implementation-08",
+      "outcome": "failed",
+      "passed_before_failure": "Both T2 approvals, engineering v2 and first real ImplementationCapture saved",
+      "cause": "Actual implementation-captures route returned its ORM instance; transaction commit expired attributes and FastAPI encoded an empty object. Added explicit transaction-local public capture_view and HTTP regression using genuine SQLAlchemy expiration/detachment. No business or authorization guards weakened."
+    },
+    {
+      "name": "actual-implementation-09",
+      "outcome": "failed",
+      "passed_before_failure": "Both professional approvals, actual engineering v2, complete nonempty HTTP capture and replay, real implementation inputs and T1 preview",
+      "cause": "Common publication attachment still required CoverageRead for every operation and rejected the new RetainedCoverageRead at implementation commit. Attachment now requires the exact operation-specific opaque type/token: retained only for implementation, current for impact/preparation/approval. Existing final source/access/UOW/closure/deadline/consumer fences unchanged."
+    },
+    {
+      "name": "actual-implementation-10",
+      "outcome": "passed",
+      "source_changed": [],
+      "unique_scenario": 1
+    }
+  ],
+  "test_plan_validity": "The explicit synthetic plan is now one hour to avoid spending its arbitrary short business interval on sequential fixture/owner checks; common confirmation TTL, authority/source windows and all expiry guards are unchanged. No performance acceptance is inferred.",
+  "focused_validation_after_0776": {
+    "shared_groups": 8,
+    "peer_other_actor_keys_visible": 0,
+    "wrong_tenant_product_unknown_receipt": false,
+    "source": "retained-group-after-0776.json"
+  },
+  "tail_regression_initial_fixture_failure": {
+    "failed": 18,
+    "passed": 50,
+    "cause": "New retained-read test fixture supplied raw UNKNOWN graph instead of graph projected by the actual verified current CoverageRead. Updated fixture to use existing covered_graph; no production owner checks weakened."
+  },
+  "focused_output_preflight": {
+    "passed": true,
+    "separate_prior_synthetic_scope": true,
+    "records_saved": "two actual T1 configuration successors; zero implementation records",
+    "harness_setup_failures": [
+      "test import path corrected before DB mutation",
+      "ISO timestamp corrected to aware datetime before DB mutation"
+    ]
+  }
+}

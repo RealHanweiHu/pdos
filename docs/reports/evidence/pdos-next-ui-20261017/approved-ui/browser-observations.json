@@ -1,0 +1,95 @@
+{
+  "scope": "Independent local production Web build; all API responses synthetic GET fixtures; no business DB/API or model access.",
+  "initial_candidate": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/approved-ui-web-1792241164349140000",
+  "final_candidate": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/approved-ui-web-1792241472461595000",
+  "observed": [
+    {
+      "check": "three views consume same two authorized projects",
+      "result": "passed; final board has no grouping control or drag action"
+    },
+    {
+      "check": "320px dark timeline / project / Pai",
+      "result": "document.scrollWidth=320, viewport=320; local scroll retained"
+    },
+    {
+      "check": "project links",
+      "result": "Build / handoff / results retain actual category/product/project; model-wide issue shortcut omitted"
+    },
+    {
+      "check": "four-time / maturity separation",
+      "result": "forecast stays plan-completion bounds, other times unknown; three maturity blocks distinct"
+    },
+    {
+      "check": "Pai loaded skill / background",
+      "result": "synthetic persisted skill event displayed; same run selected; background closes rail; no POST"
+    },
+    {
+      "check": "network observation",
+      "api_calls_at_observation": 58,
+      "non_get_calls": []
+    },
+    {
+      "check": "failed project GET / explicit retry",
+      "result": {
+        "injected_status": 503,
+        "query_preserved": "便携",
+        "false_empty": false,
+        "error_after_retry": null,
+        "expected_project_recovered": true
+      }
+    },
+    {
+      "check": "product management capability false",
+      "result": {
+        "management_group_visible": false,
+        "Pai_entry_retained": true,
+        "viewport": 1440,
+        "document_width": 1440
+      }
+    }
+  ],
+  "fixture_notes": [
+    "Initial CLI context-level route overrides were shadowed by the page-level fixture; corrected to page-level routes before failure/permission observations. This was not a product defect.",
+    "Initial synthetic candidate page omitted run_id and therefore correctly displayed a scope-read warning; candidate adoption was not part of browser coverage."
+  ],
+  "limits": [
+    "No real PG/RLS login/HTTP integration in this UI batch.",
+    "No model, external data, production, domain approval or write operation.",
+    "UI remains partial: stages/rules/health/freeze, status update objects, work triage/commitments, persistent conversations and remaining page restyling still pending."
+  ],
+  "artifacts": [
+    {
+      "path": "output/playwright/pdos-approved-ui-20261017/projects-light.png",
+      "sha256": "708660e039e401cda8af16335983636f56cf0bed501b015b7691758a247f038b"
+    },
+    {
+      "path": "output/playwright/pdos-approved-ui-20261017/timeline-light.png",
+      "sha256": "88ae422fb20097b3e389549a60954218b7884880b04a8426bb251d1d42ecabef"
+    },
+    {
+      "path": "output/playwright/pdos-approved-ui-20261017/timeline-320-dark.png",
+      "sha256": "52e65768363a76a5abbbcd38a2ad3312f1d9fe6f94a3339de81f42497d0aaddc"
+    },
+    {
+      "path": "output/playwright/pdos-approved-ui-20261017/project-320-dark.png",
+      "sha256": "8df1457823042c2abcb7c5538465a8b3f32691546975d2e7952797eda17f728d"
+    },
+    {
+      "path": "output/playwright/pdos-approved-ui-20261017/pai-320-dark.png",
+      "sha256": "e083d3da60b64d844e2d054a8369ae3121f34e7e7f44307c79dce2a063906ef0"
+    },
+    {
+      "path": "output/playwright/pdos-approved-ui-20261017/final-projects-manager-dark.png",
+      "sha256": "f7f22ef13fa096186ce7a51e3ac1e1027b9756561a2bef6bd9943bfca3dc38ec"
+    },
+    {
+      "path": "output/playwright/pdos-approved-ui-20261017/final-projects-nonmanager-dark.png",
+      "sha256": "6e62b68171f61c8c03f0892ab3390df4b9b4f288f903caba3ec664f48e3b2cd5"
+    }
+  ],
+  "cleanup": {
+    "own_browser": "closed",
+    "own_web_preview": "stopped",
+    "shared_S2_services": "untouched"
+  }
+}

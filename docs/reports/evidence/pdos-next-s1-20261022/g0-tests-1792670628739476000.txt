@@ -1,0 +1,54 @@
+........................                                                 [100%]
+=============================== warnings summary ===============================
+tests/preproject/test_g0.py: 17 warnings
+tests/preproject/test_pilot_g0.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:715: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/preproject/test_g0.py: 100 warnings
+tests/preproject/test_pilot_g0.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:600: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/preproject/test_g0.py: 10 warnings
+tests/preproject/test_pilot_g0.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:880: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/preproject/test_g0.py::test_private_proposal_and_read_only_reviewer_atomic_g0
+tests/preproject/test_g0.py::test_return_edit_and_new_submission
+tests/preproject/test_g0.py::test_fault_rolls_back_decision_results_receipt_and_confirmation
+tests/preproject/test_g0.py::test_sealed_definition_and_database_independence_constraints
+tests/preproject/test_g0.py::test_private_source_is_visible_to_reviewer_and_withdrawal_blocks_approval
+tests/preproject/test_g0.py::test_g0_keeps_native_definition_citations_immutable
+tests/preproject/test_g0.py::test_returned_proposal_writer_can_edit_but_only_owner_can_submit
+tests/preproject/test_pilot_g0.py::test_pilot_owner_appears_and_named_decision_creates_project_once
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:935: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/preproject/test_g0.py::test_private_proposal_and_read_only_reviewer_atomic_g0
+tests/preproject/test_g0.py::test_fault_rolls_back_decision_results_receipt_and_confirmation
+tests/preproject/test_g0.py::test_sealed_definition_and_database_independence_constraints
+tests/preproject/test_g0.py::test_g0_keeps_native_definition_citations_immutable
+tests/preproject/test_pilot_g0.py::test_pilot_owner_appears_and_named_decision_creates_project_once
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/preproject/test_g0.py::test_private_proposal_and_read_only_reviewer_atomic_g0
+tests/preproject/test_g0.py::test_fault_rolls_back_decision_results_receipt_and_confirmation
+tests/preproject/test_g0.py::test_sealed_definition_and_database_independence_constraints
+tests/preproject/test_g0.py::test_g0_keeps_native_definition_citations_immutable
+tests/preproject/test_pilot_g0.py::test_pilot_owner_appears_and_named_decision_creates_project_once
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/preproject/test_g0.py::test_private_proposal_and_read_only_reviewer_atomic_g0
+tests/preproject/test_g0.py::test_fault_rolls_back_decision_results_receipt_and_confirmation
+tests/preproject/test_g0.py::test_sealed_definition_and_database_independence_constraints
+tests/preproject/test_g0.py::test_g0_keeps_native_definition_citations_immutable
+tests/preproject/test_pilot_g0.py::test_pilot_owner_appears_and_named_decision_creates_project_once
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+24 passed, 166 warnings in 39.15s

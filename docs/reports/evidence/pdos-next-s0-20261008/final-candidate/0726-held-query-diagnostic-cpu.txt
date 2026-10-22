@@ -1,0 +1,111 @@
+         1164841 function calls (1045553 primitive calls) in 0.869 seconds
+
+   Ordered by: cumulative time
+   List reduced from 1640 to 60 due to restriction <60>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.871    0.871 service.py:1285(list_quality)
+        1    0.000    0.000    0.620    0.620 service.py:1295(_list_quality)
+        2    0.000    0.000    0.583    0.291 test_read_batch.py:98(observed_retained)
+        2    0.001    0.000    0.583    0.291 retained.py:357(inspect_retained_execution)
+        4    0.000    0.000    0.502    0.126 service.py:85(_result)
+        4    0.001    0.000    0.502    0.126 quality_result_bridge.py:532(fixed_failure_result)
+        2    0.000    0.000    0.489    0.244 service.py:926(_view)
+        2    0.001    0.000    0.363    0.181 service.py:1247(_load)
+  181/162    0.000    0.000    0.259    0.002 {built-in method builtins.next}
+        2    0.000    0.000    0.251    0.125 quality_result_bridge.py:274(read_failure_batch)
+        2    0.000    0.000    0.251    0.125 quality_result_bridge.py:206(_failure_batch)
+      6/3    0.000    0.000    0.251    0.084 contextlib.py:141(__exit__)
+        1    0.000    0.000    0.250    0.250 quality_result_bridge.py:167(_terminal_batch_execution)
+        2    0.000    0.000    0.212    0.106 service.py:384(_scope)
+        4    0.000    0.000    0.185    0.046 service.py:895(inspect_sample)
+        4    0.000    0.000    0.185    0.046 service.py:739(_inspect)
+       22    0.000    0.000    0.158    0.007 service.py:1198(_verify_stored_fingerprint_v2)
+       24    0.000    0.000    0.140    0.006 service.py:1185(_stored_fingerprint_v2)
+41600/443    0.058    0.000    0.127    0.000 copy.py:118(deepcopy)
+ 3505/295    0.016    0.000    0.122    0.000 copy.py:217(_deepcopy_dict)
+        4    0.000    0.000    0.114    0.028 service.py:267(_start_context)
+       75    0.001    0.000    0.106    0.001 session.py:2201(_execute_internal)
+      208    0.001    0.000    0.100    0.000 service.py:74(digest)
+       72    0.000    0.000    0.091    0.001 context.py:306(orm_execute_statement)
+27658/208    0.052    0.000    0.090    0.000 service.py:77(canonical)
+ 1972/961    0.003    0.000    0.087    0.000 copy.py:191(_deepcopy_list)
+        4    0.000    0.000    0.087    0.022 retained.py:321(_versioned_revision)
+        1    0.000    0.000    0.086    0.086 service.py:1414(_failure_candidates)
+        4    0.000    0.000    0.084    0.021 service.py:1513(execution_projection)
+       75    0.001    0.000    0.083    0.001 base.py:1618(_execute_clauseelement)
+       72    0.000    0.000    0.082    0.001 base.py:1404(execute)
+       72    0.000    0.000    0.082    0.001 elements.py:524(_execute_on_connection)
+       24    0.001    0.000    0.077    0.003 service.py:1116(_validate_fingerprint_v2_json)
+   312144    0.074    0.000    0.076    0.000 {built-in method builtins.isinstance}
+      119    0.006    0.000    0.074    0.001 service.py:158(_sources)
+       56    0.000    0.000    0.072    0.001 elements.py:324(_compiler)
+       56    0.000    0.000    0.072    0.001 compiler.py:1449(__init__)
+       56    0.000    0.000    0.072    0.001 compiler.py:893(__init__)
+    68/56    0.000    0.000    0.072    0.001 compiler.py:971(process)
+  1872/90    0.002    0.000    0.072    0.001 visitors.py:116(_compiler_dispatch)
+    58/56    0.001    0.000    0.071    0.001 compiler.py:5088(visit_select)
+       33    0.000    0.000    0.065    0.002 session.py:2565(scalars)
+       48    0.000    0.000    0.063    0.001 elements.py:255(compile)
+    99/75    0.001    0.000    0.063    0.001 base.py:1767(_execute_context)
+     1072    0.001    0.000    0.063    0.000 attributes.py:456(operate)
+     1072    0.001    0.000    0.060    0.000 properties.py:481(operate)
+2116/2112    0.016    0.000    0.059    0.000 {method 'validate_python' of 'pydantic_core._pydantic_core.SchemaValidator' objects}
+ 3936/985    0.003    0.000    0.058    0.000 operators.py:741(__eq__)
+    99/75    0.002    0.000    0.057    0.001 base.py:1826(_exec_single_context)
+        4    0.000    0.000    0.057    0.014 service.py:1075(_saved_capabilities)
+ 2951/985    0.002    0.000    0.056    0.000 {built-in method _operator.eq}
+       27    0.001    0.000    0.052    0.002 service.py:108(_basis)
+      312    0.004    0.000    0.051    0.000 request_proof.py:120(batch_read)
+     1128    0.001    0.000    0.051    0.000 elements.py:1592(operate)
+        4    0.000    0.000    0.050    0.013 service.py:169(_chain)
+     1128    0.002    0.000    0.048    0.000 type_api.py:261(operate)
+        4    0.000    0.000    0.047    0.012 service.py:262(_lot_context)
+        4    0.000    0.000    0.046    0.011 service.py:159(_actual_context)
+      983    0.001    0.000    0.045    0.000 annotation.py:372(__eq__)
+        4    0.000    0.000    0.045    0.011 service.py:90(_comparison)
+
+
+         1164841 function calls (1045553 primitive calls) in 0.869 seconds
+
+   Ordered by: internal time
+   List reduced from 1640 to 35 due to restriction <35>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   312144    0.074    0.000    0.076    0.000 {built-in method builtins.isinstance}
+41600/443    0.058    0.000    0.127    0.000 copy.py:118(deepcopy)
+27658/208    0.052    0.000    0.090    0.000 service.py:77(canonical)
+     1589    0.030    0.000    0.032    0.000 encoder.py:205(iterencode)
+   100955    0.030    0.000    0.035    0.000 {method 'get' of 'dict' objects}
+16610/1041    0.020    0.000    0.031    0.000 common.py:53(visit)
+2116/2112    0.016    0.000    0.059    0.000 {method 'validate_python' of 'pydantic_core._pydantic_core.SchemaValidator' objects}
+ 3505/295    0.016    0.000    0.122    0.000 copy.py:217(_deepcopy_dict)
+    54767    0.013    0.000    0.013    0.000 {built-in method builtins.id}
+  6624/34    0.012    0.000    0.022    0.001 service.py:1004(_fingerprint_json)
+     1970    0.011    0.000    0.011    0.000 decoder.py:344(raw_decode)
+     3921    0.011    0.000    0.018    0.000 uuid.py:139(__init__)
+    22678    0.010    0.000    0.016    0.000 uuid.py:268(__hash__)
+    26992    0.010    0.000    0.010    0.000 attributes.py:561(__get__)
+     2916    0.010    0.000    0.036    0.000 coercions.py:323(expect)
+     1182    0.009    0.000    0.010    0.000 {method 'to_python' of 'pydantic_core._pydantic_core.SchemaSerializer' objects}
+    17359    0.008    0.000    0.012    0.000 uuid.py:240(__eq__)
+  5928/24    0.008    0.000    0.014    0.001 fingerprint_compatibility.py:109(_safe_values)
+    35997    0.008    0.000    0.008    0.000 copy.py:172(_deepcopy_atomic)
+     2992    0.007    0.000    0.019    0.000 {built-in method builtins.any}
+      119    0.006    0.000    0.074    0.001 service.py:158(_sources)
+23119/23057    0.006    0.000    0.006    0.000 {built-in method builtins.hash}
+12708/12658    0.005    0.000    0.006    0.000 {built-in method builtins.getattr}
+      211    0.005    0.000    0.013    0.000 _cursor_base.py:275(_maybe_prepare_gen)
+      594    0.005    0.000    0.027    0.000 service.py:331(source_for)
+     5123    0.005    0.000    0.005    0.000 uuid.py:280(__str__)
+     5589    0.005    0.000    0.007    0.000 copy.py:231(_keep_alive)
+    12800    0.004    0.000    0.004    0.000 {method 'replace' of 'str' objects}
+    14485    0.004    0.000    0.004    0.000 {method 'append' of 'list' objects}
+15517/15387    0.004    0.000    0.004    0.000 {built-in method builtins.len}
+      312    0.004    0.000    0.051    0.000 request_proof.py:120(batch_read)
+     1030    0.004    0.000    0.031    0.000 request_proof.py:108(_snapshot_identity)
+     1736    0.004    0.000    0.009    0.000 identity.py:219(get)
+     1079    0.004    0.000    0.007    0.000 elements.py:4249(__init__)
+     1390    0.003    0.000    0.009    0.000 _column.py:20(__init__)
+
+

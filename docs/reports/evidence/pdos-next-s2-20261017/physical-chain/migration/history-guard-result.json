@@ -1,0 +1,14 @@
+{
+  "head_retained": "s0_0774",
+  "target_port": 65296,
+  "downgrade_refused_before_ddl": true,
+  "catalog_unchanged": true,
+  "row_counts_unchanged": {
+    "verification_run_identities": 17,
+    "verification_run_versions": 55,
+    "verification_formal_requests": 160,
+    "test_resource_facts": 18
+  },
+  "private_backup_bytes": 44685816,
+  "private_backup_sha256": "d429e6fd8e95b9a6ece7b2accfe0414c8cd501b0dde1db64d5dd551715660637"
+}

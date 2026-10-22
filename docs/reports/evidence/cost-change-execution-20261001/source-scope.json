@@ -1,0 +1,18 @@
+{
+  "files": {
+    "server/app/api/change_governance.py": "6b6db3f5856528a183fd9b46500a03af692a68c07a63474ad9c6cbc6319dac1e",
+    "server/app/domain/change_execution_evidence.py": "6ce6d397c71dd8fdb2a7555e4a938391eff275e7290e1cbd261adc8979017584",
+    "server/app/domain/change_execution_tasks.py": "105119ee35ba6340a15518b22898e2c138ebb22e8eeccc2260b67ad6c393333b",
+    "server/app/domain/change_execution_results.py": "9c70b5e8190d9e1d471d99dc882e736934dfe88741e89c99080cfa2e308c481a",
+    "server/tests/test_cost_change_execution_postgres.py": "61e883dfaaedea47ddc190aadb66d1b9e1718eabba9657032adbed36083d2068",
+    "web/src/components/projects/professional-change-route.tsx": "1f0c397f4bebeab9aea01380e48bcd28122719d22f4cf5df123c15a3410cd4f1",
+    "web/src/components/projects/change-execution-overview.tsx": "d278e66e19a3b583b48c359b53a772d516f79ab313b6cde4d7bdc1cff9e50002",
+    "web/src/components/projects/cost-change-execution.test.tsx": "68cbe9e043e7670bfb1a0a2ebfd25342a7a8f7836b74499d686bc6c9770014c9",
+    "web/src/components/projects/cost-alternatives.tsx": "6f37d35bb3b53c75221b77182e242ca994ca4bca01bfac31179877468b1f35c8"
+  },
+  "database": "exclusive 127.0.0.1:57440/pdos_test",
+  "schema_head": "0416_product_evidence_item_decisions",
+  "migration_change": false,
+  "joint_candidate": false,
+  "initial_dependency_type_error": "server/app/domain/product_evidence_items.py:127 incompatible list[dict[str,Any] | None] return; concurrent PM file excluded; affected targets checked using --follow-imports=silent"
+}

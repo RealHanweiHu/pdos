@@ -1,0 +1,2841 @@
+{
+  "version": "1.0.0-draft.1",
+  "status": "measurement_design_not_results",
+  "metrics": [
+    {
+      "key": "milestone_delivery",
+      "family": "timeline",
+      "label": "里程碑兑现率",
+      "statistic": "ratio",
+      "numerator_or_value": "如期完成的持续预测关键里程碑数",
+      "denominator_or_population": "窗口内到期的持续预测关键里程碑数（含未完成）",
+      "logical_source": "里程碑/Commitment批准历史/Actual/Forecast序列",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "项目经理",
+      "work_items": [
+        "N2-07",
+        "N6-03",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "warning_lead",
+      "family": "timeline",
+      "label": "延期发现提前量",
+      "statistic": "median_days",
+      "numerator_or_value": "实际延期发生时间−首次有效延期预警时间",
+      "denominator_or_population": "有实际延期及当时预警证据的里程碑；无预警数另列",
+      "logical_source": "不可变预警时间线/Actual",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "项目经理",
+      "work_items": [
+        "N2-07",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "baseline_forecast_delta",
+      "family": "timeline",
+      "label": "Baseline与Forecast偏差",
+      "statistic": "signed_days",
+      "numerator_or_value": "Forecast目标日−有效Baseline目标日",
+      "denominator_or_population": "每个as_of的可比里程碑；另报中位数与分布",
+      "logical_source": "四时间版本/工作日历",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "项目经理",
+      "work_items": [
+        "N2-07",
+        "N6-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "forecast_error",
+      "family": "timeline",
+      "label": "Forecast有符号误差",
+      "statistic": "mean_days",
+      "numerator_or_value": "Actual日−该as_of预测日之和",
+      "denominator_or_population": "同预测跨度且已完成的有效预测记录数；未完成删失单列",
+      "logical_source": "预测历史/Actual版本",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "项目经理",
+      "work_items": [
+        "N2-07",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "forecast_absolute_error",
+      "family": "timeline",
+      "label": "Forecast绝对误差",
+      "statistic": "mean_days",
+      "numerator_or_value": "abs(Actual日−该as_of预测日)之和",
+      "denominator_or_population": "同预测跨度且已完成的有效预测记录数",
+      "logical_source": "预测历史/Actual版本",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "项目经理",
+      "work_items": [
+        "N2-07",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "issue_accountability",
+      "family": "issue",
+      "label": "开放Issue责任完整率",
+      "statistic": "ratio",
+      "numerator_or_value": "Owner/Verifier/目标日/关闭条件均完整的开放Issue数",
+      "denominator_or_population": "as_of全部开放Issue数；Open暂存按阶段另列",
+      "logical_source": "Issue当前版本/状态历史",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "工程/品质",
+      "work_items": [
+        "N0-04",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": 1.0,
+      "reference_target_status": "reference_only_not_approved_threshold",
+      "hard_gate": null
+    },
+    {
+      "key": "issue_first_response",
+      "family": "issue",
+      "label": "Issue首次响应",
+      "statistic": "median_seconds",
+      "numerator_or_value": "首次具名有效响应时间−创建时间",
+      "denominator_or_population": "创建cohort已响应Issue；未响应等待时长另列",
+      "logical_source": "Issue事件/回复证据",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "工程/品质",
+      "work_items": [
+        "N0-04",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "issue_close_cycle",
+      "family": "issue",
+      "label": "平均关闭周期",
+      "statistic": "mean_seconds",
+      "numerator_or_value": "每Issue首次有效关闭时间−创建时间之和",
+      "denominator_or_population": "创建cohort中已有效关闭Issue数；未关闭单列",
+      "logical_source": "Issue事件/验证记录",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "工程/品质",
+      "work_items": [
+        "N0-04",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "verification_return",
+      "family": "issue",
+      "label": "验证退回率",
+      "statistic": "ratio",
+      "numerator_or_value": "验证退回的提交轮次数",
+      "denominator_or_population": "已有验证裁决的提交轮次数",
+      "logical_source": "Issue提交轮次/Verifier裁决",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "品质",
+      "work_items": [
+        "N0-04",
+        "N4-05"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "issue_reopen",
+      "family": "issue",
+      "label": "重开率",
+      "statistic": "ratio",
+      "numerator_or_value": "固定随访期内重开的唯一Issue数",
+      "denominator_or_population": "具有完整同长度随访的已关闭Issue数",
+      "logical_source": "关闭/重开事件/随访窗口",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "品质",
+      "work_items": [
+        "N4-05",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "issue_recurrence",
+      "family": "issue",
+      "label": "复发问题占比",
+      "statistic": "ratio",
+      "numerator_or_value": "经专业确认与原问题同因复发的新Issue数",
+      "denominator_or_population": "窗口内经专业分类的新Issue数；未分类另列",
+      "logical_source": "Issue/根因/复发关联",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "DQE/SQE",
+      "work_items": [
+        "N4-05",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "critical_closure",
+      "family": "issue",
+      "label": "高严重闭环完整率",
+      "statistic": "ratio",
+      "numerator_or_value": "根因/独立验证/证据/批准齐全的已关闭high或critical Issue数",
+      "denominator_or_population": "范围内已关闭high或critical Issue数",
+      "logical_source": "Issue/RootCause/Verification/Event/Audit",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "品质",
+      "work_items": [
+        "N0-04",
+        "N4-05"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": 0.9,
+      "reference_target_status": "reference_only_not_approved_threshold",
+      "hard_gate": null
+    },
+    {
+      "key": "meeting_preparation",
+      "family": "meeting",
+      "label": "会议准备投入",
+      "statistic": "median_person_seconds",
+      "numerator_or_value": "所有准备者主动活动段并集后跨人相加",
+      "denominator_or_population": "范围内会议；缺准备日志另列",
+      "logical_source": "人工活动段/会议版本",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "项目经理",
+      "work_items": [
+        "N3-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "meeting_duration",
+      "family": "meeting",
+      "label": "会议时长",
+      "statistic": "median_seconds",
+      "numerator_or_value": "会议实际结束−实际开始",
+      "denominator_or_population": "范围内已结束会议；取消/未结束另列",
+      "logical_source": "真实会议记录",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "项目经理",
+      "work_items": [
+        "N3-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "action_ontime",
+      "family": "meeting",
+      "label": "会议行动按期关闭率",
+      "statistic": "ratio",
+      "numerator_or_value": "截止承诺日期已执行并被接收的行动数",
+      "denominator_or_population": "窗口内到期的会议行动数（含未完成）",
+      "logical_source": "Action承诺历史/执行/接收",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "行动Owner/接收方",
+      "work_items": [
+        "N3-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "decision_executed",
+      "family": "meeting",
+      "label": "Decision实际执行回链率",
+      "statistic": "ratio",
+      "numerator_or_value": "有效目标执行证据且验真成功的已声称执行Decision数",
+      "denominator_or_population": "全部声称已执行Decision数",
+      "logical_source": "Decision/目标对象操作receipt/当前有效性",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "项目经理",
+      "work_items": [
+        "N0-04",
+        "N3-06"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "kit_total",
+      "family": "supply",
+      "label": "总体齐套率",
+      "statistic": "ratio",
+      "numerator_or_value": "按需求数量和可用时间完整满足的Build物料需求行数",
+      "denominator_or_population": "有效Build的全部应需物料行数；零需求N/A",
+      "logical_source": "Build需求版本/库存与供期快照",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "采购/IE",
+      "work_items": [
+        "N5-02",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "kit_critical",
+      "family": "supply",
+      "label": "关键齐套率",
+      "statistic": "ratio",
+      "numerator_or_value": "按需求数量和可用时间完整满足的关键物料行数",
+      "denominator_or_population": "事先标为关键的全部应需物料行数",
+      "logical_source": "关键标记版本/Build/库存快照",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "采购/SQE",
+      "work_items": [
+        "N5-02",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "shortage_lead",
+      "family": "supply",
+      "label": "短缺预警提前量",
+      "statistic": "median_days",
+      "numerator_or_value": "实际缺料阻塞起日−首个有效预警日",
+      "denominator_or_population": "有真实缺料和当时预警的需求；未预警缺料数另列",
+      "logical_source": "预警时间线/实际阻塞证据",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "采购",
+      "work_items": [
+        "N5-03",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "supply_freshness",
+      "family": "supply",
+      "label": "供应快照新鲜度",
+      "statistic": "median_seconds",
+      "numerator_or_value": "as_of−来源实际采集时间",
+      "denominator_or_population": "被使用的供应快照；采集时间未知另列",
+      "logical_source": "SupplySnapshot来源时刻",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "采购/数据职责",
+      "work_items": [
+        "N5-02",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "sample_delivery_delta",
+      "family": "supply",
+      "label": "样品承诺实际偏差",
+      "statistic": "signed_days",
+      "numerator_or_value": "实际收样日−该批次有效承诺日",
+      "denominator_or_population": "到期样品批次；未收样逾期单列",
+      "logical_source": "供应承诺历史/收样记录",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "采购/SQE",
+      "work_items": [
+        "N5-03",
+        "N5-05"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "reported_yield",
+      "family": "supply",
+      "label": "报告真实良率",
+      "statistic": "ratio",
+      "numerator_or_value": "按该报告口径通过的实际检测样本数",
+      "denominator_or_population": "报告中实际检测样本数；首检/最终良率分别列",
+      "logical_source": "真实试产/检测报告及定位/批次",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "IE/品质",
+      "work_items": [
+        "N5-05",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "requirement_trace",
+      "family": "digital",
+      "label": "需求追溯覆盖率",
+      "statistic": "ratio",
+      "numerator_or_value": "有可测Spec并连到验证用例的Requirement数",
+      "denominator_or_population": "范围内Requirement数",
+      "logical_source": "Requirement/Spec/TestCase有效版本链",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理/DQE",
+      "work_items": [
+        "N4-02",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": 0.9,
+      "reference_target_status": "reference_only_not_approved_threshold",
+      "hard_gate": null
+    },
+    {
+      "key": "sample_configuration",
+      "family": "digital",
+      "label": "样机配置完整率",
+      "statistic": "ratio",
+      "numerator_or_value": "具有全部适用模板字段和版本引用的样机数",
+      "denominator_or_population": "纳入测试的实际样机数",
+      "logical_source": "样机/不可变配置/模板适用性",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "测试/工程",
+      "work_items": [
+        "N4-01",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": 0.95,
+      "reference_target_status": "reference_only_not_approved_threshold",
+      "hard_gate": null
+    },
+    {
+      "key": "structured_testing",
+      "family": "digital",
+      "label": "结构化测试率",
+      "statistic": "ratio",
+      "numerator_or_value": "已人工确认且可追源的结构化有效测试记录数",
+      "denominator_or_population": "原报告范围内应导入的有效测试记录数；跳行保留原因",
+      "logical_source": "原报告有效记录清单/已确认Run",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "测试/数据职责",
+      "work_items": [
+        "N4-01",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": 0.8,
+      "reference_target_status": "reference_only_not_approved_threshold",
+      "hard_gate": null
+    },
+    {
+      "key": "import_accuracy",
+      "family": "digital",
+      "label": "逐字段导入准确率",
+      "statistic": "ratio",
+      "numerator_or_value": "与独立人工核对一致的字段数",
+      "denominator_or_population": "抽查全部字段数（空白/0/单位/缺失也纳入）",
+      "logical_source": "原件cell定位/映射版本/人工核对/Run",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "测试/数据职责",
+      "work_items": [
+        "N4-01",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "gate_required_evidence",
+      "family": "digital",
+      "label": "Gate必需证据覆盖率",
+      "statistic": "ratio",
+      "numerator_or_value": "满足该轮版本化政策的有效必需证据项数",
+      "denominator_or_population": "该轮全部必需证据项数",
+      "logical_source": "Gate轮次/政策/有效Evidence",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "Gate签核职责",
+      "work_items": [
+        "N4-07",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": {
+        "operator": "eq",
+        "value": 1,
+        "unit": "ratio"
+      }
+    },
+    {
+      "key": "research_source_coverage",
+      "family": "research",
+      "label": "研究来源覆盖率",
+      "statistic": "ratio",
+      "numerator_or_value": "有符合类型/区域/时间用途来源的预注册证据需求槽位数",
+      "denominator_or_population": "研究计划预注册的证据需求槽位数",
+      "logical_source": "ResearchPlan/SourceSnapshot",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理",
+      "work_items": [
+        "N1-02",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "research_source_freshness",
+      "family": "research",
+      "label": "研究来源新鲜率",
+      "statistic": "ratio",
+      "numerator_or_value": "满足用途预注册最大年龄且版本有效的引用来源数",
+      "denominator_or_population": "抽查引用来源数；时间未知不算新鲜",
+      "logical_source": "来源采集时间/有效性/用途政策",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理",
+      "work_items": [
+        "N1-02",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "research_traceability",
+      "family": "research",
+      "label": "研究证据可追溯率",
+      "statistic": "ratio",
+      "numerator_or_value": "可跳到有权访问原快照和定位的事实主张数",
+      "denominator_or_population": "抽查事实主张数（缺引用计入）",
+      "logical_source": "研究结果/引用/快照/current ACL",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理",
+      "work_items": [
+        "N1-02",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "research_fact_error",
+      "family": "research",
+      "label": "分析事实错误率",
+      "statistic": "ratio",
+      "numerator_or_value": "独立核对为错误的事实主张数",
+      "denominator_or_population": "完成独立事实核对的主张数；未判定数另列",
+      "logical_source": "原快照/专业核对表",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理/专业核对人",
+      "work_items": [
+        "N1-02",
+        "N1-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "competitor_change_lead",
+      "family": "research",
+      "label": "竞品变化发现提前量",
+      "statistic": "signed_days",
+      "numerator_or_value": "独立业务获知时间−PDOS首次有效发现时间",
+      "denominator_or_population": "双方时间均有同期证据的竞品变化；历史回放不可用",
+      "logical_source": "快照版本变化/人工获知记录",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理",
+      "work_items": [
+        "N1-03",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "definition_evidence",
+      "family": "research",
+      "label": "产品定义证据覆盖率",
+      "statistic": "ratio",
+      "numerator_or_value": "具有有效来源或具名批准决策的应证据字段数",
+      "denominator_or_population": "定义中预注册的应证据字段数；纯假设不作已证实",
+      "logical_source": "Definition版本/来源/决策",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理/DQE",
+      "work_items": [
+        "N1-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "definition_review_cycle",
+      "family": "research",
+      "label": "定义审核周期",
+      "statistic": "median_seconds",
+      "numerator_or_value": "该版正式发布或拒绝时间−首次提交审核时间",
+      "denominator_or_population": "已裁决定义版本；待审截至as_of另列",
+      "logical_source": "Definition版本/审核事件",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理/审核方",
+      "work_items": [
+        "N1-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "opportunity_experiment_cycle",
+      "family": "research",
+      "label": "机会到实验周期",
+      "statistic": "median_seconds",
+      "numerator_or_value": "首个有效实验启动−机会正式记录",
+      "denominator_or_population": "已有实验的机会cohort；未启动另列",
+      "logical_source": "Opportunity/Experiment/状态时刻",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理",
+      "work_items": [
+        "N1-04",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "opportunity_definition_cycle",
+      "family": "research",
+      "label": "机会到定义周期",
+      "statistic": "median_seconds",
+      "numerator_or_value": "定义正式发布−机会正式记录",
+      "denominator_or_population": "已有定义的机会cohort；未发布另列",
+      "logical_source": "Opportunity/Definition发布历史",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理",
+      "work_items": [
+        "N1-04",
+        "N1-06"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "definition_charter_cycle",
+      "family": "research",
+      "label": "定义到Charter或DCP周期",
+      "statistic": "median_seconds",
+      "numerator_or_value": "指定Charter批准或DCP裁决−定义正式发布",
+      "denominator_or_population": "按终点类型分列的定义cohort；未完成另列",
+      "logical_source": "Definition/Charter/DCP独立批准历史",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理/项目经理",
+      "work_items": [
+        "N1-07",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "hypothesis_validated",
+      "family": "research",
+      "label": "假设验证率",
+      "statistic": "ratio",
+      "numerator_or_value": "满足预注册验证阈值且有结果证据的假设数",
+      "denominator_or_population": "到期且已纳入实验的假设数；未决保留分母",
+      "logical_source": "VUVF假设/实验阈值/结果",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理",
+      "work_items": [
+        "N1-04",
+        "N1-05"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "hypothesis_falsified",
+      "family": "research",
+      "label": "假设证伪率",
+      "statistic": "ratio",
+      "numerator_or_value": "满足预注册证伪阈值且有结果证据的假设数",
+      "denominator_or_population": "到期且已纳入实验的假设数；未决保留分母",
+      "logical_source": "VUVF假设/实验阈值/结果",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理",
+      "work_items": [
+        "N1-04",
+        "N1-05"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "matrix_gaps",
+      "family": "research",
+      "label": "矩阵覆盖空白数",
+      "statistic": "count",
+      "numerator_or_value": "已预注册市场场景格中无适用产品覆盖的格数",
+      "denominator_or_population": "非比率；同时给预注册格总数与未知格数",
+      "logical_source": "矩阵轴/范围版本/产品定义",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理",
+      "work_items": [
+        "N6-04",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "matrix_overlap",
+      "family": "research",
+      "label": "矩阵重叠数",
+      "statistic": "count",
+      "numerator_or_value": "具有两个及以上同口径适用产品的预注册格数",
+      "denominator_or_population": "非比率；产品对数不代替格数，未知另列",
+      "logical_source": "矩阵轴/范围版本/产品覆盖",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理",
+      "work_items": [
+        "N6-04",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "strategy_tradeoff_coverage",
+      "family": "research",
+      "label": "策略取舍覆盖率",
+      "statistic": "ratio",
+      "numerator_or_value": "有备选/代价/理由/具名决策及证据的应决策取舍数",
+      "denominator_or_population": "策略预注册的应决策取舍数",
+      "logical_source": "策略Canvas/Decision/证据",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理",
+      "work_items": [
+        "N1-05",
+        "N6-05"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "product_outcome_validation",
+      "family": "research",
+      "label": "产品结果验证覆盖率",
+      "statistic": "ratio",
+      "numerator_or_value": "有真实结果及对预注册指标作判定的到期验证项数",
+      "denominator_or_population": "窗口内到期的产品结果验证项数",
+      "logical_source": "Definition成功指标/实际结果",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理",
+      "work_items": [
+        "N1-06",
+        "N6-05"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "finding_evidence",
+      "family": "ai",
+      "label": "Finding证据覆盖率",
+      "statistic": "ratio",
+      "numerator_or_value": "全部应支持主张均有有效证据的Finding数",
+      "denominator_or_population": "抽查Finding数（缺证据计入）",
+      "logical_source": "Finding载荷/引用/核对记录",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "领域审核人",
+      "work_items": [
+        "N0-03",
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": 1.0,
+      "reference_target_status": "reference_only_not_approved_threshold",
+      "hard_gate": null
+    },
+    {
+      "key": "claim_support",
+      "family": "ai",
+      "label": "事实引用正确率",
+      "statistic": "ratio",
+      "numerator_or_value": "经人工确认引用支持结论的事实主张数",
+      "denominator_or_population": "抽查全部事实主张数（无引用也计入）",
+      "logical_source": "实际模型结果/原快照/独立核对",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "领域审核人",
+      "work_items": [
+        "N0-03",
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": 0.95,
+      "reference_target_status": "reference_only_not_approved_threshold",
+      "hard_gate": null
+    },
+    {
+      "key": "citation_validity",
+      "family": "ai",
+      "label": "引用有效率",
+      "statistic": "ratio",
+      "numerator_or_value": "可解析且确实支持事实的引用数",
+      "denominator_or_population": "抽查引用数；无引用主张另由claim_support计入",
+      "logical_source": "引用定位/ACL/原来源/人工判断",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "领域审核人",
+      "work_items": [
+        "N0-03",
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "constraint_fidelity",
+      "family": "ai",
+      "label": "约束保真率",
+      "statistic": "ratio",
+      "numerator_or_value": "正确保留的必需约束数",
+      "denominator_or_population": "输入来源中全部必需约束数",
+      "logical_source": "预注册约束清单/实际输出",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "领域审核人",
+      "work_items": [
+        "N0-03",
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "finding_accept",
+      "family": "ai",
+      "label": "Finding接受率",
+      "statistic": "ratio",
+      "numerator_or_value": "人工接受的唯一Finding裁决数",
+      "denominator_or_population": "已有接受或拒绝裁决的唯一Finding数；未审另列",
+      "logical_source": "Finding人工裁决/版本",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "领域审核人",
+      "work_items": [
+        "N0-03",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "finding_modify",
+      "family": "ai",
+      "label": "Finding修改率",
+      "statistic": "ratio",
+      "numerator_or_value": "接受前有人工修改的唯一已裁决Finding数",
+      "denominator_or_population": "全部已裁决唯一Finding数；与接受率可重叠",
+      "logical_source": "Finding修订diff/裁决",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "领域审核人",
+      "work_items": [
+        "N0-03",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "finding_reject",
+      "family": "ai",
+      "label": "Finding拒绝率",
+      "statistic": "ratio",
+      "numerator_or_value": "人工拒绝的唯一Finding数",
+      "denominator_or_population": "已有接受或拒绝裁决的唯一Finding数",
+      "logical_source": "Finding裁决/原因",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "领域审核人",
+      "work_items": [
+        "N0-03",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "finding_apply",
+      "family": "ai",
+      "label": "Finding独立应用率",
+      "statistic": "ratio",
+      "numerator_or_value": "经独立人工动作成功应用的唯一Finding数",
+      "denominator_or_population": "已接受的唯一Finding数；过期/停用/失败/待应用分列",
+      "logical_source": "Finding动作/业务receipt",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "业务应用人",
+      "work_items": [
+        "N0-03",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "finding_false_positive",
+      "family": "ai",
+      "label": "Finding误报率",
+      "statistic": "ratio",
+      "numerator_or_value": "经专业核实为错误告警/建议的Finding数",
+      "denominator_or_population": "有专业真值核对的Finding数；拒绝不自动等于误报",
+      "logical_source": "Finding/独立专业裁定",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "领域审核人",
+      "work_items": [
+        "N0-03",
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "capability_quality",
+      "family": "ai",
+      "label": "每能力席位质量",
+      "statistic": "ratio",
+      "numerator_or_value": "满足预注册断言的case assertion数",
+      "denominator_or_population": "该capability/实际seat的全部适用断言数；硬失败单列",
+      "logical_source": "实际模型/工具/bundle/suite版本与人工核对",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "专业质量职责",
+      "work_items": [
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "source_snapshot_coverage",
+      "family": "ai",
+      "label": "模型来源快照覆盖率",
+      "statistic": "ratio",
+      "numerator_or_value": "有当时授权快照及digest的实际使用来源数",
+      "denominator_or_population": "该次调用实际使用来源数",
+      "logical_source": "ContextManifest/Observation/实际调用",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "AI质量职责",
+      "work_items": [
+        "N0-03",
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "brief_dissent",
+      "family": "ai",
+      "label": "Brief分歧完整率",
+      "statistic": "ratio",
+      "numerator_or_value": "准确保留的有证据分歧/代价/未决项数",
+      "denominator_or_population": "席位原记录中全部应保留分歧/代价/未决项数",
+      "logical_source": "逐席位记录/Brief/专业核对",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "主持职责/审核人",
+      "work_items": [
+        "N3-07",
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "session_budget",
+      "family": "ai",
+      "label": "讨论场次预算达标率",
+      "statistic": "ratio",
+      "numerator_or_value": "全lineage用量可对账且未超已采用预算的场次数",
+      "denominator_or_population": "结束/中止场次数；未知费用或缺账不算达标",
+      "logical_source": "lineage/attempt/工具/模型实际账本",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "系统运行职责",
+      "work_items": [
+        "N3-07",
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "model_cost",
+      "family": "ai",
+      "label": "模型实际费用",
+      "statistic": "sum_currency",
+      "numerator_or_value": "有来源且同币种同口径的实际费用总和",
+      "denominator_or_population": "非比率；同时报已知次数/未知次数，不以0填未知",
+      "logical_source": "真实费率版本/账单或usage证据",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "系统运行职责",
+      "work_items": [
+        "N0-03",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "model_latency",
+      "family": "ai",
+      "label": "模型端到端延时",
+      "statistic": "p95_seconds",
+      "numerator_or_value": "请求发起至终态结果的时长序列",
+      "denominator_or_population": "所有请求尝试；成功/失败/超时/取消分层",
+      "logical_source": "实际调用与attempt时刻",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "系统运行职责",
+      "work_items": [
+        "N0-03",
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "active_time",
+      "family": "employee",
+      "label": "总主动时间",
+      "statistic": "sum_person_seconds",
+      "numerator_or_value": "同人活动段去重后跨人相加（含学习/审核/纠错/交接/接收）",
+      "denominator_or_population": "非比率；按任务对/角色报告秒数与任务数",
+      "logical_source": "经参与者核对的活动段",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "各参与职责",
+      "work_items": [
+        "N0-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "active_time_saved",
+      "family": "employee",
+      "label": "主动时间节省",
+      "statistic": "paired_seconds",
+      "numerator_or_value": "同口径任务基线总主动时间−辅助总主动时间",
+      "denominator_or_population": "有效匹配任务对；未配对/未完成/缺段数另列",
+      "logical_source": "task_pair/活动段/匹配依据",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "各参与职责",
+      "work_items": [
+        "N0-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "duplicate_entry",
+      "family": "employee",
+      "label": "重复录入负担下降",
+      "statistic": "paired_ratio",
+      "numerator_or_value": "基线重复录入时间−辅助重复录入时间",
+      "denominator_or_population": "基线重复录入时间；为0记N/A，次数另列",
+      "logical_source": "同一事实来源/重复录入活动段",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "各参与职责",
+      "work_items": [
+        "N0-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "clarification_rounds",
+      "family": "employee",
+      "label": "追问轮次",
+      "statistic": "count",
+      "numerator_or_value": "独立追加澄清请求轮次总数",
+      "denominator_or_population": "非比率；同时给任务数/各任务分布",
+      "logical_source": "任务记录/澄清轮次与用途",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "各参与职责",
+      "work_items": [
+        "N0-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "omission_rework",
+      "family": "employee",
+      "label": "漏项返工率",
+      "statistic": "ratio",
+      "numerator_or_value": "因核实遗漏而返工的唯一任务数",
+      "denominator_or_population": "已完成质量检查的任务数；未检查另列",
+      "logical_source": "返工原因/版本/独立核对",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "工程/DQE/SQE/IE",
+      "work_items": [
+        "N0-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "first_acceptance",
+      "family": "employee",
+      "label": "首次接收通过率",
+      "statistic": "ratio",
+      "numerator_or_value": "第一轮被真实下游接收方接受的交付数",
+      "denominator_or_population": "已有第一轮接收裁决的交付数；待接收另列",
+      "logical_source": "交付/接收人/轮次/裁决",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "交付人与接收方",
+      "work_items": [
+        "N0-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "notification_noise",
+      "family": "employee",
+      "label": "通知噪声率",
+      "statistic": "ratio",
+      "numerator_or_value": "收件人确认重复/无关/过期/不可办的通知数",
+      "denominator_or_population": "具有收件人分类反馈的通知数；未反馈数另列",
+      "logical_source": "实际通知id/去重关系/收件人反馈",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "各接收职责",
+      "work_items": [
+        "N0-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "candidate_expiry",
+      "family": "employee",
+      "label": "候选过期率",
+      "statistic": "ratio",
+      "numerator_or_value": "首次人审前已失效的唯一候选数",
+      "denominator_or_population": "同一已成熟观察cohort的候选数；未成熟另列",
+      "logical_source": "候选创建/失效/首次审核事件",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "各审核职责",
+      "work_items": [
+        "N7-03",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "false_block_delta",
+      "family": "employee",
+      "label": "错误阻塞增量",
+      "statistic": "paired_count",
+      "numerator_or_value": "辅助流程经核实误阻塞次数−基线经核实误阻塞次数",
+      "denominator_or_population": "匹配同任务量/复杂度的队列；未裁定另列",
+      "logical_source": "阻断原因/专业真值/人工路径",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "各参与职责",
+      "work_items": [
+        "N0-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "actual_recovery",
+      "family": "employee",
+      "label": "实际问题恢复率",
+      "statistic": "ratio",
+      "numerator_or_value": "有实际恢复证据且被接收验证的问题数",
+      "denominator_or_population": "已采取恢复措施并到复核期的问题数；未到期另列",
+      "logical_source": "Issue/行动/实际恢复/验证证据",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "工程/品质/接收方",
+      "work_items": [
+        "N7-03",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "handoff_rounds",
+      "family": "employee",
+      "label": "交接补齐轮次",
+      "statistic": "count",
+      "numerator_or_value": "下游因交付缺项提出补齐的轮次总数",
+      "denominator_or_population": "非比率；同时给交付数和完成/待接收分布",
+      "logical_source": "交接版本/补齐请求/接收结果",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "IE/制造/接收方",
+      "work_items": [
+        "N0-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "target_actual_cost",
+      "family": "cost",
+      "label": "目标实际成本差",
+      "statistic": "signed_currency",
+      "numerator_or_value": "同口径实际滚算成本−目标成本",
+      "denominator_or_population": "每产品配置/币种/数量阶梯/生效期分别报告",
+      "logical_source": "目标版本/BOM/真实报价/成本快照",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "产品经理/采购",
+      "work_items": [
+        "N5-04",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "knowledge_adoption",
+      "family": "knowledge",
+      "label": "知识采用率",
+      "statistic": "ratio",
+      "numerator_or_value": "被业务交付实际引用的唯一获准知识推送数",
+      "denominator_or_population": "已送达且有适用机会的唯一知识推送数；仅点开另列",
+      "logical_source": "KnowledgePush/Memory有效版本/业务引用",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "工程/品质",
+      "work_items": [
+        "N7-03",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "knowledge_effect",
+      "family": "knowledge",
+      "label": "知识应用效果",
+      "statistic": "paired_seconds",
+      "numerator_or_value": "无知识与使用适用verified知识的同口径任务主动时间差",
+      "denominator_or_population": "匹配任务对；质量/返工/接收同时报告",
+      "logical_source": "知识版本/任务对/活动段/接收",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "工程/品质",
+      "work_items": [
+        "N7-03",
+        "N7-04"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": null
+    },
+    {
+      "key": "unauthorized_writes",
+      "family": "guardrail",
+      "label": "Agent与ERP越界写",
+      "statistic": "count",
+      "numerator_or_value": "受限Agent业务直写或ERP越界写穿透次数",
+      "denominator_or_population": "非比率；同时报告攻击尝试数/路径覆盖，零尝试不是通过",
+      "logical_source": "受限账号/业务表前后/审计红队证据",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "安全职责",
+      "work_items": [
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": {
+        "operator": "eq",
+        "value": 0,
+        "unit": "breaches"
+      }
+    },
+    {
+      "key": "scope_breach",
+      "family": "guardrail",
+      "label": "跨租户项目及撤权穿透",
+      "statistic": "count",
+      "numerator_or_value": "越界读取/披露/调用/导出/应用成功次数",
+      "denominator_or_population": "非比率；同时报告负例数及scope覆盖",
+      "logical_source": "实际受限账号/ACL负例/审计",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "安全职责",
+      "work_items": [
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": {
+        "operator": "eq",
+        "value": 0,
+        "unit": "breaches"
+      }
+    },
+    {
+      "key": "first_screen_latency",
+      "family": "guardrail",
+      "label": "三页首屏性能",
+      "statistic": "p95_seconds",
+      "numerator_or_value": "导航到可操作内容的耗时序列",
+      "denominator_or_population": "MyWork/项目概览/ReviewInbox各页独立固定设备网络数据规模样本",
+      "logical_source": "真实浏览器计时/设备网络数据规模",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "系统验收",
+      "work_items": [
+        "N7-02"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-09-10-pdos-complete-design-contract.md",
+        "tasks/ai-native-integrated-todo.md"
+      ],
+      "historical_reference_target": null,
+      "reference_target_status": "none",
+      "hard_gate": {
+        "operator": "lt",
+        "value": 1.5,
+        "unit": "seconds",
+        "per_page": true
+      }
+    },
+    {
+      "key": "pm_manual_update_reduction",
+      "family": "employee",
+      "label": "项目经理手工更新减少",
+      "statistic": "paired_ratio",
+      "numerator_or_value": "同口径任务基线手工更新时间−辅助手工更新时间",
+      "denominator_or_population": "基线手工更新时间；为0记N/A，不能套用到全部角色总主动时间",
+      "logical_source": "项目经理手工更新活动段/相同范围任务对",
+      "source_binding_status": "logical_contract_not_instrumented",
+      "responsible_role": "项目经理",
+      "work_items": [
+        "N0-06",
+        "N7-03"
+      ],
+      "window": "protocol.window_start <= event_time < protocol.window_end; fixed protocol.as_of",
+      "strata": [
+        "pilot",
+        "evidence_kind",
+        "role",
+        "scenario",
+        "workflow_version",
+        "complexity",
+        "first_use"
+      ],
+      "exclusions": "预注册不适用/重复记录须逐项留理由；失败/未采纳不自动排除",
+      "missing_rule": "缺关键字段incomplete；未采样not_assessed；完整且零分母not_applicable；缺失/排除与有效样本数并列",
+      "baseline_value": null,
+      "calibrated_threshold": null,
+      "acceptance_status": "not_assessed",
+      "source_refs": [
+        "docs/design/2026-08-24-pdos-vnext-unified-requirements.md",
+        "docs/design/2026-09-08-v0-v1-acceptance-and-pilot-contract.md"
+      ],
+      "historical_reference_target": 0.4,
+      "reference_target_status": "reference_only_not_approved_threshold",
+      "hard_gate": null
+    }
+  ],
+  "primary_review_keys": [
+    "milestone_delivery",
+    "active_time_saved",
+    "first_acceptance"
+  ],
+  "all_metrics_retained": true,
+  "zero_denominator": "not_applicable",
+  "no_samples": "not_assessed",
+  "actual_samples": []
+}

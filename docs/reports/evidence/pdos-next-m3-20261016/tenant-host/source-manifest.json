@@ -1,0 +1,47 @@
+{
+  "base_commit": "c6e7f5e6b898b314e6c1be053b78d219bbc94f4e",
+  "candidate": "tenant-host-20261016",
+  "database_head": "s0_0762",
+  "schema_change": false,
+  "frontend_change": false,
+  "source_sha256": {
+    "pdos-next/server/pdos_next/model_configuration/host.py": "b256508c00f1aacd7d913f5d08fb4f221c1da59f106398c6b2d93819ddcbaaec",
+    "pdos-next/server/pdos_next/model_configuration/kms.py": "bb05c3204da7666241809e134193d63a7971f1847f4b048ef36a8523feee92eb",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "eca8f0617d7cd6cf6adcc0a2848df924b7f2c5445a8acdd0f08e40886d055af5",
+    "pdos-next/server/pdos_next/agent_kernel/gateway.py": "3ce6b4e73274429339181d89473d202b574c1859c4e2cb99db2bcb98841cdd15",
+    "pdos-next/server/pdos_next/workflows/worker.py": "ecbd3e56595d4a0fd01d5c91a7670ceb43e344b491294cd31b263dc226479595",
+    "pdos-next/server/tests/model_configuration/test_host_runtime.py": "79a4680922e8875f2b7e35fbbf3090bb46870afa785368e4e0eec5b3ed149b2a",
+    "pdos-next/server/tests/agent_kernel/test_host_runtime_process.py": "afa7184729374db8cb1886b2bea4815c4e22648b002ae16c069427ae0d778a7a",
+    "pdos-next/server/tests/agent_kernel/test_gateway.py": "8d34579f705194217989ce4058437e09865f5fc766c80f3d131e1edda32eb690",
+    "pdos-next/server/tests/agent_kernel/test_worker_process_recovery.py": "636d4f0ba0b8c642756188129153a4ec77b84c7d9803d434fa707d939ce4264e",
+    "pdos-next/server/tests/agent_kernel/test_cost_budget.py": "78e5b9667a1a266dd0a94ee5bcd46e96992b326f710d8c8bba43a634fc40d0b2",
+    "pdos-next/server/tests/agent_kernel/test_model_configuration_transactions.py": "1b804b328b245820fef36d6b274f27c5604be3b1e42fd18ca56c386b0e600efe",
+    "pdos-next/server/pyproject.toml": "3ad2b1087514ee438dcb6fd03eecb6204c80d7aa0d42c8017f0867116bd98799",
+    "pdos-next/server/uv.lock": "a8c7e7d98eb140ce372066f7e1127682c69eda91fbce65ee77be4a0287f89561",
+    "pdos-next/config/tenant-runtime.example.json": "5861073567cc8e16242cf8c1b14bf0e3f2da69269f0a042ee4aea72f23e9d168",
+    "pdos-next/.env.example": "24674d29e794571178c8e547f23b557ce8abd06547ab6571f2f509f2404327c7",
+    "docs/runbooks/pdos-next-tenant-model-runtime.md": "b20746374d3f5ed67f4ee0cb498918658a2634812b485fc43f87183bfc515835"
+  },
+  "checks": {
+    "model_configuration_pure_cases": 89,
+    "gateway_budget_configuration_worker_cases": 30,
+    "default_host_process_cases": 1,
+    "distinct_total": 120,
+    "distinct_postgres_cases": 30,
+    "distinct_pure_cases": 90,
+    "external_model_calls": 0,
+    "external_kms_calls": 0,
+    "golden_case_writes": 0,
+    "ruff": "passed"
+  },
+  "transport_overrides": [
+    "AliyunKms.sdk -> synthetic SDK response DTOs",
+    "AgentGateway.AgentProviderClient -> synthetic model transport"
+  ],
+  "actual_default_bootstrap": true,
+  "actual_default_worker_main": true,
+  "cloud_sdk_versions": {
+    "alibabacloud-kms20160120": "2.4.0",
+    "alibabacloud-credentials": "1.0.12"
+  }
+}

@@ -1,0 +1,3 @@
+{"run_id": "4733b7bc-a8d0-4e1f-ae73-1fc71749ec46", "temporal_run_id": "01a145ec-1393-71c5-a709-688f3add66d4", "worker_processes": 2, "actual_claims": 1, "real_model_calls": 0}
+.
+1 passed in 21.17s

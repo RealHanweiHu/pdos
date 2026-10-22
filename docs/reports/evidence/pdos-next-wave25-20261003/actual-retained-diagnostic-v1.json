@@ -1,0 +1,16 @@
+{
+  "status": "FAIL",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "head": "next_0028",
+  "exact_old_actor": "77465957-a05e-4663-85bf-34cd39ac43dd",
+  "exact_old_product": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+  "scope": "actual current two profiles each family and actual original-store/security runtime; old immutable saved Start evaluation clock only",
+  "stage_helper_sha256": "a1fd4ee0c2963ba20d96f4329fe3f0aaaa35f4621f814f732c636749bf456abf",
+  "business_commands": 0,
+  "qualification_imports": 0,
+  "runtime_module_modified": false,
+  "model_calls": 0,
+  "error_type": "ProgrammingError",
+  "error": "(psycopg.errors.UndefinedColumn) column \"id\" does not exist\nLINE 1: ...:text FROM \"login_sessions\" t WHERE tenant_id=$1 ORDER BY id\n                                                                     ^\n[SQL: SELECT to_jsonb(t)::text FROM \"login_sessions\" t WHERE tenant_id=%(tenant)s ORDER BY id]\n[SQL parameters hidden due to hide_parameters=True]\n(Background on this error at: https://sqlalche.me/e/21/f405)"
+}

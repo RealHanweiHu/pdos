@@ -1,0 +1,15 @@
+{
+  "provenance": "Agent standalone tool reports; no independent initial raw output file was saved",
+  "reader_initial_type_diagnostics": {
+    "count": 5,
+    "cause": "Shared NativePilotItem does not declare additional server metadata used by stricter projection reader",
+    "repair": "Narrow an unknown local metadata object after a guard; shared type unchanged",
+    "final": "46 directed tests and own lint/narrow typecheck passed"
+  },
+  "component_last_refinement": {
+    "change": "Distinguish missing members field from explicit empty list",
+    "affected_check": "passed",
+    "prior_directed_checks": 15,
+    "final_public_checks": "192 final candidate checks passed, including component tests"
+  }
+}

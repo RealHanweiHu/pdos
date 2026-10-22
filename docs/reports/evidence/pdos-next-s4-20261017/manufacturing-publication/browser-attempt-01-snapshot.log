@@ -1,0 +1,32 @@
+### Page
+- Page URL: http://127.0.0.1:63559/?area=category&category=30f1ff30-2617-4edd-ae9c-710c8fc840e8&bench=projects&view=builds&task=prepare&product=d6f554d2-fb6b-4f38-a0dc-c55b207b31fe&project=ce956c9a-5c72-4135-a9e4-d07262d2350d
+- Page Title: PDOS · 研发工作区
+- Console: 2 errors, 0 warnings
+### Snapshot
+```yaml
+- region "制造基线正式发布" [ref=e264]:
+  - generic [ref=e265]:
+    - generic [ref=e266]:
+      - heading "制造基线发布" [level=2] [ref=e267]
+      - paragraph [ref=e270]: 固定本轮工艺和资料，由有权本人核对并具名发布。
+    - button "刷新发布资料" [ref=e286]
+  - status [ref=e289]: 服务器未返回与原请求和本人一致的完整发布材料。
+  - generic [ref=e271]:
+    - generic [ref=e272]:
+      - text: 项目
+      - combobox "项目" [disabled] [ref=e273]:
+        - option "请选择项目"
+        - option "Approved revision fixture" [selected]
+    - generic [ref=e274]:
+      - text: 固定制造基线
+      - combobox "固定制造基线" [disabled] [ref=e275]:
+        - option "请选择已保存的基线"
+        - option "Synthetic manufacturing_baseline documentation · v1" [selected]
+  - generic [ref=e276]:
+    - text: 本次发布说明
+    - textbox "本次发布说明" [disabled] [ref=e277]: 本地合成页面联验：固定本轮工艺及资料，资源资格与制造放行仍保留未知。
+  - paragraph [ref=e278]: 本入口沿用所选基线的固定用途、地点和来源。尚未声明的资源要求、包装及反应计划保留为缺项，发布时会一并显示。
+  - generic [ref=e288]:
+    - button "继续核对原请求" [ref=e290]
+    - button "取消本次核对" [ref=e291]
+```

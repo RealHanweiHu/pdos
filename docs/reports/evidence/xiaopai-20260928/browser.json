@@ -1,0 +1,21 @@
+{
+  "environment": "isolated synthetic data, API 8896 + preview 3016 + PostgreSQL 57439/pdos_test; preview processes stopped afterwards",
+  "passed": [
+    "Login and open bottom-right launcher from project A",
+    "Natural-language continuous-follow-up request opens calendar/timezone configuration",
+    "Create shared conversation and durable delegation from UI",
+    "Run real deterministic forecast and reminder domain services; followup reaches waiting_reply and daily summary is persisted",
+    "Navigate project A to B: next input follows B; return to A: unsent draft retained",
+    "Expand panel into full page, save a project note, refresh: saved note and delegation restored",
+    "Pause and resume delegation from UI",
+    "1440x1000 desktop and 390x844 mobile, light/dark visual inspection"
+  ],
+  "limits": [
+    "No real model calls or model direct-write qualification",
+    "Background scan invoked in isolated environment; no production daemon/deployment",
+    "Initial incomplete synthetic project B lacked a workflow stage and was corrected before final UI walk-through",
+    "Earlier UI observation raced project adoption; stale project-list refresh was prevented from overriding a selected context and the steady-source navigation replay passed",
+    "Screenshot source predates final label and permission-button refinements; final source passed static checks and build"
+  ],
+  "console": "Final walkthrough: no application errors; dev font preloading warnings remained"
+}

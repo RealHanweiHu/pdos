@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-04T02:34:23.949009+00:00",
+  "actual_layout_types_and_ast": {
+    "typecheck": "PASS",
+    "ast": "PASS",
+    "existing_shared_workflow_unchanged": true,
+    "files": {
+      "../../web/src/components/builds/build-quality-loop.tsx": "2fc48a829bf40e4521f44073172f02b76dd6dc3e57fc2bcd9fa8c28faa376254",
+      "../../web/src/components/builds/capa-draft-text-revision.tsx": "a012257cde9f8b38e90abd9d8d28b86babff9c6cf7a725802e500ae2099ed62c",
+      "../../web/src/lib/capa-draft-text-view.ts": "97de24434cd167221405419805a88ac46857b329e7934af85c5e6a04232d8f66",
+      "../../web/src/lib/capa-draft-text-view.test.tsx": "39f8ce4f681313858d41d094a9d1038a5ca99bee7962ee44fc95fcc3f3266100"
+    },
+    "build": false,
+    "http": false,
+    "database": false
+  },
+  "owned_lint_errors": 0,
+  "owned_lint_warnings": 0,
+  "helper_react_static_tests": {
+    "passed": 28,
+    "failed": 0,
+    "skipped": 0
+  },
+  "full_build": false,
+  "http": false,
+  "browser": false,
+  "actual_check_log": "capa-text-ui-actual-check-v1.log",
+  "manufacturing_ui_applied": false,
+  "check_script_sha256": "7bf2cbbfb2f0e576097b1de65b65307c9b9627434ed310dddd94b06715d4b078"
+}

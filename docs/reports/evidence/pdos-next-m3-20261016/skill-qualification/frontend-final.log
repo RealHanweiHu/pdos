@@ -1,0 +1,15 @@
+ENOENT: no such file or directory, open '/Users/huhanwei/Desktop/ai-native-R&D-platform/src/app/api/[...path]/route.ts'
+✔ case review defaults keep unknowns and recovery remains person/category scoped (2.046167ms)
+✔ recovery binds actual receipt operation, author, skill and case count (0.116208ms)
+✔ named qualification recovery checks decision and original control revision (0.127084ms)
+✔ only the exact confirmed skill command is retained for scope-owned recovery (0.188542ms)
+✔ corrupted or expanded local commands cannot masquerade as approved skill toggles (0.167333ms)
+✔ only a same-person receipt for the approved skill state and revision clears pending (0.100292ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 52.819584

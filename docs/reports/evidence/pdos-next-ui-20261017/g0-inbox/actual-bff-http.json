@@ -1,0 +1,70 @@
+{
+  "checks": [
+    {
+      "label": "actual authenticated queue",
+      "method": "GET",
+      "path": "/api/v1/personal/g0-reviews?page_size=50",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "actual first keyset page",
+      "method": "GET",
+      "path": "/api/v1/personal/g0-reviews?page_size=1",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "actual next keyset page",
+      "method": "GET",
+      "path": "/api/v1/personal/g0-reviews?page_size=1&cursor=ab5b011c-a1bd-4a75-a557-eb3a3dc60fb2",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "caller scope cannot be replaced",
+      "method": "GET",
+      "path": "/api/v1/personal/g0-reviews?category_id=afe3b45d-0a04-4516-8f60-a66ebc9b63f0",
+      "status": 422,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "repeated pagination rejected",
+      "method": "GET",
+      "path": "/api/v1/personal/g0-reviews?page_size=1&page_size=2",
+      "status": 422,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "missing session rejected",
+      "method": "GET",
+      "path": "/api/v1/personal/g0-reviews",
+      "status": 401,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "malformed cursor rejected",
+      "method": "GET",
+      "path": "/api/v1/personal/g0-reviews?cursor=bad",
+      "status": 422,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "unknown cursor rejected by domain",
+      "method": "GET",
+      "path": "/api/v1/personal/g0-reviews?cursor=c58a489a-14d4-438b-9ddd-4e3a22972123",
+      "status": 403,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "queue is read only",
+      "method": "POST",
+      "path": "/api/v1/personal/g0-reviews",
+      "status": 405,
+      "cache_control": ""
+    }
+  ],
+  "passed": 9,
+  "uses_actual_domain_api": true,
+  "uses_response_proxy": false
+}

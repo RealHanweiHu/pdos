@@ -1,0 +1,37 @@
+{
+  "candidate": "Wave16 owned UI v5: exact not-saved expired-proof recovery",
+  "recorded_at": "2026-10-03T08:54:40.816232+00:00",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "aad32a09053227f1ac7007a3a8430f2a04cb2bbb8d20ef76469509a75b320922"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "8a216f69b378eed95839ccb76b3f02740e24449ae32bfc3f2c55475a95612f5a"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "5b9a31c2bb50774e928b9259a9c1e464107646aef46d5541dd20648fad15b72b"
+    }
+  ],
+  "baseline": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "b00f6c5be2302a58882a2540a86cdc1a14cbe0a6c6bda54b0f4e76454ae1f4d6",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v4-source/build-quality-followup.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "c44ea7a6957570350d7af248095a2e6091787dc56906ba165ddabc9108c9f4e3",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v4-source/build-quality-followup-view.ts"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "88054bac3a979d0213b21b6f3a703ba34846f58b76904a6d8d3d0cd0741c42ca",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v4-source/build-quality-followup-view.test.ts"
+    }
+  ],
+  "delta_file": "ui-v4-to-v5.diff",
+  "public_paths_changed": false
+}

@@ -1,0 +1,68 @@
+.......F..........                                                       [100%]
+=================================== FAILURES ===================================
+_ test_same_candidate_delivery_supports_category_proposal_and_retains_ai_authorship _
+
+setup = <isolated synthetic test scope>
+
+    def test_same_candidate_delivery_supports_category_proposal_and_retains_ai_authorship(setup):
+        from tests.preproject.test_g0 import payload as proposal_payload
+    
+        arguments = proposal_payload(setup)
+        for item in arguments["groups"]["items"]:
+            if item["kind"] == "spec":
+                item["content"]["item_status"] = "ai_draft"
+        f = agent_fixture(
+            setup,
+            arguments,
+            operation="proposal.create",
+            skill_key="proposal_drafting",
+            product_bound=False,
+        )
+        bootstrap = Bootstrap(setup.engine)
+        bootstrap.route = lambda *_: f.route
+        prepared = bootstrap.prepare_candidate(
+            f.scope,
+            bootstrap.registry.get("proposal.create"),
+            arguments,
+            execution_key(f.scope.run_id, f.model.id, 0),
+        )
+        listed = read(setup, f)
+        assert listed.status_code == 200, listed.text
+        assert listed.json()["items"][0]["command"]["product_id"] is None
+        receipt, _ = confirmed(setup, prepared["command"])
+        result = read(setup, f)
+        assert result.status_code == 200, result.text
+        item = result.json()["items"][0]
+>       assert item["state"] == "adopted" and item["receipt"]["id"] == receipt["id"]
+E       AssertionError: assert ('unavailable' == 'adopted'
+E         
+E         - adopted
+E         + unavailable)
+
+tests/agent_kernel/test_domain_candidates_pg.py:230: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_domain_candidates_pg.py::test_confirmation_receipt_resolves_candidate_even_after_run_completion
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:175: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/agent_kernel/test_domain_candidates_pg.py::test_confirmation_receipt_resolves_candidate_even_after_run_completion
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:192: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+tests/agent_kernel/test_domain_candidates_pg.py::test_same_candidate_delivery_supports_category_proposal_and_retains_ai_authorship
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:689: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_domain_candidates_pg.py::test_same_candidate_delivery_supports_category_proposal_and_retains_ai_authorship
+tests/agent_kernel/test_domain_candidates_pg.py::test_same_candidate_delivery_supports_category_proposal_and_retains_ai_authorship
+tests/agent_kernel/test_domain_candidates_pg.py::test_same_candidate_delivery_supports_category_proposal_and_retains_ai_authorship
+tests/agent_kernel/test_domain_candidates_pg.py::test_same_candidate_delivery_supports_category_proposal_and_retains_ai_authorship
+tests/agent_kernel/test_domain_candidates_pg.py::test_same_candidate_delivery_supports_category_proposal_and_retains_ai_authorship
+tests/agent_kernel/test_domain_candidates_pg.py::test_same_candidate_delivery_supports_category_proposal_and_retains_ai_authorship
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:574: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_domain_candidates_pg.py::test_same_candidate_delivery_supports_category_proposal_and_retains_ai_authorship
+1 failed, 17 passed, 9 warnings in 23.77s

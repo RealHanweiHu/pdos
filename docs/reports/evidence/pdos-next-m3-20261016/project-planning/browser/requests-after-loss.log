@@ -1,0 +1,24 @@
+### Result
+15. [GET] http://127.0.0.1:3037/api/v1/session => [401] Unauthorized
+16. [POST] http://127.0.0.1:3037/api/local-session => [200] OK
+17. [GET] http://127.0.0.1:3037/api/v1/session => [200] OK
+18. [GET] http://127.0.0.1:3037/api/v1/categories => [200] OK
+19. [GET] http://127.0.0.1:3037/api/v1/personal/projects?page_size=100 => [200] OK
+20. [GET] http://127.0.0.1:3037/api/v1/personal/run-activity?page_size=100&waiting=true => [200] OK
+21. [GET] http://127.0.0.1:3037/api/v1/personal/agent-runs?page_size=50 => [200] OK
+22. [GET] http://127.0.0.1:3037/api/v1/personal/run-activity?page_size=12&waiting=false => [200] OK
+23. [GET] http://127.0.0.1:3037/api/v1/personal/projects/413b59ef-b92d-4f52-8dfb-f36d6ea0f766 => [200] OK
+24. [GET] http://127.0.0.1:3037/api/v1/categories/09abfd74-586b-459f-8b80-b5a4ef7cb484/agent-runs?page_size=50 => [200] OK
+25. [GET] http://127.0.0.1:3037/api/v1/session => [200] OK
+26. [GET] http://127.0.0.1:3037/api/v1/categories/09abfd74-586b-459f-8b80-b5a4ef7cb484/products => [200] OK
+27. [GET] http://127.0.0.1:3037/api/v1/categories/09abfd74-586b-459f-8b80-b5a4ef7cb484/products/43d0b282-f550-4e2f-968d-c770f47b6d33/workspace => [200] OK
+28. [GET] http://127.0.0.1:3037/api/v1/categories/09abfd74-586b-459f-8b80-b5a4ef7cb484/products/43d0b282-f550-4e2f-968d-c770f47b6d33/projects/413b59ef-b92d-4f52-8dfb-f36d6ea0f766 => [200] OK
+29. [POST] http://127.0.0.1:3037/api/v1/categories/09abfd74-586b-459f-8b80-b5a4ef7cb484/commands => [200] OK
+30. [GET] http://127.0.0.1:3037/api/v1/categories/09abfd74-586b-459f-8b80-b5a4ef7cb484/products/43d0b282-f550-4e2f-968d-c770f47b6d33/projects/413b59ef-b92d-4f52-8dfb-f36d6ea0f766 => [200] OK
+31. [GET] http://127.0.0.1:3037/api/v1/categories/09abfd74-586b-459f-8b80-b5a4ef7cb484/products/43d0b282-f550-4e2f-968d-c770f47b6d33/workspace => [200] OK
+32. [POST] http://127.0.0.1:3037/api/v1/categories/09abfd74-586b-459f-8b80-b5a4ef7cb484/commands/preview => [200] OK
+33. [POST] http://127.0.0.1:3037/api/v1/categories/09abfd74-586b-459f-8b80-b5a4ef7cb484/commands => [200] OK
+34. [GET] http://127.0.0.1:3037/api/v1/categories/09abfd74-586b-459f-8b80-b5a4ef7cb484/products/43d0b282-f550-4e2f-968d-c770f47b6d33/projects/413b59ef-b92d-4f52-8dfb-f36d6ea0f766 => [200] OK
+35. [GET] http://127.0.0.1:3037/api/v1/categories/09abfd74-586b-459f-8b80-b5a4ef7cb484/products/43d0b282-f550-4e2f-968d-c770f47b6d33/workspace => [200] OK
+
+Note: 14 static requests not shown, run with --static option to see them.

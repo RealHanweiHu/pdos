@@ -1,0 +1,16 @@
+{
+  "owned_test_container": "d1d1f17f275a6414a847533e067263347e6006958b8c81c7918ac7ee653f6bba",
+  "owned_test_name": "pdos-proposals-test-20261006-0424",
+  "owned_test_port": 55041,
+  "stopped": true,
+  "container_removed": false,
+  "volumes_removed": false,
+  "qa_api_8846_stopped": true,
+  "qa_web_3046_stopped": true,
+  "user_web_3000_listening": true,
+  "user_api_8000_listening": true,
+  "agent_created_qa_browser_tab_closed": true,
+  "user_browser_tabs_closed": false,
+  "private_backups_retained": true,
+  "qa_synthetic_records_cleared_by_final_isolated_regression_and_roundtrip": true
+}

@@ -1,0 +1,19 @@
+{
+  "real_api_authorization_and_run_history": true,
+  "trigger_forms": [
+    "manual",
+    "schedule",
+    "domain_event",
+    "relative_milestone"
+  ],
+  "event_catalog_count": 122,
+  "unknown_clocks_and_source_ids_empty": true,
+  "automatic_manual_button_count": 0,
+  "mobile": {
+    "viewport": 320,
+    "width": 320,
+    "dark": true
+  },
+  "non_get_requests": [],
+  "page_errors": []
+}

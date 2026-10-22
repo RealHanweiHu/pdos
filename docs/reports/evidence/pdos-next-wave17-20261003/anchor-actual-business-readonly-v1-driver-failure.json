@@ -1,0 +1,10 @@
+{
+  "status": "FAILED_DRIVER_BEFORE_OWNER_READ",
+  "exit_code": 1,
+  "error": "AttributeError: sha(__file__) passed str to Path-only helper",
+  "actual_anchor_owner_called": false,
+  "business_data_modified": false,
+  "raw_log_sha256": "f118420fd0b24324ddae87c9c67487ee4b30b5a1be2a141c1e3139d21a46087b",
+  "original_tool_sha256_not_captured": true,
+  "repair": "Normalize sha argument with Path; distinct v2 report/log preserves original failure"
+}

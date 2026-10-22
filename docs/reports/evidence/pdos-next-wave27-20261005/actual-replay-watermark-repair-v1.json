@@ -1,0 +1,29 @@
+{
+  "status": "ACTUAL_REPLAY_WATERMARK_DEFECT_REPAIRED_REAL_PG_RECHECK_PENDING",
+  "recorded_at": "2026-10-05T19:44:38.023056+00:00",
+  "failed_log": {
+    "path": "docs/reports/evidence/pdos-next-wave27-20261005/actual-versioned-atomic-pg-v1.log",
+    "sha256": "d00a7de9787f3b86ee04de90493933f44b38f9a73234cee528e3048e69c0dca7"
+  },
+  "actual_atomic_v1_overall_pass": false,
+  "confirmed_before_failure": [
+    "missing deferred common group rejected with whole transaction rollback",
+    "structurally valid original Start proof mismatch rejected by deferred atom with whole rollback",
+    "four actual common rows flushed then failure restores whole 17-table hashes and unconsumed T1",
+    "same original command legally committed before client response loss",
+    "complete saved v2 proof and retained Current agree",
+    "unrelated issuer registry additions preserve fixed single dependency",
+    "same original request returns original receipt"
+  ],
+  "failure": "After exact saved request recovery, products lifecycle_epoch changed; other 16 table hashes remained identical. Malformed SQL CHECK step was not reached.",
+  "actual_write_chain": "common.validate -> verification_launch._guards -> resources.recheck_running -> _load(write=True) -> conflicting SampleUsageSentinel INSERT -> BEFORE INSERT lifecycle_reference_gate -> Product.lifecycle_epoch UPDATE",
+  "repair": "Current write permission remains required. Only new reservations may initialize consuming sentinels. Existing reservation locks and reads; a missing saved sentinel is rejected as RUN_SAMPLE_USAGE_MISSING without reconstruction.",
+  "prior_resource_sha256": "1a21caa42b460b5ef4fed1ae2fc3e00a647100b6222ae7ace088a7cc1053e1b7",
+  "repaired_resource_sha256": "a588bdef2d51375d17f6b0caf4534d89ce3ba4fc7aecf893ed20bac350a32d03",
+  "affected_pure_checks": {
+    "actual-resource-dependency-pure-v2.log": 99,
+    "actual-retained-launch-pure-v2.log": 157
+  },
+  "real_qualification_granted": false,
+  "old_expired_account_grant_extended": false
+}

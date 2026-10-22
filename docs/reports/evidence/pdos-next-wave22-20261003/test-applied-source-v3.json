@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-03T19:10:07.542943+00:00",
+  "scope": "Promise future committed window start guard only; Start remains actual past; old saved originals unchanged",
+  "files": {
+    "tools/wave22_shared_test.py": {
+      "before_sha256": "a99731770aa59882ef2f2b6c4b3d14002b44783e1e6a58979739845f6ed26509",
+      "sha256": "d9a78abdba39ff4461f4e6e1070f428d9b880c7fa621a79a8e694faf340c4b5c"
+    },
+    "tools/tests/test_wave22_shared_test.py": {
+      "before_sha256": "b0861e1d073d8661e1419108bac8549c4327fc0372160316fc31b2624d365891",
+      "sha256": "3a531a3e4ef52e419ecbba51bf3ce5ab5714b7bfd59f336b777b713f3e2240d9"
+    }
+  }
+}

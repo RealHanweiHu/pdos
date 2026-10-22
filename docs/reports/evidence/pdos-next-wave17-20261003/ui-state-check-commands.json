@@ -1,0 +1,35 @@
+{
+  "cwd_typecheck": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+  "typecheck_argv": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/.bin/tsc",
+    "--target",
+    "ES2022",
+    "--module",
+    "commonjs",
+    "--moduleResolution",
+    "node",
+    "--strict",
+    "--esModuleInterop",
+    "--noEmitOnError",
+    "--noUnusedLocals",
+    "--noUnusedParameters",
+    "--types",
+    "node",
+    "--typeRoots",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/@types",
+    "--outDir",
+    "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-ui-state-zqimqo4s",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/ui-contract.ts",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/ui-state.ts",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/ui-state.test.ts"
+  ],
+  "test_argv": [
+    "node",
+    "--test",
+    "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-ui-state-zqimqo4s/ui-state.test.js"
+  ],
+  "temporary_output": "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-ui-state-zqimqo4s",
+  "typecheck_exit": 0,
+  "test_exit": 0,
+  "scope": "Only three staged TS files; no public build/HTTP/DB/browser"
+}

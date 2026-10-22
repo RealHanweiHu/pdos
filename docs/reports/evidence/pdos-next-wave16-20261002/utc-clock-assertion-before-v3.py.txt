@@ -1,0 +1,489 @@
+"""Real PG/API candidates. Root alone runs them after shared Wave16 integration."""
+
+# ruff: noqa: F811 - imported fixtures deliberately register the entire parent tree
+
+from copy import deepcopy
+from dataclasses import replace
+from datetime import timedelta
+from uuid import UUID, uuid4
+
+import pytest
+from sqlalchemy import event, select, update
+
+from pdos_next import quality_followup_host as host
+from pdos_next.contracts import Command
+from pdos_next.database import tenant_session
+from pdos_next.domain.capa_verification.models import RemediationLinkRecord
+from pdos_next.domain.quality_execution.models import QualityIssueVersion
+from pdos_next.domain.quality_followup import service as followup
+from pdos_next.domain.quality_followup.adapters import TransactionCommands
+from pdos_next.domain.quality_followup.schemas import RootCausePayload
+from pdos_next.errors import DomainError
+from pdos_next.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    OriginalSecurity,
+    Outbox,
+    Receipt,
+    RequestKey,
+    now,
+)
+from pdos_next.originals import object_reference
+from pdos_next.service import digest
+from quality_followup_transactions.fixtures import (  # noqa: F401
+    LINK,
+    PATH,
+    accepted,
+    accepted_work,
+    command,
+    complete_command,
+    counts,
+    current_rows,
+    fixed_issue,
+    followup_integration_contract,
+    followup_work,
+    known_configuration,
+    launch_work,
+    link_command,
+    no_effect,
+    operational_work,
+    post,
+    proof_row,
+    quality_work,
+    ready_work,
+    results_work,
+    root_command,
+)
+
+
+def prepared(work, value):
+    response = post(work.quality, value, True)
+    assert response.status_code == 200, response.text
+    return response.json()["command"]
+
+
+def truth_counts(work):
+    return {key: value for key, value in counts(work).items() if key != RequestKey.__tablename__}
+
+
+def test_t2_named_root_cause_uses_actual_common_uuid_and_atomic_shared_receipt(
+    followup_work, monkeypatch
+):
+    work = followup_work
+    value = root_command(work)
+    approved = prepared(work, value)
+    assert "approval_token" in approved["payload"]
+    assert not approved["payload"].get("confirmation_token")
+    before = counts(work)
+    old = fixed_issue(work)
+    captured = []
+    original = TransactionCommands.confirm
+
+    def observe(commands, invocation, preview, authority):
+        # Observe the real kernel invocation; do not replace authorization/confirm.
+        captured.append((invocation.decision_id, commands.consumed_proof_id))
+        return original(commands, invocation, preview, authority)
+
+    monkeypatch.setattr(TransactionCommands, "confirm", observe)
+    result = post(work.quality, approved)
+    assert result.status_code == 200, result.text
+    receipt = result.json()
+    proof = proof_row(work, approved)
+    assert proof.consumed is True and captured == [(proof.id, proof.id)]
+    row = fixed_issue(work)
+    assert row.revision == old.revision + 1 and row.previous_issue_version_id == old.id
+    assert row.source_basis["shared_proof"] == {"id": str(proof.id), "tier": "T2"}
+    conclusion = row.issue_snapshot["root_cause"]
+    assert conclusion["actor_id"] == str(work.quality.human)
+    assert conclusion["text"] == value["payload"]["text"]
+    assert conclusion["at"] is not None
+    assert receipt["subject_type"] == "quality_issue" and receipt["subject_id"] == str(row.id)
+    after = counts(work)
+    for cls in (QualityIssueVersion, Receipt, Audit, Outbox):
+        assert after[cls.__tablename__] == before[cls.__tablename__] + 1
+    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        assert (
+            s.scalar(select(Outbox.type).where(Outbox.receipt_id == UUID(receipt["id"])))
+            == "issue.root_cause_decided"
+        )
+    assert fixed_issue(work, old.revision).issue_snapshot == old.issue_snapshot
+
+
+def test_real_consumption_marker_requires_no_sql_gap_and_cannot_cross_transaction(followup_work):
+    work = followup_work
+    approved = prepared(work, root_command(work))
+    checked = Command.model_validate(approved)
+    payload = RootCausePayload.model_validate(checked.payload)
+    calls = []
+
+    def sql(*_args):
+        calls.append(True)
+
+    event.listen(work.setup.engine, "before_cursor_execute", sql)
+    try:
+        with pytest.raises(RuntimeError, match="rollback-provenance-probe"):
+            with tenant_session(work.setup.engine, work.setup.tenant) as s:
+                row = s.scalar(
+                    select(Confirmation)
+                    .where(Confirmation.token_hash == digest(payload.approval_token))
+                    .with_for_update()
+                )
+                assert row.consumed is False
+                row.consumed = True
+                count = len(calls)
+                actual = host.record_consumed_confirmation(
+                    s, work.quality.ctx, checked, payload, followup, row
+                )
+                assert len(calls) == count  # false→true provenance captured before any SQL/flush.
+                assert (
+                    host.require_consumed_proof(s, work.quality.ctx, checked, payload, tier="T2")
+                    == actual
+                )
+                raise RuntimeError("rollback-provenance-probe")
+        assert proof_row(work, approved).consumed is False
+        with tenant_session(work.setup.engine, work.setup.tenant) as another:
+            with pytest.raises(DomainError) as error:
+                host.require_consumed_proof(another, work.quality.ctx, checked, payload, tier="T2")
+            assert error.value.code == "NAMED_APPROVAL_REQUIRED"
+    finally:
+        event.remove(work.setup.engine, "before_cursor_execute", sql)
+
+
+def test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution(
+    followup_work,
+):
+    work = followup_work
+    accepted(work.quality, root_command(work))
+    before = fixed_issue(work)
+    first, first_command = accepted(work.quality, complete_command(work, (0,)))
+    partial = fixed_issue(work)
+    assert partial.revision == before.revision + 1 and partial.status == "actioning"
+    assert partial.issue_snapshot["capa"]["actions"][0]["completion"] is not None
+    assert partial.issue_snapshot["capa"]["actions"][1]["completion"] is None
+    second, second_command = accepted(work.quality, complete_command(work, (1,)))
+    complete = fixed_issue(work)
+    assert complete.revision == partial.revision + 1 and complete.status == "awaiting_verification"
+    assert complete.issue_snapshot["closure"] is None
+    assert complete.issue_snapshot["capa"]["effectiveness"] is None
+    assert all(a["completion"] is not None for a in complete.issue_snapshot["capa"]["actions"])
+    for index, action in enumerate(complete.issue_snapshot["capa"]["actions"]):
+        persisted = action["completion"]
+        assert persisted["executor_id"] == str(work.quality.human)
+        assert persisted["at"]["occurred_at"] == work.completions[index]["at"]["occurred_at"]
+        assert persisted["text"] == work.completion_rows[index]["text"]
+    for row, command_value, receipt in (
+        (partial, first_command, first),
+        (complete, second_command, second),
+    ):
+        proof = proof_row(work, command_value)
+        assert proof.consumed is True and row.source_basis["shared_proof"]["id"] == str(proof.id)
+        assert receipt["subject_id"] == str(row.id)
+        observation = row.source_basis["completion_observations"][-1]
+        assert observation["received_at"] is not None
+        assert observation["fact"]["occurred_at"] in {
+            r["occurred_at"] for r in work.completion_rows
+        }
+    historical = fixed_issue(work, before.revision)
+    assert historical.issue_snapshot == before.issue_snapshot
+    saved_execution = current_rows(work)
+    assert saved_execution.row.id == work.original_result.row.id
+    assert saved_execution.run == work.original_result.run
+    assert saved_execution.request.id == work.original_result.request.id
+    response = work.quality.client.get(
+        f"/v1/products/{work.setup.product}/{PATH}",
+        headers=work.quality.headers,
+        params={"issue_id": str(work.issue_id)},
+    )
+    assert response.status_code == 200, response.text
+    assert response.json()["integration"]["effectiveness"] is False
+    assert response.json()["integration"]["close"] is False
+
+
+@pytest.mark.parametrize("operation", [followup.ROOT_CAUSE, followup.COMPLETE, LINK])
+def test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect(
+    followup_work, operation
+):
+    work = followup_work
+    value = {
+        followup.ROOT_CAUSE: root_command,
+        followup.COMPLETE: complete_command,
+        LINK: link_command,
+    }[operation](work)
+    receipt, approved = accepted(work.quality, value)
+    baseline = truth_counts(work)
+    original = proof_row(work, approved)
+    for replay in (
+        approved,
+        {**deepcopy(approved), "command_id": str(uuid4()), "idempotency_key": str(uuid4())},
+    ):
+        result = post(work.quality, replay)
+        assert result.status_code == 200, result.text
+        assert result.json()["id"] == receipt["id"]
+        assert truth_counts(work) == baseline
+        assert (
+            proof_row(work, approved).id == original.id
+            and proof_row(work, approved).consumed is True
+        )
+
+
+@pytest.mark.parametrize("change", ["executor", "event_clock", "event_text"])
+def test_exact_nine_fields_and_named_executor_cannot_change_after_review(followup_work, change):
+    work = followup_work
+    approved = prepared(work, complete_command(work))
+    before, old = counts(work), fixed_issue(work)
+    altered = deepcopy(approved)
+    completion = altered["payload"]["completions"][0]
+    if change == "executor":
+        completion["executor_id"] = str(work.setup.peer)
+        expected = "NAMED_EXECUTOR_REQUIRED"
+    elif change == "event_clock":
+        completion["at"]["occurred_at"] = (now() + timedelta(minutes=1)).isoformat()
+        expected = "MISSING_REQUIRED_EVIDENCE"
+    else:
+        completion["text"] += " altered after observation"
+        expected = "MISSING_REQUIRED_EVIDENCE"
+    result = post(work.quality, altered)
+    assert result.status_code == (403 if change == "executor" else 422), result.text
+    assert result.json()["code"] == expected
+    no_effect(work, before, approved, old)
+
+
+@pytest.mark.parametrize("source", ["completion_original", "classification"])
+def test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_and_history(
+    followup_work, source
+):
+    work = followup_work
+    approved = prepared(work, complete_command(work))
+    old = fixed_issue(work)
+    if source == "completion_original":
+        from test_project_first_plan import cmd
+
+        from pdos_next.models import UploadedOriginal
+
+        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+            artifact = s.get(Artifact, work.completion_artifact_id)
+            original = s.get(UploadedOriginal, artifact.original_id)
+            security = s.scalar(
+                select(OriginalSecurity).where(OriginalSecurity.original_id == original.id)
+            )
+            ref, epoch = object_reference(original), security.epoch
+        raw = work.report_store.read_original(ref)
+        accepted(
+            work.quality,
+            cmd(
+                work.quality,
+                "evidence.original.withdraw",
+                {
+                    "original_id": str(ref.id),
+                    "expected_epoch": epoch,
+                    "reason": "Synthetic current completion source withdrawal",
+                },
+            ),
+        )
+        assert work.report_store.read_original(ref) == raw
+    else:
+        # A current terminal source withdrawal is real scoped DB state, not content mutation.
+        with tenant_session(work.setup.engine, work.setup.tenant) as s:
+            s.execute(
+                update(Artifact)
+                .where(Artifact.id == work.classification_artifact_id)
+                .values(status="withdrawn")
+            )
+    before = counts(work)
+    result = post(work.quality, approved)
+    assert result.status_code == 409 and result.json()["code"] == "SOURCE_UNAVAILABLE", result.text
+    no_effect(work, before, approved, old)
+    assert fixed_issue(work, old.revision).issue_snapshot == old.issue_snapshot
+
+
+@pytest.mark.parametrize("changed", ["original_epoch", "policy_epoch"])
+def test_mid_phase_aba_versions_are_rechecked_after_completion_assessment(followup_work, changed):
+    work = followup_work
+    policy_versions = []
+    if changed == "policy_epoch":
+        import json
+
+        from verification_handoff.fixtures import artifact
+
+        # The two actual publication sources exist before the reviewed command.
+        for state in ("withdrawn", "active"):
+            value = deepcopy(work.policy_input)
+            value["state"] = state
+            publication = {
+                key: value[key]
+                for key in (
+                    "external_id",
+                    "purpose",
+                    "risk",
+                    "independent_verification",
+                    "state",
+                    "valid_from",
+                    "valid_until",
+                    "approval",
+                )
+            }
+            value["sources"] = [
+                artifact(work.quality, json.dumps(publication), "Synthetic fixed policy ABA")
+            ]
+            policy_versions.append(value)
+    approved = prepared(work, complete_command(work))
+    before, old = counts(work), fixed_issue(work)
+    actual = work.followup_runtime.assess_action_completion
+    calls = []
+
+    def observe(s, ctx, product_id, basis, action, completion, **kwargs):
+        value = actual(s, ctx, product_id, basis, action, completion, **kwargs)
+        calls.append(True)
+        if len(calls) == 2:  # First _load captured basis; actual final refresh reads again.
+            if changed == "original_epoch":
+                artifact = s.get(Artifact, work.completion_artifact_id)
+                row = s.scalar(
+                    select(OriginalSecurity).where(
+                        OriginalSecurity.original_id == artifact.original_id
+                    )
+                )
+                # Protected epochs change while bytes/source state stay identical.
+                for _ in range(2):
+                    row.epoch += 1
+                    s.flush()
+            else:
+                from pdos_next.quality_policy_import import import_quality_policy_fact
+
+                previous = work.policy_receipt
+                for data in policy_versions:
+                    data["previous_id"] = previous["subject_id"]
+                    data["expected_previous_revision"] = previous["subject_revision"]
+                    previous = import_quality_policy_fact(
+                        s,
+                        ctx,
+                        work.policy_issuer,
+                        data,
+                        request_key=str(uuid4()),
+                        command_id=uuid4(),
+                    )
+        return value
+
+    work.setup.engine._pdos_quality_followup = replace(
+        work.followup_runtime, assess_action_completion=observe
+    )
+    result = post(work.quality, approved)
+    assert len(calls) >= 2
+    expected = "ORIGINAL_SECURITY_BLOCKED" if changed == "original_epoch" else "SOURCE_STALE"
+    assert result.status_code == 409 and result.json()["code"] == expected, result.text
+    no_effect(work, before, approved, old)
+
+
+def test_link_t1_preserves_issue_pointer_and_records_exact_scoped_owner_output(followup_work):
+    work = followup_work
+    old, before = fixed_issue(work), counts(work)
+    receipt, approved = accepted(work.quality, link_command(work))
+    assert receipt["subject_type"] == "capa_remediation_link"
+    with tenant_session(work.setup.engine, work.setup.tenant) as s:
+        row = s.get(RemediationLinkRecord, UUID(receipt["subject_id"]))
+        assert (row.issue_id, row.issue_version_id, row.issue_revision, row.capa_id) == (
+            work.issue_id,
+            old.id,
+            old.revision,
+            work.capa_id,
+        )
+        assert row.input_snapshot["shared_proof"] == {
+            "id": str(proof_row(work, approved).id),
+            "tier": "T1",
+        }
+        assert row.output_snapshot["outputs"][0]["ref"] == {
+            "kind": "build",
+            "id": work.build_id,
+            "revision": 1,
+            "key": None,
+        }
+        assert row.output_snapshot["action_fulfilled"] is None
+        assert row.visibility == "private" and row.owner_id == work.quality.human
+    saved = fixed_issue(work)
+    assert (saved.id, saved.revision, saved.issue_snapshot) == (
+        old.id,
+        old.revision,
+        old.issue_snapshot,
+    )
+    after = counts(work)
+    assert after[QualityIssueVersion.__tablename__] == before[QualityIssueVersion.__tablename__]
+    for cls in (RemediationLinkRecord, Receipt, Audit, Outbox):
+        assert after[cls.__tablename__] == before[cls.__tablename__] + 1
+    altered = deepcopy(approved)
+    altered.update(command_id=str(uuid4()), idempotency_key=str(uuid4()))
+    altered["payload"]["output_refs"][0]["revision"] = 2
+    refused = post(work.quality, altered)
+    assert refused.status_code == 409 and refused.json()["code"] == "VERSION_CONFLICT", refused.text
+    assert truth_counts(work) == {
+        key: value for key, value in after.items() if key != RequestKey.__tablename__
+    }
+
+
+def test_classification_profile_aba_during_actual_source_checks_cannot_reuse_old_closure(
+    followup_work, monkeypatch
+):
+    from pdos_next import quality_followup_bootstrap as bootstrap
+
+    work = followup_work
+    approved = prepared(work, complete_command(work))
+    before, old = counts(work), fixed_issue(work)
+    actual, calls = bootstrap.check_source, []
+
+    def check(s, ctx, product_id, source):
+        checked = actual(s, ctx, product_id, source)
+        calls.append(True)
+        if len(calls) == 3:
+            # Same scope and exact content return, but withdrawal/reconfiguration
+            # is a genuine new host epoch, never an unchanged positive proof.
+            bootstrap.disable_local_profile(
+                work.setup.engine,
+                tenant_id=work.setup.tenant,
+                product_id=work.setup.product,
+                project_id=UUID(work.config["project"]),
+            )
+            bootstrap.configure_local_profile(work.setup.engine, work.completion_profile)
+        return checked
+
+    monkeypatch.setattr(bootstrap, "check_source", check)
+    result = post(work.quality, approved)
+    assert len(calls) >= 3
+    assert result.status_code == 409 and result.json()["code"] == "SOURCE_STALE", result.text
+    no_effect(work, before, approved, old)
+
+
+@pytest.mark.parametrize(
+    "operation,event_type",
+    [
+        (followup.ROOT_CAUSE, "issue.root_cause_decided"),
+        (followup.COMPLETE, "capa.actions_completed"),
+        (LINK, "capa.followup_linked"),
+    ],
+)
+def test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link(
+    followup_work, operation, event_type
+):
+    work = followup_work
+    value = {
+        followup.ROOT_CAUSE: root_command,
+        followup.COMPLETE: complete_command,
+        LINK: link_command,
+    }[operation](work)
+    approved = prepared(work, value)
+    before, old = counts(work), fixed_issue(work)
+
+    def fail(_mapper, _connection, target):
+        if target.type == event_type:
+            raise RuntimeError("synthetic-wave16-terminal-outbox-failure")
+
+    event.listen(Outbox, "before_insert", fail)
+    try:
+        with pytest.raises(RuntimeError, match="synthetic-wave16-terminal-outbox-failure"):
+            post(work.quality, approved)
+    finally:
+        event.remove(Outbox, "before_insert", fail)
+    no_effect(work, before, approved, old)
+    # An ended marker cannot certify retry; common consumption creates a fresh marker.
+    success = post(work.quality, approved)
+    assert success.status_code == 200, success.text
+    assert proof_row(work, approved).consumed is True
+    assert current_rows(work).run == work.original_result.run

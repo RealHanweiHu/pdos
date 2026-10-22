@@ -1,0 +1,58 @@
+{
+  "workspace": "/Users/huhanwei/Documents/ai-native-R&D-platform/output/cost-recovery-20261001/web-cached-fonts",
+  "baseline": {
+    "base": "/private/tmp/pdos-global-layout-20261001-pbkq9d27/web",
+    "overlay": "ten cost and canonical close UI/type/test files",
+    "scope": "prior verified layout + current cost files; concurrent product/professional changes excluded; all candidate TypeScript included"
+  },
+  "font_reuse": {
+    "source": "/private/tmp/pdos-global-layout-20261001-pbkq9d27/web/.next/static/media",
+    "assets": {
+      "geist.woff2": "9b6f5ff45b278c744b5f379a2c4ecbaf858a842b8eaf82ac8d21b699ca16c608",
+      "geist-mono.woff2": "5f3d6ad60f29d6cb708414ec6887163d63bf197377ef5417d2483ff31ace6c3b"
+    },
+    "scope": "temporary candidate uses the previous successfully downloaded actual Geist Latin variable fonts through next/font/local; repository font source unchanged; no mock font"
+  },
+  "overlay_reconciliation": {
+    "web/src/components/projects/cost-gaps.tsx": {
+      "current_matches_scope": true,
+      "matches_browser_build": true
+    },
+    "web/src/components/projects/cost-issue-closure-review.tsx": {
+      "current_matches_scope": true,
+      "matches_browser_build": true
+    },
+    "web/src/components/projects/cost-issue-closure-review.test.tsx": {
+      "current_matches_scope": true,
+      "matches_browser_build": true
+    },
+    "web/src/components/projects/material-issue-closure-review.tsx": {
+      "current_matches_scope": true,
+      "matches_browser_build": true
+    },
+    "web/src/components/projects/material-issue-closure-review.test.tsx": {
+      "current_matches_scope": true,
+      "matches_browser_build": true
+    },
+    "web/src/components/projects/project-work-item-api.ts": {
+      "current_matches_scope": true,
+      "matches_browser_build": true
+    },
+    "web/src/components/projects/project-work-item-types.ts": {
+      "current_matches_scope": true,
+      "matches_browser_build": true
+    },
+    "web/src/components/projects/project-issue-material-closure.test.tsx": {
+      "current_matches_scope": true,
+      "matches_browser_build": true
+    },
+    "web/src/components/my-work/issue-risk-work-card.tsx": {
+      "current_matches_scope": true,
+      "matches_browser_build": true
+    },
+    "web/src/components/my-work/issue-risk-material-closure.test.tsx": {
+      "current_matches_scope": true,
+      "matches_browser_build": true
+    }
+  }
+}

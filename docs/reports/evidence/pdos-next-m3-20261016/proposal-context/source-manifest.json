@@ -1,0 +1,17 @@
+{
+  "base_commit": "a82657a98c6ee895b1677c257587a1e45b0b0781",
+  "database_head": "s0_0760",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/agent_kernel/api.py": "982c34407c974ea9ce89e6a6089f0e74f912e39fc3ed46266f493adafa58656d",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "c8e11000540a1d3654b39f60ea65897aa39a79ece942911aa40a51407509facf",
+    "pdos-next/server/pdos_next/agent_kernel/gateway.py": "3d4d0ad0663bc7656c19ab7ea698a41b688270e4f6c835a008af311072a15dd3",
+    "pdos-next/server/pdos_next/agent_kernel/m3_object_reads.py": "c8eef674aafd3bf35789e6a02de466437d98422140d91b1b9be9178d1ca105b1",
+    "pdos-next/server/pdos_next/agent_kernel/persistence.py": "b781e52389cbc7b1544cf37194fe45aec74d8150d493c0d8dfd661c147ff3534",
+    "pdos-next/server/pdos_next/agent_kernel/tools.py": "291debc956bc8cdb1ea6c4ee026426148e151f4080855509fe70b130886ec40a",
+    "pdos-next/server/pdos_next/agent_kernel/proposal_context.py": "03d2fad221e19e4392277e34552a60431d5bfb021b47d7c87bd3015a2ff5e8b4",
+    "pdos-next/server/pdos_next/domain/preproject/access.py": "b0796c5cffac0622189b3e4430da6f17896e0a0083d879d9cf9ea65d01b18d79",
+    "pdos-next/server/pdos_next/domain/preproject/baseline.py": "87f7ee154322361379a4f8ee5ae6ea6c3d710c52fa6af6f2cfe8dba718ca3c85",
+    "pdos-next/server/tests/agent_kernel/test_proposal_context_pg.py": "72a1f78a827fae26f79fb254d37893293b812a67908bded44c6461f8a88f9611"
+  },
+  "scope": "exact Run-bound private proposal reads and model egress; no migration or frontend change; source watermarks, not repeated body closure reconstruction"
+}

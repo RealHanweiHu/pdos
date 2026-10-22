@@ -1,0 +1,55 @@
+........F............................................................... [ 73%]
+..........................                                               [100%]
+=================================== FAILURES ===================================
+__ test_agent_platform_read_omits_private_variant_and_forbids_private_target ___
+
+setup = <isolated synthetic test scope>
+
+    def test_agent_platform_read_omits_private_variant_and_forbids_private_target(setup):
+        artifact = source(setup)
+        parent = definition(setup, artifact)
+        variant, _, _ = derive(setup, parent, artifact, kind="customer", visibility="private")
+        saved, _ = confirmed(
+            setup, request(setup, variant_id=variant["id"], compatibility="客户私有要求")
+        )
+        f = reader(setup, {}, tool="platform.read")
+        result = invoke(f)
+        assert result["items"][0]["id"] == saved["result"]["platform_id"]
+        assert result["items"][0]["links"] == []
+        private = reader(
+            setup,
+            {
+                "product_id": str(setup.product),
+                "variant_id": variant["id"],
+            },
+            tool="platform.read",
+        )
+        with pytest.raises(DomainError) as denied:
+            invoke(private)
+>       assert denied.value.code == "SOURCE_UNAVAILABLE"
+E       AssertionError: assert 'FORBIDDEN_SCOPE' == 'SOURCE_UNAVAILABLE'
+E         
+E         - SOURCE_UNAVAILABLE
+E         + FORBIDDEN_SCOPE
+
+tests/agent_kernel/test_platform_reads_pg.py:70: AssertionError
+=============================== warnings summary ===============================
+tests/products/test_platform_links_pg.py: 8 warnings
+tests/agent_kernel/test_platform_reads_pg.py: 2 warnings
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:175: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/products/test_platform_links_pg.py: 11 warnings
+tests/agent_kernel/test_platform_reads_pg.py: 3 warnings
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:192: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+tests/products/test_platform_links_pg.py::test_private_variant_link_hidden_but_shared_platform_metadata_readable
+tests/agent_kernel/test_platform_reads_pg.py::test_agent_platform_read_omits_private_variant_and_forbids_private_target
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_platform_reads_pg.py::test_agent_platform_read_omits_private_variant_and_forbids_private_target
+1 failed, 97 passed, 26 warnings in 14.92s

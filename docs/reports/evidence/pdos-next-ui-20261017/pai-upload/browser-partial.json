@@ -1,0 +1,24 @@
+{
+  "counts": {
+    "agent_sessions": 0,
+    "agent_runs": 0,
+    "agent_run_events": 0,
+    "agent_tool_calls": 0,
+    "agent_run_inputs": 0,
+    "audit_entries": 9,
+    "action_receipts": 9,
+    "outbox_events": 9,
+    "request_keys": 5,
+    "artifact_versions": 2,
+    "uploaded_originals": 3,
+    "upload_attempts": 3,
+    "original_scan_requests": 2,
+    "original_scan_results": 2
+  },
+  "runs": {},
+  "two_new_originals_only": true,
+  "no_new_run": true,
+  "models_called": false,
+  "synthetic_scanner_only": true,
+  "browser_followup_blocked": true
+}

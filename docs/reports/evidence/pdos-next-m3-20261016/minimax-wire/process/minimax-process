@@ -1,0 +1,9 @@
+{"run_id": "8d5a49a5-980b-4f58-8cad-3183edc785ab", "same_temporal_run": true, "same_checkpoint_thread": true, "worker_processes": 2, "native_http_attempts": 3, "private_continuation_persisted": true, "public_reasoning_exposed": false, "actual_t1_proposals": 1, "held_tokens": 0, "synthetic_cost_micro_usd": 639, "history": {"history_reference_fields": ["actor_id", "category_id", "requester_id", "subject_id", "tenant_id"], "answer_signals": 1, "activities": 2}, "real_model_calls": 0, "real_kms_calls": 0, "worker_log_directory": "/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-272/test_default_minimax_wire_rest0"}
+.
+=============================== warnings summary ===============================
+tests/agent_kernel/test_minimax_process.py::test_default_minimax_wire_restarts_question_and_creates_one_actual_t1_proposal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 1 warning in 24.67s

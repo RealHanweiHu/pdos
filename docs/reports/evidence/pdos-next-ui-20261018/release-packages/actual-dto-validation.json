@@ -1,0 +1,1095 @@
+{
+  "version": "project-release-packages-actual-dto-validation/v1",
+  "input": "docs/reports/evidence/pdos-next-ui-20261018/release-packages/pg-http-responses.json",
+  "validation": "Original actual GET bodies through the frozen project reader and real shared release parsers; no field supplementation",
+  "input_sha256": "0824f5dc4e6d3f00c91750d9b1304dec5963d8e67abf73f1b5a3641ddf61a6b1",
+  "source_sha256": {
+    "pdos-next/web/src/lib/project-release-packages.ts": "a0f556cdbea0041d38b3a8e26c2513b9c85e2fd052f9b3efd0f53b45614fbcf3",
+    "pdos-next/web/src/components/manufacturing-preparation/manufacturing-preparation-contract.ts": "2fc6fa24f90012a1fabd14b88442ad95bb90fe0aa5f10ccc77eb4fa2fae370fc",
+    "pdos-next/web/src/lib/releases.ts": "6f8315b4b7f7743b71ef689c74903934b82c924433a7f58ee5d6c5a556ae740b",
+    "pdos-next/web/src/lib/build-quality-loop-view.ts": "7cfc49a4ece48f8e072cffc0d1744825b7550dea0cc87b58ce93a1a0c0f266e0",
+    "pdos-next/web/src/lib/project-build-scope.ts": "9a800dc150bd35811e354c468f298d71d33abe31ad65a6f591034b1a22864f32",
+    "pdos-next/web/src/lib/product-view.ts": "ef9e4740e02f4ab9b11fb70c89097424dae09cb637ed719d8202627e7c15ec15",
+    "pdos-next/web/src/lib/spec-bound-values.ts": "b6c082364ffbc5c8ad0344603b951a1fc2bff59526b42b6b4fc77f3e59c37ea5"
+  },
+  "calls": [
+    {
+      "scenario": "original_package_with_two_named_decisions/project_packages",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages?project_id=89e35766-c76d-48a4-b7ab-3abc890d8d93",
+      "status": 200,
+      "original_body_sha256": "2637ba0d6f3816565a3361c2efa3810629f2aeb5e56a52ad118ca3e35107c9b2"
+    },
+    {
+      "scenario": "original_package_with_two_named_decisions/selected_original",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages/3c36ec90-ee56-4a69-8be7-dffa720344de",
+      "status": 200,
+      "original_body_sha256": "0110d2a4cc695575ec6a95d6e45a54c909917be9c2516924f40d58226d2704df"
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/project_packages",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages?project_id=89e35766-c76d-48a4-b7ab-3abc890d8d93",
+      "status": 200,
+      "original_body_sha256": "996751711c5b7dfabe7df8cd34c18b20d526e16ed4af312faee348bcc0851b76"
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/selected_original",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages/3c36ec90-ee56-4a69-8be7-dffa720344de",
+      "status": 200,
+      "original_body_sha256": "6f999321f5f0d9725660a905d50916f65fa235853c1db2621126c8994055e94e"
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/selected_current",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages/e634805e-d567-4d2c-b242-d268a1f87df9",
+      "status": 200,
+      "original_body_sha256": "63663da700d5111d5f51da359fe553d595075f804ea12c97d1325d4e78f36f34"
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/peer_project_packages",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages?project_id=89e35766-c76d-48a4-b7ab-3abc890d8d93",
+      "status": 200,
+      "original_body_sha256": "996751711c5b7dfabe7df8cd34c18b20d526e16ed4af312faee348bcc0851b76"
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/peer_selected_original",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages/3c36ec90-ee56-4a69-8be7-dffa720344de",
+      "status": 200,
+      "original_body_sha256": "6f999321f5f0d9725660a905d50916f65fa235853c1db2621126c8994055e94e"
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/other_model_project",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages?project_id=3f4a4841-9479-41c1-8cd5-89fbc33b18f8",
+      "status": 403,
+      "original_body_sha256": "cbc7dc50ebab2702d81453333efc2de13edf5fb69b0a9c10eada9e513b97f94e"
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/foreign_tenant_project",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages?project_id=89e35766-c76d-48a4-b7ab-3abc890d8d93",
+      "status": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/foreign_tenant_original",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages/3c36ec90-ee56-4a69-8be7-dffa720344de",
+      "status": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    },
+    {
+      "scenario": "withdrawn_policy_fixed_decisions_need_recheck/project_packages",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages?project_id=89e35766-c76d-48a4-b7ab-3abc890d8d93",
+      "status": 200,
+      "original_body_sha256": "996751711c5b7dfabe7df8cd34c18b20d526e16ed4af312faee348bcc0851b76"
+    },
+    {
+      "scenario": "withdrawn_policy_fixed_decisions_need_recheck/selected_original",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages/3c36ec90-ee56-4a69-8be7-dffa720344de",
+      "status": 200,
+      "original_body_sha256": "8b391fe50bb6ebc429de4ea808169313097655d0d13d1b76edf35affe63ea0f9"
+    },
+    {
+      "scenario": "withdrawn_policy_fixed_decisions_need_recheck/selected_current",
+      "method": "GET",
+      "path": "v1/categories/9b4098c5-7f99-48be-9ecd-228eceebbd91/products/1ad53419-5a58-4800-a99d-1e45b546af38/release-packages/e634805e-d567-4d2c-b242-d268a1f87df9",
+      "status": 200,
+      "original_body_sha256": "54139b9cc6e0e8833489ce3c7e913ec114bbc9fa217669fb19de9e0c984f6fb8"
+    }
+  ],
+  "checks": [
+    {
+      "check": "original_actual_three_phase_export",
+      "passed": true
+    },
+    {
+      "check": "frozen_project_and_shared_readers_match",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_original_package_with_two_named_decisions/project_packages",
+      "passed": true
+    },
+    {
+      "check": "original_headers_and_series_pointers_preserved_original_package_with_two_named_decisions/project_packages",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_original_package_with_two_named_decisions/selected_original",
+      "passed": true
+    },
+    {
+      "check": "complete_original_package_assessments_decisions_preserved_original_package_with_two_named_decisions/selected_original",
+      "passed": true
+    },
+    {
+      "check": "thirty_two_recorded_business_counts_unchanged_original_package_with_two_named_decisions",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_new_package_current_old_decisions_retained/project_packages",
+      "passed": true
+    },
+    {
+      "check": "original_headers_and_series_pointers_preserved_new_package_current_old_decisions_retained/project_packages",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_new_package_current_old_decisions_retained/selected_original",
+      "passed": true
+    },
+    {
+      "check": "complete_original_package_assessments_decisions_preserved_new_package_current_old_decisions_retained/selected_original",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_new_package_current_old_decisions_retained/selected_current",
+      "passed": true
+    },
+    {
+      "check": "complete_original_package_assessments_decisions_preserved_new_package_current_old_decisions_retained/selected_current",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_new_package_current_old_decisions_retained/peer_project_packages",
+      "passed": true
+    },
+    {
+      "check": "original_headers_and_series_pointers_preserved_new_package_current_old_decisions_retained/peer_project_packages",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_new_package_current_old_decisions_retained/peer_selected_original",
+      "passed": true
+    },
+    {
+      "check": "complete_original_package_assessments_decisions_preserved_new_package_current_old_decisions_retained/peer_selected_original",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_new_package_current_old_decisions_retained/other_model_project",
+      "passed": true
+    },
+    {
+      "check": "original_403_preserved_new_package_current_old_decisions_retained/other_model_project",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_new_package_current_old_decisions_retained/foreign_tenant_project",
+      "passed": true
+    },
+    {
+      "check": "original_403_preserved_new_package_current_old_decisions_retained/foreign_tenant_project",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_new_package_current_old_decisions_retained/foreign_tenant_original",
+      "passed": true
+    },
+    {
+      "check": "original_403_preserved_new_package_current_old_decisions_retained/foreign_tenant_original",
+      "passed": true
+    },
+    {
+      "check": "thirty_two_recorded_business_counts_unchanged_new_package_current_old_decisions_retained",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_withdrawn_policy_fixed_decisions_need_recheck/project_packages",
+      "passed": true
+    },
+    {
+      "check": "original_headers_and_series_pointers_preserved_withdrawn_policy_fixed_decisions_need_recheck/project_packages",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_withdrawn_policy_fixed_decisions_need_recheck/selected_original",
+      "passed": true
+    },
+    {
+      "check": "complete_original_package_assessments_decisions_preserved_withdrawn_policy_fixed_decisions_need_recheck/selected_original",
+      "passed": true
+    },
+    {
+      "check": "original_route_scope_withdrawn_policy_fixed_decisions_need_recheck/selected_current",
+      "passed": true
+    },
+    {
+      "check": "complete_original_package_assessments_decisions_preserved_withdrawn_policy_fixed_decisions_need_recheck/selected_current",
+      "passed": true
+    },
+    {
+      "check": "thirty_two_recorded_business_counts_unchanged_withdrawn_policy_fixed_decisions_need_recheck",
+      "passed": true
+    },
+    {
+      "check": "series_renewal_changes_pointer_without_inheriting_original_decisions",
+      "passed": true
+    },
+    {
+      "check": "policy_withdrawal_retains_saved_material_and_only_marks_applicability_for_recheck",
+      "passed": true
+    },
+    {
+      "check": "peer_original_scope_reads_match_owner_without_granting_approval",
+      "passed": true
+    },
+    {
+      "check": "actual_case_has_no_cursor_pagination",
+      "passed": true
+    },
+    {
+      "check": "raw_export_and_all_loaded_product_sources_unchanged",
+      "passed": true
+    }
+  ],
+  "results": [
+    {
+      "scenario": "original_package_with_two_named_decisions/project_packages",
+      "status": 200,
+      "returned_rows": 1,
+      "next_cursor": null,
+      "headers": [
+        {
+          "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+          "revision": 1,
+          "current": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "version": {
+              "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+              "revision": 1
+            },
+            "epoch": 1
+          },
+          "applicability": "not_checked",
+          "is_series_current": true
+        }
+      ]
+    },
+    {
+      "scenario": "original_package_with_two_named_decisions/selected_original",
+      "status": "assembled",
+      "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+      "revision": 1,
+      "project_id": "89e35766-c76d-48a4-b7ab-3abc890d8d93",
+      "receipt_id": "b0669ede-c09a-4753-91a1-4ee082a416f2",
+      "is_series_current": true,
+      "current": {
+        "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+        "version": {
+          "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+          "revision": 1
+        },
+        "epoch": 1
+      },
+      "applicability": "current",
+      "package_body_sha256": "f9a7d7c02e4486972dbe763a63b24443f3dafd3e6652fa501b3e72a0a2de31fb",
+      "raw_assessments_sha256": "c4d75dbe06b9e64d31ddf94c6386e94ad771703d5488897db816274c9d476329",
+      "raw_assessments_shape": "discipline map",
+      "assessments": [
+        {
+          "discipline": "engineering",
+          "state": "READY",
+          "check_count": 1,
+          "blocked_count": 0,
+          "unknown_count": 0,
+          "conditions": []
+        },
+        {
+          "discipline": "manufacturing",
+          "state": "READY",
+          "check_count": 1,
+          "blocked_count": 0,
+          "unknown_count": 0,
+          "conditions": []
+        }
+      ],
+      "decisions": [
+        {
+          "id": "3e6ebd80-4f13-4389-bcb4-07da0b4a56ad",
+          "revision": 1,
+          "discipline": "engineering",
+          "package": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "revision": 1
+          },
+          "receipt_id": "2fa4e7bf-ffce-4446-b318-f64680fa114e",
+          "applicability": "current",
+          "body_sha256": "64e710cd86b50fe07acdd59d810d72ddd548de15e0e81b5076beeeed11609caf",
+          "authority_sha256": "bb787778bcd8a8d9fb92dee774b9bc4e95713672ef28df45bd6d19912718d345",
+          "signers": [
+            "4547a266-5c68-4248-93b3-8189471c6687"
+          ],
+          "expiry": null,
+          "prepared_at": "2026-10-18T20:49:18.063542Z",
+          "limits_count": 1,
+          "limits_sha256": "b1ad1b92f920d8652e5077f1b7179e3c7b1fbb4efa2ee62e71c54d15969f02ec",
+          "assessment_state": "READY",
+          "customer_acceptance": null,
+          "external_received": false,
+          "external_effective": false
+        },
+        {
+          "id": "1deab97a-86b9-41af-bb48-673ad20af91f",
+          "revision": 1,
+          "discipline": "manufacturing",
+          "package": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "revision": 1
+          },
+          "receipt_id": "a69f0e8c-4304-4acb-87e1-170e5610c893",
+          "applicability": "current",
+          "body_sha256": "7eb945afac5e082da7537a157fb0526ce74eb92a0d01614e702e8794b80334b9",
+          "authority_sha256": "d6bfd746e662cf305a32ff02e7504b1dbe070897093b86499b325d7653fddf65",
+          "signers": [
+            "bea2f5eb-e079-41e8-9629-f54bdb2482a8"
+          ],
+          "expiry": null,
+          "prepared_at": "2026-10-18T20:49:21.147335Z",
+          "limits_count": 1,
+          "limits_sha256": "b1ad1b92f920d8652e5077f1b7179e3c7b1fbb4efa2ee62e71c54d15969f02ec",
+          "assessment_state": "READY",
+          "customer_acceptance": null,
+          "external_received": false,
+          "external_effective": false
+        }
+      ]
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/project_packages",
+      "status": 200,
+      "returned_rows": 2,
+      "next_cursor": null,
+      "headers": [
+        {
+          "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+          "revision": 2,
+          "current": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "version": {
+              "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+              "revision": 2
+            },
+            "epoch": 2
+          },
+          "applicability": "not_checked",
+          "is_series_current": true
+        },
+        {
+          "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+          "revision": 1,
+          "current": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "version": {
+              "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+              "revision": 2
+            },
+            "epoch": 2
+          },
+          "applicability": "not_checked",
+          "is_series_current": false
+        }
+      ]
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/selected_original",
+      "status": "assembled",
+      "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+      "revision": 1,
+      "project_id": "89e35766-c76d-48a4-b7ab-3abc890d8d93",
+      "receipt_id": "b0669ede-c09a-4753-91a1-4ee082a416f2",
+      "is_series_current": false,
+      "current": {
+        "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+        "version": {
+          "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+          "revision": 2
+        },
+        "epoch": 2
+      },
+      "applicability": "current",
+      "package_body_sha256": "f9a7d7c02e4486972dbe763a63b24443f3dafd3e6652fa501b3e72a0a2de31fb",
+      "raw_assessments_sha256": "c4d75dbe06b9e64d31ddf94c6386e94ad771703d5488897db816274c9d476329",
+      "raw_assessments_shape": "discipline map",
+      "assessments": [
+        {
+          "discipline": "engineering",
+          "state": "READY",
+          "check_count": 1,
+          "blocked_count": 0,
+          "unknown_count": 0,
+          "conditions": []
+        },
+        {
+          "discipline": "manufacturing",
+          "state": "READY",
+          "check_count": 1,
+          "blocked_count": 0,
+          "unknown_count": 0,
+          "conditions": []
+        }
+      ],
+      "decisions": [
+        {
+          "id": "3e6ebd80-4f13-4389-bcb4-07da0b4a56ad",
+          "revision": 1,
+          "discipline": "engineering",
+          "package": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "revision": 1
+          },
+          "receipt_id": "2fa4e7bf-ffce-4446-b318-f64680fa114e",
+          "applicability": "current",
+          "body_sha256": "64e710cd86b50fe07acdd59d810d72ddd548de15e0e81b5076beeeed11609caf",
+          "authority_sha256": "bb787778bcd8a8d9fb92dee774b9bc4e95713672ef28df45bd6d19912718d345",
+          "signers": [
+            "4547a266-5c68-4248-93b3-8189471c6687"
+          ],
+          "expiry": null,
+          "prepared_at": "2026-10-18T20:49:18.063542Z",
+          "limits_count": 1,
+          "limits_sha256": "b1ad1b92f920d8652e5077f1b7179e3c7b1fbb4efa2ee62e71c54d15969f02ec",
+          "assessment_state": "READY",
+          "customer_acceptance": null,
+          "external_received": false,
+          "external_effective": false
+        },
+        {
+          "id": "1deab97a-86b9-41af-bb48-673ad20af91f",
+          "revision": 1,
+          "discipline": "manufacturing",
+          "package": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "revision": 1
+          },
+          "receipt_id": "a69f0e8c-4304-4acb-87e1-170e5610c893",
+          "applicability": "current",
+          "body_sha256": "7eb945afac5e082da7537a157fb0526ce74eb92a0d01614e702e8794b80334b9",
+          "authority_sha256": "d6bfd746e662cf305a32ff02e7504b1dbe070897093b86499b325d7653fddf65",
+          "signers": [
+            "bea2f5eb-e079-41e8-9629-f54bdb2482a8"
+          ],
+          "expiry": null,
+          "prepared_at": "2026-10-18T20:49:21.147335Z",
+          "limits_count": 1,
+          "limits_sha256": "b1ad1b92f920d8652e5077f1b7179e3c7b1fbb4efa2ee62e71c54d15969f02ec",
+          "assessment_state": "READY",
+          "customer_acceptance": null,
+          "external_received": false,
+          "external_effective": false
+        }
+      ]
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/selected_current",
+      "status": "assembled",
+      "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+      "revision": 2,
+      "project_id": "89e35766-c76d-48a4-b7ab-3abc890d8d93",
+      "receipt_id": "3de12ab9-75ce-4d15-af0b-0cf05b89473a",
+      "is_series_current": true,
+      "current": {
+        "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+        "version": {
+          "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+          "revision": 2
+        },
+        "epoch": 2
+      },
+      "applicability": "current",
+      "package_body_sha256": "5bf7c03332ee66323e8ada2b17bc5c5e7e687ddbeec4ce74827f71773f124a08",
+      "raw_assessments_sha256": "c4d75dbe06b9e64d31ddf94c6386e94ad771703d5488897db816274c9d476329",
+      "raw_assessments_shape": "discipline map",
+      "assessments": [
+        {
+          "discipline": "engineering",
+          "state": "READY",
+          "check_count": 1,
+          "blocked_count": 0,
+          "unknown_count": 0,
+          "conditions": []
+        },
+        {
+          "discipline": "manufacturing",
+          "state": "READY",
+          "check_count": 1,
+          "blocked_count": 0,
+          "unknown_count": 0,
+          "conditions": []
+        }
+      ],
+      "decisions": []
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/peer_project_packages",
+      "status": 200,
+      "returned_rows": 2,
+      "next_cursor": null,
+      "headers": [
+        {
+          "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+          "revision": 2,
+          "current": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "version": {
+              "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+              "revision": 2
+            },
+            "epoch": 2
+          },
+          "applicability": "not_checked",
+          "is_series_current": true
+        },
+        {
+          "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+          "revision": 1,
+          "current": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "version": {
+              "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+              "revision": 2
+            },
+            "epoch": 2
+          },
+          "applicability": "not_checked",
+          "is_series_current": false
+        }
+      ]
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/peer_selected_original",
+      "status": "assembled",
+      "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+      "revision": 1,
+      "project_id": "89e35766-c76d-48a4-b7ab-3abc890d8d93",
+      "receipt_id": "b0669ede-c09a-4753-91a1-4ee082a416f2",
+      "is_series_current": false,
+      "current": {
+        "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+        "version": {
+          "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+          "revision": 2
+        },
+        "epoch": 2
+      },
+      "applicability": "current",
+      "package_body_sha256": "f9a7d7c02e4486972dbe763a63b24443f3dafd3e6652fa501b3e72a0a2de31fb",
+      "raw_assessments_sha256": "c4d75dbe06b9e64d31ddf94c6386e94ad771703d5488897db816274c9d476329",
+      "raw_assessments_shape": "discipline map",
+      "assessments": [
+        {
+          "discipline": "engineering",
+          "state": "READY",
+          "check_count": 1,
+          "blocked_count": 0,
+          "unknown_count": 0,
+          "conditions": []
+        },
+        {
+          "discipline": "manufacturing",
+          "state": "READY",
+          "check_count": 1,
+          "blocked_count": 0,
+          "unknown_count": 0,
+          "conditions": []
+        }
+      ],
+      "decisions": [
+        {
+          "id": "3e6ebd80-4f13-4389-bcb4-07da0b4a56ad",
+          "revision": 1,
+          "discipline": "engineering",
+          "package": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "revision": 1
+          },
+          "receipt_id": "2fa4e7bf-ffce-4446-b318-f64680fa114e",
+          "applicability": "current",
+          "body_sha256": "64e710cd86b50fe07acdd59d810d72ddd548de15e0e81b5076beeeed11609caf",
+          "authority_sha256": "bb787778bcd8a8d9fb92dee774b9bc4e95713672ef28df45bd6d19912718d345",
+          "signers": [
+            "4547a266-5c68-4248-93b3-8189471c6687"
+          ],
+          "expiry": null,
+          "prepared_at": "2026-10-18T20:49:18.063542Z",
+          "limits_count": 1,
+          "limits_sha256": "b1ad1b92f920d8652e5077f1b7179e3c7b1fbb4efa2ee62e71c54d15969f02ec",
+          "assessment_state": "READY",
+          "customer_acceptance": null,
+          "external_received": false,
+          "external_effective": false
+        },
+        {
+          "id": "1deab97a-86b9-41af-bb48-673ad20af91f",
+          "revision": 1,
+          "discipline": "manufacturing",
+          "package": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "revision": 1
+          },
+          "receipt_id": "a69f0e8c-4304-4acb-87e1-170e5610c893",
+          "applicability": "current",
+          "body_sha256": "7eb945afac5e082da7537a157fb0526ce74eb92a0d01614e702e8794b80334b9",
+          "authority_sha256": "d6bfd746e662cf305a32ff02e7504b1dbe070897093b86499b325d7653fddf65",
+          "signers": [
+            "bea2f5eb-e079-41e8-9629-f54bdb2482a8"
+          ],
+          "expiry": null,
+          "prepared_at": "2026-10-18T20:49:21.147335Z",
+          "limits_count": 1,
+          "limits_sha256": "b1ad1b92f920d8652e5077f1b7179e3c7b1fbb4efa2ee62e71c54d15969f02ec",
+          "assessment_state": "READY",
+          "customer_acceptance": null,
+          "external_received": false,
+          "external_effective": false
+        }
+      ]
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/other_model_project",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "fallback": false
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/foreign_tenant_project",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "fallback": false
+    },
+    {
+      "scenario": "new_package_current_old_decisions_retained/foreign_tenant_original",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "fallback": false
+    },
+    {
+      "scenario": "withdrawn_policy_fixed_decisions_need_recheck/project_packages",
+      "status": 200,
+      "returned_rows": 2,
+      "next_cursor": null,
+      "headers": [
+        {
+          "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+          "revision": 2,
+          "current": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "version": {
+              "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+              "revision": 2
+            },
+            "epoch": 2
+          },
+          "applicability": "not_checked",
+          "is_series_current": true
+        },
+        {
+          "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+          "revision": 1,
+          "current": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "version": {
+              "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+              "revision": 2
+            },
+            "epoch": 2
+          },
+          "applicability": "not_checked",
+          "is_series_current": false
+        }
+      ]
+    },
+    {
+      "scenario": "withdrawn_policy_fixed_decisions_need_recheck/selected_original",
+      "status": "assembled",
+      "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+      "revision": 1,
+      "project_id": "89e35766-c76d-48a4-b7ab-3abc890d8d93",
+      "receipt_id": "b0669ede-c09a-4753-91a1-4ee082a416f2",
+      "is_series_current": false,
+      "current": {
+        "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+        "version": {
+          "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+          "revision": 2
+        },
+        "epoch": 2
+      },
+      "applicability": "needs_recheck",
+      "package_body_sha256": "f9a7d7c02e4486972dbe763a63b24443f3dafd3e6652fa501b3e72a0a2de31fb",
+      "raw_assessments_sha256": "c4d75dbe06b9e64d31ddf94c6386e94ad771703d5488897db816274c9d476329",
+      "raw_assessments_shape": "discipline map",
+      "assessments": [
+        {
+          "discipline": "engineering",
+          "state": "READY",
+          "check_count": 1,
+          "blocked_count": 0,
+          "unknown_count": 0,
+          "conditions": []
+        },
+        {
+          "discipline": "manufacturing",
+          "state": "READY",
+          "check_count": 1,
+          "blocked_count": 0,
+          "unknown_count": 0,
+          "conditions": []
+        }
+      ],
+      "decisions": [
+        {
+          "id": "3e6ebd80-4f13-4389-bcb4-07da0b4a56ad",
+          "revision": 1,
+          "discipline": "engineering",
+          "package": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "revision": 1
+          },
+          "receipt_id": "2fa4e7bf-ffce-4446-b318-f64680fa114e",
+          "applicability": "needs_recheck",
+          "body_sha256": "64e710cd86b50fe07acdd59d810d72ddd548de15e0e81b5076beeeed11609caf",
+          "authority_sha256": "bb787778bcd8a8d9fb92dee774b9bc4e95713672ef28df45bd6d19912718d345",
+          "signers": [
+            "4547a266-5c68-4248-93b3-8189471c6687"
+          ],
+          "expiry": null,
+          "prepared_at": "2026-10-18T20:49:18.063542Z",
+          "limits_count": 1,
+          "limits_sha256": "b1ad1b92f920d8652e5077f1b7179e3c7b1fbb4efa2ee62e71c54d15969f02ec",
+          "assessment_state": "READY",
+          "customer_acceptance": null,
+          "external_received": false,
+          "external_effective": false
+        },
+        {
+          "id": "1deab97a-86b9-41af-bb48-673ad20af91f",
+          "revision": 1,
+          "discipline": "manufacturing",
+          "package": {
+            "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+            "revision": 1
+          },
+          "receipt_id": "a69f0e8c-4304-4acb-87e1-170e5610c893",
+          "applicability": "needs_recheck",
+          "body_sha256": "7eb945afac5e082da7537a157fb0526ce74eb92a0d01614e702e8794b80334b9",
+          "authority_sha256": "d6bfd746e662cf305a32ff02e7504b1dbe070897093b86499b325d7653fddf65",
+          "signers": [
+            "bea2f5eb-e079-41e8-9629-f54bdb2482a8"
+          ],
+          "expiry": null,
+          "prepared_at": "2026-10-18T20:49:21.147335Z",
+          "limits_count": 1,
+          "limits_sha256": "b1ad1b92f920d8652e5077f1b7179e3c7b1fbb4efa2ee62e71c54d15969f02ec",
+          "assessment_state": "READY",
+          "customer_acceptance": null,
+          "external_received": false,
+          "external_effective": false
+        }
+      ]
+    },
+    {
+      "scenario": "withdrawn_policy_fixed_decisions_need_recheck/selected_current",
+      "status": "assembled",
+      "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+      "revision": 2,
+      "project_id": "89e35766-c76d-48a4-b7ab-3abc890d8d93",
+      "receipt_id": "3de12ab9-75ce-4d15-af0b-0cf05b89473a",
+      "is_series_current": true,
+      "current": {
+        "id": "3c36ec90-ee56-4a69-8be7-dffa720344de",
+        "version": {
+          "id": "e634805e-d567-4d2c-b242-d268a1f87df9",
+          "revision": 2
+        },
+        "epoch": 2
+      },
+      "applicability": "needs_recheck",
+      "package_body_sha256": "5bf7c03332ee66323e8ada2b17bc5c5e7e687ddbeec4ce74827f71773f124a08",
+      "raw_assessments_sha256": "c4d75dbe06b9e64d31ddf94c6386e94ad771703d5488897db816274c9d476329",
+      "raw_assessments_shape": "discipline map",
+      "assessments": [
+        {
+          "discipline": "engineering",
+          "state": "READY",
+          "check_count": 1,
+          "blocked_count": 0,
+          "unknown_count": 0,
+          "conditions": []
+        },
+        {
+          "discipline": "manufacturing",
+          "state": "READY",
+          "check_count": 1,
+          "blocked_count": 0,
+          "unknown_count": 0,
+          "conditions": []
+        }
+      ],
+      "decisions": []
+    }
+  ],
+  "passed": true,
+  "network": false,
+  "database": false,
+  "browser": false,
+  "component_ssr": "not_run",
+  "boundaries": [
+    "Each offline request must exactly match one original recorded path and query; response bodies are cloned without adding fields",
+    "isSeriesCurrent compares only a returned row or explicitly selected version against its original Current pointer",
+    "No latest package substitution, decision inheritance, professional eligibility or approval action is inferred",
+    "Saved package body, checks, raw assessment shape, decision body, limits, signers, expiry and receipt remain original server data",
+    "prepared_at is a preparation instant, never labelled as the actual signature time",
+    "Policy withdrawal affects current applicability without rewriting original saved package or decision evidence",
+    "Peer reads use their original recorded category-scoped responses and do not expand private or foreign access",
+    "All page cursors in this actual case are null; historical cursor pagination is not exercised by this actual export",
+    "Business count invariance is recorded PG evidence; no database operation, SSR, UI or browser behavior is exercised here"
+  ],
+  "fixture_version": "project-release-packages-projection-qa/v1",
+  "helper_sha256": "56b911a7844c94d32affd78c11ab959304953d1e42c05c424ba292cd86e1739e",
+  "read_only_counts": [
+    {
+      "phase": "original_package_with_two_named_decisions",
+      "before": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 6,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 31,
+        "audit_entries": 31,
+        "outbox_events": 32,
+        "request_keys": 29,
+        "confirmations": 13,
+        "artifact_versions": 7,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6
+      },
+      "after": {
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 6,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 1,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 31,
+        "audit_entries": 31,
+        "outbox_events": 32,
+        "request_keys": 29,
+        "confirmations": 13,
+        "artifact_versions": 7,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 6
+      },
+      "unchanged": true,
+      "origin": "Original actual PG export; this offline check has no database connection"
+    },
+    {
+      "phase": "new_package_current_old_decisions_retained",
+      "before": {
+        "products": 3,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 2,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 6,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 2,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 35,
+        "audit_entries": 35,
+        "outbox_events": 37,
+        "request_keys": 33,
+        "confirmations": 16,
+        "artifact_versions": 7,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 12
+      },
+      "after": {
+        "products": 3,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 2,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 6,
+        "release_policy_facts": 1,
+        "release_policy_currents": 1,
+        "release_packages": 2,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 35,
+        "audit_entries": 35,
+        "outbox_events": 37,
+        "request_keys": 33,
+        "confirmations": 16,
+        "artifact_versions": 7,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 12
+      },
+      "unchanged": true,
+      "origin": "Original actual PG export; this offline check has no database connection"
+    },
+    {
+      "phase": "withdrawn_policy_fixed_decisions_need_recheck",
+      "before": {
+        "products": 3,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 2,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 6,
+        "release_policy_facts": 2,
+        "release_policy_currents": 1,
+        "release_packages": 2,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 37,
+        "audit_entries": 37,
+        "outbox_events": 39,
+        "request_keys": 35,
+        "confirmations": 16,
+        "artifact_versions": 8,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 12
+      },
+      "after": {
+        "products": 3,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 2,
+        "bom_revisions": 1,
+        "bom_lines": 1,
+        "parts": 1,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 6,
+        "release_policy_facts": 2,
+        "release_policy_currents": 1,
+        "release_packages": 2,
+        "release_package_currents": 1,
+        "release_decisions": 2,
+        "action_receipts": 37,
+        "audit_entries": 37,
+        "outbox_events": 39,
+        "request_keys": 35,
+        "confirmations": 16,
+        "artifact_versions": 8,
+        "uploaded_originals": 1,
+        "original_security": 1,
+        "claim_consumptions": 0,
+        "grants": 3,
+        "object_audiences": 12
+      },
+      "unchanged": true,
+      "origin": "Original actual PG export; this offline check has no database connection"
+    }
+  ],
+  "summary": {
+    "phases": 3,
+    "original_get_responses": 13,
+    "offline_get_calls": 13,
+    "successful_lists": 4,
+    "successful_fixed_details": 6,
+    "original_403_responses": 3,
+    "independent_original_decisions": 2,
+    "renewed_package_decisions": 0,
+    "business_models_per_phase": 32,
+    "actual_cursor_pages": 0,
+    "pagination": "not exercised: every original list next_cursor is null",
+    "raw_assessment_shapes": [
+      "discipline map"
+    ]
+  }
+}

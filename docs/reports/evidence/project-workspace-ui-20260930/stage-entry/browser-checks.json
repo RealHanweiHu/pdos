@@ -1,0 +1,35 @@
+[
+  {
+    "check": "overview_without_stage_content",
+    "boardCount": 0,
+    "activityVisible": true
+  },
+  {
+    "check": "stages_refresh",
+    "url": "http://localhost:3000/projects?project=107f11c1-258a-4131-a941-37448826ec83&tab=stages",
+    "selected": "true",
+    "activityCount": 0,
+    "overviewCount": 0,
+    "layout": {
+      "documentWidth": 1440,
+      "width": 1440
+    }
+  },
+  {
+    "check": "stage_controls_moved",
+    "advanceButton": true
+  },
+  {
+    "check": "mobile_stages",
+    "selected": "true",
+    "layout": {
+      "documentWidth": 390,
+      "width": 390
+    }
+  },
+  {
+    "check": "mobile_overview_separate",
+    "boardCount": 0,
+    "activityVisible": true
+  }
+]

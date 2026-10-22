@@ -1,0 +1,5 @@
+$ next typegen && tsc --noEmit
+Generating route types...
+✓ Types generated successfully
+.next/types/routes.d 2.ts(56,8): error TS2300: Duplicate identifier 'LayoutProps'.
+[ELIFECYCLE] Command failed with exit code 2.

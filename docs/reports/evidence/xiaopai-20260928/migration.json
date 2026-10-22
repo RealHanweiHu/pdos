@@ -1,0 +1,12 @@
+{
+  "projectA": "82b019dd-5570-4dcd-93ea-60ac8259a39b",
+  "projectB": "7c2bc0e4-42a1-4d88-92f2-04aeb8a82658",
+  "engineer": "c5b6ad05-ea3e-42cd-8bfb-3dcd7d7802de",
+  "migration": "0395_xiaopai_delegations",
+  "checks": [
+    "populated downgrade refused",
+    "empty downgrade/upgrade passed",
+    "new table schema matches metadata"
+  ],
+  "environment": "isolated localhost:57439/pdos_test, synthetic records"
+}

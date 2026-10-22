@@ -1,0 +1,15 @@
+{
+  "synthetic_messages": 4,
+  "reply_runs": [
+    {
+      "status": "degraded",
+      "error_code": "REPLY_CANCELLED",
+      "count": 1
+    },
+    {
+      "status": "succeeded",
+      "error_code": null,
+      "count": 3
+    }
+  ]
+}

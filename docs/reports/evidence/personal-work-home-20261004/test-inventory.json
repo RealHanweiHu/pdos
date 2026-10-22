@@ -1,0 +1,538 @@
+[
+  {
+    "name": "WorkspaceHome personal login entry > opens product_manager's own work without a manual view selection",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > opens project_manager's own work without a manual view selection",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > opens engineer's own work without a manual view selection",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > opens quality's own work without a manual view selection",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > opens owner's own work without a manual view selection",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > opens admin's own work without a manual view selection",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > ignores the old product preference when opening an engineer's own work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > ignores the old project preference when opening an engineer's own work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > ignores the old quality preference when opening an engineer's own work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > ignores the old portfolio preference when opening an engineer's own work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > ignores the old administration preference when opening an engineer's own work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > ignores the old unknown-perspective preference when opening an engineer's own work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > opens only authorized projects for supplier despite a saved internal view",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > opens only authorized projects for customer despite a saved internal view",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > opens only authorized projects for unknown despite a saved internal view",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > returns an unauthenticated visitor to login",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > can retry identity failure before choosing an authorized home",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "WorkspaceHome personal login entry > does not navigate using an identity response after the page has unmounted",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-home.test.tsx"
+  },
+  {
+    "name": "exposes remaining work, reads the chosen collection and preserves typed source links",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/product-work/preproject-work.test.tsx"
+  },
+  {
+    "name": "keeps failed reads distinct from an empty queue and retries independently",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/product-work/preproject-work.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > opens the real default work scenario for owner without promoting its permissions",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > opens the real default work scenario for engineer without promoting its permissions",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > opens the real default work scenario for quality without promoting its permissions",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > refreshes the current Issue count after AI withdrawal while keeping the original suggestion open and loading withdrawn history",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > loads an accessible empty state",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > renders the seven-stage timeline and edits with a minimal PATCH",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > uses explicit status and adjacent-stage actions",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > allows member viewers to inspect timeline without write controls",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > opens the implemented planning domain from project stages without loading unrelated work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > restores project and domain through browser history without refetching the project directory",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > follows a same-page deep link and removes stale project content for an unavailable target",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > resolves old planning references while preserving explicit unrelated tabs and legacy timeline",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > renders the internal tabs and keeps dependency waiting distinct from blocked",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > loads exception-first Gate readiness and private document metadata lazily",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > lets an authorized project owner open the missing Gate signoff round",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > keeps Gate load failures explicit and retryable",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > loads Complaint and CAPA history lazily inside the project workspace",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > loads the product register lazily and creates a specification and typed BOM",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > keeps the product register read-only for Quality",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > shows a retryable product-engineering error without presenting zero counts",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > creates work items and advances only explicit lifecycle actions",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > refreshes sibling readiness after a predecessor is completed",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > does not expose or request work items for external project members",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > opens the project selected by the dashboard deep link",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > redirects expired sessions and retries load failures",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > keeps a selected project above the folded 25-project list and preserves navigation",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > does not fetch work-item details or activity for a plan deep link",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > does not fetch work-item details or activity for a materials deep link",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > does not fetch work-item details or activity for a engineering deep link",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > does not fetch work-item details or activity for a decisions deep link",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > does not fetch work-item details or activity for a gates deep link",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > does not fetch work-item details or activity for a quality deep link",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > does not fetch work-item details or activity for a documents deep link",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > keeps external members on the permitted overview even with an internal-tab deep link",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > restores a direct stages link, loads its work items, and only loads activity when overview opens",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > restores the permitted stages link for an external member without internal reads or controls",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > restores the matching risk list from tab=risks without showing unrelated task forms",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > restores the matching risk list from tab=work-items&view=risks without showing unrelated task forms",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > keeps reminder bookkeeping out of the default feed but preserves the full record and direct receipts",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > links pending overview work to its actual record without presenting completed work as pending",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > restores a cold withdrawn Issue receipt even though it is absent from the current lists",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > keeps internal settings unavailable from an external services deep link",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "ProjectWorkspace > loads work items and activity when their tabs first open and reuses an empty activity result",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-workspace.test.tsx"
+  },
+  {
+    "name": "AuthScreen > shows the one-time workspace setup form when the server is empty",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "AuthScreen > creates an HttpOnly-backed session and resolves the current identity",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "AuthScreen > takes product_manager directly to /my-work after login",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "AuthScreen > takes project_manager directly to /my-work after login",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "AuthScreen > takes engineer directly to /my-work after login",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "AuthScreen > takes quality directly to /my-work after login",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "AuthScreen > takes owner directly to /my-work after login",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "AuthScreen > takes admin directly to /my-work after login",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "AuthScreen > takes supplier directly to /projects after login",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "AuthScreen > takes customer directly to /projects after login",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "AuthScreen > submits the one-time setup fields through the same-origin session boundary",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "AuthScreen > announces a stable error and clears the password after rejected credentials",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "AuthScreen > starts DingTalk OAuth only after a tenant is supplied",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/auth/auth-screen.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > counts full server totals and never invents a zero for pre-project work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > chooses actual urgency and recognizes every existing receipt anchor",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > shows product_manager their name, role actions and actual assigned work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > shows project_manager their name, role actions and actual assigned work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > shows engineer their name, role actions and actual assigned work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > shows quality their name, role actions and actual assigned work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > shows owner their name, role actions and actual assigned work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > shows admin their name, role actions and actual assigned work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > keeps a product manager's research work visible alongside urgent project tasks on arrival",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > opens the personal assistant from the work home",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > shows full scene counts while preserving hidden domain drafts",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > opens the correct scenario before priority navigation and retains query context",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > keeps pre-project work and secondary tools mounted through scenario switches",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > retains an explicitly opened receiving panel when another scenario is selected",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "My Work 场景与责任数据 > keeps priority links usable independently and reports their exact collection",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work-scenario.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > keeps search and first-time field capture reachable from the top bar for internal members",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > keeps the sidebar to daily destinations with a single pinned settings entry",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > has no entries for contextual surfaces or project workspace tabs",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > hides governance entries from an engineer but keeps their own work and settings",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > drops every internal business destination for supplier",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > drops every internal business destination for customer",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > starts with a compact mobile current entry and preserves every permitted destination when expanded",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > supports keyboard disclosure, navigation and Escape with focus restored to the toggle",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > keeps mobile permission filtering for engineer",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > keeps mobile permission filtering for supplier",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > keeps mobile permission filtering for customer",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > retains sidebar preference across pages while keeping every permitted link named",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > keeps engineer's home separate from the explicit read-only project snapshot",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > keeps quality's home separate from the explicit read-only project snapshot",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > automatically orders product_manager's work on desktop and mobile without a picker",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > automatically orders project_manager's work on desktop and mobile without a picker",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > automatically orders engineer's work on desktop and mobile without a picker",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > automatically orders quality's work on desktop and mobile without a picker",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > automatically orders admin's work on desktop and mobile without a picker",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > ignores a saved unrelated perspective and retains the original page and permissions",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "WorkspaceShell global domain navigation (D31 regrouped) > opens a product detail without a generic work-path banner",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/workspace-shell.test.tsx"
+  },
+  {
+    "name": "项目任务办理空间 > shows the first task by default and respects the first explicit default",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-task-workspace.test.tsx"
+  },
+  {
+    "name": "项目任务办理空间 > keeps a draft mounted when moving between tasks and refreshing the content",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-task-workspace.test.tsx"
+  },
+  {
+    "name": "项目任务办理空间 > opens the first matching query task, including an empty receipt selector",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-task-workspace.test.tsx"
+  },
+  {
+    "name": "项目任务办理空间 > prioritizes the concrete fragment target over another matching query task",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-task-workspace.test.tsx"
+  },
+  {
+    "name": "项目任务办理空间 > uses prefix and root fragment links and responds to browser history",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-task-workspace.test.tsx"
+  },
+  {
+    "name": "项目任务办理空间 > reveals a deferred encoded fragment inside nested disclosures",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-task-workspace.test.tsx"
+  },
+  {
+    "name": "项目任务办理空间 > retains a chosen task across refreshes and preserves all named query selectors",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-task-workspace.test.tsx"
+  },
+  {
+    "name": "项目任务办理空间 > moves selection and focus with arrows, Home and End",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-task-workspace.test.tsx"
+  },
+  {
+    "name": "项目任务办理空间 > does not reveal an unrelated fragment outside its workspace",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-task-workspace.test.tsx"
+  },
+  {
+    "name": "项目任务办理空间 > leaves browser jump and history shortcuts available without changing the current task",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-task-workspace.test.tsx"
+  },
+  {
+    "name": "项目任务办理空间 > cancels a pending old receipt when the person deliberately switches tasks",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/projects/project-task-workspace.test.tsx"
+  },
+  {
+    "name": "MyWork > renders assigned sections with exact deep links, priority anchors, badges, and loaded counts",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work.test.tsx"
+  },
+  {
+    "name": "MyWork > shows the guided empty state when nothing is assigned",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work.test.tsx"
+  },
+  {
+    "name": "MyWork > keeps malformed rows out without failing the page",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work.test.tsx"
+  },
+  {
+    "name": "MyWork > shows fired notifications with acknowledge buttons",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work.test.tsx"
+  },
+  {
+    "name": "MyWork > renders the restricted state for external roles",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work.test.tsx"
+  },
+  {
+    "name": "MyWork > waits for work data but does not let slow notifications block actionable work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work.test.tsx"
+  },
+  {
+    "name": "MyWork > shows and retries a notification error without refetching identity or assigned work",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work.test.tsx"
+  },
+  {
+    "name": "MyWork > does not claim readiness when assigned work fails even if notifications succeed",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work.test.tsx"
+  },
+  {
+    "name": "MyWork > keeps 200 notifications folded with the full unread count while assigned tasks are reachable",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work.test.tsx"
+  },
+  {
+    "name": "MyWork > ignores an earlier notification success that settles after a successful full-page retry",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work.test.tsx"
+  },
+  {
+    "name": "MyWork > ignores an earlier notification failure that settles after a successful full-page retry",
+    "file": "/Users/huhanwei/Documents/ai-native-R&D-platform/web/src/components/my-work/my-work.test.tsx"
+  }
+]

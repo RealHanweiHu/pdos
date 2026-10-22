@@ -1,0 +1,9 @@
+[
+  "tests/test_resource_dependency",
+  "tests/test_fingerprint_compatibility.py",
+  "tests/test_retained_fingerprint_compatibility.py",
+  "tests/build_operational_facts/test_pure.py",
+  "tests/supply_cost_engine/test_contract.py",
+  "tests/verification/test_contracts.py",
+  "tests/test_resources/test_rules.py"
+]

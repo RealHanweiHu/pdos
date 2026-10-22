@@ -1,0 +1,408 @@
+{
+  "outcome": "passed",
+  "passed": true,
+  "head": "s0_0723",
+  "database": "pdos_test",
+  "port": 62303,
+  "rollback_only": true,
+  "optional_category_access_applied": false,
+  "diagnostic_only": true,
+  "performance_acceptance": "Not evaluated: single scoped observations are not 30-sample p95",
+  "environments_created": false,
+  "state_written": false,
+  "business_dml_executed": false,
+  "catalog_restored": true,
+  "data_unchanged": true,
+  "source_unchanged": true,
+  "transaction_only_direct_function_definition_changed": true,
+  "scoped_select_comparisons": {
+    "quality_current_issue": {
+      "rows_equal": true,
+      "before_rows": 1,
+      "after_rows": 1,
+      "before_elapsed_seconds": 0.029648417003045324,
+      "after_elapsed_seconds": 0.014527708000969142,
+      "before_explain": {
+        "planning_ms": 1.532,
+        "execution_ms": 20.358,
+        "actual_rows": 1,
+        "actual_loops": 1,
+        "shared_hit_blocks": 1335,
+        "shared_read_blocks": 0
+      },
+      "after_explain": {
+        "planning_ms": 1.302,
+        "execution_ms": 8.368,
+        "actual_rows": 1,
+        "actual_loops": 1,
+        "shared_hit_blocks": 639,
+        "shared_read_blocks": 0
+      }
+    },
+    "quality_failure_map": {
+      "rows_equal": true,
+      "before_rows": 1,
+      "after_rows": 1,
+      "before_elapsed_seconds": 0.002186666999477893,
+      "after_elapsed_seconds": 0.0025244579956051894,
+      "before_explain": {
+        "planning_ms": 0.278,
+        "execution_ms": 0.433,
+        "actual_rows": 1,
+        "actual_loops": 1,
+        "shared_hit_blocks": 29,
+        "shared_read_blocks": 0
+      },
+      "after_explain": {
+        "planning_ms": 0.349,
+        "execution_ms": 0.464,
+        "actual_rows": 1,
+        "actual_loops": 1,
+        "shared_hit_blocks": 29,
+        "shared_read_blocks": 0
+      }
+    }
+  },
+  "case_comparisons": {
+    "actual_complete_read_set": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "sql_null_refs": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "scalar_number": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "scalar_string": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "scalar_object": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "empty_array": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "bad_uuid_element": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "missing_artifact_id": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "json_null_artifact_id": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "json_null_array_element": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "json_null_refs": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "malformed_json": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "null_tenant_argument": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "null_category_argument": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "null_product_argument": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_argument": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_context": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_tenant_both": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "wrong_category_context": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_tenant_guc": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_tenant_guc_empty_refs": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_tenant_guc_bad_uuid": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "missing_actor_guc": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_actor_guc_empty_refs": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_actor_guc_bad_uuid": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_requester_guc": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_requester_guc_empty_refs": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_requester_guc_bad_uuid": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_category_guc": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_category_guc_empty_refs": {
+      "equal": true,
+      "before_value": true,
+      "after_value": true,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_category_guc_bad_uuid": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "missing_all_guc": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_all_guc_empty_refs": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "missing_all_guc_bad_uuid": {
+      "equal": true,
+      "before_value": false,
+      "after_value": false,
+      "before_sqlstate": null,
+      "after_sqlstate": null
+    },
+    "malformed_tenant_guc": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_tenant_guc_empty_refs": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_tenant_guc_bad_uuid": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_actor_guc": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_actor_guc_empty_refs": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_actor_guc_bad_uuid": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_requester_guc": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_requester_guc_empty_refs": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_requester_guc_bad_uuid": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_category_guc": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_category_guc_empty_refs": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "malformed_category_guc_bad_uuid": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "wrong_tenant_and_malformed_actor_guc": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    },
+    "wrong_tenant_and_malformed_requester_guc": {
+      "equal": true,
+      "before_value": null,
+      "after_value": null,
+      "before_sqlstate": "22P02",
+      "after_sqlstate": "22P02"
+    }
+  },
+  "helper_metadata_restored": true,
+  "sequence_values_unchanged": true,
+  "state_file_unchanged": true,
+  "private_diagnostic": ".local/s0-direct-source-diagnostics/87695926-7ab1-4866-8bfb-76e80a0a4363.json"
+}

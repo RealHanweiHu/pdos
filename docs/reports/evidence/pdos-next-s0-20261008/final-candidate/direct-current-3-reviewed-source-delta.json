@@ -1,0 +1,32 @@
+{
+  "changed": [
+    "pdos-next/server/pdos_next/domain/quality_execution/adapters.py",
+    "pdos-next/server/pdos_next/domain/quality_execution/service.py",
+    "pdos-next/server/pdos_next/domain/test_resources/retained.py",
+    "pdos-next/server/pdos_next/domain/test_resources/service.py",
+    "pdos-next/server/pdos_next/domain/verification_launch/service.py",
+    "pdos-next/server/pdos_next/quality_result_bridge.py",
+    "pdos-next/server/pdos_next/service.py",
+    "pdos-next/server/tests/quality_execution_transactions/test_request_prepare.py",
+    "pdos-next/server/tests/verification_launch/test_transactions.py",
+    "pdos-next/server/tests/verification_launch_v2/test_start_versioned_owner.py",
+    "pdos-next/tools/checkpoints/b4_performance.py",
+    "pdos-next/tools/checkpoints/b5_performance.py",
+    "pdos-next/tools/checkpoints/b6_performance.py",
+    "pdos-next/tools/s0_b8_performance_summary.py",
+    "pdos-next/tools/s0_performance.py",
+    "pdos-next/tools/s0_profile_checkpoint.py"
+  ],
+  "added": [
+    "pdos-next/server/migrations/schema_s0_0728.py",
+    "pdos-next/server/migrations/versions/s0_0728_direct_confirmation.py",
+    "pdos-next/server/pdos_next/domain/quality_execution/direct.py",
+    "pdos-next/server/pdos_next/source_current.py",
+    "pdos-next/server/tests/quality_execution/test_direct_confirmation.py",
+    "pdos-next/server/tests/quality_execution_transactions/test_direct_confirmation_storage.py",
+    "pdos-next/server/tests/quality_execution_transactions/test_minimal_current.py",
+    "pdos-next/server/tests/test_source_current.py",
+    "pdos-next/tools/tests/test_performance_load.py"
+  ],
+  "removed": []
+}

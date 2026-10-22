@@ -1,0 +1,78 @@
+{
+  "date": "2026-09-10",
+  "scope": "actual pre-handler durable tool intent, single dispatch, cumulative lineage call admission and recovery distinctions",
+  "tests": {
+    "distinct_passed": 160,
+    "new_cases": 22,
+    "regression_cases": 138,
+    "initial_batch_passed": 59,
+    "real_role_batch_passed": 90,
+    "shared_regression_batch_passed": 69,
+    "final_new_and_security_batch_passed": 31,
+    "distinct_formula": "90 + 69 + 1 final DBA atomicity case",
+    "logs": {
+      "real_role_batch": "........................................................................ [ 80%]\n..................                                                       [100%]\n90 passed in 219.53s (0:03:39)\n",
+      "shared_regression_batch": ".....................................................................    [100%]\n69 passed in 126.46s (0:02:06)\n",
+      "final_dba_and_tool_batch": "...............................                                          [100%]\n31 passed in 54.46s\n"
+    }
+  },
+  "checks": {
+    "ruff_files": 8,
+    "format_files": 8,
+    "mypy_files": 3,
+    "contract_exports": "common 4; runtime 5 checked",
+    "approved_manifests": "unchanged",
+    "dba_port_and_recovery_parity": "passed",
+    "shared_database_six_function_bodies": "passed",
+    "dba_late_failure_atomic_rollback": "passed",
+    "scoped_diff_check": "passed"
+  },
+  "databases": [
+    "127.0.0.1:57432/pdos_test",
+    "127.0.0.1:57433/pdos_test"
+  ],
+  "migration_head": "0077_tool_dispatch_intents",
+  "temporary_container": "pdos-tool-intent-test",
+  "temporary_container_removed": true,
+  "temporary_container_instances": 2,
+  "shared_role_changes": false,
+  "verification_corrections": [
+    "Manual isolated test downgrade lacked PYTHONPATH before any migration; corrected and passed.",
+    "DBA template COMMIT preceded newer ports; rollback absence assertion failed only in disposable test database. Container removed; COMMIT moved to final statement and real late-failure rollback verified in a fresh container."
+  ],
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "golden_writes": false,
+  "git_push": false,
+  "production_operations": false,
+  "default_budget_mode": "legacy",
+  "goal_item_status": "N0-03 partial",
+  "remaining": [
+    "bounded model-tool loop",
+    "complete authorization/version pins/context manifest",
+    "paid tool and embedding cost reservations and unknown usage reconciliation",
+    "derived source ACLs and context compression",
+    "persistent waits and step checkpoints",
+    "Owner run leases",
+    "production adoption gates"
+  ],
+  "sources": {
+    "server/app/ai/observations.py": "13ffb8cfee1f52c27eab49fd7f035f0134c7ecbf0bb471b2e2f955834d39d830",
+    "server/app/ai/executor.py": "69191e173ecccd2116624fa934a0766764ef2ea44a2c8e102c63494e85d4b681",
+    "server/app/db/schema.py": "b770c82542028e93ad7bf02e4731eb2a168b91d035fa8e5ff6affd9cfe0ae288",
+    "server/migrations/versions/0077_tool_dispatch_intents.py": "a0d198a0cfd2356adafb78121dad2412a7ba5b5d88c940da7925dd1989579a7b",
+    "infra/postgres/security/agent-runtime.sql": "daa7fd520a9d3e01b27f187573eb09004a2a3588c01bce61c896d7d82d0751d6",
+    "infra/postgres/security/agent-runtime-revert.sql": "17ac7ced3539d957bf1a7429298258259dd302938200c6cf950f84f66b3732cb",
+    "server/tests/test_tool_dispatch_intents.py": "5eefd0c88f6cffeb07dfe204d58751ee2f5f28974b32d0925d7c6cfd9c39fb5a",
+    "server/tests/test_tool_observation_receipts.py": "d0a0a2f9b9c8dd968967f6880890edae7dca8755ba58cf18a630368a90f6b657",
+    "server/tests/test_agent_checkpoints.py": "1ffdc8d305d53a40c803002ff851ae4f3378273851dbf7abe21dd1f8994afd00",
+    "server/tests/test_agent_runtime_schema.py": "f05333c43386293d1a3721d95d9fed735360d8fa334c950004a6bd854dc05dee",
+    "docs/runbooks/agent-tool-dispatch-intents.md": "0d301ef3b10ee14600f126ede07f61886e4b3cb49d4855e3034e89048f63d187",
+    "docs/runbooks/agent-tool-observations.md": "56652e8d6630f8f38d6d3cee0ef5e98e3d0b4e63ed60699b61c92ca110a80797",
+    "docs/reports/2026-09-10-n0-03-tool-dispatch-intents-validation.md": "2d65c91b4ac102687157bb6a53a934ca9d90704b0b5cd0185eb41c01d4fa8cd0",
+    "tasks/ai-native-integrated-todo.md": "2c04265a57c19313db9c0d9cd870658e6d29896627be228b0374dd2a024da17f",
+    "tasks/todo.md": "5186a7919896051ab8bfe9af4b4e799269dbdb2fec9db5e37b1457f3a2067484",
+    "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+    "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+  }
+}

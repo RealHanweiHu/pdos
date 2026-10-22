@@ -1,0 +1,540 @@
+{
+  "database": "pdos_test",
+  "port": 51918,
+  "runs": [
+    {
+      "id": "ddab21b9-fcf0-5bbf-9804-8c180c2cf364",
+      "status": "degraded",
+      "error_code": "PROVIDER_OUTPUT_TRUNCATED",
+      "completed_at": "2026-10-07 07:52:47.943296+00:00",
+      "run_context": {
+        "reply_result": {
+          "answer": null,
+          "run_id": "ddab21b9-fcf0-5bbf-9804-8c180c2cf364",
+          "status": "unavailable",
+          "process": {
+            "state": "failed",
+            "steps": [
+              {
+                "key": "understand",
+                "at_ms": 0,
+                "label": "处理思路",
+                "state": "completed",
+                "detail": "先做品牌与产品发现：搜索欧美电动SUP充气泵的多品牌公开资料，覆盖不同供电方式（车载12V、锂电池、交流）与价位段；随后读官网规格与独立评测，整理候选与规格字典。"
+              },
+              {
+                "key": "081b2662-a299-59a6-8baa-9a686f830f46",
+                "at_ms": 37379,
+                "label": "搜索：best electric SUP pump 2024 portable rechargeable review brands",
+                "state": "completed",
+                "detail": "tavily返回10条候选线索。"
+              },
+              {
+                "key": "c934ba15-97de-530d-8c72-f40cd84410de",
+                "at_ms": 53162,
+                "label": "读取：https://outdoormaster.com/blogs/om-blog/2025-sup-pump-recommendations-get-the-best-pump-for-you",
+                "state": "partial",
+                "detail": "已保存原文快照，提供6000字符正文。"
+              },
+              {
+                "key": "92fa70f1-6c02-5f43-8321-1822dd0276df",
+                "at_ms": 66715,
+                "label": "读取：https://www.inflatableboarder.com/electric-sup-pump",
+                "state": "partial",
+                "detail": "已保存原文快照，提供6000字符正文。"
+              },
+              {
+                "key": "606cff84-5e59-5c23-ad02-a1d713185569",
+                "at_ms": 78981,
+                "label": "读取：https://isupworld.com/top-3-electric-pumps",
+                "state": "partial",
+                "detail": "已保存原文快照，提供6000字符正文。"
+              },
+              {
+                "key": "assess_sources_1",
+                "at_ms": 102930,
+                "label": "正在思考",
+                "state": "failed",
+                "detail": "已搜索1次、发现10条不同线索，读取3份正文；决定补查还是整理结果。"
+              }
+            ],
+            "elapsed_ms": 170143,
+            "earlier_steps_omitted": 0
+          },
+          "research": {
+            "failures": [],
+            "searches": 1,
+            "remaining": 6,
+            "candidates": [
+              {
+                "url": "https://outdoormaster.com/pages/best-sup-pump",
+                "title": "Best Sup Pump",
+                "snippet": "From the first Shark to today’s full lineup — engineered to deliver faster, smarter, and more reliable inflation for every ride.\n\n2018\n\n### Shark Begins\n\nThe st"
+              },
+              {
+                "url": "https://www.youtube.com/watch?v=wH00YWlibZY&xstg=CAMSBhUDze3xHw%3D%3D",
+                "title": "Comparing The BEST Paddle Board Pumps On The Market.",
+                "snippet": "Best Electric Paddle Board Pump? 5 Battery-Powered SUP Pumps Tested ... Shark 3 Rechargeable Electric SUP Pump Review | ISUPWORLD.com."
+              },
+              {
+                "url": "https://www.boatsailmag.com/paddle-boarding/best-electric-sup-pump",
+                "title": "Top 9 Best Electric SUP Pumps in 2026 | Find the Best One",
+                "snippet": "Nixy Air Pump Built In Cooling System\n\nNixy Ventus New Product Image\n\n###### Where to buy NIXY Ventus:\n\nAmazon\n\nRead full review Read full review\n\nThe NIXY Vent"
+              },
+              {
+                "url": "https://isupworld.com/outdoormaster-shark-electric-pump-review",
+                "title": "OutdoorMaster Shark II Electric Pump For Inflatable SUP’s Review - Inflatable SUP World",
+                "snippet": "Airhead SUP Anchor\n Airhead SUP Deluxe Coast Guard Kit\n Airhead SUP Heavy Duty Board Leash\n Airhead SUP High Pressure Electric Pump\n Airhead SUP High Velocity 1"
+              },
+              {
+                "url": "https://www.supboardguide.com/best-electric-pumps-for-inflatable-sups",
+                "title": "Best Electric Pumps for Inflatable Paddle Boards (2023)| SUPBoardGuide",
+                "snippet": "1. Outdoor Master Shark II Electric Air Pump\n2. iRocker 12 V Electric Pump\n3. BEWELLAERO SUP Air Pump w/ Rechargeable Battery\n4. Nixy Ventus Paddle Board Electr"
+              },
+              {
+                "url": "https://finance.yahoo.com/news/paddle-board-pump-market-report-115400281.html",
+                "title": "Paddle Board Pump Market Report 2025, with Key Player Profiles for Scoprega, OutdoorMaster, Sea Eagle Boats, NIXY, iROCKER, THURSO SURF, SereneLife, The Coleman",
+                "snippet": "The Paddle Board Pump Market was valued at USD 2.65 Billion in 2024 and is expected to reach USD 4.77 Billion by 2030, rising at a CAGR of 10.11%. This market c"
+              },
+              {
+                "url": "https://paddleadventurer.com/battery-powered-paddle-board-pumps-2026",
+                "title": "Best Battery Powered Paddle Board Pumps: 5 Tested | Paddle Adventurer",
+                "snippet": "UPowerace Quiet Pump 1 electric paddle board pump with hose, nozzles and charging cables\n\n## Bonus Test: OutdoorMaster Electric Ray Power Bank\n\nOne last product"
+              }
+            ],
+            "last_action": [
+              {
+                "action": "search",
+                "status": "executed",
+                "target": "best electric SUP pump 2024 portable rechargeable review brands",
+                "model_call_id": "761f9101-399d-5103-ab20-d1d9b23fa29f"
+              }
+            ],
+            "observations": [
+              {
+                "tool": "search",
+                "status": "completed",
+                "target": "best electric SUP pump 2024 portable rechargeable review brands",
+                "warnings": "",
+                "shown_count": 10,
+                "provider_key": "tavily",
+                "providers_tried": [
+                  "tavily"
+                ]
+              },
+              {
+                "tool": "read",
+                "status": "partial",
+                "target": "https://outdoormaster.com/blogs/om-blog/2025-sup-pump-recommendations-get-the-best-pump-for-you",
+                "warnings": "公开来源；采集时间 2026-10-07T07:51:03.879675+00:00；taint=untrusted_external；trust=unknown\n正文由Firecrawl提取；保留未信任外部资料标记",
+                "shown_count": 6000,
+                "total_count": 10505
+              },
+              {
+                "tool": "read",
+                "status": "partial",
+                "target": "https://www.inflatableboarder.com/electric-sup-pump",
+                "warnings": "公开来源；采集时间 2026-10-07T07:51:16.404962+00:00；taint=untrusted_external；trust=unknown\n正文由Firecrawl提取；保留未信任外部资料标记",
+                "shown_count": 6000,
+                "total_count": 31144
+              },
+              {
+                "tool": "read",
+                "status": "partial",
+                "target": "https://isupworld.com/top-3-electric-pumps",
+                "warnings": "公开来源；采集时间 2026-10-07T07:51:40.052718+00:00；taint=untrusted_external；trust=unknown\n正文由Firecrawl提取；保留未信任外部资料标记",
+                "shown_count": 6000,
+                "total_count": 53502
+              }
+            ],
+            "sources_read": 3,
+            "read_attempts": 3,
+            "read_remaining": 21,
+            "candidate_count": 10,
+            "search_remaining": 5,
+            "candidates_truncated": false
+          },
+          "citations": [],
+          "error_code": "PROVIDER_OUTPUT_TRUNCATED"
+        },
+        "reply_source": {
+          "digest": "1175a73662a453ba2510b872ca0e3d3d6d739324db147e98442f08f5c5bd137e",
+          "history": [],
+          "actor_id": "88672334-6b1b-4979-b165-e28478b81073",
+          "question": "我想做桨板电动充气泵，面向欧美休闲SUP用户，码头或自驾出游使用。供电方式和价位先作假设，请搜索不同品牌公开资料，整理品类候选与规格字典。资料不足就写未知。",
+          "message_id": "93e3ec02-7005-4ff1-984b-f68ac67ffb48",
+          "preproject": {
+            "goal": "category",
+            "category": null,
+            "user_brief": "我想做桨板电动充气泵，面向欧美休闲SUP用户，码头或自驾出游使用。供电方式和价位先作假设，请搜索不同品牌公开资料，整理品类候选与规格字典。资料不足就写未知。",
+            "previous_assessment": null
+          },
+          "project_id": null,
+          "references": [],
+          "scope_kind": "personal",
+          "archived_at": null,
+          "context_version": 1,
+          "conversation_id": "e4258061-0e37-5fb3-b43f-34eb8e59f8c0",
+          "history_truncated": false
+        },
+        "reply_research": {
+          "pins": [
+            {
+              "id": "9b5e8083-583b-4d49-abe6-8569a80e4d8a",
+              "url": "https://outdoormaster.com/blogs/om-blog/2025-sup-pump-recommendations-get-the-best-pump-for-you",
+              "taint": "untrusted_external",
+              "source_id": "5d73bf3b-8035-42db-8585-e601ef213594",
+              "trust_tier": "unknown",
+              "captured_at": "2026-10-07 07:51:03.879675+00:00",
+              "conflict_note": null,
+              "content_digest": "9cde54365ef03d44edac60a55dd06ef90764c0efd289c0d0d90b80af57fe02c2",
+              "superseded_by_id": null,
+              "conflicts_with_id": null,
+              "freshness_expires_at": null
+            },
+            {
+              "id": "b68b6abe-c360-4c98-b2b6-747b15bba3b3",
+              "url": "https://www.inflatableboarder.com/electric-sup-pump",
+              "taint": "untrusted_external",
+              "source_id": "bf09632f-d4f8-417b-9fa8-ee87de533ca3",
+              "trust_tier": "unknown",
+              "captured_at": "2026-10-07 07:51:16.404962+00:00",
+              "conflict_note": null,
+              "content_digest": "cbb93c2400fb60f0d33c6505fa08d4a76de390305e0914904e5f4138b79dc204",
+              "superseded_by_id": null,
+              "conflicts_with_id": null,
+              "freshness_expires_at": null
+            },
+            {
+              "id": "4401be9f-e770-4704-9dad-423c38670967",
+              "url": "https://isupworld.com/top-3-electric-pumps/",
+              "taint": "untrusted_external",
+              "source_id": "48899bbf-1365-4458-a41b-b27ae4312b5c",
+              "trust_tier": "unknown",
+              "captured_at": "2026-10-07 07:51:40.052718+00:00",
+              "conflict_note": null,
+              "content_digest": "c66f9d6b4a251a5147046810b93a6e495b6d65199208cf4895132aba02ea96a6",
+              "superseded_by_id": null,
+              "conflicts_with_id": null,
+              "freshness_expires_at": null
+            }
+          ],
+          "rounds": [
+            {
+              "action": "search",
+              "status": "executed",
+              "target": "best electric SUP pump 2024 portable rechargeable review brands",
+              "model_call_id": "761f9101-399d-5103-ab20-d1d9b23fa29f"
+            }
+          ],
+          "version": "xiaopai-public-research-v2",
+          "references": [
+            {
+              "href": "https://outdoormaster.com/blogs/om-blog/2025-sup-pump-recommendations-get-the-best-pump-for-you",
+              "label": "Best & Fastest Electric Paddle Board Pump: OutdoorMaster Shark 3（under 5mins） - YouTubeSHARK 2S RECHARGEABLE ELECTRIC SUP/ KAYAK PUMP- UNBOXING 🏄🏻🚣🏻 - YouTubeReview OutdoorMaster 20PSI High Pressure SUP Air Pump, The Cachalot 2 Mini Paddle Board Pump, Intell - YouTubeMost Compact Electric PADDLE BOARD PUMP - DOLPHIN - YouTube · outdoormaster.com",
+              "entity": "evidence_snapshot",
+              "excerpt": "公开来源；采集时间 2026-10-07T07:51:03.879675+00:00；taint=untrusted_external；trust=unknown；正文由Firecrawl提取；保留未信任外部资料标记\nMaster Guides\n2025 SUP Pump Recommendations: Get the Best Pump for YOU\nSummer is here! Which means it’s time to get back in the great outdoors to do what you love. With warm weather and bright sunny days, now is the time to grab your stand-up paddleboard and head for the water. If you’re like me, you’ll want to spend every weekend on the water, soaking up the sun, and spending time with friends.\nPaddleboarding is an amazing way to get outside, exercise, socialize, work on your balance, enjoy nature, fish, swim, tan, and more! Utilizing a SUP Pump is the best way to ensure you can do more of what you enjoy, and less time pumping until your arms fall off. In this article, we will cover the best SUP pumps for 2025.\nSpoiler Alert: It’s the SHARK 3 SUP Pump\nWhy Choosing the Right SUP Pump is Essential in 2025\nGetting the right pump for your SUP will blow you away… literally! Modern SUPs feature enhanced drop-stitch technology and higher-pressure requirements, making pump selection more critical than ever. The right pump doesn't just inflate your board; it ensures optimal performance, accuracy with PSI, and a better overall paddling experience.\nManual Vs. Electric SUP Pumps\nMost inflatable SUPs come with a Manual Pump. These pumps are simple, straightforward, and get the job done; however, they tend to be the least efficient option for those hoping to spend more time on the water and less time inflating their board. While a manual pump can certainly inflate your board and get it close to your desired PSI, it can take quite a while. Trust me. It’s taken me over 20 minutes just to pump up two SUPs with a manual pump. Not to mention, it takes A LOT of effort to pump up your SUP by hand, which results in less energy when out on the water.\nElectric SUP Pumps are entirely different. With the Outdoor Master SUP pumps, all your inflating happens at the press of a button. An electric SUP pump saves time and energy. For those concerned with optimal performance, a SUP is the best way to ensure your inflatable paddle board is pumped up to your desired PSI. Outdoor Master SUP pumps make inflating easy and convenient. Simply input your PSI and watch your board swell up IN LESS THAN 5 MINUTES. Our pumps switch off automatically, so you don’t have to worry about your board over-inflating. Want to save time during deflation? Oh yeah, Outdoor Master pumps do that too.\nOur Top 5 SUP Pumps for 2025\nOutdoor Master SHARK 3: The Ultimate SUP Pump for 2025 (Top Pick)\nThe Outdoor Master SHARK 3 is our best SUP to date. With the best technology from our previous version, the SHARK 3 is faster, more accurate, more portable, and the best choice for those looking to pump with incredible ease. While most boards struggle to inflate three boards without overheating, the SHARK 3 can inflate up to six at one time.\nOffering advanced dual-stage inflating technology, the SHARK 3 SUP pump is 3x faster. It can inflate a single board to 15 PSI (recommended) in less than four minutes! This means you can inflate four boards in about 16 minutes total. You’ll be a hero if you show up at the dock with one of these. You and your friends will be out paddling on the water before you know it! This pump is the ideal pump for individuals, groups, or families. Even Inflatable Boarder thinks the SHARK 3 is the best SUP pump of 2025.\nBest & Fastest Electric Paddle Board Pump: OutdoorMaster Shark 3（under 5mins）Outdoor Master\nOutdoor Master4.31K subscribers\nWatch on\nSpecs:\nUp to 20 PSI (max)\n8 Versatile Nozzles\n3 Smart Mode (Sup/Mat/Kite)\nRapid Dual Stage & Auto Shut-off\nPower Supply: Battery & 12 V DC\nDoubles As A Power Bank\nReal-Time psi Monitoring\nTesla Car Compatibility (15.4V)\nBattery Capacity: 74Wh\nCharging Way: Support 45W Fast Charger & 12 V DC\nOutdoor Master Shark II: Efficiency & Performance\nThe Outdoor Master Shark II exemplifies everything modern paddlers need in a SUP pump. There is a reason both SUP Board Guide and iSUP World ranked this pump as the best SUP of 2024. This dual-action manual pump delivers exceptional efficiency, inflating boards up to 20 PSI with smooth, consistent strokes. Its ergonomic T-handle reduces fatigue during extended pumping sessions, while the extra-wide base provides stability on any surface.\nThe Shark II's premium construction features a reinforced hose that resists kinking and wear, ensuring years of reliable performance. What sets it apart is the innovative pressure gauge integration and quick-connect valve system that works seamlessly with all major SUP brands. Compact enough for any adventure pack yet powerful enough for the most demanding boards, the Shark II strikes the perfect balance between portability and performance that serious paddlers demand.\nSHARK 2S RECHARGEABLE ELECTRIC SUP/ KAYAK PUMP- UNBOXING 🏄🏻🚣🏻Julian Outdoors\nJulian Outdoors799 subscribers\nWatch on\nSpecs:\nUp to 20 PSI\n3 Smart Mode(Sup/Mat/Kite)\nDual-Stage Inflation & Deflation\nReal-Time Monitoring & Auto Shut-off\nUltimate Charging: Type-C & 12V DC\nDoubled As A Power Bank\nActive Cooling System\n8 Versatile Nozzles\nBattery Capacity: 88.8Wh\nOutdoor Master CACHALOT 2 Mini: Compact & Convenient\nFor solo paddlers and couples seeking electric convenience without the bulk, the CACHALOT 2 Mini delivers impressive performance in a surprisingly compact package. This budget-friendly electric pump easily handles one or two boards, making it perfect for casual weekend paddlers who want to skip the manual labor. Despite its smaller size, it maintains a reliable 15 PSI inflation capacity with automatic shut-off for safety. The lightweight design won't weigh down your gear bag, while the affordable price point makes electric pumping accessible to every paddler. Its quiet operation and efficient battery life ensure you're on the water quickly without disturbing fellow adventurers at launch sites.\nReview OutdoorMaster 20PSI High Pressure SUP Air Pump, The Cachalot 2 Mini Paddle Board Pump, IntellVCT Team\nVCT Team1.26K subscribers\nWatch on\nSpecs:\nUp to ",
+              "entity_id": "9b5e8083-583b-4d49-abe6-8569a80e4d8a",
+              "source_host": "outdoormaster.com",
+              "reference_id": "snapshot:9b5e8083-583b-4d49-abe6-8569a80e4d8a",
+              "title_origin": "page"
+            },
+            {
+              "href": "https://www.inflatableboarder.com/electric-sup-pump",
+              "label": "Best iSUP Pumps Tested and Reviewed | 2025 · www.inflatableboarder.com",
+              "entity": "evidence_snapshot",
+              "excerpt": "公开来源；采集时间 2026-10-07T07:51:16.404962+00:00；taint=untrusted_external；trust=unknown；正文由Firecrawl提取；保留未信任外部资料标记\nFiled Under: SUP Accessories, Accessory Buying Guides, Reviews Tagged With: accessories, buying guide\nSave\nAn electric pump is one of the best accessories you can purchase for your stand up paddle board. Whether it is your first time on a SUP or you are a professional paddle boarder, you can’t beat the hands-free ease of an electric paddle board pump. We put the most popular electric pumps for paddle boards through thousands of uses to find out which are the Best iSUP Pumps of 2024.\nElectric paddle board pumps save you the energy of hand-pumping and help you get on the water faster. Instead of inflating your paddle board by hand and then getting ready to hit the water, you can change clothes, apply sunscreen, fill water bottles, and more all while an electric pump inflates your iSUP.\nElectric SUP Pumps are designed specifically for the challenges of inflating a paddle board. They have two stages: a high-flow/low-pressure stage to inflate the board from flat to about 1 PSI and then a low-flow/high-pressure stage that brings your paddle board to its final pressure. Each pump has an automatic cutoff that you can set to your desired pressure. Once the board reaches that pressure, the pump will automatically turn off to prevent over-pressurizing your board.\nIn the past, electric SUP pumps have required you to connect directly to your car’s battery or plug into a 12v socket (“cigarette lighter”) in your car. But now, many electric pumps with built-in lithium-ion batteries can inflate multiple paddle boards extremely quickly.\nChoosing the best electric pump for your paddle board boils down to whether you are looking for speed, portability, ease of use, or a bit of all three. We tested several electric SUP pumps for speed, usability, portability, and other measures. Here is our list of the Best iSUP Pumps.\nBest Electric Paddle Board Pumps Comparison Chart\nsection-hd\nTop-Rated Electric Pumps for Your Paddle Board\nBOARDDIMENSIONSAVERAGE INFLATION TIMEWARRANTYPRICE\nOutdoor Master Shark III Pump\nOutdoor Master Shark III Pump\n14” x 10.5\" x 8.75\"\n6.5 pounds\n5 minutes2 yearsCheck Best PriceRead Full Review\nSwonder Seawolf S20Li\nSwonder Seawolf S20Li\n13.5” x 8.5\" x 4.5\"\n5.2 pounds\n9.3 minutes\n1 year\nCheck Best PriceRead Full Review\niRocker Power Pump Max\niRocker Power Pump Max\n8” x 6.5\" x 3.5\"\n2 pounds\n10.5 minutes\n1 year\nCheck Best PriceRead Full Review\nNixy Ventus Electric Pump\nNixy Ventus Electric Pump\n10.5” x 7.75” x 5\"\n3.9 pounds12.3 minutes\n1 years\nCheck Best PriceRead Full Review\nHonu E-Pump\nHonu E-Pump\n11” x 9” x 5\"\n3.9 pounds10.8 minutes1 yearCheck Best PriceRead Full Review\nOutdoor Master Shark II Pump\nOutdoor Master Shark II Pump\n11” x 9\" x 5\"\n3.6 pounds\n11.8 minutes\n2 years\nCheck Best PriceRead Full Review\nRetrospec Weekender Electric Pump\nRetrospec Weekender Electric Pump\n10” x 6\" x 3.5\"\n3.0 pounds10.3 minutes1 yearCheck Best PriceRead Full Review\nOutdoor Master Vortex Pro\nOutdoor Master Vortex Pro\n6.75” x 5.75” x 3.25\"\n2.7 pounds13.2 minutes2 yearsCheck Best PriceRead Full Review\nTOPUMP TPS 260\nTOPUMP TPS 260\n7.5” x 6.5” x 3.5\"\n2 pounds11.5 minutes\n1 year\nCheck Best PriceRead Full Review\niRocker Electric SUP Pump\niRocker Electric SUP Pump\n10” x 7.5\" x 4\"\n3.8 pounds10.2 minutes1 year\nCheck Best PriceRead Full Review\nOutdoor Master Shark III Electric SUP Pump\nAvailability: US, Canada, Australia, UK, Europe\nRead Full Review\nCheck Best Price\nThe Shark III Electric SUP Pump is Outdoor Master’s new Flagship offering. It boasts incredibly fast inflation times and the portability of a built-in battery.\nSave\nFeatures and Usability:\nThe Shark III comes with all the bells and whistles you could hope for. The pump itself has, of course, automatic inflation and deflation capabilities and can bring your board up to 20 PSI. It has an onboard active cooling system and a large LCD Display screen. However, like the Cachalot 2S, the screen is difficult to read in bright daylight.\nYou can control the pump’s settings with the four buttons located on the top of the pump. The screen indicates battery life remaining with color indicators around the edge of the screen. The Shark III also has different settings for inflating SUPs, Kites/Wings, and Air Mattresses, as well as a memory function to recall your preferred settings.\nThe biggest downside of the Shark III is its size. At 6.5 pounds and with a voluminous shape, it’s hard to forget where you put the pump.\nInflation Speed:\nThe Shark III takes over the top spot for the fastest electric pump we’ve reviewed, inflating our test board to 15 PSI in an average of 5 minutes.\nBattery and Other Accessories:\nThe internal 74Wh battery has enough juice to reliably inflate three paddle boards. When the battery gets low, you can plug the Shark III into a 12v power source to operate the pump, though it inflates at a much slower speed than with the battery. The USB-C port can also charge your phone and other devices.\nBottom Line: The Outdoor Master Shark 3 is an ultra-fast and versatile rechargeable electric pump.\nSwonder Seawolf S20Li Battery Electric SUP Pump\nAvailability: US\nRead Full Review\nCheck Best Price\nThe Swonder Seawolf S20Li SUP pump is powered by an internal battery that is extremely fast and can inflate up to seven boards on a single charge.\nSave\nFeatures and Usability:\nThe Seawolf’s key feature is its massive internal battery. With a 10,000mAh battery, it has more power onboard than some eBikes! The Seawolf’s battery has enough juice to inflate our 11’x32″ test board to 15 PSI seven times and still has a little power left over to deflate them at the end of the day.\nThe interface is clean and easy to use, with four buttons and an easy-to-read, information-packed screen. There is a power switch on the bottom of the pump to turn the Seawolf on and start the internal cooling fan.\nThe Seawolf is easy to operate. There is one button to change units from PSI to Bar, +/- buttons to adjust the target pressure (up to 20 PSI), and a power button to start and stop the pump.",
+              "entity_id": "b68b6abe-c360-4c98-b2b6-747b15bba3b3",
+              "source_host": "www.inflatableboarder.com",
+              "reference_id": "snapshot:b68b6abe-c360-4c98-b2b6-747b15bba3b3",
+              "title_origin": "search_hint"
+            },
+            {
+              "href": "https://isupworld.com/top-3-electric-pumps/",
+              "label": "Best Electric Pumps for Inflatable Paddle Boards Most Common Types Of Electric Pumps For Paddle Boards 1. OUTDOORMASTER SHARK II 12V ELECTRIC PUMP 2. OUTDOORMASTER DOLPHIN ELECTRIC SUP PUMP · isupworld.com",
+              "entity": "evidence_snapshot",
+              "excerpt": "公开来源；采集时间 2026-10-07T07:51:40.052718+00:00；taint=untrusted_external；trust=unknown；正文由Firecrawl提取；保留未信任外部资料标记\nYou are here: Home / SUP Pumps / Best Electric Pumps for Inflatable Paddle Boards\nBest Electric Pumps for Inflatable Paddle Boards\nAs new electric SUP pumps hit the market, I continually test and evaluate them to keep this guide up to date. The recommendations below reflect the latest and best-performing pumps for inflatable stand-up paddle boards.\nAre you tired of manually pumping your paddle board up to 15 PSI? You’re not alone. Few things are more frustrating than working up a sweat before you’ve even launched your board.\nI’ve tested a wide range of electric SUP pumps over the years. I’ve learned that not all of them are created equal and they can differ significantly in:\ninflation speed\nmaximum pressure\nnoise level\nportability\nand overall value.\nNot long ago, there were very few quality electric SUP pumps to choose from. Fortunately, as stand-up paddleboarding has become more popular, manufacturers have stepped up their game.\nToday, there are excellent options available for every budget, making it easier than ever to spend less time inflating your board and more time enjoying the water.\nI have done extensive research on these pumps and used them myself many times over.\nThey not only work great for the majority of inflatable paddle boards but they can also be used for inflating inflatable kayaks, inflatable boats, inflatable mattresses, inflatable tents, inflatable pools and other inflatable gear.\nEach of these pumps have pros and cons and fall into different price range categories so you can choose one that fits your needs and your budget best.\nBrand/Model:Outdoormaster Shark\nOutdoormaster DolphinOutdoormaster Shark 3\nPhoto:\nPower Source:12V DC Connector12V DC Connector12V DC Connector & Built-In Rechargeable Battery\nMax PSI:20 PSI20 PSI20 PSI\nAuto Off:YesYesYes\nInflate & Deflate:YesInflate OnlyYes\nSpeed:Just over 7 minutes to inflate average size SUP10-12 minutes to inflate average size SUP3-5 minutes to inflate average size SUP\nNoice Decibels:83 to 85db80db80db average\nSize:11\"L x 10\"W x 4.5\"D10.2″L x 6.7″W x 6.6″D13.8″L × 7.5″W × 7.0″D\nWeight:3.6 lbs.2.93 lbs.6.4 lbs.\nTesla Compatible:With workaroundsNoYes\nPrice Range:$$$$$$\nBest Deal:Check priceCheck priceCheck price\nMost Common Types Of Electric Pumps For Paddle Boards\nThe most common types of electric pumps used with inflatable SUP’s are:\n12V pumps that connect directly to your car battery with alligator clips\n12V pumps that connect to an external battery pack\n12V pumps that have an integrated rechargeable battery\npumps that connect to the 12V connection in your vehicle\nair compressors (not recommended)\nI’ll save you some time right from the start—an air compressor is one of the worst options for inflating a paddle board.\nWithout the proper adapter, it won’t even connect securely to your board’s valve. But even if you have the correct adapter, most air compressors are extremely slow at inflating an inflatable SUP to its recommended pressure.\nI’ve tested this approach multiple times, hoping for better results, but it has consistently been disappointing. In my experience, it’s simply not worth the hassle.\nInstead, choose a pump that’s specifically designed for high-pressure inflatable paddle boards and boats. These pumps are faster, more reliable, and capable of easily inflating your board to the recommended PSI. The models below are the ones I recommend.\n1. OUTDOORMASTER SHARK II 12V ELECTRIC PUMP\nI’ve been using the Shark II electric pump for several years, and it has never let me down. While newer models with extra features have come and gone, the Shark II has remained my go-to pump thanks to its consistent performance and reliability.\nOutdoormaster has done an excellent job with the Shark II, combining impressive power with a practical, user-friendly design. Better yet, it’s priced in the sweet spot—offering premium performance without the premium price tag.\nWhere To Find The Best Deal\nFor the best deal and free shipping to the US and Canada for the Shark II electric pump go to Outdoormaster.com.\nIMPORTANT FEATURES\nThis 12V electric pump has some great features as well.\n5 Valve Attachments\nThe attachment you need for most inflatable SUP’s is the H3 valve attachment. I have used the Shark II with about a dozen different SUP brands and it has worked perfectly with all of them.\nHowever it also comes with more attachments such as for a:\nBoston valve\nC7 valve\nPinch valve\n805 Valve\nWith all of these attachments it also works great for inflating inflatable kayaks or canoes, dinghies, air mattresses and other inflatable products.\nIt also comes with four different sized gaskets (the white rubber rings) to ensure a tight seal when inflating your board.\nPlugs Into 12V DC Car Connector\nThe Shark pump very easily plugs into the 12V accessory socket in your vehicle.\nThe power cord is 9′ long making it easy to reach the plug and the board.\nKink Free Hose\nThe 4′ kink-free hose is really easy to secure to the pump and doesn’t get kinked as some other flimsy hoses can.\nDigital Display With Auto Shutoff\nIt has a digital display that is easy to read. There is no guessing at what PSI level you are at as you can see the progress on the display.\nOnce you set the PSI level it will automatically shut off when it reaches the set air pressure.\nLightweight\nThis pump is also one of the lightest options weighing only 3.6 lbs. and it is very easy to carry with the built-in carry handle.\nIt doesn’t come with a carry bag, which is unfortunate but I just keep mine in a canvas bag and keep it in my larger SUP gear mesh duffle bag.\nDoes Not Overheat\nMost of the electric pumps for SUP’s on the market have a reputation for eventually overheating especially if you are inflating more than one board at a time.\nThis is not the case with the Shark II pump. It has a built in automatic cooling system that cools the pump down as it is working hard even when inflating multiple boards.\nI regularly use mine to inflate 2-3 boards in one go and it’s still going strong. This h",
+              "entity_id": "4401be9f-e770-4704-9dad-423c38670967",
+              "source_host": "isupworld.com",
+              "reference_id": "snapshot:4401be9f-e770-4704-9dad-423c38670967",
+              "title_origin": "page"
+            }
+          ],
+          "observations": [
+            {
+              "id": "86d7c48b-6590-527e-b4cb-e532b68b7227",
+              "output": {
+                "hits": [
+                  {
+                    "url": "https://outdoormaster.com/blogs/om-blog/2025-sup-pump-recommendations-get-the-best-pump-for-you",
+                    "title": "2025 SUP Pump Recommendations: Get the Best Pump for YOU",
+                    "snippet": "The Outdoor Master Shark II exemplifies everything modern paddlers need in a SUP pump. There is a reason both SUP Board Guide and iSUP World ranked this pump as the best SUP of 2024. This dual-action manual pump delivers exceptional efficiency, inflating boards up to 20 PSI with smooth, consistent strokes. Its ergonomic T-handle reduces fatigue during extended pumping sessions, while the extra-wide base provides stability on any surface. [...] ## Our Top 5 SUP Pumps for 2025\n\n1. ### Outdoor Master SHARK 3: The Ultimate SUP Pump for 2025 (Top Pick)\n\nThe Outdoor Master SHARK 3 is our best SUP to date. With the best technology from our previous version, the SHARK 3 is faster, more accurate, more portable, and the best choice for those looking to pump with incredible ease. While most boards struggle to inflate three boards without overheating, the SHARK 3 can inflate up to six at one time. [...] ## Only at Outdoor Master\n\nMake your SUP dreams come true in 2025. Outdoor Master has an amazing reputation for making the best SUP pumps you can buy. Whether you’re going out for the weekend or planning a week-long paddleboarding excursion, choose a pump you can trust. We highly recommend the Outdoor Master SHARK 3 Electric SUP Pump."
+                  },
+                  {
+                    "url": "https://www.inflatableboarder.com/electric-sup-pump",
+                    "title": "Best iSUP Pumps Tested and Reviewed | 2025",
+                    "snippet": "Bottom Line: The iRocker Power Pump Max is a fantastic, portable, pump for those with compact iSUPs that want a smaller and lighter rechargeable pump.\n\n### Nixy Ventus Electric Pump\n\nAvailability: US, CAN, UK  \n Read Full Review\n\nCheck Best Price\n\nThe Nixy Ventus is a user-friendly, highly portable electric pump with an internal cooling fan and an excellent battery option.\n\nNixy Ventus electric paddle board pump\n\n Save\n\nFeatures and Usability: [...] Bottom Line: The Retrospec Weekender electric pump is a reliable and quick way to inflate your paddle board for under $100.\n\n### Outdoor Master Vortex Pro Rechargeable Electric Pump\n\nAvailability: US, Canada, Australia, UK, Europe  \n Read Full Review\n\nCheck Best Price\n\nThe Outdoor Master Vortex Pro takes over as this popular brand’s new compact rechargeable SUP pump with impressive inflation speed.\n\nOutdoor Master Vortex Pro Rechargeable Electric Pump\n\n Save\n\nFeatures and Usability: [...] The internal 74Wh battery has enough juice to reliably inflate three paddle boards. When the battery gets low, you can plug the Shark III into a 12v power source to operate the pump, though it inflates at a much slower speed than with the battery. The USB-C port can also charge your phone and other devices.\n\nBottom Line: The Outdoor Master Shark 3 is an ultra-fast and versatile rechargeable electric pump.\n\n### Swonder Seawolf S20Li Battery Electric SUP Pump"
+                  },
+                  {
+                    "url": "https://outdoormaster.com/pages/best-sup-pump",
+                    "title": "Best Sup Pump",
+                    "snippet": "From the first Shark to today’s full lineup — engineered to deliver faster, smarter, and more reliable inflation for every ride.\n\n2018\n\n### Shark Begins\n\nThe start of high-performance electric SUP pumping.\n\n2021\n\n### Proven Upgrade\n\nShark II sets the standard for power and durability.\n\n2023\n\n### Expanded Lineup\n\nMore choices for every rider and every scenario.\n\n2024\n\n### Power Anywhere\n\nRechargeable pumps unlock true outdoor mobility.\n\n2025\n\n### Next Level-Shark 3 [...] \"\n\n\"\n\nOutdoor Master is one of the best-known brands for electric SUP pumps. They’ve been in the business for many years and have constantly evolved their pump technology. The latest electric SUP pump is a true chart-topping device. The Shark 3 electric pump has blown away the competition for inflation speed and has become my go-to electric pump and first recommendation to anyone looking for an electric pump.\n\n\"\n\n\" [...] 3.6 W followers\n\nI've been using the Outdoor Master Cachalot 2s mini rechargeable electric sup pump for a few months now & it's a fab little bit of kit. On a full charge, it'll be able to fully inflate & deflate 3 boards consecutively & with outdoor master's dual-stage technology, it can do this quickly! It takes less than 10 minutes for my 11ft board to reach 20PSI. While there are similar rechargeable pumps on the market, I have to say, this is definitely the quietest one I've used."
+                  },
+                  {
+                    "url": "https://isupworld.com/top-3-electric-pumps",
+                    "title": "Best Electric Pumps for Inflatable Paddle Boards",
+                    "snippet": "## Full Review\n\nClick here to read our full review of the Dolphin electric pump for inflatable paddle boards.\n\n## 3. OUTDOORMASTER SHARK 3 RECHARGEABLE ELECTRIC PUMP\n\nIf you’re looking for one of the best electric pumps for inflatable paddle boards, the Outdoormaster Shark 3 Electric Pump deserves a close look. Designed specifically for high-pressure inflatable SUPs, this upgraded pump combines:\n\n fast inflation\n intelligent features\n and impressive portability into one compact package. [...] Premium price compared to entry-level electric pumps\n Rechargeable battery adds a little extra weight\n Battery should be kept charged for maximum performance\n\n## Bottom Line\n\nThe Outdoormaster Shark 3 Electric Pump is one of the most versatile electric SUP pumps currently available.\n\nIts combination of fast inflation, cordless convenience, automatic shut-off, and reliable performance makes it an outstanding choice for paddlers who want to spend less time pumping and more time on the water. [...] ## Review\n\nFor more information, pictures and video please click the link below for my full detailed review.\n\nClick Here For My Full Review Of The Shark II Electric Pump.\n\n# 2.  OUTDOORMASTER DOLPHIN ELECTRIC SUP PUMP\n\nThe Dolphin is a little smaller, a little lighter, a little slower to inflate but also priced extremely well.  If you’re not in a rush and okay with your pump taking a few minutes longer to inflate your paddle board, the Dolphin is a fantastic pump to consider.\n\n## Key Features"
+                  },
+                  {
+                    "url": "https://www.youtube.com/watch?v=wH00YWlibZY&xstg=CAMSBhUDze3xHw%3D%3D",
+                    "title": "Comparing The BEST Paddle Board Pumps On The Market.",
+                    "snippet": "Best Electric Paddle Board Pump? 5 Battery-Powered SUP Pumps Tested ... Shark 3 Rechargeable Electric SUP Pump Review | ISUPWORLD.com."
+                  },
+                  {
+                    "url": "https://www.boatsailmag.com/paddle-boarding/best-electric-sup-pump",
+                    "title": "Top 9 Best Electric SUP Pumps in 2026 | Find the Best One",
+                    "snippet": "Nixy Air Pump Built In Cooling System\n\nNixy Ventus New Product Image\n\n###### Where to buy NIXY Ventus:\n\nAmazon\n\nRead full review Read full review\n\nThe NIXY Ventus electric pump is a very portable, affordable pump that has proven to be one of the best.\n\nChange your clothes or stretch while your SUP or kayak inflates. That it also deflates the inflatables makes it easier to pack up when done too. [...] Amazon\n\n  \n\nThe SereneLife electric air pump stands out for its ergonomic design and rechargeable battery that allows you to inflate your inflatable paddle board or kayak literally anywhere you want.\n\nThe SereneLife electric pump provides paddlers with an ergonomically designed product that has a foldable carry handle for convenient transportation. [...] ### Portability\n\nWhen looking to purchase an electric air pumpportability is an important factor. You want to find a pump that is lightweight and compact.\n\nMaking sure your electric air pump is compact and portable is important as it means you’ll save space in your SUP bag. The Thurso Surf electric air pump is the lightest pump on our list at just 2.6 lbs."
+                  },
+                  {
+                    "url": "https://isupworld.com/outdoormaster-shark-electric-pump-review",
+                    "title": "OutdoorMaster Shark II Electric Pump For Inflatable SUP’s Review - Inflatable SUP World",
+                    "snippet": "Airhead SUP Anchor\n Airhead SUP Deluxe Coast Guard Kit\n Airhead SUP Heavy Duty Board Leash\n Airhead SUP High Pressure Electric Pump\n Airhead SUP High Velocity 12V Pump\n Airhead SUP Stabilizer\n Bravo BP12 Single Action Electric Pump\n BTP 2-Stage Electric Turbo Pump\n Chums Downriver Rolltop Bag\n Icemule Jaunt 15L Soft Cooler Backpack\n K-Pump K20\n NIXY Hammock\n NIXY Ventus 12V Universal Electric Pump\n NIXY Landing Mat\n Onyx M-24 Inflatable PFD Belt Pack\n OutdoorMaster Pop Up Beach Tent [...] ### Related Posts\n\n Chasing Blue Ace Sport Inflatable SUP Review\n Best Electric Pumps for Inflatable Paddle Boards\n Inflatable SUP Pump Options\n Bravo BP12 Single-Stage Electric Pump\n\n### Comments\n\n1.  Lesley Beech says:\n\n   March 29, 2025 at 4:30 pm\n\n   Is the pump compatible with the fat stick air 20 psi board please . I. Am a complete newby so trying to research the best bits of kit ready for my maiden trip . Thank you is there a mains adapter too.? .\n\n   Reply\n\n     Allison says: [...] ## WARRANTY\n\nThe Shark has a 90-day return policy and a 1-year warranty.\n\nI haven’t heard of any major issues with this pump and mine has been working great for a two years now.  Still using the same pump and inflating lots of paddle boards.\n\n## IN SUMMARY\n\nThe Outdoormaster Shark II electric pump is awesome. If you have an inflatable SUP go for the splurge and get yourself an electric pump.\n\nThe Shark basically allows you to get on the water without breaking a sweat."
+                  },
+                  {
+                    "url": "https://www.supboardguide.com/best-electric-pumps-for-inflatable-sups",
+                    "title": "Best Electric Pumps for Inflatable Paddle Boards (2023)| SUPBoardGuide",
+                    "snippet": "1. Outdoor Master Shark II Electric Air Pump\n2. iRocker 12 V Electric Pump\n3. BEWELLAERO SUP Air Pump w/ Rechargeable Battery\n4. Nixy Ventus Paddle Board Electric Pump\n5. Sea Gods Battery Electric SUP Pump\n6. Honu E-Pump\n7. Swonder SeaWolf SUP Air Pump\n8. ThursoSurf Rechargeable Electric Pump\n9. Outdoor Master Whale Electric Pump\n\n## Outdoor Master Shark II SUP Electric Air Pump (See Full Review) [...] Cons\n\n Has a 16 PSI cap (we like it to be around 20)\n Warranty is only 30 days\n\nThe SereneLife Rechargeable pump is another portable pump option for those who do not want to be reliant on their car to inflate their SUP. This pump has an internal battery pack, meaning there’s no need to purchase an additional battery. Yet it also has a 12V charger that you can plug into your car’s cigarette lighter. [...] As far as which electric pump we recommend for inflatable paddle boards, I still would recommend the iRocker pump. I’ve been using ours non stop for 2 years now without a single problem. I love the shape, how the cord can be stored in the little compartment, and LOVE how iRocker has a portable battery you can buy (it’s seriously a game changer). I go out several times a week, and that’s the pump I grab every time. I also do really like the Outdoor Master and NIXY pumps, but so far have had"
+                  },
+                  {
+                    "url": "https://finance.yahoo.com/news/paddle-board-pump-market-report-115400281.html",
+                    "title": "Paddle Board Pump Market Report 2025, with Key Player Profiles for Scoprega, OutdoorMaster, Sea Eagle Boats, NIXY, iROCKER, THURSO SURF, SereneLife, The Coleman Company, and Airhead Sports Group",
+                    "snippet": "The Paddle Board Pump Market was valued at USD 2.65 Billion in 2024 and is expected to reach USD 4.77 Billion by 2030, rising at a CAGR of 10.11%. This market covers the global industry engaged in the production, distribution, and sale of manual and electric pumps designed specifically for inflating stand-up paddle boards (SUPs). [...] The increasing popularity of stand-up paddleboarding (SUP) as a versatile recreational and fitness activity is a major driver for the paddle board pump market. Once a niche sport, SUP now enjoys widespread appeal among a diverse user base - from outdoor enthusiasts to wellness seekers - who engage in activities such as yoga, fishing, touring, and racing. This diversification has spurred the adoption of inflatable SUPs (iSUPs), which are valued for their portability and ease of storage. [...] Company Logo\n\n \n\nThe paddle board pump market thrives on the growing popularity of SUP activities like fitness and eco-tourism. Innovations in electric pumps, enhanced features like digital gauges, and expanded online sales drive demand. Cost and compatibility challenges persist, but smart, efficient designs offer growth potential.\n\nPaddle Board Pump Market\n\nPaddle Board Pump Market\n\nPaddle Board Pump Market"
+                  },
+                  {
+                    "url": "https://paddleadventurer.com/battery-powered-paddle-board-pumps-2026",
+                    "title": "Best Battery Powered Paddle Board Pumps: 5 Tested | Paddle Adventurer",
+                    "snippet": "UPowerace Quiet Pump 1 electric paddle board pump with hose, nozzles and charging cables\n\n## Bonus Test: OutdoorMaster Electric Ray Power Bank\n\nOne last product I tested was the OutdoorMaster Electric Ray Power Bank. This isn’t a paddle board pump itself. Instead, it’s a portable battery bank with a 12V outlet that allows you to use a plug-in electric pump away from your vehicle. [...] I really wanted to like this idea. If you already own a 12V paddle board pump, adding a portable power supply could theoretically give you the convenience of a battery powered pump without replacing something you already own.\n\nUnfortunately, the performance fell short in my testing.\n\nThe Electric Ray fully inflated one board to 16 PSI on a single charge and ran out of power on the second board just before reaching 16 PSI. It also took just under six hours to fully recharge. [...] Anker Nano II 65w fast USBSC plug in charger with box\n\n### If you’re new to electric paddle board pumps and want to learn more, check out my original blog post, “Electric Paddle Board Pump,” where I compare electric vs. manual pumping and share more tips for using an electric pump.\n\n## Final Thoughts on the Best Battery Powered Paddle Board Pumps"
+                  }
+                ],
+                "tool": "search",
+                "status": "completed",
+                "target": "best electric SUP pump 2024 portable rechargeable review brands",
+                "warnings": [],
+                "shown_count": 10,
+                "provider_key": "tavily",
+                "providers_tried": [
+                  "tavily"
+                ],
+                "response_digest": "da0589cf984a6768a106eb26d40d3c2807a6d4f6ae3a663ee3930a54640ca452"
+              }
+            },
+            {
+              "id": "2b11ce15-91a1-5ad0-abae-82f427159533",
+              "output": {
+                "pin": {
+                  "id": "9b5e8083-583b-4d49-abe6-8569a80e4d8a",
+                  "url": "https://outdoormaster.com/blogs/om-blog/2025-sup-pump-recommendations-get-the-best-pump-for-you",
+                  "taint": "untrusted_external",
+                  "source_id": "5d73bf3b-8035-42db-8585-e601ef213594",
+                  "trust_tier": "unknown",
+                  "captured_at": "2026-10-07 07:51:03.879675+00:00",
+                  "conflict_note": null,
+                  "content_digest": "9cde54365ef03d44edac60a55dd06ef90764c0efd289c0d0d90b80af57fe02c2",
+                  "superseded_by_id": null,
+                  "conflicts_with_id": null,
+                  "freshness_expires_at": null
+                },
+                "tool": "read",
+                "status": "partial",
+                "target": "https://outdoormaster.com/blogs/om-blog/2025-sup-pump-recommendations-get-the-best-pump-for-you",
+                "warnings": [
+                  "公开来源；采集时间 2026-10-07T07:51:03.879675+00:00；taint=untrusted_external；trust=unknown",
+                  "正文由Firecrawl提取；保留未信任外部资料标记"
+                ],
+                "reference": {
+                  "href": "https://outdoormaster.com/blogs/om-blog/2025-sup-pump-recommendations-get-the-best-pump-for-you",
+                  "label": "Best & Fastest Electric Paddle Board Pump: OutdoorMaster Shark 3（under 5mins） - YouTubeSHARK 2S RECHARGEABLE ELECTRIC SUP/ KAYAK PUMP- UNBOXING 🏄🏻🚣🏻 - YouTubeReview OutdoorMaster 20PSI High Pressure SUP Air Pump, The Cachalot 2 Mini Paddle Board Pump, Intell - YouTubeMost Compact Electric PADDLE BOARD PUMP - DOLPHIN - YouTube · outdoormaster.com",
+                  "entity": "evidence_snapshot",
+                  "excerpt": "公开来源；采集时间 2026-10-07T07:51:03.879675+00:00；taint=untrusted_external；trust=unknown；正文由Firecrawl提取；保留未信任外部资料标记\nMaster Guides\n2025 SUP Pump Recommendations: Get the Best Pump for YOU\nSummer is here! Which means it’s time to get back in the great outdoors to do what you love. With warm weather and bright sunny days, now is the time to grab your stand-up paddleboard and head for the water. If you’re like me, you’ll want to spend every weekend on the water, soaking up the sun, and spending time with friends.\nPaddleboarding is an amazing way to get outside, exercise, socialize, work on your balance, enjoy nature, fish, swim, tan, and more! Utilizing a SUP Pump is the best way to ensure you can do more of what you enjoy, and less time pumping until your arms fall off. In this article, we will cover the best SUP pumps for 2025.\nSpoiler Alert: It’s the SHARK 3 SUP Pump\nWhy Choosing the Right SUP Pump is Essential in 2025\nGetting the right pump for your SUP will blow you away… literally! Modern SUPs feature enhanced drop-stitch technology and higher-pressure requirements, making pump selection more critical than ever. The right pump doesn't just inflate your board; it ensures optimal performance, accuracy with PSI, and a better overall paddling experience.\nManual Vs. Electric SUP Pumps\nMost inflatable SUPs come with a Manual Pump. These pumps are simple, straightforward, and get the job done; however, they tend to be the least efficient option for those hoping to spend more time on the water and less time inflating their board. While a manual pump can certainly inflate your board and get it close to your desired PSI, it can take quite a while. Trust me. It’s taken me over 20 minutes just to pump up two SUPs with a manual pump. Not to mention, it takes A LOT of effort to pump up your SUP by hand, which results in less energy when out on the water.\nElectric SUP Pumps are entirely different. With the Outdoor Master SUP pumps, all your inflating happens at the press of a button. An electric SUP pump saves time and energy. For those concerned with optimal performance, a SUP is the best way to ensure your inflatable paddle board is pumped up to your desired PSI. Outdoor Master SUP pumps make inflating easy and convenient. Simply input your PSI and watch your board swell up IN LESS THAN 5 MINUTES. Our pumps switch off automatically, so you don’t have to worry about your board over-inflating. Want to save time during deflation? Oh yeah, Outdoor Master pumps do that too.\nOur Top 5 SUP Pumps for 2025\nOutdoor Master SHARK 3: The Ultimate SUP Pump for 2025 (Top Pick)\nThe Outdoor Master SHARK 3 is our best SUP to date. With the best technology from our previous version, the SHARK 3 is faster, more accurate, more portable, and the best choice for those looking to pump with incredible ease. While most boards struggle to inflate three boards without overheating, the SHARK 3 can inflate up to six at one time.\nOffering advanced dual-stage inflating technology, the SHARK 3 SUP pump is 3x faster. It can inflate a single board to 15 PSI (recommended) in less than four minutes! This means you can inflate four boards in about 16 minutes total. You’ll be a hero if you show up at the dock with one of these. You and your friends will be out paddling on the water before you know it! This pump is the ideal pump for individuals, groups, or families. Even Inflatable Boarder thinks the SHARK 3 is the best SUP pump of 2025.\nBest & Fastest Electric Paddle Board Pump: OutdoorMaster Shark 3（under 5mins）Outdoor Master\nOutdoor Master4.31K subscribers\nWatch on\nSpecs:\nUp to 20 PSI (max)\n8 Versatile Nozzles\n3 Smart Mode (Sup/Mat/Kite)\nRapid Dual Stage & Auto Shut-off\nPower Supply: Battery & 12 V DC\nDoubles As A Power Bank\nReal-Time psi Monitoring\nTesla Car Compatibility (15.4V)\nBattery Capacity: 74Wh\nCharging Way: Support 45W Fast Charger & 12 V DC\nOutdoor Master Shark II: Efficiency & Performance\nThe Outdoor Master Shark II exemplifies everything modern paddlers need in a SUP pump. There is a reason both SUP Board Guide and iSUP World ranked this pump as the best SUP of 2024. This dual-action manual pump delivers exceptional efficiency, inflating boards up to 20 PSI with smooth, consistent strokes. Its ergonomic T-handle reduces fatigue during extended pumping sessions, while the extra-wide base provides stability on any surface.\nThe Shark II's premium construction features a reinforced hose that resists kinking and wear, ensuring years of reliable performance. What sets it apart is the innovative pressure gauge integration and quick-connect valve system that works seamlessly with all major SUP brands. Compact enough for any adventure pack yet powerful enough for the most demanding boards, the Shark II strikes the perfect balance between portability and performance that serious paddlers demand.\nSHARK 2S RECHARGEABLE ELECTRIC SUP/ KAYAK PUMP- UNBOXING 🏄🏻🚣🏻Julian Outdoors\nJulian Outdoors799 subscribers\nWatch on\nSpecs:\nUp to 20 PSI\n3 Smart Mode(Sup/Mat/Kite)\nDual-Stage Inflation & Deflation\nReal-Time Monitoring & Auto Shut-off\nUltimate Charging: Type-C & 12V DC\nDoubled As A Power Bank\nActive Cooling System\n8 Versatile Nozzles\nBattery Capacity: 88.8Wh\nOutdoor Master CACHALOT 2 Mini: Compact & Convenient\nFor solo paddlers and couples seeking electric convenience without the bulk, the CACHALOT 2 Mini delivers impressive performance in a surprisingly compact package. This budget-friendly electric pump easily handles one or two boards, making it perfect for casual weekend paddlers who want to skip the manual labor. Despite its smaller size, it maintains a reliable 15 PSI inflation capacity with automatic shut-off for safety. The lightweight design won't weigh down your gear bag, while the affordable price point makes electric pumping accessible to every paddler. Its quiet operation and efficient battery life ensure you're on the water quickly without disturbing fellow adventurers at launch sites.\nReview OutdoorMaster 20PSI High Pressure SUP Air Pump, The Cachalot 2 Mini Paddle Board Pump, IntellVCT Team\nVCT Team1.26K subscribers\nWatch on\nSpecs:\nUp to ",
+                  "entity_id": "9b5e8083-583b-4d49-abe6-8569a80e4d8a",
+                  "source_host": "outdoormaster.com",
+                  "reference_id": "snapshot:9b5e8083-583b-4d49-abe6-8569a80e4d8a",
+                  "title_origin": "page"
+                },
+                "shown_count": 6000,
+                "total_count": 10505
+              }
+            },
+            {
+              "id": "3c571598-3d7e-56a3-92b8-18dee61cfe3d",
+              "output": {
+                "pin": {
+                  "id": "b68b6abe-c360-4c98-b2b6-747b15bba3b3",
+                  "url": "https://www.inflatableboarder.com/electric-sup-pump",
+                  "taint": "untrusted_external",
+                  "source_id": "bf09632f-d4f8-417b-9fa8-ee87de533ca3",
+                  "trust_tier": "unknown",
+                  "captured_at": "2026-10-07 07:51:16.404962+00:00",
+                  "conflict_note": null,
+                  "content_digest": "cbb93c2400fb60f0d33c6505fa08d4a76de390305e0914904e5f4138b79dc204",
+                  "superseded_by_id": null,
+                  "conflicts_with_id": null,
+                  "freshness_expires_at": null
+                },
+                "tool": "read",
+                "status": "partial",
+                "target": "https://www.inflatableboarder.com/electric-sup-pump",
+                "warnings": [
+                  "公开来源；采集时间 2026-10-07T07:51:16.404962+00:00；taint=untrusted_external；trust=unknown",
+                  "正文由Firecrawl提取；保留未信任外部资料标记"
+                ],
+                "reference": {
+                  "href": "https://www.inflatableboarder.com/electric-sup-pump",
+                  "label": "Best iSUP Pumps Tested and Reviewed | 2025 · www.inflatableboarder.com",
+                  "entity": "evidence_snapshot",
+                  "excerpt": "公开来源；采集时间 2026-10-07T07:51:16.404962+00:00；taint=untrusted_external；trust=unknown；正文由Firecrawl提取；保留未信任外部资料标记\nFiled Under: SUP Accessories, Accessory Buying Guides, Reviews Tagged With: accessories, buying guide\nSave\nAn electric pump is one of the best accessories you can purchase for your stand up paddle board. Whether it is your first time on a SUP or you are a professional paddle boarder, you can’t beat the hands-free ease of an electric paddle board pump. We put the most popular electric pumps for paddle boards through thousands of uses to find out which are the Best iSUP Pumps of 2024.\nElectric paddle board pumps save you the energy of hand-pumping and help you get on the water faster. Instead of inflating your paddle board by hand and then getting ready to hit the water, you can change clothes, apply sunscreen, fill water bottles, and more all while an electric pump inflates your iSUP.\nElectric SUP Pumps are designed specifically for the challenges of inflating a paddle board. They have two stages: a high-flow/low-pressure stage to inflate the board from flat to about 1 PSI and then a low-flow/high-pressure stage that brings your paddle board to its final pressure. Each pump has an automatic cutoff that you can set to your desired pressure. Once the board reaches that pressure, the pump will automatically turn off to prevent over-pressurizing your board.\nIn the past, electric SUP pumps have required you to connect directly to your car’s battery or plug into a 12v socket (“cigarette lighter”) in your car. But now, many electric pumps with built-in lithium-ion batteries can inflate multiple paddle boards extremely quickly.\nChoosing the best electric pump for your paddle board boils down to whether you are looking for speed, portability, ease of use, or a bit of all three. We tested several electric SUP pumps for speed, usability, portability, and other measures. Here is our list of the Best iSUP Pumps.\nBest Electric Paddle Board Pumps Comparison Chart\nsection-hd\nTop-Rated Electric Pumps for Your Paddle Board\nBOARDDIMENSIONSAVERAGE INFLATION TIMEWARRANTYPRICE\nOutdoor Master Shark III Pump\nOutdoor Master Shark III Pump\n14” x 10.5\" x 8.75\"\n6.5 pounds\n5 minutes2 yearsCheck Best PriceRead Full Review\nSwonder Seawolf S20Li\nSwonder Seawolf S20Li\n13.5” x 8.5\" x 4.5\"\n5.2 pounds\n9.3 minutes\n1 year\nCheck Best PriceRead Full Review\niRocker Power Pump Max\niRocker Power Pump Max\n8” x 6.5\" x 3.5\"\n2 pounds\n10.5 minutes\n1 year\nCheck Best PriceRead Full Review\nNixy Ventus Electric Pump\nNixy Ventus Electric Pump\n10.5” x 7.75” x 5\"\n3.9 pounds12.3 minutes\n1 years\nCheck Best PriceRead Full Review\nHonu E-Pump\nHonu E-Pump\n11” x 9” x 5\"\n3.9 pounds10.8 minutes1 yearCheck Best PriceRead Full Review\nOutdoor Master Shark II Pump\nOutdoor Master Shark II Pump\n11” x 9\" x 5\"\n3.6 pounds\n11.8 minutes\n2 years\nCheck Best PriceRead Full Review\nRetrospec Weekender Electric Pump\nRetrospec Weekender Electric Pump\n10” x 6\" x 3.5\"\n3.0 pounds10.3 minutes1 yearCheck Best PriceRead Full Review\nOutdoor Master Vortex Pro\nOutdoor Master Vortex Pro\n6.75” x 5.75” x 3.25\"\n2.7 pounds13.2 minutes2 yearsCheck Best PriceRead Full Review\nTOPUMP TPS 260\nTOPUMP TPS 260\n7.5” x 6.5” x 3.5\"\n2 pounds11.5 minutes\n1 year\nCheck Best PriceRead Full Review\niRocker Electric SUP Pump\niRocker Electric SUP Pump\n10” x 7.5\" x 4\"\n3.8 pounds10.2 minutes1 year\nCheck Best PriceRead Full Review\nOutdoor Master Shark III Electric SUP Pump\nAvailability: US, Canada, Australia, UK, Europe\nRead Full Review\nCheck Best Price\nThe Shark III Electric SUP Pump is Outdoor Master’s new Flagship offering. It boasts incredibly fast inflation times and the portability of a built-in battery.\nSave\nFeatures and Usability:\nThe Shark III comes with all the bells and whistles you could hope for. The pump itself has, of course, automatic inflation and deflation capabilities and can bring your board up to 20 PSI. It has an onboard active cooling system and a large LCD Display screen. However, like the Cachalot 2S, the screen is difficult to read in bright daylight.\nYou can control the pump’s settings with the four buttons located on the top of the pump. The screen indicates battery life remaining with color indicators around the edge of the screen. The Shark III also has different settings for inflating SUPs, Kites/Wings, and Air Mattresses, as well as a memory function to recall your preferred settings.\nThe biggest downside of the Shark III is its size. At 6.5 pounds and with a voluminous shape, it’s hard to forget where you put the pump.\nInflation Speed:\nThe Shark III takes over the top spot for the fastest electric pump we’ve reviewed, inflating our test board to 15 PSI in an average of 5 minutes.\nBattery and Other Accessories:\nThe internal 74Wh battery has enough juice to reliably inflate three paddle boards. When the battery gets low, you can plug the Shark III into a 12v power source to operate the pump, though it inflates at a much slower speed than with the battery. The USB-C port can also charge your phone and other devices.\nBottom Line: The Outdoor Master Shark 3 is an ultra-fast and versatile rechargeable electric pump.\nSwonder Seawolf S20Li Battery Electric SUP Pump\nAvailability: US\nRead Full Review\nCheck Best Price\nThe Swonder Seawolf S20Li SUP pump is powered by an internal battery that is extremely fast and can inflate up to seven boards on a single charge.\nSave\nFeatures and Usability:\nThe Seawolf’s key feature is its massive internal battery. With a 10,000mAh battery, it has more power onboard than some eBikes! The Seawolf’s battery has enough juice to inflate our 11’x32″ test board to 15 PSI seven times and still has a little power left over to deflate them at the end of the day.\nThe interface is clean and easy to use, with four buttons and an easy-to-read, information-packed screen. There is a power switch on the bottom of the pump to turn the Seawolf on and start the internal cooling fan.\nThe Seawolf is easy to operate. There is one button to change units from PSI to Bar, +/- buttons to adjust the target pressure (up to 20 PSI), and a power button to start and stop the pump.",
+                  "entity_id": "b68b6abe-c360-4c98-b2b6-747b15bba3b3",
+                  "source_host": "www.inflatableboarder.com",
+                  "reference_id": "snapshot:b68b6abe-c360-4c98-b2b6-747b15bba3b3",
+                  "title_origin": "search_hint"
+                },
+                "shown_count": 6000,
+                "total_count": 31144
+              }
+            },
+            {
+              "id": "e0f93b74-f056-554c-9fe6-fd2a9cd20698",
+              "output": {
+                "pin": {
+                  "id": "4401be9f-e770-4704-9dad-423c38670967",
+                  "url": "https://isupworld.com/top-3-electric-pumps/",
+                  "taint": "untrusted_external",
+                  "source_id": "48899bbf-1365-4458-a41b-b27ae4312b5c",
+                  "trust_tier": "unknown",
+                  "captured_at": "2026-10-07 07:51:40.052718+00:00",
+                  "conflict_note": null,
+                  "content_digest": "c66f9d6b4a251a5147046810b93a6e495b6d65199208cf4895132aba02ea96a6",
+                  "superseded_by_id": null,
+                  "conflicts_with_id": null,
+                  "freshness_expires_at": null
+                },
+                "tool": "read",
+                "status": "partial",
+                "target": "https://isupworld.com/top-3-electric-pumps",
+                "warnings": [
+                  "公开来源；采集时间 2026-10-07T07:51:40.052718+00:00；taint=untrusted_external；trust=unknown",
+                  "正文由Firecrawl提取；保留未信任外部资料标记"
+                ],
+                "reference": {
+                  "href": "https://isupworld.com/top-3-electric-pumps/",
+                  "label": "Best Electric Pumps for Inflatable Paddle Boards Most Common Types Of Electric Pumps For Paddle Boards 1. OUTDOORMASTER SHARK II 12V ELECTRIC PUMP 2. OUTDOORMASTER DOLPHIN ELECTRIC SUP PUMP · isupworld.com",
+                  "entity": "evidence_snapshot",
+                  "excerpt": "公开来源；采集时间 2026-10-07T07:51:40.052718+00:00；taint=untrusted_external；trust=unknown；正文由Firecrawl提取；保留未信任外部资料标记\nYou are here: Home / SUP Pumps / Best Electric Pumps for Inflatable Paddle Boards\nBest Electric Pumps for Inflatable Paddle Boards\nAs new electric SUP pumps hit the market, I continually test and evaluate them to keep this guide up to date. The recommendations below reflect the latest and best-performing pumps for inflatable stand-up paddle boards.\nAre you tired of manually pumping your paddle board up to 15 PSI? You’re not alone. Few things are more frustrating than working up a sweat before you’ve even launched your board.\nI’ve tested a wide range of electric SUP pumps over the years. I’ve learned that not all of them are created equal and they can differ significantly in:\ninflation speed\nmaximum pressure\nnoise level\nportability\nand overall value.\nNot long ago, there were very few quality electric SUP pumps to choose from. Fortunately, as stand-up paddleboarding has become more popular, manufacturers have stepped up their game.\nToday, there are excellent options available for every budget, making it easier than ever to spend less time inflating your board and more time enjoying the water.\nI have done extensive research on these pumps and used them myself many times over.\nThey not only work great for the majority of inflatable paddle boards but they can also be used for inflating inflatable kayaks, inflatable boats, inflatable mattresses, inflatable tents, inflatable pools and other inflatable gear.\nEach of these pumps have pros and cons and fall into different price range categories so you can choose one that fits your needs and your budget best.\nBrand/Model:Outdoormaster Shark\nOutdoormaster DolphinOutdoormaster Shark 3\nPhoto:\nPower Source:12V DC Connector12V DC Connector12V DC Connector & Built-In Rechargeable Battery\nMax PSI:20 PSI20 PSI20 PSI\nAuto Off:YesYesYes\nInflate & Deflate:YesInflate OnlyYes\nSpeed:Just over 7 minutes to inflate average size SUP10-12 minutes to inflate average size SUP3-5 minutes to inflate average size SUP\nNoice Decibels:83 to 85db80db80db average\nSize:11\"L x 10\"W x 4.5\"D10.2″L x 6.7″W x 6.6″D13.8″L × 7.5″W × 7.0″D\nWeight:3.6 lbs.2.93 lbs.6.4 lbs.\nTesla Compatible:With workaroundsNoYes\nPrice Range:$$$$$$\nBest Deal:Check priceCheck priceCheck price\nMost Common Types Of Electric Pumps For Paddle Boards\nThe most common types of electric pumps used with inflatable SUP’s are:\n12V pumps that connect directly to your car battery with alligator clips\n12V pumps that connect to an external battery pack\n12V pumps that have an integrated rechargeable battery\npumps that connect to the 12V connection in your vehicle\nair compressors (not recommended)\nI’ll save you some time right from the start—an air compressor is one of the worst options for inflating a paddle board.\nWithout the proper adapter, it won’t even connect securely to your board’s valve. But even if you have the correct adapter, most air compressors are extremely slow at inflating an inflatable SUP to its recommended pressure.\nI’ve tested this approach multiple times, hoping for better results, but it has consistently been disappointing. In my experience, it’s simply not worth the hassle.\nInstead, choose a pump that’s specifically designed for high-pressure inflatable paddle boards and boats. These pumps are faster, more reliable, and capable of easily inflating your board to the recommended PSI. The models below are the ones I recommend.\n1. OUTDOORMASTER SHARK II 12V ELECTRIC PUMP\nI’ve been using the Shark II electric pump for several years, and it has never let me down. While newer models with extra features have come and gone, the Shark II has remained my go-to pump thanks to its consistent performance and reliability.\nOutdoormaster has done an excellent job with the Shark II, combining impressive power with a practical, user-friendly design. Better yet, it’s priced in the sweet spot—offering premium performance without the premium price tag.\nWhere To Find The Best Deal\nFor the best deal and free shipping to the US and Canada for the Shark II electric pump go to Outdoormaster.com.\nIMPORTANT FEATURES\nThis 12V electric pump has some great features as well.\n5 Valve Attachments\nThe attachment you need for most inflatable SUP’s is the H3 valve attachment. I have used the Shark II with about a dozen different SUP brands and it has worked perfectly with all of them.\nHowever it also comes with more attachments such as for a:\nBoston valve\nC7 valve\nPinch valve\n805 Valve\nWith all of these attachments it also works great for inflating inflatable kayaks or canoes, dinghies, air mattresses and other inflatable products.\nIt also comes with four different sized gaskets (the white rubber rings) to ensure a tight seal when inflating your board.\nPlugs Into 12V DC Car Connector\nThe Shark pump very easily plugs into the 12V accessory socket in your vehicle.\nThe power cord is 9′ long making it easy to reach the plug and the board.\nKink Free Hose\nThe 4′ kink-free hose is really easy to secure to the pump and doesn’t get kinked as some other flimsy hoses can.\nDigital Display With Auto Shutoff\nIt has a digital display that is easy to read. There is no guessing at what PSI level you are at as you can see the progress on the display.\nOnce you set the PSI level it will automatically shut off when it reaches the set air pressure.\nLightweight\nThis pump is also one of the lightest options weighing only 3.6 lbs. and it is very easy to carry with the built-in carry handle.\nIt doesn’t come with a carry bag, which is unfortunate but I just keep mine in a canvas bag and keep it in my larger SUP gear mesh duffle bag.\nDoes Not Overheat\nMost of the electric pumps for SUP’s on the market have a reputation for eventually overheating especially if you are inflating more than one board at a time.\nThis is not the case with the Shark II pump. It has a built in automatic cooling system that cools the pump down as it is working hard even when inflating multiple boards.\nI regularly use mine to inflate 2-3 boards in one go and it’s still going strong. This h",
+                  "entity_id": "4401be9f-e770-4704-9dad-423c38670967",
+                  "source_host": "isupworld.com",
+                  "reference_id": "snapshot:4401be9f-e770-4704-9dad-423c38670967",
+                  "title_origin": "page"
+                },
+                "shown_count": 6000,
+                "total_count": 53502
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "9fab0e16-b2df-5925-b379-f4375b6e4c71",
+      "status": "degraded",
+      "error_code": "STRUCTURED_OUTPUT_INVALID",
+      "completed_at": "2026-10-07 07:56:04.208320+00:00",
+      "run_context": {
+        "reply_result": {
+          "answer": null,
+          "run_id": "9fab0e16-b2df-5925-b379-f4375b6e4c71",
+          "status": "unavailable",
+          "process": {
+            "state": "failed",
+            "steps": [
+              {
+                "key": "understand",
+                "at_ms": 0,
+                "label": "正在思考",
+                "state": "running",
+                "detail": "本轮目标：按品牌发现→官网规格→独立评测/用户反馈三条路线搜索SUP电动充气泵。先发起品牌与场景发现类查询，覆盖不同价位与供电场景；下轮再读取官网规格页与独立评测。"
+              },
+              {
+                "key": "answer",
+                "at_ms": 8951,
+                "label": "正在组织回复",
+                "state": "failed",
+                "detail": "整理结论、依据和仍需确认的问题。"
+              }
+            ],
+            "elapsed_ms": 21259,
+            "earlier_steps_omitted": 0
+          },
+          "citations": [],
+          "error_code": "STRUCTURED_OUTPUT_INVALID"
+        },
+        "reply_source": {
+          "digest": "bca8a2c28c54249a32e516d4d01e5a68a4b33e150b3ab84d6ecb74ec4b754b5f",
+          "history": [
+            {
+              "role": "user",
+              "content": "我想做桨板电动充气泵，面向欧美休闲SUP用户，码头或自驾出游使用。供电方式和价位先作假设，请搜索不同品牌公开资料，整理品类候选与规格字典。资料不足就写未知。"
+            }
+          ],
+          "actor_id": "88672334-6b1b-4979-b165-e28478b81073",
+          "question": "按前面的欧美休闲SUP、码头和自驾方向继续。请补查不同品牌官网规格与独立评测，输出一份紧凑完整的品类候选：正文概述，不重复候选资料；字典先放6到8个关键参数，证据不足标未知。",
+          "message_id": "f3830028-f3d9-4e6d-815b-8bb97ab849a8",
+          "preproject": {
+            "goal": "category",
+            "category": null,
+            "user_brief": "我想做桨板电动充气泵，面向欧美休闲SUP用户，码头或自驾出游使用。供电方式和价位先作假设，请搜索不同品牌公开资料，整理品类候选与规格字典。资料不足就写未知。\n\n按前面的欧美休闲SUP、码头和自驾方向继续。请补查不同品牌官网规格与独立评测，输出一份紧凑完整的品类候选：正文概述，不重复候选资料；字典先放6到8个关键参数，证据不足标未知。",
+            "previous_assessment": null
+          },
+          "project_id": null,
+          "references": [],
+          "scope_kind": "personal",
+          "archived_at": null,
+          "context_version": 1,
+          "conversation_id": "e4258061-0e37-5fb3-b43f-34eb8e59f8c0",
+          "history_truncated": false
+        }
+      }
+    }
+  ],
+  "model_invocations": [
+    {
+      "id": "b6b67dd3-bc19-426d-b1ed-e3b6ca0676b0",
+      "status": "succeeded",
+      "input_tokens": 7406,
+      "output_tokens": 1606,
+      "total_tokens": 9012,
+      "usage_status": "known",
+      "error_code": null,
+      "prompt_version": "preproject-dialogue-v4"
+    },
+    {
+      "id": "73715eaf-71ad-4819-90ae-5954a0f0fa60",
+      "status": "provider_error",
+      "input_tokens": 8797,
+      "output_tokens": 4000,
+      "total_tokens": 12797,
+      "usage_status": "known",
+      "error_code": "PROVIDER_OUTPUT_TRUNCATED",
+      "prompt_version": "preproject-dialogue-v4"
+    },
+    {
+      "id": "b4be6601-4f7f-4d29-a03a-072ace7a0c33",
+      "status": "schema_error",
+      "input_tokens": 7874,
+      "output_tokens": 719,
+      "total_tokens": 8593,
+      "usage_status": "known",
+      "error_code": "STRUCTURED_OUTPUT_INVALID",
+      "prompt_version": "preproject-dialogue-v5"
+    }
+  ]
+}

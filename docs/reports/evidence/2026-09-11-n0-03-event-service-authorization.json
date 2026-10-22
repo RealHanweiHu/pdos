@@ -1,0 +1,94 @@
+{
+  "date": "2026-09-11",
+  "scope": "budget-bound event service authorization, project anchor filtering, immediate revocation, same-envelope recovery and receipt foreign keys",
+  "tests": {
+    "distinct_passed": 201,
+    "new_cases": 14,
+    "regression_cases": 187,
+    "final_independent_role_batch_passed": 137,
+    "distinct_shared_batch_passed": 64,
+    "shared_first_passed": 63,
+    "shared_first_inventory_assertion_failure": 1,
+    "shared_runtime_schema_retest_passed": 3,
+    "first_independent_batch": {
+      "passed": 115,
+      "fixture_or_history_expectation_failures": 5
+    },
+    "focused_batch": {
+      "passed": 52,
+      "fixture_workflow_identity_failures": 4
+    },
+    "projection_retest_passed": 4,
+    "formula": "137 + (63 + 1 newly passing shared inventory case) = 201; repeats not counted"
+  },
+  "checks": {
+    "mypy_files": 3,
+    "ruff_files": 9,
+    "common_contract_artifacts": 4,
+    "runtime_contract_artifacts": 5,
+    "approved_manifests_unchanged": {
+      "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "source_sha256": {
+    "server/migrations/versions/0079_event_authorization.py": "2e91c3f5b71968869bb2ac06e21c5fe8c2a05afe538110fb48e5e8af938b43c1",
+    "server/app/db/schema.py": "d62b9d7c4307ce3cf898df5d7aba7994dd11112ec3c613be963d710e7950ab27",
+    "server/app/ai/executor.py": "a2b4598d868c1e5fe2c13bf8680bec13bb5308b4ee283ed65ccca4ac5adf2ae6",
+    "server/app/ai/observations.py": "1eb346a2cd079dec01ca9c14102da740cb12f49e4325e226e7dbd34747714a8c",
+    "infra/postgres/security/agent-runtime.sql": "2153d43d224c9f998ef68a1fb286cb4f08986d5190f0e4d9c89bcccfba939d6d",
+    "infra/postgres/security/agent-runtime-revert.sql": "38509d2cccbe721724e39253d8e72fe42a9c0e95dddf4351684c2eba27f7e934",
+    "server/tests/test_event_authorization.py": "5759cb77d710fbed55c14f88431f7eb46610fc47579bf040cf403e308a6346c3",
+    "server/tests/test_agent_checkpoints.py": "0a6e71d927bbfd04709b0bbabcc7348072ade27c0751c001d68a40a1cb0402b6",
+    "server/tests/test_tool_observation_receipts.py": "ced1aab7eb17761c883e6721a79985e3cf91b44055b422d83b165b5513b83710",
+    "server/tests/test_tool_dispatch_intents.py": "e4a06175d6bbb36471e6a1cbaf04a7c41791ddcb793d584dafd8a4db5c6b82f0",
+    "server/tests/test_agent_runtime_schema.py": "49072d19afb9f0fbdfba7a39fb6f37a6c0efd73eb089754692e783d57b3f4539"
+  },
+  "log_sha256": {
+    "pdos-auth-final.log": "3c14d9d2daf832edc7b2882702c93702cee74ed9745e9b20b570d6d9d316cf5c",
+    "pdos-auth-shared.log": "f33fc4cb1f8c3e34bdd58118c74ac6cdeed6467d2f0f1985532d3e684a9356e5",
+    "pdos-auth-schema.log": "514679ac7f814b3bc2e6e11fe14fa48353386be2c2bcda7c23b2bc2e63b7ef4e"
+  },
+  "limits": [
+    "single event project anchor; no multi-project grants",
+    "policy family pins are not a complete deployment/capability bundle",
+    "ContextReceipt is not ContextManifest",
+    "user/delegation/Owner authorization remains separate",
+    "waiting and intermediate-step recovery unfinished",
+    "paid tool and real embedding accounting unfinished"
+  ],
+  "no_external_model_or_embedding_calls": true,
+  "no_golden_writes": true,
+  "no_push_or_production_actions": true,
+  "n0_03_complete": false,
+  "database_verification": {
+    "57432": {
+      "database": "pdos_test",
+      "head": "0079_event_authorization",
+      "verified_private_functions": [
+        "agent_authorized_project_allows",
+        "agent_base_lease_is_current",
+        "attach_event_authorization",
+        "event_authorization_history_missing",
+        "event_authorization_is_current",
+        "issue_event_authorization"
+      ],
+      "queued_lifecycle_constraint_verified": true
+    },
+    "57433": {
+      "database": "pdos_test",
+      "head": "0079_event_authorization",
+      "verified_private_functions": [
+        "agent_authorized_project_allows",
+        "agent_base_lease_is_current",
+        "attach_event_authorization",
+        "event_authorization_history_missing",
+        "event_authorization_is_current",
+        "issue_event_authorization"
+      ],
+      "queued_lifecycle_constraint_verified": true
+    }
+  },
+  "dedicated_test_container": "pdos-auth-test",
+  "dedicated_test_container_removed": true
+}

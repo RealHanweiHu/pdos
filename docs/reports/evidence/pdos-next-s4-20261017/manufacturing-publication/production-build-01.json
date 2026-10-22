@@ -1,0 +1,15 @@
+{
+  "snapshot": "/private/tmp/pdos-s4-publication-focj048c",
+  "command": [
+    "node",
+    "node_modules/next/dist/bin/next",
+    "build",
+    "--webpack"
+  ],
+  "exit": 0,
+  "typescript": true,
+  "source_changed": [],
+  "network": "Read-only Google Fonts fetch required sandbox escalation; initial sandbox-only attempt failed DNS ENOTFOUND; no business egress",
+  "output": "Compiled successfully in 12.0s; Finished TypeScript in 11.5s; static generation6/6; app routes built",
+  "scope": "current publication frontend; backend service candidate still under correction"
+}

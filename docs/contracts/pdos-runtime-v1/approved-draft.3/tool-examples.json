@@ -1,0 +1,355 @@
+{
+  "status": "synthetic_schema_examples_not_real_authorized_handles",
+  "examples": {
+    "research.search_sources": {
+      "query": "气泵 噪声 试验工况",
+      "limit": 10
+    },
+    "research.capture_snapshot": {
+      "url": "https://example.com/specification",
+      "purpose": "采集公开规格原文"
+    },
+    "knowledge.search_applicable": {
+      "query": "同工况噪声测试经验",
+      "applicability": [
+        {
+          "handle": "sample.scope-bound-ref",
+          "version": 1
+        }
+      ]
+    },
+    "verification.get_evidence": {
+      "targets": [
+        {
+          "handle": "sample.scope-bound-ref",
+          "version": 1
+        }
+      ],
+      "facets": [
+        "spec",
+        "run"
+      ]
+    },
+    "readiness.evaluate": {
+      "target": {
+        "handle": "sample.scope-bound-ref",
+        "version": 1
+      },
+      "action": "gate.submit",
+      "policy_version": "candidate.v2"
+    },
+    "schedule.evaluate_scenario": {
+      "draft": {
+        "template": {
+          "handle": "sample.scope-bound-ref",
+          "version": 1
+        },
+        "tasks": [
+          {
+            "node_key": "ID",
+            "title": "外观方案",
+            "discipline": "ID",
+            "owner": null,
+            "receiver": null,
+            "expected_output": "外观方案与约束",
+            "acceptance_criteria": "接收方评审",
+            "effort_hours": null
+          }
+        ],
+        "dependencies": [],
+        "source_handles": [
+          {
+            "handle": "sample.scope-bound-ref",
+            "version": 1
+          }
+        ]
+      },
+      "calendars": [],
+      "capacities": [],
+      "expected_input_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "algorithm_version": "candidate.v2"
+    },
+    "engineering.trace_impact": {
+      "changed_objects": [
+        {
+          "handle": "sample.scope-bound-ref",
+          "version": 1
+        }
+      ],
+      "proposed_change": "增加温度验证要求"
+    },
+    "product.prepare_definition": {
+      "strategy": {
+        "handle": "sample.scope-bound-ref",
+        "version": 1
+      },
+      "product": {
+        "handle": "sample.scope-bound-ref",
+        "version": 1
+      },
+      "title": "气泵定义候选",
+      "target_users": [
+        "骑行用户"
+      ],
+      "scenarios": [
+        "路边充气"
+      ],
+      "included_features": [
+        "inflation"
+      ],
+      "excluded_features": [
+        "lighting"
+      ],
+      "items": [
+        {
+          "item_key": "S1",
+          "title": "工作温度",
+          "target_text": null,
+          "target_value": null,
+          "unit": "°C",
+          "conditions": [],
+          "priority": "must",
+          "rationale": {
+            "text": "待专业确认的估算",
+            "nature": "hypothesis",
+            "citations": [
+              {
+                "handle": "sample.scope-bound-ref",
+                "version": 1
+              }
+            ]
+          },
+          "verification_method": null,
+          "acceptance_criterion": null,
+          "missing": [
+            "品质确认判据"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "text": "待专业确认的估算",
+          "nature": "hypothesis",
+          "citations": [
+            {
+              "handle": "sample.scope-bound-ref",
+              "version": 1
+            }
+          ]
+        }
+      ],
+      "missing": [
+        "当前发布前补齐判据"
+      ]
+    },
+    "planning.prepare_initial_plan": {
+      "case": {
+        "handle": "sample.scope-bound-ref",
+        "version": 1
+      },
+      "definition": {
+        "handle": "sample.scope-bound-ref",
+        "version": 1
+      },
+      "draft": {
+        "template": {
+          "handle": "sample.scope-bound-ref",
+          "version": 1
+        },
+        "tasks": [
+          {
+            "node_key": "ID",
+            "title": "外观方案",
+            "discipline": "ID",
+            "owner": null,
+            "receiver": null,
+            "expected_output": "外观方案与约束",
+            "acceptance_criteria": "接收方评审",
+            "effort_hours": null
+          }
+        ],
+        "dependencies": [],
+        "source_handles": [
+          {
+            "handle": "sample.scope-bound-ref",
+            "version": 1
+          }
+        ]
+      },
+      "scenario_result": null,
+      "current_missing": [
+        "工期估算及责任人确认"
+      ]
+    },
+    "verification.prepare_plan_change": {
+      "plan": {
+        "handle": "sample.scope-bound-ref",
+        "version": 1
+      },
+      "reason": {
+        "text": "待专业确认的估算",
+        "nature": "hypothesis",
+        "citations": [
+          {
+            "handle": "sample.scope-bound-ref",
+            "version": 1
+          }
+        ]
+      },
+      "additions": [
+        {
+          "item_key": "T1",
+          "feature": "inflation",
+          "title": "温升验证",
+          "method": null,
+          "conditions": [],
+          "acceptance_criterion": null,
+          "applicability": {
+            "text": "待专业确认的估算",
+            "nature": "hypothesis",
+            "citations": [
+              {
+                "handle": "sample.scope-bound-ref",
+                "version": 1
+              }
+            ]
+          },
+          "missing": [
+            "专业判据"
+          ]
+        }
+      ],
+      "retire_item_keys": [],
+      "changed_requirements": [
+        {
+          "handle": "sample.scope-bound-ref",
+          "version": 1
+        }
+      ]
+    },
+    "reports.preview_import": {
+      "batch": {
+        "handle": "sample.scope-bound-ref",
+        "version": 1
+      },
+      "plan": {
+        "handle": "sample.scope-bound-ref",
+        "version": 1
+      },
+      "mapping": null
+    },
+    "change.prepare_work_package": {
+      "change": {
+        "handle": "sample.scope-bound-ref",
+        "version": 1
+      },
+      "impact_result": {
+        "handle": "sample.scope-bound-ref",
+        "version": 1
+      },
+      "rationale": {
+        "text": "待专业确认的估算",
+        "nature": "hypothesis",
+        "citations": [
+          {
+            "handle": "sample.scope-bound-ref",
+            "version": 1
+          }
+        ]
+      },
+      "actions": [
+        {
+          "action_key": "A1",
+          "title": "验证措施",
+          "owner": null,
+          "output": "验证记录",
+          "verification": "按明确判据检查",
+          "predecessors": [],
+          "evidence": [
+            {
+              "handle": "sample.scope-bound-ref",
+              "version": 1
+            }
+          ]
+        }
+      ],
+      "affected_versions": [
+        {
+          "handle": "sample.scope-bound-ref",
+          "version": 1
+        }
+      ],
+      "missing": [
+        "适用专业审批"
+      ]
+    },
+    "quality.prepare_capa": {
+      "issue": {
+        "handle": "sample.scope-bound-ref",
+        "version": 1
+      },
+      "failure_evidence": [
+        {
+          "handle": "sample.scope-bound-ref",
+          "version": 1
+        }
+      ],
+      "root_cause_hypotheses": [
+        {
+          "text": "待专业确认的估算",
+          "nature": "hypothesis",
+          "citations": [
+            {
+              "handle": "sample.scope-bound-ref",
+              "version": 1
+            }
+          ]
+        }
+      ],
+      "containment": [],
+      "corrective_actions": [
+        {
+          "action_key": "A1",
+          "title": "验证措施",
+          "owner": null,
+          "output": "验证记录",
+          "verification": "按明确判据检查",
+          "predecessors": [],
+          "evidence": [
+            {
+              "handle": "sample.scope-bound-ref",
+              "version": 1
+            }
+          ]
+        }
+      ],
+      "effectiveness_plan": "按约定样本复验并由独立人员确认",
+      "missing": [
+        "根因验证"
+      ]
+    },
+    "handoff.prepare_package": {
+      "target": {
+        "handle": "sample.scope-bound-ref",
+        "version": 1
+      },
+      "approved_versions": [],
+      "delivery_evidence": [],
+      "sender": null,
+      "receiver": null,
+      "open_items": [
+        {
+          "text": "待专业确认的估算",
+          "nature": "hypothesis",
+          "citations": [
+            {
+              "handle": "sample.scope-bound-ref",
+              "version": 1
+            }
+          ]
+        }
+      ],
+      "mode": "readiness_only"
+    }
+  }
+}

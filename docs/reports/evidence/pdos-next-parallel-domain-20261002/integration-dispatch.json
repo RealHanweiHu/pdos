@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sentFollowup": "只读核对补充已发送：供应CommandPort与主线T1预览/确认/回执不能重复拥有；按主线registry统一编排，领域适配只stage。执行重建复用Confirmation.snapshot固定as_of，另用当前时间重核报价/汇率/权限。消费同次BuildReadiness的固定basis/demands/制造和原件读集，不重建权威需求。",
+  "dispatchedAt": "2026-10-02 12:02:41 UTC",
+  "authorization": {
+    "question": "是否将已确认的三包接入任务发给「按新设计完成并执行方案」，由它统一接入和联验？",
+    "answer": "发送给主线统一执行（推荐）"
+  },
+  "target": {
+    "threadId": "01a0fbeb-3050-7662-912f-7a380996ed6a",
+    "title": "按新设计完成并执行方案",
+    "hostId": "local"
+  },
+  "prompt": "用户已明确授权将三个已交付独立包交给本主线统一接入和联验，并要求开始执行。请在继续当前实际配置/产出批次/样件闭环的基础上，按依赖连续推进以下接入，不要重复实现独立包，不要仅停在接口规划或把局部检查当整链完成。\n\n现有交付与入口：\n1. 品质验证与交接：docs/reports/evidence/pdos-next-verification-20261002/{result.md,integration.md}；domain/verification、schemas/verification、web/src/components/verification。\n2. 供应与成本业务接入：docs/reports/evidence/pdos-next-supply-business-20261002/{result.md,integration.md}；domain/supply_cost、schemas/supply_cost、web/src/components/supply_cost。\n3. 文件安全与原件生命周期：docs/reports/evidence/pdos-next-evidence-security-20261002/{result.md,integration.md}；evidence_security、original_lifecycle。\n完成状态与证据已在 tasks/ai-native-integrated-todo.md 的 pdos-next-parallel-domain 小节核对更新；原启动/完成记录仍保留。\n\n执行顺序与结果：\n- 保持当前 build_execution 的实际配置、批次和样件工作，先完成本闭环必要验证。实际已发生产出不表示批准开工；SampleUnit 当前 unknown/hold 或仅 planned Build 不足以接收/开测。\n- 固定BOM/Build已具备的部分可先接供应：由Build权威提供同次 FixedBasis + 完整DemandLine + 原件读集 + 固定制造工序keys，接来源capture、不可变供给/报价/工艺/汇率快照、前后版差异、齐套/成本投影、共同命令/回执及父页面办理。不得另建MaterialDemand权威，不把承诺/在途当现货，不把未知补零。\n- 品质先接请求、方法准备、暂定时段；实际配置/样件就绪后接具名交样/部分接收、真实资源与样件预约/消耗、TestRun及分批原值返回。实现服务端身份/资格/来源原值核对，固定样件和配置版本，同事务父Request/Run双对象CAS与样件消费；原值核对未接通时不得伪造导入成功。\n- 文件安全先接持久扫描请求/回执、Outbox/worker、解析前和派生Artifact写入前的两次当前门禁及失效传播。扫描器缺失保持unavailable；已有not_scanned/成功解析不冒充clean。再补完整上传journal/inventory、引用/hold/保留期保护及生命周期持久接线，未知效果保留pending并对账。真实存储隔离/恢复、物理删除和正式purge遵守原明确授权，不因模块接入自动激活。\n- 公共 models/contracts/service/command_handlers/api/runtime/originals、迁移、依赖锁、BFF/父页面、唯一清单和联合验证继续由本主线统一负责。可按明确独占文件归属拆分子任务，但公共接线只由本主线完成；协调会话当前没有修改业务源码，不会与你竞争这些文件。\n- 包内人工T1动作尚未注册，按已批准canonical操作与写入政策决定适配，不把T0强改为T1、不授真实T0资格、不放宽T2具名边界。\n- 完成入口→领域动作→结果→异常恢复后集中验证：显式TEST_DATABASE_URL仅使用已核对独立pdos_test，校验真实目标/marker并保留必要备份；禁止57432及旧库。验证持久化/锁竞争/权限与撤回/重复意图/确认消费/回滚和受影响迁移、HTTP/BFF/浏览器。无变化的独立候选检查不重跑，测试数量不累加冒充联合验收。\n- 唯一清单原位记录本次实际可用能力、候选证据、未接入/真实环境缺口。缺真实scanner或外部材料只阻塞依赖部分，其余授权内接入继续。保留G/N/P/Q、生产/外发/git push及人工Exit边界。\n\n请直接继续实施并在本会话呈现实际进展和最终验证结果，无需再次询问是否开始。",
+  "sendResult": {
+    "threadId": "01a0fbeb-3050-7662-912f-7a380996ed6a",
+    "isError": false
+  },
+  "readback": {
+    "threadStatus": "active",
+    "activeTurnId": "01a0fc76-9141-7043-85df-2c1080f2ea71",
+    "turnStatus": "inProgress",
+    "error": null,
+    "scope": "主线当前仍在执行实际配置/产出批次/样件工作；发送成功尚不代表三包业务接入完成。"
+  }
+}

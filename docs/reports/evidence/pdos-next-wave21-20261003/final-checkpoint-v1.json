@@ -1,0 +1,34 @@
+{
+  "schema_version": "pdos-next-wave21-final-checkpoint-v1",
+  "status": "PASS_LOCAL_SYNTHETIC_FINITE_HOST_CONFIGURATION",
+  "sealed_at": "2026-10-03T18:15:04.373428+00:00",
+  "candidate_manifest": "candidate-source-v2.json",
+  "candidate_manifest_sha256": "7878fe8b9d7c1d40be28405d532a76d31f05f7ac86dfc7fb1bcf2d996166c186",
+  "frozen_source_files": 544,
+  "source_unchanged": true,
+  "affected_pure": {
+    "files": 27,
+    "passed": 815,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 6.45
+  },
+  "actual_api_process_id": 15369,
+  "actual_target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "head": "next_0026",
+  "business_commands": 0,
+  "model_calls": 0,
+  "new_migrations": 0,
+  "proofs": {
+    "affected-check-result-v2.json": "40cb8c479c76a43cfea22752b392dccfa8c3860f66b7766a78d695800fd8f038",
+    "merged-static-result-v1.json": "8adc26402301ba3d2731a547ff962170379bc589f1f492d3b2e48ec637ab88e2",
+    "actual-host-readback-v1.json": "09c224d8de05076eaba5113f6b5f044e91bb4a11ea4c6c16afbb386581cd0ac6",
+    "actual-api-readback-v1.json": "c7dc3dfb0b4f38f2e123b23fda398f00b711417263934530a65edd73e51071e0",
+    "actual-startup-profiles-v1.json": "612e4ff6a642c9fc4e4632672469d0ba68b80b65ff23505d8937ef9b7004d452",
+    "applied-owned-source-v3.json": "caf61b290ed3e8871904bc914cca8bd75ed4795f62d48ec8cc3e86db45889431"
+  },
+  "web_unchanged_reuses": "../pdos-next-wave20-20261003/web-build-result-v2.json",
+  "remaining": "New shared three-person business case, real professional qualification, action fulfillment, effectiveness/closure and original manual exits remain incomplete",
+  "second_host_scope": "Explicit unpublished whitelist; no actual Product/source/event/eligibility created"
+}

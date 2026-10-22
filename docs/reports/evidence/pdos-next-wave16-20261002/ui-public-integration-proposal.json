@@ -1,0 +1,62 @@
+{
+  "status": "UNAPPLIED proposal; existing 138 source files untouched",
+  "recorded_at": "2026-10-03T07:24:24.426223+00:00",
+  "patch": "ui-public-integration-proposal.patch",
+  "patch_sha256": "bd6aa49fa470dab23c3f0a31cdaab957e4260629140c00eac38d0aef0aad7f94",
+  "affected_paths": [
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "base_sha256": "c17d2c59bba074b5c865ca4524405deb4c10ee36f15350a4bf0155dd8d04c900",
+      "proposed_sha256": "fb153e67486991db62663ead781797a0e89911996ec841ee0e9a44f94bdbde85"
+    },
+    {
+      "path": "pdos-next/web/src/components/workspace.tsx",
+      "base_sha256": "6a868b0fc15c3cfade06283eec9f1287ae2ed01c3941c53ba294eb0342b0b4cc",
+      "proposed_sha256": "1f0cd94b57da51a1a05088822b3feffbfc703b1e5c0045a07e96b392552fe4f6"
+    }
+  ],
+  "owned_component_candidate": "ui-source-v2-manifest.json",
+  "scope": [
+    "BFF strict single-Issue GET and inputs-only POST with structural full Command/source-read-set checks",
+    "Three existing frozen operation names join common 180-second classification",
+    "Existing quality panel mounts BuildQualityFollowup with same product/principalId/api/onSaved; no new navigation or public API helper change"
+  ],
+  "authority_boundary": "BFF never validates source completeness, professional duties or actual completion evidence. Host inputs/preview/apply/replay remain authoritative. Forward body exactly once; no regeneration and no retry.",
+  "base_paths_recheck_before_apply": true,
+  "required_minimal_checks_after_root_apply": [
+    "BFF pure handler harness: required issue UUID, optional positive safe integer revision, duplicate/unknown keys, wrong method; no query on inputs",
+    "BFF inputs body once, only 3 operations, matched product/current expected revisions and explicit unique 1..20 fixed read refs; reject malformed JSON/missing reads/fractional revisions/unknown op before fetch; forward original body unchanged",
+    "BFF no-session/same-origin/no-store, existing quality/change route regression, and both common preview/submit 3 operations 180s with no transport retry",
+    "Affected route/workspace/C-v2 typecheck and lint, then one root public build at candidate checkpoint",
+    "Root HTTP/browser closure: existing quality navigation, blank Build no deep read, explicit Build index→Issue→history readonly, same command unknown recovery; T2 root vs T1 complete/link, server_on_save non-fact-time; two themes and affected narrow layout"
+  ],
+  "checks_run_for_this_proposal": [
+    {
+      "command": "git apply --check docs/reports/evidence/pdos-next-wave16-20261002/ui-public-integration-proposal.patch",
+      "exit_code": 0,
+      "mutation": false
+    },
+    {
+      "command": "Bundled TypeScript.transpileModule on only two temporary proposed sources, reportDiagnostics=true, ES2022/CommonJS/ReactJSX",
+      "exit_code": 0,
+      "syntax_errors": 0,
+      "scope": "Syntax/transpile diagnostic only; not semantic tsc, BFF behavior, build or production validation"
+    },
+    {
+      "command": "SHA-256 compare existing public files to proposal base_sha256",
+      "unchanged": true
+    }
+  ],
+  "not_run": [
+    "public build",
+    "DB/HTTP/browser",
+    "existing public BFF tests"
+  ],
+  "backend_prerequisites": [
+    "Root frozen public single-Issue adapter; historical current pointer read with ACL",
+    "Public inputs dispatch A root/complete and B link; complete host callback",
+    "Shared commands/professional registration/required migration"
+  ],
+  "temporary_proposed_sources": "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-integration-proposal-d446bxhm",
+  "check_record": "ui-public-integration-proposal-check.log"
+}

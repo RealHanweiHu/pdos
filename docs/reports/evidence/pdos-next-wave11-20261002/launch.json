@@ -1,0 +1,33 @@
+{
+  "at": "2026-10-02T17:42:29.164411+00:00",
+  "previous_turn_classification": "progress",
+  "base_candidate": "../pdos-next-wave10-20261002/candidate.json",
+  "base_candidate_sha256": "073fda7393eb500f114e5bcf6616cfb0a1e4b66b4e08eb2e28baf0c89b02eef0",
+  "base_final_check_sha256": "37457392e8b71c61bcca403d1c01c3b7853924711a2632ac119724f1437ddf01",
+  "base_source_changes": [],
+  "base_joint_passed": 1234,
+  "recorded_head": "next_0013",
+  "scope": "Build current operational facts, purpose-bound readiness/engineering and manufacturing authority, atomic start; preserve same Build identity, planned history and prior verification request",
+  "parallel_ownership": {
+    "engineering": [
+      "domain/build_start",
+      "tests/build_start"
+    ],
+    "foundation": [
+      "domain/build_operational_facts",
+      "tests/build_operational_facts"
+    ],
+    "ui": [
+      "components/builds/build-start.tsx",
+      "lib/build-start-view.ts",
+      "lib/build-start-view.test.ts"
+    ],
+    "root": [
+      "shared registry/proof/roles/API/BFF/workspace",
+      "migration and current-reference coverage",
+      "common verification and actual preview"
+    ]
+  },
+  "database_boundary": "Only verified own marker at 127.0.0.1:62513/pdos_test; verify before each operation; old instances untouched",
+  "remaining_formal_boundaries": "real qualifications/materials, production and original G/N/P/Q exits are not granted by this launch"
+}

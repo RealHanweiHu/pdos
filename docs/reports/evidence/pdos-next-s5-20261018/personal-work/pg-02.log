@@ -1,0 +1,64 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/category_creation.py:515: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([category])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/category_creation.py:524: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([grant])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/preproject/category_creation.py:661: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([receipt])
+
+tests/work_management_pg/test_personal_projection.py: 12 warnings
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/work_management/service.py:346: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+tests/work_management_pg/test_personal_projection.py::test_actual_personal_queues_follow_named_work_across_categories_and_current_grants
+  /private/tmp/pdos-s5-personal-delivery-ln6r5t19/pdos-next/server/pdos_next/domain/work_management/service.py:394: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 35 warnings in 578.26s (0:09:38)

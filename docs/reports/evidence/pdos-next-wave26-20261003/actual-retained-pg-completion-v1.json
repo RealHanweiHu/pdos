@@ -1,0 +1,18 @@
+{
+  "status": "PASS_AFFECTED_REAL_START_RETAINED_PG_SELECTION",
+  "passed": 9,
+  "failed": 0,
+  "duration_seconds": 4540.3,
+  "log": "actual-retained-pg-v1.log",
+  "log_sha256": "73a94a6bac6e54a75e8de5fe4c19550817b1bd8114ab6aa57fdc085a5ada3112",
+  "target": "127.0.0.1:63866/pdos_test",
+  "marker": "20a17344-1e35-42e1-95ab-e100e56e9d88",
+  "selection": [
+    "tests/test_retained_execution.py",
+    "tests/test_retained_registry_compatibility.py"
+  ],
+  "shared_62513_used_for_repository_tests": false,
+  "original_running_handle_missing": true,
+  "authoritative_terminal_raw_log_inspected": true,
+  "overall_goal_complete": false
+}

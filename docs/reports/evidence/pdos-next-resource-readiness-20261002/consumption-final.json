@@ -1,0 +1,61 @@
+{
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification/ports.py",
+      "initial_sha256": "6661a1dd3f13ec071bc842781a48357ea8d4787cf5701f93245fbb13dd738c39",
+      "final_sha256": "6661a1dd3f13ec071bc842781a48357ea8d4787cf5701f93245fbb13dd738c39",
+      "changed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/verification/contracts.py",
+      "initial_sha256": "5262b95c950a20625da5abb54b4c47dc5e77bb790f97518ca21cd3c422039734",
+      "final_sha256": "5262b95c950a20625da5abb54b4c47dc5e77bb790f97518ca21cd3c422039734",
+      "changed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/dto.py",
+      "initial_sha256": "22acd27e207250208e86c37b9dcef4d79d31817948c125602c1d5c2ff5693a4f",
+      "final_sha256": "22acd27e207250208e86c37b9dcef4d79d31817948c125602c1d5c2ff5693a4f",
+      "changed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/calendar.py",
+      "initial_sha256": "8d57a37a5137f2bbd058986d7220296c0c0a9da0613decc7e97c19808434d42d",
+      "final_sha256": "8d57a37a5137f2bbd058986d7220296c0c0a9da0613decc7e97c19808434d42d",
+      "changed": false
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-verification-20261002/integration.md",
+      "initial_sha256": "d330b4773a05ecae6a4c71a6f7a75cf363ac55f07ae5f22c70463dbe96a3dd41",
+      "final_sha256": "d330b4773a05ecae6a4c71a6f7a75cf363ac55f07ae5f22c70463dbe96a3dd41",
+      "changed": false
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-planning-20261002/result.md",
+      "initial_sha256": "466713d17310642374fd41b97f53f42b757a330784e942c63a39e59b4b271940",
+      "final_sha256": "466713d17310642374fd41b97f53f42b757a330784e942c63a39e59b4b271940",
+      "changed": false
+    },
+    {
+      "path": "pdos-next/web/src/components/ui/button.tsx",
+      "initial_sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24",
+      "final_sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24",
+      "changed": false
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/preview.tsx",
+      "initial_sha256": "6b9ab998151c70d70e7c9454fe6fa9c06a68c5b97de57f01de60c3a998a706d6",
+      "final_sha256": "6b9ab998151c70d70e7c9454fe6fa9c06a68c5b97de57f01de60c3a998a706d6",
+      "changed": false
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/contracts.ts",
+      "initial_sha256": "33725420bdc10f8560366b7a879f25be1b2d96f43058398b4d3e3fa10816da3a",
+      "final_sha256": "33725420bdc10f8560366b7a879f25be1b2d96f43058398b4d3e3fa10816da3a",
+      "changed": false
+    }
+  ],
+  "interface_drift": [],
+  "ui_interface_drift": [],
+  "summary": "Direct backend contracts/calendar imports and frontend Button consumed; verification confirmation remains host-injected. No consumed interface drift at delivery."
+}

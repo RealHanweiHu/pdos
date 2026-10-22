@@ -1,0 +1,57 @@
+{
+  "at": "2026-10-03T10:39:01.041409+00:00",
+  "status": 200,
+  "seconds": 102.099,
+  "states": [
+    {
+      "revision": 1,
+      "status": "draft",
+      "zero_occupancy": true,
+      "has_actual_start": false
+    },
+    {
+      "revision": 2,
+      "status": "draft",
+      "zero_occupancy": true,
+      "has_actual_start": false
+    },
+    {
+      "revision": 3,
+      "status": "offered",
+      "zero_occupancy": true,
+      "has_actual_start": false
+    },
+    {
+      "revision": 4,
+      "status": "accepted",
+      "zero_occupancy": true,
+      "has_actual_start": false
+    },
+    {
+      "revision": 5,
+      "status": "scheduled",
+      "zero_occupancy": true,
+      "has_actual_start": false
+    },
+    {
+      "revision": 6,
+      "status": "executing",
+      "zero_occupancy": false,
+      "has_actual_start": true
+    },
+    {
+      "revision": 7,
+      "status": "reported",
+      "zero_occupancy": false,
+      "has_actual_start": true
+    },
+    {
+      "revision": 1,
+      "status": "draft",
+      "zero_occupancy": true,
+      "has_actual_start": false
+    }
+  ],
+  "read_only": true,
+  "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75"
+}

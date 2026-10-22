@@ -1,0 +1,64 @@
+{
+  "candidate": "/private/tmp/pdos-s4-native-pilot-yht8hdv0",
+  "actual_browser_and_API": true,
+  "draft_seed_only_before_UI": true,
+  "first_create_response_fault_attempt_not_triggered": true,
+  "result_response_fault_triggered_and_asserted": true,
+  "reload_required_explicit_replay": true,
+  "same_partial_record_and_receipt_after_replay": true,
+  "root_stays_revision_one": true,
+  "current": {
+    "revision": 3,
+    "epoch": 3,
+    "latest_observation_id": "ae11d41d-382a-42f8-ab8f-3ff2cbe99c8a"
+  },
+  "original_observation_unchanged_after_correction": true,
+  "fixed_input": 2,
+  "first_pass_yield": "0.5",
+  "final_good_yield": "1",
+  "qualification": "unknown",
+  "start_authorized": false,
+  "manufacturing_release": null,
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 1000,
+      "theme": "light",
+      "document_width": 1440,
+      "panel_client_width": 1174,
+      "panel_scroll_width": 1174
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "document_width": 390,
+      "panel_client_width": 356,
+      "panel_scroll_width": 356
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "native-pilot-create-preview.png",
+      "sha256": "86641930384f1f29becc66ac3f1e1f28b05c1dc94a08c571cc4e3b8e46fcadb3"
+    },
+    {
+      "file": "native-pilot-response-recovery.png",
+      "sha256": "458b1a0f94bd60d1b0f7218a5a023cb860c1f623157fbda54d321da1526b2eef"
+    },
+    {
+      "file": "native-pilot-correction-preview.png",
+      "sha256": "38d4a22336963ae4a09ee6b4b0d02df27a2efc27a7042fd6d12c140af2f4cb54"
+    },
+    {
+      "file": "native-pilot-complete-light.png",
+      "sha256": "a583115bef579edfc0734c0fc4bfb7a5e69dc89768080c75d7ab04a30efcac3c"
+    },
+    {
+      "file": "native-pilot-complete-dark-mobile.png",
+      "sha256": "a99f89638526ed3ff17d13940d7b35934e3d2c1ebafb55aaa9fbacc381e61350"
+    }
+  ],
+  "real_external_calls": 0,
+  "formal_acceptance": false
+}

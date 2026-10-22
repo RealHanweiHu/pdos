@@ -1,0 +1,11 @@
+{
+  "tavily_configured": true,
+  "firecrawl_configured": true,
+  "fallback_endpoint": "http://127.0.0.1:8888/search",
+  "searxng": {
+    "http_status": 200,
+    "content_type": "application/json",
+    "candidate_count": 20,
+    "unresponsive_engine_count": 2
+  }
+}

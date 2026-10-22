@@ -1,0 +1,74 @@
+### Page
+- Page URL: http://127.0.0.1:63559/?area=category&category=30f1ff30-2617-4edd-ae9c-710c8fc840e8&bench=projects&view=builds&task=prepare&product=d6f554d2-fb6b-4f38-a0dc-c55b207b31fe&project=ce956c9a-5c72-4135-a9e4-d07262d2350d
+- Page Title: PDOS · 研发工作区
+- Console: 2 errors, 0 warnings
+### Snapshot
+```yaml
+- region "制造基线正式发布" [ref=f2e5]:
+  - generic [ref=f2e6]:
+    - generic [ref=f2e7]:
+      - heading "制造基线发布" [level=2] [ref=f2e8]
+      - paragraph [ref=f2e11]: 固定本轮工艺和资料，由有权本人核对并具名发布。
+    - button "刷新发布资料" [ref=f2e12]
+  - status [ref=f2e230]: 这版制造基线已具名发布，可回读固定内容。资产资格和制造放行仍分别核对。
+  - paragraph [ref=f2e231]:
+    - text: 已取得第2版发布回执。
+    - generic [ref=f2e234]: a07aa646-3c6c-465f-b0ff-9802ce47c61c
+  - generic [ref=f2e17]:
+    - generic [ref=f2e18]:
+      - text: 项目
+      - combobox "项目" [disabled] [ref=f2e19]:
+        - option "请选择项目"
+        - option "Approved revision fixture" [selected]
+    - generic [ref=f2e20]:
+      - text: 固定制造基线
+      - combobox "固定制造基线" [ref=f2e21]:
+        - option "请选择已保存的基线"
+        - option "Synthetic manufacturing_baseline documentation · v1" [selected]
+  - generic [ref=f2e22]:
+    - text: 本次发布说明
+    - textbox "本次发布说明" [ref=f2e23]: 本地合成页面续版v2：明确续接首版，保留原版固定内容与各自说明。
+  - paragraph [ref=f2e188]: 将续接固定发布 v1，生成 v2。可选择本项目另一版固定制造基线，原发布内容保留。
+  - status [ref=f2e235]: 所选前版已不是当前发布，请明确选择当前版继续。
+  - paragraph [ref=f2e24]: 本入口沿用所选基线的固定用途、地点和来源。尚未声明的资源要求、包装及反应计划保留为缺项，发布时会一并显示。
+  - button "核对具名发布" [disabled]
+  - generic [ref=f2e26]:
+    - heading "已发布的固定版本" [level=3] [ref=f2e27]
+    - generic [ref=f2e236]:
+      - generic [ref=f2e237]: 固定发布 v2 · 当前版 · 来源已核对
+      - generic [ref=f2e238]:
+        - button "从此版续接" [ref=f2e239]
+        - button "回读固定内容" [ref=f2e240]
+    - generic [ref=f2e28]:
+      - generic [ref=f2e29]: 固定发布 v1 · 历史版 · 来源已核对
+      - button "回读固定内容" [ref=f2e32]
+  - generic [ref=f2e241]:
+    - heading "固定发布 v1" [level=3] [ref=f2e242]
+    - generic [ref=f2e243]:
+      - paragraph [ref=f2e244]: 发布说明：本地合成页面联验：固定本轮工艺及资料，资源资格与制造放行仍保留未知。
+      - generic [ref=f2e245]:
+        - generic [ref=f2e246]:
+          - term [ref=f2e247]: 基线内容
+          - definition [ref=f2e248]: Synthetic manufacturing_baseline documentation
+        - generic [ref=f2e249]:
+          - term [ref=f2e250]: 固定制造配置
+          - definition [ref=f2e251]: Synthetic original motor assembly process · v1
+        - generic [ref=f2e252]:
+          - term [ref=f2e253]: 地点
+          - definition [ref=f2e254]: SYN-INTERNAL-LAB
+        - generic [ref=f2e255]:
+          - term [ref=f2e256]: 产线
+          - definition [ref=f2e257]: SYN-LINE
+      - group [ref=f2e258]:
+        - generic "本版固定工序资料（2份）" [ref=f2e259]
+      - paragraph [ref=f2e260]: 发布固定本版内容。资源资格、本轮准备度及制造放行分别核对；未知项会保留。
+    - paragraph [ref=f2e261]: 过程风险依据未知。
+    - paragraph [ref=f2e262]: 包装标识依据未知。
+    - paragraph [ref=f2e263]: 反应计划依据未知。
+    - paragraph [ref=f2e264]: 实际适用产线范围未知。
+    - paragraph [ref=f2e265]: tooling要求依据未知。
+    - paragraph [ref=f2e266]: fixture要求依据未知。
+    - paragraph [ref=f2e267]: equipment要求依据未知。
+    - paragraph [ref=f2e268]: line要求依据未知。
+    - paragraph [ref=f2e269]: person要求依据未知。
+```

@@ -1,0 +1,28 @@
+{
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "head": "s0_0760",
+  "counts": {
+    "platforms": 1,
+    "platform_product_links": 1,
+    "platform_link_current": 1,
+    "proposals": 0,
+    "proposal_item_versions": 0,
+    "proposal_revisions": 0,
+    "action_receipts": 1,
+    "audit_entries": 1,
+    "outbox_events": 1,
+    "agent_tool_calls": 2,
+    "agent_run_events": 4,
+    "proposal_prepared_candidates": 2
+  },
+  "receipts": [
+    {
+      "id": "2111729a-d28f-4ff8-a7ba-8151c552a204",
+      "operation": "platform.link.create",
+      "agent_run_id": "b1f01c32-cad5-4553-8105-e86e8177e8ef",
+      "confirmation_id": "17f894ec-c4ba-4921-b5aa-1177a527f416",
+      "subject_id": "0b3f6399-ec83-4139-a3d6-91e54bad0c78"
+    }
+  ],
+  "versions": []
+}

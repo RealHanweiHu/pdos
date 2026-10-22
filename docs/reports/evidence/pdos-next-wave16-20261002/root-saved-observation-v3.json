@@ -1,0 +1,22 @@
+{
+  "observed_at": "2026-10-03T09:08:08.984601+00:00",
+  "scope": "Actual local synthetic root after expired bound repreview; read-only head25 observation",
+  "issue_revisions": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "root_operation": "quality.issue.root_cause.decide",
+  "root_decided_at": "2026-10-03T09:04:26.389428Z",
+  "receipt_count": 1,
+  "atom": {
+    "audit_entries": 1,
+    "outbox_events": 1
+  },
+  "proof_consumed": true,
+  "original_expired_proof_unconsumed": true,
+  "failures_and_capa_preserved": true,
+  "no_effectiveness_or_close": true
+}

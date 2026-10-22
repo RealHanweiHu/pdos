@@ -1,0 +1,16 @@
+......{"run_id": "3522b9ba-a361-41a4-8c4c-faca56f53414", "snapshot_id": "56335beb-a04b-4a88-8f2e-2651e747e7b2", "job_id": "828def55-78d8-4af1-afe7-1dec34d8e1d3", "model_calls": 7, "cost_micro_usd": 840, "checkpoint_threads": 2, "exact_job_replay": true, "external_model_calls": 0, "external_search_read_calls": 0}
+..............{"scope": "one synthetic original, outbound watermark read", "elapsed_ms": 144.38, "sql_count": 20, "artifact_body_selects": 0}
+.
+=============================== warnings summary ===============================
+tests/agent_kernel/test_research_projection_pg.py: 4 warnings
+tests/agent_kernel/test_proposal_context_pg.py: 14 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_research_projection_pg.py: 24 warnings
+tests/agent_kernel/test_proposal_context_pg.py: 92 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+21 passed, 134 warnings in 68.19s (0:01:08)

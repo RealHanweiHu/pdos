@@ -1,0 +1,62 @@
+{
+  "status": "owned_pure_static_pass_frozen_actual_readback_pending_root",
+  "reason": "Root actual stored-fact-readback-v4 reached canonical Run/Fact input mismatch: Run input_snapshot is an aggregate; LaunchFact/ResultAction input_snapshot is only the current semantic atom.",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+      "before_sha256": "6cdf8157a6d39c5d3489b07650daf30393e888810dbb3372f1dfc83abe3bb0e5",
+      "after_sha256": "62813ccf5355bd66edc9dc0f6e0270142ce7de7812542669371cdb431f7ecd52"
+    },
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_participants_owner.py",
+      "before_sha256": "c47404584789a46b6942f81d281493b06e003ee5e23204b5bc519a8a8f35d5d7",
+      "after_sha256": "3155657c9ba02d05f6b328f8beaaa1cd56a387c8e74edbaa6b7c57b67508559f"
+    }
+  ],
+  "production_delta": [
+    "LaunchFact input matches Run.input_snapshot.launch_input; ResultAction input matches Run.input_snapshot.result_input. Never compare either atom with the complete aggregate or with the other transition atom.",
+    "Full Run snapshots, aggregate launch/reservation/plan/retained material, Fact inputs, sources and source-basis are retained in tracked raw rows, full material SHA and independent final reread.",
+    "Actual actor versus current Run writer, original series owner/audience, domain intent equality, exact tenant/product/project/build/request/run and full source/readset/authority basis remain bound. Domain intent is not compared to Common Receipt.intent_digest.",
+    "ResultAction.before Run must be the saved immutable predecessor; declared request before/next allows the real unchanged or +1 transition. Plan before/next equals immutable Run origin; Result operations never rebind Run origin to later Current.",
+    "Launch kernel event SHA and result atom event equality are checked. Fixed Run scope/build and immutable originating Formal metadata must be identical across the immutable history.",
+    "No DML, new attestation, qualification, public proof, new Receipt, current pointer mutation, caller substitution or positive gate."
+  ],
+  "checks": {
+    "pure": {
+      "command": "PYTHONPATH=server:server/tests server/.venv/bin/pytest --noconftest -q server/tests/capa_effectiveness/test_participants_owner.py",
+      "exit_code": 0,
+      "passed": 61,
+      "seconds": 1.44,
+      "log": "participants-run-atom-pure-final-v2.log",
+      "log_sha256": "1476a785ae6f41a6eb757c3b31d81405f100601b3466f4b71e7f451602544456"
+    },
+    "static": {
+      "ruff_exit_code": 0,
+      "format_exit_code": 0,
+      "ast_compile_files": 2,
+      "log": "participants-run-atom-static-v1.log",
+      "log_sha256": "6c0b45898e0856dd132b1dd294efe0fcfa03672270f1024441645469ce93ec5e"
+    },
+    "first_pure": {
+      "log": "participants-run-atom-pure-v1.log",
+      "passed": 61,
+      "seconds": 1.46
+    }
+  },
+  "covered": [
+    "Five saved writer-shaped operations through the actual reader chain, using real launch/results.semantic and domain _intent functions with explicit no-connect raw SQL substitutes.",
+    "Plan/Start/Import/Review/Disposition nested atoms; Plan and Review real non-advancing Formal shapes; complete raw aggregate SHA preservation.",
+    "Wrong actor/series owner/domain intent/build/request/predecessor/next revision/kernel event SHA/source-basis/authority rejects.",
+    "Whole aggregate cannot replace an atom; result cannot match retained launch atom; changing reservation after read fails final raw reread.",
+    "All prior saved SourceRef/DefinitionReference, current source guard, private scope, Receipt/Audit/Outbox/RequestKey/UOW/fresh Grant clock negatives remain included."
+  ],
+  "history": {
+    "previous_source_shape_delta": "participants-source-shape-delta-v1.json",
+    "previous_runtime_checks": "Historical only; not unified validation of this new production delta."
+  },
+  "limits": [
+    "No DB, HTTP, browser, public checks or broad tests executed. Raw-row fixtures model writer storage shapes rather than demonstrate a real business Run or installed PG guards.",
+    "Root actual readback/restart/unified validation remains pending. The reader still does not attest independence or seven gates.",
+    "Other owner modules, models, canonical writers, migrations, registries and public common service were not modified."
+  ]
+}

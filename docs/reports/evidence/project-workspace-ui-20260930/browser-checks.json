@@ -1,0 +1,109 @@
+[
+  {
+    "check": "overview_real_stage_and_unassigned",
+    "url": "http://localhost:3000/projects?project=107f11c1-258a-4131-a941-37448826ec83&tab=overview",
+    "stages": [
+      "工作类型",
+      "概念已走过",
+      "EVT当前阶段",
+      "DVT后续阶段",
+      "未归阶段"
+    ],
+    "activityRows": 6
+  },
+  {
+    "check": "activity_expanded",
+    "rows": 59
+  },
+  {
+    "check": "stage_list_actual_counts",
+    "text": "阶段泳道\n\n新品开发流程 · v1 · 阶段 2/3\n\n办理计划与资源\n泳道\n阶段列表\n\n横向看阶段，纵向看工作类型\n\n仅未完成\n显示前置关系\n\n概念已走过\n\n0 项未完成\n\nEVT当前阶段\n\n2 项未完成\n\nDVT后续阶段\n\n0 项未完成\n\n未归阶段\n\n1 项未完成\n跨阶段风险\n当前无开放风险\n\n按真实归属展示；阶段位置不代表完成率。具体排期与资源安排在“计划·资源”中查看。"
+  },
+  {
+    "check": "keyboard_end",
+    "activeTab": "true"
+  },
+  {
+    "check": "management_workflow",
+    "url": "http://localhost:3000/projects?project=107f11c1-258a-4131-a941-37448826ec83&tab=management&section=workflow",
+    "text": "成员与协作\n流程与初始化\n报告与导出\n接口与测量\n结项与交接\n流程与初始化\n\n维护项目模板，核对在途资料与初始化记录。\n\n产品模板与功能范围\n在途项目资料导入与初始化"
+  },
+  {
+    "check": "management_connections",
+    "url": "http://localhost:3000/projects?project=107f11c1-258a-4131-a941-37448826ec83&tab=management&section=connections",
+    "text": "成员与协作\n流程与初始化\n报告与导出\n接口与测量\n结项与交接\n接口与测量\n\n管理受控接口、事件通知与活动测量。\n\n受控接口 · 项目授权与调用回执\n事件通知 · 接收端点与投递回执\n员工活动测量 · 协议、本人记录与描述汇总"
+  },
+  {
+    "check": "management_completion",
+    "url": "http://localhost:3000/projects?project=107f11c1-258a-4131-a941-37448826ec83&tab=management&section=completion",
+    "text": "成员与协作\n流程与初始化\n报告与导出\n接口与测量\n结项与交接\n结项与交接\n\n核对配置、原件、残余问题与具名交接。\n\n结项与交接清单"
+  },
+  {
+    "check": "desktop_dark",
+    "layout": {
+      "dark": true,
+      "documentWidth": 1440,
+      "tableWidth": 1102,
+      "viewport": {
+        "height": 1000,
+        "width": 1440
+      }
+    }
+  },
+  {
+    "check": "mobile_lanes",
+    "layout": {
+      "documentWidth": 390,
+      "scroller": {
+        "scrollWidth": 880,
+        "width": 356
+      },
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    }
+  },
+  {
+    "check": "mobile_stage_list",
+    "layout": {
+      "documentWidth": 390,
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    },
+    "text": "阶段泳道\n\n新品开发流程 · v1 · 阶段 2/3\n\n办理计划与资源\n泳道\n阶段列表\n\n横向看阶段，纵向看工作类型\n\n仅未完成\n显示前置关系\n\n概念已走过\n\n0 项工作\n\nEVT当前阶段\n\n2 项工作\n\nDVT后续阶段\n\n0 项工作\n\n未归阶段\n\n1 项工作\n跨阶段风险\n当前无开放风险\n\n按真实归属展示；阶段位置不代表完成率。具体排期与资源安排在“计划·资源”中查看。"
+  },
+  {
+    "check": "mobile_management",
+    "layout": {
+      "documentWidth": 390,
+      "viewport": {
+        "height": 844,
+        "width": 390
+      }
+    },
+    "activeTab": "true"
+  },
+  {
+    "check": "management_reports",
+    "url": "http://localhost:3000/projects?project=107f11c1-258a-4131-a941-37448826ec83&tab=management&section=reports",
+    "text": "成员与协作\n流程与初始化\n报告与导出\n接口与测量\n结项与交接\n报告与导出\n\n整理内部报告、客户报告与审核证据包。\n\n导出中心 · 项目内部报告\n客户报告 · 内容核准与导出\n审核证据包 · 签核与条款对应"
+  },
+  {
+    "check": "task_card_navigation",
+    "result": "叶轮改模验证任务详情已展开，阶段EVT、完成要求和原办理操作均可见；未提交业务操作。"
+  },
+  {
+    "check": "viewport_restored",
+    "layout": {
+      "documentWidth": 595,
+      "viewport": {
+        "height": 853,
+        "width": 595
+      }
+    },
+    "theme": true
+  }
+]

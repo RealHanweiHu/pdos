@@ -1,0 +1,19 @@
+{
+  "observed_at": "2026-10-03T10:18:47.281612+00:00",
+  "target_port": 62513,
+  "readonly": true,
+  "non_root_link_preview_rows": [
+    {
+      "created_at": "2026-10-03T10:00:38.103198+00:00",
+      "expires_at": "2026-10-03T10:10:38.102618+00:00",
+      "consumed": false,
+      "product_revision_matches": true,
+      "subject_matches": true,
+      "product_tenant_matches": true,
+      "human_active": true,
+      "saved_links": 0
+    }
+  ],
+  "exact_pg_node_identified": false,
+  "limitation": "No rolled-back Link.saved_at or in-UOW consumed state remains; cannot uniquely assign a row to pg-v3-08 or prove exact failing guard condition."
+}

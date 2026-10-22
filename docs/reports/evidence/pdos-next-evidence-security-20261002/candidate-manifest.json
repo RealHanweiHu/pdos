@@ -1,0 +1,137 @@
+{
+  "candidate_id": "pdos-next-evidence-security-20261002-v1",
+  "status": "independent_first_version_ready_for_mainline_integration",
+  "digest_algorithm": "SHA256 of sorted [{path,sha256}] compact sort_keys JSON; paths relative pdos-next/server",
+  "source_candidate_sha256": "3fa2d330591e1ad55b5e2413161790d4b7ad6c98c32e30c5238bac99973609ae",
+  "source_file_count": 20,
+  "lifecycle_candidate_sha256": "fe5eacf141d9953af2d1cd2874175b9e89c55bf3400199107818f7034bc1125a",
+  "lifecycle_frozen_digest_verified": true,
+  "scanning_candidate_sha256": "dbdac3838e6555667893543d5aa608c848848012a7b12948b77227cc149711dc",
+  "files": [
+    {
+      "path": "pdos_next/evidence_security/__init__.py",
+      "sha256": "d093c271e2ddee8025b5d54aa40ab2abca234fdde2592162364db8b2b0affe61"
+    },
+    {
+      "path": "pdos_next/evidence_security/adapter.py",
+      "sha256": "d82083d98dceb27bdd3dc547db704c112a2616d6623049b8023770db5d2ea5d2"
+    },
+    {
+      "path": "pdos_next/evidence_security/preflight.py",
+      "sha256": "09902617cad904c31612bbaced01ae548f6b8fbfdd240fa45ae8fe7ae9076b1d"
+    },
+    {
+      "path": "pdos_next/evidence_security/rules.py",
+      "sha256": "b4edcb84184f226ff59aea1b0aa65d8221e688e78f4f90dd23979f4d41467bdc"
+    },
+    {
+      "path": "pdos_next/evidence_security/types.py",
+      "sha256": "a544bcf732915277e6cdd702c0e68ec9c3d4b5bc5653d0206b7f467f599f8321"
+    },
+    {
+      "path": "pdos_next/original_lifecycle/__init__.py",
+      "sha256": "7f40f5e9cdd8c0532fbeacd9f07e5d5b6c23e8f03dbc8e2269e9d6a2a9c94ee4"
+    },
+    {
+      "path": "pdos_next/original_lifecycle/adapters.py",
+      "sha256": "68906159710f67479318b1b77044642fb1c1fb318c27ee12083070a91e7c0aa5"
+    },
+    {
+      "path": "pdos_next/original_lifecycle/integration.md",
+      "sha256": "fd8afaa8dd1c14907e23dc23589571973e929ff292b460db97fa33327be5a5ce"
+    },
+    {
+      "path": "pdos_next/original_lifecycle/ports.py",
+      "sha256": "5c10b63b31abbf42ec8870190513d98a1943bee46509820ab2360dd51fcd23c2"
+    },
+    {
+      "path": "pdos_next/original_lifecycle/rules.py",
+      "sha256": "263f0783169fe6d74ebe008eee500ab3e276888a79261313fe63f7bb98e7653a"
+    },
+    {
+      "path": "pdos_next/original_lifecycle/service.py",
+      "sha256": "920ff7cf18c31e52b00b4b925217b33a2fbccdd3e5851e365412f0e0794e9bca"
+    },
+    {
+      "path": "pdos_next/original_lifecycle/types.py",
+      "sha256": "d8a4a564a1b58e330ce491ca5062a881fc2183d60ddf1662519da9cdf7f2c3d1"
+    },
+    {
+      "path": "tests/evidence_security/conftest.py",
+      "sha256": "be5a30e62aa787d868f6d6a58c1b57e0cbd3a505ac01007d1d79a43e3e1f519b"
+    },
+    {
+      "path": "tests/evidence_security/test_scanning.py",
+      "sha256": "11b5b8008f262650adc46cd007a20b7c98b2fc4b43f6c113d2926383bbb5edfc"
+    },
+    {
+      "path": "tests/original_lifecycle/__init__.py",
+      "sha256": "a10cf0eca6ea7ec62735c73324e543c25a85a7e97e9ab88f9b93e9a44809f73b"
+    },
+    {
+      "path": "tests/original_lifecycle/conftest.py",
+      "sha256": "40c01a16774ac55e2b0257ba54b27bff2512839604af7b1519dae2fd8699f3c0"
+    },
+    {
+      "path": "tests/original_lifecycle/helpers.py",
+      "sha256": "d10f465771fce86f32570371215eb141e90a4478e5c37858c88c8def8963703b"
+    },
+    {
+      "path": "tests/original_lifecycle/test_rules.py",
+      "sha256": "3fb7a5ab02235ca6b711c27139ee5d5b0ee4b07141c486335b5ce21e81f4c579"
+    },
+    {
+      "path": "tests/original_lifecycle/test_safety_guard.py",
+      "sha256": "61408c2d9e638187361981f89927cb800d393d4669a1d94351257c6485845bd1"
+    },
+    {
+      "path": "tests/original_lifecycle/test_service.py",
+      "sha256": "5988657875012c8c3e6837e2bbcaf58aa557d7014834b84b63df6bd5f3efde93"
+    }
+  ],
+  "evidence_files_sha256": {
+    "scanning-pytest.log": "39ccbea1949ba6fb5c3ae65bdef062d79255cc67cd632f0bf416b414c453ab64",
+    "scanning-lint.log": "4c9bc570d0998bf52c4744007eb7f43db472e48ce16c389ba996faff99f6e15b",
+    "lifecycle-pytest.log": "18a4dc974f137e640eeb07a49429adee0508b79014a3eebcaed3dedeaf9c3ceb",
+    "lifecycle-lint.log": "7390797865c3d5ab9393b304229f69099a066b0f305144b3d0b9d95373480b37",
+    "result.md": "07579752ce8572fc87408cfbf8364f0224f03ef44ee64f61e454533280116d22",
+    "integration.md": "e56ab2e7016dfbb17fc5a3171c75ecd635fda076d65a6bd6b721607bbf3226d1",
+    "review.md": "f45440f44ade7794c4529fb447ce2329397baebfd22d9fa49988c3f5f71eb5b6",
+    "consumed-interfaces.json": "96fbfe5df4643f330e04686dd507faf2cc71e7b5fcf1cbe9ec3d7e84c3defabb",
+    "interface-drift.json": "8fbd81a789d36bebe28280b52eef011c70ee2c9759e068fd765cc7746541ee05"
+  },
+  "independent_checks": {
+    "scanning_pytest": {
+      "passed": 80,
+      "exit_code": 0
+    },
+    "lifecycle_pytest": {
+      "passed": 75,
+      "exit_code": 0
+    },
+    "ruff_scanning": {
+      "exit_code": 0
+    },
+    "ruff_lifecycle": {
+      "exit_code": 0
+    }
+  },
+  "shared_interface_drift": [],
+  "build_interfaces_consumed": false,
+  "not_covered": [
+    "database_transactions_and_migrations",
+    "public_command_api_bff_ui",
+    "Outbox_Inbox_worker_restart",
+    "real_malware_scanner_or_qualification",
+    "OS_security_sandbox",
+    "actual_S3_lifecycle_adapter",
+    "physical_delete_or_real_originals",
+    "production_or_formal_exits"
+  ],
+  "exclusions": [
+    ".pytest_cache",
+    "__pycache__",
+    "shared_mainline_candidate",
+    "credentials_and_business_content"
+  ]
+}

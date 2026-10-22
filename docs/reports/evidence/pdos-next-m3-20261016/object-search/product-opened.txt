@@ -1,0 +1,110 @@
+Browser tab: 5, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=products&view=overview&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a".
+0 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=products&view=overview&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a
+	1 container
+		2 link Description: 跳到工作内容, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=products&view=overview&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a#workspace-content
+		3 text PDOS
+		4 button 收起侧栏
+			5 image
+		6 container 工作区导航
+			7 link Description: 我的工作, Value: 127.0.0.1:3046/?area=work&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+			8 link Description: 项目驾驶舱, Value: 127.0.0.1:3046/?area=cockpit&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+			9 link Description: 项目列表, Value: 127.0.0.1:3046/?area=projects&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+			10 link Description: 项目集, Value: 127.0.0.1:3046/?area=programs&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+			11 link Description: 产品品类工作区, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=products&view=overview&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a
+			12 link Description: 知识, Value: 127.0.0.1:3046/?area=knowledge&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+			13 text 当前品类
+			14 text 自行车充气泵
+			15 text 项目与专业工作按品类范围授权
+		16 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: 127.0.0.1:3046/plan
+		17 checkbox Description: 小Pai 工作栏, Value: 0
+		18 link Description: 设置, Value: 127.0.0.1:3046/?area=settings&category=f7ea946c-f579-476e-9cba-f0138957ea5a
+		19 text Synthetic owner
+		20 text 本地合成环境
+		21 text PDOS 产品品类工作区 自行车充气泵
+		22 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			23 image
+			24 text 搜索
+		25 checkbox Description: 小Pai 工作栏, Value: 0
+			26 image
+		27 button 切换明暗主题
+			28 image
+		29 container workspace-content
+			30 container 品类工作台区
+				31 link Description: 型号, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=products&view=overview&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a
+				32 link Description: 项目, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=projects&view=overview&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a
+				33 link Description: 知识, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=knowledge&view=sources&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a
+				34 link Description: 设置, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=settings&view=preferences&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a
+				35 button Description: 快速查找入口或型号, Help: 快速查找 · ⌘ / Ctrl K
+				36 pop up button (collapsed, settable) Description: 当前型号, Value: 自行车充气泵开发, Secondary Actions: Expand
+					37 menu
+						38 (selected) 自行车充气泵开发
+			39 container 型号视图
+				40 link Description: 总览, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=products&view=overview&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a
+				41 link Description: 研究, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=products&view=research&task=sources&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a
+				42 link Description: 定义与规格, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=products&view=definition&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a
+				43 link Description: 派生与配置, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=products&view=variants&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a
+				44 link Description: 活动, Value: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=products&view=activity&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a
+			45 container
+				46 heading 自行车充气泵开发, Value: 1
+					47 text 自行车充气泵开发
+				48 text Build and verify a synthetic design
+				49 button 新建型号
+					50 image
+					51 text 新建型号
+				52 definition list
+					53 container 定义版本
+						54 text 定义版本
+					55 button 查看定义版本
+					56 container 研发项目
+						57 text 研发项目
+					58 button 查看研发项目
+					59 container 试制
+						60 text 试制
+					61 button 查看试制
+				62 container
+					63 heading 接下来, Value: 2
+						64 text 接下来
+					65 text 按当前事实接续
+				66 button 导入第一份资料 保留原件、定位原文，再登记有出处的事实
+					67 text 导入第一份资料
+					68 text 保留原件、定位原文，再登记有出处的事实
+				69 button 整理型号定义与规格 1 份可见定义版本，草稿与正式发布分别办理
+					70 text 整理型号定义与规格
+					71 text 1 份可见定义版本，草稿与正式发布分别办理
+				72 button 继续关联项目工作 1 个可见项目，分别固定定义与研发范围
+					73 text 继续关联项目工作
+					74 text 1 个可见项目，分别固定定义与研发范围
+				75 container
+					76 heading 证据状态, Value: 2
+						77 text 证据状态
+					78 button 查看资料
+				79 definition list
+					80 container 有效来源
+						81 text 有效来源
+					82 container
+						83 text 0 份
+					84 container 有据事实
+						85 text 有据事实
+					86 container
+						87 text 0 条
+					88 container 未知或冲突
+						89 text 未知或冲突
+					90 container
+						91 text 0 条
+					92 container 来源待重核
+						93 text 来源待重核
+					94 container
+						95 text 0 条
+				96 text 计数仅来自当前授权范围，不表示专业结论或正式批准。
+				97 container
+					98 heading 已保存定义, Value: 2
+						99 text 已保存定义
+					100 button 进入工作区
+				101 text 自行车充气泵开发
+				102 container
+					103 text 0  项规格 ·  0  处来源
+				104 text 草稿
+				105 text v
+				106 text 1
+
+The focused UI element is 29 container workspace-content

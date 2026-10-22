@@ -1,0 +1,335 @@
+{
+  "status": "PASS_SELECTED_NEGATIVES_WITH_EXPLICIT_PENDING_BUSINESS_CASES",
+  "head": "next_0028",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "target": "127.0.0.1:62513/pdos_test",
+  "source_qualifications_created": 0,
+  "business_facts_committed": 0,
+  "positive_professional_approval_or_manufacturing_attested": false,
+  "change": {
+    "schema_version": "wave25-change-agent-delete-recheck-v2",
+    "status": "PASS",
+    "expected_head": "next_0028",
+    "scope": {
+      "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+      "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+      "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0",
+      "actor_id": "c5535eca-59be-4684-975f-4858722b6e2f"
+    },
+    "cases": [
+      {
+        "name": "agent_delete_change_order_records",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table change_order_records",
+          "message_sha256": "3ad2b7eb4f591e89c85cb35e2d5e3b219ab48f1fac919ad33b86058d0cc69d6c",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_change_approval_records",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table change_approval_records",
+          "message_sha256": "36b0c1b96b48830fc07f7200f9300f6a074040346392a584d52122b93e02e708",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_change_implementation_captures",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table change_implementation_captures",
+          "message_sha256": "613843728d3796505f7694957ff2ac00812c78d58debc6c2be230d8a7966e478",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_change_implementation_records",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table change_implementation_records",
+          "message_sha256": "3b1115aa23a18cfd8f173b8ebb3fa8e85b07c33a600c956187e0a8cc67f13a73",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_controlled_change_policy_facts",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table controlled_change_policy_facts",
+          "message_sha256": "27f4ce8760ae78a5d102061d2feae3c2b56ff781baf31db71dca822c04e3390c",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_controlled_change_policy_currents",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table controlled_change_policy_currents",
+          "message_sha256": "25e990bb41fc117c263de2df0e72ab98a6fb27e33d07a82983531527ff191304",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_controlled_change_selection_facts",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table controlled_change_selection_facts",
+          "message_sha256": "9c71d6b5f1a738dc4e3e9cd366b6980feae211764ac9f179d82e83e4fc2e537a",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      },
+      {
+        "name": "agent_delete_controlled_change_selection_currents",
+        "status": "PASS",
+        "expected_phase": "immediate",
+        "observed": {
+          "sqlstate": "42501",
+          "message": "permission denied for table controlled_change_selection_currents",
+          "message_sha256": "47acfbbe5e7f41c81fe2dc11022161e01178154ff7f8bff77730f4458dfd63e4",
+          "constraint": null,
+          "constraint_sha256": null,
+          "phase": "immediate"
+        }
+      }
+    ],
+    "replaces_v1_cases": [
+      "agent_delete_change_order_records",
+      "agent_delete_change_approval_records",
+      "agent_delete_change_implementation_captures",
+      "agent_delete_change_implementation_records",
+      "agent_delete_controlled_change_policy_facts",
+      "agent_delete_controlled_change_policy_currents",
+      "agent_delete_controlled_change_selection_facts",
+      "agent_delete_controlled_change_selection_currents"
+    ],
+    "unselected_v1_case_counts_not_rerun": {
+      "PASS": 29,
+      "PENDING": 13
+    },
+    "original_v1_result_sha256": "e1991d0f5d69eb440484af6e1cd48d10c306831143db1e5c81eec4810b4334f9",
+    "business_positive_attested": false,
+    "qualification_created": false,
+    "retained_fingerprint_before": {
+      "change_order_records": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_approval_records": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_implementation_captures": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_implementation_records": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_policy_facts": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_policy_currents": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_selection_facts": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_selection_currents": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "confirmations": {
+        "count": 41,
+        "sha256": "4f91d6d58ff1291c0d7a4b955db6fcaa48cafbf50d65eb55ac7866f5fb9611e8"
+      },
+      "action_receipts": {
+        "count": 90,
+        "sha256": "0d67b01628c7ec6349606af9f0a423e20974b02ee50559ef9709d177570fa692"
+      },
+      "request_keys": {
+        "count": 373,
+        "sha256": "083b837c1b7041b7b6f6d3779bd0e483904631409cac5b4405c1350f7bf397a0"
+      },
+      "audit_entries": {
+        "count": 397,
+        "sha256": "a702abd793f3791e13492375bb1ba0e0a6f1c5a85165de71adffa833ea591891"
+      },
+      "outbox_events": {
+        "count": 397,
+        "sha256": "e60706b97d19c2a2f273cf961648ec4bbb539a61a23a45942bb04b86f4390631"
+      },
+      "products": {
+        "count": 4,
+        "sha256": "0fbc4c92801029930bcb8b5c336f403311e26dff4e04b0f2a835f35b0f659931"
+      },
+      "change_request_versions": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_request_currents": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    },
+    "retained_fingerprint_after": {
+      "change_order_records": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_approval_records": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_implementation_captures": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_implementation_records": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_policy_facts": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_policy_currents": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_selection_facts": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "controlled_change_selection_currents": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "confirmations": {
+        "count": 41,
+        "sha256": "4f91d6d58ff1291c0d7a4b955db6fcaa48cafbf50d65eb55ac7866f5fb9611e8"
+      },
+      "action_receipts": {
+        "count": 90,
+        "sha256": "0d67b01628c7ec6349606af9f0a423e20974b02ee50559ef9709d177570fa692"
+      },
+      "request_keys": {
+        "count": 373,
+        "sha256": "083b837c1b7041b7b6f6d3779bd0e483904631409cac5b4405c1350f7bf397a0"
+      },
+      "audit_entries": {
+        "count": 397,
+        "sha256": "a702abd793f3791e13492375bb1ba0e0a6f1c5a85165de71adffa833ea591891"
+      },
+      "outbox_events": {
+        "count": 397,
+        "sha256": "e60706b97d19c2a2f273cf961648ec4bbb539a61a23a45942bb04b86f4390631"
+      },
+      "products": {
+        "count": 4,
+        "sha256": "0fbc4c92801029930bcb8b5c336f403311e26dff4e04b0f2a835f35b0f659931"
+      },
+      "change_request_versions": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "change_request_currents": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    },
+    "outer_rolled_back": true
+  },
+  "manufacturing": {
+    "cases": [
+      {
+        "tables_checked": 3,
+        "catalog_permissions_checked": true,
+        "actual_RLS_behavior_checked": false,
+        "actual_business_qualification_checked": false
+      },
+      {
+        "case": "agent_insert_manufacturing_preparation_versions",
+        "sqlstate": "42501",
+        "all_baseline_restored": true
+      },
+      {
+        "case": "agent_insert_manufacturing_preparation_currents",
+        "sqlstate": "42501",
+        "all_baseline_restored": true
+      },
+      {
+        "case": "agent_insert_manufacturing_baseline_document_links",
+        "sqlstate": "42501",
+        "all_baseline_restored": true
+      },
+      {
+        "case": "preconsumed_npi.work_instruction.record",
+        "sqlstate": "P0001",
+        "all_baseline_restored": true
+      },
+      {
+        "case": "false_true_no_target_npi.work_instruction.record",
+        "sqlstate": "P0001",
+        "all_baseline_restored": true
+      },
+      {
+        "case": "preconsumed_npi.control_plan.record",
+        "sqlstate": "P0001",
+        "all_baseline_restored": true
+      },
+      {
+        "case": "false_true_no_target_npi.control_plan.record",
+        "sqlstate": "P0001",
+        "all_baseline_restored": true
+      },
+      {
+        "case": "preconsumed_npi.manufacturing_baseline.record",
+        "sqlstate": "P0001",
+        "all_baseline_restored": true
+      },
+      {
+        "case": "false_true_no_target_npi.manufacturing_baseline.record",
+        "sqlstate": "P0001",
+        "all_baseline_restored": true
+      }
+    ],
+    "status": "PASS_NEGATIVE_SELECTION",
+    "scoped_baseline_restored": true,
+    "proof_only_sql_fixture_not_business_authority": true,
+    "remaining_positive_atomic_groups_rls_rows_and_real_source_race": "PENDING_ACTUAL_QUALIFIED_MATERIAL"
+  }
+}

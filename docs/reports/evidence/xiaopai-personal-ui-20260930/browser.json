@@ -1,0 +1,34 @@
+{
+  "origin": "http://localhost:3000",
+  "identity": "既有本地owner，未记录凭据",
+  "checks": [
+    {
+      "page": "驾驶舱",
+      "scope": "自动来源/可见页面文字预览/无项目选择器/展开及返回",
+      "passed": true
+    },
+    {
+      "page": "项目A1",
+      "scope": "自动项目/仅本人会话/项目附件入口/完整页/刷新恢复",
+      "passed": true
+    },
+    {
+      "viewport": "390x844",
+      "pageWidth": 390,
+      "scope": "无水平溢出",
+      "passed": true
+    },
+    {
+      "viewport": "1280x800",
+      "scope": "完整页/侧面板/亮暗主题",
+      "passed": true
+    }
+  ],
+  "no_messages_sent": true,
+  "no_uploads": true,
+  "no_delegations_created": true,
+  "no_model_calls": true,
+  "temporary_viewport_reset": true,
+  "theme_restored": "light",
+  "candidate_sources_still_match": true
+}

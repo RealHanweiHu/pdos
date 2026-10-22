@@ -1,0 +1,18 @@
+{
+  "status": "ALLOCATED_NOT_APPLIED",
+  "actual_predecessor": "next_0026",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "installed_helper_sha256": "77124b96289c401fcba480a25df8cb023a232729406f7fe2f2f234c594e3c06c",
+  "exact_checks": {
+    "change_request_versions_check": "(((visibility)::text = ANY ((ARRAY['private'::character varying, 'product'::character varying])::text[])) AND ((status)::text = ANY ((ARRAY['draft'::character varying, 'analysis'::character varying])::text[])))",
+    "change_request_versions_operation_check": "((operation)::text = ANY ((ARRAY['change.request.create'::character varying, 'change.impact.compute'::character varying])::text[]))",
+    "change_request_versions_request_snapshot_check": "COALESCE(((request_snapshot -> 'orders'::text) = '[]'::jsonb), false)"
+  },
+  "migrations": {
+    "server/migrations/versions/0027_controlled_change_orders.py": "3ea43bf0d1c292be83855080be0feb039139ac7481c99350a96021ccbc47f6d0",
+    "server/migrations/versions/0028_manufacturing_preparation.py": "0d54c2a6ac55553b050ea4b7d98d95bcacaae9a80c6751923d09b4e7a1bb97f5"
+  },
+  "c_parent_and_sql_guard_rebased_to_actual_27": true,
+  "temporary_semantic_check_rolled_back": true
+}

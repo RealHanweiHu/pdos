@@ -1,0 +1,54 @@
+{
+  "status": "REGISTERED_SOURCE_NOT_T2_APPROVED",
+  "recorded_at": "2026-10-03T18:45:14.263126+00:00",
+  "source_ref": {
+    "artifact_id": "67f7c873-511a-4ab3-addf-e16ce2ed80a5",
+    "expected_revision": 1
+  },
+  "receipt_id": "c025f3ec-97cd-4a23-802c-00628fa7d34d",
+  "source_content_sha256": "c7194f614d493ee62e65c79a99e6d6dac64f3eb1502e51f9ade139d7e944e3e7",
+  "lines": 6,
+  "fixed_binding": {
+    "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+    "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+    "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0",
+    "maker_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+    "build": {
+      "id": "beb94737-d081-4f0f-a72c-326824126b58",
+      "revision": 1
+    },
+    "build_type": "prototype",
+    "definition": {
+      "id": "51d4b72c-c623-415d-9086-fff5f2959913",
+      "revision": 1
+    },
+    "bom": {
+      "id": "d8f9d5e0-b61d-45b9-b50d-3c16dae26388",
+      "revision": 1
+    },
+    "engineering": {
+      "id": "becde270-4262-4728-a257-d0fa77698197",
+      "revision": 1
+    },
+    "manufacturing": {
+      "id": "8be025dc-0141-4bde-8e88-fe4b6be16869",
+      "revision": 1
+    },
+    "assessment": {
+      "id": "695e5cdd-7498-546d-a4b9-d990bde56207",
+      "revision": 1,
+      "sha256": "6b8ab7bf7f8fd731348abc19dfd3a0bf171048d0741063af707b2053f3b74117"
+    },
+    "execution_scope": {
+      "purpose": "内部共享三人调查：独立单模穴A尺寸复测（合成）",
+      "quantity": "2",
+      "unit": "ea",
+      "site": "wave22-internal-lab-eb2c84ee-197d-43bf-9f93-6ea671f2ca6a",
+      "window_start": "2026-10-03T18:34:51.575100Z",
+      "window_end": "2026-10-04T02:34:51.575100Z",
+      "window_timezone": "UTC"
+    }
+  },
+  "publication_saved_without_duplicate": true,
+  "production_qualification": false
+}

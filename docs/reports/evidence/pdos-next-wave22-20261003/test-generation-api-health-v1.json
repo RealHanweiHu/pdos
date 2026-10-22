@@ -1,0 +1,14 @@
+{
+  "recorded_at": "2026-10-03T19:35:44.091314+00:00",
+  "status": 200,
+  "body": {
+    "status": "ok",
+    "model_available": false,
+    "slice": "wave1-source-definition",
+    "durable_queue_enabled": true
+  },
+  "pid": 28237,
+  "resource_profile_version": "v2",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "previous_attempt": "Incorrect /api/health and inherited HTTP proxy timed out; corrected exact /health with local transport trust_env=False; no write"
+}

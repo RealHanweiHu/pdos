@@ -1,0 +1,3107 @@
+{
+  "config": {
+    "phase": "after",
+    "kind": "project",
+    "cache": "cold",
+    "url": "http://127.0.0.1:3314/projects?project=b1355164-1e83-41f6-80ac-835d50d46f87&tab=overview",
+    "projectId": "b1355164-1e83-41f6-80ac-835d50d46f87",
+    "projectIds": [
+      "b1355164-1e83-41f6-80ac-835d50d46f87",
+      "682e85de-d005-431d-bf09-f1e8ca1aa04d",
+      "b606161e-be6a-4df3-b1f4-4344da932a14",
+      "4d8f00d8-4015-4fb6-9e35-2c5b9f6692c7",
+      "e95285f6-4304-4844-a292-2a277010be37",
+      "1abf93f9-74fb-4257-878b-41bca13c8d7b",
+      "dcf7117e-c3fb-47b3-9497-97c3c884d387",
+      "c97ec065-d098-4669-8441-f4ef3bd77598",
+      "a98401cf-f435-4d2f-8057-5cbc5f70a086",
+      "a760125b-b7e3-4307-913b-1c5fba48a7cc",
+      "b85e9a20-14cf-4496-a51e-49969bb7ce2d",
+      "666a6669-81fe-4856-b72b-816c40049adf",
+      "f79108fa-a6bb-4ec2-8fa0-18d703279bff",
+      "17fa022b-b4a8-40a3-9600-a92b04cf4c88",
+      "7d586a25-d79f-4272-be6a-0d1383af762a",
+      "7bfc8229-4bcf-44cb-a143-6c098a7ababf",
+      "041e1d30-e7db-4414-9fc6-d06cd6f5eadc",
+      "debea322-3516-4121-a80e-962661f8f4fa",
+      "2b94cc83-a5e7-4229-b944-af8b7d02c977",
+      "831a100c-ff52-40d0-b075-9c8a285d008e",
+      "ca9cd244-688a-42e3-ac76-f2e0d84285e5",
+      "6e984fba-e81b-44ba-8c59-20ab28678dba",
+      "43d89122-ea4a-4205-9cb8-30aa00ee757b",
+      "a6df4367-7158-4783-83bf-7947f2c099d7",
+      "ab1eef5f-339f-4154-ae49-6b3391bc08b2"
+    ]
+  },
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "browser": "152.0.7977.76",
+  "samples": [
+    {
+      "ms": 309.40000000037253,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 68,
+          "duration": 34,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 102,
+          "duration": 33,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 136,
+          "duration": 39,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 136,
+          "duration": 149,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 136,
+          "duration": 38,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 136,
+          "duration": 35,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 163,
+          "duration": 101,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 0
+    },
+    {
+      "ms": 309.69999999925494,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 83,
+          "duration": 16,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 100,
+          "duration": 17,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 117,
+          "duration": 35,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 118,
+          "duration": 168,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 118,
+          "duration": 63,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 118,
+          "duration": 53,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 143,
+          "duration": 118,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 1
+    },
+    {
+      "ms": 276,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 77,
+          "duration": 13,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 90,
+          "duration": 24,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 115,
+          "duration": 36,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 115,
+          "duration": 137,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 115,
+          "duration": 49,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 115,
+          "duration": 35,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 141,
+          "duration": 107,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 2
+    },
+    {
+      "ms": 285.8999999985099,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 76,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 89,
+          "duration": 24,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 114,
+          "duration": 35,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 114,
+          "duration": 147,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 114,
+          "duration": 42,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 115,
+          "duration": 33,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 141,
+          "duration": 102,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 3
+    },
+    {
+      "ms": 290.5,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 68,
+          "duration": 25,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 93,
+          "duration": 31,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 125,
+          "duration": 42,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 126,
+          "duration": 141,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 126,
+          "duration": 42,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 126,
+          "duration": 41,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 152,
+          "duration": 95,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 4
+    },
+    {
+      "ms": 281.30000000074506,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 66,
+          "duration": 16,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 83,
+          "duration": 19,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 103,
+          "duration": 47,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 103,
+          "duration": 151,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 103,
+          "duration": 68,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 103,
+          "duration": 46,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 129,
+          "duration": 100,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 5
+    },
+    {
+      "ms": 281.09999999962747,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 80,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 92,
+          "duration": 19,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 112,
+          "duration": 46,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 112,
+          "duration": 145,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 112,
+          "duration": 40,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 112,
+          "duration": 59,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 139,
+          "duration": 96,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 6
+    },
+    {
+      "ms": 316.7999999988824,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 82,
+          "duration": 21,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 103,
+          "duration": 28,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 132,
+          "duration": 42,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 132,
+          "duration": 158,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 132,
+          "duration": 46,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 132,
+          "duration": 52,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 158,
+          "duration": 108,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 7
+    },
+    {
+      "ms": 282,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 73,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 85,
+          "duration": 22,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 108,
+          "duration": 44,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 108,
+          "duration": 148,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 108,
+          "duration": 49,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 108,
+          "duration": 50,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 135,
+          "duration": 92,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 8
+    },
+    {
+      "ms": 301.30000000074506,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 76,
+          "duration": 14,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 91,
+          "duration": 27,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 118,
+          "duration": 51,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 119,
+          "duration": 153,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 119,
+          "duration": 52,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 119,
+          "duration": 48,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 145,
+          "duration": 95,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 9
+    },
+    {
+      "ms": 301.2000000011176,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 68,
+          "duration": 19,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 88,
+          "duration": 27,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 116,
+          "duration": 47,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 116,
+          "duration": 159,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 116,
+          "duration": 53,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 116,
+          "duration": 51,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 143,
+          "duration": 100,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 10
+    },
+    {
+      "ms": 304.8999999985099,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 70,
+          "duration": 19,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 89,
+          "duration": 27,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 117,
+          "duration": 51,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 117,
+          "duration": 160,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 117,
+          "duration": 47,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 117,
+          "duration": 50,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 143,
+          "duration": 100,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 11
+    },
+    {
+      "ms": 347,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 70,
+          "duration": 16,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 87,
+          "duration": 28,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 115,
+          "duration": 41,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 116,
+          "duration": 207,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 116,
+          "duration": 39,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 116,
+          "duration": 41,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 141,
+          "duration": 155,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 12
+    },
+    {
+      "ms": 297.6000000014901,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 82,
+          "duration": 14,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 96,
+          "duration": 28,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 125,
+          "duration": 46,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 125,
+          "duration": 150,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 125,
+          "duration": 50,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 125,
+          "duration": 50,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 152,
+          "duration": 100,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 13
+    },
+    {
+      "ms": 295.5,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 84,
+          "duration": 13,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 97,
+          "duration": 26,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 124,
+          "duration": 39,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 124,
+          "duration": 143,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 124,
+          "duration": 43,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 124,
+          "duration": 42,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 150,
+          "duration": 98,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 14
+    },
+    {
+      "ms": 299.09999999962747,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 66,
+          "duration": 33,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 99,
+          "duration": 23,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 123,
+          "duration": 53,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 123,
+          "duration": 147,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 123,
+          "duration": 52,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 123,
+          "duration": 52,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 150,
+          "duration": 90,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 15
+    },
+    {
+      "ms": 316.69999999925494,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 81,
+          "duration": 21,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 103,
+          "duration": 31,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 135,
+          "duration": 42,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 135,
+          "duration": 152,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 135,
+          "duration": 44,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 135,
+          "duration": 47,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 161,
+          "duration": 96,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 16
+    },
+    {
+      "ms": 309,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 67,
+          "duration": 19,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 87,
+          "duration": 25,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 112,
+          "duration": 62,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 112,
+          "duration": 173,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 112,
+          "duration": 71,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 112,
+          "duration": 62,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 139,
+          "duration": 101,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 17
+    },
+    {
+      "ms": 291.3999999985099,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 76,
+          "duration": 17,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 93,
+          "duration": 25,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 119,
+          "duration": 43,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 120,
+          "duration": 146,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 120,
+          "duration": 42,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 120,
+          "duration": 46,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 146,
+          "duration": 98,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 18
+    },
+    {
+      "ms": 296.40000000037253,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 72,
+          "duration": 27,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 99,
+          "duration": 24,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 124,
+          "duration": 42,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 125,
+          "duration": 143,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 125,
+          "duration": 42,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 125,
+          "duration": 46,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 150,
+          "duration": 89,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 19
+    },
+    {
+      "ms": 314.59999999962747,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 70,
+          "duration": 25,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 96,
+          "duration": 37,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 133,
+          "duration": 59,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 134,
+          "duration": 152,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 134,
+          "duration": 88,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 134,
+          "duration": 59,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 159,
+          "duration": 111,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 20
+    },
+    {
+      "ms": 313.5,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 73,
+          "duration": 13,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 86,
+          "duration": 25,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 113,
+          "duration": 52,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 113,
+          "duration": 178,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 113,
+          "duration": 58,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 113,
+          "duration": 54,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 139,
+          "duration": 102,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 21
+    },
+    {
+      "ms": 298.90000000037253,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 72,
+          "duration": 18,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 91,
+          "duration": 23,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 115,
+          "duration": 52,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 115,
+          "duration": 161,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 115,
+          "duration": 53,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 115,
+          "duration": 58,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 140,
+          "duration": 113,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 22
+    },
+    {
+      "ms": 299.09999999962747,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 70,
+          "duration": 18,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 89,
+          "duration": 37,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 127,
+          "duration": 35,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 127,
+          "duration": 143,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 127,
+          "duration": 36,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 127,
+          "duration": 52,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 152,
+          "duration": 96,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 23
+    },
+    {
+      "ms": 313.90000000037253,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 69,
+          "duration": 28,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 98,
+          "duration": 26,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 124,
+          "duration": 58,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 124,
+          "duration": 162,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 124,
+          "duration": 75,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 124,
+          "duration": 57,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 151,
+          "duration": 119,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 24
+    },
+    {
+      "ms": 306.40000000037253,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 66,
+          "duration": 27,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 94,
+          "duration": 18,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 113,
+          "duration": 48,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 113,
+          "duration": 164,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 114,
+          "duration": 46,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 114,
+          "duration": 59,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 140,
+          "duration": 129,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 25
+    },
+    {
+      "ms": 294.40000000037253,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 70,
+          "duration": 19,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 89,
+          "duration": 29,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 118,
+          "duration": 69,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 118,
+          "duration": 154,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 118,
+          "duration": 68,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 119,
+          "duration": 68,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 145,
+          "duration": 93,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 26
+    },
+    {
+      "ms": 281.69999999925494,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 76,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 89,
+          "duration": 18,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 108,
+          "duration": 41,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 108,
+          "duration": 148,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 108,
+          "duration": 47,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 108,
+          "duration": 44,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 133,
+          "duration": 88,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 27
+    },
+    {
+      "ms": 297.40000000037253,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 66,
+          "duration": 29,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 95,
+          "duration": 22,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 118,
+          "duration": 48,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 118,
+          "duration": 156,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 118,
+          "duration": 47,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 118,
+          "duration": 52,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 144,
+          "duration": 99,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 28
+    },
+    {
+      "ms": 277.7000000011176,
+      "boxes": [
+        {
+          "selector": "[data-metric=\"task\"]",
+          "text": "400",
+          "top": 510.7890625,
+          "bottom": 541.7890625,
+          "left": 1074.8984375,
+          "right": 1118.1015625,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "编辑项目",
+          "top": 611.2890625,
+          "bottom": 643.2890625,
+          "left": 318,
+          "right": 396,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 76,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 89,
+          "duration": 21,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "start": 111,
+          "duration": 37,
+          "bytes": 452
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "start": 111,
+          "duration": 143,
+          "bytes": 886677
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "start": 111,
+          "duration": 37,
+          "bytes": 25271
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "start": 112,
+          "duration": 35,
+          "bytes": 6301
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "start": 137,
+          "duration": 86,
+          "bytes": 676
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/risks",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/issues",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/activity",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/projects/b1355164-1e83-41f6-80ac-835d50d46f87/runs",
+          "status": 200
+        },
+        {
+          "path": "/api/projects/b1355164-1e83-41f6-80ac-835d50d46f87/tasks",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 29
+    }
+  ],
+  "p50": 298.90000000037253,
+  "p95": 316.7999999988824,
+  "max": 347,
+  "success": 30
+}

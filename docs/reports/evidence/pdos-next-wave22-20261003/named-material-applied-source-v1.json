@@ -1,0 +1,10 @@
+{
+  "recorded_at": "2026-10-03T18:42:19.509153+00:00",
+  "files": {
+    "pdos-next/tools/named_build_decision_material.py": "a78ac9c0556399df891a96436466b26ee24c1380ea0d8589d10db9a7ae23eb17",
+    "pdos-next/.local/wave22-build-staged/named-build-decision-contract-v1.md": "581e4bb92fbc4c3434f79f3ebe745572003d452b8afa52a8032c68cfeac3cf16"
+  },
+  "staged_pure_log_sha256": "0fe07550b4b89fdc5eae84fc4fcc7d781f22c8a52c79a82b676f09bc02f7d126",
+  "stage_pure_count": 9,
+  "actual_db_http": false
+}

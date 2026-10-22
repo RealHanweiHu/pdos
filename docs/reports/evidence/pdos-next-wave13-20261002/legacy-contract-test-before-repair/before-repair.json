@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-10-03T02:25:28.823844+00:00",
+  "scope": "Two obsolete assertion repairs only; no production or database changes",
+  "files": [
+    {
+      "source": "pdos-next/server/tests/test_build_execution.py",
+      "backup": "docs/reports/evidence/pdos-next-wave13-20261002/legacy-contract-test-before-repair/test_build_execution.py",
+      "sha256": "18a37454f21ed34382fa303c4e0b8ef151cb93d00280bdf25952a24257d27568"
+    },
+    {
+      "source": "pdos-next/server/tests/test_verification_execution.py",
+      "backup": "docs/reports/evidence/pdos-next-wave13-20261002/legacy-contract-test-before-repair/test_verification_execution.py",
+      "sha256": "a606054844f14f5675ab5369af9488328315f0eba71427d1fab6c4317ea0c248"
+    }
+  ]
+}

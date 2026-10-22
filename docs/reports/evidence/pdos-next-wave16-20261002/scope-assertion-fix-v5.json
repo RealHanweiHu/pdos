@@ -1,0 +1,17 @@
+{
+  "scope": "Only line425 expected403/FORBIDDEN_SCOPE; whole source AST otherwise identical",
+  "changed_files": [
+    "pdos-next/server/tests/quality_followup_transactions/test_transactions.py"
+  ],
+  "source_count": 484,
+  "runtime_migrations_configs_all_unchanged": true,
+  "preserved_original_test_sha256": "7e0a9bf64b4fb6a702bb7658598211e18e1194669c1a6aa0ac5563c29e1d4dfc",
+  "v4_candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+  "v5_candidate_sha256": "220bf21030b0510d87012363a3967519b79941b0e5b2e708e4d4c476fdc5c1f2",
+  "selected_node": "tests/quality_followup_transactions/test_transactions.py::test_link_t1_preserves_issue_pointer_and_records_exact_scoped_owner_output",
+  "old_failures_preserved": [
+    "repair-v4-16-result.json",
+    "repair-v4-16.log"
+  ],
+  "retained_other_v4_scope": "Eight completed PASS on frozen v4, not re-run or full-tree claim"
+}

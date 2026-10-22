@@ -1,0 +1,82 @@
+{
+  "status": "proposed_not_approved_not_adopted",
+  "current_published_meter_sha256": "9df66b9433dd5d14faae811a760b21c57f54ec08756374c444a93e59b6e04aad",
+  "current_profile": {
+    "active_seconds": 900,
+    "include_retries_and_seats": true,
+    "input_token_limit": 32000,
+    "key": "research_discussion",
+    "lease_seconds": 60,
+    "lifetime_seconds": 604800,
+    "lineage_parallel_calls": 1,
+    "lineage_token_limit": 360000,
+    "max_backoff_seconds": 8,
+    "min_safety_tokens": 1024,
+    "model_call_limit": 10,
+    "monetary_limit_microusd": null,
+    "next_tool_token_reserve": 2048,
+    "output_token_reserve": 4000,
+    "renew_seconds": 20,
+    "resume_resets_budget": false,
+    "tenant_parallel_lineages": 2,
+    "tool_call_limit": 40,
+    "transient_attempt_limit": 2,
+    "version": "candidate.v2",
+    "wait_consumes_active_budget": false,
+    "window_safety_percent": 5
+  },
+  "proposed_local_profile": {
+    "active_seconds": 900,
+    "include_retries_and_seats": true,
+    "input_token_limit": 32000,
+    "key": "research_expanded",
+    "lease_seconds": 60,
+    "lifetime_seconds": 604800,
+    "lineage_parallel_calls": 1,
+    "lineage_token_limit": 360000,
+    "max_backoff_seconds": 8,
+    "min_safety_tokens": 1024,
+    "model_call_limit": 10,
+    "monetary_limit_microusd": null,
+    "next_tool_token_reserve": 2048,
+    "output_token_reserve": 8192,
+    "renew_seconds": 20,
+    "resume_resets_budget": false,
+    "tenant_parallel_lineages": 2,
+    "tool_call_limit": 40,
+    "transient_attempt_limit": 2,
+    "version": "proposed.v1",
+    "wait_consumes_active_budget": false,
+    "window_safety_percent": 5
+  },
+  "meter_change_proposal": {
+    "output_token_limit": {
+      "from": 4000,
+      "to": 8192
+    },
+    "max_qualified_input_tokens": 17000,
+    "window_tokens": 1000000,
+    "valid_until": "2026-10-14T02:12:31.097559+00:00",
+    "new_evidence_review_and_human_publication_required": true
+  },
+  "scope": "current local original preview, newly created application runs using research_expanded; no existing run budget changes",
+  "token_budget_enforced": false,
+  "retain": [
+    "calls10",
+    "tools40",
+    "active_seconds900",
+    "parallel_lineages2",
+    "current route and text protocol",
+    "source and authorization guards",
+    "T1/T2",
+    "golden files unchanged",
+    "historical unknown usage"
+  ],
+  "real_verification_proposal": {
+    "synthetic_public_only": true,
+    "meter_probe_attempt_limit": 1,
+    "research_validation_new_run_limit": 1,
+    "automatic_retry_after_failure": false,
+    "post_verification_actual_usage_and_known_unknown_receipts_required": true
+  }
+}

@@ -1,0 +1,2304 @@
+{
+  "status_code": 200,
+  "seconds": 14.934,
+  "response": {
+    "issue": {
+      "id": "8d8901e6-c051-406e-9db4-8e6c99e4d8e4",
+      "issue_id": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+      "revision": 4,
+      "project_id": "4c1cd1b0-97b9-4e10-aaf6-b06a962e33e7",
+      "purpose": "\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09",
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "status": "actioning",
+      "issue": {
+        "id": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+        "revision": 4,
+        "scope": {
+          "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "project_id": "4c1cd1b0-97b9-4e10-aaf6-b06a962e33e7"
+        },
+        "audience": [
+          "private:77465957-a05e-4663-85bf-34cd39ac43dd"
+        ],
+        "title": "Wave15 \u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u786e\u5b9a\u5931\u8d25\u8c03\u67e5",
+        "status": "actioning",
+        "risk": "high",
+        "failures": [
+          {
+            "identity": "e218c8dc607a59699e0e024c43409bdbb238821bd9a2df45c48d1a8cb2757730",
+            "run": {
+              "id": "055a9f66-8e2a-4900-87da-b1c9666549af",
+              "revision": 3
+            },
+            "measurement_id": "43971427-c453-4844-9388-d795b35fda51",
+            "executor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+            "coverage": {
+              "sample_id": "1672638f-6bb0-4e51-84a4-4573afb32ebb",
+              "item_id": "dimension"
+            },
+            "build": {
+              "id": "0c16c8b2-9f71-4df2-85db-36aec7945b34",
+              "revision": 1,
+              "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+              "project_id": "4c1cd1b0-97b9-4e10-aaf6-b06a962e33e7",
+              "engineering_configuration": {
+                "id": "495b878f-e449-4ad2-992f-1def28104702",
+                "revision": 1
+              },
+              "manufacturing_configuration": {
+                "id": "25207163-2d04-4a4e-b5ac-c2cb81cdd6d1",
+                "revision": 1
+              }
+            },
+            "sample": {
+              "id": "1672638f-6bb0-4e51-84a4-4573afb32ebb",
+              "revision": 1,
+              "build_id": "0c16c8b2-9f71-4df2-85db-36aec7945b34",
+              "actual_configuration": {
+                "id": "06cea8e8-0de7-4419-91be-f681b92c53fc",
+                "revision": 1
+              },
+              "cavity": "A"
+            },
+            "criterion": {
+              "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:2;quote_sha256:15491158ce0395acb0e5ae0db1da190d55e370b33e0fc51ebb7ae336cb790eaa"
+            },
+            "method": {
+              "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314"
+            },
+            "source": {
+              "id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:f519ff596ef54de6ad2a96e274121e05ae7ed9498d38804ef836431fbc8c5bef"
+            },
+            "nature": "synthetic"
+          }
+        ],
+        "aliases": [],
+        "merged_into": null,
+        "containment": [
+          {
+            "id": "97ac84cf-7881-4321-93d9-54c0b66fe979",
+            "text": "\u72ec\u7acb\u5408\u6210\u6837\u4ef6\u4ec5\u4fdd\u7559\u5185\u90e8\u8c03\u67e5\uff0c\u975e\u91ca\u653e/\u5173\u95ed",
+            "executor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+            "evidence": [
+              {
+                "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:4;quote_sha256:283bb339f09b9cf202fd45a1c9c78c6ffe8e32527bd31870b94121579aebe155"
+              },
+              {
+                "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:5;quote_sha256:40926e24fe2710bf2600e889e00a3952ad876dc77ef71634b751a8425d812c97"
+              },
+              {
+                "id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:0ccc5f872405fcb0cf0cd2afaa97d4d45435f4be264530db26cd500dc5871aa5"
+              }
+            ],
+            "at": {
+              "occurred_at": "2026-10-03T06:25:03.160086Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:0ccc5f872405fcb0cf0cd2afaa97d4d45435f4be264530db26cd500dc5871aa5"
+              },
+              "effective_at": null
+            }
+          }
+        ],
+        "root_cause": null,
+        "capa": {
+          "id": "3352bbb0-fd50-4b5b-b1ef-2dd87ef79405",
+          "hypotheses": [
+            {
+              "text": "\u6838\u5bf9\u56fa\u5b9a\u5de5\u51b5\u4e0b\u5c3a\u5bf8\u504f\u5dee\u7684\u53ef\u80fd\u539f\u56e0\uff0c\u5c1a\u672a\u8ba4\u5b9a\u6839\u56e0\u3002",
+              "sources": [
+                {
+                  "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+                  "revision": 1,
+                  "kind": "artifact",
+                  "position": "line:5;quote_sha256:40926e24fe2710bf2600e889e00a3952ad876dc77ef71634b751a8425d812c97"
+                }
+              ]
+            }
+          ],
+          "actions": [
+            {
+              "id": "d6437922-f362-4c7a-9827-a17a7ea70dc7",
+              "kind": "corrective",
+              "text": "\u8c03\u67e5\u56fa\u5b9a\u5de5\u51b5\u4e0b\u7684\u5c3a\u5bf8\u504f\u5dee\uff0c\u8865\u9f50\u65b9\u6cd5\u4e0e\u6837\u4ef6\u4f9d\u636e\uff1b\u5c1a\u672a\u6267\u884c\u6b63\u5f0f\u914d\u7f6e\u5207\u6362\u3002",
+              "executor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+              "completion": null
+            }
+          ],
+          "requirement": {
+            "method": "\u7531\u72ec\u7acb\u5177\u540d\u4eba\u5458\u5f62\u6210\u65b0\u8bf7\u6c42\u4e0e\u65b0\u8fd0\u884c\uff0c\u6838\u5bf9\u914d\u7f6e\u3001\u65b9\u6cd5\u3001\u5de5\u51b5\u548c\u539f\u62a5\u544a\u540e\u590d\u9a8c\u3002",
+            "acceptance": "\u5c3a\u5bf8\u57289.5\u81f310.5 mm\u8303\u56f4\u5185\uff0c\u5de5\u51b523 C\u3001dry\uff1b\u8986\u76d6\u56fa\u5b9a\u539f\u5931\u8d25\u53ca\u72ec\u7acb\u89c2\u5bdf\u8981\u6c42\u3002",
+            "observation_until": "2026-10-04T06:00:00Z",
+            "required_failure_ids": [
+              "e218c8dc607a59699e0e024c43409bdbb238821bd9a2df45c48d1a8cb2757730"
+            ]
+          },
+          "effectiveness": null,
+          "effectiveness_history": []
+        },
+        "needs_recheck": false,
+        "recheck_reasons": [],
+        "history": [
+          {
+            "command_id": "c1f3bf9e-2c1f-4508-94b3-519b36131796",
+            "operation": "quality.issue.create",
+            "actor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+            "actor_kind": "human",
+            "at": "2026-10-03T06:17:21.947271Z",
+            "note": "\u56fa\u5b9a\u5b9e\u6d4b\u5931\u8d25\u5efa\u5355\u3002"
+          },
+          {
+            "command_id": "a1630662-e5c4-45c1-bf54-55237e84a3d8",
+            "operation": "quality.issue.triage",
+            "actor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+            "actor_kind": "human",
+            "at": "2026-10-03T06:23:34.131953Z",
+            "note": "\u5177\u540d\u6838\u5bf9\u56fa\u5b9a11.0000 mm\u8d85\u51fa9.5\u81f310.5 mm\u5224\u636e\uff0c\u6309\u5f53\u524d\u9ad8\u98ce\u9669\u653f\u7b56\u8fdb\u5165\u5185\u90e8\u8c03\u67e5\u3002"
+          },
+          {
+            "command_id": "70914833-9308-4954-ba3e-8e0d8ba71299",
+            "operation": "quality.issue.containment.record",
+            "actor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+            "actor_kind": "human",
+            "at": "2026-10-03T06:45:49.989859Z",
+            "note": "quality.issue.containment.record"
+          },
+          {
+            "command_id": "ab237495-08bf-4f65-91d7-5d3dbc3c69ff",
+            "operation": "quality.capa.draft",
+            "actor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+            "actor_kind": "human",
+            "at": "2026-10-03T06:49:17.065743Z",
+            "note": "quality.capa.draft"
+          }
+        ],
+        "closure": null
+      },
+      "is_current": true,
+      "source_status": "current",
+      "capabilities": {
+        "quality.issue.root_cause.decide": true,
+        "quality.capa.actions.complete": true,
+        "quality.capa.effectiveness.decide": false,
+        "quality.issue.close": false
+      },
+      "authority": {
+        "quality.issue.root_cause.decide": {
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "4c1cd1b0-97b9-4e10-aaf6-b06a962e33e7"
+          },
+          "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+          "operation": "quality.issue.root_cause.decide",
+          "purpose": "\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09",
+          "authorized": true,
+          "roles": [
+            "quality"
+          ],
+          "qualified": true,
+          "reason_codes": [],
+          "fact_refs": [
+            {
+              "id": "b586c89f-0fa8-457d-965a-03d83e469cde",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "dd9b085c-66fb-460c-9a5e-df46cfa336e4",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "4b8bae74-6b78-42fe-8428-03aabbe293db",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "cc5458ca-21bf-4340-b9ea-d78ad6ad0df7",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "dfad93f5-79f9-4fae-80c6-6fc93930005e",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "33c14272-b175-4a84-a731-c85a43843755",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "98148977-f735-4ac2-a030-f42b279f241c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "31554143-f673-4516-8bc0-b3113ef937d7",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "f305a341-1619-4fbf-a5f2-1d7a47aacd2c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "8393345d-59db-461f-8ec5-3bc3b03ca776",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "d52ddbc3-f3c0-4b2d-97cf-048e64b5450d",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "01ea97d4-ba38-4424-9bea-7c66242b9a9c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "4ea80bc9-db2c-455b-899d-3b17275d70e1",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "6ddf5b22-6e98-427f-8a86-b90a95e497fc",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "b57279f4-b098-43a3-90e1-04684cd31813",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "24ac71d0-51b2-4ed9-81a2-f641ef4da892",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "23ca74f6-c2e9-46f1-b73a-abcc9d48b2f5",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "c4ef0d7d-ee5a-44e0-8e97-1c142f74e26a",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            }
+          ],
+          "facts_revision": "9aebeeb1f2820bf5045f7010f3928f5aa0d55b3dee6155c34b661d8c470eddbd",
+          "valid_until": "2026-10-04T08:06:00+00:00",
+          "synthetic": true,
+          "required_source_read_set": [
+            {
+              "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+              "expected_revision": 1
+            },
+            {
+              "artifact_id": "df562ff4-c366-4e23-90a0-52047fd4ba25",
+              "expected_revision": 1
+            }
+          ]
+        },
+        "quality.capa.actions.complete": {
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "4c1cd1b0-97b9-4e10-aaf6-b06a962e33e7"
+          },
+          "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+          "operation": "quality.capa.actions.complete",
+          "purpose": "\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09",
+          "authorized": true,
+          "roles": [
+            "quality"
+          ],
+          "qualified": true,
+          "reason_codes": [],
+          "fact_refs": [
+            {
+              "id": "b586c89f-0fa8-457d-965a-03d83e469cde",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "dd9b085c-66fb-460c-9a5e-df46cfa336e4",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "4b8bae74-6b78-42fe-8428-03aabbe293db",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "cc5458ca-21bf-4340-b9ea-d78ad6ad0df7",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "dfad93f5-79f9-4fae-80c6-6fc93930005e",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "33c14272-b175-4a84-a731-c85a43843755",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "98148977-f735-4ac2-a030-f42b279f241c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "31554143-f673-4516-8bc0-b3113ef937d7",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "f305a341-1619-4fbf-a5f2-1d7a47aacd2c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "8393345d-59db-461f-8ec5-3bc3b03ca776",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "d52ddbc3-f3c0-4b2d-97cf-048e64b5450d",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "01ea97d4-ba38-4424-9bea-7c66242b9a9c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "4ea80bc9-db2c-455b-899d-3b17275d70e1",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "6ddf5b22-6e98-427f-8a86-b90a95e497fc",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "b57279f4-b098-43a3-90e1-04684cd31813",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "24ac71d0-51b2-4ed9-81a2-f641ef4da892",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "23ca74f6-c2e9-46f1-b73a-abcc9d48b2f5",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "c4ef0d7d-ee5a-44e0-8e97-1c142f74e26a",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            }
+          ],
+          "facts_revision": "a214b8c2ba34a90423449edda721dd2c5ca33482edb890f74bd95e79673743c4",
+          "valid_until": "2026-10-04T08:06:00+00:00",
+          "synthetic": true,
+          "required_source_read_set": [
+            {
+              "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+              "expected_revision": 1
+            },
+            {
+              "artifact_id": "df562ff4-c366-4e23-90a0-52047fd4ba25",
+              "expected_revision": 1
+            }
+          ]
+        }
+      },
+      "policy": {
+        "id": "b5a43846-1b2e-4df4-941d-393f61fc3ea7",
+        "revision": 1,
+        "risk": "high",
+        "independent_verification": true,
+        "nature": "synthetic",
+        "valid_until": "2026-10-04T06:12:10.850721+00:00",
+        "facts_revision": "34ef0d414894cba3924c474cdc4ce36c68b9f2ce100e34dba889b70f2dc0003a",
+        "sources": [
+          {
+            "id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:066a7ea38663d4023afe3438c657de8bfeeafd62da4784cea5da9d14f8aa20fe",
+            "revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+            "expected_revision": 1
+          }
+        ],
+        "source_basis": [
+          {
+            "id": "b5a43846-1b2e-4df4-941d-393f61fc3ea7",
+            "revision": 1,
+            "epoch": 1,
+            "sha256": "7059d8f395f637559b71ca9605f1111409ab1fbcc719076d32b7b382df416638",
+            "issuer_epoch": 1
+          }
+        ],
+        "private": true
+      },
+      "required_source_read_set": [
+        {
+          "artifact_id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "1f09718c-b2d4-4740-a8f5-29e73df19a2d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "33fa986c-bb30-44db-b7ef-3ab36a0344b8",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "414b170e-1e31-4bc1-a72a-e8409f5eac78",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "443579e4-fd0a-4d00-955e-e8ee5da3551e",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "89b85985-7de0-441a-8f2a-1fae0ca10ab4",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "b49ea770-1f55-4e35-ac30-d7075a691b41",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "df562ff4-c366-4e23-90a0-52047fd4ba25",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "ed40676c-af0f-460c-b26b-f38b5d4e6fe8",
+          "expected_revision": 1
+        }
+      ],
+      "sources": [
+        {
+          "id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:066a7ea38663d4023afe3438c657de8bfeeafd62da4784cea5da9d14f8aa20fe"
+        },
+        {
+          "id": "1f09718c-b2d4-4740-a8f5-29e73df19a2d",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:a9064d596152da0eaf840c4107ace6b3d910b933cf226bc815c82f87633d4c9e"
+        },
+        {
+          "id": "414b170e-1e31-4bc1-a72a-e8409f5eac78",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:7965af50d3b2ec822a4bec1f26250e273440ecd9987fbe48baeb4099cb52bead"
+        },
+        {
+          "id": "443579e4-fd0a-4d00-955e-e8ee5da3551e",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:e8e932225da3e2b42f195fd9b11232bbca3cde30893ca10e2f7651ffee8188d0"
+        },
+        {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:e9c775c84611994ccb49ef47b91074f288ad1b45f5a27dd3f14e482e6aa5a118"
+        },
+        {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:15491158ce0395acb0e5ae0db1da190d55e370b33e0fc51ebb7ae336cb790eaa"
+        },
+        {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314"
+        },
+        {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:4;quote_sha256:283bb339f09b9cf202fd45a1c9c78c6ffe8e32527bd31870b94121579aebe155"
+        },
+        {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:5;quote_sha256:40926e24fe2710bf2600e889e00a3952ad876dc77ef71634b751a8425d812c97"
+        },
+        {
+          "id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:0ccc5f872405fcb0cf0cd2afaa97d4d45435f4be264530db26cd500dc5871aa5"
+        },
+        {
+          "id": "89b85985-7de0-441a-8f2a-1fae0ca10ab4",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:42ca9df68885ba22e92f1ae3ccc5efb95e76d9880e4e6b068a2af22022401486"
+        },
+        {
+          "id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:f519ff596ef54de6ad2a96e274121e05ae7ed9498d38804ef836431fbc8c5bef"
+        },
+        {
+          "id": "b49ea770-1f55-4e35-ac30-d7075a691b41",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:42086a777d5ef2aea5bf502325c60647ecba25c3df65081a1ac23624fd77fe8c"
+        },
+        {
+          "id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:6ca6c201666d4fca4e06a37db64036e2ca460bac1ac951c02235cdd914d7569c"
+        },
+        {
+          "id": "ed40676c-af0f-460c-b26b-f38b5d4e6fe8",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:424ff621c81a10836161025640986dd56b20b467b50b631580c049f46c957b50"
+        }
+      ],
+      "created_at": "2026-10-03T06:49:22.864334+00:00",
+      "reason": "quality.capa.draft",
+      "actions": [
+        {
+          "action_id": "d6437922-f362-4c7a-9827-a17a7ea70dc7",
+          "executor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+          "text": "\u8c03\u67e5\u56fa\u5b9a\u5de5\u51b5\u4e0b\u7684\u5c3a\u5bf8\u504f\u5dee\uff0c\u8865\u9f50\u65b9\u6cd5\u4e0e\u6837\u4ef6\u4f9d\u636e\uff1b\u5c1a\u672a\u6267\u884c\u6b63\u5f0f\u914d\u7f6e\u5207\u6362\u3002",
+          "completion": null,
+          "capabilities": {
+            "quality.capa.actions.complete": true
+          },
+          "can_prepare_completion": true,
+          "can_complete": false,
+          "completion_verified": null,
+          "blockers": [
+            {
+              "code": "STRUCTURED_COMPLETION_REQUIRED",
+              "detail": "\u987b\u63d0\u4ea4\u672c\u4eba\u5b9e\u9645\u5b8c\u6210\u6574\u884c\u539f\u6587\uff0c\u5e76\u6838\u5bf9\u8c03\u67e5\u653f\u7b56/\u6b63\u5f0f\u5b9e\u65bdowner\u8bc1\u660e\u3002"
+            }
+          ]
+        }
+      ],
+      "reason_codes": [],
+      "followup_basis": {
+        "scope": {
+          "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "project_id": "4c1cd1b0-97b9-4e10-aaf6-b06a962e33e7"
+        },
+        "issue_id": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+        "issue_version_id": "8d8901e6-c051-406e-9db4-8e6c99e4d8e4",
+        "issue_revision": 4,
+        "capa_id": "3352bbb0-fd50-4b5b-b1ef-2dd87ef79405",
+        "purpose": "\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09",
+        "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+        "visibility": "private",
+        "nature": "synthetic",
+        "requirement": {
+          "method": "\u7531\u72ec\u7acb\u5177\u540d\u4eba\u5458\u5f62\u6210\u65b0\u8bf7\u6c42\u4e0e\u65b0\u8fd0\u884c\uff0c\u6838\u5bf9\u914d\u7f6e\u3001\u65b9\u6cd5\u3001\u5de5\u51b5\u548c\u539f\u62a5\u544a\u540e\u590d\u9a8c\u3002",
+          "acceptance": "\u5c3a\u5bf8\u57289.5\u81f310.5 mm\u8303\u56f4\u5185\uff0c\u5de5\u51b523 C\u3001dry\uff1b\u8986\u76d6\u56fa\u5b9a\u539f\u5931\u8d25\u53ca\u72ec\u7acb\u89c2\u5bdf\u8981\u6c42\u3002",
+          "observation_until": "2026-10-04T06:00:00Z",
+          "required_failure_ids": [
+            "e218c8dc607a59699e0e024c43409bdbb238821bd9a2df45c48d1a8cb2757730"
+          ]
+        },
+        "requirement_sha256": "8f17c9150d00edda090aea360127642115e48a524a03689e2d6c99124f838f63",
+        "failure_ids": [
+          "e218c8dc607a59699e0e024c43409bdbb238821bd9a2df45c48d1a8cb2757730"
+        ],
+        "failure_basis_sha256": "9fabf8175ea1255937e9da96530f23a3d3e6c5625f2e0df35cb0ad0761ee3dfb",
+        "actions": [
+          {
+            "action_id": "d6437922-f362-4c7a-9827-a17a7ea70dc7",
+            "executor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+            "action_sha256": "b864af7172d72c3da439b6469e4c63bd7f7ce3b835be22294dbf853a2bca8899",
+            "completion_sha256": null,
+            "completed_at": null
+          }
+        ],
+        "root_cause_sha256": null,
+        "sources": [
+          {
+            "id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:066a7ea38663d4023afe3438c657de8bfeeafd62da4784cea5da9d14f8aa20fe"
+          },
+          {
+            "id": "1f09718c-b2d4-4740-a8f5-29e73df19a2d",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:a9064d596152da0eaf840c4107ace6b3d910b933cf226bc815c82f87633d4c9e"
+          },
+          {
+            "id": "414b170e-1e31-4bc1-a72a-e8409f5eac78",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:7965af50d3b2ec822a4bec1f26250e273440ecd9987fbe48baeb4099cb52bead"
+          },
+          {
+            "id": "443579e4-fd0a-4d00-955e-e8ee5da3551e",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:e8e932225da3e2b42f195fd9b11232bbca3cde30893ca10e2f7651ffee8188d0"
+          },
+          {
+            "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:e9c775c84611994ccb49ef47b91074f288ad1b45f5a27dd3f14e482e6aa5a118"
+          },
+          {
+            "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:2;quote_sha256:15491158ce0395acb0e5ae0db1da190d55e370b33e0fc51ebb7ae336cb790eaa"
+          },
+          {
+            "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314"
+          },
+          {
+            "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:4;quote_sha256:283bb339f09b9cf202fd45a1c9c78c6ffe8e32527bd31870b94121579aebe155"
+          },
+          {
+            "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:5;quote_sha256:40926e24fe2710bf2600e889e00a3952ad876dc77ef71634b751a8425d812c97"
+          },
+          {
+            "id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:0ccc5f872405fcb0cf0cd2afaa97d4d45435f4be264530db26cd500dc5871aa5"
+          },
+          {
+            "id": "89b85985-7de0-441a-8f2a-1fae0ca10ab4",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:42ca9df68885ba22e92f1ae3ccc5efb95e76d9880e4e6b068a2af22022401486"
+          },
+          {
+            "id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:f519ff596ef54de6ad2a96e274121e05ae7ed9498d38804ef836431fbc8c5bef"
+          },
+          {
+            "id": "b49ea770-1f55-4e35-ac30-d7075a691b41",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:42086a777d5ef2aea5bf502325c60647ecba25c3df65081a1ac23624fd77fe8c"
+          },
+          {
+            "id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:6ca6c201666d4fca4e06a37db64036e2ca460bac1ac951c02235cdd914d7569c"
+          },
+          {
+            "id": "ed40676c-af0f-460c-b26b-f38b5d4e6fe8",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:424ff621c81a10836161025640986dd56b20b467b50b631580c049f46c957b50"
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "1f09718c-b2d4-4740-a8f5-29e73df19a2d",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "33fa986c-bb30-44db-b7ef-3ab36a0344b8",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "414b170e-1e31-4bc1-a72a-e8409f5eac78",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "443579e4-fd0a-4d00-955e-e8ee5da3551e",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "89b85985-7de0-441a-8f2a-1fae0ca10ab4",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "b49ea770-1f55-4e35-ac30-d7075a691b41",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "ed40676c-af0f-460c-b26b-f38b5d4e6fe8",
+            "expected_revision": 1
+          }
+        ],
+        "source_basis_sha256": "ffa36d1584bbcc213cb5be4ab347868edc55553bafb3503fa38769715390037b",
+        "basis_sha256": "9616abb14f83ec9f625df533721faf111658c26179d535fdeb85e42c88dd4092"
+      },
+      "saved_followup_basis": null,
+      "shared_proof": null,
+      "completion_observations": [],
+      "source_options": [
+        {
+          "artifact_id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+          "revision": 1,
+          "title": "Wave15 \u00b7 policy-source",
+          "line": 1,
+          "quote": "{\"approval\":{\"approved_by\":\"\u5408\u6210\u5177\u540d\u653f\u7b56\u53d1\u5e03\uff0c\u4e0d\u662f\u771f\u5b9e\u653f\u7b56\",\"external_id\":\"wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-policy-approval\",\"issued_at\":\"2026-10-03T06:12:10.850721+00:00\",\"system\":\"explicit-local-synthetic-wave15\",\"version\":\"v1\"},\"external_id\":\"wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-quality-policy\",\"independent_verification\":true,\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"risk\":\"high\",\"state\":\"active\",\"valid_from\":\"2026-10-03T06:11:10.850721+00:00\",\"valid_until\":\"2026-10-04T06:12:10.850721+00:00\"}",
+          "source": {
+            "id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:066a7ea38663d4023afe3438c657de8bfeeafd62da4784cea5da9d14f8aa20fe"
+          }
+        },
+        {
+          "artifact_id": "1f09718c-b2d4-4740-a8f5-29e73df19a2d",
+          "revision": 1,
+          "title": "Wave15 \u00b7 event-accept",
+          "line": 1,
+          "quote": "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"occurred_at\":\"2026-10-03T05:54:08.815629+00:00\",\"operation\":\"verification.handoff.accept\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"request_id\":\"e774b968-dc18-449c-81d2-954a1c2f7a7d\"}",
+          "source": {
+            "id": "1f09718c-b2d4-4740-a8f5-29e73df19a2d",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:a9064d596152da0eaf840c4107ace6b3d910b933cf226bc815c82f87633d4c9e"
+          }
+        },
+        {
+          "artifact_id": "414b170e-1e31-4bc1-a72a-e8409f5eac78",
+          "revision": 1,
+          "title": "Wave15 \u00b7 event-promise",
+          "line": 1,
+          "quote": "{\"executor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"occurred_at\":\"2026-10-03T06:04:53.481060Z\",\"operation\":\"verification.schedule.promise\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"request_id\":\"e774b968-dc18-449c-81d2-954a1c2f7a7d\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\"}",
+          "source": {
+            "id": "414b170e-1e31-4bc1-a72a-e8409f5eac78",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:7965af50d3b2ec822a4bec1f26250e273440ecd9987fbe48baeb4099cb52bead"
+          }
+        },
+        {
+          "artifact_id": "443579e4-fd0a-4d00-955e-e8ee5da3551e",
+          "revision": 1,
+          "title": "Wave15 \u00b7 event-end",
+          "line": 1,
+          "quote": "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"occurred_at\":\"2026-10-03T06:08:50.045167+00:00\",\"operation\":\"test.run.end\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"request_id\":\"e774b968-dc18-449c-81d2-954a1c2f7a7d\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\"}",
+          "source": {
+            "id": "443579e4-fd0a-4d00-955e-e8ee5da3551e",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:e8e932225da3e2b42f195fd9b11232bbca3cde30893ca10e2f7651ffee8188d0"
+          }
+        },
+        {
+          "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "title": "Wave15 \u00b7 independent-input",
+          "line": 1,
+          "quote": "Synthetic requirement is unverified",
+          "source": {
+            "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:e9c775c84611994ccb49ef47b91074f288ad1b45f5a27dd3f14e482e6aa5a118"
+          }
+        },
+        {
+          "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "title": "Wave15 \u00b7 independent-input",
+          "line": 2,
+          "quote": "Synthetic drawing, dimension in mm; numeric limits 9.5 to 10.5 at 23 C, dry.",
+          "source": {
+            "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:2;quote_sha256:15491158ce0395acb0e5ae0db1da190d55e370b33e0fc51ebb7ae336cb790eaa"
+          }
+        },
+        {
+          "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "title": "Wave15 \u00b7 independent-input",
+          "line": 3,
+          "quote": "Synthetic method and material information; no production qualification.",
+          "source": {
+            "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314"
+          }
+        },
+        {
+          "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "title": "Wave15 \u00b7 independent-input",
+          "line": 4,
+          "quote": "Synthetic containment observed by the named person.",
+          "source": {
+            "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:4;quote_sha256:283bb339f09b9cf202fd45a1c9c78c6ffe8e32527bd31870b94121579aebe155"
+          }
+        },
+        {
+          "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "title": "Wave15 \u00b7 independent-input",
+          "line": 5,
+          "quote": "Synthetic hypothesis only, not a root cause.",
+          "source": {
+            "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:5;quote_sha256:40926e24fe2710bf2600e889e00a3952ad876dc77ef71634b751a8425d812c97"
+          }
+        },
+        {
+          "artifact_id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+          "revision": 1,
+          "title": "Wave15 \u00b7 event-containment",
+          "line": 1,
+          "quote": "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"issue_id\":\"16ff0607-08f8-5e3c-9b74-b48999791b00\",\"occurred_at\":\"2026-10-03T06:25:03.160086+00:00\",\"operation\":\"quality.issue.containment.record\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"text\":\"\u72ec\u7acb\u5408\u6210\u6837\u4ef6\u4ec5\u4fdd\u7559\u5185\u90e8\u8c03\u67e5\uff0c\u975e\u91ca\u653e/\u5173\u95ed\"}",
+          "source": {
+            "id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:0ccc5f872405fcb0cf0cd2afaa97d4d45435f4be264530db26cd500dc5871aa5"
+          }
+        },
+        {
+          "artifact_id": "89b85985-7de0-441a-8f2a-1fae0ca10ab4",
+          "revision": 1,
+          "title": "Wave15 \u00b7 event-run-start",
+          "line": 1,
+          "quote": "{\"executor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"occurred_at\":\"2026-10-03T06:05:14.686991+00:00\",\"operation\":\"test.run.start\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"request_id\":\"e774b968-dc18-449c-81d2-954a1c2f7a7d\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\"}",
+          "source": {
+            "id": "89b85985-7de0-441a-8f2a-1fae0ca10ab4",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:42ca9df68885ba22e92f1ae3ccc5efb95e76d9880e4e6b068a2af22022401486"
+          }
+        },
+        {
+          "artifact_id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+          "revision": 1,
+          "title": "Wave15 \u72ec\u7acb\u5408\u621011.0000\u539f\u751f\u62a5\u544a",
+          "line": 1,
+          "quote": "{\"actual_configuration\":{\"id\":\"06cea8e8-0de7-4419-91be-f681b92c53fc\",\"revision\":1},\"calibration\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314\",\"revision\":1},\"cavity\":\"A\",\"conditions\":\"23 C, dry\",\"environment\":\"Explicit synthetic local lab\",\"equipment\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:2;quote_sha256:15491158ce0395acb0e5ae0db1da190d55e370b33e0fc51ebb7ae336cb790eaa\",\"revision\":1},\"equipment_label\":\"\u72ec\u7acb\u5408\u6210\u8bbe\u5907\uff0c\u4e0d\u662f\u771f\u5b9e\u4eea\u5668\",\"executor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"format\":\"pdos-measurement-jsonl-v1\",\"item_id\":\"dimension\",\"method\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314\",\"revision\":1},\"note\":\"Explicit synthetic observation; exact uploaded bytes, not real instrument data\",\"observed_at\":\"2026-10-03T06:07:54.344529+00:00\",\"observed_timezone\":\"UTC\",\"raw_value\":\"11.0000\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\",\"sample_id\":\"1672638f-6bb0-4e51-84a4-4573afb32ebb\",\"sample_revision\":1,\"unit\":\"mm\"}",
+          "source": {
+            "id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:f519ff596ef54de6ad2a96e274121e05ae7ed9498d38804ef836431fbc8c5bef"
+          }
+        },
+        {
+          "artifact_id": "b49ea770-1f55-4e35-ac30-d7075a691b41",
+          "revision": 1,
+          "title": "Wave15 \u00b7 event-results",
+          "line": 1,
+          "quote": "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"occurred_at\":\"2026-10-03T06:08:50.367611+00:00\",\"operation\":\"test.results.import\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"request_id\":\"e774b968-dc18-449c-81d2-954a1c2f7a7d\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\"}",
+          "source": {
+            "id": "b49ea770-1f55-4e35-ac30-d7075a691b41",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:42086a777d5ef2aea5bf502325c60647ecba25c3df65081a1ac23624fd77fe8c"
+          }
+        },
+        {
+          "artifact_id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+          "revision": 1,
+          "title": "Wave15 \u00b7 event-sample-ready",
+          "line": 1,
+          "quote": "{\"actual_configuration_id\":\"06cea8e8-0de7-4419-91be-f681b92c53fc\",\"build_id\":\"0c16c8b2-9f71-4df2-85db-36aec7945b34\",\"lot_id\":\"ea93ce5e-fbc0-4c32-9507-21f98a4f97c4\",\"occurred_at\":\"2026-10-03T05:49:18.688546+00:00\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"sample_id\":\"1672638f-6bb0-4e51-84a4-4573afb32ebb\",\"state\":\"ready\"}",
+          "source": {
+            "id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:6ca6c201666d4fca4e06a37db64036e2ca460bac1ac951c02235cdd914d7569c"
+          }
+        },
+        {
+          "artifact_id": "ed40676c-af0f-460c-b26b-f38b5d4e6fe8",
+          "revision": 1,
+          "title": "Wave15 \u00b7 event-offer",
+          "line": 1,
+          "quote": "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"occurred_at\":\"2026-10-03T05:53:10.925798+00:00\",\"operation\":\"verification.handoff.offer\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"request_id\":\"e774b968-dc18-449c-81d2-954a1c2f7a7d\"}",
+          "source": {
+            "id": "ed40676c-af0f-460c-b26b-f38b5d4e6fe8",
+            "revision": 1,
+            "kind": "artifact",
+            "position": "line:1;quote_sha256:424ff621c81a10836161025640986dd56b20b467b50b631580c049f46c957b50"
+          }
+        }
+      ],
+      "source_options_has_more": false,
+      "historical_root_cause_limit": "\u6839\u56e0\u4ec5\u6267\u884c\u63aa\u65bd\u4e2d\u53ef\u51b3\u5b9a\uff1b\u5168\u90e8\u5b8c\u6210\u540e\u4e0d\u80fd\u8865\u529e\u6839\u56e0\u3002"
+    },
+    "current": {
+      "version_id": "8d8901e6-c051-406e-9db4-8e6c99e4d8e4",
+      "revision": 4
+    },
+    "basis": {
+      "scope": {
+        "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+        "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+        "project_id": "4c1cd1b0-97b9-4e10-aaf6-b06a962e33e7"
+      },
+      "issue_id": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+      "issue_version_id": "8d8901e6-c051-406e-9db4-8e6c99e4d8e4",
+      "issue_revision": 4,
+      "capa_id": "3352bbb0-fd50-4b5b-b1ef-2dd87ef79405",
+      "purpose": "\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09",
+      "owner_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+      "visibility": "private",
+      "nature": "synthetic",
+      "requirement": {
+        "method": "\u7531\u72ec\u7acb\u5177\u540d\u4eba\u5458\u5f62\u6210\u65b0\u8bf7\u6c42\u4e0e\u65b0\u8fd0\u884c\uff0c\u6838\u5bf9\u914d\u7f6e\u3001\u65b9\u6cd5\u3001\u5de5\u51b5\u548c\u539f\u62a5\u544a\u540e\u590d\u9a8c\u3002",
+        "acceptance": "\u5c3a\u5bf8\u57289.5\u81f310.5 mm\u8303\u56f4\u5185\uff0c\u5de5\u51b523 C\u3001dry\uff1b\u8986\u76d6\u56fa\u5b9a\u539f\u5931\u8d25\u53ca\u72ec\u7acb\u89c2\u5bdf\u8981\u6c42\u3002",
+        "observation_until": "2026-10-04T06:00:00Z",
+        "required_failure_ids": [
+          "e218c8dc607a59699e0e024c43409bdbb238821bd9a2df45c48d1a8cb2757730"
+        ]
+      },
+      "requirement_sha256": "8f17c9150d00edda090aea360127642115e48a524a03689e2d6c99124f838f63",
+      "failure_ids": [
+        "e218c8dc607a59699e0e024c43409bdbb238821bd9a2df45c48d1a8cb2757730"
+      ],
+      "failure_basis_sha256": "9fabf8175ea1255937e9da96530f23a3d3e6c5625f2e0df35cb0ad0761ee3dfb",
+      "actions": [
+        {
+          "action_id": "d6437922-f362-4c7a-9827-a17a7ea70dc7",
+          "executor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+          "action_sha256": "b864af7172d72c3da439b6469e4c63bd7f7ce3b835be22294dbf853a2bca8899",
+          "completion_sha256": null,
+          "completed_at": null
+        }
+      ],
+      "root_cause_sha256": null,
+      "sources": [
+        {
+          "id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:066a7ea38663d4023afe3438c657de8bfeeafd62da4784cea5da9d14f8aa20fe"
+        },
+        {
+          "id": "1f09718c-b2d4-4740-a8f5-29e73df19a2d",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:a9064d596152da0eaf840c4107ace6b3d910b933cf226bc815c82f87633d4c9e"
+        },
+        {
+          "id": "414b170e-1e31-4bc1-a72a-e8409f5eac78",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:7965af50d3b2ec822a4bec1f26250e273440ecd9987fbe48baeb4099cb52bead"
+        },
+        {
+          "id": "443579e4-fd0a-4d00-955e-e8ee5da3551e",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:e8e932225da3e2b42f195fd9b11232bbca3cde30893ca10e2f7651ffee8188d0"
+        },
+        {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:e9c775c84611994ccb49ef47b91074f288ad1b45f5a27dd3f14e482e6aa5a118"
+        },
+        {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:15491158ce0395acb0e5ae0db1da190d55e370b33e0fc51ebb7ae336cb790eaa"
+        },
+        {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314"
+        },
+        {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:4;quote_sha256:283bb339f09b9cf202fd45a1c9c78c6ffe8e32527bd31870b94121579aebe155"
+        },
+        {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:5;quote_sha256:40926e24fe2710bf2600e889e00a3952ad876dc77ef71634b751a8425d812c97"
+        },
+        {
+          "id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:0ccc5f872405fcb0cf0cd2afaa97d4d45435f4be264530db26cd500dc5871aa5"
+        },
+        {
+          "id": "89b85985-7de0-441a-8f2a-1fae0ca10ab4",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:42ca9df68885ba22e92f1ae3ccc5efb95e76d9880e4e6b068a2af22022401486"
+        },
+        {
+          "id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:f519ff596ef54de6ad2a96e274121e05ae7ed9498d38804ef836431fbc8c5bef"
+        },
+        {
+          "id": "b49ea770-1f55-4e35-ac30-d7075a691b41",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:42086a777d5ef2aea5bf502325c60647ecba25c3df65081a1ac23624fd77fe8c"
+        },
+        {
+          "id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:6ca6c201666d4fca4e06a37db64036e2ca460bac1ac951c02235cdd914d7569c"
+        },
+        {
+          "id": "ed40676c-af0f-460c-b26b-f38b5d4e6fe8",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:424ff621c81a10836161025640986dd56b20b467b50b631580c049f46c957b50"
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "1f09718c-b2d4-4740-a8f5-29e73df19a2d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "33fa986c-bb30-44db-b7ef-3ab36a0344b8",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "414b170e-1e31-4bc1-a72a-e8409f5eac78",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "443579e4-fd0a-4d00-955e-e8ee5da3551e",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "89b85985-7de0-441a-8f2a-1fae0ca10ab4",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "b49ea770-1f55-4e35-ac30-d7075a691b41",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "ed40676c-af0f-460c-b26b-f38b5d4e6fe8",
+          "expected_revision": 1
+        }
+      ],
+      "source_basis_sha256": "ffa36d1584bbcc213cb5be4ab347868edc55553bafb3503fa38769715390037b",
+      "basis_sha256": "9616abb14f83ec9f625df533721faf111658c26179d535fdeb85e42c88dd4092"
+    },
+    "operations": {
+      "quality.issue.root_cause.decide": {
+        "allowed": true,
+        "authority": {
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "4c1cd1b0-97b9-4e10-aaf6-b06a962e33e7"
+          },
+          "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+          "operation": "quality.issue.root_cause.decide",
+          "purpose": "\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09",
+          "authorized": true,
+          "roles": [
+            "quality"
+          ],
+          "qualified": true,
+          "reason_codes": [],
+          "fact_refs": [
+            {
+              "id": "b586c89f-0fa8-457d-965a-03d83e469cde",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "dd9b085c-66fb-460c-9a5e-df46cfa336e4",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "4b8bae74-6b78-42fe-8428-03aabbe293db",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "cc5458ca-21bf-4340-b9ea-d78ad6ad0df7",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "dfad93f5-79f9-4fae-80c6-6fc93930005e",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "33c14272-b175-4a84-a731-c85a43843755",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "98148977-f735-4ac2-a030-f42b279f241c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "31554143-f673-4516-8bc0-b3113ef937d7",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "f305a341-1619-4fbf-a5f2-1d7a47aacd2c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "8393345d-59db-461f-8ec5-3bc3b03ca776",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "d52ddbc3-f3c0-4b2d-97cf-048e64b5450d",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "01ea97d4-ba38-4424-9bea-7c66242b9a9c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "4ea80bc9-db2c-455b-899d-3b17275d70e1",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "6ddf5b22-6e98-427f-8a86-b90a95e497fc",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "b57279f4-b098-43a3-90e1-04684cd31813",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "24ac71d0-51b2-4ed9-81a2-f641ef4da892",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "23ca74f6-c2e9-46f1-b73a-abcc9d48b2f5",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "c4ef0d7d-ee5a-44e0-8e97-1c142f74e26a",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            }
+          ],
+          "facts_revision": "9aebeeb1f2820bf5045f7010f3928f5aa0d55b3dee6155c34b661d8c470eddbd",
+          "valid_until": "2026-10-04T08:06:00+00:00",
+          "synthetic": true,
+          "required_source_read_set": [
+            {
+              "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+              "expected_revision": 1
+            },
+            {
+              "artifact_id": "df562ff4-c366-4e23-90a0-52047fd4ba25",
+              "expected_revision": 1
+            }
+          ]
+        },
+        "reason_codes": []
+      },
+      "quality.capa.actions.complete": {
+        "allowed": true,
+        "authority": {
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "4c1cd1b0-97b9-4e10-aaf6-b06a962e33e7"
+          },
+          "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+          "operation": "quality.capa.actions.complete",
+          "purpose": "\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09",
+          "authorized": true,
+          "roles": [
+            "quality"
+          ],
+          "qualified": true,
+          "reason_codes": [],
+          "fact_refs": [
+            {
+              "id": "b586c89f-0fa8-457d-965a-03d83e469cde",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "dd9b085c-66fb-460c-9a5e-df46cfa336e4",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "4b8bae74-6b78-42fe-8428-03aabbe293db",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "cc5458ca-21bf-4340-b9ea-d78ad6ad0df7",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "dfad93f5-79f9-4fae-80c6-6fc93930005e",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "33c14272-b175-4a84-a731-c85a43843755",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "98148977-f735-4ac2-a030-f42b279f241c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "31554143-f673-4516-8bc0-b3113ef937d7",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "f305a341-1619-4fbf-a5f2-1d7a47aacd2c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "8393345d-59db-461f-8ec5-3bc3b03ca776",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "d52ddbc3-f3c0-4b2d-97cf-048e64b5450d",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "01ea97d4-ba38-4424-9bea-7c66242b9a9c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "4ea80bc9-db2c-455b-899d-3b17275d70e1",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "6ddf5b22-6e98-427f-8a86-b90a95e497fc",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "b57279f4-b098-43a3-90e1-04684cd31813",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "24ac71d0-51b2-4ed9-81a2-f641ef4da892",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "23ca74f6-c2e9-46f1-b73a-abcc9d48b2f5",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "c4ef0d7d-ee5a-44e0-8e97-1c142f74e26a",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            }
+          ],
+          "facts_revision": "a214b8c2ba34a90423449edda721dd2c5ca33482edb890f74bd95e79673743c4",
+          "valid_until": "2026-10-04T08:06:00+00:00",
+          "synthetic": true,
+          "required_source_read_set": [
+            {
+              "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+              "expected_revision": 1
+            },
+            {
+              "artifact_id": "df562ff4-c366-4e23-90a0-52047fd4ba25",
+              "expected_revision": 1
+            }
+          ]
+        },
+        "reason_codes": []
+      },
+      "quality.capa.followup.link": {
+        "allowed": false,
+        "authority": {
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "4c1cd1b0-97b9-4e10-aaf6-b06a962e33e7"
+          },
+          "subject_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+          "operation": "quality.capa.followup.link",
+          "purpose": "\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09",
+          "authorized": true,
+          "roles": [
+            "quality"
+          ],
+          "qualified": true,
+          "reason_codes": [],
+          "fact_refs": [
+            {
+              "id": "b586c89f-0fa8-457d-965a-03d83e469cde",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "dd9b085c-66fb-460c-9a5e-df46cfa336e4",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "4b8bae74-6b78-42fe-8428-03aabbe293db",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "cc5458ca-21bf-4340-b9ea-d78ad6ad0df7",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "dfad93f5-79f9-4fae-80c6-6fc93930005e",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "33c14272-b175-4a84-a731-c85a43843755",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "98148977-f735-4ac2-a030-f42b279f241c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "31554143-f673-4516-8bc0-b3113ef937d7",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "f305a341-1619-4fbf-a5f2-1d7a47aacd2c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "8393345d-59db-461f-8ec5-3bc3b03ca776",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "d52ddbc3-f3c0-4b2d-97cf-048e64b5450d",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "01ea97d4-ba38-4424-9bea-7c66242b9a9c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "4ea80bc9-db2c-455b-899d-3b17275d70e1",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "6ddf5b22-6e98-427f-8a86-b90a95e497fc",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "b57279f4-b098-43a3-90e1-04684cd31813",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "24ac71d0-51b2-4ed9-81a2-f641ef4da892",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "23ca74f6-c2e9-46f1-b73a-abcc9d48b2f5",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "c4ef0d7d-ee5a-44e0-8e97-1c142f74e26a",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            }
+          ],
+          "facts_revision": "9e1886d4fb37d65aa179c917a36c6cca8dbeccafcc2fde005bad4b94cdeb0f26",
+          "valid_until": "2026-10-04T08:06:00+00:00",
+          "synthetic": true,
+          "required_source_read_set": [
+            {
+              "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+              "expected_revision": 1
+            },
+            {
+              "artifact_id": "df562ff4-c366-4e23-90a0-52047fd4ba25",
+              "expected_revision": 1
+            }
+          ]
+        },
+        "reason_codes": [
+          "NO_VERIFIED_OUTPUT_OPTIONS"
+        ]
+      }
+    },
+    "actions": [
+      {
+        "action_id": "d6437922-f362-4c7a-9827-a17a7ea70dc7",
+        "executor_id": "77465957-a05e-4663-85bf-34cd39ac43dd",
+        "label": "\u8c03\u67e5\u56fa\u5b9a\u5de5\u51b5\u4e0b\u7684\u5c3a\u5bf8\u504f\u5dee\uff0c\u8865\u9f50\u65b9\u6cd5\u4e0e\u6837\u4ef6\u4f9d\u636e\uff1b\u5c1a\u672a\u6267\u884c\u6b63\u5f0f\u914d\u7f6e\u5207\u6362\u3002",
+        "completion": null,
+        "can_prepare_completion": true,
+        "can_complete": false,
+        "completion_verified": null,
+        "reason_codes": [
+          "STRUCTURED_COMPLETION_REQUIRED"
+        ],
+        "blockers": [
+          {
+            "code": "STRUCTURED_COMPLETION_REQUIRED",
+            "detail": "\u987b\u63d0\u4ea4\u672c\u4eba\u5b9e\u9645\u5b8c\u6210\u6574\u884c\u539f\u6587\uff0c\u5e76\u6838\u5bf9\u8c03\u67e5\u653f\u7b56/\u6b63\u5f0f\u5b9e\u65bdowner\u8bc1\u660e\u3002"
+          }
+        ]
+      }
+    ],
+    "output_options": [],
+    "links": [],
+    "candidates": [],
+    "required_source_read_set": [
+      {
+        "artifact_id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "1f09718c-b2d4-4740-a8f5-29e73df19a2d",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "33fa986c-bb30-44db-b7ef-3ab36a0344b8",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "414b170e-1e31-4bc1-a72a-e8409f5eac78",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "443579e4-fd0a-4d00-955e-e8ee5da3551e",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "89b85985-7de0-441a-8f2a-1fae0ca10ab4",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "b49ea770-1f55-4e35-ac30-d7075a691b41",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "df562ff4-c366-4e23-90a0-52047fd4ba25",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "ed40676c-af0f-460c-b26b-f38b5d4e6fe8",
+        "expected_revision": 1
+      }
+    ],
+    "source_options": [
+      {
+        "title": "Wave15 \u00b7 policy-source",
+        "source": {
+          "id": "1675a7f4-0d28-4149-9415-abf5b8f093fb",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:066a7ea38663d4023afe3438c657de8bfeeafd62da4784cea5da9d14f8aa20fe"
+        },
+        "quote": "{\"approval\":{\"approved_by\":\"\u5408\u6210\u5177\u540d\u653f\u7b56\u53d1\u5e03\uff0c\u4e0d\u662f\u771f\u5b9e\u653f\u7b56\",\"external_id\":\"wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-policy-approval\",\"issued_at\":\"2026-10-03T06:12:10.850721+00:00\",\"system\":\"explicit-local-synthetic-wave15\",\"version\":\"v1\"},\"external_id\":\"wave15-ba90e412-b823-44fa-8b86-5f0a853ded6e-quality-policy\",\"independent_verification\":true,\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"risk\":\"high\",\"state\":\"active\",\"valid_from\":\"2026-10-03T06:11:10.850721+00:00\",\"valid_until\":\"2026-10-04T06:12:10.850721+00:00\"}"
+      },
+      {
+        "title": "Wave15 \u00b7 event-accept",
+        "source": {
+          "id": "1f09718c-b2d4-4740-a8f5-29e73df19a2d",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:a9064d596152da0eaf840c4107ace6b3d910b933cf226bc815c82f87633d4c9e"
+        },
+        "quote": "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"occurred_at\":\"2026-10-03T05:54:08.815629+00:00\",\"operation\":\"verification.handoff.accept\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"request_id\":\"e774b968-dc18-449c-81d2-954a1c2f7a7d\"}"
+      },
+      {
+        "title": "Wave15 \u00b7 event-promise",
+        "source": {
+          "id": "414b170e-1e31-4bc1-a72a-e8409f5eac78",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:7965af50d3b2ec822a4bec1f26250e273440ecd9987fbe48baeb4099cb52bead"
+        },
+        "quote": "{\"executor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"occurred_at\":\"2026-10-03T06:04:53.481060Z\",\"operation\":\"verification.schedule.promise\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"request_id\":\"e774b968-dc18-449c-81d2-954a1c2f7a7d\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\"}"
+      },
+      {
+        "title": "Wave15 \u00b7 event-end",
+        "source": {
+          "id": "443579e4-fd0a-4d00-955e-e8ee5da3551e",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:e8e932225da3e2b42f195fd9b11232bbca3cde30893ca10e2f7651ffee8188d0"
+        },
+        "quote": "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"occurred_at\":\"2026-10-03T06:08:50.045167+00:00\",\"operation\":\"test.run.end\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"request_id\":\"e774b968-dc18-449c-81d2-954a1c2f7a7d\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\"}"
+      },
+      {
+        "title": "Wave15 \u00b7 independent-input",
+        "source": {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:e9c775c84611994ccb49ef47b91074f288ad1b45f5a27dd3f14e482e6aa5a118"
+        },
+        "quote": "Synthetic requirement is unverified"
+      },
+      {
+        "title": "Wave15 \u00b7 independent-input",
+        "source": {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:15491158ce0395acb0e5ae0db1da190d55e370b33e0fc51ebb7ae336cb790eaa"
+        },
+        "quote": "Synthetic drawing, dimension in mm; numeric limits 9.5 to 10.5 at 23 C, dry."
+      },
+      {
+        "title": "Wave15 \u00b7 independent-input",
+        "source": {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314"
+        },
+        "quote": "Synthetic method and material information; no production qualification."
+      },
+      {
+        "title": "Wave15 \u00b7 independent-input",
+        "source": {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:4;quote_sha256:283bb339f09b9cf202fd45a1c9c78c6ffe8e32527bd31870b94121579aebe155"
+        },
+        "quote": "Synthetic containment observed by the named person."
+      },
+      {
+        "title": "Wave15 \u00b7 independent-input",
+        "source": {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:5;quote_sha256:40926e24fe2710bf2600e889e00a3952ad876dc77ef71634b751a8425d812c97"
+        },
+        "quote": "Synthetic hypothesis only, not a root cause."
+      },
+      {
+        "title": "Wave15 \u00b7 event-containment",
+        "source": {
+          "id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:0ccc5f872405fcb0cf0cd2afaa97d4d45435f4be264530db26cd500dc5871aa5"
+        },
+        "quote": "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"issue_id\":\"16ff0607-08f8-5e3c-9b74-b48999791b00\",\"occurred_at\":\"2026-10-03T06:25:03.160086+00:00\",\"operation\":\"quality.issue.containment.record\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"text\":\"\u72ec\u7acb\u5408\u6210\u6837\u4ef6\u4ec5\u4fdd\u7559\u5185\u90e8\u8c03\u67e5\uff0c\u975e\u91ca\u653e/\u5173\u95ed\"}"
+      },
+      {
+        "title": "Wave15 \u00b7 event-run-start",
+        "source": {
+          "id": "89b85985-7de0-441a-8f2a-1fae0ca10ab4",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:42ca9df68885ba22e92f1ae3ccc5efb95e76d9880e4e6b068a2af22022401486"
+        },
+        "quote": "{\"executor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"occurred_at\":\"2026-10-03T06:05:14.686991+00:00\",\"operation\":\"test.run.start\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"request_id\":\"e774b968-dc18-449c-81d2-954a1c2f7a7d\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\"}"
+      },
+      {
+        "title": "Wave15 \u72ec\u7acb\u5408\u621011.0000\u539f\u751f\u62a5\u544a",
+        "source": {
+          "id": "a8f1f043-76ae-4490-88e7-ec02403c1c82",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:f519ff596ef54de6ad2a96e274121e05ae7ed9498d38804ef836431fbc8c5bef"
+        },
+        "quote": "{\"actual_configuration\":{\"id\":\"06cea8e8-0de7-4419-91be-f681b92c53fc\",\"revision\":1},\"calibration\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314\",\"revision\":1},\"cavity\":\"A\",\"conditions\":\"23 C, dry\",\"environment\":\"Explicit synthetic local lab\",\"equipment\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:2;quote_sha256:15491158ce0395acb0e5ae0db1da190d55e370b33e0fc51ebb7ae336cb790eaa\",\"revision\":1},\"equipment_label\":\"\u72ec\u7acb\u5408\u6210\u8bbe\u5907\uff0c\u4e0d\u662f\u771f\u5b9e\u4eea\u5668\",\"executor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"format\":\"pdos-measurement-jsonl-v1\",\"item_id\":\"dimension\",\"method\":{\"id\":\"4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3\",\"kind\":\"artifact\",\"position\":\"line:3;quote_sha256:0f86f6b9a46f821f780a16841b50c3b9aa911b11d97c63d049c6fc307f48b314\",\"revision\":1},\"note\":\"Explicit synthetic observation; exact uploaded bytes, not real instrument data\",\"observed_at\":\"2026-10-03T06:07:54.344529+00:00\",\"observed_timezone\":\"UTC\",\"raw_value\":\"11.0000\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\",\"sample_id\":\"1672638f-6bb0-4e51-84a4-4573afb32ebb\",\"sample_revision\":1,\"unit\":\"mm\"}"
+      },
+      {
+        "title": "Wave15 \u00b7 event-results",
+        "source": {
+          "id": "b49ea770-1f55-4e35-ac30-d7075a691b41",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:42086a777d5ef2aea5bf502325c60647ecba25c3df65081a1ac23624fd77fe8c"
+        },
+        "quote": "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"occurred_at\":\"2026-10-03T06:08:50.367611+00:00\",\"operation\":\"test.results.import\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"request_id\":\"e774b968-dc18-449c-81d2-954a1c2f7a7d\",\"run_id\":\"055a9f66-8e2a-4900-87da-b1c9666549af\"}"
+      },
+      {
+        "title": "Wave15 \u00b7 event-sample-ready",
+        "source": {
+          "id": "d8449ee1-ec17-41a9-bc2c-e91a8aeec9ed",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:6ca6c201666d4fca4e06a37db64036e2ca460bac1ac951c02235cdd914d7569c"
+        },
+        "quote": "{\"actual_configuration_id\":\"06cea8e8-0de7-4419-91be-f681b92c53fc\",\"build_id\":\"0c16c8b2-9f71-4df2-85db-36aec7945b34\",\"lot_id\":\"ea93ce5e-fbc0-4c32-9507-21f98a4f97c4\",\"occurred_at\":\"2026-10-03T05:49:18.688546+00:00\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"sample_id\":\"1672638f-6bb0-4e51-84a4-4573afb32ebb\",\"state\":\"ready\"}"
+      },
+      {
+        "title": "Wave15 \u00b7 event-offer",
+        "source": {
+          "id": "ed40676c-af0f-460c-b26b-f38b5d4e6fe8",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:424ff621c81a10836161025640986dd56b20b467b50b631580c049f46c957b50"
+        },
+        "quote": "{\"actor_id\":\"77465957-a05e-4663-85bf-34cd39ac43dd\",\"occurred_at\":\"2026-10-03T05:53:10.925798+00:00\",\"operation\":\"verification.handoff.offer\",\"purpose\":\"\u5185\u90e8\u95ee\u9898\u8c03\u67e5\uff1a\u72ec\u7acb\u5355\u6a21\u7a74A\u5c3a\u5bf8\u590d\u6d4b\uff08\u5408\u6210\uff09\",\"request_id\":\"e774b968-dc18-449c-81d2-954a1c2f7a7d\"}"
+      }
+    ],
+    "integration": {
+      "effectiveness": false,
+      "close": false,
+      "missing": [
+        {
+          "code": "CANDIDATE_PERSISTENCE_NOT_ENABLED",
+          "detail": "\u5c1a\u65e0\u53d7\u63a7\u5019\u9009\u4fdd\u5b58\u53ca\u4e13\u4e1a\u72ec\u7acb\u9a8c\u8bc1\u63a5\u53e3\u3002"
+        },
+        {
+          "code": "PAIRED_FORMAL_OWNER_PROOF_NOT_CONFIGURED",
+          "detail": "\u7531\u5f00\u6d4b\u6216\u7ed3\u679c\u529e\u7406\u63a8\u8fdb\u3001\u4fdd\u5b58\u56de\u6267\u5f52\u5c5e\u6d4b\u8bd5\u8f6e\u6b21\u7684\u8bf7\u6c42\u7248\u672c\u6682\u4e0d\u80fd\u9009\u62e9\uff1b\u672c\u6b21\u53ef\u9009\u62e9\u5177\u6709\u76f4\u63a5\u4fdd\u5b58\u56de\u6267\u7684\u5f53\u524d\u65b0\u8bf7\u6c42\uff0c\u4e0d\u56de\u9000\u5df2\u6709\u8bf7\u6c42\u7248\u672c\u3002"
+        }
+      ],
+      "links": {
+        "has_more": false,
+        "unavailable_count": 0
+      }
+    }
+  },
+  "read_only": true,
+  "loopback_direct": true
+}

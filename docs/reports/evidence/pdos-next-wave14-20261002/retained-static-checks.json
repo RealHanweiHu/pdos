@@ -1,0 +1,44 @@
+{
+  "observed_at": "2026-10-03T03:22:32.900809+00:00",
+  "ownership": {
+    "implementation_changes": false,
+    "test_file": "pdos-next/server/tests/test_retained_execution.py",
+    "shared_fixture_changes": false
+  },
+  "verification": {
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "py_compile": "passed",
+    "pytest_executed_by_subagent": false,
+    "database_accessed_by_subagent": false,
+    "measurement_87_pure_rerun": false,
+    "postgresql_status": "pending_root_execution",
+    "pg_test_functions": 6
+  },
+  "test_nodeids": [
+    "tests/test_retained_execution.py::test_retained_saved_start_with_simulated_late_read_clock_and_no_new_permission",
+    "tests/test_retained_execution.py::test_retained_proof_rejects_changed_fixed_run_basis_even_with_valid_snapshot_hash",
+    "tests/test_retained_execution.py::test_retained_proof_rechecks_source_terminal_withdrawal_and_resource_sample_epochs",
+    "tests/test_retained_execution.py::test_retained_proof_rejects_issuer_disable_restore_aba_without_new_effects",
+    "tests/test_retained_execution.py::test_retained_proof_rejects_original_professional_qualification_revoke_restore_aba",
+    "tests/test_retained_execution.py::test_retained_proof_rejects_new_real_observation_of_configuration_deviation"
+  ],
+  "hashes_observed_not_root_final_candidate": {
+    "pdos-next/server/tests/test_retained_execution.py": "dde53c854bad71b6490e6744b838247197829144a088fd2c6acfb7f0ff3efc73",
+    "pdos-next/server/pdos_next/domain/test_resources/retained.py": "abf1c6d4599b3a5c13f113666b1971e85bfb173b5c27e1b34e1e17197517e0de",
+    "pdos-next/server/pdos_next/domain/test_resources/service.py": "d40119ba12f5504ffe9f2259e4bf9504ad2060829112cfbfecdd6b08a7a608c1",
+    "pdos-next/server/pdos_next/domain/professional_authority/service.py": "c017bb3221dc1abbb9bf764a0a5c90863157ce39ba75ff4c804e04442aa5e8ee",
+    "pdos-next/server/pdos_next/domain/build_start/service.py": "d6bd8a8ad35f450b28bba6cc0fe8811c7d69f998778452c2092118bf77ab794d",
+    "pdos-next/server/pdos_next/domain/sample_handoff/service.py": "e1764354eff6cc1e3d83c833cfb18fd0d023b9f6f2814982a288ca2d9f743156",
+    "pdos-next/server/pdos_next/domain/verification_handoff/service.py": "d1e222468c379366cd7eeacdeec110ea75dcd9720051990163111ea58592c424",
+    "pdos-next/server/pdos_next/domain/verification_front/service.py": "aed530f151325e3a74fbe60d12f4b52861890065f2f144704956cb0c866d87c6",
+    "pdos-next/server/migrations/versions/0020_artifact_withdrawal_terminal.py": "2e11d268bbe2e9ecbe6c027c3b73d3598c1bf88a4289b6be02d8e34d52f91828"
+  },
+  "limits": [
+    "All fixtures and external facts are synthetic.",
+    "The Start is saved by real API/UOW at real wall clock; later 41-minute eligibility is an explicitly simulated evaluator read clock.",
+    "No claim of real qualification natural-expiry acceptance or production enablement.",
+    "The root will independently validate real post-window report import.",
+    "This evidence does not state whole-repository validation or a completed Wave14."
+  ]
+}

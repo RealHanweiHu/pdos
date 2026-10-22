@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "feedback_id": "47e04c3f-65d0-5999-b1a4-bbaf2dc4dc41",
+  "receipt_id": "3caef6a5-3bdb-44b6-acb2-18b99057287c",
+  "fixed_native_impact_receipt": "b8b4096d-1267-42c9-bf80-95e6a6a79059",
+  "parent_revision": 2,
+  "responses": 2,
+  "parent_unchanged": true,
+  "model_calls": 0
+}

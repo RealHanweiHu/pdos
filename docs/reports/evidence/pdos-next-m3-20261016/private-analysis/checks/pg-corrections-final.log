@@ -1,0 +1,38 @@
+{"category_run_actual_model_scope_preserved": true, "wrong_source_model_rejected": true, "unsafe_downgrade_rejected": true, "forced_rls_restored": true}
+..
+=============================== warnings summary ===============================
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:369: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(rows)
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:409: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(subject.changed_rows)
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_inherit.py:197: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(subject.created_specs)
+
+tests/agent_kernel/test_private_analysis_pg.py::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result
+tests/agent_kernel/test_private_analysis_pg.py::test_private_bom_sources_require_existing_binding_and_unselected_blocks_stay_unread
+tests/agent_kernel/test_private_analysis_pg.py::test_private_bom_sources_require_existing_binding_and_unselected_blocks_stay_unread
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_private_analysis_pg.py: 18 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+2 passed, 7 deselected, 32 warnings in 48.34s

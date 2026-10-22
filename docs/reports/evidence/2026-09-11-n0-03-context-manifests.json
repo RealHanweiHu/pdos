@@ -1,0 +1,96 @@
+{
+  "date": "2026-09-11",
+  "scope": "budget-bound event ContextManifest, local runtime content bundle, actual admission and current direct knowledge verification",
+  "tests": {
+    "distinct_passed": 244,
+    "new_cases": 16,
+    "regression_cases": 228,
+    "independent_role_batch_passed": 153,
+    "shared_backend_batch_passed": 91,
+    "final_toolset_retest_passed": 36,
+    "formula": "153 + 91 = 244; focused repeats not counted",
+    "earlier_independent": {
+      "passed": 147,
+      "failed": 2
+    },
+    "earlier_shared": {
+      "passed": 90,
+      "failed": 1
+    }
+  },
+  "checks": {
+    "mypy_files": 6,
+    "ruff_files": 14,
+    "common_contract_artifacts": 4,
+    "runtime_contract_artifacts": 5,
+    "approved_manifests_unchanged": {
+      "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    },
+    "migration_ports_match_dba_template": true,
+    "dba_final_single_commit": true
+  },
+  "source_sha256": {
+    "server/app/ai/context_manifests.py": "cd9a8411064f45639dedd4dde85da25734b1e41a53f6458a96048e5d3854ec81",
+    "server/app/ai/model_budget.py": "580a43b62434d14939ed23e332a565bc0fdd294f2e936b6d42fdca238a71d017",
+    "server/app/ai/gateway.py": "d5c20f264dbe34de826e3e1721bcda61c66b8736b16b66ff63906d3ed06a6338",
+    "server/app/ai/executor.py": "520b90ad995ebc20d4ccae4ffb0c796d1c3e89c26a6d3e66a6ca4578b94ce7b6",
+    "server/app/ai/loop_policy.py": "43386f2fb2c29886299beb7b0d27d43d59d448434f0782033c4905d6d07173a5",
+    "server/app/db/schema.py": "731d405c377300faa79ef2613c18f8dc90a9a23aabad7ff07d8163c3752d493a",
+    "server/migrations/versions/0080_context_manifests.py": "b24dddffae2a74437a4174f100b60989ebd9fe9c60bd99361127e998a2f72150",
+    "infra/postgres/security/agent-runtime.sql": "b27c1549ef1ad013c324a0d09e08d7cd1212ce1bde97c6da7151de1e5b89fa5b",
+    "infra/postgres/security/agent-runtime-revert.sql": "32cf295809920516d030872a41d0654d0b012d1fd67335439b6f3ff1e5f6642d",
+    "server/tests/test_context_manifests.py": "447848cbb5a799a1ec83d9b08faa2546968f0add5a6c8a965930989507443ff6",
+    "server/tests/test_manifest_source_acl.py": "a8ee8c9d3851e279c64d45168ead2fdb0881b8a5ddbb31c1023a395d86b61cd0",
+    "server/tests/test_agent_tool_loop.py": "61c49cd0033806f58b7abec2fce77382b8bbbb20917c087a57dfac7942061f18",
+    "server/tests/test_agent_runtime_schema.py": "8a8dea6fac61713cd69061682011248ed5a0afc034a5607b147775347f9ca691",
+    "server/tests/test_agent_checkpoints.py": "e136bc4ac7944f85b93c28ab2fdca6cf439488991f55b6318ae62d1912ddd738",
+    "server/tests/test_tool_dispatch_intents.py": "d3113769f0d4a5083cd503fb9b3e3cc4e76bb61dfa5fe8ea7ca231fcd64daee3",
+    "server/tests/test_tool_observation_receipts.py": "6f0698cc759c3615870f1a4a1acef0ad689c83985ec223d6f5a745c0057d4746"
+  },
+  "log_sha256": {
+    "pdos-manifest-final.log": "f00a32ded5e908659c097c431eb26ccfc7df81cdc239d470f64208df19d1a568",
+    "pdos-manifest-shared-final.log": "786fd68c4b20393ebd829253129eb064c14c2e3b1bb73a0121b0e4b2390d6a05",
+    "pdos-manifest-toolset-final.log": "f2f8e144365551c25038f64bf94ca031541a7236c94f37bc16513dbc6c342c36",
+    "pdos-manifest-meter-gate.log": "3c0a5ce676cad0e1ed8c6befbf5d28626d5123ec7349305a6487881d11303e1a"
+  },
+  "database_verification": {
+    "57432": {
+      "database": "pdos_test",
+      "head": "0080_context_manifests",
+      "verified_function_sha256": {
+        "agent_manifest_sources_are_current": "b6f953adacb4ee012b15bafc6f6c709059b2b1d9001531be30b31dde43f34023",
+        "require_model_manifest": "411e79b86570c3415818fbd1f3dfc8932e2fcab596d1dd248c9bb06a1d873425",
+        "require_trace_manifests": "4334abe91670804b73ce658b281d161eb5f57da4d39eb31b7ad4932fda39685c"
+      },
+      "manifest_scoped_foreign_keys": 5,
+      "execution_bundle_jsonb": true
+    },
+    "57433": {
+      "database": "pdos_test",
+      "head": "0080_context_manifests",
+      "verified_function_sha256": {
+        "agent_manifest_sources_are_current": "b6f953adacb4ee012b15bafc6f6c709059b2b1d9001531be30b31dde43f34023",
+        "require_model_manifest": "411e79b86570c3415818fbd1f3dfc8932e2fcab596d1dd248c9bb06a1d873425",
+        "require_trace_manifests": "4334abe91670804b73ce658b281d161eb5f57da4d39eb31b7ad4932fda39685c"
+      },
+      "manifest_scoped_foreign_keys": 5,
+      "execution_bundle_jsonb": true
+    }
+  },
+  "dedicated_test_container": "pdos-manifest-test",
+  "dedicated_test_container_removed": true,
+  "no_external_model_or_embedding_calls": true,
+  "no_golden_writes": true,
+  "no_push_or_production_actions": true,
+  "n0_03_complete": false,
+  "limits": [
+    "event budget path only; application and Owner Manifest unfinished",
+    "local source and compiled config bundle is not full deployed environment or release approval",
+    "direct consumed memory verification does not complete derived source ACL",
+    "multi-anchor and user delegation unfinished",
+    "compaction, persistent waiting and intermediate recovery unfinished",
+    "paid tools and real embedding accounting unfinished",
+    "real purpose qualification and production adoption pending"
+  ]
+}

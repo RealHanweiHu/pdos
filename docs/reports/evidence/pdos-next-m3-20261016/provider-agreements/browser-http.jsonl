@@ -1,0 +1,15 @@
+{"method": "GET", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": null, "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": null, "actual_status": 200}
+{"method": "POST", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": "synthetic-browser-normal", "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": null, "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": null, "actual_status": 200}
+{"method": "POST", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": "synthetic-browser-normal", "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": null, "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": null, "actual_status": 200}
+{"method": "POST", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": "synthetic-browser-recovery", "actual_status": 200}
+{"method": "POST", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements/recover", "provider": "synthetic-browser-recovery", "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": null, "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": null, "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": null, "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": null, "actual_status": 200}
+{"method": "GET", "path": "/v1/categories/41232990-a38c-4cd2-b354-09d1a5bfc33b/provider-agreements", "provider": null, "actual_status": 200}

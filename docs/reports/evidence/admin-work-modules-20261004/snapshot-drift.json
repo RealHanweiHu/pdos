@@ -1,0 +1,8 @@
+{
+  "web_drift": [
+    "src/components/projects/project-workspace.test.tsx",
+    "src/components/ai/xiaopai-session.tsx",
+    "src/components/ai/xiaopai-session.test.tsx"
+  ],
+  "server_drift": []
+}

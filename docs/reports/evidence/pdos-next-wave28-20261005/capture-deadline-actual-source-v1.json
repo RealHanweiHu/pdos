@@ -1,0 +1,12 @@
+{
+  "status": "ACTUAL_SOURCE_APPLIED_PENDING_VALIDATION",
+  "source_baseline_sha256": "f5afbd459e1663041111f80b53157e1f84537c346eb7035de488d478f1a0d98c",
+  "only_existing_function_changed": "prepare_capture",
+  "files": {
+    "server/pdos_next/domain/change_execution/service.py": "1be0da78584fa45dbc769bd2b38e3b00e40affa1c8d86d55c9a8cef81596dae8",
+    "server/tests/test_change_capture_deadline.py": "f9de8410bf44ea12dc839c99260714a6e22f421050e4f7bf0b6fbfdea900dfe8"
+  },
+  "new_capture_deadline_shortened_only": true,
+  "old_capture_window_preserved": true,
+  "stage_all_files_verified": true
+}

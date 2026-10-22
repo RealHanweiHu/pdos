@@ -1,0 +1,61 @@
+{
+  "status": "APPLIED_NOT_YET_VERIFIED",
+  "five_files": [
+    {
+      "source": "pdos-next/.local/wave24-manufacturing-ui-staged/src/manufacturing-preparation.tsx",
+      "source_sha256": "03077296f698cdb02f953d14efeb95a2ff6321568446fb98af5c3dc0db4a90b4",
+      "target": "pdos-next/web/src/components/manufacturing-preparation/manufacturing-preparation.tsx",
+      "baseline_sha256": null,
+      "combined": "pdos-next/.local/wave24-quality-manufacturing-ui-combination-staged/web/src/components/manufacturing-preparation/manufacturing-preparation.tsx",
+      "combined_sha256": "03077296f698cdb02f953d14efeb95a2ff6321568446fb98af5c3dc0db4a90b4",
+      "transform": null,
+      "role": "C manufacturing component"
+    },
+    {
+      "source": "pdos-next/.local/wave24-manufacturing-ui-staged/src/manufacturing-preparation-contract.ts",
+      "source_sha256": "3d93807d8adbda140b8238c2051e9c607ced1848159ff640b69b2192bc567668",
+      "target": "pdos-next/web/src/components/manufacturing-preparation/manufacturing-preparation-contract.ts",
+      "baseline_sha256": null,
+      "combined": "pdos-next/.local/wave24-quality-manufacturing-ui-combination-staged/web/src/components/manufacturing-preparation/manufacturing-preparation-contract.ts",
+      "combined_sha256": "3d93807d8adbda140b8238c2051e9c607ced1848159ff640b69b2192bc567668",
+      "transform": null,
+      "role": "C manufacturing helper"
+    },
+    {
+      "source": "pdos-next/.local/wave24-manufacturing-ui-staged/tests/manufacturing-preparation.test.ts",
+      "source_sha256": "f1590a633d886ee94bb74d692e0a29f6fe6575948b7400f0aea060084fb12499",
+      "target": "pdos-next/web/src/components/manufacturing-preparation/manufacturing-preparation.test.ts",
+      "baseline_sha256": null,
+      "combined": "pdos-next/.local/wave24-quality-manufacturing-ui-combination-staged/web/src/components/manufacturing-preparation/manufacturing-preparation.test.ts",
+      "combined_sha256": "fc00837cbe0f81a2014ba90d8292c9ce9ec90e3d378915aed6074ddafb5344b5",
+      "transform": {
+        "from": "\"../src/manufacturing-preparation-contract\"",
+        "to": "\"./manufacturing-preparation-contract\""
+      },
+      "role": "C frozen test import relocation"
+    },
+    {
+      "source": "pdos-next/.local/wave24-manufacturing-ui-staged/checks/workspace.proposed.txt",
+      "source_sha256": "b3b1e5f5484672ec2eb5005ac0441997cc7f11e611161ab2425401193face1b6",
+      "target": "pdos-next/web/src/components/workspace.tsx",
+      "baseline_sha256": "c003462188e93c29bb9b426748143af868b654912306daca6ce73142eefa088c",
+      "combined": "pdos-next/.local/wave24-quality-manufacturing-ui-combination-staged/web/src/components/workspace.tsx",
+      "combined_sha256": "b3b1e5f5484672ec2eb5005ac0441997cc7f11e611161ab2425401193face1b6",
+      "transform": null,
+      "role": "C workspace entry proposal"
+    },
+    {
+      "source": "pdos-next/.local/wave24-manufacturing-ui-staged/checks/route.proposed.txt",
+      "source_sha256": "43dd7b87c7e90ba8e6480e3166599542c63402b6ebaa1cc21757a18886f87e45",
+      "target": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "baseline_sha256": "380522fe9529c670e481782d00b73da9e1ad6d03871acd3c53c1cb232f26b9ff",
+      "combined": "pdos-next/.local/wave24-quality-manufacturing-ui-combination-staged/web/src/app/api/[...path]/route.ts",
+      "combined_sha256": "43dd7b87c7e90ba8e6480e3166599542c63402b6ebaa1cc21757a18886f87e45",
+      "transform": null,
+      "role": "C BFF proposal"
+    }
+  ],
+  "existing_B4_exact_preserved": true,
+  "source_map_sha256": "43bd9a5df2a822081c94410effd66ac91c94eeba34b4189849a2623ba4aecf58",
+  "database_http_browser_or_build_executed": false
+}

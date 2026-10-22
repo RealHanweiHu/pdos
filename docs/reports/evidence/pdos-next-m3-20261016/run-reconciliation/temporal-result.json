@@ -1,0 +1,64 @@
+{
+  "target": "127.0.0.1:61596",
+  "reused_existing_service": true,
+  "actual_durable_timer_seconds": 300,
+  "advance_attempts": [
+    {
+      "run_id": "c225e8f3-99ce-42b5-b2c0-7ea9af7c0255",
+      "attempt": 1
+    },
+    {
+      "run_id": "d64da77f-4b91-4bca-91cb-11d6839e503d",
+      "attempt": 1
+    },
+    {
+      "run_id": "d64da77f-4b91-4bca-91cb-11d6839e503d",
+      "attempt": 2
+    },
+    {
+      "run_id": "d64da77f-4b91-4bca-91cb-11d6839e503d",
+      "attempt": 3
+    }
+  ],
+  "results": [
+    {
+      "reconciliation": {
+        "business_receipt_count": 0,
+        "closed_at": "2026-10-16T22:44:41.168491+00:00",
+        "estimated_micro_usd": 1600,
+        "event_id": "5403f07f-561c-41dc-9c30-a810de2c0b35",
+        "external_effect_unknown": false,
+        "failed_call_count": 1,
+        "held_tokens": 0,
+        "initiated_by": null,
+        "may_start_new_request": true,
+        "mode": "automatic",
+        "original_cancel_epoch": 0,
+        "recovered_call_count": 0
+      },
+      "run_id": "c225e8f3-99ce-42b5-b2c0-7ea9af7c0255",
+      "status": "failed"
+    },
+    {
+      "reconciliation": {
+        "business_receipt_count": 0,
+        "closed_at": "2026-10-16T22:39:44.334436+00:00",
+        "estimated_micro_usd": 1600,
+        "event_id": "f6e07030-9b16-48a0-9c9c-7850c986796e",
+        "external_effect_unknown": false,
+        "failed_call_count": 1,
+        "held_tokens": 0,
+        "initiated_by": null,
+        "may_start_new_request": true,
+        "mode": "automatic",
+        "original_cancel_epoch": 0,
+        "recovered_call_count": 0
+      },
+      "run_id": "d64da77f-4b91-4bca-91cb-11d6839e503d",
+      "status": "failed"
+    }
+  ],
+  "real_model_calls": 0,
+  "real_external_calls": 0,
+  "own_worker_stopped": true
+}

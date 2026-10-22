@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-03T06:38:02.425126+00:00",
+  "status": "owned_source_fix_static_frozen_pending_root_rechecks",
+  "diagnosis_record": "graph-plan-node-diagnosis.json",
+  "previous_candidate": "backend-candidate-v2-source.json",
+  "previous_candidate_sha256": "d1823dafba0dbdefc495491b1445132a706693a0ee36b9254288f0d6572b3be8",
+  "changes": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/change_execution/graph.py",
+      "before_sha256": "5e42fb2ba4a953901cd15d8ffa14d9bc7e44ad73979b1a0de85742471cbebe1f",
+      "after_sha256": "3fe9b7988ee504f4310858754082baf565914457e1ca7518a5ccc00c7eb0b6bb"
+    },
+    {
+      "path": "pdos-next/server/tests/change_execution/test_transactions.py",
+      "before_sha256": "9726106e991f402ea6d695d0b55db42ecec1e8bfed40816d7791f422e981f317",
+      "after_sha256": "1f5e8aa3d7c102f5a76a407015a292498d9bfdf6389000258af2f802f5e624f5"
+    },
+    {
+      "path": "pdos-next/server/tests/change_execution/test_pure.py",
+      "before_sha256": "e185ec9f2945de53202595814377d2196c5a6ad706798964d9e6e66afd88f400",
+      "after_sha256": "daa6705911eb68bbbff6981305dfd4220df389a7b6ce1a7dbb50c60504c52422"
+    }
+  ],
+  "production_scope": [
+    "Only change_execution/graph.py changed; no schema, public registration, source policy, retained executor, shared source gate, or models changed",
+    "Build and Sample discovered Run neighbors use one exact Current join: tenant/product/request/run/version ID/revision; explicit fixed roots and FailureRef edges retain their selected historical revision",
+    "No status filter: a currently planned Run remains discovered and blocked by actual retained RUN_NOT_STARTED; owner_port=plan_not_integrated makes the missing Plan owner explicit",
+    "Only checked_at and execution_window_elapsed information fields excluded from immutable proof basis; source/fact/security/intent/effects preserved",
+    "All eight graph facets remain UNKNOWN and no formal Order/implementation/effectivity/release is authorized"
+  ],
+  "owned_checks": {
+    "ruff_format": "passed, final3files unchanged",
+    "ruff_check": "passed",
+    "ast_compile": "passed, three files",
+    "pure": {
+      "command": "PYTHONPATH=. .venv/bin/python -m pytest --noconftest -q tests/change_execution/test_pure.py",
+      "cwd": "pdos-next/server",
+      "passed": 29,
+      "failed": 0,
+      "seconds": 0.85,
+      "scope": "one owned pure module only, four new parameterized cases; fake SQL construction and controlled owner port branches, not actual DB joins/qualification"
+    }
+  },
+  "pg_assertion_extension": "Existing pg11 now verifies persisted Current Run exact reference, real saved plan v1 excluded from discovered graph, and all original fixed failed Run/Sample/Build references preserved. pg12 retains its actual impact terminal-Outbox rollback/retry chain.",
+  "required_root_rechecks": [
+    {
+      "node": "tests/change_execution/test_transactions.py::test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualification_aba",
+      "original_failed_log": "pg-11.log"
+    },
+    {
+      "node": "tests/change_execution/test_transactions.py::test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_keeps_capture",
+      "original_failed_log": "pg-12.log"
+    }
+  ],
+  "original_failure_log_hashes": {
+    "pg-11.log": "710e27152dd1fd5c369d2c097be021c7f2dd46b18fc502b913de0707a3f16807",
+    "pg-12.log": "983140a4c039d7d0597395ed5fedba7fc3f7522dfcc0727a448e37ea1c70c243"
+  },
+  "not_run": [
+    "DB",
+    "HTTP",
+    "public pytest",
+    "public build",
+    "browser",
+    "migration"
+  ],
+  "pending": "Root v3 manifest/delta and exact two PG nodes plus actual UI capture/impact/readback. Original v1/v2 logs/candidates retained; this record is not a replacement success or full new joint validation."
+}

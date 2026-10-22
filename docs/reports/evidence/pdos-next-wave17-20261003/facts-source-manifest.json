@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "scope": "wave17 staged facts only; not a public backend candidate",
+  "created_at": "2026-10-03T10:25:34.734889+00:00",
+  "source_files": {
+    "pdos-next/staging/wave17/facts.py": "5b711db84275b2c9e88d633a6e782fca63bee90f41207a1116a94f24676a017d",
+    "pdos-next/staging/wave17/test_facts.py": "bb676aa2cd1a0008c0c2100360515469ef8894dccc3ac6c9be54403d35b411d3",
+    "pdos-next/staging/wave17/facts-contract.md": "fbcf3b5bb959a556e8b801ab9436e4180700c6a9b54ef39769a9407b8f2292e1"
+  },
+  "read_only_dependencies": {
+    "pdos-next/staging/wave17/anchor.py": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+    "pdos-next/staging/wave17/lineage.py": "252a11c5a48f9d6db8a270e07f979ae1437de4156bd1b16d6fe4bd7dcea6dcce",
+    "pdos-next/staging/wave17/paired.py": "3cff4b1534533b2797f201faceede7e2a9514d84240ca06c6953b1de20dce750",
+    "pdos-next/server/pdos_next/domain/capa_verification/schemas.py": "d97373d13d9bcf3a0087ac301885dd649a92537d9d61e7f16fc69d88a0a2745f",
+    "pdos-next/server/pdos_next/domain/quality_issues/rules.py": "a6504baf0f28049dc0e97313c5c93ce275b86ee0fba7c628db2f90f186f1f92a",
+    "pdos-next/server/pdos_next/domain/verification/rules.py": "17c094742a07eed64ee5dbf9c9a628b611d5feeb2b157e52d0371f335ef280c7"
+  },
+  "source_stable_during_checks": true
+}

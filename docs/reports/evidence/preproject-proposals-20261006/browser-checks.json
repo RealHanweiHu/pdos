@@ -1,0 +1,33 @@
+{
+  "target": "localhost:3046 / API8846 / isolated59366 pdos_test",
+  "dataset": "synthetic",
+  "build": "frozen production candidate",
+  "provider_environment": "empty; no model/search credentials",
+  "checks": [
+    "login via existing synthetic account",
+    "one proposal page with editable narrative and sourced spec states",
+    "unsaved changes disable submit and navigation",
+    "save persists and returns v2",
+    "MODEL_NOT_AVAILABLE retains the saved narrative",
+    "named-review submit form",
+    "decision view shows options, questions and risks",
+    "light and dark desktop views"
+  ],
+  "limits": [
+    "No real model output",
+    "No real customer case",
+    "No named human Exit",
+    "No complete proposal narrow-screen walkthrough"
+  ],
+  "closeout": [
+    {
+      "port": 8846,
+      "pid": 80126
+    },
+    {
+      "port": 3046,
+      "pid": 80144
+    }
+  ],
+  "session_incident": "Initial test login on 127.0.0.1 shared the production-preview cookie host and required user re-login; subsequent QA used localhost; accounts and passwords were not modified."
+}

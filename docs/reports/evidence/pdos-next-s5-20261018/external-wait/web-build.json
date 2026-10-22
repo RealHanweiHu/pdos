@@ -1,0 +1,17 @@
+{
+  "exit": 0,
+  "output": "▲ Next.js 16.3.3 (webpack)\n✓ Running next.config.ts took 18ms\n\n  Creating an optimized production build ...\n✓ Compiled successfully in 15.4s\n  Running TypeScript ...\n  Finished TypeScript in 11.5s ...\n  Collecting page data using 9 workers ...\n  Generating static pages using 9 workers (0/5) ...\n  Generating static pages using 9 workers (1/5) \n  Generating static pages using 9 workers (2/5) \n  Generating static pages using 9 workers (3/5) \n✓ Generating static pages using 9 workers (5/5) in 654ms\n  Finalizing page optimization ...\n  Collecting build traces ...\n\nRoute (app)\n┌ ○ /\n├ ○ /_not-found\n├ ƒ /api/[...path]\n├ ƒ /api/local-session\n├ ƒ /api/v1/personal/attention\n├ ƒ /categories/[categoryId]/proposals/[proposalId]\n└ ƒ /plan\n\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand\n\n",
+  "snapshot": "/private/tmp/pdos-external-wait-kgkk6oxo",
+  "web_manifest": {
+    "pdos-next/web/src/lib/external-waits.ts": "8a0471f15ba8bbd40bc6d2576f58286331804d844fbff6fa0715bb77df319f02",
+    "pdos-next/web/src/lib/external-waits.test.ts": "c609ebd934f27fbc27e074dea823c087c691236f10cdbd3e7ef69fa3c91ae1a3",
+    "pdos-next/web/src/components/projects/external-waits.tsx": "8f24c681e8607f01e11342c4b6da9da67b2453e7ed78f85b7385467ff0d749c0",
+    "pdos-next/web/src/components/projects/external-waits.module.css": "495ce3ba86463c50bca7b2f8b2cbf556694776b5de8a767b6814585b19e15cee",
+    "pdos-next/web/src/components/projects/external-waits.test.mjs": "5a6b8adede74b4ea1450720204cf90ca3087258da2bbf36857c720520e704895",
+    "pdos-next/web/src/components/projects/project-work.tsx": "88c7a2423a0ddc6e965327b710b8c03773a4405ca17b1991fc9d155ba4834e48",
+    "pdos-next/web/src/components/projects/project-work.test.mjs": "1b8eb99586af72e7f9769ba5fc969d05219c509490c48d5de0b75cc70f9c239e",
+    "pdos-next/web/src/app/api/external-wait-route.test.mjs": "d84382f02126a5d683f6d3afedeb7b62eb1bab8c973877ca26c54f68e44cda43",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "358b39311967059d892578a188287afa45bfa078f33cd9d55b3637ac81660b4a"
+  },
+  "network_scope": "public font assets required by the existing Next build"
+}

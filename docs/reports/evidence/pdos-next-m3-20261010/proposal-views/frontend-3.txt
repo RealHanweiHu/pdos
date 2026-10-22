@@ -1,0 +1,39 @@
+✔ reads only scoped GETs and displays the server document identity (17.951791ms)
+✔ scope remount aborts old reads and ignores responses arriving after abort (1.815625ms)
+✔ a late view response cannot replace a newer selected view (3.700333ms)
+✔ same frozen identity refresh hides old sources and fetches fresh redaction (12.654ms)
+✔ failed document or view reads hide old success and retry first reloads the document (7.260459ms)
+✔ mismatched envelopes are unavailable and never trigger an automatic retry loop (3.396792ms)
+✔ view changes preserve G0 form values and the prepared command for same-key retry (15.943416ms)
+✔ foreground refresh is read-only, hidden pages do not refresh, and cleanup removes listeners (23.132625ms)
+✔ superseded same-scope reload cannot replace a newer source projection (11.437416ms)
+✔ late confirmed write from an unmounted scope does not reload or replace the new proposal (19.514084ms)
+✔ missing identity or unreadable frozen copy cannot fall back to current document content (2.510292ms)
+✔ legacy responses without document identity remain unavailable (1.013333ms)
+✔ source details retain exact identity, version, locator and unavailable status (5.385708ms)
+✔ source addresses and markup remain inert text and missing content is not invented (0.603333ms)
+✔ empty references remain explicitly unavailable (0.150917ms)
+✔ comparison preserves server groups, precision, reasons and sample counts (1.820041ms)
+✔ feature booleans retain false and enum text; unmapped names are kept separate (2.348417ms)
+✔ positioning plots known coordinates only and distinguishes evidence styles (4.230041ms)
+✔ separate server price facets remain separate even with identical parameter ids (5.75125ms)
+✔ nonfinite numeric coordinates never generate invalid SVG or invented values (4.613833ms)
+✔ every document identity dimension rejects an old result (3.529291ms)
+✔ loading, failed reads, wrong view and incomplete payload hide old successful content (1.44475ms)
+✔ maturity renders only server counts, question assignments and exact blocker reasons (1.661875ms)
+✔ rendering never issues requests or starts an agent (5.522542ms)
+✔ nonmeasurement evidence uses a separate marker and retains the original nature (2.868125ms)
+✔ free-text feature sections remain separate and never become mapped feature values (0.899625ms)
+✔ nullable unavailable feature text retains its source identity without displaying hidden content (3.469083ms)
+✔ unknown positioning records drill into the returned redacted references (0.803ms)
+✔ unrepresentable decimal coordinates retain exact text and explain why they are not plotted (3.569ms)
+✔ finite extreme endpoints do not overflow the SVG scale (1.26425ms)
+✔ true zero and equivalent decimal spellings remain plotable (4.051291ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 535.755416

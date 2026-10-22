@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-02",
+  "checks": {
+    "local_document_links": 57,
+    "unchanged_inventoried_source_files": 61,
+    "plan_queue_consistency": "passed",
+    "original_N_P_Q_completion_unchanged": "patch only changed new G1 queue row and added a new-scope paragraph"
+  },
+  "applications_tests": "not rerun; documentation-only change; source hashes unchanged",
+  "files": [
+    {
+      "path": "docs/design/2026-10-02-pdos-next-reuse-and-parallel-plan.md",
+      "sha256": "c0e2dd9f1bfc697ad055e64918ab6f52567d7403b672901df8fc52a595019c02"
+    },
+    {
+      "path": "docs/design/2026-10-02-pdos-next-execution-plan.md",
+      "sha256": "01a6b01a8d62029b973cfc4c9a5a6750c9330d082035e816fd85ade4f3574376"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-reuse-parallel-20261002/result.md",
+      "sha256": "b083e9aba8d0f0a77d763a8e5c37276863d4574777670e1681a4ea738829e784"
+    },
+    {
+      "path": "tasks/ai-native-integrated-todo.md",
+      "sha256": "936fcc4e368116eda9eeb0a28da90ff63f762507776373861afc841bd06b1cb6"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-reuse-parallel-20261002/source-inventory.json",
+      "sha256": "a13146346df961347a95dedfa40f7ba85f91e6c9497415fd3542e7479bda6f2a"
+    }
+  ]
+}

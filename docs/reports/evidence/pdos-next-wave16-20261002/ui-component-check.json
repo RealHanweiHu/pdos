@@ -1,0 +1,72 @@
+{
+  "status": "owned UI candidate; public integration and backend/browser checks pending root",
+  "recorded_at": "2026-10-03T07:02:26.188Z",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "caab169d65708b86031b7bd18eefb865374af566bfb8ee225065a2c860b6f570"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "3b3dd97b4b1569497aef0b4127a7b93407d74b6dd7625eaed021033c250bd000"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "310e98928f534e6a86966d91d8ebc39ab1856060a81bc05d0240224b284ee9db"
+    }
+  ],
+  "helper_checks": {
+    "tests": 32,
+    "passed": 32,
+    "failed": 0,
+    "exit_code": 0,
+    "raw_output": "ui-helper-checks.log",
+    "execution": "Transpile product-view.ts, build-quality-followup-view.ts and its test with bundled TypeScript.transpileModule (ES2022/CommonJS/esModuleInterop), only into /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-PoU2Zt; then process.execPath --test /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-PoU2Zt/build-quality-followup-view.test.js",
+    "temporary_directory": "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-PoU2Zt",
+    "no_src_javascript_created": true
+  },
+  "typecheck": {
+    "command": "node_modules/.bin/tsc --project /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-PoU2Zt/tsconfig.json",
+    "cwd": "pdos-next/web",
+    "exit_code": 0,
+    "raw_output": "ui-typecheck.log",
+    "configuration": "ui-local-type-config.json",
+    "scope": "owned component/helper/test and imported read-only dependencies; noEmit; incremental false"
+  },
+  "lint": {
+    "command": "node_modules/.bin/eslint src/components/builds/build-quality-followup.tsx src/lib/build-quality-followup-view.ts src/lib/build-quality-followup-view.test.ts --format json --output-file /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-PoU2Zt/lint-final.json",
+    "cwd": "pdos-next/web",
+    "exit_code": 0,
+    "errors": 0,
+    "warnings": 0,
+    "raw_output": "ui-lint-result.json"
+  },
+  "earlier_outputs_preserved": [
+    "ui-helper-initial-checks.log (29 passed before later recovery/preparation-ability cases)",
+    "ui-helper-intermediate-checks.log (30 passed before current final cases)",
+    "ui-type-initial-failure.log (5 narrowing errors, repaired in owned helper)",
+    "ui-lint-initial-failure.log (22 errors/1 warning: reserved React ref prop name, repaired; final zero warnings)"
+  ],
+  "contracts": {
+    "get": "v1/products/{pid}/quality-followup?issue_id={logical}[&revision={explicit}]",
+    "inputs": "v1/products/{pid}/quality-followup/inputs",
+    "preview": "v1/commands/preview",
+    "submit": "v1/commands",
+    "source_index": "v1/products/{pid}/workspace",
+    "issue_index": "v1/products/{pid}/quality-execution",
+    "preparation_guard": "actions.can_prepare_completion + operation.allowed; GET can_complete=false/completion_verified=null do not certify a fact",
+    "receipts": {
+      "root_cause": "quality_issue",
+      "actions_complete": "quality_issue",
+      "followup_link": "capa_remediation_link"
+    },
+    "pending_root_wiring": "Root adapts A internal list to frozen single-Issue envelope; wires public route/BFF/navigation/migration/host completion callback"
+  },
+  "boundaries": {
+    "existing_138_paths_modified": false,
+    "shared_api_bff_parent_modified": false,
+    "database_http_browser_or_public_build_run": false,
+    "effectiveness_close_and_formal_change_enabled": false,
+    "candidate_creation_api_invented": false
+  }
+}

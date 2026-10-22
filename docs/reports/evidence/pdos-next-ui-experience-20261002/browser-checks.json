@@ -1,0 +1,69 @@
+{
+  "checks": [
+    {
+      "activeTaskVisible": true,
+      "check": "320px deep-link results after reload",
+      "pageWidth": 320,
+      "panel": [
+        "results"
+      ],
+      "width": 320
+    },
+    {
+      "check": "320px dark product overview",
+      "dark": true,
+      "definitions": "3",
+      "pageWidth": 320,
+      "width": 320
+    },
+    {
+      "check": "1440px dark overview",
+      "dark": true,
+      "pageWidth": 1440,
+      "width": 1440
+    },
+    {
+      "check": "final candidate source draft survives view switches",
+      "passed": true,
+      "restored": true,
+      "businessSubmitted": false
+    },
+    {
+      "check": "project plan reading first",
+      "editorInitiallyVisible": false
+    },
+    {
+      "check": "project record opens plan editor and selects target",
+      "selected": "第十一波 · 内部开工演练",
+      "visible": true,
+      "restored": true
+    },
+    {
+      "check": "1440px light product overview",
+      "dark": false,
+      "pageWidth": 1440,
+      "width": 1440
+    },
+    {
+      "check": "collapsed icon navigation",
+      "pageWidth": 1440,
+      "productLinkNamed": true,
+      "width": 1440
+    },
+    {
+      "check": "320px light product overview",
+      "dark": false,
+      "pageWidth": 320,
+      "width": 320
+    },
+    {
+      "check": "keyboard search and mobile drawer",
+      "commandShortcut": "super+k",
+      "costSearchOpens": "cost",
+      "drawerEscapeReturnsFocus": "打开导航",
+      "observedDuring": "final candidate browser check",
+      "businessSubmitted": false
+    }
+  ],
+  "console": []
+}

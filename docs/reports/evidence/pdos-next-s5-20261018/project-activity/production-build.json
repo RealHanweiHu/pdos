@@ -1,0 +1,21 @@
+{
+  "snapshot": "/private/tmp/pdos-s5-activity-w4yjh0dj",
+  "args": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "exit": 1,
+  "web_source": {
+    "pdos-next/web/src/app/api/[...path]/route.ts": "06c4d234f3d6c5792b5f2998bd361b5ee5f56e874412f814f76718c02aaa2f49",
+    "pdos-next/web/src/app/api/project-activity-route.test.mjs": "771b613f60c7c434f00a91378cca8940c36d1867bc657cc867b97a1d9f9b4729",
+    "pdos-next/web/src/components/projects/project-activity.module.css": "d10c7989f169903a57ead964d8218b1302c6add654f263ae2ff91b19f979b207",
+    "pdos-next/web/src/components/projects/project-activity.test.mjs": "59b679a415bd7fda970a69858f14a94e1eec5ac6f589a61995a0e3b54d9cb1ce",
+    "pdos-next/web/src/components/projects/project-activity.tsx": "c077bd395c38a8801941b07cc3e641a714bf25d13c3c5529d17b37a796bb0ef6",
+    "pdos-next/web/src/components/projects/project-cockpit.tsx": "27497832bfd6d7b81cc96211cb20f825eb1033cf5dac4ca3b99c698d50b224cd",
+    "pdos-next/web/src/components/workspace.tsx": "927998b7216e534d58a4a52a5e2b45051878325df631c88ba1248679cb59f99e",
+    "pdos-next/web/src/lib/project-activity.test.mjs": "72ce5d10407c41d221f3e1fc3e8e005c10a6e25fb485917e93e1f1f94b49f726",
+    "pdos-next/web/src/lib/project-activity.ts": "cf985cb6f3627e6cf9543ebc0b2371fc66a5552e221952c4a3943c3f49d4883a"
+  },
+  "real_model_calls": 0
+}

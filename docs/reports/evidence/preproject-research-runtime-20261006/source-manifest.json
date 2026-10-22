@@ -1,0 +1,37 @@
+{
+  "recorded_at": "2026-10-07T01:20:41.042314+00:00",
+  "git_head": "7922b460f58cf7bff3479bffe302861f13438c1d",
+  "source_sha256": {
+    "server/app/ai/conversation_reply.py": "104270be5362d9e2bac26828a13d214958795d62f2696fbabe8779de439e7aa4",
+    "server/app/ai/conversation_research.py": "43a1ba719f024f5a19bfd032e61f25007db6eadfef65c1c9adfa2adf5e880d57",
+    "server/tests/test_xiaopai_conversation_search.py": "6591e12259e978208ee327228710ec68401a3ffe9feb124dde0ec31fa062071b",
+    "web/src/components/ai/xiaopai-session.tsx": "f7d35b48e8d2885ea1f3707d9cbcf819ff150e2170478a49288222cbf17ff72f",
+    "web/src/components/ai/xiaopai-session.test.tsx": "7edd88f89edbdd65f4de02ba87d542034acdd2567856676c49f7a4ce5e74c596",
+    ".env.example": "15e1cce8dedd77314491bfc42e6751affeecb71ed22f5935026d8ed805c11bc1",
+    "docs/runbooks/application-budget-adoption.md": "54450c4ad08367fe69a33734e1473f7cc4bcadf244edd2f997ec127944ded992"
+  },
+  "backend_checks": {
+    "passed": 30,
+    "log": "backend-final.log",
+    "legacy_specific_cases": 2,
+    "specific_cases_included_in_backend_count": true
+  },
+  "frontend_checks": {
+    "passed": 15,
+    "log": "frontend.log"
+  },
+  "browser": {
+    "synthetic_gateway": true,
+    "actual_http": true,
+    "source_snapshot_matched": true,
+    "private_test_database_only": true,
+    "reason_persisted_after_reload": true,
+    "input_enabled_after_failure": true,
+    "no_real_provider_calls": true
+  },
+  "production_build_repeated": false,
+  "migration_changes": false,
+  "main_database_write": false,
+  "real_input_meter_qualification_published": false,
+  "real_calibration_requests_executed": 0
+}

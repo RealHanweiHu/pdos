@@ -1,0 +1,103 @@
+{
+  "functional_passed": true,
+  "all_required_groups_complete": true,
+  "all_thresholds_passed": true,
+  "summary": {
+    "draft_save": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.04357529199478449,
+      "p95_seconds": 0.07366937500046333,
+      "sql_range": [
+        10,
+        10
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "draft_create": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.08251741700223647,
+      "p95_seconds": 0.14648870899691246,
+      "sql_range": [
+        19,
+        19
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "t1_preview": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.05730895799933933,
+      "p95_seconds": 0.08779254199907882,
+      "sql_range": [
+        15,
+        15
+      ],
+      "limit_seconds": 2,
+      "passed": true
+    },
+    "t1_confirmation": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.10015658300108043,
+      "p95_seconds": 0.12318487500306219,
+      "sql_range": [
+        24,
+        24
+      ],
+      "limit_seconds": 2,
+      "passed": true
+    },
+    "same_key_replay": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.03837662499427097,
+      "p95_seconds": 0.08614487500017276,
+      "sql_range": [
+        8,
+        8
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "workspace_read": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.11691279200022109,
+      "p95_seconds": 0.13941758299915818,
+      "sql_range": [
+        12,
+        12
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "readiness_read": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.031936792001943104,
+      "p95_seconds": 0.05721975000051316,
+      "sql_range": [
+        12,
+        12
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "configuration_read_21_sources": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.12859383300383342,
+      "p95_seconds": 0.1785910420003347,
+      "sql_range": [
+        25,
+        25
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "owned_sources_match": 9,
+  "frontend_candidate_source_count": 1055,
+  "frontend_overlay_matches": 4,
+  "report_links_exist": true,
+  "diff_check_passed": true,
+  "original_statuses": {
+    "total": 65,
+    "completed": 2,
+    "partial": 51,
+    "pending": 12
+  },
+  "current_loop_local_complete": true,
+  "joint_shared_tree_pass_claimed": false,
+  "backend_tests": 21,
+  "frontend_tests": 15,
+  "actual_bff_checks": 8,
+  "static_checks": {
+    "ruff": "passed affected targets",
+    "mypy": "passed 4 affected targets with --follow-imports=silent; shared dependency error recorded in source-scope.json",
+    "eslint": "passed affected frontend files; empty logs reflect no diagnostics"
+  },
+  "production_build": "97 pages independent frozen candidate",
+  "remaining": "real sample/TestRun/retest/re-review/re-certification/cost effects, qualifications and original manual exits"
+}

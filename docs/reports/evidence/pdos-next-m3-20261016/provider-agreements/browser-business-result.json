@@ -1,0 +1,42 @@
+{
+  "target": "verified 64245/pdos_test",
+  "head": "s0_0762",
+  "agreements": [
+    {
+      "provider": "synthetic-browser-normal",
+      "revision": 1,
+      "active": true,
+      "receipt_id": "feed5b3d-f8b4-48ed-8816-c44411e23d13",
+      "counts": {
+        "action_receipts": 1,
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    },
+    {
+      "provider": "synthetic-browser-normal",
+      "revision": 2,
+      "active": false,
+      "receipt_id": "37571c77-d24d-4bba-8e17-b4efad1f0cf3",
+      "counts": {
+        "action_receipts": 1,
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    },
+    {
+      "provider": "synthetic-browser-recovery",
+      "revision": 1,
+      "active": true,
+      "receipt_id": "f27207ab-135f-4293-88d1-cd7e1b492156",
+      "counts": {
+        "action_receipts": 1,
+        "audit_entries": 1,
+        "outbox_events": 1
+      }
+    }
+  ],
+  "cleanup": false,
+  "real_model_calls": 0,
+  "real_agreements": 0
+}

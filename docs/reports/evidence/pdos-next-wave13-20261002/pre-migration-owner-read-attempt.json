@@ -1,0 +1,5 @@
+{
+  "result": "diagnostic_schema_assumption_corrected",
+  "reason": "build_start_id is newly added; the original pointer is owner_execution_id",
+  "database_or_restore_write": false
+}

@@ -1,0 +1,13 @@
+{
+  "web/src/components/workspace-experience.ts": "cfec074b0423466c339b5db1188b9cc8d9c764fdcaefe771a0be9c7ef95ee693",
+  "web/src/components/workspace-shell.tsx": "7722fd3bdd641c1be32eaa9c6950306398f28320fb404209985420db4d86b166",
+  "web/src/components/workspace-home.tsx": "8e422a21e2829e9377947be85a6f0eac44e7c3b8e3e5d28c314f3841eaed065b",
+  "web/src/components/my-work/my-work-view.tsx": "5a960c660822743cbde629ace94ed4d931cf990b1cb4d2d1e1f1efcc1d2ccf13",
+  "web/src/components/auth/auth-screen.tsx": "aa2014c8830621b51544051604b3c637ddc0c98ae7feff72b885ae13dc1f3b7f",
+  "web/src/components/workspace-experience.test.ts": "6cdac1aedf3c8219b13e79bf3a6558b1d17b3081957ff6ac31f8ac5f1bd305cf",
+  "web/src/components/workspace-home.test.tsx": "466eb8882be9df5d5b073fe7f0d2ea8e9b2f8dfe8665655ebbe03a1efd719844",
+  "web/src/components/workspace-shell.test.tsx": "f4f6798f55a6bca5b17cae50908a98951d5d2d5e4e7eaaaeaeec6db888dd8be0",
+  "web/src/components/my-work/my-work.test.tsx": "689820c18f9537553fcd8b5eefd38834eaff5427f88531f7253064131118cb78",
+  "web/src/components/my-work/my-work-scenario.test.tsx": "8e22753c21660f5dc08a87754bcfd9bdef696886c22f922e0f953f571980ad2a",
+  "docs/design/2026-10-01-role-scenario-ui.md": "835b37256c3b2cfd88e12bbec6354cc9b1f802004d49090d4818ff7db8a97e4c"
+}

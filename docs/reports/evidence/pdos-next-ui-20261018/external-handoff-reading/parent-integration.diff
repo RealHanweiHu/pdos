@@ -1,0 +1,51 @@
+--- prior-pilot-candidate/src/components/projects/project-workspace.tsx
++++ current/src/components/projects/project-workspace.tsx
+@@ -14,6 +14,7 @@
+ import { ProjectBuildEngineering } from "./project-build-engineering";
+ import { ProjectReleasePackages } from "./project-release-packages";
+ import { ProjectPilots } from "./project-pilots";
++import { ProjectExternalHandoffs } from "./project-external-handoffs";
+ import styles from "./project-views.module.css";
+ 
+ type Props = {
+@@ -65,7 +66,7 @@
+       {tab === "builds" && <ProjectBuildSummary categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} readVersion={readVersion} api={api}/>}
+       {tab === "prep" && <><ProjectBuildEngineering api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} readVersion={readVersion}/><Section title="工程与制造准备办理"><div className={styles.sectionBox}><p>从本项目 Build 选择固定引用的工程与制造配置，再核对准备缺项。</p><p className={styles.noteInline}>工程与制造配置按型号共享，轮次准备按项目核对；下面的制造准备草稿不代替当前准备度或正式发布。</p><a className={styles.outlineLink} href={workHref(entry, "builds", "prepare")}>配置、制造与试产办理<ArrowRight size={13}/></a></div></Section><ProjectManufacturingPreparation api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} readVersion={readVersion}/><ProjectPilots api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} readVersion={readVersion}/></>}
+       {tab === "issues" && <Section title="问题与变更"><div className={styles.sectionBox}><p>进入本项目固定失败、问题、CAPA 与工程 / 制造双线影响核对。</p><p className={styles.noteInline}>本总览尚未汇入问题计数和状态，不以任务或风险数代替。</p><a className={styles.outlineLink} href={workHref(entry, "issues")}>办理本项目问题与变更<ArrowRight size={13}/></a></div></Section>}
+-      {tab === "review" && <><ProjectReleasePackages api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} readVersion={readVersion}/><Section title="评审与交接办理"><div className={styles.sectionBox}><p className={styles.unknown}>阶段正式评审读集尚未接入；发布包与专业决定按各自固定范围读取。</p><div className={styles.rowActions}><a className={styles.outlineLink} href={workHref(entry, "builds", "prepare")}>发布包与专业决定办理</a><a className={styles.outlineLink} href={workHref(entry, "verification", "handoff")}>样件交接与接收</a><a className={styles.outlineLink} href={workHref(entry, "verification", "results")}>测试结果与处置</a></div></div></Section></>}
++      {tab === "review" && <><ProjectReleasePackages api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} readVersion={readVersion}/><ProjectExternalHandoffs api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} readVersion={readVersion}/><Section title="评审与交接办理"><div className={styles.sectionBox}><p className={styles.unknown}>阶段正式评审读集尚未接入；发布包与专业决定按各自固定范围读取。</p><div className={styles.rowActions}><a className={styles.outlineLink} href={workHref(entry, "builds", "prepare")}>发布包、专业决定与外部移交办理</a><a className={styles.outlineLink} href={workHref(entry, "verification", "handoff")}>样件交接与接收</a><a className={styles.outlineLink} href={workHref(entry, "verification", "results")}>测试结果与处置</a></div></div></Section></>}
+       {tab === "docs" && <div className={styles.workspaceGrid}><div>{scope}</div><Section title="资料"><div className={styles.sectionBox}><p>项目资料包尚未汇入总览。</p><p className={styles.noteInline}>现有原件在型号范围共享，进入后仍按当前权限读取。</p><a className={styles.outlineLink} href={workHref(entry, "files")}>查看型号共享原件<ArrowRight size={13}/></a></div></Section></div>}
+     </div>
+     <p className={styles.note}><Info size={14}/>项目阶段、健康度和具名更新只按对应记录展示。</p>
+--- prior-pilot-candidate/src/components/projects/project-views.test.mjs
++++ current/src/components/projects/project-views.test.mjs
+@@ -155,22 +155,27 @@
+   assert.equal(elements(tree, e => e.type?.name === "ProjectBuildEngineering").length, 0);
+   assert.equal(elements(tree, e => e.type?.name === "ProjectPilots").length, 0);
+ });
+-test("fixed release packages load only in review, preserve refresh identity, and retain scoped professional actions", () => {
++test("fixed release packages and external handoffs load only in review, preserve refresh identity, and retain scoped professional actions", () => {
+   const api = async () => {}, props = { entry: entries[0], api, session: { name: "本人", principal_id: "me" }, today: "2026-10-18", readVersion: 9, onBack() {}, onOpenWorkbench() {} };
+   const component = driver(ProjectWorkspace, props); let tree = component.render();
+   const panes = current => elements(current, e => e.type?.name === "ProjectReleasePackages");
++  const handoffs = current => elements(current, e => e.type?.name === "ProjectExternalHandoffs");
+   assert.equal(panes(tree).length, 0);
++  assert.equal(handoffs(tree).length, 0);
+   elements(tree, e => e.props?.id === "project-tab-review")[0].props.onClick(); tree = component.render();
+   assert.equal(panes(tree).length, 1);
+   assert.deepEqual(panes(tree)[0].props, { api, categoryId: "cat", productId: "model", projectId: "one", principalId: "me", readVersion: 9 });
++  assert.equal(handoffs(tree).length, 1); assert.deepEqual(handoffs(tree)[0].props, panes(tree)[0].props);
+   assert.match(markup(tree), /阶段正式评审读集尚未接入/);
+   const anchors = elements(tree, e => e.type === "a"); assert.equal(anchors.length, 3);
+   for (const anchor of anchors) { const params = new URLSearchParams(anchor.props.href); assert.equal(params.get("project"), "one"); assert.equal(params.get("category"), "cat"); assert.equal(params.get("product"), "model"); }
+-  const release = anchors.find(e => e.props.children === "发布包与专业决定办理"); assert.equal(new URLSearchParams(release.props.href).get("view"), "builds"); assert.equal(new URLSearchParams(release.props.href).get("task"), "prepare");
++  const release = anchors.find(e => e.props.children === "发布包、专业决定与外部移交办理"); assert.equal(new URLSearchParams(release.props.href).get("view"), "builds"); assert.equal(new URLSearchParams(release.props.href).get("task"), "prepare");
+   const next = entry("next"), nextApi = async () => {}; next.category.id = "next-cat"; next.product.id = "next-model";
+   component.setProps({ entry: next, api: nextApi, session: { name: "另一人", principal_id: "other" }, readVersion: 10 }); tree = component.render();
+   assert.deepEqual(panes(tree)[0].props, { api: nextApi, categoryId: "next-cat", productId: "next-model", projectId: "next", principalId: "other", readVersion: 10 });
++  assert.deepEqual(handoffs(tree)[0].props, panes(tree)[0].props);
+   elements(tree, e => e.props?.id === "project-tab-now")[0].props.onClick(); tree = component.render(); assert.equal(panes(tree).length, 0);
++  assert.equal(handoffs(tree).length, 0);
+ });
+ test("cockpit task read failures remain unknown rather than claiming zero risks or no conflicts", async () => {
+   const unreadable = entry("one"); unreadable.openItemsError = "合成任务权限待核对";

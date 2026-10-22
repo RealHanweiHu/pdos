@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-03T04:08:30.824288+00:00",
+  "reason": "Results credentials imported before all launch facts made setup exceed immutable future Promise window. Preserve future-time guard and move independently applicable results-only facts after real Start, as validated in root live chain. Independent retained tests continue.",
+  "children": [
+    {
+      "pid": 11168,
+      "nodes": "tests/verification_results/test_guards.py::test_quality_current_role_and_exact_scope_cannot_be_supplied_by_client_or_agent"
+    },
+    {
+      "pid": 11181,
+      "nodes": "tests/verification_results/test_guards.py::test_result_tables_are_immutable_and_rls_agent_zero_write"
+    },
+    {
+      "pid": 11182,
+      "nodes": "tests/verification_results/test_runtime_guards.py::test_store_read_runtime_revocation_blocks_import_and_rolls_back_confirmation"
+    },
+    {
+      "pid": 11183,
+      "nodes": "tests/verification_results/test_runtime_guards.py::test_compute_semantic_replay_also_rechecks_runtime_after_old_measurement_io"
+    }
+  ]
+}

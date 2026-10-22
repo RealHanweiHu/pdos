@@ -1,0 +1,51 @@
+{
+  "actual_backend_candidate": "/private/tmp/pdos-s4-publication-594m5l8p",
+  "frontend_candidate": "/private/tmp/pdos-s4-publication-zjbe059o",
+  "owned_backend_files_unchanged": {
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/rules.py": "c025dac68168be6316a9ab308ceafd908a5eea0b21c49e61d9b1d2e27175cc0a",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py": "8291048d8814908987484113f7ac4988db6b6b6e0f3fb5a62c9a690cec33b5e5",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/consumption.py": "4d44782f637e9f59d8873be8cea0b4fce26460b6a0a8f528dec6557ccc1f51a8",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_schemas.py": "d4f68c8bb7da1ce0ede3ee1d8631315848e5889ef5aea1ac92b7c860a474ad15",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_models.py": "87990a0a9bf1a9367052764f4d377a828d1679f09f71852c0e77cf023a801f2e",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_rules.py": "7503ff011930d7c40b3233d0eb7c5801baadfb33e9ec20b68fb1e7ff3b66a675",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_material_owner.py": "7e1d2d65609b786f453df54048a63d573f084a70a76523b4f9489a2a00c5503f",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_service.py": "72abc097b7b55711afdc6adde35aaa2ed0c3cdf138872a9706127783c346a7e8",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_storage_schema.py": "5829fc5f9c55636e639292b4fc065035f1b6800fdb3352453c6c770ca97e7333",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_api.py": "b1a26d4532045ab4cb1f0c7908743f92d8a02d4560c8326a46247a8c37837cf9",
+    "pdos-next/server/migrations/schema_s0_0777.py": "b5f5d136c826a3a311d76c4fa52a1969c07a96067db728368f57acac73413331",
+    "pdos-next/server/migrations/versions/s0_0777_manufacturing_publication.py": "df4f48927d6693d2ba7597e2da27707633225f89468a9c7627d9b9de0e843dda",
+    "pdos-next/server/tests/manufacturing_preparation/test_preparation.py": "719b995d18205acf0bb19dec568778090628a8c97dd14a64ae935b0748499342",
+    "pdos-next/server/tests/manufacturing_preparation/test_peer_preparation_request_binding.py": "a702cb05cb0bee19afeacf0823b16703453c8c5c0ff74b5833a751a2a037bcf2",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_rules.py": "caf474c5c861f8b12f9e598f3f4e2bfef820959a9135014235d75c5a5378485d",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_material_owner.py": "f26c3b037d69071b030a9e4bad9acbcfe4e0b188d6703c972cd0ad4869f98c98",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_service.py": "a07b7ad2e645813d538b091f75e05377f9ff1878a1d40d42489cc0e2303b3366",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_consumption.py": "25ac1b0645f39f88f38e4a7925eed1e5c417c65bfb3288cb899fc4d6f5a06f92",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_storage_schema.py": "364bcc00375e539b488c9b9ad535385e6f836275207abd7f5e358e822457ce58",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_migration.py": "75b95943abe834727fe2b2bad0bddce49243c8a4faab10a5ccb8416ce8ad3587",
+    "pdos-next/server/tests/manufacturing_preparation/test_publication_pg.py": "914c5850e29de9f3b51c5f0aed3c277d4edacfd5aeca7621c477cc7494cae3a2",
+    "pdos-next/server/tests/manufacturing_preparation/publication_pg_helpers.py": "6d847a67a2d4dc1698606a7020d6d7d1b35b793e53651a14bcb1c4a2f83be8c9",
+    "pdos-next/server/pdos_next/contracts.py": "ca21ff09ba5ceb55a3a09ea69dfbec6767fab9e191f9760e2f96bb488e69474e",
+    "pdos-next/server/pdos_next/command_handlers.py": "1f8bcd9bcbb89cc620cc93d68a1592c21d8ff5c39acca6f4872bf285368b2c7d",
+    "pdos-next/server/pdos_next/service.py": "50fcf077a09c13ad80c31d57876ca0144c6b9434c2c97f2abdb36c319840f34d",
+    "pdos-next/server/pdos_next/domain/professional_authority/service.py": "fe53b3f31c755c863beff494360904486b5a861c6731b198567faa483fc0ca54",
+    "pdos-next/server/pdos_next/models.py": "e34dc453fedd6f723d04821abc002b77502e06e76dfc989c5f24bfd11a127126",
+    "pdos-next/server/pdos_next/api.py": "d90c44ac32e352fe04f95217a305526af5f8374ac127589d073317e767d7ba20",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py": "4237a30afd9bab471a974cd14efc3b476f7bcc4a17dda4084f45ef46ec093f0d"
+  },
+  "records": [
+    "actual-publication-04.json",
+    "affected-pure-04.json",
+    "scoped-checks-04.json",
+    "migration-checks-reuse-04.json"
+  ],
+  "foreign_context_changes_excluded_from_delivery": {
+    "changed": [
+      "pdos-next/server/pdos_next/agent_kernel/api.py"
+    ],
+    "added": [
+      "agent session read views and independent BFF routes, listed in candidate manifest"
+    ]
+  },
+  "not_a_whole_repository_regression": true,
+  "live_browser_backend": "same actual04 snapshot and verified isolated DB"
+}

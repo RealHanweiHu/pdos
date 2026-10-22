@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "at": "2026-10-03T17:55:53.902540+00:00",
+  "head": "next_0026",
+  "retained_tables": 24,
+  "retained_table_status": "PASS",
+  "counts": {
+    "capa_verification_evidence": 2,
+    "capa_verification_rule_facts": 1,
+    "capa_observation_facts": 1,
+    "capa_named_verification_reviews": 0,
+    "capa_current_verification_rules": 1,
+    "capa_current_observations": 1
+  },
+  "actual_readback_equals_http_after": true,
+  "source_groups": {
+    "runtime_files": 355,
+    "backend_test_files": 17,
+    "web_files": 159,
+    "tools": 2
+  },
+  "source_unchanged": true,
+  "not_claimed": [
+    "whole database equivalence",
+    "real independent Review",
+    "physical retest",
+    "validity or closure",
+    "manual exits"
+  ]
+}

@@ -1,0 +1,34 @@
+.......F
+=================================== FAILURES ===================================
+__ test_run_returns_stable_work_id_and_missing_model_wait_has_zero_inference ___
+
+setup = <isolated synthetic test scope>
+
+    def test_run_returns_stable_work_id_and_missing_model_wait_has_zero_inference(setup):
+        api, calls = client(setup)
+        payload = {"goal": "Synthetic public research", "idempotency_key": "api:" + str(uuid4())}
+        path = f"/v1/categories/{setup.category}/agent-runs"
+        first = api.post(path, json=payload)
+        assert first.status_code == 202
+        second = api.post(path, json=payload)
+        assert first.json() == second.json()
+        ref = calls[0][1]
+        assert set(ref) == {"tenant_id", "category_id", "actor_id", "requester_id", "subject_id"}
+        assert "Synthetic public research" not in str(ref)
+        result = KernelActivities(setup.engine).advance(ref)
+        assert result["status"] == "waiting_input" and result["error_code"] == "SOURCE_UNAVAILABLE"
+        read = api.get(path + "/" + first.json()["run_id"])
+        assert read.json()["status"] == "waiting_input"
+        stream = api.get(path + "/" + first.json()["run_id"] + "/events")
+>       assert [r["event"]["type"] for r in stream.json()["items"]] == ["accepted", "model_unavailable"]
+E       AssertionError: assert ['accepted', ..._unavailable'] == ['accepted', ..._unavailable']
+E         
+E         At index 1 diff: 'run_state' != 'model_unavailable'
+E         Left contains one more item: 'model_unavailable'
+E         Use -v to get more diff
+
+tests/agent_kernel/test_api.py:74: AssertionError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_api.py::test_run_returns_stable_work_id_and_missing_model_wait_has_zero_inference
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 7 passed in 5.34s

@@ -1,0 +1,41 @@
+{"kind": "published", "direct_definition_body_selects": 1, "upstream_source_body_selects": 0, "tool": "product.baseline.read", "elapsed_ms": 1108.15, "sql_count": 61, "real_provider_calls": 0}
+.{"kind": "inherited_draft", "direct_definition_body_selects": 1, "upstream_source_body_selects": 0, "tool": "product.baseline.read", "elapsed_ms": 2453.73, "sql_count": 61, "real_provider_calls": 0}
+....
+=============================== warnings summary ===============================
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[published]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_source_watermarks_are_rechecked_before_restoring_baseline[withdrawn_source]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_source_watermarks_are_rechecked_before_restoring_baseline[expired_membership]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_unbound_public_baseline_keeps_ordinary_source_validation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_baseline_watermarks_pg.py: 54 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:369: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(rows)
+
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_items.py:409: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(subject.changed_rows)
+
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+tests/agent_kernel/test_baseline_watermarks_pg.py::test_bound_baseline_reads_direct_body_once_without_full_source_tree[inherited_draft]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definition_inherit.py:197: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush(subject.created_specs)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+5 passed, 70 warnings in 89.22s (0:01:29)

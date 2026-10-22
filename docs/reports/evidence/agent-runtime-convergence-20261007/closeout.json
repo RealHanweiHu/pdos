@@ -1,0 +1,72 @@
+{
+  "test_environments": [
+    {
+      "container": "pdos-agent-convergence-07e137f1",
+      "port": 58949,
+      "verified_marker": "07e137f128754dc9d4c57818f4f5ed22",
+      "backup_records": [
+        {
+          "database": "pdos_test",
+          "path": "/Users/huhanwei/.codex/agent-convergence-recovery-20261007/pdos-agent-convergence-07e137f1-pdos_test.dump",
+          "size": 4316796,
+          "sha256": "61870e4f14b3d39d0a8811bd0a9ee99c464ec3f7d088c7172b9353322c97f8ef",
+          "archive_list_readable": true,
+          "schema_head": "0431_conversation_research_exploration"
+        },
+        {
+          "database": "pdos_agent_runtime",
+          "path": "/Users/huhanwei/.codex/agent-convergence-recovery-20261007/pdos-agent-convergence-07e137f1-pdos_agent_runtime.dump",
+          "size": 25218,
+          "sha256": "51f525381ea36282e7d655c082a36c58bb9c2516c4069d4a0052a37cb9edb73b",
+          "archive_list_readable": true,
+          "schema_head": null
+        }
+      ],
+      "stopped": true,
+      "volumes_preserved": true
+    },
+    {
+      "container": "pdos-next-test-20261002-e917a043",
+      "port": 61762,
+      "verified_marker": "e917a043-d38a-4d2f-8c28-9f7979e7f62f",
+      "backup_records": [
+        {
+          "database": "pdos_test",
+          "path": "/Users/huhanwei/.codex/agent-convergence-recovery-20261007/pdos-next-test-20261002-e917a043-pdos_test.dump",
+          "size": 1486846,
+          "sha256": "8f1137d1cc220ac22ffcdb3c4bd79f4f6d4793a5a1e1f9164faa5e3ee564de0b",
+          "archive_list_readable": true,
+          "schema_head": "next_0032"
+        }
+      ],
+      "stopped": true,
+      "volumes_preserved": true
+    }
+  ],
+  "development_agent_services_preserved": true,
+  "frontend_typecheck_passed_before_move": true,
+  "frontend_affected_eslint_passed_before_move": true,
+  "original_affected_ruff_passed_before_move": true,
+  "checked_at": "2026-10-07T16:13:33.154606+00:00",
+  "source_path": "/Users/huhanwei/Desktop/ai-native-R&D-platform",
+  "source_access_restored": true,
+  "worker_state_file": "worker-state.json",
+  "full_dependency_mypy": {
+    "passed": false,
+    "errors": 115,
+    "files": 12,
+    "scope": "expanded imports across existing app modules; selected adapter-only check recorded separately"
+  },
+  "frontend_typecheck_exit": 0,
+  "frontend_affected_eslint_exit": 0,
+  "full_frontend_build_or_gui_performed": false,
+  "external_operations_performed": false,
+  "final_check_record": "final-checks.json",
+  "shared_package_installed_source_match": {
+    "pdos": true,
+    "pdos-next": true
+  },
+  "dev_script_syntax_passed": true,
+  "selected_tracked_diff_whitespace_passed": true,
+  "checks_completed_after_desktop_move": true
+}

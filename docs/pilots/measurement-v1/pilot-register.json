@@ -1,0 +1,439 @@
+{
+  "version": "1.0.0-draft.1",
+  "status": "design_not_pilot_acceptance",
+  "protocol": {
+    "protocol_id": null,
+    "version": "1.0.0-draft.1",
+    "status": "draft",
+    "window_start": null,
+    "window_end": null,
+    "as_of": null,
+    "display_timezone": null,
+    "baseline_window": null,
+    "acceptance_window": null,
+    "minimum_participants": null,
+    "minimum_task_pairs_per_stratum": null,
+    "pre_registered_exclusions": [],
+    "matching_rules_ref": "README.md#3-抽样和对照协议",
+    "calibration_evidence_ref": null,
+    "threshold_version": null,
+    "approver_ref": null,
+    "approved_at": null
+  },
+  "roles": [
+    {
+      "role_id": "system_acceptance",
+      "label": "系统开发与验收",
+      "confirmed_person_label": "用户",
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "系统门禁及最终验收",
+      "boundary": "不自动承担下列业务职责",
+      "assignment_status": "confirmed_system_acceptance_only",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "product_manager",
+      "label": "产品经理",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "研究、假设、策略、产品定义",
+      "boundary": "项目经理不能替代产品判断",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "project_manager",
+      "label": "项目经理",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "立项计划、里程碑、会议、协调",
+      "boundary": "不能代专业签核",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "industrial_design",
+      "label": "ID工业设计",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "设计来源、评审反馈、冻结",
+      "boundary": "后续结构接收需另记",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "mechanical",
+      "label": "结构工程",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "接口、板框、结构验证",
+      "boundary": "输入ID/接口版本需可追溯",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "hardware",
+      "label": "硬件工程",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "电路、板框约束、样板和联调",
+      "boundary": "专业personas不授予系统权限",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "firmware",
+      "label": "嵌入式工程",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "固件版本、基础开发、联调与复验",
+      "boundary": "真实硬件与固件版本汇合",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "dqe",
+      "label": "设计质量工程",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "前期约束、验证覆盖、设计失效预防",
+      "boundary": "不可只使用后期品质样本",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "sqe",
+      "label": "供应商质量工程",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "前期供方约束、供样质量、纠正效果",
+      "boundary": "供方资料真实性需独立核对",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "ie",
+      "label": "工业工程",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "早期可制造/可测、工装、试产与交接",
+      "boundary": "不可只使用后期产线报表",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "test_quality",
+      "label": "测试与品质",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "原值记录、报告确认、独立验证",
+      "boundary": "Quality窄动作变更另属待批N0-02/N0-04",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "procurement",
+      "label": "采购与供应协调",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "报价/承诺核实、缺料协调",
+      "boundary": "业务交易仍在ERP",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "manufacturing_receiver",
+      "label": "制造与下游接收",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "交接检查、补齐、实际接收",
+      "boundary": "apply不等于已接收",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "data_steward",
+      "label": "数据职责",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "来源用途、字段人工核对、样本完整性",
+      "boundary": "资料出站授权独立",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "quality_reviewer",
+      "label": "专业质量核对职责",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "预期结果、错误/遗漏裁定、case核对",
+      "boundary": "不由模型评价自身代替",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "erp_steward",
+      "label": "ERP职责",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "快照口径、单位和交易边界",
+      "boundary": "没有真实ERP写授权",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    },
+    {
+      "role_id": "security_steward",
+      "label": "安全职责",
+      "confirmed_person_label": null,
+      "participant_ref": null,
+      "account_mapping_ref": null,
+      "responsibility": "受限账号/撤权/数据出站负例",
+      "boundary": "不得降低安全硬线",
+      "assignment_status": "unassigned",
+      "assignment_approval_ref": null
+    }
+  ],
+  "pilots": [
+    {
+      "pilot_id": "D14-04",
+      "evidence_kind": "prospective_real_pilot",
+      "product_type": "锂电自行车泵（不带照明）",
+      "selection_status": "user_approved",
+      "tenant_id": null,
+      "project_id": null,
+      "source_ref": "docs/pilots/D14-04-test-plan-v1.md",
+      "known_facts": {
+        "applicable_test_items": 29,
+        "excluded_lighting_items": 1,
+        "real_result_records_available": false
+      },
+      "allowed_use": "模板/流程准备；实际运行样本另采",
+      "not_evidence_for": [
+        "真实结果",
+        "员工收益",
+        "第二产品类型"
+      ]
+    },
+    {
+      "pilot_id": "D14-02",
+      "evidence_kind": "historical_replay",
+      "product_type": "自行车泵",
+      "selection_status": "user_approved_replay",
+      "tenant_id": null,
+      "project_id": null,
+      "source_ref": "docs/pilots/D14-02-report-replay.md",
+      "known_facts": {
+        "report_sheets": 30,
+        "confirmed_in_rolled_back_replay": 8,
+        "compared_record_cells": 217
+      },
+      "allowed_use": "复用既有隔离回放与原值核对证据",
+      "not_evidence_for": [
+        "D14-04实测",
+        "真实预警提前量",
+        "员工时间节省",
+        "多人试用",
+        "第二产品类型"
+      ],
+      "model_egress_authorization_ref": null
+    },
+    {
+      "pilot_id": "SECOND-TYPE-PENDING",
+      "evidence_kind": "synthetic",
+      "product_type": null,
+      "selection_status": "unselected",
+      "tenant_id": null,
+      "project_id": null,
+      "source_ref": "tasks/ai-native-integrated-todo.md",
+      "known_facts": {},
+      "allowed_use": "N0-05第二类型模拟设计与试配，明确标模拟",
+      "not_evidence_for": [
+        "真实业务结果",
+        "真实产品已选定",
+        "第二类型已试配"
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "pm_research_definition",
+      "role_ids": [
+        "product_manager"
+      ],
+      "workflow": "研究输入→证据/冲突→机会/实验/定义→审核",
+      "work_items": [
+        "N1-02",
+        "N1-04",
+        "N1-05",
+        "N1-06"
+      ],
+      "actual_samples": [],
+      "minimum_sample_count": null,
+      "acceptance_status": "not_assessed"
+    },
+    {
+      "scenario_id": "pm_initial_plan",
+      "role_ids": [
+        "project_manager"
+      ],
+      "workflow": "已批准需求→计划候选→确认→下游接收",
+      "work_items": [
+        "N2-01",
+        "N2-03",
+        "N2-04"
+      ],
+      "actual_samples": [],
+      "minimum_sample_count": null,
+      "acceptance_status": "not_assessed"
+    },
+    {
+      "scenario_id": "discipline_handoff",
+      "role_ids": [
+        "industrial_design",
+        "mechanical",
+        "hardware",
+        "firmware"
+      ],
+      "workflow": "分专业输入→执行→版本交接→接收",
+      "work_items": [
+        "N3-04",
+        "N4-06"
+      ],
+      "actual_samples": [],
+      "minimum_sample_count": null,
+      "acceptance_status": "not_assessed"
+    },
+    {
+      "scenario_id": "dqe_early_review",
+      "role_ids": [
+        "dqe"
+      ],
+      "workflow": "概念约束→验证计划→评审→接收",
+      "work_items": [
+        "N2-03",
+        "N4-06"
+      ],
+      "actual_samples": [],
+      "minimum_sample_count": null,
+      "acceptance_status": "not_assessed"
+    },
+    {
+      "scenario_id": "sqe_early_review",
+      "role_ids": [
+        "sqe"
+      ],
+      "workflow": "新供方约束/证据缺项→资格/供样计划→接收",
+      "work_items": [
+        "N2-03",
+        "N5-04",
+        "N5-05"
+      ],
+      "actual_samples": [],
+      "minimum_sample_count": null,
+      "acceptance_status": "not_assessed"
+    },
+    {
+      "scenario_id": "ie_early_review",
+      "role_ids": [
+        "ie"
+      ],
+      "workflow": "可制造可测/工装约束→试产计划→接收",
+      "work_items": [
+        "N2-03",
+        "N5-05"
+      ],
+      "actual_samples": [],
+      "minimum_sample_count": null,
+      "acceptance_status": "not_assessed"
+    },
+    {
+      "scenario_id": "test_report_execution",
+      "role_ids": [
+        "test_quality"
+      ],
+      "workflow": "实际报告→原值核对→确认→问题与独立验证",
+      "work_items": [
+        "N4-01",
+        "N4-05"
+      ],
+      "actual_samples": [],
+      "minimum_sample_count": null,
+      "acceptance_status": "not_assessed"
+    },
+    {
+      "scenario_id": "supply_coordination",
+      "role_ids": [
+        "procurement",
+        "sqe"
+      ],
+      "workflow": "快照/缺料→催交或替代方案→人工执行→收样",
+      "work_items": [
+        "N5-02",
+        "N5-03"
+      ],
+      "actual_samples": [],
+      "minimum_sample_count": null,
+      "acceptance_status": "not_assessed"
+    },
+    {
+      "scenario_id": "manufacturing_handoff",
+      "role_ids": [
+        "ie",
+        "manufacturing_receiver"
+      ],
+      "workflow": "转产包→核对缺项→补齐→接收",
+      "work_items": [
+        "N5-05"
+      ],
+      "actual_samples": [],
+      "minimum_sample_count": null,
+      "acceptance_status": "not_assessed"
+    },
+    {
+      "scenario_id": "issue_close_reopen",
+      "role_ids": [
+        "mechanical",
+        "hardware",
+        "firmware",
+        "test_quality"
+      ],
+      "workflow": "Issue提交→独立Verifier→退回或关闭→重开",
+      "work_items": [
+        "N0-04",
+        "N4-05"
+      ],
+      "actual_samples": [],
+      "minimum_sample_count": null,
+      "acceptance_status": "not_assessed"
+    },
+    {
+      "scenario_id": "meeting_action",
+      "role_ids": [
+        "project_manager"
+      ],
+      "workflow": "会前准备→会议→行动/决定→真实执行回链",
+      "work_items": [
+        "N3-06"
+      ],
+      "actual_samples": [],
+      "minimum_sample_count": null,
+      "acceptance_status": "not_assessed"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "schema_version": "wave21-shared-foundation-check-result-v3",
+  "source_manifest": "foundation-source-v3.json",
+  "source_manifest_sha256": "83b9e11a38f1cb092f15cf3f950df1bdad37293d812f2f1cd4ee9196b0e78a92",
+  "checks": [
+    {
+      "name": "owned_pure",
+      "command": "PYTHONPATH=server:tools server/.venv/bin/python -m pytest --noconftest .local/wave21-case-staged/test_wave21_shared_case.py -q -p no:cacheprovider",
+      "exit_code": 0,
+      "cases": 37,
+      "seconds": 0.85,
+      "log": "foundation-pure-v3.log"
+    },
+    {
+      "name": "ruff",
+      "command": "server/.venv/bin/ruff check .local/wave21-case-staged/wave21_shared_case.py .local/wave21-case-staged/test_wave21_shared_case.py",
+      "exit_code": 0,
+      "log": "foundation-ruff-v3.log"
+    },
+    {
+      "name": "format",
+      "command": "server/.venv/bin/ruff format --check .local/wave21-case-staged/wave21_shared_case.py .local/wave21-case-staged/test_wave21_shared_case.py",
+      "exit_code": 0,
+      "log": "foundation-format-v3.log"
+    },
+    {
+      "name": "ast_compile",
+      "command": "stdlib ast.parse + compile of two owned Python files; no execution",
+      "exit_code": 0,
+      "log": "foundation-ast-v3.log"
+    },
+    {
+      "name": "offline_plan",
+      "command": "server/.venv/bin/python .local/wave21-case-staged/wave21_shared_case.py --phase plan",
+      "exit_code": 0,
+      "log": "foundation-offline-plan-v3.json"
+    }
+  ],
+  "raw_logs": [
+    {
+      "path": "foundation-pure-v3.log",
+      "sha256": "b8b21c21693fa9a05b240c86c958532e9fa7861fb7d423ac20a44b185c363bd7"
+    },
+    {
+      "path": "foundation-ruff-v3.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "foundation-format-v3.log",
+      "sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    },
+    {
+      "path": "foundation-ast-v3.log",
+      "sha256": "9dbed98df2d40eb6caba5d0a272745ac9abeef03d9ce5ddde9477d5a352ec12c"
+    },
+    {
+      "path": "foundation-offline-plan-v3.json",
+      "sha256": "30dd856da84449d6398f3e15091360cb09451a8ff0275a0e13763968fd85cf53"
+    }
+  ],
+  "superseded_check_logs": [
+    "foundation-pure-v1.log (35 passed)",
+    "foundation-pure-v2.log (36 passed)"
+  ],
+  "deduplicated_final_cases": 37,
+  "evidence_generation_repair": "Initial manifest assembly used a wrong docs-relative path; AST had passed and log was preserved. Corrected only evidence dependency path to ../docs. No source/test/actual-runtime change.",
+  "scope": "controller tests only: actual registered schemas/tier maps/receipt families plus explicit HTTP response substitutes; external connection entry points forbidden",
+  "not_verified": [
+    "DB identity/bootstrap transaction",
+    "actual HTTP or T1 write",
+    "three actor real API readback",
+    "later Build/Run/Issue/qualification/profile/Review",
+    "performance or production qualification"
+  ],
+  "runtime_private_checkpoint_read_or_written": false
+}

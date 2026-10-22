@@ -1,0 +1,159 @@
+--- docs/reports/evidence/pdos-next-wave16-20261002/ui-v4-source/build-quality-followup.tsx
++++ pdos-next/web/src/components/builds/build-quality-followup.tsx
+@@ -6,7 +6,7 @@
+ import { sourceLines } from "@/lib/product-view";
+ import {
+   blankCompletion, blankFollowupLocal, canFollowup, completesWithoutRoot, completionPayload, emptyFollowupContext,
+-  followupCancelled, followupCommand, followupError, followupFailureRecovery, followupNames, followupOutputKey, followupPayloadReads, followupReads, followupRecord, followupSame,
++  followupCancelled, followupCommand, followupError, followupExpiredRepreview, followupFailureRecovery, followupNames, followupOutputKey, followupPayloadReads, followupReads, followupRecord, followupSame,
+   followupSource, followupSourceKey, followupStable, followupStates, followupSynthetic, followupTier,
+   linkPayload, readBuildFollowupIndex, readFollowupContext, readSelectedFollowup, restoreFollowupLocal, rootCausePayload, selectFollowupBuild, selectFollowupIssue, validFollowupInputs, validFollowupPreview, validFollowupReceipt,
+   type CompletionDraft, type FollowupApi, type FollowupContext, type FollowupExactSource, type FollowupLocal, type FollowupOperation, type FollowupPending, type FollowupPreview, type FollowupSource, type FollowupWork,
+@@ -49,6 +49,7 @@
+   const scope = JSON.stringify(followupStable([principalId, product.id, product.revision, local.selectedBuildId, local.selectedIssueId, local.selectedVersionId, data?.issue.id, data?.current, data?.basis, data?.operations, data?.actions, data?.output_options, context.sources.map(row => [row.id, row.revision, row.status])]));
+   useEffect(() => { scopeRef.current = scope; }, [scope]);
+   const activePreview = preview && scope === previewScope ? preview : null, unlocked = !loading && !readFailed && !busy && !pending && !preview;
++  const reviewLocked = busy || (!!pending && !pending.reconfirmation);
+   const can = (operation: FollowupOperation) => unlocked && canFollowup(data, operation);
+   const refs = [...new Map([...addedRefs, ...(data?.source_options.map(row => row.source) ?? []), ...work.rootSources, ...work.completions.flatMap(row => row.evidence)].map(ref => [followupSourceKey(ref), ref])).values()];
+   const uniqueIssues = [...new Set(context.issues.map(row => row.issue_id))], versions = context.issues.filter(row => row.issue_id === local.selectedIssueId).sort((a, b) => b.revision - a.revision), synthetic = followupSynthetic(data);
+@@ -68,7 +69,7 @@
+   function reread() { if (lock.current) return; setLoading(true); setError(""); void refresh().catch(failure => { if (!alive.current || followupCancelled(failure)) return; const handled = followupError(failure, true); if (handled.status === 401 || handled.status === 403) clearSensitive(); setReadFailed(true); setLoading(false); setError(handled.message); }); }
+   function chooseBuild(buildId: string) { if (!unlocked) return; try { sequence.current++; save(selectFollowupBuild(state.current, buildId)); setPreview(null); setInputs(null); setAddedRefs([]); setSourceId(""); setSourceLine(1); setLoading(true); void refresh("index").catch(failure => { if (!alive.current || followupCancelled(failure)) return; const handled = followupError(failure, true); if (handled.status === 401 || handled.status === 403) clearSensitive(); setReadFailed(true); setLoading(false); setError(handled.message); }); } catch (failure) { setError(failure instanceof Error ? failure.message : "请选择实际试制轮次。"); } }
+   function choose(issueId: string, versionId = "") { if (!unlocked) return; try { sequence.current++; save(selectFollowupIssue(state.current, issueId, versionId)); setPreview(null); setInputs(null); setAddedRefs([]); setLoading(true); void refresh(false).catch(failure => { if (!alive.current || followupCancelled(failure)) return; const handled = followupError(failure, true); if (handled.status === 401 || handled.status === 403) clearSensitive(); setReadFailed(true); setLoading(false); setError(handled.message); }); } catch (failure) { setError(failure instanceof Error ? failure.message : "请选择实际固定问题。"); } }
+-  function closePreview() { if (lock.current || state.current.pending) return; setPreview(null); dialog.current?.close(); trigger.current?.focus(); }
++  function closePreview() { if (lock.current || (state.current.pending && !state.current.pending.reconfirmation)) return; setPreview(null); dialog.current?.close(); trigger.current?.focus(); }
+   async function perform(waiting: FollowupPending, element?: HTMLElement) {
+     if (lock.current) return; const requestedScope = scopeRef.current, recovering = state.current.pending?.stage === "execute"; sequence.current++; lock.current = true; setBusy(true); setError(""); setNotice(""); if (element) trigger.current = element; save({ pending: waiting }); let current = waiting, committed = false;
+     try {
+@@ -80,7 +81,7 @@
+       }
+       if (current.stage === "preview") {
+         const value = await api<unknown>("v1/commands/preview", current.command);
+-        if (!validFollowupPreview(value, current.command)) throw new Error("尚未取得与原载荷和完整读集一致的实质预览，请保留原请求核对。"); if (!alive.current) return; save({ pending: null }); if (requestedScope !== scopeRef.current) { setNotice("当前固定范围已变化，预览已废弃，请重新核对。"); return; } setPreview(value); setPreviewScope(requestedScope); return;
++        if (!validFollowupPreview(value, current.command)) throw new Error("尚未取得与原载荷和完整读集一致的实质预览，请保留原请求核对。"); if (!alive.current) return; save({ pending: current.reconfirmation ? current : null }); if (requestedScope !== scopeRef.current) { setNotice(current.reconfirmation ? "当前固定范围已变化，预览已废弃；原命令与内容继续保留，请重新预览核对，不另造操作。" : "当前固定范围已变化，预览已废弃，请重新核对。"); return; } setPreview(value); setPreviewScope(requestedScope); return;
+       }
+       const receipt = await api<unknown>("v1/commands", current.command);
+       if (!validFollowupReceipt(receipt, current.command)) throw new Error("尚未取得确定的本次保存回执，请按同一原请求恢复。"); committed = true; if (!alive.current) return;
+@@ -91,7 +92,11 @@
+       if (!alive.current) return; const handled = followupError(failure), recovery = followupFailureRecovery(committed, handled.status);
+       if (recovery.clearPrivate) clearSensitive();
+       if (recovery.mode === "saved_read_failed") { setNotice(recovery.clearPrivate ? "已取得成功回执；当前读取权限不可用，私有内容和本机草稿已清除。请只重新核对读取权限并刷新，不重复提交。" : "已取得成功回执，随后刷新失败；请只刷新保存内容，不重复提交。"); setReadFailed(true); setLoading(false); }
+-      else { if (current.stage === "execute") setPreview(null); setError(failure instanceof Error && handled.status === undefined ? failure.message : handled.message); if ([400, 404, 409, 410, 422].includes(handled.status ?? 0) && !recovering) { save({ pending: null }); setPreview(null); } }
++      else {
++        const repreview = followupExpiredRepreview(current, failure, recovering, committed);
++        if (repreview) { save({ pending: repreview }); setPreview(null); setInputs(null); setError(""); setNotice("服务器已核对原请求尚未保存，原确认已过期。原命令、内容和完整读集继续保留；请点击重新预览，由有权本人再次核对并确认，本页面不会自动批准或提交。"); }
++        else { if (current.stage === "execute") setPreview(null); setError(failure instanceof Error && handled.status === undefined ? failure.message : handled.message); if (current.stage !== "execute" && !current.reconfirmation && [400, 404, 410, 422].includes(handled.status ?? 0) && !recovering) { save({ pending: null }); setPreview(null); } }
++      }
+     } finally { lock.current = false; if (alive.current) setBusy(false); }
+   }
+   async function action(operation: FollowupOperation, element: HTMLElement) { if (!can(operation) || !data) return; try { const payload = operation === "quality.issue.root_cause.decide" ? rootCausePayload(data, work) : operation === "quality.capa.actions.complete" ? completionPayload(data, work, principalId) : linkPayload(data, work); const command = followupCommand(product, operation, payload, followupReads(data.required_source_read_set, followupPayloadReads(payload)), crypto.randomUUID(), crypto.randomUUID()); await perform({ stage: "inputs", command }, element); } catch (failure) { setError(failure instanceof Error ? failure.message : "请核对当前范围与内容。"); } }
+@@ -102,7 +107,7 @@
+     <header className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="flex items-center gap-2 text-xl font-semibold"><GitBranch/>根因、本人整改与独立复验回链</h2><p className="subtle mt-2">保留原失败与假设 → 具名根因 → 本人实际完成 → 固定新输出与新复验分支。有效性、问题关闭和正式变更批准仍未开放。</p></div><Button type="button" variant="outline" disabled={busy} onClick={reread}><ArrowClockwise/>刷新当前整改事实</Button></header>
+     {synthetic && <p className="rounded-lg border border-primary p-3 text-sm">本地合成演练：根因、完成与复验回链用于验证流程，不代表真实整改有效、生产放行或人工出口通过。</p>}
+     {error && <p role="alert" className="flex items-start gap-2 rounded-lg border border-destructive p-3 text-sm text-destructive"><WarningCircle className="shrink-0"/>{error}</p>}{notice && <p role="status" className="rounded-lg border border-border p-3 text-sm">{notice}</p>}
+-    {pending && <div className="space-y-3 rounded-lg border border-primary p-4"><p className="font-medium">{pending.stage === "execute" ? "原提交回执尚待核对" : "原操作核对尚未完成"}</p><p className="subtle">同一命令、完整载荷和原标识已保留；输入锁定，恢复不另造一次操作。</p><Button disabled={busy} onClick={event => void perform(pending, event.currentTarget)}><ArrowClockwise/>按原请求恢复</Button></div>}
++    {pending && <div className="space-y-3 rounded-lg border border-primary p-4"><p className="font-medium">{pending.reconfirmation ? "原请求已核对未保存，等待重新具名确认" : pending.stage === "execute" ? "原提交回执尚待核对" : "原操作核对尚未完成"}</p><p className="subtle">同一命令、完整载荷和原标识已保留；输入锁定，恢复不另造一次操作。{pending.reconfirmation && "重新预览只核对范围与依据，仍须在预览中明确确认；不会自动提交。"}</p><Button disabled={busy} onClick={event => void perform(pending, event.currentTarget)}><ArrowClockwise/>{pending.reconfirmation ? "重新预览原操作" : "按原请求恢复"}</Button></div>}
+     <label className="block space-y-2 text-sm"><span className="font-medium">明确选择试制轮次</span><select aria-label="整改后续轮次" disabled={!unlocked} value={local.selectedBuildId} onChange={event => chooseBuild(event.target.value)}><option value="">请选择当前可读轮次</option>{context.builds.map(row => <option key={row.id} value={row.id}>{row.name} · v{row.revision}{row.source_status === "needs_recheck" ? " · 当前依据需重核" : ""}</option>)}</select></label>
+     <div className="grid gap-4 sm:grid-cols-2"><label className="space-y-2 text-sm"><span className="font-medium">明确选择本轮已有问题 / CAPA</span><select aria-label="整改后续问题" disabled={!unlocked || !local.selectedBuildId} value={local.selectedIssueId} onChange={event => choose(event.target.value)}><option value="">请选择当前可读真实问题</option>{uniqueIssues.map(id => { const row = context.issues.find(row => row.id === context.current_by_issue[id]?.issue_version_id) ?? context.issues.find(row => row.issue_id === id); return <option key={id} value={id}>{row?.issue.title ?? "固定问题"} · {row ? `v${row.revision}` : "历史"}</option>; })}</select></label><label className="space-y-2 text-sm"><span className="font-medium">当前 / 固定历史版本</span><select aria-label="整改问题固定版本" disabled={!unlocked || !local.selectedIssueId} value={local.selectedVersionId} onChange={event => choose(local.selectedIssueId, event.target.value)}><option value="">读取服务器当前版本</option>{versions.map(row => <option key={row.id} value={row.id}>v{row.revision} · {followupStates[row.issue.status] ?? "固定历史"}{row.id !== context.current_by_issue[row.issue_id]?.issue_version_id ? " · 只读历史" : ""}</option>)}</select></label></div>
+     {context.has_more && <p className="subtle">本轮索引只返回部分可读历史；未返回的对象不能按猜测标识办理。</p>}{loading && <p role="status" className="subtle">正在读取当前选择的固定整改依据…</p>}{!local.selectedBuildId && <p className="subtle">先明确选择轮次，再读取本轮问题；空选择不深查全产品复验，也不默认选择某一轮。</p>}{local.selectedBuildId && !local.selectedIssueId && <p className="subtle">选择本轮真实问题后，才读取它的输出、候选与专业能力。</p>}
+@@ -114,7 +119,7 @@
+     <div className="space-y-3 rounded-lg border border-border p-4"><h3 className="font-medium">4 · 独立复验候选与明确缺项（只读）</h3><p className="subtle">按固定新 Run、原值与规则读取覆盖；规定观察截止不是实际观察完成。适用方法、全部失败映射、独立人和观察事实缺口不以数值通过补齐。</p><Details value={data.candidates} context={context}/><p className="rounded-lg border border-primary p-3 text-sm">有效性决定、Issue 关闭、正式变更批准 / 实施 / 生效保持不可办理。已保存复验候选或新请求不等于这些批准。</p></div></>}
+     {!!local.selectedIssueId && <div className="space-y-3 rounded-lg border border-border p-4"><h3 className="font-medium">选择精确原文完整行</h3><div className="grid gap-3 sm:grid-cols-2"><label className="space-y-2 text-sm"><span>已登记的有效原文</span><select disabled={!unlocked} value={sourceId} onChange={event => { setSourceId(event.target.value); setSourceLine(1); }}><option value="">请选择原文</option>{context.sources.map(row => <option key={row.id} value={row.id} disabled={row.status !== "active"}>{row.title} · v{row.revision}{row.status !== "active" ? " · 当前不可作为新依据" : ""}</option>)}</select></label><label className="space-y-2 text-sm"><span>派生原文完整行（不冒充原件页码或表格单元格）</span><input type="number" min={1} step={1} disabled={!unlocked} value={sourceLine} onChange={event => setSourceLine(Number(event.target.value))}/></label></div>{chosenSource && <blockquote className="border-l-2 border-primary pl-3 whitespace-pre-wrap text-sm [overflow-wrap:anywhere]">{sourceLines(chosenSource.content)[sourceLine - 1] ?? "这一行未在当前原文中返回"}</blockquote>}<Button type="button" variant="outline" disabled={!unlocked || !chosenSource} onClick={() => void addSource()}><Plus/>加入完整行依据</Button><details><summary className="cursor-pointer text-sm">已选精确依据可阅读</summary><div className="mt-3 space-y-3">{refs.map(ref => <SourceReading key={followupSourceKey(ref)} reference={ref} context={context}/>)}</div></details></div>}
+     {inputs !== null && <details className="rounded-lg border border-border p-4"><summary className="cursor-pointer text-sm font-medium">本次服务器固定范围与当前办理核对</summary><div className="mt-3"><Details value={inputs} context={context}/></div></details>}
+-    <dialog ref={dialog} className="m-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-3xl overflow-y-auto rounded-lg border border-border bg-background p-5 text-foreground backdrop:bg-black/50" onCancel={event => { event.preventDefault(); closePreview(); }}><div className="space-y-4 [&_*]:min-w-0 [overflow-wrap:anywhere]"><div className="flex items-start justify-between gap-3"><h3 className="font-semibold">{activePreview && followupTier(activePreview.command.operation) === "T2" ? "核对本次具名根因批准（T2）" : "核对本次实际范围（T1）"}</h3><Button type="button" variant="ghost" size="icon" aria-label="关闭本次实质预览" disabled={busy || !!pending} onClick={closePreview}><X/></Button></div>{activePreview && <><p className="text-sm">{activePreview.review.effect}</p>{activePreview.command.operation === "quality.capa.actions.complete" && finalWithoutRoot && <p className="rounded-lg border border-primary p-3 text-sm">本次全完成时根因仍空；进入待验证后当前无根因补办端口，请明确核对这一实际后果。</p>}<Details value={activePreview.review} context={context}/><p className="subtle">确认有效至 {activePreview.expires_at}；不新增当前时间、事实或授权。提交后未知仅恢复同一原请求。</p><div className="flex flex-wrap gap-3"><Button disabled={busy || !!pending} onClick={() => { if (!validFollowupPreview(activePreview, { ...activePreview.command, payload: Object.fromEntries(Object.entries(activePreview.command.payload).filter(([key]) => key !== "approval_token" && key !== "confirmation_token")) })) { setError("本次确认已过期或范围不完整，请重新核对。"); closePreview(); return; } void perform({ stage: "execute", command: activePreview.command }); }}><CheckCircle/>{followupTier(activePreview.command.operation) === "T2" ? "具名批准本次根因结论" : "一次确认保存本次范围"}</Button><Button type="button" variant="outline" disabled={busy || !!pending} onClick={closePreview}>返回核对</Button></div></>}</div></dialog>
++    <dialog ref={dialog} className="m-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-3xl overflow-y-auto rounded-lg border border-border bg-background p-5 text-foreground backdrop:bg-black/50" onCancel={event => { event.preventDefault(); closePreview(); }}><div className="space-y-4 [&_*]:min-w-0 [overflow-wrap:anywhere]"><div className="flex items-start justify-between gap-3"><h3 className="font-semibold">{activePreview && followupTier(activePreview.command.operation) === "T2" ? "核对本次具名根因批准（T2）" : "核对本次实际范围（T1）"}</h3><Button type="button" variant="ghost" size="icon" aria-label="关闭本次实质预览" disabled={reviewLocked} onClick={closePreview}><X/></Button></div>{activePreview && <><p className="text-sm">{activePreview.review.effect}</p>{activePreview.command.operation === "quality.capa.actions.complete" && finalWithoutRoot && <p className="rounded-lg border border-primary p-3 text-sm">本次全完成时根因仍空；进入待验证后当前无根因补办端口，请明确核对这一实际后果。</p>}<Details value={activePreview.review} context={context}/><p className="subtle">确认有效至 {activePreview.expires_at}；不新增当前时间、事实或授权。提交后未知仅恢复同一原请求。</p><div className="flex flex-wrap gap-3"><Button disabled={reviewLocked} onClick={() => { if (!validFollowupPreview(activePreview, pending?.reconfirmation ? pending.command : { ...activePreview.command, payload: Object.fromEntries(Object.entries(activePreview.command.payload).filter(([key]) => key !== "approval_token" && key !== "confirmation_token")) })) { setError("本次确认已过期或范围不完整，请重新核对。"); closePreview(); return; } void perform({ stage: "execute", command: activePreview.command }); }}><CheckCircle/>{followupTier(activePreview.command.operation) === "T2" ? "具名批准本次根因结论" : "一次确认保存本次范围"}</Button><Button type="button" variant="outline" disabled={reviewLocked} onClick={closePreview}>返回核对</Button></div></>}</div></dialog>
+   </section>;
+ }
+ 
+--- docs/reports/evidence/pdos-next-wave16-20261002/ui-v4-source/build-quality-followup-view.ts
++++ pdos-next/web/src/lib/build-quality-followup-view.ts
+@@ -91,7 +91,17 @@
+ 
+ export type FollowupWork = { rootText: string; rootSources: FollowupSource[]; completions: CompletionDraft[]; linkActionId: string; outputKeys: string[]; linkReason: string; linkSources: FollowupExactSource[] };
+ export const blankFollowupWork = (): FollowupWork => ({ rootText: "", rootSources: [], completions: [], linkActionId: "", outputKeys: [], linkReason: "", linkSources: [] });
+-export type FollowupPending = { stage: "inputs" | "preview" | "execute"; command: FollowupCommand };
++export type FollowupPending = { stage: "inputs" | "preview" | "execute"; command: FollowupCommand; reconfirmation?: true };
++export function followupExpiredRepreview(waiting: FollowupPending, failure: unknown, recovered: boolean, committed = false): FollowupPending | null {
++  if (committed || !recovered || waiting.stage !== "execute" || !followupRecord(failure) || failure.status !== 409 || failure.code !== "FOLLOWUP_CONFIRMATION_EXPIRED" || !followupRecord(failure.recovery) || failure.recovery.state !== "not_saved_expired_proof" || !allowedKeys(failure.recovery, ["state", "command"])) return null;
++  const token = followupTier(waiting.command.operation) === "T2" ? "approval_token" : "confirmation_token", other = token === "approval_token" ? "confirmation_token" : "approval_token";
++  if (typeof waiting.command.payload[token] !== "string" || waiting.command.payload[token].length < 20 || other in waiting.command.payload) return null;
++  const command = { ...waiting.command, payload: Object.fromEntries(Object.entries(waiting.command.payload).filter(([key]) => !["approval_token", "confirmation_token"].includes(key))) };
++  // Recovery echoes the ORIGINAL fields, not DTO defaults or normalized clocks.
++  // This comparison intentionally does not normalize times, sort arrays or replace reads.
++  if (!followupSame(failure.recovery.command, command)) return null;
++  return { stage: "preview", command, reconfirmation: true };
++}
+ export type FollowupLocal = { selectedBuildId: string; selectedIssueId: string; selectedVersionId: string; work: FollowupWork; drafts: Record<string, FollowupWork>; pending: FollowupPending | null };
+ export const blankFollowupLocal = (): FollowupLocal => ({ selectedBuildId: "", selectedIssueId: "", selectedVersionId: "", work: blankFollowupWork(), drafts: {}, pending: null });
+ const allowedKeys = (value: Record<string, unknown>, keys: string[]) => Object.keys(value).every(key => keys.includes(key));
+@@ -120,7 +130,7 @@
+ export function restoreFollowupLocal(value: unknown, productId: string, principalId: string): FollowupLocal | null {
+   if (!followupRecord(value) || value.schema_version !== 1 || value.product_id !== productId || value.principal_id !== principalId || typeof value.selectedIssueId !== "string" || (value.selectedIssueId && !followupUuid(value.selectedIssueId)) || typeof value.selectedVersionId !== "string" || (value.selectedVersionId && !followupUuid(value.selectedVersionId)) || !validWork(value.work) || !followupRecord(value.drafts) || !Object.values(value.drafts).every(validWork)) return null;
+   if (value.selectedBuildId !== undefined && (typeof value.selectedBuildId !== "string" || (value.selectedBuildId && !followupUuid(value.selectedBuildId)))) return null;
+-  if (value.pending !== null && (!followupRecord(value.pending) || !["inputs", "preview", "execute"].includes(String(value.pending.stage)) || !validCommand(value.pending.command, productId, principalId, value.pending.stage as FollowupPending["stage"]))) return null;
++  if (value.pending !== null && (!followupRecord(value.pending) || !allowedKeys(value.pending, ["stage", "command", "reconfirmation"]) || !["inputs", "preview", "execute"].includes(String(value.pending.stage)) || ("reconfirmation" in value.pending && (value.pending.reconfirmation !== true || value.pending.stage !== "preview")) || !validCommand(value.pending.command, productId, principalId, value.pending.stage as FollowupPending["stage"]))) return null;
+   const pending = value.pending as FollowupPending | null, target = pending ? String(pending.command.payload.issue_id) : value.selectedIssueId;
+   if (pending && value.selectedIssueId && value.selectedIssueId !== target) return null;
+   const selectedBuildId = typeof value.selectedBuildId === "string" ? value.selectedBuildId : "", drafts = { ...value.drafts as Record<string, FollowupWork>, ...(target ? { [target]: value.work } : {}) };
+--- docs/reports/evidence/pdos-next-wave16-20261002/ui-v4-source/build-quality-followup-view.test.ts
++++ pdos-next/web/src/lib/build-quality-followup-view.test.ts
+@@ -2,10 +2,10 @@
+ import test from "node:test";
+ import {
+   blankCompletion, blankFollowupLocal, blankFollowupWork, canFollowup, completesWithoutRoot, completionEvent, completionPayload,
+-  followupCapability, followupCommand, followupError, followupFailureRecovery, followupOutputKey, followupPayloadReads, followupReads, followupSame,
++  followupCapability, followupCommand, followupError, followupExpiredRepreview, followupFailureRecovery, followupOutputKey, followupPayloadReads, followupReads, followupSame,
+   followupSource, followupTier, followupTime, linkPayload, normalizeFollowup, readBuildFollowupIndex, readFollowupContext, readSelectedFollowup, restoreFollowupLocal, rootCausePayload,
+   selectFollowupBuild, selectFollowupIssue, validFollowupInputs, validFollowupPreview, validFollowupReceipt, validOutputRef,
+-  type FollowupApi, type FollowupCommand, type FollowupData, type FollowupSource,
++  type FollowupApi, type FollowupCommand, type FollowupData, type FollowupPending, type FollowupSource,
+ } from "./build-quality-followup-view";
+ 
+ const uuid = (n: number) => `00000000-0000-0000-0000-${String(n).padStart(12, "0")}`;
+@@ -75,3 +75,45 @@
+   const row = data(); row.integration.missing = [{ code: "FUTURE_OWNER_PROOF_REQUIRED", detail: "当前尚缺新的真实责任接口。" }]; row.operations["quality.capa.followup.link"].allowed = false;
+   const read = normalizeFollowup(row, issueId); assert.equal(read.integration.missing[0].detail, row.integration.missing[0].detail); assert.equal(canFollowup(read, "quality.capa.followup.link"), false); assert.deepEqual(normalizeFollowup(data(), issueId).integration.missing, []);
+ });
++
++function expiryRecovery(prepared: FollowupCommand) {
++  return { status: 409, code: "FOLLOWUP_CONFIRMATION_EXPIRED", recovery: { state: "not_saved_expired_proof", command: { ...structuredClone(prepared), payload: Object.fromEntries(Object.entries(structuredClone(prepared.payload)).filter(([key]) => !["approval_token", "confirmation_token"].includes(key))) } } };
++}
++test("explicit recovered unsaved expiry retains original IDs and reads for a manual new T2 preview", () => {
++  const waiting: FollowupPending = { stage: "execute", command: preview().command }, recovered = followupExpiredRepreview(waiting, expiryRecovery(waiting.command), true);
++  assert.ok(recovered); assert.equal(recovered.stage, "preview"); assert.equal(recovered.reconfirmation, true); assert.deepEqual(recovered.command, command()); assert.equal("approval_token" in recovered.command.payload, false); assert.deepEqual(recovered.command.source_read_set, waiting.command.source_read_set);
++  const saved = { schema_version: 1, product_id: product.id, principal_id: principal, ...blankFollowupLocal(), pending: recovered };
++  assert.deepEqual(restoreFollowupLocal(saved, product.id, principal)?.pending, recovered); assert.throws(() => selectFollowupIssue({ ...blankFollowupLocal(), pending: recovered }, uuid(99)));
++});
++test("ordinary conflicts, timeouts, first execution and known commits never become a repreview permit", () => {
++  const waiting: FollowupPending = { stage: "execute", command: preview().command }, failure = expiryRecovery(waiting.command);
++  for (const code of ["CONFIRMATION_REQUIRED", "VERSION_CONFLICT", "CONFIRMATION_SCOPE_CHANGED", "READ_SUPERSEDED", undefined]) assert.equal(followupExpiredRepreview(waiting, { ...failure, code }, true), null);
++  for (const status of [400, 401, 403, 410, 422, 500, 503, undefined]) assert.equal(followupExpiredRepreview(waiting, { ...failure, status }, true), null);
++  assert.equal(followupExpiredRepreview(waiting, failure, false), null); assert.equal(followupExpiredRepreview(waiting, failure, true, true), null);
++  for (const stage of ["inputs", "preview"] as const) assert.equal(followupExpiredRepreview({ ...waiting, stage }, failure, true), null);
++});
++test("server expiry recovery must echo every original field without altered identity, reads or semantic content", () => {
++  const waiting: FollowupPending = { stage: "execute", command: preview().command }, failure = expiryRecovery(waiting.command);
++  for (const change of [{ command_id: uuid(31) }, { idempotency_key: uuid(32) }, { product_id: uuid(33) }, { expected_revision: 99 }, { operation: "quality.capa.followup.link" }, { source_read_set: [] }, { payload: { ...command().payload, text: "另一结论" } }, { payload: { ...command().payload, approval_token: "t".repeat(40) } }, { unknown_field: true }]) assert.equal(followupExpiredRepreview(waiting, { ...failure, recovery: { ...failure.recovery, command: { ...failure.recovery.command, ...change } } }, true), null);
++  for (const recovery of [undefined, null, {}, { ...failure.recovery, state: "not_checked" }, { ...failure.recovery, saved_receipt: true }]) assert.equal(followupExpiredRepreview(waiting, { ...failure, recovery }, true), null);
++});
++test("T1 repreview keeps microsecond offset, explicit null and source order rather than rewriting facts", () => {
++  const original = followupCommand(product, "quality.capa.actions.complete", { issue_id: issueId, expected_issue_revision: 2, completions: [{ id: actionId, text: "本人实际完成", executor_id: principal, evidence: [source], at: { occurred_at: "2026-10-02T23:25:03.160086-07:00", original_timezone: "America/Los_Angeles", source, effective_at: null } }] }, reads, uuid(9), uuid(10)), waiting: FollowupPending = { stage: "execute", command: preview(original).command }, failure = expiryRecovery(waiting.command);
++  const result = followupExpiredRepreview(waiting, Object.assign(new Error("原确认过期"), failure), true); assert.ok(result); assert.deepEqual(result.command, original); assert.equal("confirmation_token" in result.command.payload, false);
++  const changed = structuredClone(failure), row = (changed.recovery.command.payload.completions as { at: { occurred_at: string } }[])[0]; row.at.occurred_at = "2026-10-03T06:25:03.160086Z"; assert.equal(followupExpiredRepreview(waiting, changed, true), null);
++  assert.deepEqual(restoreFollowupLocal({ schema_version: 1, product_id: product.id, principal_id: principal, ...blankFollowupLocal(), pending: result }, product.id, principal)?.pending, result);
++});
++test("fixed output linking renews only its T1 token and never creates a new output or command", () => {
++  const original = followupCommand(product, "quality.capa.followup.link", { issue_id: issueId, expected_issue_revision: 2, capa_id: uuid(7), action_id: actionId, output_refs: [data().output_options[0].ref], sources: [], reason: "固定输出回链" }, reads, uuid(9), uuid(10)), waiting: FollowupPending = { stage: "execute", command: preview(original).command };
++  assert.deepEqual(followupExpiredRepreview(waiting, expiryRecovery(waiting.command), true)?.command, original);
++});
++test("renewed review requires a new bound named T2 preview and retains exact tokenless command locally", () => {
++  const waiting: FollowupPending = { stage: "execute", command: preview().command }, recovered = followupExpiredRepreview(waiting, expiryRecovery(waiting.command), true)!;
++  const review = preview(recovered.command); review.command.payload.approval_token = "n".repeat(40);
++  assert.equal(validFollowupPreview(review, recovered.command, now), true); assert.equal(validFollowupPreview({ ...review, named_decision: false }, recovered.command, now), false); assert.equal(validFollowupPreview({ ...review, command: { ...review.command, command_id: uuid(99) } }, recovered.command, now), false);
++  for (const pending of [{ ...recovered, reconfirmation: false }, { ...recovered, stage: "execute" }, { ...recovered, command: waiting.command }]) assert.equal(restoreFollowupLocal({ schema_version: 1, product_id: product.id, principal_id: principal, ...blankFollowupLocal(), pending }, product.id, principal), null);
++});
++test("expiry echo checking never mutates the original prepared request or grants an unbound recovery", () => {
++  const waiting: FollowupPending = { stage: "execute", command: preview().command }, original = structuredClone(waiting), failure = expiryRecovery(waiting.command), echoed = structuredClone(failure);
++  followupExpiredRepreview(waiting, failure, true); assert.deepEqual(waiting, original); assert.deepEqual(failure, echoed); assert.equal(followupExpiredRepreview({ ...waiting, command: { ...waiting.command, payload: command().payload } }, failure, true), null);
++});

@@ -1,0 +1,195 @@
+{
+  "status": "APPLIED_NOT_YET_VERIFIED",
+  "source_mapping_sha256": "e21a831a1826d22e3afb50c6cab3b8a72f4f578a825d9f1b99f7c6b4777a99fe",
+  "files": {
+    "pdos-next/server/pdos_next/api.py": {
+      "sha256": "4d2cbfdf9dd67feffe280b21a0f57b7c56608ef68c0003fc7f639152fd01b840",
+      "baseline_sha256": "45fa2cd5f127cf220a3e033b0fdaeff1a4199a9bdcf9bd1cba9467946f22897c",
+      "source": ".local/wave24-change-manufacturing-combination-staged/server/pdos_next/api.py"
+    },
+    "pdos-next/server/pdos_next/models.py": {
+      "sha256": "e273a662d00df66130dd4969772cf9219542dd9a34ab873747feb3740fe1c539",
+      "baseline_sha256": "9e34f7a30834fa3576cca9737b6996a12d35c8ad06b12c445aaf1de46f7c7482",
+      "source": ".local/wave24-change-manufacturing-combination-staged/server/pdos_next/models.py"
+    },
+    "pdos-next/server/pdos_next/contracts.py": {
+      "sha256": "28800ac505dad83c05fc77ec6c3b9435d7ea8c51817984f861a4f7a668819df4",
+      "baseline_sha256": "94a7d820425f0ca9b885f3969886dd899a41a779c28f390d325fdb5406b10b4a",
+      "source": ".local/wave24-change-manufacturing-combination-staged/server/pdos_next/contracts.py"
+    },
+    "pdos-next/server/pdos_next/command_handlers.py": {
+      "sha256": "76fbc140801cb724c7656c508f36b71c47b1bfde78dabaf8cb8be52e7fc7d212",
+      "baseline_sha256": "1856870abf87fc0898a0adbf82ece9942361911cf261585916ee29acc844e9ed",
+      "source": ".local/wave24-change-manufacturing-combination-staged/server/pdos_next/command_handlers.py"
+    },
+    "pdos-next/server/pdos_next/service.py": {
+      "sha256": "d7efbcd63714b72a18297d74f59392004905a6c7139d84491437c5e15a5bdbb4",
+      "baseline_sha256": "33204c2767cf9df4bfd23331e0f6da6b1ff2e1a4dc9ee0a6049a7c23a32437d1",
+      "source": ".local/wave24-change-manufacturing-combination-staged/server/pdos_next/service.py"
+    },
+    "pdos-next/server/pdos_next/lifecycle_catalog.py": {
+      "sha256": "14a803060eb1a1034f49f35097006a05581ee685596fd04514de92764de05c15",
+      "baseline_sha256": "429b26ad4bc5985992a5a23322186fa79b4fbf8560824863e649ce816b2cec46",
+      "source": ".local/wave24-change-manufacturing-combination-staged/server/pdos_next/lifecycle_catalog.py"
+    },
+    "pdos-next/server/pdos_next/domain/professional_authority/service.py": {
+      "sha256": "5212366b6276eff7a3e0fdb1f0fd241209f51b44d342cfa36ec421e692254c9f",
+      "baseline_sha256": "d1920edd315ce26f8ea1ba3631e1aff67a820032e77c53374a0793c840e44433",
+      "source": ".local/wave24-change-manufacturing-combination-staged/server/pdos_next/domain/professional_authority/service.py"
+    },
+    "pdos-next/server/pdos_next/change_command_schemas.py": {
+      "sha256": "38faf725b01490504c6d070ea251e7e41efb144f6cdc8358641fb17d5bae2bcc",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_command_schemas.py"
+    },
+    "pdos-next/server/pdos_next/change_completion_adapter.py": {
+      "sha256": "3a6a4212c972b343534ea5a582ca326edb7df623101e6e09f24ea049f1f8b2a4",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_completion_adapter.py"
+    },
+    "pdos-next/server/pdos_next/change_controlled_owner.py": {
+      "sha256": "f4ed002073d1a9b00b277144bb9b6252ed1ee68c4dda60927dd436ded5c4fc0d",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_controlled_owner.py"
+    },
+    "pdos-next/server/pdos_next/change_controlled_schemas.py": {
+      "sha256": "0e49c62fabfc10484019b33b3ebe96463d5cf674c549457b28545f6ef9fcf1d3",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_controlled_schemas.py"
+    },
+    "pdos-next/server/pdos_next/change_controlled_store.py": {
+      "sha256": "79c3829ecbb9df7cfc3918d6ef14e77b77008c378f35d0b7090b8be4c37cce6c",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_controlled_store.py"
+    },
+    "pdos-next/server/pdos_next/change_implementation_owner.py": {
+      "sha256": "ff9b2710332f5ac8b5cd404d6c94294e75dd6165aa20d348b922101486adaa41",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_implementation_owner.py"
+    },
+    "pdos-next/server/pdos_next/change_order_consumption.py": {
+      "sha256": "2442530f690627ccb01236cc5ccf4679e35020f45b379d942b82e9c167897884",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_order_consumption.py"
+    },
+    "pdos-next/server/pdos_next/change_order_integration.py": {
+      "sha256": "1ac5068eb42a9c5c8a49e374ec6acbc882ce05a0cbbecd730bf0047c1f387268",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_order_integration.py"
+    },
+    "pdos-next/server/pdos_next/change_order_service.py": {
+      "sha256": "f1b1ca77d8db08dabf1f010266f5e7a4ce55fa8ea6cec93c9c8a5402c0950fa0",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_order_service.py"
+    },
+    "pdos-next/server/pdos_next/change_order_store.py": {
+      "sha256": "d78299dbdbc3148a9a99782b9b5490113c2eb3506c091d351f5ae4331c171045",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_order_store.py"
+    },
+    "pdos-next/server/pdos_next/change_public_integration.py": {
+      "sha256": "1299595f2e19a540e4aaa9962a5467eccf29c9ba40d6fffe589a3b3dff81895a",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_public_integration.py"
+    },
+    "pdos-next/server/pdos_next/change_selection_consumption.py": {
+      "sha256": "e580de2bb0c345f15e776ba3f80050f82205b873186c884b2ab52b5f40b4b03f",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_selection_consumption.py"
+    },
+    "pdos-next/server/pdos_next/change_selection_integration.py": {
+      "sha256": "65a0ab85d54de67aa7935bae29b8e27f612440913b3c7045e9db510fa55bd644",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_selection_integration.py"
+    },
+    "pdos-next/server/pdos_next/change_selection_service.py": {
+      "sha256": "0061acc4787127af6c547fa055ffd5d0c79a87b96eda79c9e34ba6920679ace1",
+      "baseline_sha256": null,
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/change_selection_service.py"
+    },
+    "pdos-next/server/pdos_next/domain/change_execution/api.py": {
+      "sha256": "13c337558cdf61e481594b66b4d445db8176ebb828fcfed1ccf2e8dd5f3f1f2b",
+      "baseline_sha256": "fcd8d37a402a95dd40bee65c92cab56d97d753ed4b8fb7834f9be67b9f1325af",
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/domain/change_execution/api.py"
+    },
+    "pdos-next/server/pdos_next/domain/change_execution/models.py": {
+      "sha256": "83aaf1880855a27382dd27e5adad6ee36daeff56c287bfd8cd762af2ac5734e1",
+      "baseline_sha256": "cf0961f9ac8160430b6075e3dfecbfa7bad1493486c052b81e93165218607679",
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/domain/change_execution/models.py"
+    },
+    "pdos-next/server/pdos_next/domain/change_execution/schemas.py": {
+      "sha256": "fcb132bf05550d7252c51a9f26f75f0ecea85669b4e8dd01a798bf5ac480056c",
+      "baseline_sha256": "af449f47ff19887a7e9c6d02529960fbad4de1b69e98f370fcfdfc83edbb349e",
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/domain/change_execution/schemas.py"
+    },
+    "pdos-next/server/pdos_next/domain/change_execution/service.py": {
+      "sha256": "ac91fc0842bb9546a09e714416ebbb97b39f8a822140d84b690615925f2b0f8b",
+      "baseline_sha256": "85781f6e73eab4763ff1f54af56185457bf5863a80f65b6ee16318520e3409bd",
+      "source": ".local/wave23-change-root-combination-staged/server/pdos_next/domain/change_execution/service.py"
+    },
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/__init__.py": {
+      "sha256": "dbd9e34056c1ae24cfd7d520e51af04552ababba92f77d194090e2c8906d54c9",
+      "baseline_sha256": null,
+      "source": ".local/wave24-manufacturing-integration-staged/src/pdos_next/domain/manufacturing_baseline/__init__.py"
+    },
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/api.py": {
+      "sha256": "fc27d109c1df908975bdd65be430ecf2b4a8a26ff243b0ca4116da17437b6c12",
+      "baseline_sha256": null,
+      "source": ".local/wave24-manufacturing-integration-staged/src/pdos_next/domain/manufacturing_baseline/api.py"
+    },
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/consumption.py": {
+      "sha256": "2da94c721f3077c8fd4e51e3e232a85a339271042bf9585820686859387442b4",
+      "baseline_sha256": null,
+      "source": ".local/wave24-manufacturing-integration-staged/src/pdos_next/domain/manufacturing_baseline/consumption.py"
+    },
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/models.py": {
+      "sha256": "02661157a13d08f15707ae93478309b233af32b62ba05dd6c6d5b16478bd1881",
+      "baseline_sha256": null,
+      "source": ".local/wave24-manufacturing-integration-staged/src/pdos_next/domain/manufacturing_baseline/models.py"
+    },
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/rules.py": {
+      "sha256": "789aaa7fe1f307a5ccd1cc9c02590e65bfc280755104b7027ba3a78aa4444401",
+      "baseline_sha256": null,
+      "source": ".local/wave24-manufacturing-integration-staged/src/pdos_next/domain/manufacturing_baseline/rules.py"
+    },
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/schema_proposal.py": {
+      "sha256": "cea3e5ec4f34a5bd13418da82eab97b372b2444be845691017e7d4bce206bb16",
+      "baseline_sha256": null,
+      "source": ".local/wave24-manufacturing-integration-staged/src/pdos_next/domain/manufacturing_baseline/schema_proposal.py"
+    },
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/schemas.py": {
+      "sha256": "948f32fbf5f8b6ccc2c8c9b56a271e2e3c58da61cb1864255e6be09a2ff2d763",
+      "baseline_sha256": null,
+      "source": ".local/wave24-manufacturing-integration-staged/src/pdos_next/domain/manufacturing_baseline/schemas.py"
+    },
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py": {
+      "sha256": "625b76771e354a9003e085d20074ba047c2adf6ef3d9fb7cf20aa8c97684b766",
+      "baseline_sha256": null,
+      "source": ".local/wave24-manufacturing-expiry-staged/src/pdos_next/domain/manufacturing_baseline/service.py"
+    },
+    "pdos-next/server/tests/manufacturing_preparation/test_preparation.py": {
+      "sha256": "a0eb0003901f9e179d55076622d2921350d916998db73058ec5aa8b6904a2e85",
+      "baseline_sha256": null,
+      "source": ".local/wave24-manufacturing-integration-staged/tests/test_preparation.py"
+    },
+    "pdos-next/server/tests/manufacturing_preparation/test_public_protocol.py": {
+      "sha256": "ceb81f28077949e2221841122810215a747f1a717b07c49587f45f188c09ca01",
+      "baseline_sha256": null,
+      "source": ".local/wave24-manufacturing-integration-staged/tests/public/test_public_protocol.py"
+    },
+    "pdos-next/server/tests/manufacturing_preparation/test_expiry.py": {
+      "sha256": "24dbbf6627e87881f716e00a9f07cf06cc148c01adfb9e8255b26854d4938541",
+      "baseline_sha256": null,
+      "source": ".local/wave24-manufacturing-expiry-staged/tests/test_expiry.py"
+    }
+  },
+  "preserved": {
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py": "378a6b0c627c6d4fe2bc48cef10827c312c5e1f33b9ddcfe1620163243afbc5c",
+    "pdos-next/server/pdos_next/domain/quality_issues/rules.py": "4ded3535d24b4ad645b6c17708147939232887727c2dfc711f892cf96659bb13",
+    "pdos-next/server/pdos_next/domain/quality_issues/handlers.py": "4a4a23b7a48962c85e305a6057b362334315d2b9dfd726fd62945efd3e6e4ecc",
+    "pdos-next/server/pdos_next/domain/quality_execution/service.py": "e5d54dc814faa6e2611c48395c9ec4215f18da411ccbea8e06df8e79f9c22020",
+    "pdos-next/tools/wave22_followup_control.py": "38d06a67eb71e2be94948cc685833a8b609b211eeff8c56b9b152432cdbb062d",
+    "pdos-next/web/src/components/builds/build-quality-loop.tsx": "2fc48a829bf40e4521f44073172f02b76dd6dc3e57fc2bcd9fa8c28faa376254"
+  },
+  "database_or_http_executed": false
+}

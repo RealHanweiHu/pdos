@@ -1,0 +1,43 @@
+{
+  "candidate": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/project-commitments-web-1792291165024153000",
+  "candidate_inputs": 403,
+  "checks": [
+    {
+      "name": "lint",
+      "exit_code": 0
+    },
+    {
+      "name": "build",
+      "exit_code": 0
+    },
+    {
+      "name": "typecheck",
+      "exit_code": 0
+    }
+  ],
+  "owned_source_sha256": {
+    "src/components/projects/project-commitments.tsx": "2eeeb3f2fe3258eb6cb677836cf7c57a62be50d6f668e512cbdebaa48a77f62b",
+    "src/components/projects/project-commitments.module.css": "1ae8062a9ad4a79ce4bed45b44393666e8881389604025276092a81fccb07a62",
+    "src/components/projects/project-commitments.test.mjs": "439d8a29a83bb7c632f01be179f418918c2e043de5e8c3c2904b9bc92587efc0",
+    "src/components/projects/project-workspace.tsx": "356f1e88f87a9d7a84b55b72d04a1d0085332b9e489ad11e18e004e95a9af76b"
+  },
+  "owned_changes_since_build": [],
+  "other_frontend_changes_since_build": [],
+  "shared_contract_changes_since_start": [],
+  "central_component_checks": 22,
+  "central_library_checks": 19,
+  "historical_dto_compatibility": "actual previous S5 GET JSON, unchanged; offline only",
+  "new_domain_acceptance_claimed": false,
+  "browser_checks_this_turn": false,
+  "browser_gate_preserved": true,
+  "database_operations_this_turn": false,
+  "new_business_write_or_migration": false,
+  "models_called": false,
+  "performance_sampling": false,
+  "first_test_command": {
+    "components_pass": 22,
+    "library_loader_failure": 1,
+    "reason": "Node direct TS extensionless import unsupported; no source repair needed",
+    "correct_library_run": "same source transpiled to CommonJS; 19 pass, 0 fail"
+  }
+}

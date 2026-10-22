@@ -1,0 +1,219 @@
+{
+  "backend_unique_passed": 35,
+  "backend_cases": {
+    "tests.preproject.test_evidence_commands_pg::test_claim_link_projection_counter_and_target_version_are_independent": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_claim_withdraw_confirmation_replay_and_source_projection": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_claim_withdraw_failure_rolls_back_status_link_projections_and_confirmation": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_private_context_public_source_claim_shares_only_after_named_confirmation": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_withdrawn_claim_keeps_old_named_reader_but_not_future_shared_readers": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_share_rejects_identity_hits_and_private_source_roots[False]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_share_rejects_identity_hits_and_private_source_roots[True]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_share_rechecks_saved_watermark_and_revision[watermark]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_share_rechecks_saved_watermark_and_revision[revision]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_g0_frozen_link_is_independent_and_signed_claim_consumption_blocks_withdraw": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_submitted_claim_withdrawal_blocks_approval_with_exact_stale_reason": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_withdraw_repairs_hidden_private_proposal_without_disclosing_it": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_claim_http_and_application_role_are_tenant_and_category_isolated": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_share_scans_legacy_claim_statement_even_when_content_text_is_clean": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_share_retains_original_filename_identity_after_source_counter_is_empty[removed_item_reference]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_commands_pg::test_share_retains_original_filename_identity_after_source_counter_is_empty[private_run_read_set]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_guards_pg::test_claim_ai_confirmation_cannot_be_laundered_as_human": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_guards_pg::test_claim_actual_content_must_equal_confirmed_candidate": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_guards_pg::test_claim_identical_confirmation_from_old_transaction_cannot_be_reused": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_guards_pg::test_claim_sql_withdraw_without_named_withdrawal_record_is_rejected": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_guards_pg::test_claim_withdrawal_reason_must_match_its_actual_confirmation": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_guards_pg::test_evidence_link_history_is_immutable_under_application_sql[relation]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_guards_pg::test_evidence_link_history_is_immutable_under_application_sql[noop]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_guards_pg::test_evidence_link_history_is_immutable_under_application_sql[delete]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_guards_pg::test_old_share_confirmation_cannot_authorize_later_sql_audience_expansion": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_guards_pg::test_read_only_claim_lock_exposes_only_scoped_metadata_and_no_update": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_guards_pg::test_old_shared_confirmation_does_not_allow_sql_audience_deletion": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_revert_pg::test_t0_claim_and_link_whole_run_revert_is_one_named_confirmation_and_replay": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_revert_pg::test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo[human_edit]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_revert_pg::test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo[submitted]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_revert_pg::test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo[signed]": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_evidence_revert_pg::test_whole_run_revert_tail_failure_rolls_back_claim_link_counter_and_proof": {
+      "passed": true,
+      "evidence": "check-1.xml"
+    },
+    "tests.preproject.test_proposal_share_recovery_pg::test_version_rejection_can_repreview_original_key_and_commit_once": {
+      "passed": true,
+      "evidence": "recovery-http-2.xml"
+    },
+    "tests.preproject.test_proposal_share_recovery_pg::test_consumption_after_withdraw_preview_is_definitive_without_side_effect": {
+      "passed": true,
+      "evidence": "recovery-http-2.xml"
+    },
+    "tests.preproject.test_proposal_share_recovery_pg::test_human_identity_hit_withdraw_then_share_keeps_item_value_and_future_scope": {
+      "passed": true,
+      "evidence": "recovery-http-2.xml"
+    }
+  },
+  "frontend_unique_passed": 62,
+  "frontend_evidence": "frontend-3.txt",
+  "frontend_cases": [
+    "positioning forwards the exact scoped GET and every parameter occurrence",
+    "spec-benchmark forwards the exact scoped GET and every parameter occurrence",
+    "feature-config forwards the exact scoped GET and every parameter occurrence",
+    "definition-maturity forwards the exact scoped GET and every parameter occurrence",
+    "parameter filters are optional but a single valid proposal id is mandatory for every view",
+    "each repeated parameter is validated and extra scope or query keys are rejected",
+    "only the four exact scoped paths are opened",
+    "views reject writes and other methods without forwarding",
+    "existing proposal collection, document, items and participants reads preserve their URLs",
+    "session and configuration requirements still guard the new reads",
+    "backend denial and read transport failure never become a successful view",
+    "existing command body and same-origin write protection remain unchanged",
+    "proposal claims collection and fixed detail preserve the authenticated category scope",
+    "claim reads reject ambiguous filters, unbound collections and extra scopes before forwarding",
+    "only exact claim GET routes are opened and writes remain domain commands",
+    "claim reads propagate privacy denial and missing sessions without rewriting results",
+    "reads only scoped GETs and displays the server document identity",
+    "scope remount aborts old reads and ignores responses arriving after abort",
+    "a late view response cannot replace a newer selected view",
+    "same frozen identity refresh hides old sources and fetches fresh redaction",
+    "failed document or view reads hide old success and retry first reloads the document",
+    "mismatched envelopes are unavailable and never trigger an automatic retry loop",
+    "view changes preserve G0 form values and the prepared command for same-key retry",
+    "foreground refresh is read-only, hidden pages do not refresh, and cleanup removes listeners",
+    "superseded same-scope reload cannot replace a newer source projection",
+    "late confirmed write from an unmounted scope does not reload or replace the new proposal",
+    "missing identity or unreadable frozen copy cannot fall back to current document content",
+    "legacy responses without document identity remain unavailable",
+    "initial reads do not choose scope, consent, share, withdraw or invoke an agent",
+    "preview uses current command revision and preserves server checks and exact watermark before explicit confirmation",
+    "private identity hits block share and changing to withdrawal discards the shared preview",
+    "preview transport failure retries the exact request and synchronous double submit sends once",
+    "unknown apply outcome locks edits and retry reuses sealed token and idempotency key",
+    "proven confirmation rejection rereads and previews the same operation with the same key before a new human confirmation",
+    "withdrawal receipt invalidates previews before reread and notification failure cannot undo success",
+    "successful withdrawal followed by denied reread hides old material but keeps actual receipt",
+    "signed consumption denial shows actual failure, never alters content or fabricates withdrawal",
+    "scope and principal changes abort requests and reject late old-scope previews",
+    "unexpected prepared payload is rejected instead of applying a different audience",
+    "paginated candidates stay in the proposal and product-bound candidates are not given invented revisions",
+    "semantic payload key order does not invalidate an unchanged server preview",
+    "authoritative access denial hides prior private preview while retaining the original retry request",
+    "late applied receipt from a prior scope never refreshes the new proposal or calls its parent",
+    "apply is durably journaled before sending and remount only offers exact-request recovery",
+    "withdrawal journal survives unknown outcome without persisting fetched claim content",
+    "matching receipt notifies parent immediately while local document GET is still pending",
+    "claim pagination 403 erases private list and proposal context",
+    "claim detail 401 erases the retained private list and preview hit text",
+    "session journal is isolated by actor, category and proposal and never overwritten by another scope",
+    "storage write failure prevents the apply network request",
+    "mismatched receipt and network/5xx errors retain original journal without offering new preview",
+    "proved confirmation rejection survives remount and requires explicit reread, not automatic apply",
+    "corrupt or body-bearing journal is preserved and blocks new requests",
+    "share version conflict survives remount and explicitly re-previews current revision with original identity",
+    "signed-consumption rejection persists without private display and explicit ending unlocks the next action",
+    "terminal preview denial also has an explicit end without creating an apply journal",
+    "withdrawal reason is trimmed before preview so normalized sealed payload remains identical",
+    "unproven 409 VERSION_CONFLICT/proposal_locked retains exact journal and cannot end or reprepare",
+    "unproven 409 VALIDATION_FAILED/evidence_version_moved retains exact journal and cannot end or reprepare",
+    "unproven 409 UNDO_BLOCKED_BY_DEPENDENCY/other_dependency retains exact journal and cannot end or reprepare",
+    "unproven 503 UNDO_BLOCKED_BY_DEPENDENCY/consumed_by_decision retains exact journal and cannot end or reprepare",
+    "unproven 403 VERSION_CONFLICT/evidence_version_moved retains exact journal and cannot end or reprepare"
+  ],
+  "build": "build-2.txt; includes TypeScript",
+  "frontend_lint": "frontend-lint-2.txt; zero warnings",
+  "backend_lint": "ruff check of new PG recovery tests passed",
+  "schema_head": "s0_0752; no migration or backend behavior change",
+  "initial_fixture_failures": "recovery-http-1.xml: 2 failed/1 passed; extra product_id in strict source_read_set corrected, final 3/3 pass",
+  "source_count": 1524,
+  "source_digest": "9bd3244b8d1d03f9c514a8d9a7009515f0a56b1f38475675a8795ab06d5e1466",
+  "real_model_calls": 0
+}

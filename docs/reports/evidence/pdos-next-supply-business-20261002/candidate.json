@@ -1,0 +1,101 @@
+{
+  "candidate_sha256": "8876b5bc371bd86fdf2ca9b3afd0311907463b2937aadc2657bf6c7e26274763",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/__init__.py",
+      "sha256": "0fdc7d05cebc082dffd4be8c80c0e5171b2f90b4458d58b88fb052e3bc7f383e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/adapters.py",
+      "sha256": "740299f0cf78635c68a05d430522d9587693154ee8335169d71826ff08951b80"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/errors.py",
+      "sha256": "b391821b1020acf5a4207144cf59121bc4d7ac4e115ebd0805f2759bd8cdf28f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/handlers.py",
+      "sha256": "f99e23b19ec7981e35d7bd21885ed377f5a85fd661f7d83ca8c5dddcae9fe6a4"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/ports.py",
+      "sha256": "6a418b8a0b71458eb1f315e874456f3b0c83f2c3462229d1cdf0321dcabb4d25"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+      "sha256": "c9e5ddfb4cf5406829f51eb985c2086cc2e2a2e2a111c70f4dbece680be3e650"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/rules.py",
+      "sha256": "5fb9113df27d7088fc3365d9d42c828648427928c821f070abe74826ef91d6e1"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/supply_cost/__init__.py",
+      "sha256": "44abfc6833aa379358f095310a038b38451e3f48e7d7c37b0dc5981314d77a5f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/supply_cost/dto.py",
+      "sha256": "539f725a0c39df2ebea96ec32c6af8ac332ab99d45f54219c086cdad9c04f3e3"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/__init__.py",
+      "sha256": "5ffb64472c30f00b2e803bd898b9ddcb8aeb624314bd8503dfb1c320a8a16ee6"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/conftest.py",
+      "sha256": "6c8213a11efd39ab3658320a87ac4b2d0b9b0a04edae7ef7b512f7d082295b98"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/helpers.py",
+      "sha256": "8b8df2ae8bafb789c4cffac1488cc789ce0a0cc0955c7a41afe1eb9167b1dae6"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/test_handlers.py",
+      "sha256": "664edc868237ed5ef93dd381ef664009a504d0394ee9247229c54559b4c11bcb"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/test_quality_units.py",
+      "sha256": "68767d60517136fda2d5c33e47d5e1d234cba576ee50c945a6105c55547957a3"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/test_read_models.py",
+      "sha256": "40ba8f046d2944014445839fb3754da3680bf992724622f1129013900f9b44a6"
+    },
+    {
+      "path": "pdos-next/server/tests/supply_cost_domain/test_rules_and_adapters.py",
+      "sha256": "71dfa2a8224e9b55684975c94f0fae09c66be5186ec7d728929c2f79bd5dac2e"
+    },
+    {
+      "path": "pdos-next/web/src/components/supply_cost/cost-breakdown.tsx",
+      "sha256": "9697edd4661f974b0ded0632c2b86d0b30705ed8581f08476679b0362768ca4b"
+    },
+    {
+      "path": "pdos-next/web/src/components/supply_cost/coverage-shortages.tsx",
+      "sha256": "8f4525a445a4cbdd4b8c4753760f3973e11675234f3f40184a00af833dd929b9"
+    },
+    {
+      "path": "pdos-next/web/src/components/supply_cost/display.tsx",
+      "sha256": "e434491aa35999c8f5f83314f942d08c43b6a1920db688f61faff508f7a41665"
+    },
+    {
+      "path": "pdos-next/web/src/components/supply_cost/index.ts",
+      "sha256": "054121111f0f1036bb6cb51ce9140fd9715300074467fce7d61c6e49c157219b"
+    },
+    {
+      "path": "pdos-next/web/src/components/supply_cost/presentation.ts",
+      "sha256": "d8defc35c602a4332c6112cade2e5f0c8a2bfab4987103b79c632f3c30b9a949"
+    },
+    {
+      "path": "pdos-next/web/src/components/supply_cost/snapshot-history.tsx",
+      "sha256": "548d0c5c30a86e5cb695efe2653010c065977210027d3aecabca0c9094c74520"
+    },
+    {
+      "path": "pdos-next/web/src/components/supply_cost/supply-entry.tsx",
+      "sha256": "146b4694c756a3ecd54a79b4711b4860c108129ade02d94cd4ccea10630ae3ae"
+    },
+    {
+      "path": "pdos-next/web/src/components/supply_cost/types.ts",
+      "sha256": "267756ccea0625eac43e19c2200f285d3f15480306d5b53a6d637c8dd15f9ccc"
+    }
+  ]
+}

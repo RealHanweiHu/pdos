@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "purpose": "Wave10 owned frontend checks; consolidated from prior tool results without rerunning checks",
+  "recorded_local_date": "2026-10-02",
+  "recorded_by": "reuse_product_ui",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/product/verification-professional.tsx",
+      "sha256": "cc2bb575793ba7e7aecee5af736d22121a5330411a3e2aa8022d8532b9b930fe"
+    },
+    {
+      "path": "pdos-next/web/src/lib/verification-professional.ts",
+      "sha256": "3c97a5f77a36ada337932b049eca2566a00f0bae1f071afe487c2b4dd62ae8ad"
+    },
+    {
+      "path": "pdos-next/web/src/lib/verification-professional.test.ts",
+      "sha256": "59f9e27ea657a14d57efd089a15efa831f7d1802d49ee1e7a5ae027633afd666"
+    }
+  ],
+  "working_directory": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+  "checks": [
+    {
+      "name": "owned helper compilation",
+      "command": "node_modules/.bin/tsc -p /tmp/pdos-professional-tests-tsconfig.json",
+      "tool_chunk_id": "247fb9",
+      "exit_code": 0,
+      "output": "",
+      "config_snapshot": {
+        "extends": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+        "compilerOptions": {
+          "incremental": false,
+          "noEmit": false,
+          "module": "CommonJS",
+          "moduleResolution": "Node",
+          "outDir": "/tmp/pdos-professional-owned-tests",
+          "rootDir": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src",
+          "plugins": [],
+          "typeRoots": [
+            "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/@types"
+          ]
+        },
+        "include": [
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib/verification-professional.ts",
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib/verification-professional.test.ts"
+        ],
+        "exclude": [
+          "node_modules"
+        ]
+      }
+    },
+    {
+      "name": "owned helper tests",
+      "command": "node --test /tmp/pdos-professional-owned-tests/lib/verification-professional.test.js",
+      "tool_chunk_id": "b6f2fd",
+      "exit_code": 0,
+      "tests": 13,
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "raw_output": "✔ capabilities require an explicit server true and are not inferred from role or product write (0.940834ms)\n✔ create binds the exact fixed preparation hash without supplying items or professional facts (1.051084ms)\n✔ method assessment must cover every fixed item once and preserves unknown (0.27525ms)\n✔ positive method assessment needs exact evidence and keeps conditions separate (0.233084ms)\n✔ source selection verifies the active original line and retains fixed revision (0.147583ms)\n✔ fixed read sets deduplicate but reject changed revisions and oversized scope (0.202375ms)\n✔ aware times preserve UTC microseconds and reject invalid dates or absent offsets (15.195959ms)\n✔ unknown resource units stay null and cannot become zero or unlimited (0.355334ms)\n✔ schedule expresses future intent, canonical time, and unknown resource identity without occupancy (0.748458ms)\n✔ T1 confirms only the exact original command, payload, read set, and request scope (1.534084ms)\n✔ stable comparison ignores database object key order and preserves array order and semantic differences (0.127333ms)\n✔ unknown method submission restores the same prepared command only in the same private scope (0.363958ms)\n✔ receipt must match the exact operation and request family (0.112541ms)\nℹ tests 13\nℹ suites 0\nℹ pass 13\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 142.739291\n",
+      "executed_source_sha256": {
+        "pdos-next/web/src/lib/verification-professional.ts": "3c97a5f77a36ada337932b049eca2566a00f0bae1f071afe487c2b4dd62ae8ad",
+        "pdos-next/web/src/lib/verification-professional.test.ts": "59f9e27ea657a14d57efd089a15efa831f7d1802d49ee1e7a5ae027633afd666"
+      }
+    },
+    {
+      "name": "final owned lint after read-only failure wording fix",
+      "command": "node_modules/.bin/eslint src/components/product/verification-professional.tsx src/lib/verification-professional.ts src/lib/verification-professional.test.ts",
+      "tool_chunk_id": "bc1dc6",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "final owned typecheck after read-only failure wording fix",
+      "command": "node_modules/.bin/tsc --noEmit --incremental false -p /tmp/pdos-professional-owned-tsconfig.json",
+      "tool_chunk_id": "f681c4",
+      "exit_code": 0,
+      "output": "",
+      "config_snapshot": {
+        "extends": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+        "compilerOptions": {
+          "incremental": false
+        },
+        "include": [
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/next-env.d.ts",
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/product/verification-professional.tsx",
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/lib/verification-professional.ts"
+        ],
+        "exclude": [
+          "node_modules"
+        ]
+      }
+    }
+  ],
+  "candidate_sequence": {
+    "initial_frozen_component_sha256": "93180ce04a1c9fb64f248639a97eac20f826ea57ab0cf31e77f7ecd37666b761",
+    "initial_frozen_owned_lint": {
+      "tool_chunk_id": "85221f",
+      "exit_code": 0,
+      "output": ""
+    },
+    "initial_frozen_owned_typecheck": {
+      "tool_chunk_id": "1cc1eb",
+      "exit_code": 0,
+      "output": ""
+    },
+    "last_component_change": "Only refresh GET failure wording was changed to say that current requests/qualification could not be read and the read-only refresh had not initiated an operation. perform unknown-receipt semantics were preserved.",
+    "current_component_sha256": "cc2bb575793ba7e7aecee5af736d22121a5330411a3e2aa8022d8532b9b930fe",
+    "helper_and_tests_unchanged_since_13_test_execution": true,
+    "helper_tests_repeated_for_last_copy_change": false,
+    "final_owned_lint_and_typecheck_repeated_for_last_copy_change": true,
+    "initial_compile_attempt": {
+      "tool_chunk_id": "a6a945",
+      "exit_code": 2,
+      "reason": "Temporary helper compile config rootDir did not include imported type declaration modules; minimal preparation test fixture did not satisfy the full Preparation DTO. Both were corrected before successful compile 247fb9 and the 13-test execution; this failed compile is not counted as validation success."
+    }
+  },
+  "parent_validation": {
+    "performed_by": "root, not this subagent",
+    "candidate_manifest": "docs/reports/evidence/pdos-next-wave10-20261002/candidate.json",
+    "production_build_log": "docs/reports/evidence/pdos-next-wave10-20261002/web-build-final.log",
+    "inspected_build_result": "Next.js 16.3.3 webpack: compiled successfully, TypeScript finished, static page generation completed.",
+    "browser_actions": "docs/reports/evidence/pdos-next-wave10-20261002/browser-actions.json",
+    "browser_layouts": "docs/reports/evidence/pdos-next-wave10-20261002/browser-layouts.json",
+    "actual_api_readback": "docs/reports/evidence/pdos-next-wave10-20261002/actual-preview.json",
+    "reported_last_copy_fix_coverage": "Parent reported final production build and real-page verification coverage for the read-only fetch-failure wording fix; no new browser run was performed while assembling this record.",
+    "observed_parent_browser_evidence": "Explicit local synthetic only: fixed Preparation v2 -> Request v1, positive method attempt rejected with METHOD_EVIDENCE_INCOMPLETE, unknown assessments saved with one T1 confirmation as v2, tentative window saved as v3 with null resource units/id and occupancy=0, historical v1 actions disabled. Layout evidence records 1440px and 390px in both themes.",
+    "boundaries": [
+      "Synthetic local authority does not establish real or production qualification.",
+      "No DB, service, shared build, or browser operations were performed by this subagent while assembling evidence.",
+      "These owned helper checks do not replace parent joint candidate validation."
+    ]
+  }
+}

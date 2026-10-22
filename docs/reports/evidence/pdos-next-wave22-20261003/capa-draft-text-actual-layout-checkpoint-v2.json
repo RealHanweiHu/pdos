@@ -1,0 +1,16 @@
+{
+  "status": "PASS_AFFECTED_CHECKS_RUNTIME_RELOAD_REQUIRED",
+  "actual_source_sha256s": {
+    "server/pdos_next/domain/quality_issues/rules.py": "4ded3535d24b4ad645b6c17708147939232887727c2dfc711f892cf96659bb13",
+    "server/pdos_next/domain/quality_issues/handlers.py": "4a4a23b7a48962c85e305a6057b362334315d2b9dfd726fd62945efd3e6e4ecc",
+    "server/pdos_next/domain/quality_execution/service.py": "e5d54dc814faa6e2611c48395c9ec4215f18da411ccbea8e06df8e79f9c22020",
+    "server/tests/quality_execution/test_capa_draft_revision.py": "0aec021b8679676f034ce5d3a3b767f9e2a23509cef83fef52a2536714c2fbdc"
+  },
+  "pure_checks": 189,
+  "same_new_tests_after_import_order_only": 48,
+  "static_initial_error": "I001 new test import grouping differs in actual server layout; only import order fixed",
+  "db_migration": false,
+  "old_api_verified_pid": 40642,
+  "no_pending_current_t1": true,
+  "old_rejected_triage_preserved": true
+}

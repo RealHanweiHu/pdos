@@ -1,0 +1,381 @@
+[
+  {
+    "id": "e222026e-037e-43a4-917e-c16ffd20a00f",
+    "run_id": "00158d80-c47a-40be-9a4e-5754c7ec347b",
+    "product_id": "213b67f6-426e-45de-8e44-f5ecc66ec7aa",
+    "revision": 4,
+    "status": "results_pending",
+    "result": "indeterminate",
+    "computed": [
+      {
+        "result": "indeterminate",
+        "reasons": [
+          "工况与要求不一致，需专业适用性判断"
+        ],
+        "coverage": {
+          "item_id": "dimension",
+          "sample_id": "265ff866-5061-4cf9-99f9-f6cbff9a663c"
+        },
+        "measurement_id": "fbfcb8d1-f7ca-47ca-afe1-07432a09ca3f"
+      },
+      {
+        "result": "indeterminate",
+        "reasons": [
+          "工况与要求不一致，需专业适用性判断"
+        ],
+        "coverage": {
+          "item_id": "dimension",
+          "sample_id": "d2370332-83a4-4726-8417-4164d925b46e"
+        },
+        "measurement_id": "f3bfedaa-b8e7-4e39-8060-1953a52a3f74"
+      }
+    ],
+    "items": [
+      {
+        "id": "dimension",
+        "unit": "mm",
+        "method": {
+          "id": "8882aac0-50fb-4471-a966-02263de0a9a3",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:c6d89bf5de748e862fc383f6142bb7740e1fd13abc28d17ef3bc0d958a218c45",
+          "revision": 1
+        },
+        "drawing": {
+          "id": "8882aac0-50fb-4471-a966-02263de0a9a3",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:30fa93b151694d146da27b23cca053ebec47c38132459431b187bbf06da77505",
+          "revision": 1
+        },
+        "feature": "Synthetic dimension",
+        "cavities": [
+          "A",
+          "B"
+        ],
+        "material": "Synthetic polymer",
+        "criterion": {
+          "lower": "9.5",
+          "upper": "10.5",
+          "source": {
+            "id": "8882aac0-50fb-4471-a966-02263de0a9a3",
+            "kind": "artifact",
+            "position": "line:2;quote_sha256:c6d89bf5de748e862fc383f6142bb7740e1fd13abc28d17ef3bc0d958a218c45",
+            "revision": 1
+          }
+        },
+        "conditions": "23 C, dry",
+        "destructive": false,
+        "sample_count": 2,
+        "criterion_text": null,
+        "criterion_source": null
+      }
+    ],
+    "measurements": [
+      {
+        "id": "fbfcb8d1-f7ca-47ca-afe1-07432a09ca3f",
+        "note": null,
+        "unit": "mm",
+        "method": {
+          "id": "8882aac0-50fb-4471-a966-02263de0a9a3",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:c6d89bf5de748e862fc383f6142bb7740e1fd13abc28d17ef3bc0d958a218c45",
+          "revision": 1
+        },
+        "source": {
+          "id": "f0559bd7-5203-4098-9d3d-d4b1cef53372",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:86814a912c7a11be9d45538bd7bbfe505c2937c90604ef2e3cbc7b87fa544444",
+          "revision": 1
+        },
+        "missing": [],
+        "coverage": {
+          "item_id": "dimension",
+          "sample_id": "265ff866-5061-4cf9-99f9-f6cbff9a663c"
+        },
+        "equipment": {
+          "id": "8882aac0-50fb-4471-a966-02263de0a9a3",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:c6d89bf5de748e862fc383f6142bb7740e1fd13abc28d17ef3bc0d958a218c45",
+          "revision": 1
+        },
+        "raw_value": "1.5000",
+        "conditions": "Synthetic 20C",
+        "environment": "Synthetic finite lab",
+        "observed_at": "2026-10-03T04:21:21.300857Z",
+        "equipment_label": null,
+        "observed_timezone": "UTC"
+      },
+      {
+        "id": "f3bfedaa-b8e7-4e39-8060-1953a52a3f74",
+        "note": null,
+        "unit": "mm",
+        "method": {
+          "id": "8882aac0-50fb-4471-a966-02263de0a9a3",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:c6d89bf5de748e862fc383f6142bb7740e1fd13abc28d17ef3bc0d958a218c45",
+          "revision": 1
+        },
+        "source": {
+          "id": "f0559bd7-5203-4098-9d3d-d4b1cef53372",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:a184aa526e0b9b17b2c2aeb8f715fdec86833ee24a55e851f8bede88a88580ff",
+          "revision": 1
+        },
+        "missing": [],
+        "coverage": {
+          "item_id": "dimension",
+          "sample_id": "d2370332-83a4-4726-8417-4164d925b46e"
+        },
+        "equipment": {
+          "id": "8882aac0-50fb-4471-a966-02263de0a9a3",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:c6d89bf5de748e862fc383f6142bb7740e1fd13abc28d17ef3bc0d958a218c45",
+          "revision": 1
+        },
+        "raw_value": "1.5000",
+        "conditions": "Synthetic 20C",
+        "environment": "Synthetic finite lab",
+        "observed_at": "2026-10-03T04:21:21.300880Z",
+        "equipment_label": null,
+        "observed_timezone": "UTC"
+      }
+    ]
+  },
+  {
+    "id": "97cfc6a2-4368-469a-85c3-0c67d1df4936",
+    "run_id": "c0c3b013-fdfd-4b1f-8dc0-456d80774187",
+    "product_id": "dd71d6e5-9112-4b65-80e4-0b0ed23e93a1",
+    "revision": 4,
+    "status": "results_pending",
+    "result": "indeterminate",
+    "computed": [
+      {
+        "result": "indeterminate",
+        "reasons": [
+          "工况与要求不一致，需专业适用性判断"
+        ],
+        "coverage": {
+          "item_id": "dimension",
+          "sample_id": "491bf855-7905-48ed-89ea-5743479024fd"
+        },
+        "measurement_id": "f776e008-33c6-417b-8ac8-08f09e9eb073"
+      },
+      {
+        "result": "indeterminate",
+        "reasons": [
+          "工况与要求不一致，需专业适用性判断"
+        ],
+        "coverage": {
+          "item_id": "dimension",
+          "sample_id": "91bad57b-4889-48ab-a4f1-6f94d00f8ac3"
+        },
+        "measurement_id": "3fabd24a-5d6c-4803-9cb1-97265ddd9ce4"
+      }
+    ],
+    "items": [
+      {
+        "id": "dimension",
+        "unit": "mm",
+        "method": {
+          "id": "42d5d35d-1d27-405b-beda-6458d8913318",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:c6d89bf5de748e862fc383f6142bb7740e1fd13abc28d17ef3bc0d958a218c45",
+          "revision": 1
+        },
+        "drawing": {
+          "id": "42d5d35d-1d27-405b-beda-6458d8913318",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:30fa93b151694d146da27b23cca053ebec47c38132459431b187bbf06da77505",
+          "revision": 1
+        },
+        "feature": "Synthetic dimension",
+        "cavities": [
+          "A",
+          "B"
+        ],
+        "material": "Synthetic polymer",
+        "criterion": {
+          "lower": "9.5",
+          "upper": "10.5",
+          "source": {
+            "id": "42d5d35d-1d27-405b-beda-6458d8913318",
+            "kind": "artifact",
+            "position": "line:2;quote_sha256:c6d89bf5de748e862fc383f6142bb7740e1fd13abc28d17ef3bc0d958a218c45",
+            "revision": 1
+          }
+        },
+        "conditions": "23 C, dry",
+        "destructive": false,
+        "sample_count": 2,
+        "criterion_text": null,
+        "criterion_source": null
+      }
+    ],
+    "measurements": [
+      {
+        "id": "f776e008-33c6-417b-8ac8-08f09e9eb073",
+        "note": null,
+        "unit": "mm",
+        "method": {
+          "id": "42d5d35d-1d27-405b-beda-6458d8913318",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:c6d89bf5de748e862fc383f6142bb7740e1fd13abc28d17ef3bc0d958a218c45",
+          "revision": 1
+        },
+        "source": {
+          "id": "c097f2be-fd89-4ce3-8665-a20dbdd00c72",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:4767f6cfbec9e18ca8c73f012fb14d1f6e091449c7da793a49e7587abfda2ce4",
+          "revision": 1
+        },
+        "missing": [],
+        "coverage": {
+          "item_id": "dimension",
+          "sample_id": "491bf855-7905-48ed-89ea-5743479024fd"
+        },
+        "equipment": {
+          "id": "42d5d35d-1d27-405b-beda-6458d8913318",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:c6d89bf5de748e862fc383f6142bb7740e1fd13abc28d17ef3bc0d958a218c45",
+          "revision": 1
+        },
+        "raw_value": "1.5000",
+        "conditions": "Synthetic 20C",
+        "environment": "Synthetic finite lab",
+        "observed_at": "2026-10-03T04:21:21.555744Z",
+        "equipment_label": null,
+        "observed_timezone": "UTC"
+      },
+      {
+        "id": "3fabd24a-5d6c-4803-9cb1-97265ddd9ce4",
+        "note": null,
+        "unit": "mm",
+        "method": {
+          "id": "42d5d35d-1d27-405b-beda-6458d8913318",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:c6d89bf5de748e862fc383f6142bb7740e1fd13abc28d17ef3bc0d958a218c45",
+          "revision": 1
+        },
+        "source": {
+          "id": "c097f2be-fd89-4ce3-8665-a20dbdd00c72",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:50c4fae7c03214d5c6ae35af9ceda3365b02d528132284e1d7a83cf7f0352be5",
+          "revision": 1
+        },
+        "missing": [],
+        "coverage": {
+          "item_id": "dimension",
+          "sample_id": "91bad57b-4889-48ab-a4f1-6f94d00f8ac3"
+        },
+        "equipment": {
+          "id": "42d5d35d-1d27-405b-beda-6458d8913318",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:c6d89bf5de748e862fc383f6142bb7740e1fd13abc28d17ef3bc0d958a218c45",
+          "revision": 1
+        },
+        "raw_value": "1.5000",
+        "conditions": "Synthetic 20C",
+        "environment": "Synthetic finite lab",
+        "observed_at": "2026-10-03T04:21:21.555766Z",
+        "equipment_label": null,
+        "observed_timezone": "UTC"
+      }
+    ]
+  },
+  {
+    "id": "ff60811c-20aa-402e-acf6-730f562bc400",
+    "run_id": "050b0f95-39b6-4c90-8131-04118dfa32e3",
+    "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+    "revision": 6,
+    "status": "disposed",
+    "result": "indeterminate",
+    "computed": [
+      {
+        "result": "indeterminate",
+        "reasons": [
+          "工况与要求不一致，需专业适用性判断"
+        ],
+        "coverage": {
+          "item_id": "dimension",
+          "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a"
+        },
+        "measurement_id": "7402653e-803f-4cf0-91c0-6ba377c4754c"
+      }
+    ],
+    "items": [
+      {
+        "id": "dimension",
+        "unit": "mm",
+        "method": {
+          "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb",
+          "revision": 1
+        },
+        "drawing": {
+          "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:aef891e710caf19e7666ba28005a2bf2797ae05938f075bf8879e80d6f820e3e",
+          "revision": 1
+        },
+        "feature": "Synthetic dimension",
+        "cavities": [
+          "A",
+          "B",
+          "C"
+        ],
+        "material": "Synthetic polymer",
+        "criterion": {
+          "lower": "9.5",
+          "upper": "10.5",
+          "source": {
+            "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "kind": "artifact",
+            "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb",
+            "revision": 1
+          }
+        },
+        "conditions": "23 C, dry",
+        "destructive": false,
+        "sample_count": 3,
+        "criterion_text": null,
+        "criterion_source": null
+      }
+    ],
+    "measurements": [
+      {
+        "id": "7402653e-803f-4cf0-91c0-6ba377c4754c",
+        "note": "Synthetic native report; no instrument data",
+        "unit": "mm",
+        "method": {
+          "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb",
+          "revision": 1
+        },
+        "source": {
+          "id": "10abb48e-7139-4acd-a7c7-252c76b70d44",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:c5a01d2960e95b6612bed1fc1822a69aaab2a884974f9e15f2950a9444ae30ef",
+          "revision": 1
+        },
+        "missing": [],
+        "coverage": {
+          "item_id": "dimension",
+          "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a"
+        },
+        "equipment": {
+          "id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:f0c5e4419a8cfe4b9349a43319312fb5076052069e117c465006a42e5bd9d7f4",
+          "revision": 1
+        },
+        "raw_value": "  10.0  ",
+        "conditions": "固定合成20°C，结果与处置尚未接入",
+        "environment": "本地合成测试室",
+        "observed_at": "2026-10-03T01:46:12.160096Z",
+        "equipment_label": "本地合成固定设备",
+        "observed_timezone": "UTC"
+      }
+    ]
+  }
+]

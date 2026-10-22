@@ -1,0 +1,67 @@
+{
+  "synthetic_only": true,
+  "count": 15,
+  "checks": [
+    {
+      "name": "valid fixed preview and confirmation contains only bound review fields",
+      "passed": true
+    },
+    {
+      "name": "no locally fabricated or empty material preview",
+      "passed": true
+    },
+    {
+      "name": "source drift rejects preview",
+      "passed": true
+    },
+    {
+      "name": "Build and demand drift reject preview",
+      "passed": true
+    },
+    {
+      "name": "manufacturing source drift and source expiration block confirmation preview",
+      "passed": true
+    },
+    {
+      "name": "shared pool choices deduplicate fixed identities and reject cross-system id ambiguity",
+      "passed": true
+    },
+    {
+      "name": "exclusive expiration and named decision block confirmation",
+      "passed": true
+    },
+    {
+      "name": "receipt must be durable and match review",
+      "passed": true
+    },
+    {
+      "name": "unknown remains unknown; zero and precise decimals are retained",
+      "passed": true
+    },
+    {
+      "name": "all viewers show unconnected, loading, empty and error states",
+      "passed": true
+    },
+    {
+      "name": "supply entry unconnected cannot submit and uses no invented source",
+      "passed": true
+    },
+    {
+      "name": "coverage preserves secured unknown vs potential, no readiness promotion",
+      "passed": true
+    },
+    {
+      "name": "cost retains decimal known subtotal and unknown total within selected scope",
+      "passed": true
+    },
+    {
+      "name": "snapshot keeps partial receipt, commitment, quality limits and other Build reservations separate",
+      "passed": true
+    },
+    {
+      "name": "snapshot distinguishes supplier promise date from actual partial receipt time",
+      "passed": true
+    }
+  ],
+  "candidate_sha256": "71350e7fb1127d4601e88ffacd4050b3c4c445553025793df7a5a6cc61c20e15"
+}

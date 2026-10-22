@@ -1,0 +1,14 @@
+{
+  "started_at": "2026-10-17T20:39:40.824596+00:00",
+  "finished_at": "2026-10-17T20:40:12.420574+00:00",
+  "snapshot": "/private/tmp/pdos-s4-native-pilot-u_u2_mfd",
+  "command": [
+    "node",
+    "node_modules/next/dist/bin/next",
+    "build",
+    "--webpack"
+  ],
+  "exit": 0,
+  "source_changed": [],
+  "external_network": "public Geist font fetch only; no business material or model/KMS calls"
+}

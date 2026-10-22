@@ -1,0 +1,64 @@
+{
+  "expected_refusal": "Work history retained; downgrade refused",
+  "actual_exit": 1,
+  "before": {
+    "head": "s0_0785",
+    "tables": {
+      "work_task_versions": {
+        "count": 24,
+        "sha256": "10b4440de29dec7fad7b4b03aeecf033bbf5534ba2e6af02826dc299d315b095"
+      },
+      "work_task_currents": {
+        "count": 3,
+        "sha256": "6aa604bfa678102c4ce859ea7ed5f30cda8ff4bc02e57015343f1307a95146bf"
+      },
+      "work_commitment_versions": {
+        "count": 6,
+        "sha256": "a4e8ac4233c1696fd08196234e33f6bce26b3452b1a2cfa77f743fa13870458d"
+      },
+      "work_commitment_currents": {
+        "count": 6,
+        "sha256": "409885719b5ca6876ee81ee12496f7f04dfa705a29d72fa97bea81864166611b"
+      },
+      "project_status_updates": {
+        "count": 3,
+        "sha256": "598b0a740fe1d11753d1d4a2b4ee5e249c4a3126d8791abd0455c188acb138f6"
+      }
+    }
+  },
+  "after": {
+    "head": "s0_0785",
+    "tables": {
+      "work_task_versions": {
+        "count": 24,
+        "sha256": "10b4440de29dec7fad7b4b03aeecf033bbf5534ba2e6af02826dc299d315b095"
+      },
+      "work_task_currents": {
+        "count": 3,
+        "sha256": "6aa604bfa678102c4ce859ea7ed5f30cda8ff4bc02e57015343f1307a95146bf"
+      },
+      "work_commitment_versions": {
+        "count": 6,
+        "sha256": "a4e8ac4233c1696fd08196234e33f6bce26b3452b1a2cfa77f743fa13870458d"
+      },
+      "work_commitment_currents": {
+        "count": 6,
+        "sha256": "409885719b5ca6876ee81ee12496f7f04dfa705a29d72fa97bea81864166611b"
+      },
+      "project_status_updates": {
+        "count": 3,
+        "sha256": "598b0a740fe1d11753d1d4a2b4ee5e249c4a3126d8791abd0455c188acb138f6"
+      }
+    }
+  },
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d"
+  },
+  "own_preview_stopped": true,
+  "private_seed_removed": true,
+  "dedicated_browser_closed": true,
+  "business_rows_unchanged": true
+}

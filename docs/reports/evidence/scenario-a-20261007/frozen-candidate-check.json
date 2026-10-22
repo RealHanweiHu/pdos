@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-10-07T08:36:06.918286+00:00",
+  "implementation_files": 17,
+  "implementation_changed": [
+    "server/app/ai/conversation_reply.py"
+  ],
+  "frontend_build_files": 1086,
+  "frontend_build_changed": [],
+  "output_candidate_enabled": false,
+  "qualification_guard_tests_passed": 98,
+  "general_prompt_changed_by_other_work": "xiaopai-reply-v6; added to final source manifest; real preproject sample used preproject-dialogue-v6",
+  "concurrent_delta": "After98-case check and cleanup, shared reply module selected v7 prompts; both selectors only; no revert and no claim of v7 real research/save validation.",
+  "validated_reply_source_preserved": "/Users/huhanwei/Documents/ai-native-R&D-platform/tmp/scenario-a-final-candidate/server/app/ai/conversation_reply.py"
+}

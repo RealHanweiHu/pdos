@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-03T07:01:32.655030+00:00",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "change_id": "d1a1a7b0-b63d-5545-95c6-b6364a2d6d0e",
+  "version_id": "37a44833-ee84-4be9-a610-b85831670b62",
+  "revision": 1,
+  "status": "draft",
+  "fixed_references": [
+    {
+      "id": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+      "key": null,
+      "kind": "issue",
+      "revision": 4
+    },
+    {
+      "id": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+      "key": "3352bbb0-fd50-4b5b-b1ef-2dd87ef79405",
+      "kind": "capa",
+      "revision": 4
+    }
+  ],
+  "receipt_id": "1b73fc12-328d-4f95-8eb0-029762c39e5f",
+  "receipt_operation": "change.request.create",
+  "orders": [],
+  "snapshot_sha256": "21b1c4a930801272cb335022588c4af9c553d29de08ed08ca2654c3bd720a843",
+  "nature": "synthetic"
+}

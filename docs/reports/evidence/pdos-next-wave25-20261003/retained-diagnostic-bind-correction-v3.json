@@ -1,0 +1,11 @@
+{
+  "status": "ROOT_RUNNER_BIND_CORRECTED_PENDING_SAME_ACTUAL_OWNER_PROBE",
+  "prior_result": "actual-retained-diagnostic-v2.json",
+  "prior_session_bind": "Connection; owner configuration absent because actual owners read Session.get_bind() directly",
+  "prior_reason_not_attested_as_live_service_reason": true,
+  "preserved_v2_zero_business_writes_and_all_122_row_equality": true,
+  "new_session_bind": "same configured actual Engine; explicit Session.begin finally rollback",
+  "actual_security_and_issuer_registries_asserted": true,
+  "runtime_source_changed": false,
+  "same_original_context_run_scope_helper": true
+}

@@ -1,0 +1,24 @@
+{
+  "environment": "isolated real Chrome, synthetic local data",
+  "faults_injected_by": "browser routes returning HTTP 503; real application API and database untouched",
+  "checks": {
+    "notification_failure_preserves_tasks_and_retry_restores_200_unread": true,
+    "candidate_failure_preserves_finding_and_retry_restores_75_candidates": true,
+    "project_task_failure_shows_unknown_not_zero_and_retry_restores_400_20_5": true,
+    "mobile_menu_keyboard_escape_restores_focus": true,
+    "mobile_keyboard_reopen_and_navigation_to_my_work_closes_menu": true
+  },
+  "snapshot_sha256": {
+    "notification-failure.txt": "ac07919f55968672a1cc1bb9b65ce4303b74f774ff846f0690d6122a5bd3e90f",
+    "notification-recovered.txt": "b9ae44287e0451802f6a2e4158498199fff46983d5fec4b22a8a10257ab0ce39",
+    "review-extras-failure.txt": "8e571f4394f4fb0cb8d76774321e61e78b0e2b311bde593293fa880151d0413b",
+    "review-extras-recovered.txt": "ea692fa4f806544b14dcea0daf7bdcdaa3d0086d1da80f37fa0ee8e200a06f13",
+    "project-work-items-failure.txt": "73e2556ba7ddd9c64361d1ecf33e213ba02817b3ca6e275d2d7d3be8abcf4b4d",
+    "project-work-items-recovered.txt": "28d0d11c9f087f4205b56a938de84a112915459fbaf545604b6aa69aad8b3f33",
+    "mobile-navigation-expanded.txt": "c212eb055e211f7d2657166ec08475a81936933964e760b54b4c424503000fb1",
+    "mobile-navigation-escape.txt": "f7c1419d94126b6149bab34051cca1c897bfcf2020d6ac5c5bbc258bd09ddcff",
+    "mobile-navigation-keyboard.txt": "c212eb055e211f7d2657166ec08475a81936933964e760b54b4c424503000fb1",
+    "mobile-navigation-destination.txt": "905a0f218454d72aa245345534dbd91694e3c44d7ad9a458682e9adb72f04123",
+    "mobile-navigation-result.txt": "e5edd3491e4f694ae83047116fe13fdb6fdb76dc3273438d836c24aa944c8741"
+  }
+}

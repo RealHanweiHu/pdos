@@ -1,0 +1,19 @@
+{
+  "started_at": "2026-10-17T16:29:12.168367+00:00",
+  "finished_at": "2026-10-17T16:39:45.215144+00:00",
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0776"
+  },
+  "snapshot": "/private/tmp/pdos-s3-continuation-rk2giy_8",
+  "pytest_exit": 1,
+  "source_changed": [],
+  "tests": [
+    "tests/change_execution/test_approved_configuration_continuation_chain.py"
+  ],
+  "real_model_calls": 0,
+  "real_KMS_calls": 0
+}

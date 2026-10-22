@@ -1,0 +1,147 @@
+{
+  "base_head": "9fab424c4a3dfc4909499aea11862b3cb0bc50ba",
+  "modified": [
+    {
+      "path": "server/app/api/npi_execution.py",
+      "baseline_sha256": "c0e4c7c714bbec5a0226f7cf1c459294be9aa7b9c4c443cb973aa10fdd3d82a1",
+      "candidate_sha256": "bf17ba40606403c6882e93217b7e7aff449bb1631c42281c61f15d9576e60ddf",
+      "preexisting_git_status": ""
+    },
+    {
+      "path": "server/app/domain/cost_backtests.py",
+      "baseline_sha256": "5cab7d5a53891b10b34e4003721e8ae48c32278b650a27bdb445f611e94c4159",
+      "candidate_sha256": "8255ac82a36dabc4a2a268ee8bfa9fa914cbc2c00cadef83542f841d6e4803de",
+      "preexisting_git_status": ""
+    },
+    {
+      "path": "server/app/domain/cost_rollups.py",
+      "baseline_sha256": "2245b67937b38bd660c94b34462f0f02559c1c0a1ceae60c00951399589a07a8",
+      "candidate_sha256": "cbcbf5193cdacb8bc1bd4b9ed3adbb19a42f62254b68537f095cfc6389d95059",
+      "preexisting_git_status": ""
+    },
+    {
+      "path": "server/app/domain/material_coverage.py",
+      "baseline_sha256": "17fe10649689a43f8e5bb66f118d7190afc69bcb9bc48700fa3f4323160468a8",
+      "candidate_sha256": "c264df235feaf3e461dbe60bf65e74a9dfc2b2f2d1108ee695fc795188ed5dcf",
+      "preexisting_git_status": ""
+    },
+    {
+      "path": "server/app/domain/supplier_engineering.py",
+      "baseline_sha256": "ff4fd5facd7d551429dcc73b5b51a27daafa209b7d0b5a9aeea440d4dab8daef",
+      "candidate_sha256": "877567d37cc0fde3056b3bbe6b9b28d1551ebcd2325453fcdb94ff3c8673bfe8",
+      "preexisting_git_status": "M server/app/domain/supplier_engineering.py"
+    },
+    {
+      "path": "web/src/components/projects/build-material-coverage.tsx",
+      "baseline_sha256": "66fa20e187413d55792f0133b1d4bf47d4f26db3c8254e694efaeb644c906858",
+      "candidate_sha256": "29d52a827e44857424a85150557c461c4da7416566eb448de9ff159a2178dae7",
+      "preexisting_git_status": ""
+    },
+    {
+      "path": "web/src/components/projects/supplier-engineering.tsx",
+      "baseline_sha256": "8dea36660295ec5a0c6d34241cc378cb6e59fdbc0133779b13d39bf32423e8a1",
+      "candidate_sha256": "819080396fd4ab77dc34cbc40f460aba2ce8c7ea271c38af9b1ce1bc729cefeb",
+      "preexisting_git_status": ""
+    }
+  ],
+  "new": [
+    {
+      "path": "server/app/domain/supplier_replies.py",
+      "candidate_sha256": "200c87cdb663897fb9baf8ed2b4c30e70531d289451709d411fb2b9c07fa52fb"
+    },
+    {
+      "path": "server/tests/test_supplier_replies.py",
+      "candidate_sha256": "83b7538d4b23e4b3d84ad5b7edf8fa7a3eeff5f61a27de681db67b7388bef9a1"
+    },
+    {
+      "path": "server/tests/test_supplier_replies_api.py",
+      "candidate_sha256": "1bad4be50ddaae5de6742ef44b0772c9b7bd947d97dfec82e40e4469cf437e22"
+    },
+    {
+      "path": "server/tests/test_material_allocations.py",
+      "candidate_sha256": "61bf90dea3517f20a1c52718d542f5bfd6cd04118d406ef75c99fe9d4a192cef"
+    },
+    {
+      "path": "server/tests/test_material_coverage.py",
+      "candidate_sha256": "08c939c9bf485ed6f83304ebcfeb32ae96ee4693b8e41d233c1d4ab89bf847ba"
+    },
+    {
+      "path": "server/tests/test_cost_rollups.py",
+      "candidate_sha256": "39dc3bec32c56a139ca3aa7bb15d58e0e2b11f23fc5ccaf466f5d80c3844704e"
+    },
+    {
+      "path": "web/src/components/projects/supplier-replies.tsx",
+      "candidate_sha256": "a3c4abf8a34e72c72303e9f4cfb89b6eb9de802439425901e796a853786ef4e9"
+    },
+    {
+      "path": "web/src/components/projects/supplier-replies.test.tsx",
+      "candidate_sha256": "829444a4c7bf99eb53de29ff55d1e5a8771ef622518e625e9b12a79f6a2c075b"
+    },
+    {
+      "path": "web/src/app/api/projects/[projectId]/npi/supplier-replies/[supplierId]/[recordId]/[operation]/route.ts",
+      "candidate_sha256": "95605b1fba3ac47fdb1f261570869d49b9ca5105585b8855ad860f5199d587ff"
+    },
+    {
+      "path": "web/src/app/api/projects/[projectId]/npi/supplier-replies/[supplierId]/[recordId]/[operation]/route.test.ts",
+      "candidate_sha256": "6207ad03f8da3b41ba10d37c05e0a13e88b134b86a92e525194b3654485debda"
+    }
+  ],
+  "checks": {
+    "backend_tests": {
+      "passed": 58,
+      "includes_mocked_http_and_source_regression": true,
+      "raw": "output/parallel-supply-20260930/backend-tests.txt"
+    },
+    "pool_tests": {
+      "passed": 2,
+      "raw": "output/parallel-supply-20260930/pool-tests.txt"
+    },
+    "frontend_tests": {
+      "passed": 7,
+      "raw": "output/parallel-supply-20260930/frontend-tests.txt"
+    },
+    "backend_lint": {
+      "exit_code": 0,
+      "raw": "output/parallel-supply-20260930/backend-lint.txt"
+    },
+    "backend_types": {
+      "exit_code": 0,
+      "checked_sources": 10,
+      "raw": "output/parallel-supply-20260930/backend-types.txt"
+    },
+    "frontend_lint": {
+      "exit_code": 0,
+      "raw": "output/parallel-supply-20260930/frontend-lint.txt"
+    },
+    "frontend_types": {
+      "exit_code": 0,
+      "raw": "output/parallel-supply-20260930/frontend-types.txt",
+      "command": "tsc --noEmit --incremental false",
+      "note": "Final source candidate; no diagnostics."
+    },
+    "reply_final_tests": {
+      "passed": 13,
+      "supersedes": "supplier_replies and supplier_replies_api in initial 58-test run",
+      "raw": "output/parallel-supply-20260930/reply-final-tests.txt"
+    },
+    "reply_frontend_final_tests": {
+      "passed": 4,
+      "supersedes": "supplier-replies in initial 7-test run",
+      "raw": "output/parallel-supply-20260930/reply-frontend-final-tests.txt"
+    },
+    "reply_frontend_final_lint": {
+      "exit_code": 0,
+      "raw": "output/parallel-supply-20260930/reply-frontend-final-lint.txt"
+    },
+    "distinct_backend_tests_for_final_candidate": 61,
+    "distinct_frontend_tests_for_final_candidate": 7
+  },
+  "unverified": [
+    "PostgreSQL write/constraint/rollback and concurrent idempotency",
+    "Next build/route registration and browser integration",
+    "Real supplier reply parsing and per-capability AI identity/qualification/run receipts",
+    "Authorized real ERP snapshots and production actual feedback",
+    "Human Exit and production/remote operations"
+  ],
+  "candidate_digest": "38d3d40bf6434697b65ee66c856039ff335c6f176ffd8aabd412d0e3b8c6c345"
+}

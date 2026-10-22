@@ -1,0 +1,709 @@
+{
+  "version": "project-commitment-actual-dto-validation/v1",
+  "result": "passed",
+  "validation_kind": "Offline original HTTP DTO parsing, exact fixed-record pairing and React static markup with the existing component state driver; no browser or network requests.",
+  "source": {
+    "raw_http_dtos": {
+      "path": "docs/reports/evidence/pdos-next-ui-20261018/commitment-fulfillment/pg-http-responses.json",
+      "sha256": "ef7cf3d8b85f24bfa1b55b79e49eec833584dc298a2fbd82237df0b55a10bb76"
+    },
+    "pane": {
+      "path": "pdos-next/web/src/components/projects/project-commitments.tsx",
+      "sha256": "8d5b5660ebd947d3611097b94993e5fc52a7941f2ec53a8be12688b349a50193"
+    },
+    "pane_css": {
+      "path": "pdos-next/web/src/components/projects/project-commitments.module.css",
+      "sha256": "4dec031e1fe2dc24589c7a611ce970ff3000b549d37b855756e12c9e52face68"
+    },
+    "pane_tests": {
+      "path": "pdos-next/web/src/components/projects/project-commitments.test.mjs",
+      "sha256": "9208b27f42851f9165030378b68d301ec110082d4d4553538db459cbc09c63e1"
+    },
+    "project_work_reader": {
+      "path": "pdos-next/web/src/lib/project-work.ts",
+      "sha256": "64bd5c26048ed3b0f5e11b005d398b327e855a6df02c808d1438d6e58f6d955b"
+    },
+    "fulfillment_reader": {
+      "path": "pdos-next/web/src/lib/commitment-fulfillment.ts",
+      "sha256": "b9ff3e22bb86b18ec1f5fcf03ac25b9913c0c2aca2c74f99c3a495043d9d5d1a"
+    },
+    "pg_case_producer": {
+      "path": "pdos-next/server/tests/ui/test_project_commitment_projection_pg.py",
+      "sha256": "076af17d32f69a8b8a67bec7aeb71a3fb4c034d943bd8a87dc3752edc3964061"
+    }
+  },
+  "producer": {
+    "original_http_dto_version": "project-commitment-projection-qa/v1",
+    "fixture_nature": "actual HTTP/domain commands over isolated synthetic evidence",
+    "root_reported_pg_result": "1 passed in 80.55 seconds",
+    "root_reported_migration_head": "s0_0792",
+    "counts_evidence": "Captured by the root-run actual PG/HTTP case; this offline check only compares the exported before/after maps."
+  },
+  "scope": {
+    "category_id": "aab8b224-c39e-433f-b015-f3811c75b358",
+    "product_id": "a7b20391-96ed-4615-b52d-06cc46b55198",
+    "project_id": "0d9a997b-5c4d-444f-9742-8d322e3ac858",
+    "principal_id": "8165dd4d-bebb-41db-94e8-d2fa5ca886f2",
+    "promisor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857"
+  },
+  "phases": [
+    {
+      "phase": "returned_open_and_fulfilled",
+      "direct_parsers_and_pair": "passed",
+      "offline_component_read_and_ssr": "passed",
+      "project_work_body_sha256": "0074d4328ae21f080f20aa9560f4eece91fcc944099de50fcc19f55b32f31fd2",
+      "fulfillment_body_sha256": "a90a4086df9f19496f3bf8aed9ef257cac1d24b2003a069a2c29306f7ebcfaef",
+      "project_revision": 1,
+      "product_revision": 1,
+      "as_of": {
+        "project_work": "2026-10-18T18:13:56.379747+00:00",
+        "fulfillment": "2026-10-18T18:13:56.897464+00:00"
+      },
+      "raw_current_commitment_count": 2,
+      "distinct_current_recipients": 2,
+      "all_commitment_rows": 2,
+      "rendered_commitment_ids": [
+        "9080a8a5-2ec3-48f1-86f1-a00b4633f238",
+        "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe"
+      ],
+      "current_commitments": [
+        {
+          "id": "9080a8a5-2ec3-48f1-86f1-a00b4633f238",
+          "revision": 1,
+          "series_id": "9080a8a5-2ec3-48f1-86f1-a00b4633f238",
+          "task_id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+          "fixed_task_revision": 3,
+          "current_task": {
+            "id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+            "version_id": "011e1799-9623-42b9-a34a-effe45b9eed7",
+            "revision": 5,
+            "title": "Synthetic paired commitment projection",
+            "state": "submitted"
+          },
+          "recipient_id": "8165dd4d-bebb-41db-94e8-d2fa5ca886f2",
+          "promisor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+          "promised_at": null,
+          "original_timezone": "Asia/Shanghai",
+          "recorded_at": "2026-10-18T18:13:26.699381Z",
+          "created_at": "2026-10-18T18:13:26.744024+00:00",
+          "replaces": null,
+          "fulfillment": {
+            "state": "open",
+            "revision": 1,
+            "review_id": "fc80bfbd-fb51-46c9-9142-df0176f4554c",
+            "history": [
+              {
+                "id": "fc80bfbd-fb51-46c9-9142-df0176f4554c",
+                "revision": 1,
+                "decision": "returned",
+                "state": "open",
+                "actor_id": "8165dd4d-bebb-41db-94e8-d2fa5ca886f2",
+                "recorded_at": "2026-10-18T18:13:48.961708+00:00",
+                "receipt_id": "8672b450-c521-437d-8656-05a206cc9f5e",
+                "checks": [
+                  {
+                    "key": "drawing",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  },
+                  {
+                    "key": "inspection",
+                    "reason": "The original submitted outcome is incomplete",
+                    "decision": "rejected"
+                  }
+                ]
+              }
+            ]
+          },
+          "current_submission_context": {
+            "id": "011e1799-9623-42b9-a34a-effe45b9eed7",
+            "revision": 5,
+            "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+            "time": {
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actual_at": "2026-10-18T18:13:43.353237Z",
+              "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+              "recorded_at": "2026-10-18T18:13:44.120024Z"
+            }
+          },
+          "rendered_label": "已退回 · 履行保持开放"
+        },
+        {
+          "id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+          "revision": 1,
+          "series_id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+          "task_id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+          "fixed_task_revision": 3,
+          "current_task": {
+            "id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+            "version_id": "011e1799-9623-42b9-a34a-effe45b9eed7",
+            "revision": 5,
+            "title": "Synthetic paired commitment projection",
+            "state": "submitted"
+          },
+          "recipient_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+          "promisor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+          "promised_at": "2026-10-19T18:13:31.416938Z",
+          "original_timezone": "Asia/Shanghai",
+          "recorded_at": "2026-10-18T18:13:32.639071Z",
+          "created_at": "2026-10-18T18:13:32.694062+00:00",
+          "replaces": null,
+          "fulfillment": {
+            "state": "fulfilled",
+            "revision": 1,
+            "review_id": "e63b4ae3-ff27-4447-92b4-97bfe40e7575",
+            "history": [
+              {
+                "id": "e63b4ae3-ff27-4447-92b4-97bfe40e7575",
+                "revision": 1,
+                "decision": "accepted",
+                "state": "fulfilled",
+                "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+                "recorded_at": "2026-10-18T18:13:53.596855+00:00",
+                "receipt_id": "9a4c6805-fb62-499a-945f-c3920699c085",
+                "checks": [
+                  {
+                    "key": "drawing",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  }
+                ]
+              }
+            ]
+          },
+          "current_submission_context": {
+            "id": "011e1799-9623-42b9-a34a-effe45b9eed7",
+            "revision": 5,
+            "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+            "time": {
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actual_at": "2026-10-18T18:13:43.353237Z",
+              "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+              "recorded_at": "2026-10-18T18:13:44.120024Z"
+            }
+          },
+          "rendered_label": "已具名核对履行"
+        }
+      ],
+      "excluded_historical_commitments": [],
+      "read_only_counts": {
+        "before": {
+          "work_task_versions": 5,
+          "work_task_currents": 1,
+          "work_commitment_versions": 2,
+          "work_commitment_currents": 2,
+          "project_status_updates": 0,
+          "action_receipts": 17,
+          "audit_entries": 17,
+          "outbox_events": 18,
+          "request_keys": 15,
+          "confirmations": 12,
+          "work_commitment_reviews": 2,
+          "work_commitment_review_currents": 2,
+          "artifact_versions": 1,
+          "original_security": 1,
+          "uploaded_originals": 1,
+          "original_scan_requests": 1,
+          "original_scan_results": 1
+        },
+        "after": {
+          "work_task_versions": 5,
+          "work_task_currents": 1,
+          "work_commitment_versions": 2,
+          "work_commitment_currents": 2,
+          "project_status_updates": 0,
+          "action_receipts": 17,
+          "audit_entries": 17,
+          "outbox_events": 18,
+          "request_keys": 15,
+          "confirmations": 12,
+          "work_commitment_reviews": 2,
+          "work_commitment_review_currents": 2,
+          "artifact_versions": 1,
+          "original_security": 1,
+          "uploaded_originals": 1,
+          "original_scan_requests": 1,
+          "original_scan_results": 1
+        },
+        "unchanged": true
+      },
+      "offline_api_calls": [
+        {
+          "route": "v1/categories/aab8b224-c39e-433f-b015-f3811c75b358/products/a7b20391-96ed-4615-b52d-06cc46b55198/project-work?project_id=0d9a997b-5c4d-444f-9742-8d322e3ac858",
+          "body_present": false
+        },
+        {
+          "route": "v1/categories/aab8b224-c39e-433f-b015-f3811c75b358/products/a7b20391-96ed-4615-b52d-06cc46b55198/project-work/fulfillment?project_id=0d9a997b-5c4d-444f-9742-8d322e3ac858",
+          "body_present": false
+        }
+      ],
+      "rendered_markup_sha256": "b968f82f4a6d7687e7367a187d04a1c2a59c9cad8a4a5ba635d0b230d2ca1115",
+      "rendered_bytes": 8176,
+      "raw_dtos_unchanged": true
+    },
+    {
+      "phase": "successor_open_predecessor_fulfilled",
+      "direct_parsers_and_pair": "passed",
+      "offline_component_read_and_ssr": "passed",
+      "project_work_body_sha256": "65c16cc84bec1ee3ed6c47bef435b74c02269e12d273df463126d45d95cd8f0b",
+      "fulfillment_body_sha256": "88c1661a2cef8e8f6fdeef893c7fdc33cae5d0c013dd91bb9b78e43e7e1b8b67",
+      "project_revision": 1,
+      "product_revision": 1,
+      "as_of": {
+        "project_work": "2026-10-18T18:14:01.965278+00:00",
+        "fulfillment": "2026-10-18T18:14:02.515789+00:00"
+      },
+      "raw_current_commitment_count": 2,
+      "distinct_current_recipients": 2,
+      "all_commitment_rows": 3,
+      "rendered_commitment_ids": [
+        "9080a8a5-2ec3-48f1-86f1-a00b4633f238",
+        "ccbfeba3-6b37-4456-9b4a-03cec3775673"
+      ],
+      "current_commitments": [
+        {
+          "id": "9080a8a5-2ec3-48f1-86f1-a00b4633f238",
+          "revision": 1,
+          "series_id": "9080a8a5-2ec3-48f1-86f1-a00b4633f238",
+          "task_id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+          "fixed_task_revision": 3,
+          "current_task": {
+            "id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+            "version_id": "011e1799-9623-42b9-a34a-effe45b9eed7",
+            "revision": 5,
+            "title": "Synthetic paired commitment projection",
+            "state": "submitted"
+          },
+          "recipient_id": "8165dd4d-bebb-41db-94e8-d2fa5ca886f2",
+          "promisor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+          "promised_at": null,
+          "original_timezone": "Asia/Shanghai",
+          "recorded_at": "2026-10-18T18:13:26.699381Z",
+          "created_at": "2026-10-18T18:13:26.744024+00:00",
+          "replaces": null,
+          "fulfillment": {
+            "state": "open",
+            "revision": 1,
+            "review_id": "fc80bfbd-fb51-46c9-9142-df0176f4554c",
+            "history": [
+              {
+                "id": "fc80bfbd-fb51-46c9-9142-df0176f4554c",
+                "revision": 1,
+                "decision": "returned",
+                "state": "open",
+                "actor_id": "8165dd4d-bebb-41db-94e8-d2fa5ca886f2",
+                "recorded_at": "2026-10-18T18:13:48.961708+00:00",
+                "receipt_id": "8672b450-c521-437d-8656-05a206cc9f5e",
+                "checks": [
+                  {
+                    "key": "drawing",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  },
+                  {
+                    "key": "inspection",
+                    "reason": "The original submitted outcome is incomplete",
+                    "decision": "rejected"
+                  }
+                ]
+              }
+            ]
+          },
+          "current_submission_context": {
+            "id": "011e1799-9623-42b9-a34a-effe45b9eed7",
+            "revision": 5,
+            "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+            "time": {
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actual_at": "2026-10-18T18:13:43.353237Z",
+              "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+              "recorded_at": "2026-10-18T18:13:44.120024Z"
+            }
+          },
+          "rendered_label": "已退回 · 履行保持开放"
+        },
+        {
+          "id": "ccbfeba3-6b37-4456-9b4a-03cec3775673",
+          "revision": 2,
+          "series_id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+          "task_id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+          "fixed_task_revision": 5,
+          "current_task": {
+            "id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+            "version_id": "011e1799-9623-42b9-a34a-effe45b9eed7",
+            "revision": 5,
+            "title": "Synthetic paired commitment projection",
+            "state": "submitted"
+          },
+          "recipient_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+          "promisor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+          "promised_at": "2026-10-19T18:13:31.416938Z",
+          "original_timezone": "Asia/Shanghai",
+          "recorded_at": "2026-10-18T18:13:57.897423Z",
+          "created_at": "2026-10-18T18:13:57.995953+00:00",
+          "replaces": {
+            "id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+            "revision": 1
+          },
+          "fulfillment": {
+            "state": "open",
+            "revision": 0,
+            "review_id": null,
+            "history": []
+          },
+          "current_submission_context": {
+            "id": "011e1799-9623-42b9-a34a-effe45b9eed7",
+            "revision": 5,
+            "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+            "time": {
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actual_at": "2026-10-18T18:13:43.353237Z",
+              "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+              "recorded_at": "2026-10-18T18:13:44.120024Z"
+            }
+          },
+          "rendered_label": "尚未具名核对"
+        }
+      ],
+      "excluded_historical_commitments": [
+        {
+          "id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+          "revision": 1,
+          "status": "superseded",
+          "series_id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+          "fulfillment_state": "fulfilled",
+          "fulfillment_revision": 1,
+          "review_id": "e63b4ae3-ff27-4447-92b4-97bfe40e7575"
+        }
+      ],
+      "read_only_counts": {
+        "before": {
+          "work_task_versions": 5,
+          "work_task_currents": 1,
+          "work_commitment_versions": 3,
+          "work_commitment_currents": 2,
+          "project_status_updates": 0,
+          "action_receipts": 18,
+          "audit_entries": 18,
+          "outbox_events": 19,
+          "request_keys": 16,
+          "confirmations": 13,
+          "work_commitment_reviews": 2,
+          "work_commitment_review_currents": 2,
+          "artifact_versions": 1,
+          "original_security": 1,
+          "uploaded_originals": 1,
+          "original_scan_requests": 1,
+          "original_scan_results": 1
+        },
+        "after": {
+          "work_task_versions": 5,
+          "work_task_currents": 1,
+          "work_commitment_versions": 3,
+          "work_commitment_currents": 2,
+          "project_status_updates": 0,
+          "action_receipts": 18,
+          "audit_entries": 18,
+          "outbox_events": 19,
+          "request_keys": 16,
+          "confirmations": 13,
+          "work_commitment_reviews": 2,
+          "work_commitment_review_currents": 2,
+          "artifact_versions": 1,
+          "original_security": 1,
+          "uploaded_originals": 1,
+          "original_scan_requests": 1,
+          "original_scan_results": 1
+        },
+        "unchanged": true
+      },
+      "offline_api_calls": [
+        {
+          "route": "v1/categories/aab8b224-c39e-433f-b015-f3811c75b358/products/a7b20391-96ed-4615-b52d-06cc46b55198/project-work?project_id=0d9a997b-5c4d-444f-9742-8d322e3ac858",
+          "body_present": false
+        },
+        {
+          "route": "v1/categories/aab8b224-c39e-433f-b015-f3811c75b358/products/a7b20391-96ed-4615-b52d-06cc46b55198/project-work/fulfillment?project_id=0d9a997b-5c4d-444f-9742-8d322e3ac858",
+          "body_present": false
+        }
+      ],
+      "rendered_markup_sha256": "943d8dd1fdee7cf04a0537f5008cec347340742c6003be007d0ada84d983706d",
+      "rendered_bytes": 7176,
+      "raw_dtos_unchanged": true
+    },
+    {
+      "phase": "completed_task_independent_fulfillment_history",
+      "direct_parsers_and_pair": "passed",
+      "offline_component_read_and_ssr": "passed",
+      "project_work_body_sha256": "f2fedf2b7fb1ce3eba5ab73067a8c3da41c41df801c8599fa70baacc7adae398",
+      "fulfillment_body_sha256": "8219439b980eed3275f905cd803419988553d8fd1aee767b6e93c2f773f3e818",
+      "project_revision": 1,
+      "product_revision": 1,
+      "as_of": {
+        "project_work": "2026-10-18T18:14:13.805379+00:00",
+        "fulfillment": "2026-10-18T18:14:14.502806+00:00"
+      },
+      "raw_current_commitment_count": 2,
+      "distinct_current_recipients": 2,
+      "all_commitment_rows": 3,
+      "rendered_commitment_ids": [
+        "9080a8a5-2ec3-48f1-86f1-a00b4633f238",
+        "ccbfeba3-6b37-4456-9b4a-03cec3775673"
+      ],
+      "current_commitments": [
+        {
+          "id": "9080a8a5-2ec3-48f1-86f1-a00b4633f238",
+          "revision": 1,
+          "series_id": "9080a8a5-2ec3-48f1-86f1-a00b4633f238",
+          "task_id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+          "fixed_task_revision": 3,
+          "current_task": {
+            "id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+            "version_id": "c352216c-96b6-455b-9a06-9202121544fd",
+            "revision": 6,
+            "title": "Synthetic paired commitment projection",
+            "state": "completed"
+          },
+          "recipient_id": "8165dd4d-bebb-41db-94e8-d2fa5ca886f2",
+          "promisor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+          "promised_at": null,
+          "original_timezone": "Asia/Shanghai",
+          "recorded_at": "2026-10-18T18:13:26.699381Z",
+          "created_at": "2026-10-18T18:13:26.744024+00:00",
+          "replaces": null,
+          "fulfillment": {
+            "state": "fulfilled",
+            "revision": 2,
+            "review_id": "39e5483b-bdca-4a48-b370-4359e031cd4e",
+            "history": [
+              {
+                "id": "fc80bfbd-fb51-46c9-9142-df0176f4554c",
+                "revision": 1,
+                "decision": "returned",
+                "state": "open",
+                "actor_id": "8165dd4d-bebb-41db-94e8-d2fa5ca886f2",
+                "recorded_at": "2026-10-18T18:13:48.961708+00:00",
+                "receipt_id": "8672b450-c521-437d-8656-05a206cc9f5e",
+                "checks": [
+                  {
+                    "key": "drawing",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  },
+                  {
+                    "key": "inspection",
+                    "reason": "The original submitted outcome is incomplete",
+                    "decision": "rejected"
+                  }
+                ]
+              },
+              {
+                "id": "39e5483b-bdca-4a48-b370-4359e031cd4e",
+                "revision": 2,
+                "decision": "accepted",
+                "state": "fulfilled",
+                "actor_id": "8165dd4d-bebb-41db-94e8-d2fa5ca886f2",
+                "recorded_at": "2026-10-18T18:14:10.003890+00:00",
+                "receipt_id": "95f9c7ad-5ba7-4b3d-84a8-40238cbf8198",
+                "checks": [
+                  {
+                    "key": "drawing",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  },
+                  {
+                    "key": "inspection",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  }
+                ]
+              }
+            ]
+          },
+          "current_submission_context": {
+            "id": "011e1799-9623-42b9-a34a-effe45b9eed7",
+            "revision": 5,
+            "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+            "time": {
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actual_at": "2026-10-18T18:13:43.353237Z",
+              "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+              "recorded_at": "2026-10-18T18:13:44.120024Z"
+            }
+          },
+          "rendered_label": "已具名核对履行"
+        },
+        {
+          "id": "ccbfeba3-6b37-4456-9b4a-03cec3775673",
+          "revision": 2,
+          "series_id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+          "task_id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+          "fixed_task_revision": 5,
+          "current_task": {
+            "id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+            "version_id": "c352216c-96b6-455b-9a06-9202121544fd",
+            "revision": 6,
+            "title": "Synthetic paired commitment projection",
+            "state": "completed"
+          },
+          "recipient_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+          "promisor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+          "promised_at": "2026-10-19T18:13:31.416938Z",
+          "original_timezone": "Asia/Shanghai",
+          "recorded_at": "2026-10-18T18:13:57.897423Z",
+          "created_at": "2026-10-18T18:13:57.995953+00:00",
+          "replaces": {
+            "id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+            "revision": 1
+          },
+          "fulfillment": {
+            "state": "open",
+            "revision": 0,
+            "review_id": null,
+            "history": []
+          },
+          "current_submission_context": {
+            "id": "011e1799-9623-42b9-a34a-effe45b9eed7",
+            "revision": 5,
+            "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+            "time": {
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actual_at": "2026-10-18T18:13:43.353237Z",
+              "actor_id": "f6ac291b-f19b-4188-ae44-87c7f1eaa857",
+              "recorded_at": "2026-10-18T18:13:44.120024Z"
+            }
+          },
+          "rendered_label": "尚未具名核对"
+        }
+      ],
+      "excluded_historical_commitments": [
+        {
+          "id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+          "revision": 1,
+          "status": "superseded",
+          "series_id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+          "fulfillment_state": "fulfilled",
+          "fulfillment_revision": 1,
+          "review_id": "e63b4ae3-ff27-4447-92b4-97bfe40e7575"
+        }
+      ],
+      "read_only_counts": {
+        "before": {
+          "work_task_versions": 6,
+          "work_task_currents": 1,
+          "work_commitment_versions": 3,
+          "work_commitment_currents": 2,
+          "project_status_updates": 0,
+          "action_receipts": 20,
+          "audit_entries": 20,
+          "outbox_events": 21,
+          "request_keys": 18,
+          "confirmations": 15,
+          "work_commitment_reviews": 3,
+          "work_commitment_review_currents": 2,
+          "artifact_versions": 1,
+          "original_security": 1,
+          "uploaded_originals": 1,
+          "original_scan_requests": 1,
+          "original_scan_results": 1
+        },
+        "after": {
+          "work_task_versions": 6,
+          "work_task_currents": 1,
+          "work_commitment_versions": 3,
+          "work_commitment_currents": 2,
+          "project_status_updates": 0,
+          "action_receipts": 20,
+          "audit_entries": 20,
+          "outbox_events": 21,
+          "request_keys": 18,
+          "confirmations": 15,
+          "work_commitment_reviews": 3,
+          "work_commitment_review_currents": 2,
+          "artifact_versions": 1,
+          "original_security": 1,
+          "uploaded_originals": 1,
+          "original_scan_requests": 1,
+          "original_scan_results": 1
+        },
+        "unchanged": true
+      },
+      "offline_api_calls": [
+        {
+          "route": "v1/categories/aab8b224-c39e-433f-b015-f3811c75b358/products/a7b20391-96ed-4615-b52d-06cc46b55198/project-work?project_id=0d9a997b-5c4d-444f-9742-8d322e3ac858",
+          "body_present": false
+        },
+        {
+          "route": "v1/categories/aab8b224-c39e-433f-b015-f3811c75b358/products/a7b20391-96ed-4615-b52d-06cc46b55198/project-work/fulfillment?project_id=0d9a997b-5c4d-444f-9742-8d322e3ac858",
+          "body_present": false
+        }
+      ],
+      "rendered_markup_sha256": "7e0af7bb270ea30c6577cf69d36a9e041babb07bef4724d48716f8aa5db24ba1",
+      "rendered_bytes": 7921,
+      "raw_dtos_unchanged": true
+    }
+  ],
+  "cross_phase_proofs": {
+    "same_task_separate_recipients": true,
+    "predecessor": {
+      "id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+      "revision": 1,
+      "series_id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+      "state": "fulfilled",
+      "review_id": "e63b4ae3-ff27-4447-92b4-97bfe40e7575"
+    },
+    "successor": {
+      "id": "ccbfeba3-6b37-4456-9b4a-03cec3775673",
+      "revision": 2,
+      "series_id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+      "replaces": {
+        "id": "268ea9a2-28c6-46db-9ba9-1f1e8b3697fe",
+        "revision": 1
+      },
+      "state": "open",
+      "fulfillment_revision": 0,
+      "review": null,
+      "history": []
+    },
+    "old_fulfillment_not_inherited_by_successor": true,
+    "current_task_completed_does_not_complete_unreviewed_successor": {
+      "task_id": "60442f0a-05a3-4cf3-9b05-e3ba58f0432f",
+      "current_task_revision": 6,
+      "current_task_state": "completed",
+      "successor_fulfillment": {
+        "state": "open",
+        "revision": 0,
+        "review": null,
+        "history": []
+      }
+    },
+    "unknown_promise_date_still_null_after_fulfillment": {
+      "commitment_id": "9080a8a5-2ec3-48f1-86f1-a00b4633f238",
+      "promised_at": null,
+      "fixed_task_revision": 3,
+      "current_task_revision": 6,
+      "final_fulfillment_state": "fulfilled"
+    },
+    "current_commitment_retains_returned_then_accepted_history": true,
+    "original_raw_time_strings_and_receipt_ids_rendered": true,
+    "historical_reviews_not_backfilled_from_current_task_or_submission": true,
+    "all_three_get_count_maps_unchanged": true,
+    "input_file_and_original_dto_shapes_unchanged": true,
+    "no_production_source_written": true
+  },
+  "limitations": [
+    "The API function is an offline substitute returning the unmodified root-exported actual HTTP bodies; no fresh HTTP or database validation occurred here.",
+    "The existing component test state driver schedules React hooks; icons and CSS module imports are substituted. Static markup does not validate browser interactions, layout, CSS, accessibility tree or integration.",
+    "The two actual GET responses have independent as_of snapshots. Exact matching was checked, but no shared transaction or general race-freedom claim is made.",
+    "History DTOs expose review identity, reviewer, recorded_at, checks and receipt, but not each review's immutable task/submission/commitment reference tuple. The pane preserves this limitation and never fills historical references from current context.",
+    "Promise recorded_at, created_at and review recorded_at remain separate raw timezone strings. A review registration time is not an actual business completion time.",
+    "Read-only count equality covers exactly the explicit models exported by this PG case; it is not a schema-wide no-write proof.",
+    "The fixture uses synthetic business and source data. No real person qualification, production scanner qualification, model invocation or outbound operation is asserted."
+  ]
+}

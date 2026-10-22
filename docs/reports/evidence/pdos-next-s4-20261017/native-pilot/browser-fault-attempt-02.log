@@ -1,0 +1,27 @@
+### Ran Playwright code
+```js
+await (async (page) => {
+ let intercepted = false, committedStatus = null, commandId = null;
+ const target = "http://127.0.0.1:61740/api/v1/categories/0b1261de-e54b-4520-bd59-45764f4c56f3/commands";
+ await page.route(target, async route => {
+  const body = route.request().postDataJSON();
+  if (body?.operation !== "npi.pilot.result.record") { await route.continue(); return; }
+  intercepted = true; commandId = body.command_id;
+  const response = await route.fetch(); committedStatus = response.status();
+  if (committedStatus === 200) await route.abort("failed");
+  else await route.fulfill({ response });
+ });
+ try {
+  await page.getByRole("button", { name: "本人确认保存", exact: true }).click();
+  await page.getByRole("button", { name: "重放并核对同一原提交", exact: true }).click({ trial: true, timeout: 30000 });
+  if (!intercepted || committedStatus !== 200) throw new Error("The actual successful result response was not intercepted");
+  console.log(JSON.stringify({ intercepted, committedStatus, commandId, explicit_replay_required: true }));
+ } finally { await page.unroute(target); }
+})(page);
+```
+### Page
+- Page URL: http://127.0.0.1:61740/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&bench=projects&view=builds&product=ac902601-dffe-47a6-a875-5572675c31de&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&task=prepare
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Events
+- New console entries: .playwright-cli/console-2026-10-17T21-20-58-823Z.log#L1

@@ -1,0 +1,742 @@
+.........F..............F...............................FFFFF........... [ 48%]
+........................................................................ [ 97%]
+...                                                                      [100%]
+=================================== FAILURES ===================================
+_ test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result _
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...f20>, parser=<function parse_original at 0x1136a9940>), client=<starlette.testclient.TestClient object at 0x152851ee0>)
+
+    def test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result(
+        work, security_work
+    ):
+        owner, scope = start(work, security_work, "customer_request")
+        agree(work, scope, scope.data_categories)
+        # The intentionally unmetered transport reserves bytes, rather than real model tokens.
+        with Session(work.admin) as session, session.begin():
+            session.get(AgentRun, scope.run_id).token_limit = 1_000_000
+        seen = []
+    
+        def response(kwargs):
+            context = json.loads(kwargs["messages"][0]["content"])["context"]
+            assert context["proposal"]["id"] == str(scope.proposal_id)
+            assert QUOTE in kwargs["messages"][0]["content"]
+            seen.append(kwargs["messages"])
+            if len(seen) == 1:
+                return ModelTurn(
+                    calls=(
+                        ToolCall(
+                            id="synthetic-private-read",
+                            name="proposal.items.read",
+                            arguments={"proposal_id": str(scope.proposal_id)},
+                        ),
+                    ),
+                    usage=ProviderUsage(2, 1),
+                )
+            assert any(message.get("role") == "tool" for message in kwargs["messages"])
+            return ModelTurn(
+                structured={
+                    "status": "completed",
+                    "summary": "Synthetic private gap check",
+                    "result": {},
+                    "questions": [],
+                    "unfinished": [],
+                },
+                usage=ProviderUsage(2, 1),
+            )
+    
+        client = Client(response)
+        adapters = replace(
+            owner.adapters(),
+            route_for=lambda _: configured_route(),
+            provider_for=lambda *_: "synthetic-provider",
+            provider_client=client,
+            cost_required=False,
+        )
+>       result = AgentKernel(BoundHost(owner.store, adapters), owner.registry).execute(
+            scope, goal="Synthetic private proposal gap check"
+        )
+
+tests/agent_kernel/test_proposal_context_pg.py:256: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/graph.py:653: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:237: in model
+    turn = ports.model(
+pdos_next/agent_kernel/host.py:111: in model
+    return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.gateway.AgentGateway object at 0x15369fa10>
+scope = RunScope(tenant_id=UUID('7bad24ae-ce2b-4d8a-9580-c730833ce693'), requester_id=UUID('e500c6ee-d245-4a5d-9bd7-15972454ce...ories=frozenset({'customer_original', 'customer'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+system = 'You are 小Pai, the single PDOS assistant.\nUse registered tools and loaded skills. Authority, scope, privacy and tiers...xtraction", "purpose": "经隔离子任务从客户 RFQ、规格书、图纸说明和邮件中逐条抽取需求，保留原文位置、数值、单位、工况、否定与例外，映射到规格字典并登记为证据，列出冲突、未知、差距和待问客户/专家的问题。"}]'
+messages = [{'role': 'user', 'content': '{"goal": "Synthetic private proposal gap check", "context": {"goal": "Synthetic private ...b-a068-171bbbbde235", "name": "汽车充气泵", "purpose": "隔离合成品类"}}, "context_ref": "e2390448-5388-4f20-b781-42ad95947a95"}'}]
+tools = [{'name': 'ai.budget.configure', 'description': '办理 ai.budget.configure；结果以领域回执为准。', 'parameters': {'$defs': {'Limits'..., 'required': ['skill_key', 'skill_digest', 'tool_digest', 'model_digest', 'cases', 'personally_reviewed'], ...}}, ...]
+output_schema = {'$defs': {'ClarifyOption': {'additionalProperties': False, 'properties': {'value': {'title': 'Value', 'type': 'string...estions': {'items': {'$ref': '#/$defs/WireQuestion'}, 'maxItems': 3, 'title': 'Questions', 'type': 'array'}, ...}, ...}
+emit = <function BoundHost.model.<locals>.<lambda> at 0x153992d40>
+loaded_skills = ()
+
+    def turn(self, scope, *, system, messages, tools, output_schema, emit=None, loaded_skills=()):
+        if not in_registered_agent_graph():
+            raise DomainError("FORBIDDEN_SCOPE", "模型只能由登记的小Pai执行图调用。")
+        self.store.current(scope)
+        from .proposal_context import check
+    
+        check(self.store, scope)
+        if self.context_guard is not None:
+            self.context_guard(scope)
+        route = self.route_for(scope)
+        if route is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前模型未配置，AI 暂不可用。")
+        provider_key = self.provider_for(scope, route)
+        if not isinstance(provider_key, str) or not provider_key:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前服务商身份未登记。")
+        if not isinstance(system, str) or any(
+            not isinstance(message, dict) or not isinstance(message.get("content", ""), str)
+            for message in messages
+        ):
+            raise DomainError("VALIDATION_FAILED", "当前费用资格只覆盖纯文本模型请求。")
+        request = {
+            "system": system,
+            "messages": messages,
+            "tools": tools,
+            "output_schema": output_schema,
+            "route": route.digest,
+            "provider_key": provider_key,
+        }
+        with self.store.transaction(scope, lock=True) as (session, run):
+            for binding in loaded_skills:
+                validate_skill_load(session, scope, binding)
+            prior_model = run.versions.get("model_version")
+            prior_route = run.versions.get("model_route_digest")
+            prior_provider = run.versions.get("provider_key")
+            if (
+                prior_model is not None
+                and prior_model != route.version
+                or prior_route is not None
+                and prior_route != route.digest
+                or prior_provider is not None
+                and prior_provider != provider_key
+            ):
+                raise DomainError("VERSION_CONFLICT", "原运行的模型版本不能静默替换。")
+            from pdos_next.service import digest
+    
+            tool_digests = run.versions.get("tool_definitions", {})
+            prompt_digests = run.versions.get("prompt_prefixes", {})
+            if tool_digests.get(scope.isolation, digest(tools)) != digest(
+                tools
+            ) or prompt_digests.get(scope.isolation, digest(system)) != digest(system):
+                raise DomainError("VERSION_CONFLICT", "原运行的提示与工具前缀不能静默替换。")
+            run.versions = {
+                **run.versions,
+                "model_version": route.version,
+                "model_route_digest": route.digest,
+                "provider_key": provider_key,
+                "tool_definitions": {**tool_digests, scope.isolation: digest(tools)},
+                "prompt_prefixes": {**prompt_digests, scope.isolation: digest(system)},
+            }
+            binding = ModelBinding(
+                model_version=route.version, model_route_digest=route.digest,
+                tool_definitions_digest=digest(tools), prompt_digest=digest(system),
+                isolation=scope.isolation, cancel_epoch=scope.cancel_epoch,
+                loaded_skills=tuple(loaded_skills),
+            ).model_dump(mode="json")
+            request["execution_binding"] = binding
+            decision = egress(session, scope, provider_key, text=str(request))
+        from pdos_next.service import digest
+    
+        call_key = "model:" + digest(request)
+        import json
+    
+        wire = request_body(route, system, messages, tools, output_schema, bool(emit))
+        wire_bytes = len(json.dumps(wire, ensure_ascii=False).encode())
+        input_upper = wire_bytes + 4096  # Explicitly unmetered synthetic transport fixtures only.
+        pricing = self.rate_card_for(scope, route) if self.rate_card_for else None
+        if self.cost_required and pricing is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "模型费用尚无当前价格卡与验证预算。")
+        cost_lease = None
+        if pricing:
+            pricing.validate(provider_key, route)
+            input_upper = pricing.input_upper_bound(wire_bytes)
+            cost_lease = (
+                pricing.reserve(input_upper, route.max_output_tokens),
+                input_upper,
+                route.max_output_tokens,
+                pricing.snapshot(),
+            )
+        reserve = input_upper + route.max_output_tokens
+        call_id, saved = self.store.claim(
+            scope, call_key, "model", request, reservation=reserve, cost_lease=cost_lease,
+            execution_binding=binding,
+        )
+        if saved is not None:
+            from .types import ModelTurn, ToolCall
+    
+            return ModelTurn(
+                saved["text"],
+                tuple(ToolCall.model_validate(c) for c in saved["calls"]),
+                usage=ProviderUsage(**saved["usage"]),
+                request_id=saved["request_id"],
+                structured=saved["structured"],
+                ledger_call_id=call_id,
+            )
+        dispatch_started = False
+        try:
+            self.store.emit(
+                scope,
+                {
+                    "type": "egress_checked",
+                    **{
+                        k: v.isoformat() if hasattr(v, "isoformat") else v
+                        for k, v in asdict(decision).items()
+                    },
+                },
+            )
+            # Revocation/rotation after reservation still prevents sending the old scope.
+            self.store.current(scope)
+            latest = self.route_for(scope)
+            if (
+                latest is None
+                or latest.digest != route.digest
+                or self.provider_for(scope, latest) != provider_key
+            ):
+                raise DomainError("VERSION_CONFLICT", "模型配置已变化。")
+            check(self.store, scope)
+            if self.context_guard is not None:
+                self.context_guard(scope)
+            with self.store.transaction(scope) as (session, _):
+                egress(session, scope, provider_key, text=str(request))
+            if pricing:
+                latest_price = self.rate_card_for(scope, latest)
+                if latest_price is None or latest_price.snapshot() != pricing.snapshot():
+                    raise DomainError("VERSION_CONFLICT", "价格卡已变化。")
+                latest_price.validate(provider_key, latest)
+            dispatch_started = True
+            result = self.client.turn(
+                route,
+                system=system,
+                messages=messages,
+                tools=tools,
+                output_schema=output_schema,
+                emit=emit,
+                cancelled=lambda: self._cancelled(scope),
+            )
+        except ProviderError as error:
+            usage = error.usage
+            unknown = error.unknown or bool(
+                usage
+                and (
+                    usage.input_tokens > input_upper
+                    or usage.output_tokens > route.max_output_tokens
+                )
+            )
+            charged = usage.input_tokens + usage.output_tokens if usage else 0
+            cancellation_code = None
+            if error.code == "MODEL_CANCELLED":
+                # The native transport also closes on revoked ACL/budget. Only the
+                # actual persisted cancel epoch/state can call this a cancelled Run.
+                try:
+                    self.store.current(scope)
+                except DomainError as current_error:
+                    cancellation_code = current_error.code
+                else:
+                    cancellation_code = (
+                        "EXTERNAL_OUTCOME_UNKNOWN" if unknown else "SOURCE_UNAVAILABLE"
+                    )
+            code = (
+                cancellation_code
+                if error.code == "MODEL_CANCELLED"
+                else (
+                    "EXTERNAL_OUTCOME_UNKNOWN"
+                    if unknown
+                    else "RATE_LIMITED"
+                    if error.code == "PROVIDER_RATE_LIMITED"
+                    else "SOURCE_UNAVAILABLE"
+                )
+            )
+            self.store.release_call(
+                scope,
+                call_id,
+                usage=0 if unknown else charged,
+                unknown=unknown,
+                error=code,
+                request_id=error.request_id,
+                cost_usage=CostUsage(usage.input_tokens, usage.output_tokens, pricing.actual(usage))
+                if pricing and usage and not unknown
+                else CostUsage(0, 0, pricing.actual(ProviderUsage(0, 0)))
+                if pricing and not unknown
+                else None,
+            )
+            raise DomainError(
+                code,
+                "模型调用未形成可用结果，请查看原调用回执。",
+                detail={"provider_reason": error.code, "call_id": str(call_id)},
+            ) from None
+        except DomainError as error:
+            self.store.release_call(
+                scope,
+                call_id,
+                usage=0,
+                unknown=dispatch_started,
+                error=error.code,
+                request_id=error.detail.get("provider_request_id"),
+            )
+            raise
+        except Exception:
+            self.store.release_call(scope, call_id, unknown=True, error="EXTERNAL_OUTCOME_UNKNOWN")
+>           raise DomainError(
+                "EXTERNAL_OUTCOME_UNKNOWN", "原模型调用需对账。", detail={"call_id": str(call_id)}
+            ) from None
+E           pdos_next.errors.DomainError: 原模型调用需对账。
+E           During task with name 'model' and id '13b84889-3e15-f40e-c4be-e2899fef5926'
+
+pdos_next/agent_kernel/gateway.py:247: DomainError
+_________ test_category_wait_survives_postgres_checkpoint_and_new_host _________
+
+setup = <isolated synthetic test scope>
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-265/test_category_wait_survives_po0')
+
+    def test_category_wait_survives_postgres_checkpoint_and_new_host(setup, tmp_path):
+        f = personal_fixture(setup, tmp_path)
+        adapters = KernelAdapters(
+            route_for=lambda *_: f.route,
+            project_context=lambda *_: {},
+            verify_result=lambda _, result, __: result,
+            prepare_candidate=f.bootstrap.prepare_candidate,
+            execute_command=lambda *_: pytest.fail("No direct write"),
+            tool_registry=f.registry,
+            skill_catalog=f.catalog,
+        )
+    
+        class Host(BoundHost):
+            def __init__(self, turns):
+                super().__init__(f.store, adapters)
+                self.turns, self.model_count = iter(turns), 0
+    
+            def model(self, *_args, **_kwargs):
+                self.model_count += 1
+                return next(self.turns)
+    
+        target = verified_checkpoint_url(
+            os.environ["M2_TEST_CHECKPOINT_URL"].replace(
+                "postgresql://",
+                "postgresql+psycopg://",
+                1,
+            )
+        )
+        first_host = Host(
+            [
+                ModelTurn(
+                    calls=(
+                        ToolCall(
+                            id="synthetic-native",
+                            name="category.create",
+                            arguments=f.arguments,
+                        ),
+                    ),
+                    ledger_call_id=f.model_id,
+                )
+            ]
+        )
+        with PostgresSaver.from_conn_string(target) as saver:
+>           first = AgentKernel(first_host, f.registry, catalog=f.catalog).execute(
+                f.scope,
+                goal="synthetic category",
+                preload=["category_framing"],
+                checkpointer=saver,
+            )
+
+tests/agent_kernel/test_category_adoption_transactions.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/graph.py:653: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:193: in prepare
+    context = project_context(scope, state["goal"], bindings=tuple(
+pdos_next/agent_kernel/host.py:77: in skill_context
+    reference = snapshot(self.store, scope, value=value, schema=schema, bindings=bindings,
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+store = <pdos_next.agent_kernel.persistence.KernelStore object at 0x150e2d5b0>
+scope = RunScope(tenant_id=UUID('0fae4072-173c-405f-bd67-a6f7f6a418e2'), requester_id=UUID('4c203ded-1e8a-433f-ac48-0cacd2cded...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+value = {}
+schema = {'type': 'object', 'properties': {'goal': {'type': 'string'}, 'sources': {'type': 'array', 'items': {'$ref': '#/$defs/...y'}, 'product': {'$ref': '#/$defs/product'}, ...}, 'required': ['goal', 'sources'], 'additionalProperties': False, ...}
+bindings = (SkillBinding(key='category_framing', version='0.2.2-draft', digest='88a84881043cc0506069336f91795d5a5671ec26a50e612af2a2c5ba228fb768', load_event_id=UUID('d508bd21-134b-42ba-b1cd-4fed23c783da')),)
+omitted = []
+issues = [{'field': '/', 'reason': 'context_required'}, {'field': '/', 'reason': 'context_required'}]
+
+    def snapshot(store, scope, *, value, schema, bindings, omitted, issues):
+        from .execution import validate_skill_load
+        from .models import AgentEvent
+    
+        is_production = production()
+        rejected = bool(issues) or bool(omitted and not is_production)
+        metadata = {
+            "schema_digest": digest(schema), "content_digest": digest(value),
+            "skills": [binding.model_dump(mode="json") for binding in bindings],
+            "fields": sorted(value) if isinstance(value, dict) else [],
+            "omitted": omitted, "issues": issues,
+        }
+        identity = digest(metadata)
+        with store.transaction(scope, lock=True) as (session, run):
+            for binding in bindings:
+                validate_skill_load(session, scope, binding)
+            saved = run.versions.get("context_snapshots", {})
+            existing = saved.get(identity)
+            if existing is None:
+                event_id = uuid4()
+                sequence = session.scalar(select(func.coalesce(func.max(AgentEvent.sequence), 0))
+                                          .where(AgentEvent.run_id == run.id)) + 1
+                session.add(AgentEvent(id=event_id, tenant_id=scope.tenant_id, run_id=run.id,
+                    sequence=sequence, body={"type": "context_projected", **metadata,
+                        "status": "rejected" if rejected else "projected"}))
+                if not rejected:
+                    run.versions = {**run.versions, "context_snapshots": {**saved, identity: {
+                        "event_id": str(event_id), **metadata,
+                        "source_digest": digest([run.read_sources,
+                            run.versions.get("proposal_context"),
+                            run.versions.get("conversation_memory_digest")]),
+                    }}}
+            else:
+                event_id = existing["event_id"]
+        if rejected:
+>           raise DomainError("VALIDATION_FAILED", "当前方法的资料合同不匹配，已保留字段核对原因。",
+                              detail={"reason": "context_schema_mismatch", "fields": omitted + issues})
+E           pdos_next.errors.DomainError: 当前方法的资料合同不匹配，已保留字段核对原因。
+E           During task with name 'prepare_context' and id '29f1fb77-7a67-8173-e211-33fb49966c3b'
+
+pdos_next/agent_kernel/context_projection.py:128: DomainError
+______________ test_extract_dispatch_full_chain_and_exact_replay _______________
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...370>, parser=<function parse_original at 0x1136a9940>), client=<starlette.testclient.TestClient object at 0x12697e4b0>)
+
+    def test_extract_dispatch_full_chain_and_exact_replay(work, security_work):
+>       owner, scope, host, client, calls, source, version_id, _, args = fixture(
+            work, security_work, rows_factory=quote_row
+        )
+
+tests/agent_kernel/test_extract_dispatch_pg.py:305: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_extract_dispatch_pg.py:270: in fixture
+    turn = host.model(
+pdos_next/agent_kernel/host.py:110: in model
+    check_messages(self.store, scope, kwargs["messages"], kwargs.get("loaded_skills", ()))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+store = <pdos_next.agent_kernel.persistence.KernelStore object at 0x125f93c20>
+scope = RunScope(tenant_id=UUID('09fcd03f-2a18-4c2f-bca1-9c12cd7c9d6f'), requester_id=UUID('87f48163-0f43-40fd-9ca0-cd1dd7139f...ories=frozenset({'internal', 'customer_original'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+messages = [{'role': 'user', 'content': '抽取需求'}], bindings = ()
+
+    def check_messages(store, scope, messages, bindings):
+        """Verify server context envelopes without interpreting model or raw tool text."""
+        loaded = {binding.key: binding.model_dump(mode="json") for binding in bindings}
+        envelopes, loading = [], set()
+        for index, message in enumerate(messages):
+            if message.get("role") == "assistant":
+                loading.update(call["id"] for call in message.get("tool_calls", [])
+                               if call.get("name") == "skill.load")
+            if index == 0 or (message.get("role") == "tool"
+                              and message.get("tool_call_id") in loading):
+                try:
+                    envelope = json.loads(message["content"])
+                    envelopes.append((envelope["context_ref"], envelope["context"]))
+                except (ValueError, TypeError, KeyError):
+                    # A failed skill.load is an error result, never a new context envelope.
+                    if index == 0:
+>                       raise DomainError(
+                            "VERSION_CONFLICT", "原上下文缺少当前字段合同快照。",
+                        ) from None
+E                       pdos_next.errors.DomainError: 原上下文缺少当前字段合同快照。
+
+pdos_next/agent_kernel/context_projection.py:149: DomainError
+_______________ test_extract_fans_out_over_all_mounted_originals _______________
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...4a0>, parser=<function parse_original at 0x1136a9940>), client=<starlette.testclient.TestClient object at 0x125f92fc0>)
+
+    def test_extract_fans_out_over_all_mounted_originals(work, security_work):
+>       owner, scope, host, client, calls, source, version_id, second, args = fixture(
+            work, security_work, rows_factory=quote_row, extra_upload=True
+        )
+
+tests/agent_kernel/test_extract_dispatch_pg.py:342: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_extract_dispatch_pg.py:270: in fixture
+    turn = host.model(
+pdos_next/agent_kernel/host.py:110: in model
+    check_messages(self.store, scope, kwargs["messages"], kwargs.get("loaded_skills", ()))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+store = <pdos_next.agent_kernel.persistence.KernelStore object at 0x1573f0c20>
+scope = RunScope(tenant_id=UUID('884f22b3-b4bf-4066-a03f-20e25c3a884a'), requester_id=UUID('ff855c68-0430-46ba-b5ab-e3ffde0c5c...ories=frozenset({'internal', 'customer_original'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+messages = [{'role': 'user', 'content': '抽取需求'}], bindings = ()
+
+    def check_messages(store, scope, messages, bindings):
+        """Verify server context envelopes without interpreting model or raw tool text."""
+        loaded = {binding.key: binding.model_dump(mode="json") for binding in bindings}
+        envelopes, loading = [], set()
+        for index, message in enumerate(messages):
+            if message.get("role") == "assistant":
+                loading.update(call["id"] for call in message.get("tool_calls", [])
+                               if call.get("name") == "skill.load")
+            if index == 0 or (message.get("role") == "tool"
+                              and message.get("tool_call_id") in loading):
+                try:
+                    envelope = json.loads(message["content"])
+                    envelopes.append((envelope["context_ref"], envelope["context"]))
+                except (ValueError, TypeError, KeyError):
+                    # A failed skill.load is an error result, never a new context envelope.
+                    if index == 0:
+>                       raise DomainError(
+                            "VERSION_CONFLICT", "原上下文缺少当前字段合同快照。",
+                        ) from None
+E                       pdos_next.errors.DomainError: 原上下文缺少当前字段合同快照。
+
+pdos_next/agent_kernel/context_projection.py:149: DomainError
+________ test_extract_requires_declared_loaded_skill_and_bound_sources _________
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...fb0>, parser=<function parse_original at 0x1136a9940>), client=<starlette.testclient.TestClient object at 0x1536060f0>)
+
+    def test_extract_requires_declared_loaded_skill_and_bound_sources(work, security_work):
+>       owner, scope, host, client, calls, source, version_id, _, args = fixture(
+            work, security_work, rows_factory=quote_row, skill_event=False
+        )
+
+tests/agent_kernel/test_extract_dispatch_pg.py:369: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_extract_dispatch_pg.py:270: in fixture
+    turn = host.model(
+pdos_next/agent_kernel/host.py:110: in model
+    check_messages(self.store, scope, kwargs["messages"], kwargs.get("loaded_skills", ()))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+store = <pdos_next.agent_kernel.persistence.KernelStore object at 0x123ea2090>
+scope = RunScope(tenant_id=UUID('457a482a-28b0-4db9-98c2-d404d895a883'), requester_id=UUID('1bf0b1d0-0a9b-4dc1-ac54-169932c0f7...ories=frozenset({'internal', 'customer_original'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+messages = [{'role': 'user', 'content': '抽取需求'}], bindings = ()
+
+    def check_messages(store, scope, messages, bindings):
+        """Verify server context envelopes without interpreting model or raw tool text."""
+        loaded = {binding.key: binding.model_dump(mode="json") for binding in bindings}
+        envelopes, loading = [], set()
+        for index, message in enumerate(messages):
+            if message.get("role") == "assistant":
+                loading.update(call["id"] for call in message.get("tool_calls", [])
+                               if call.get("name") == "skill.load")
+            if index == 0 or (message.get("role") == "tool"
+                              and message.get("tool_call_id") in loading):
+                try:
+                    envelope = json.loads(message["content"])
+                    envelopes.append((envelope["context_ref"], envelope["context"]))
+                except (ValueError, TypeError, KeyError):
+                    # A failed skill.load is an error result, never a new context envelope.
+                    if index == 0:
+>                       raise DomainError(
+                            "VERSION_CONFLICT", "原上下文缺少当前字段合同快照。",
+                        ) from None
+E                       pdos_next.errors.DomainError: 原上下文缺少当前字段合同快照。
+
+pdos_next/agent_kernel/context_projection.py:149: DomainError
+____________________ test_extract_rows_require_actual_reads ____________________
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...ac0>, parser=<function parse_original at 0x1136a9940>), client=<starlette.testclient.TestClient object at 0x1260ca2a0>)
+
+    def test_extract_rows_require_actual_reads(work, security_work):
+        def no_read_row(artifact_id, _text):
+            return {
+                "artifact_version_id": artifact_id,
+                "locator": "line:1",
+                "quote": QUOTE,
+                "kind": "compliance",
+                "statement": "未读原件的编造行",
+                "missing": [],
+            }
+    
+>       owner, scope, host, client, calls, source, version_id, _, args = fixture(
+            work, security_work, rows_factory=no_read_row
+        )
+
+tests/agent_kernel/test_extract_dispatch_pg.py:408: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_extract_dispatch_pg.py:270: in fixture
+    turn = host.model(
+pdos_next/agent_kernel/host.py:110: in model
+    check_messages(self.store, scope, kwargs["messages"], kwargs.get("loaded_skills", ()))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+store = <pdos_next.agent_kernel.persistence.KernelStore object at 0x125bfdeb0>
+scope = RunScope(tenant_id=UUID('3c224e0a-f70b-40aa-b633-8a627c6d7b38'), requester_id=UUID('a073a7fb-1174-4fc4-a481-f199c26dc2...ories=frozenset({'internal', 'customer_original'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+messages = [{'role': 'user', 'content': '抽取需求'}], bindings = ()
+
+    def check_messages(store, scope, messages, bindings):
+        """Verify server context envelopes without interpreting model or raw tool text."""
+        loaded = {binding.key: binding.model_dump(mode="json") for binding in bindings}
+        envelopes, loading = [], set()
+        for index, message in enumerate(messages):
+            if message.get("role") == "assistant":
+                loading.update(call["id"] for call in message.get("tool_calls", [])
+                               if call.get("name") == "skill.load")
+            if index == 0 or (message.get("role") == "tool"
+                              and message.get("tool_call_id") in loading):
+                try:
+                    envelope = json.loads(message["content"])
+                    envelopes.append((envelope["context_ref"], envelope["context"]))
+                except (ValueError, TypeError, KeyError):
+                    # A failed skill.load is an error result, never a new context envelope.
+                    if index == 0:
+>                       raise DomainError(
+                            "VERSION_CONFLICT", "原上下文缺少当前字段合同快照。",
+                        ) from None
+E                       pdos_next.errors.DomainError: 原上下文缺少当前字段合同快照。
+
+pdos_next/agent_kernel/context_projection.py:149: DomainError
+______________ test_extract_replay_refused_after_run_cancellation ______________
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...7a0>, parser=<function parse_original at 0x1136a9940>), client=<starlette.testclient.TestClient object at 0x1504776b0>)
+
+    def test_extract_replay_refused_after_run_cancellation(work, security_work):
+>       owner, scope, host, client, calls, source, version_id, _, args = fixture(
+            work, security_work, rows_factory=quote_row
+        )
+
+tests/agent_kernel/test_extract_dispatch_pg.py:437: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_extract_dispatch_pg.py:270: in fixture
+    turn = host.model(
+pdos_next/agent_kernel/host.py:110: in model
+    check_messages(self.store, scope, kwargs["messages"], kwargs.get("loaded_skills", ()))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+store = <pdos_next.agent_kernel.persistence.KernelStore object at 0x12438e030>
+scope = RunScope(tenant_id=UUID('e8b84fc9-9e83-4028-9140-81bb2de46a51'), requester_id=UUID('1f1901b7-c944-4990-8070-c716eb08b7...ories=frozenset({'internal', 'customer_original'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+messages = [{'role': 'user', 'content': '抽取需求'}], bindings = ()
+
+    def check_messages(store, scope, messages, bindings):
+        """Verify server context envelopes without interpreting model or raw tool text."""
+        loaded = {binding.key: binding.model_dump(mode="json") for binding in bindings}
+        envelopes, loading = [], set()
+        for index, message in enumerate(messages):
+            if message.get("role") == "assistant":
+                loading.update(call["id"] for call in message.get("tool_calls", [])
+                               if call.get("name") == "skill.load")
+            if index == 0 or (message.get("role") == "tool"
+                              and message.get("tool_call_id") in loading):
+                try:
+                    envelope = json.loads(message["content"])
+                    envelopes.append((envelope["context_ref"], envelope["context"]))
+                except (ValueError, TypeError, KeyError):
+                    # A failed skill.load is an error result, never a new context envelope.
+                    if index == 0:
+>                       raise DomainError(
+                            "VERSION_CONFLICT", "原上下文缺少当前字段合同快照。",
+                        ) from None
+E                       pdos_next.errors.DomainError: 原上下文缺少当前字段合同快照。
+
+pdos_next/agent_kernel/context_projection.py:149: DomainError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_context_pg.py: 14 warnings
+tests/agent_kernel/test_proposal_context_admission_pg.py: 9 warnings
+tests/agent_kernel/test_extract_dispatch_pg.py: 5 warnings
+tests/agent_kernel/test_context_projection_pg.py: 5 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_pg.py: 92 warnings
+tests/agent_kernel/test_proposal_context_admission_pg.py: 60 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 4 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 7 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:515: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([category])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 4 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 7 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:524: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([grant])
+
+tests/agent_kernel/test_category_adoption_transactions.py::test_adoption_resolves_without_agent_grant_and_dispatches_same_reference
+tests/agent_kernel/test_category_adoption_transactions.py::test_terminal_candidate_not_signalled_and_receipt_authority_loss_rejects_recovery
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_actual_t1_sources_signature_and_replay
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_whole_groups_may_be_omitted[omit0]
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_whole_groups_may_be_omitted[omit1]
+tests/agent_kernel/test_category_candidate_transactions.py::test_category_transaction_failure_rolls_back_every_fact_and_confirmation
+tests/agent_kernel/test_category_candidate_transactions.py::test_category_transaction_failure_rolls_back_every_fact_and_confirmation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:552: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([snapshot])
+
+tests/agent_kernel/test_category_adoption_transactions.py::test_adoption_resolves_without_agent_grant_and_dispatches_same_reference
+tests/agent_kernel/test_category_adoption_transactions.py::test_sql_adoption_and_input_kinship_cannot_be_forged[immutable_input]
+tests/agent_kernel/test_category_adoption_transactions.py::test_sql_adoption_and_input_kinship_cannot_be_forged[immutable_event]
+tests/agent_kernel/test_category_adoption_transactions.py::test_terminal_candidate_not_signalled_and_receipt_authority_loss_rejects_recovery
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_actual_t1_sources_signature_and_replay
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_whole_groups_may_be_omitted[omit1]
+tests/agent_kernel/test_category_candidate_transactions.py::test_category_transaction_failure_rolls_back_every_fact_and_confirmation
+tests/agent_kernel/test_category_candidate_transactions.py::test_category_transaction_failure_rolls_back_every_fact_and_confirmation
+tests/agent_kernel/test_category_candidate_transactions.py::test_sql_cannot_insert_ai_category_without_actual_receipt_or_change_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:575: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_adoption_transactions.py::test_adoption_resolves_without_agent_grant_and_dispatches_same_reference
+tests/agent_kernel/test_category_adoption_transactions.py::test_sql_adoption_and_input_kinship_cannot_be_forged[immutable_input]
+tests/agent_kernel/test_category_adoption_transactions.py::test_sql_adoption_and_input_kinship_cannot_be_forged[immutable_event]
+tests/agent_kernel/test_category_adoption_transactions.py::test_terminal_candidate_not_signalled_and_receipt_authority_loss_rejects_recovery
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_actual_t1_sources_signature_and_replay
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_whole_groups_may_be_omitted[omit0]
+tests/agent_kernel/test_category_candidate_transactions.py::test_category_transaction_failure_rolls_back_every_fact_and_confirmation
+tests/agent_kernel/test_category_candidate_transactions.py::test_category_transaction_failure_rolls_back_every_fact_and_confirmation
+tests/agent_kernel/test_category_candidate_transactions.py::test_sql_cannot_insert_ai_category_without_actual_receipt_or_change_run_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:602: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 4 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 7 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:661: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([receipt])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_proposal_context_pg.py::test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result
+FAILED tests/agent_kernel/test_category_adoption_transactions.py::test_category_wait_survives_postgres_checkpoint_and_new_host
+FAILED tests/agent_kernel/test_extract_dispatch_pg.py::test_extract_dispatch_full_chain_and_exact_replay
+FAILED tests/agent_kernel/test_extract_dispatch_pg.py::test_extract_fans_out_over_all_mounted_originals
+FAILED tests/agent_kernel/test_extract_dispatch_pg.py::test_extract_requires_declared_loaded_skill_and_bound_sources
+FAILED tests/agent_kernel/test_extract_dispatch_pg.py::test_extract_rows_require_actual_reads
+FAILED tests/agent_kernel/test_extract_dispatch_pg.py::test_extract_replay_refused_after_run_cancellation
+7 failed, 140 passed, 243 warnings in 268.25s (0:04:28)

@@ -1,0 +1,7 @@
+{
+  "expected_refusal": true,
+  "actual_exit": 1,
+  "head_retained": "s0_0782",
+  "reason": "Preserve original release decision proof history; downgrade refused",
+  "evidence": "history-preserve-01.json"
+}

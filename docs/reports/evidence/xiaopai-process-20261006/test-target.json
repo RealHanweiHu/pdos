@@ -1,0 +1,8 @@
+{
+  "container": "pdos-pai-process-test-20261006",
+  "host": "127.0.0.1",
+  "port": 53744,
+  "database": "pdos_test",
+  "image": "pgvector/pgvector:0.8.6-pg16-bookworm",
+  "reason": "Previous independent test container already running; do not share clearing fixtures or stop another task environment."
+}

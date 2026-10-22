@@ -1,0 +1,42 @@
+[
+  {
+    "name": "anonymous work-card denied",
+    "status": 401,
+    "no_store": true
+  },
+  {
+    "name": "real local verifier session",
+    "status": 200,
+    "no_store": true
+  },
+  {
+    "name": "current cost recovery projection",
+    "status": 200,
+    "no_store": true
+  },
+  {
+    "name": "malformed JSON denied",
+    "status": 400,
+    "no_store": true
+  },
+  {
+    "name": "invalid body rejected",
+    "status": 422,
+    "no_store": true
+  },
+  {
+    "name": "missing recovery selection rejected",
+    "status": 409,
+    "no_store": true
+  },
+  {
+    "name": "stale cost digest rejected",
+    "status": 409,
+    "no_store": true
+  },
+  {
+    "name": "rejected writes retain original Issue",
+    "status": 200,
+    "no_store": true
+  }
+]

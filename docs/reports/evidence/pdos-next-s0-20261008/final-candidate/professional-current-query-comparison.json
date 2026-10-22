@@ -1,0 +1,25 @@
+{
+  "actual_exact_scope_index_conditions_equal": true,
+  "actual_role": "pdos_next_app",
+  "rr_read_only": true,
+  "diagnostic_only": true,
+  "p95_measured": false,
+  "schema_delta": "Only two repeated professional Current SELECT predicates removed; full remaining catalogs and business fingerprints unchanged",
+  "groups": [
+    {
+      "actual_rows": 2,
+      "before_execution_ms": 16.775,
+      "after_execution_ms": 8.47
+    },
+    {
+      "actual_rows": 6,
+      "before_execution_ms": 45.958,
+      "after_execution_ms": 18.91
+    },
+    {
+      "actual_rows": 8,
+      "before_execution_ms": 91.275,
+      "after_execution_ms": 35.89
+    }
+  ]
+}

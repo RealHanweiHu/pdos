@@ -1,0 +1,11 @@
+--- professional-projection-before-v3.py.txt
++++ pdos_next/domain/verification_front/service.py
+@@ -1029,7 +1029,7 @@
+         else "current"
+         if current
+         else "historical",
+-        "zero_occupancy": request.status != "executing",
++        "zero_occupancy": request.timeline.actual_start is None,
+         "physical_timeline_empty": not any(
+             getattr(request.timeline, name) is not None for name in PHYSICAL_TIMES
+         ),

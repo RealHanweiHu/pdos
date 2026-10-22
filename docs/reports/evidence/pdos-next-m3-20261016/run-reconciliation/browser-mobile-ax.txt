@@ -1,0 +1,106 @@
+Browser tab: 11, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3051/?area=category&category=09486290-7c92-461a-9361-2b06b0ebb164".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3051/?area=category&category=09486290-7c92-461a-9361-2b06b0ebb164
+	2 container
+		3 link Description: 跳到工作内容, Value: 127.0.0.1:3051/?area=category&category=09486290-7c92-461a-9361-2b06b0ebb164#workspace-content
+		91 button 打开导航
+			92 image
+		22 text PDOS
+		23 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			24 image
+		26 checkbox Description: 小Pai 工作栏, Value: 1
+			27 image
+		28 button 切换明暗主题
+			93 image
+		30 container workspace-content
+			31 heading 运行结果核对联验, Value: 1
+				32 text 运行结果核对联验
+			33 text 品类是权限范围根：共享知识、规格字典、型号与立项提案都在这里汇聚，项目经提案 G0 评审后建立。
+			34 button 打开品类工作台
+				35 text 打开品类工作台
+				36 image
+			37 container 标准品匹配
+				38 heading 先核对现有型号, Value: 2
+					39 text 先核对现有型号
+				40 text 只核对所选规格。全部满足且确认没有开发活动时，回到 CRM 办理报价与沟通，无需立项。
+				41 button (collapsed) 核对标准品规格, Secondary Actions: Expand
+					42 text 核对标准品规格
+			43 container 立项提案
+				44 heading 立项提案, Value: 2
+					45 text 立项提案
+				46 text 一案一页 · 唯一关卡是具名 G0 评审
+				47 text 客户需求、自主新品、派生迭代三个入口都落到同一种立项提案；AI 先起草，人做取舍。从对话创建的提案一律私有。
+				48 button 打开品类小Pai，起草立项提案
+					49 image
+					50 text 打开品类小Pai，起草立项提案
+				51 text 尚无立项提案。与品类小Pai 对话起草第一份提案；提案默认私有。
+			52 container 型号列表
+				53 heading 型号, Value: 2
+					54 text 型号
+				55 text 1  个
+				56 text 合成型号
+				57 text 仅用于页面联验
+				58 button 打开
+					59 text 打开
+					60 image
+			61 container 共享知识
+				62 heading 共享知识, Value: 2
+					63 text 共享知识
+				64 button 进入知识区
+					65 text 进入知识区
+					66 image
+				67 text 尚无共享知识。品类研究产生的事实经确认后在这里共享。
+			68 container 规格字典
+				69 heading 规格字典, Value: 2
+					70 text 规格字典
+				71 text 0  条参数当前版本
+				72 text 尚无字典参数。规格条目的键、名称、单位与测试条件都来自字典；缺失时按人工映射逐步补齐。
+		73 container 小Pai 工作栏
+			74 text 小Pai
+			75 text 当前品类：运行结果核对联验
+			76 button 关闭小Pai 工作栏
+				77 image
+			78 container 小Pai 运行
+				79 heading 小Pai, Value: 2
+					80 text 小Pai
+				81 button 刷新运行
+				82 text 在当前品类委派工作。结果、待答问题和未完成事项会保留，关闭页面后仍可回来查看。
+				83 button (collapsed) 新建委派, Secondary Actions: Expand
+					84 text 新建委派
+				94 heading 执行未完成, Value: 3
+					95 text 执行未完成
+				96 button 核对当前状态
+				97 text 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。
+				98 container
+					99 text 执行未完成 ·  EXTERNAL_OUTCOME_UNKNOWN
+				100 container 原运行结果核对
+					101 heading 原运行结果核对, Value: 4
+						102 text 原运行结果核对
+					103 text 先核对已提交动作，再结束不确定调用的等待。此处不会重发模型、领域动作或外部发送。
+					104 container
+						105 text 已提交动作  0  条 · 原调用  1  次 · 待核实  0  次
+					106 text 原费用按预留上界保留估算，尚无真实用量凭证；没有把未知调用当成免费。
+					107 container
+						108 text 已于  10/16/2026, 3:56:42 PM 由管理员 核对，保留  0  条已提交动作。
+					109 container
+						110 text 核对记录  fcc02aec-8394-4515-bbe3-c34076c12110
+					111 button 读取原核对记录
+					112 button (collapsed) 查看调用与实际提交记录, Secondary Actions: Expand
+						113 text 查看调用与实际提交记录
+				114 heading 未完成事项, Value: 4
+					115 text 未完成事项
+				116 content list
+					117 container
+						118 AXListMarker • 
+						119 text 原目标尚未全部完成。核对已有结果后，可调整目标以新请求继续；不自动重复原调用。
+				120 button (collapsed) 查看实际结果与回执, Secondary Actions: Expand
+					121 text 查看实际结果与回执
+				122 button (collapsed) 整次撤回草稿结果, Secondary Actions: Expand
+					123 text 整次撤回草稿结果
+				85 heading 我的运行历史, Value: 3
+					86 text 我的运行历史
+				87 checkbox Synthetic public research 执行未完成 · 10/16/2026, 3:53:16 PM, Value: 1
+					88 text Synthetic public research
+					89 container
+						90 text 执行未完成  ·  10/16/2026, 3:53:16 PM
+
+The focused UI element is 28 button 切换明暗主题

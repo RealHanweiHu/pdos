@@ -1,0 +1,187 @@
+{
+  "nature": "synthetic_local_rollback_sql_guards_not_professional_qualification",
+  "selection": {
+    "tenant": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+    "product": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+    "issue": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+    "change": "d1a1a7b0-b63d-5545-95c6-b6364a2d6d0e",
+    "policy": null,
+    "capture": null,
+    "merge_source": null
+  },
+  "tool_sha256": "7502905706681471d6f938617450cbbfef05044e2873b998b65e54d6b7ab3f6a",
+  "status": "completed_with_explicit_skips",
+  "cases": [
+    {
+      "case": "issue.immutable",
+      "expected_guard": "fixed business snapshots are immutable",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "fixed business snapshots are immutable",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "policy.immutable",
+      "expected_guard": "fixed business snapshots are immutable",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "fixed business snapshots are immutable",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "change.immutable",
+      "expected_guard": "fixed business snapshots are immutable",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "fixed business snapshots are immutable",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "capture.immutable",
+      "expected_guard": "fixed business snapshots are immutable",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "fixed business snapshots are immutable",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "issue_pointer.invalid_revision_jump",
+      "expected_guard": "Issue current requires its exact scoped version",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "Issue current requires its exact scoped version",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "issue_pointer.forged_pointer_identity",
+      "expected_guard": "Issue current requires a continuous exact predecessor",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "Issue current requires a continuous exact predecessor",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "policy_pointer.invalid_revision_jump",
+      "expected_guard": "Policy current requires its exact scoped fact",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "Policy current requires its exact scoped fact",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "policy_pointer.forged_pointer_identity",
+      "expected_guard": "Policy pointer requires a continuous exact predecessor",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "Policy pointer requires a continuous exact predecessor",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "change_pointer.invalid_revision_jump",
+      "expected_guard": "Change current requires its exact scoped version",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "Change current requires its exact scoped version",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "change_pointer.forged_pointer_identity",
+      "expected_guard": "Change pointer requires a continuous exact predecessor",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "Change pointer requires a continuous exact predecessor",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "issue.unpaired_version_and_current",
+      "expected_guard": "Quality/change write requires exactly one named receipt, audit and event",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "Quality/change write requires exactly one named receipt, audit and event",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "change.unpaired_version_and_current",
+      "expected_guard": "Quality/change write requires exactly one named receipt, audit and event",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "Quality/change write requires exactly one named receipt, audit and event",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "change.fixed_graph_basis",
+      "expected_guard": "Impact successor requires its exact unexpired committed graph capture",
+      "sqlstate": "P0001",
+      "error_type": "RaiseException",
+      "guard": "Impact successor requires its exact unexpired committed graph capture",
+      "constraint": null,
+      "status": "rejected_expected_guard",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "issue.merge_without_alias_moves",
+      "expected_guard": "Merge requires all stable failure aliases to retain their exact target",
+      "status": "skipped",
+      "reason": "NO_EXPLICIT_MERGE_SOURCE",
+      "savepoint_rolled_back": true,
+      "retained_rows_and_product_epoch_unchanged": true,
+      "outer_transaction_rolled_back": true
+    }
+  ],
+  "coverage_limits": [
+    "No positive business facts, receipts, authority, source reads or releases are created",
+    "Empty/missing optional graph or legally mergeable source is an explicit skip",
+    "Extra merge Version and full end-to-end authority/rollback use transaction tests",
+    "Observed unrelated errors, including duplicate PK, do not count as expected rejection"
+  ]
+}

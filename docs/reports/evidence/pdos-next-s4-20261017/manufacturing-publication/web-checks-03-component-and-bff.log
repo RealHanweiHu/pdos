@@ -1,0 +1,45 @@
+✔ publication history forwards exact project and opaque cursor as a read (32.514333ms)
+✔ ambiguous or missing publication scope cannot reach host: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/manufacturing-publications?project_id=00000000-0000-4000-8000-000000000005&project_id=00000000-0000-4000-8000-000000000006 (2.480625ms)
+✔ ambiguous or missing publication scope cannot reach host: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/manufacturing-publications (1.337292ms)
+✔ ambiguous or missing publication scope cannot reach host: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/manufacturing-publications/00000000-0000-4000-8000-000000000009?revision=0 (1.344334ms)
+✔ ambiguous or missing publication scope cannot reach host: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/manufacturing-publications/inputs?project_id=00000000-0000-4000-8000-000000000005 (1.231292ms)
+✔ inputs preserve the actual original command and key (2.707042ms)
+✔ publication inputs reject product substitution (1.52825ms)
+✔ publication inputs reject baseline substitution (1.315875ms)
+✔ publication inputs reject operation substitution (1.69ms)
+✔ publication input retains same-origin and session guards (2.547708ms)
+✔ uncertain POST and unavailable GET are distinguished without a transport retry (1.741208ms)
+✔ failed initial reading stays an error and cannot become an empty successful publication list (17.943833ms)
+✔ actual selections and inputs produce a visible named preview; no decision POST precedes explicit confirmation (9.372416ms)
+✔ UNKNOWN preserves exact command/key/token through refresh and remount without auto POST (12.096875ms)
+✔ actual 401 failure clears persisted and rendered private state (9.192042ms)
+✔ actual 403 failure clears persisted and rendered private state (11.1825ms)
+✔ known success persists its receipt and performs only readonly refresh/remount/fixed-content reads (11.019667ms)
+✔ scope changes and unmount dispose inputs callbacks before they can preview, save or mutate the next scope (7.861958ms)
+✔ storage failure prevents both first request submission and irreversible named execution (7.116625ms)
+✔ 403 with unavailable storage deletion still clears page state, denies actions and reports retained local data honestly (8.157166ms)
+✔ storage failure when adopting inputs stops before preview and preserves the recoverable original phase (5.563833ms)
+✔ late preview response cannot write state or storage after a different project mounts (7.654334ms)
+✔ late execute response cannot write state or storage after a different project mounts (9.005875ms)
+✔ historical paging preserves its actual project and exact original cursor, deduplicating saved versions (7.685875ms)
+✔ reading v1 then v2 of the same baseline shows each fixed publication reason without changing history (8.434583ms)
+✔ only the current row can start a successor, whose preview and receipt keep the exact previous version (9.574959ms)
+✔ a successor preserves an already selected baseline and allows another fixed baseline in the same project (9.37875ms)
+✔ a selected predecessor becoming missing cannot silently submit an initial publication (5.714208ms)
+✔ a selected predecessor becoming historical cannot silently submit an initial publication (5.670166ms)
+✔ a selected predecessor becoming revision cannot silently submit an initial publication (5.182542ms)
+✔ changing the project clears the predecessor and the next project starts with its own initial request (7.637959ms)
+✔ successor drafts and UNKNOWN recovery preserve the predecessor and exact authorized command through remount (11.038459ms)
+✔ legacy initial UNKNOWN requests without a previous field recover their original key and token (2.551542ms)
+✔ stored legacy-successor mismatch cannot be adopted as a recoverable publication request (2.238167ms)
+✔ stored id mismatch cannot be adopted as a recoverable publication request (2.109083ms)
+✔ stored revision mismatch cannot be adopted as a recoverable publication request (2.288875ms)
+✔ stored project mismatch cannot be adopted as a recoverable publication request (2.212667ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 709.787542

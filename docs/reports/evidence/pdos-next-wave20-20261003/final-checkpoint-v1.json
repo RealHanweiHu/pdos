@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "schema": "pdos-next-wave20-final-checkpoint.v1",
+  "finished_at": "2026-10-03T17:57:14.390317+00:00",
+  "source_groups": {
+    "runtime_files": 355,
+    "backend_test_files": 17,
+    "web_files": 159,
+    "tools": 2
+  },
+  "source_checks": 533,
+  "sources_unchanged": true,
+  "evidence": {
+    "candidate-source-v3.json": "c5ba37d6ef2175839a04efddad6222c3e8be770040124fb5ede7808b69011fed",
+    "affected-backend-v2.log": "235413b9cb1cb3b4bc75352ea6339f4d3a374ebe46dbcb223af9096465e911a4",
+    "deep-read-bff-v2.log": "d453cd4f329c3575b3df7ac019c24b5bc5812ce787b2ff2d803262c87c03f595",
+    "deep-read-followup-v2.log": "42640bfb416f4f4f6586e8eb8812102d702985ecf28b9476386ab9ca05b4c58e",
+    "deep-read-transport-v1.log": "98a1283e26fdda06f76fcdbb4df8d2792078bde536bcde4022d5dd7953f594e7",
+    "web-build-result-v2.json": "8773e09069f8611d7b7c79a6e6ac8a800c71d0d063127ffee086b2a1c1f61fee",
+    "paired-actual-http-v2.json": "adf606934a87c669aba4a0a72e8f0d96e1db43175bb23e8a6300bc4071a3071a",
+    "browser-timeout-v1.json": "3ecc35e094d1820ca561017d4d19491e23590d696676c982fd618c7bf7d524ef",
+    "browser-history-selection-v1.json": "bea2f62e255b45a135f6c9a0c96026aa1c7310f3eca54423e983715f15b7efe9",
+    "browser-review-v1.json": "48e9af59edf242340e62f87b689a16dc93b7ead60e3e45d9663780a555296bdd",
+    "browser-storage-readback-v1.json": "03e097f2302afaf40af1a49f8e3882514c7f8bc7b75e43d28d6b356461ee6318",
+    "actual-history-selection-v5.jpg": "81f5e9e24f3e9a388fb0cc08501a554e0c0937c7a7f4071de552ac747ae64926",
+    "actual-review-blocked-v2.jpg": "daf3a9b6c964c8fccda15c5aa7fd44307ca19e69a1ae853a2f31dc0c82919484",
+    "result.md": "43cdbea447f39936ca0c7583cfe5b2cf39b2c60a5132b73f7b33cc48b056461a"
+  },
+  "queue_sha256": "c1b1d224a57401f171feeb9426ceb4e6922868858773dea0db05e2b9bf59638a",
+  "business_commands": 0,
+  "model_calls": 0,
+  "actual_http": 200,
+  "ui_history_selection": "four supported selectors with unchanged parent completed GET counts; no elapsed-time benchmark",
+  "ui_review": "disabled for missing candidate/duty/qualification",
+  "retained_scope": "listed 24 complete old tables, not whole database",
+  "database_head": "next_0026",
+  "qualified_independent_review": false,
+  "full_design_complete": false,
+  "manual_exits_passed": false,
+  "next": "Wave21 staged exact-scope host profiles; then new legally shared three-actor business case"
+}

@@ -1,0 +1,237 @@
+{
+  "groups": {
+    "pure": {
+      "exit_code": 0,
+      "elapsed_seconds": 15.15,
+      "passed": 915
+    },
+    "build_operational_facts-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 28.21,
+      "passed": 4
+    },
+    "build_operational_facts-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 23.71,
+      "passed": 3
+    },
+    "build_operational_facts-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 39.31,
+      "passed": 6
+    },
+    "build_start-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 70.57,
+      "passed": 4
+    },
+    "build_start-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 75.61,
+      "passed": 4
+    },
+    "build_operational_facts-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 25.69,
+      "passed": 3
+    },
+    "build_start-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 98.79,
+      "passed": 4
+    },
+    "build_start-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 133.61,
+      "passed": 5
+    },
+    "sample_handoff-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 111.4,
+      "passed": 1
+    },
+    "sample_handoff-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 179.42,
+      "passed": 2
+    },
+    "sample_handoff-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 208.7,
+      "passed": 2
+    },
+    "sample_handoff-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 242.41,
+      "passed": 2
+    },
+    "test_build_execution-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 123.97,
+      "passed": 15
+    },
+    "test_build_execution-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 149.67,
+      "passed": 15
+    },
+    "test_build_execution-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 107.33,
+      "passed": 15
+    },
+    "test_build_execution-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 114.56,
+      "passed": 15
+    },
+    "verification_handoff-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 487.5,
+      "passed": 3
+    },
+    "test_verification_execution-0": {
+      "exit_code": 0,
+      "elapsed_seconds": 83.78,
+      "passed": 6
+    },
+    "verification_handoff-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 464.8,
+      "passed": 3
+    },
+    "test_verification_execution-1": {
+      "exit_code": 0,
+      "elapsed_seconds": 63.04,
+      "passed": 16
+    },
+    "verification_handoff-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 458.82,
+      "passed": 3
+    },
+    "products-test_definition_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 6.55,
+      "passed": 9
+    },
+    "test_verification_execution-2": {
+      "exit_code": 0,
+      "elapsed_seconds": 71.11,
+      "passed": 5
+    },
+    "test_verification_execution-3": {
+      "exit_code": 0,
+      "elapsed_seconds": 72.09,
+      "passed": 5
+    },
+    "providers-test_persistent_budget_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 12.07,
+      "passed": 24
+    },
+    "tests-test_build_comparison": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.02,
+      "passed": 5
+    },
+    "products-test_variants_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 23.15,
+      "passed": 16
+    },
+    "tests-test_build_readiness": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.02,
+      "passed": 41
+    },
+    "tests-test_build_start_common": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.01,
+      "passed": 8
+    },
+    "professional_authority-test_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 26.19,
+      "passed": 27
+    },
+    "tests-test_checkpoint_recovery": {
+      "exit_code": 0,
+      "elapsed_seconds": 9.08,
+      "passed": 12
+    },
+    "tests-test_durable_evidence": {
+      "exit_code": 0,
+      "elapsed_seconds": 12.07,
+      "passed": 18
+    },
+    "tests-test_handoff_common": {
+      "exit_code": 0,
+      "elapsed_seconds": 2.52,
+      "passed": 7
+    },
+    "tests-test_configurations": {
+      "exit_code": 0,
+      "elapsed_seconds": 36.74,
+      "passed": 25
+    },
+    "tests-test_original_security": {
+      "exit_code": 0,
+      "elapsed_seconds": 27.19,
+      "passed": 26
+    },
+    "tests-test_project_first_plan": {
+      "exit_code": 0,
+      "elapsed_seconds": 18.63,
+      "passed": 19
+    },
+    "verification_handoff-3": {
+      "exit_code": 1,
+      "elapsed_seconds": 512.13,
+      "passed": 2
+    },
+    "verification_front-test_read_concurrency_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 4.52,
+      "passed": 2
+    },
+    "tests-test_builds": {
+      "exit_code": 0,
+      "elapsed_seconds": 78.51,
+      "passed": 26
+    },
+    "tests-test_trusted_source_work": {
+      "exit_code": 0,
+      "elapsed_seconds": 17.1,
+      "passed": 34
+    },
+    "tests-test_build_demand": {
+      "exit_code": 0,
+      "elapsed_seconds": 97.64,
+      "passed": 25
+    },
+    "tests-test_cost_execution": {
+      "exit_code": 0,
+      "elapsed_seconds": 216.04,
+      "passed": 37
+    },
+    "tests-test_supply_execution": {
+      "exit_code": 0,
+      "elapsed_seconds": 139.74,
+      "passed": 29
+    },
+    "verification_front-test_transactions": {
+      "exit_code": 0,
+      "elapsed_seconds": 152.27,
+      "passed": 11
+    },
+    "lifecycle-isolated": {
+      "exit_code": 0,
+      "elapsed_seconds": 70.45,
+      "passed": 24
+    }
+  },
+  "total_passed": 1483,
+  "elapsed_seconds": 975.8,
+  "structural_tests_isolated": true
+}

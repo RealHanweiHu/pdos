@@ -1,0 +1,9 @@
+{
+  "changed_files": [
+    "pdos-next/web/src/components/builds/build-launch.tsx"
+  ],
+  "backend_and_test_sources_unchanged": true,
+  "reason": "Chinese status labels for existing reported/results_pending/reviewed/disposed values and explanation only; no payload/domain changes",
+  "validation": "final complete Web build and actual browser reading after the label correction",
+  "owned_primary_files_match_final_candidate": true
+}

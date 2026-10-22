@@ -1,0 +1,8 @@
+{
+  "stage": "pytest session fixture connection; before synthetic setup",
+  "reason": "remaining connection slots reserved for superuser roles",
+  "test_business_records_created": false,
+  "response_export_created": false,
+  "other_sessions_terminated": false,
+  "retries_until_condition_changes": false
+}

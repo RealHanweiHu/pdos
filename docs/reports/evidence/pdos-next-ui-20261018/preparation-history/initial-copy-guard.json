@@ -1,0 +1,7 @@
+{
+  "stage": "check-copy preparation, before tests/lint/build",
+  "result": "guard refused full current BFF overlay",
+  "reason": "Shared BFF also contains in-flight field selection material validation changes; none were overwritten.",
+  "repair": "Overlay only the manufacturingPreparation history_cursor query expression on previous validated BFF in the check copy. Current working tree retained.",
+  "product_checks_started": false
+}

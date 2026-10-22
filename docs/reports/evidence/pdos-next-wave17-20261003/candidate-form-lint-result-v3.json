@@ -1,0 +1,31 @@
+{
+  "scope": "Actual public ESLint configuration, two staged source strings in memory; no public files or build",
+  "working_directory": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+  "config": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/eslint.config.mjs",
+  "elapsed_seconds": 1.551421,
+  "error_count": 0,
+  "warning_count": 0,
+  "exit_code": 0,
+  "outcomes": [
+    {
+      "name": "candidate-form.tsx",
+      "source_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/candidate-form.tsx",
+      "virtual_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/quality/staged-candidate-form.tsx",
+      "source_sha256": "e642bc01e749da135327cb64fad2314e01db1bb024d3ffbb72edb3a1d1fb25ee",
+      "error_count": 0,
+      "warning_count": 0,
+      "messages": []
+    },
+    {
+      "name": "candidate-form-contract.ts",
+      "source_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/candidate-form-contract.ts",
+      "virtual_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/quality/staged-candidate-form-contract.ts",
+      "source_sha256": "f17424c9edebfab91b385491e60dd00219c45c8c5e39e6bb98942b1b6ae817af",
+      "error_count": 0,
+      "warning_count": 0,
+      "messages": []
+    }
+  ],
+  "tool_combined_output_notice": "Warning: React version was set to \"detect\" in eslint-plugin-react settings, but the \"react\" package is not installed. Assuming latest React version for linting.",
+  "notice_is_lint_rule_message": false
+}

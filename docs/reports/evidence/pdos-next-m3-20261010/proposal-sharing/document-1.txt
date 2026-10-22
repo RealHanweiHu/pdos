@@ -1,0 +1,20 @@
+✔ reads only scoped GETs and displays the server document identity (29.2455ms)
+✔ scope remount aborts old reads and ignores responses arriving after abort (2.997875ms)
+✔ a late view response cannot replace a newer selected view (5.369417ms)
+✔ same frozen identity refresh hides old sources and fetches fresh redaction (21.225459ms)
+✔ failed document or view reads hide old success and retry first reloads the document (9.545458ms)
+✔ mismatched envelopes are unavailable and never trigger an automatic retry loop (4.209416ms)
+✔ view changes preserve G0 form values and the prepared command for same-key retry (20.469166ms)
+✔ foreground refresh is read-only, hidden pages do not refresh, and cleanup removes listeners (22.753875ms)
+✔ superseded same-scope reload cannot replace a newer source projection (17.186958ms)
+✔ late confirmed write from an unmounted scope does not reload or replace the new proposal (18.316458ms)
+✔ missing identity or unreadable frozen copy cannot fall back to current document content (1.628208ms)
+✔ legacy responses without document identity remain unavailable (1.209541ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 545.707917

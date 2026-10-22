@@ -1,0 +1,30 @@
+{
+  "started_at": "2026-10-17T18:47:30.936178+00:00",
+  "finished_at": "2026-10-17T18:47:42.993079+00:00",
+  "snapshot": "/private/tmp/pdos-s3-fulfillment-xd5tjg0y",
+  "checks": [
+    {
+      "check": "pure",
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/change_execution/test_action_fulfillment_owner.py",
+        "tests/change_execution/test_formal_action_fulfillment_composition.py",
+        "tests/capa_effectiveness/test_actual_applicability_owner.py",
+        "../staging/wave17/test_anchor_lineage.py",
+        "tests/change_execution/test_default_action_fulfillment_wiring.py",
+        "tests/capa_effectiveness/test_peer_fact_pair_request_binding.py",
+        "tests/capa_effectiveness/test_peer_participant_request_binding.py",
+        "tests/capa_effectiveness/test_peer_candidate_request_binding.py",
+        "tests/capa_effectiveness/test_participants_owner.py",
+        "tests/capa_effectiveness/test_fact_integration.py",
+        "tests/capa_effectiveness/test_paired_followup_adapter.py"
+      ],
+      "exit": 0
+    }
+  ],
+  "source_changed": [],
+  "database_or_http_permitted": false
+}

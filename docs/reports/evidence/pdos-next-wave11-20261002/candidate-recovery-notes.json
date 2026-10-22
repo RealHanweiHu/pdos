@@ -1,0 +1,20 @@
+{
+  "first_joint": "joint-attempt-1/joint-result.json",
+  "first_joint_passed": 1347,
+  "first_joint_failures": 2,
+  "failure_reasons": [
+    "实物事实事务测试第二Build载荷与第一Build相同，合法语义去重导致未建立不同Build；改为显式独立Build并验证全局占用不泄漏私人身份",
+    "复评测试将原意图重放误期望为CAS失败；当前指针不回退且返回旧回执是正确幂等行为。另造不同语义意图验证旧父版被CAS拒绝"
+  ],
+  "implementation_delta_before_final_joint": "OperationalScope数量Decimal序列化保留精度并归一尾零；10与10.00000000绑定同用途摘要，附8项纯检查。",
+  "final_joint_candidate": "candidate-backend-joint.json",
+  "final_ui_candidate": "candidate.json",
+  "final_ui_only_delta": "ui-only-final-delta.json",
+  "new_database_instances_created": 0,
+  "old_business_preserved_by_readback": "actual-preview.json",
+  "not_counted_as_final": [
+    "初次scoped检查期间正在整合的夹具readset问题",
+    "common纯测试导入顺序修复前收集错误",
+    "原第一轮joint两个测试期望/夹具错误"
+  ]
+}

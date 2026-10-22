@@ -1,0 +1,134 @@
+{
+  "result": "passed",
+  "synthetic_only": true,
+  "old_history": {
+    "builds": {
+      "old_rows": 4,
+      "unchanged": true
+    },
+    "actual_configurations": {
+      "old_rows": 4,
+      "unchanged": true
+    },
+    "build_lots": {
+      "old_rows": 4,
+      "unchanged": true
+    },
+    "sample_units": {
+      "old_rows": 8,
+      "unchanged": true
+    },
+    "verification_preparations": {
+      "old_rows": 5,
+      "unchanged": true
+    },
+    "verification_formal_requests": {
+      "old_rows": 12,
+      "unchanged": true
+    },
+    "verification_actual_method_applicabilities": {
+      "old_rows": 3,
+      "unchanged": true
+    },
+    "verification_handoff_facts": {
+      "old_rows": 3,
+      "unchanged": true
+    },
+    "sample_readiness_facts": {
+      "old_rows": 4,
+      "unchanged": true
+    },
+    "build_starts": {
+      "old_rows": 3,
+      "unchanged": true
+    },
+    "operational_material_holds": {
+      "old_rows": 3,
+      "unchanged": true
+    },
+    "operational_resource_occupancies": {
+      "old_rows": 3,
+      "unchanged": true
+    }
+  },
+  "run_versions": [
+    {
+      "revision": 1,
+      "status": "planned"
+    },
+    {
+      "revision": 2,
+      "status": "running"
+    }
+  ],
+  "request_versions": [
+    {
+      "revision": 1,
+      "status": "draft"
+    },
+    {
+      "revision": 2,
+      "status": "draft"
+    },
+    {
+      "revision": 3,
+      "status": "offered"
+    },
+    {
+      "revision": 4,
+      "status": "accepted"
+    },
+    {
+      "revision": 5,
+      "status": "accepted"
+    },
+    {
+      "revision": 6,
+      "status": "scheduled"
+    },
+    {
+      "revision": 7,
+      "status": "executing"
+    }
+  ],
+  "receipts": [
+    {
+      "id": "abf8b136-c9ab-4aa0-888b-5731eafe942c",
+      "operation": "test.run.plan",
+      "subject_id": "acec7de4-aa17-4f04-8277-7b7d280818e5",
+      "audit_entries": 1,
+      "outbox_events": 1
+    },
+    {
+      "id": "febbc130-6856-4850-84db-064f6d1d6803",
+      "operation": "test.run.start",
+      "subject_id": "04bffd8a-cd5e-4b01-b7a3-d95712621487",
+      "audit_entries": 1,
+      "outbox_events": 1
+    },
+    {
+      "id": "ce39b523-5a74-45a5-acff-b12ea5d40ea7",
+      "operation": "verification.schedule.promise",
+      "subject_id": "5985d407-4c96-4942-bd15-c9ed561fedde",
+      "audit_entries": 1,
+      "outbox_events": 1
+    }
+  ],
+  "effects": {
+    "test_resource_reservations": 1,
+    "sample_run_usages": 1,
+    "verification_launch_facts": 3
+  },
+  "own_resource_occupancies": 2,
+  "unaccepted_gaps_remain": true,
+  "model_calls": 0,
+  "sample_original_availability": "unknown",
+  "future_results_and_disposal_null": true,
+  "agent_direct_write_tables": [],
+  "business_tables": 91,
+  "new_tables_forced_rls": 9,
+  "schema_head": "next_0018",
+  "real_qualification_or_exit_granted": false,
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "port": 62513
+}

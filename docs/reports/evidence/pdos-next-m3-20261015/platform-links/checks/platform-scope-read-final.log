@@ -1,0 +1,20 @@
+........................................................................ [ 73%]
+..........................                                               [100%]
+=============================== warnings summary ===============================
+tests/products/test_platform_links_pg.py: 8 warnings
+tests/agent_kernel/test_platform_reads_pg.py: 2 warnings
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:175: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/products/test_platform_links_pg.py: 11 warnings
+tests/agent_kernel/test_platform_reads_pg.py: 3 warnings
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:192: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+tests/products/test_platform_links_pg.py::test_private_variant_link_hidden_but_shared_platform_metadata_readable
+tests/agent_kernel/test_platform_reads_pg.py::test_agent_platform_read_omits_private_variant_and_forbids_private_target
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+98 passed, 26 warnings in 15.31s

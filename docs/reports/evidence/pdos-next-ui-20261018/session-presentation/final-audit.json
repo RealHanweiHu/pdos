@@ -1,0 +1,85 @@
+{
+  "passed": true,
+  "candidate": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/session-presentation-web-1792410193968572000",
+  "input_count": 503,
+  "head_at_audit": "b07e5485872383f137a7b8fa50fa603c9265912b",
+  "owned_sources_stable": true,
+  "owned_sha256": {
+    "pdos-next/web/src/lib/pai-session-presentation.ts": "b8ff894bc9f39fcec213348366c993c7d1e1623d677d9997a63e9cc7c0dc23f9",
+    "pdos-next/web/src/lib/pai-session-presentation.test.mjs": "790745690355c6b531e698557e5ea5b47641f8757c863b13813bed4f8f4237ea",
+    "pdos-next/web/src/lib/pai-session-presentation-proxy.ts": "b7a08dfc8fc32803d8d608a387ad96ca24afb492f64cbe46a68ca8b4cb4ede1c",
+    "pdos-next/web/src/app/api/route-pai-session-presentation.test.mjs": "6594c2ed5152460d8ed04659b81addffc6ef25cf5a52719bb78c4097d1eae169",
+    "pdos-next/web/src/app/api/v1/personal/agent-conversations/route.ts": "f723f7a6b9f75e35d12cea77912f72f291e5b3d937a96cc0dc2551ac938691f0",
+    "pdos-next/web/src/app/api/v1/personal/agent-sessions/[sessionId]/presentation/route.ts": "706c9348c7f6b3c0a38a6a0928654ec48ee0c32d0d66fb2bf020f56070d2d504",
+    "pdos-next/web/src/app/api/v1/personal/agent-sessions/[sessionId]/presentation/requests/[requestKey]/route.ts": "c60a54ec837c30dfea20b373017984bf7c967a0820581171ac1675dcae8cb47c",
+    "pdos-next/web/src/app/api/v1/categories/[categoryId]/agent-conversations/route.ts": "82a7f4b0d759aa6b41a718b9a7512124a2181d8b7b7fa71d6a8d19701246c7ac",
+    "pdos-next/web/src/app/api/v1/categories/[categoryId]/agent-sessions/[sessionId]/presentation/route.ts": "fe0522deb6a601c178289e355a8c08fb8a53d23156359df6c46e35687d795163",
+    "pdos-next/web/src/app/api/v1/categories/[categoryId]/agent-sessions/[sessionId]/presentation/requests/[requestKey]/route.ts": "bf6d440c53683f2045ab613b8d363d5497ca5cbcb6b2730e5be07bd8784a731d",
+    "pdos-next/web/src/components/pai/session-history.tsx": "712cf2ac5c779932a2992d5a37cce250f7e4ab78bcf4d7ce467d8f5a17457aa9",
+    "pdos-next/web/src/components/pai/session-history.module.css": "16367090b273061eb3cc5c752098aa5d27ed07cab92c720521999cea5a7eb77b",
+    "pdos-next/web/src/components/pai/session-history.test.mjs": "f32d915081f9025cbfb91cf9996d68e800ec95d381c0f579801d96bb0b6b8d7a",
+    "pdos-next/web/src/components/xiaopai.tsx": "34eb3c1c0bc7eb37d77045cd6bd63f1d3de4a4cb8902d9da8d3dd28578f3dfb6",
+    "pdos-next/server/pdos_next/agent_kernel/session_presentation_models.py": "a60831749e2b5e8eb776041362ad4721b50afe3680831df746e0d9c250176f9f",
+    "pdos-next/server/pdos_next/agent_kernel/session_presentation.py": "7be7ce6f05d4b00ae47a9c60b9c9df686bf4673f354b3924bdbbb90b4047603f",
+    "pdos-next/server/pdos_next/agent_kernel/session_presentation_api.py": "3f461bf89fb39fd73f15214a906e86e82b162cddabea7f8467ce0c630d2cfe40",
+    "pdos-next/server/pdos_next/agent_kernel/api.py": "ed468c3ad371d7f58ceb64f4f8fb3f20d81ea8db6f017c3fb20cc4d370c8f434",
+    "pdos-next/server/pdos_next/models.py": "60de4924ea2abb63f09b90e6aff6aa04cc2af0069428d3422e8c000bcc333b7e",
+    "pdos-next/server/tests/agent_kernel/test_session_presentation_pg.py": "0f3fe77c25d90f40879496c314b6568484736400c0dc761798f6b55c355da978",
+    "pdos-next/server/tests/agent_kernel/test_session_presentation.py": "3abb22195dd084329b22c165ebfdacae18617a313ae84551e2c44a7a69eeecf4",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py": "7345a5a897dd1a94e12f9547942935148216be8e78f904cbebf6fd06956b2f5b",
+    "pdos-next/server/pdos_next/lifecycle_access.py": "2fe46e9e76040f8f47875ded599356c081680477e37239073829a2a195f38312",
+    "pdos-next/server/migrations/schema_s0_0811.py": "45010e437e355ffb27f6b1032dad73e6b6d7b59158497d0865741e8e115f7eb2",
+    "pdos-next/server/migrations/versions/s0_0811_session_presentation.py": "0bb6bb0dc5cbd921d5279b91ecaabea387655302bfb22703599a7eeecdcded77"
+  },
+  "checks": [
+    {
+      "name": "frontend-tests",
+      "exit_code": 0
+    },
+    {
+      "name": "lint",
+      "exit_code": 0
+    },
+    {
+      "name": "build",
+      "exit_code": 0
+    },
+    {
+      "name": "typecheck",
+      "exit_code": 0
+    }
+  ],
+  "legacy_session_reader_unchanged": true,
+  "backend_runtime_stable_during_actual_check": true,
+  "evidence_sha256": {
+    "migration-state-before-check.json": "69c01fd2893f7b015bc415390383fd7ed5303afa786395e1274720facf329710",
+    "actual-dto-check.json": "ce60c93e5eee63d8a138de5d36d42dc12e77d1d11fdf95a6bedb3cc9f43abac8",
+    "initial-audit-reader.json": "1bded3ec5f8bfe22e867d53760c2ba589c07fc127d3c5b960394b34b48bffea3",
+    "concurrent-source-boundary.json": "e0caf2b2e60267fdfa7171a2787e1f25b0ffa5e8879f35c52e364c1a2dccf913",
+    "lint.log": "babd6eb00c68672f7aab7a7e593bb1895bcdfa494f9ab33c2b6a860ac60351bc",
+    "documentation-update.json": "09cdac0a192d0c61d85974f34765cda36136a00472f458f83be5051eec755abd",
+    "pg-http-responses.json": "a7d70e957b9d8585d85adcf39d66dec5af4ab0b7816cad1425355cfc8ba7104d",
+    "candidate.json": "107c4ece8b1d8f9a4746e6db75b3de8f7034dc54b7c81f8663d9b205cd544fe9",
+    "typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "storage-check.json": "89d63041ef0402516d7092908a744c204005731a42e4ca5a5c8f628dd02a1d1d",
+    "backend-tests.log": "b7b57b6fdedbcfcb45bd655536450c24df7c98f7dc37a0b033f09e953638d90a",
+    "frontend-tests.log": "5c154b4e7ccb79e6c7e0da10884dd200849dacab62197c364ab96f8a7d9c399f",
+    "backend-candidate.json": "52c8cb711cda5cd00a154552e30fb7a847f48a17ef576eb48881edca1fb1d4fd",
+    "storage-history-guards.json": "cac623943c3791ac80fb78daf33a29293d0b7dd1255bc4a4c32b33114c3e7c9a",
+    "initial-ruff-summary.json": "b18bbe9c47444c7c941421ab4a88d6c8a64cd447e8f5809c3f1031c87d299b59",
+    "initial-storage-launcher.json": "785a9cd64315b77d6cb18fa199a87a59d9a901c1ff83418ca150cd1481524ac6",
+    "storage-history-guards.log": "c4b2b0f63b05d8718fe922c6bd09ef7cb1ddfbb100fcafc93b3413914be8e941",
+    "backend-pure.log": "4d754e4bfa04a6ae11ea591fd64aafb00d9d4400ffb2fbb82060be260a0d801b",
+    "build.log": "bdf431315d8e36d52f6c107b6ef99471cd4ef1c90dafcfd53a5f0dfb53bf1df2",
+    "initial-acl-boundary/backend-tests.log": "5d50d64bce12c747abcb10b7eabbc6fc65ea978dfd350599c8762ec0841253c7",
+    "initial-acl-boundary/backend-candidate.json": "e63ac5eed7d481bad0787a12ad3dbf468f87848658e643afc7e03ac375458c6a",
+    "initial-acl-visibility/backend-tests.log": "b4dda6f02539c71c5e875d42ad8bddd7f9c6b5d962a32f5a5535da3b2901fed8",
+    "initial-acl-visibility/backend-candidate.json": "584f40b96ffed6d327aa4555a93167b8e0cfa6260ac73c35ba6e893bbaa2a9dd"
+  },
+  "concurrent_boundary": "concurrent-source-boundary.json",
+  "prior_evidence_recovery": {
+    "note": "../knowledge-library/recovered-process-evidence.json",
+    "original_full_backend_manifest_recovered": false
+  },
+  "scope": "One bounded PG/TestClient feature case, migration and rollback-only storage guards, pure checks and actual DTO offline contract checks. No new worker/model, HTTP Start, actual Next-to-API chain, browser, performance, stage approval, push or production."
+}

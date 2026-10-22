@@ -1,0 +1,43 @@
+{
+  "status": "FAILED",
+  "observed_at": "2026-10-03T12:05:49.025172+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "scope": "Actual DDL install/empty downgrade in one rolled-back transaction",
+  "plan_sha256": "caf30059f734c269d25cc4e94964b374a0e92a8fa5bed0a808b479edde230f96",
+  "tool_sha256": "cead4a564362dc93fea4e80506411405a89455f447037da4f7cfc5f494f3225c",
+  "public_candidate_sha256": "220bf21030b0510d87012363a3967519b79941b0e5b2e708e4d4c476fdc5c1f2",
+  "head": "next_0025",
+  "public_registration": false,
+  "migration_number_assigned": false,
+  "business_fact_writes": 0,
+  "model_calls": 0,
+  "transaction_end": "rollback",
+  "completed_steps": [
+    {
+      "group": "parent_unique_and_tables",
+      "statements": 6
+    },
+    {
+      "group": "guard_preflight_after_tables",
+      "statements": 3
+    }
+  ],
+  "remaining": [
+    "Positive/deferred reciprocal atom and proof-expiry transaction checks",
+    "Actual RLS cross-tenant/append-only/Current positive-negative cases",
+    "Public metadata/lifecycle registration and numbered migration roundtrip",
+    "Live candidate consumer and seven owners, separate effectiveness/close T2"
+  ],
+  "current_step": {
+    "group": "replace_functions",
+    "index": 0
+  },
+  "error": {
+    "type": "ProgrammingError",
+    "sqlstate": null,
+    "diagnostic": null
+  },
+  "seconds": 54.17,
+  "public_source_stable": true
+}

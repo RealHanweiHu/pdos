@@ -1,0 +1,13 @@
+{
+  "path": "pdos-next/server/pdos_next/api.py",
+  "replacements": [
+    {
+      "before": "        from pdos_next.capa_applicability_owner import ActualApplicabilityOwner\n",
+      "after": "        from pdos_next.capa_applicability_owner import (\n            ActualActionFulfillmentOwner,\n            ActualApplicabilityOwner,\n        )\n        from pdos_next.change_action_fulfillment_owner import ApprovedChangeActionFulfillmentOwner\n"
+    },
+    {
+      "before": "            applicability_owner=ActualApplicabilityOwner(fact_owner, paired_owner=paired_owner),\n",
+      "after": "            applicability_owner=ActualApplicabilityOwner(\n                fact_owner,\n                paired_owner=paired_owner,\n                action_owner=ActualActionFulfillmentOwner(\n                    implementation_owner=ApprovedChangeActionFulfillmentOwner(engine)\n                ),\n            ),\n"
+    }
+  ]
+}

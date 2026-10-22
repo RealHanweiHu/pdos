@@ -1,0 +1,207 @@
+{
+  "recorded_at": "2026-10-03T18:34:25.519281+00:00",
+  "review_digest": "a458c46e25084f6e1ff83eca742814a0fa6994459891b33821595f2363be3278",
+  "review": {
+    "operation": "build.create",
+    "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0",
+    "expected_project_revision": 1,
+    "engineering_configuration_id": "becde270-4262-4728-a257-d0fa77698197",
+    "manufacturing_configuration_id": "8be025dc-0141-4bde-8e88-fe4b6be16869",
+    "name": "Wave22 共享内部两件A合成轮次",
+    "type": "prototype",
+    "purpose": "内部共享三人调查：独立单模穴A尺寸复测（合成）",
+    "planned_quantity": "2",
+    "unit": "ea",
+    "planned_start": null,
+    "planned_end": null,
+    "verification_objectives": "两件独立A身份供原失败与整改后复验；开工不授测试资格",
+    "disposition_plan": "本地合成、内部保留可追溯样件；不外发、不正式放行",
+    "previous_build_id": null,
+    "project_name": "Wave21 shared investigation project",
+    "project_revision": 1,
+    "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+    "visibility": "product",
+    "engineering_configuration": {
+      "id": "becde270-4262-4728-a257-d0fa77698197",
+      "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+      "revision": 1,
+      "name": "Wave21 shared engineering configuration",
+      "status": "draft",
+      "visibility": "product",
+      "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+      "created_at": "2026-10-03T18:25:56.283703+00:00",
+      "sources": [
+        {
+          "line": 1,
+          "quote": "Wave21 shared local synthetic requirement; no production qualification.",
+          "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+          "expected_revision": 1
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+          "expected_revision": 1
+        }
+      ],
+      "source_status": "current",
+      "series_id": "becde270-4262-4728-a257-d0fa77698197",
+      "previous_id": null,
+      "expected_previous_revision": null,
+      "reason": "New fixed shared configuration",
+      "definition_id": "51d4b72c-c623-415d-9086-fff5f2959913",
+      "definition_revision": 1,
+      "definition": {
+        "id": "51d4b72c-c623-415d-9086-fff5f2959913",
+        "revision": 1,
+        "title": "Wave21 shared synthetic definition",
+        "status": "draft",
+        "visibility": "product",
+        "source_status": "current"
+      },
+      "bom_id": "d8f9d5e0-b61d-45b9-b50d-3c16dae26388",
+      "bom_revision": 1,
+      "bom": {
+        "id": "d8f9d5e0-b61d-45b9-b50d-3c16dae26388",
+        "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+        "revision": 1,
+        "name": "Wave21 known one-unit BOM",
+        "status": "draft",
+        "visibility": "product",
+        "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+        "created_at": "2026-10-03T18:24:49.188301+00:00",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "Wave21 shared local synthetic requirement; no production qualification.",
+            "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+            "expected_revision": 1
+          }
+        ],
+        "source_status": "current",
+        "series_id": "d8f9d5e0-b61d-45b9-b50d-3c16dae26388",
+        "previous_id": null,
+        "expected_previous_revision": null,
+        "reason": "New fixed shared configuration",
+        "lines": [
+          {
+            "key": "unit",
+            "part_id": "f3b87650-222d-4e9f-9871-218e408c5b06",
+            "expected_part_revision": 1,
+            "part": {
+              "id": "f3b87650-222d-4e9f-9871-218e408c5b06",
+              "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+              "revision": 1,
+              "name": "Wave21 synthetic new unit",
+              "status": "draft",
+              "visibility": "product",
+              "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+              "created_at": "2026-10-03T18:24:49.192481+00:00",
+              "sources": [
+                {
+                  "line": 1,
+                  "quote": "Wave21 shared local synthetic requirement; no production qualification.",
+                  "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+                  "expected_revision": 1
+                }
+              ],
+              "required_source_read_set": [
+                {
+                  "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+                  "expected_revision": 1
+                }
+              ],
+              "source_status": "current",
+              "internal_number": null,
+              "erp_number": null,
+              "customer_number": null,
+              "mapping_version": null,
+              "external_design_refs": [],
+              "external_verification": "not_checked",
+              "mapping_status": "unknown"
+            },
+            "quantity": "1",
+            "unit": "ea",
+            "loss_rate": "0",
+            "critical": true,
+            "notes": null
+          }
+        ]
+      },
+      "design_versions": {
+        "firmware": null,
+        "electronic": null,
+        "mechanical": null
+      },
+      "external_verification": "not_checked"
+    },
+    "manufacturing_configuration": {
+      "id": "8be025dc-0141-4bde-8e88-fe4b6be16869",
+      "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+      "revision": 1,
+      "name": "Wave21 shared manufacturing process",
+      "status": "draft",
+      "visibility": "product",
+      "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+      "created_at": "2026-10-03T18:28:36.847435+00:00",
+      "sources": [
+        {
+          "line": 1,
+          "quote": "Wave21 shared local synthetic requirement; no production qualification.",
+          "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+          "expected_revision": 1
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+          "expected_revision": 1
+        }
+      ],
+      "source_status": "current",
+      "series_id": "8be025dc-0141-4bde-8e88-fe4b6be16869",
+      "previous_id": null,
+      "expected_previous_revision": null,
+      "reason": "New fixed shared configuration",
+      "engineering_configuration_id": "becde270-4262-4728-a257-d0fa77698197",
+      "engineering_revision": 1,
+      "engineering_configuration": {
+        "id": "becde270-4262-4728-a257-d0fa77698197",
+        "revision": 1,
+        "name": "Wave21 shared engineering configuration",
+        "status": "draft",
+        "definition_id": "51d4b72c-c623-415d-9086-fff5f2959913",
+        "bom_id": "d8f9d5e0-b61d-45b9-b50d-3c16dae26388",
+        "source_status": "current"
+      },
+      "site": null,
+      "line": null,
+      "operations": [
+        {
+          "key": "assembly",
+          "sop": null,
+          "kind": "assembly",
+          "name": "Shared synthetic assembly",
+          "notes": null,
+          "depends_on": [],
+          "bom_line_keys": [
+            "unit"
+          ],
+          "cycle_time_minutes": null,
+          "acceptance_criterion": null,
+          "resource_requirements": []
+        }
+      ],
+      "external_verification": "not_checked",
+      "qualification_status": "unknown"
+    },
+    "effect": "固定本轮计划数量、工程与制造配置；保存准备中的试制计划，尚未开工或正式放行。"
+  },
+  "approval_scope": "Exact new shared local synthetic plan; not real production release"
+}

@@ -1,0 +1,53 @@
+{
+  "base_commit": "f86df8010e08fac4e8f66fab7821008fb4ca9ebf",
+  "database_head": "s0_0760",
+  "calc_spec_compare_tool_version": "3",
+  "rfq_skill_version": "0.4.0-draft",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/m3_extracted_match.py",
+      "bytes": 9791,
+      "sha256": "2ca674cfaf1e9b42baf4586206d5dcc034f7b15c4816239a7bff56324b50c166"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/m3_spec_compare.py",
+      "bytes": 15464,
+      "sha256": "f0e8b475b918e732f7ab2530a05537735e449bbce75ef759218c612133fe3882"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/bootstrap.py",
+      "bytes": 23343,
+      "sha256": "7668b591ef7b5a9ddb6a387746eff84aee576f6c44fdf9c00f101a1aef1b2750"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/tools.py",
+      "bytes": 4085,
+      "sha256": "789a11916405970ae14ef874a6fdf9ffb6a82d08d1caddb4ec981e5431c8e82e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/preproject/standard_match.py",
+      "bytes": 8162,
+      "sha256": "652ebfa93495c41f9eec53e8c0221be1195b2c715723158bebb42cd0aadd8f5b"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/skill_packages/rfq_extraction.md",
+      "bytes": 17923,
+      "sha256": "7b0604e18c3c685c5f0a6377a772c810568f468a28d4824ab902161de8a9c3b0"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_extracted_match.py",
+      "bytes": 4131,
+      "sha256": "bda7f165389f48287cad46a84895f4aa34f74828f64a687f38b7273ec98c779b"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_extracted_match_pg.py",
+      "bytes": 9184,
+      "sha256": "7930bbb3c0d1d7387db842ad3fe17f97cea386990ed27d75665c099cb3153670"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_extract_dispatch_pg.py",
+      "bytes": 17986,
+      "sha256": "89b22c219ed9a4ffab1c2bf81160ab0877ca8d5c75817904cff79223b742a864"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "base_commit": "cc4ede32e9b96b539461f47e3283a3b2e0d246af",
+  "alembic_head": "s0_0765",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/agent_kernel/models.py": "e765dbd8f2e82e00c4ae117de5182473e079b9040eb53c814ecf092b2a9542c2",
+    "pdos-next/server/pdos_next/agent_kernel/budget_management.py": "f3702496dace6db237714a8db05cb2b50e600d374482016d6b6c47f6af938343",
+    "pdos-next/server/pdos_next/agent_kernel/persistence.py": "039099d3f733844e72b9883fb0b154f8887e2a11a14e6ef1a07791885c086030",
+    "pdos-next/server/pdos_next/agent_kernel/management_api.py": "74d684f028d1e370c3b1945bafeb583c51493829d155003292eee5916d37c65b",
+    "pdos-next/server/pdos_next/command_handlers.py": "3b16f79383f1ef8941efdd106c218cf0d793529de493f16ccb90d705c03cf209",
+    "pdos-next/server/pdos_next/contracts.py": "d6caac3a6e45221b8f84f069cb0c41c4300d61a864d3f3b39470466896c902a3",
+    "pdos-next/server/pdos_next/service.py": "7b0e529f07b8946fd88d6dfaf113e812bc35a51e6dfe23db02a2cd860c24b8ff",
+    "pdos-next/server/migrations/versions/s0_0764_budget_control_receipt.py": "d1f1714535ec6f3c29253858236135acce4b394c97c89dcc60df25b3c2cd44bc",
+    "pdos-next/server/migrations/versions/s0_0765_budget_control_watermark.py": "a3ce81b76a4497180b6e5a4c8ee01cc5b44d87580953cbef927c73c5a8b51cd0",
+    "pdos-next/server/tests/agent_kernel/test_budget_management.py": "683171adb7aa057b51a9dacdfb634873b7ef331e56ed7f66ee415d8e735526ba",
+    "pdos-next/web/src/lib/agent-budgets.ts": "1c60804b4b479f1a622562112017828a65baaae2d4327d2df3f36d1d7f353b8a",
+    "pdos-next/web/src/lib/agent-budgets.test.ts": "c2b0f64a25af951a749178ab2926d964cc383ecd1059f89e02aeaa7ab5629d9b",
+    "pdos-next/web/src/components/model_configuration/agent-budgets.tsx": "61f8a43b26cc932d313992a78a862c8dc7c08728d1470834f1a50d5519bb071e",
+    "pdos-next/web/src/components/workspace.tsx": "5cdcd2a8d7c30f7e49f8973b74de7356c990ecab60596a11dcf95a5270c41176",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "74d98af325a36d80855b8e87913bcab52e9b6d33025d12f0385bb69322b66a9d",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "abbc32657c0a0277e55f8b6a75a391e77fb61c6103c56a4b4df5e8b01da58a9b",
+    "docs/runbooks/pdos-next-tenant-model-runtime.md": "12166efcce92be95bad339ae094314c56db1207ba8ff424da761505bfc9e2925"
+  },
+  "distinct_cases": {
+    "backend": 73,
+    "interaction_sample_case": 1,
+    "frontend": 52,
+    "total": 126
+  },
+  "real_model_calls": 0,
+  "real_money_spent": 0,
+  "qualification_grants": 0,
+  "stage_complete": false
+}

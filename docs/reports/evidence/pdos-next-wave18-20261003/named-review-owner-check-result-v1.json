@@ -1,0 +1,52 @@
+{
+  "schema": "wave18-named-review-owner-check-v1",
+  "scope": "only the new named_review_owner production module and its owned test",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py": "ca6c235254dbc25e140bdaa4876063a2e00a7fabad59809b1c27a3dd20c7ce6a",
+    "pdos-next/server/tests/capa_effectiveness/test_named_review_owner.py": "f48ff4508c46d09791712f58cb83c2ea4fbdcc9c69cff65a9d8bcb24b72456ca",
+    "docs/reports/evidence/pdos-next-wave18-20261003/named-review-owner-contract.md": "8e0b9a9454f421ab25386ede6b4708b14cd8b4313d1a892b2d195836f2e375ba"
+  },
+  "checks": [
+    {
+      "command": "PYTHONPATH=server:server/tests server/.venv/bin/pytest --noconftest -q server/tests/capa_effectiveness/test_named_review_owner.py",
+      "exit_code": 0,
+      "passed": 37,
+      "seconds": 1.13,
+      "log_file": "docs/reports/evidence/pdos-next-wave18-20261003/named-review-owner-pure-final-v2.log"
+    },
+    {
+      "command": "server/.venv/bin/ruff check <two owned files>",
+      "exit_code": 0,
+      "log_file": "docs/reports/evidence/pdos-next-wave18-20261003/named-review-owner-ruff-v1.log"
+    },
+    {
+      "command": "server/.venv/bin/ruff format --check <two owned files>",
+      "exit_code": 0,
+      "log_file": "docs/reports/evidence/pdos-next-wave18-20261003/named-review-owner-format-v1.log"
+    },
+    {
+      "command": "server/.venv/bin/python: ast.parse(two owned files)",
+      "exit_code": 0,
+      "log_file": "docs/reports/evidence/pdos-next-wave18-20261003/named-review-owner-ast-v1.log"
+    }
+  ],
+  "log_sha256": {
+    "docs/reports/evidence/pdos-next-wave18-20261003/named-review-owner-pure-final-v2.log": "cd5edcf6f13920f3512b3579cf9e62f9c213c3d3f06887b2ac9fb7a3d51d2348",
+    "docs/reports/evidence/pdos-next-wave18-20261003/named-review-owner-ruff-v1.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "docs/reports/evidence/pdos-next-wave18-20261003/named-review-owner-format-v1.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "docs/reports/evidence/pdos-next-wave18-20261003/named-review-owner-ast-v1.log": "77fd2ab65c34597ee0eeee16a99d9cc61c65a58306e4894dd20e351819710c23"
+  },
+  "preserved_attempts": [
+    "named-review-owner-pure-attempt1.log: 12 failed, 13 passed; invalid fixture attributes / raw missing sources",
+    "named-review-owner-pure-attempt2.log: 11 failed, 14 passed; base SourceRef passed to ExactSource fixture",
+    "named-review-owner-pure-attempt3.log: 30 passed",
+    "named-review-owner-pure-final-v1.log: 37 passed"
+  ],
+  "limits": [
+    "no database connection / PDOS HTTP / browser / public tests or build",
+    "saved-row and owner substitutes are explicitly no-connect fixtures, not live professional/bytes proof",
+    "paired_owner and applicability_owner defaults are missing and fail closed",
+    "participant/source raw readers stay unchanged and preserve their own missing/auth-false boundaries",
+    "T2 consumption / saved Review atom / effectiveness / close / public seven-owner attestation are not granted by this reader"
+  ]
+}

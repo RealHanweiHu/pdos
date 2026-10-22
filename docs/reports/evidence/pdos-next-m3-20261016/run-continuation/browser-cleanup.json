@@ -1,0 +1,50 @@
+{
+  "target": "verified independent 64245/pdos_test",
+  "head": "s0_0772",
+  "turns": [
+    {
+      "parent_id": "f4fce494-e24d-4cba-a4f0-6695dd810cf9",
+      "child_id": "8dd0aa01-2077-4bdd-bc63-ef4abe82bc9d",
+      "session_id": "2a690dbd-c5c5-4077-b90b-e9c5e05d0954",
+      "goal": "继续核对压力单位和使用工况；保留原事实及回执，不把未知写成已满足。",
+      "before_cleanup_state": "queued",
+      "read_sources_preserved": true,
+      "cleanup_state": "cancelled"
+    },
+    {
+      "parent_id": "466c52ec-9ca7-4d94-a979-86533dbfd098",
+      "child_id": "4e4b15db-3562-4d43-9b0f-53647637ab54",
+      "session_id": "894c7ad2-9161-498e-bdb7-558100301f63",
+      "goal": "继续原研究范围，先整理缺少的市场和工况资料；未知规格保持未知。",
+      "before_cleanup_state": "queued",
+      "read_sources_preserved": true,
+      "cleanup_state": "cancelled"
+    }
+  ],
+  "browser_posts": [
+    {
+      "method": "POST",
+      "path": "/v1/categories/1ed80db8-43dd-435e-a02b-319f25f7c8eb/agent-runs",
+      "query": "",
+      "actual_status": 202,
+      "client_status": 503,
+      "duration_ms": 151.24
+    },
+    {
+      "method": "POST",
+      "path": "/v1/personal/agent-runs",
+      "query": "",
+      "actual_status": 202,
+      "client_status": 202,
+      "duration_ms": 66.97
+    }
+  ],
+  "original_claims": 1,
+  "original_business_receipts": 1,
+  "model_ledger_unchanged": 2,
+  "real_model_calls": 0,
+  "real_network_calls": 0,
+  "synthetic_session_expired": true,
+  "synthetic_pilot_disabled": true,
+  "own_queued_tasks_cancelled": true
+}

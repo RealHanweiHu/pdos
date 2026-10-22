@@ -1,0 +1,44 @@
+{
+  "base_commit": "7e226d1bf913b505cb6d21f5326dbb370fefa7a9",
+  "candidate": "snapshot-ui-20261016",
+  "database_head": "s0_0762",
+  "schema_changed": false,
+  "source_sha256": {
+    "pdos-next/server/pdos_next/agent_kernel/domain_candidates.py": "0d22fe3954ed32f4b64fc0921512d4c852b85ffd8b2590f4bbe6a79d312404e3",
+    "pdos-next/server/tests/agent_kernel/test_snapshot_candidates_pg.py": "62fa98569c46f73dd6cc4f9b738ff4b6a42f54ac8de767fe240870f7d04f0992",
+    "pdos-next/server/tests/agent_kernel/test_research_runtime_process.py": "d5614a47ac70fc673fa51ac1def408212a5e9ca0027702300d5c11e9f3698c55",
+    "pdos-next/web/src/lib/domain-candidate.ts": "1684e1203647073f43d91c61bb92ad887367362e0f58dd0328f2e0241ead4e79",
+    "pdos-next/web/src/lib/domain-candidate.test.mjs": "c891f84a374297c6aa1e85020e5ea20c01f26bf7bd4192d9d6bcccd7823118a6",
+    "pdos-next/web/src/components/pai/run-candidates.tsx": "9f7ed5a0675ab49767ca1e095be10009326b6ac979d1b39ded2a256f7f8698a0",
+    "pdos-next/web/src/components/pai/run-candidates.test.mjs": "8150f2c159743f2e51a83c66a2a0649a467bf3a0fb42322e51770594390634f0",
+    "docs/runbooks/pdos-next-public-research-runtime.md": "fa70683364daeb05d34fa2a4142d9a0ad31d9f7bb4c796ac7fd3cdd8af66059d"
+  },
+  "checks": {
+    "distinct_postgres_cases": 24,
+    "first_postgres_passed": 22,
+    "targeted_fixture_recheck_passed": 2,
+    "distinct_frontend_cases": 12,
+    "distinct_total": 36,
+    "ruff": "passed",
+    "lint": "passed",
+    "typecheck": "passed",
+    "production_build": "passed"
+  },
+  "browser": {
+    "actual_default_worker_pending_candidates": true,
+    "desktop_light": [
+      1280,
+      900
+    ],
+    "mobile_dark": [
+      320,
+      900
+    ],
+    "saved_receipt_on_reopen": true,
+    "preview_and_save_posts_per_case": 1,
+    "response_fault": "one synthetic 503 after actual domain commit",
+    "final_copy_refinement": "component-checked and final-built after browser trace; no repeated browser chain"
+  },
+  "external_model_kms_search_dns_web_calls": 0,
+  "golden_case_writes": 0
+}

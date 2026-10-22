@@ -1,0 +1,11 @@
+{
+  "temporary_container_removed": true,
+  "preview_ports_released": [
+    3312,
+    3314,
+    8812,
+    8814
+  ],
+  "playwright_session_closed": "pdos-ux10",
+  "source_matches_validated_hashes": true
+}

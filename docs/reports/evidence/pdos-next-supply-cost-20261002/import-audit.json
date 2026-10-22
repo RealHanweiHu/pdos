@@ -1,0 +1,37 @@
+{
+  "allowed_external_modules": [
+    "collections",
+    "datetime",
+    "decimal",
+    "hashlib",
+    "json",
+    "pydantic",
+    "types",
+    "typing"
+  ],
+  "candidate_sha256": "c6ff76d5d5aa51cd79d11666ee9b67b16697dcb35d4555c7376add53471a421c",
+  "engine_imports": [
+    ".bom",
+    ".common",
+    ".costs",
+    ".coverage",
+    ".dto",
+    ".units",
+    "collections",
+    "datetime",
+    "decimal",
+    "hashlib",
+    "json",
+    "pydantic",
+    "types",
+    "typing"
+  ],
+  "legacy_database_network_business_imports": "absent",
+  "runtime": {
+    "pydantic": "2.13.5",
+    "pytest": "9.1.1",
+    "python": "3.12.10",
+    "ruff": "0.16.10"
+  },
+  "syntax_compilation": "passed"
+}

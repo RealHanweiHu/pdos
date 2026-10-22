@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-04T02:46:56.075353+00:00",
+  "actual_source_manifest": "control-candidate-source-v7.json",
+  "source_manifest_sha256": "d108597551de47cc28ea79867123df1ecaf399d694103a5bc3be45d084ee28dc",
+  "selected_control_count": 20,
+  "affected_pure": {
+    "passed": 62,
+    "failed": 0,
+    "skipped": 0
+  },
+  "prior_pure_failure": {
+    "failed": 2,
+    "passed": 60,
+    "reason": "old fixture assigned observation to Maker; actual qualified Observer verified before expectations changed",
+    "raw_log": "followup-observer-actual-pure-v1.log"
+  },
+  "ast_lint_format": {
+    "files": 3,
+    "errors": 0,
+    "warnings": 0
+  },
+  "current_professional_http": "retest-rule-observer-http-v1.json",
+  "checkpoint_raw_unchanged_since_control_application": true,
+  "business_writes": 0,
+  "qualification_grants": 0
+}

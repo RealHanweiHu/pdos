@@ -1,0 +1,148 @@
+{
+  "scope": "owned Wave14 BuildResults component/helper/tests only; no PostgreSQL, shared production build or browser executed",
+  "source_sha256": {
+    "pdos-next/web/src/components/builds/build-results.tsx": "8f7e721ac5436c2afc8f1bcb252370cae78d1ad99f4ae3890026c43270619cb2",
+    "pdos-next/web/src/lib/build-results-view.ts": "daf9b962f65abc7ad03d4287ce685b667e015fea9e650d30667323393f8808ba",
+    "pdos-next/web/src/lib/build-results-view.test.ts": "4fed6dd46f62e4b6fb68b67ef0b5640f85d7ecfaaa1e4e3f58cec9cbd31dfbb4"
+  },
+  "working_directory": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+  "helper_checks": {
+    "command": "node <<'JS'\nconst fs=require('node:fs'),path=require('node:path'),ts=require('./node_modules/typescript'),cp=require('node:child_process');\nconst tmp='/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave14-ui-hu4XfE';\nfor(const file of ['product-view.ts','build-handoff-view.ts','workspace-api.ts','build-results-view.ts','build-results-view.test.ts']) fs.writeFileSync(path.join(tmp,file.replace(/\\.ts$/,'.js')),ts.transpileModule(fs.readFileSync(path.join('src/lib',file),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true},fileName:file}).outputText);\nconst r=cp.spawnSync(process.execPath,['--test',path.join(tmp,'build-results-view.test.js')],{encoding:'utf8'});process.stdout.write(r.stdout);process.stderr.write(r.stderr);process.exitCode=r.status;\nJS",
+    "result": {
+      "tests": 27,
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0,
+      "exit_code": 0,
+      "tool_chunk_id": "675679"
+    },
+    "raw_output": "ui-read-cancellation-checks.log",
+    "generated_javascript_in_src": false
+  },
+  "typecheck": {
+    "command": "./node_modules/.bin/tsc --noEmit -p /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave14-ui-hu4XfE/tsconfig.json",
+    "scope": {
+      "extends": "pdos-next/web/tsconfig.json",
+      "compilerOptions": {
+        "noEmit": true,
+        "incremental": false,
+        "typeRoots": [
+          "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/@types"
+        ]
+      },
+      "include": [
+        "pdos-next/web/src/components/builds/build-results.tsx",
+        "pdos-next/web/src/lib/build-results-view.ts",
+        "pdos-next/web/src/lib/build-results-view.test.ts"
+      ]
+    },
+    "exit_code": 0,
+    "tool_chunk_id": "12ad8b",
+    "raw_output": ""
+  },
+  "lint": {
+    "command": "./node_modules/.bin/eslint src/components/builds/build-results.tsx src/lib/build-results-view.ts src/lib/build-results-view.test.ts",
+    "exit_code": 0,
+    "tool_chunk_id": "b30195",
+    "raw_output": ""
+  },
+  "preserved_initial_typecheck_failure": {
+    "exit_code": 2,
+    "tool_chunk_id": "92b05f",
+    "raw_output": "ui-typecheck-first-attempt.log",
+    "cause": "Temporary /tmp tsconfig lacked the project Node declaration typeRoots; repaired the temporary checking configuration, then the exact scoped tsc command passed. No production configuration changed."
+  },
+  "contract_scope": {
+    "get": "v1/products/{id}/verification-results?build_id={explicit-selected-build}",
+    "capture": "v1/products/{id}/verification-results/captures",
+    "inputs": "v1/products/{id}/verification-results/inputs",
+    "commands": [
+      "test.results.import",
+      "test.result.compute",
+      "test.run.review",
+      "test.disposition.decide"
+    ],
+    "source_mapping": "Server-provided immutable original_line/fragment only. Derived Artifact line numbers are not assumed to be original report positions.",
+    "tier_boundaries": "Import T1, deterministic compute T0, review and disposition independent named T2."
+  },
+  "pending_mainline_checks": [
+    "Production build/shared lint",
+    "PostgreSQL transaction and migration joint selection",
+    "Actual light/dark 320/390/1440 browser flow",
+    "Real professional/instrument/production qualification and human Exit"
+  ],
+  "previous_frozen_source_sha256": {
+    "pdos-next/web/src/components/builds/build-results.tsx": "85262936644939dfe600135c13b67c10aba2e995777fcd3949b2ebbf3634d9a9",
+    "pdos-next/web/src/lib/build-results-view.ts": "4e60209256ef215190fcdaee9b26264133792a54633412e32fee792b61752899",
+    "pdos-next/web/src/lib/build-results-view.test.ts": "0132af4397971b3300efb2e617808e5eb8f9d17f4cf79d0672d822e014a675f5"
+  },
+  "request_scope_display_delta": {
+    "source": "results-initial-get.json",
+    "change": "Read-only current Formal request status, each fixed item sample_count/cavities, direct accepted_coverage, direct coverage_gaps/document_gaps; selected Run coverage kept distinct. Empty or omitted gaps never imply qualification. Historical Run explicitly paired with the currently returned Request only. No payload or capability changes.",
+    "typecheck": {
+      "command": "./node_modules/.bin/tsc --noEmit -p /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave14-ui-hu4XfE/tsconfig.json",
+      "exit_code": 0,
+      "tool_chunk_id": "bf0fee",
+      "raw_output": ""
+    },
+    "lint": {
+      "command": "./node_modules/.bin/eslint src/components/builds/build-results.tsx src/lib/build-results-view.ts src/lib/build-results-view.test.ts",
+      "exit_code": 0,
+      "tool_chunk_id": "3b5666",
+      "raw_output": ""
+    },
+    "helper_checks": "Original 24/24 retained: helper and helper test source unchanged; no mirror tests added or repeated for this low-risk display delta."
+  },
+  "before_read_cancellation_repair": {
+    "source_sha256": {
+      "pdos-next/web/src/components/builds/build-results.tsx": "4151f397d52255ea7871269828d6d7755fb8a56b7d1c739dc98b258738df3da6",
+      "pdos-next/web/src/lib/build-results-view.ts": "4e60209256ef215190fcdaee9b26264133792a54633412e32fee792b61752899",
+      "pdos-next/web/src/lib/build-results-view.test.ts": "0132af4397971b3300efb2e617808e5eb8f9d17f4cf79d0672d822e014a675f5"
+    },
+    "helper_checks": {
+      "command": "node <<'JS'\nconst fs=require('node:fs'),path=require('node:path'),ts=require('./node_modules/typescript'),cp=require('node:child_process');\nconst tmp='/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave14-ui-hu4XfE';\nfor(const file of ['product-view.ts','build-handoff-view.ts','workspace-api.ts','build-results-view.ts','build-results-view.test.ts']) fs.writeFileSync(path.join(tmp,file.replace(/\\.ts$/,'.js')),ts.transpileModule(fs.readFileSync(path.join('src/lib',file),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true},fileName:file}).outputText);\nconst r=cp.spawnSync(process.execPath,['--test',path.join(tmp,'build-results-view.test.js')],{encoding:'utf8'});process.stdout.write(r.stdout);process.stderr.write(r.stderr);process.exitCode=r.status;\nJS",
+      "result": {
+        "tests": 27,
+        "passed": 27,
+        "failed": 0,
+        "skipped": 0,
+        "exit_code": 0,
+        "tool_chunk_id": "675679"
+      },
+      "raw_output": "ui-read-cancellation-checks.log",
+      "generated_javascript_in_src": false
+    },
+    "typecheck": {
+      "command": "./node_modules/.bin/tsc --noEmit -p /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave14-ui-hu4XfE/tsconfig.json",
+      "scope": {
+        "extends": "pdos-next/web/tsconfig.json",
+        "compilerOptions": {
+          "noEmit": true,
+          "incremental": false,
+          "typeRoots": [
+            "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/@types"
+          ]
+        },
+        "include": [
+          "pdos-next/web/src/components/builds/build-results.tsx",
+          "pdos-next/web/src/lib/build-results-view.ts",
+          "pdos-next/web/src/lib/build-results-view.test.ts"
+        ]
+      },
+      "exit_code": 0,
+      "tool_chunk_id": "12ad8b",
+      "raw_output": ""
+    },
+    "lint": {
+      "command": "./node_modules/.bin/eslint src/components/builds/build-results.tsx src/lib/build-results-view.ts src/lib/build-results-view.test.ts",
+      "exit_code": 0,
+      "tool_chunk_id": "b30195",
+      "raw_output": ""
+    }
+  },
+  "read_cancellation_repair": {
+    "cause": "Mounted refresh treated exact WorkspaceReadError READ_SUPERSEDED as generic failure, so its old error could be written after perform cleared the error even when the original command returned success and the Run refreshed.",
+    "change": "Supersede component read sequence at perform start. Load builds/workspace/scoped results atomically. Only exact READ_SUPERSEDED returns a non-failure cancelled read; existing data is retained, new actions require a fresh read. Genuine network/permission/malformed responses still fail; cancellation mixed with real failure does not hide the real failure.",
+    "new_checks": "Three meaningful tests: real createWorkspaceApi POST cancels mounted reads and subsequent context returns Run v3; real failure combined with cancellation remains an error; scoped cancellation versus real network/malformed data. No changes to shared API/BFF/production timeouts or mutation recovery identity."
+  }
+}

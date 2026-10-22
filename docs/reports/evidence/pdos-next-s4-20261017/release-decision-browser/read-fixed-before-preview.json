@@ -1,0 +1,87 @@
+{
+  "label": "fixed-before-preview",
+  "package": {
+    "id": "5ed514c4-0b56-473f-86a8-2abcb665bebf",
+    "revision": 2,
+    "receipt_id": "3f54b38b-7f65-455c-888c-0a1abb645dcf"
+  },
+  "applicability": "current",
+  "assessments": {
+    "engineering": {
+      "discipline": "engineering",
+      "state": "READY",
+      "checks": [
+        {
+          "key": "engineering.fixed_document",
+          "discipline": "engineering",
+          "applicable": true,
+          "required": true,
+          "state": "satisfied",
+          "non_waivable": true,
+          "detail": "规则 engineering.fixed_document@1；责任角色：engineering。实际具名谓词满足。",
+          "sources": [
+            {
+              "id": "fac3995e-5d62-485b-854e-0e7401b72813",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:afb884ba4aeb9cd4cf591a815751d912a5ec310c7eb127395032f9165b4c83b6"
+            }
+          ],
+          "release_scope": {
+            "quantity": null,
+            "unit": null,
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "lines": [],
+            "regions": [
+              "CN"
+            ]
+          },
+          "exception": null
+        }
+      ],
+      "blocked": [],
+      "unknown": [],
+      "conditions": []
+    },
+    "manufacturing": {
+      "discipline": "manufacturing",
+      "state": "READY",
+      "checks": [
+        {
+          "key": "manufacturing.fixed_publication",
+          "discipline": "manufacturing",
+          "applicable": true,
+          "required": true,
+          "state": "satisfied",
+          "non_waivable": true,
+          "detail": "规则 manufacturing.fixed_publication@1；责任角色：manufacturing。实际具名谓词满足。",
+          "sources": [
+            {
+              "id": "fac3995e-5d62-485b-854e-0e7401b72813",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:afb884ba4aeb9cd4cf591a815751d912a5ec310c7eb127395032f9165b4c83b6"
+            }
+          ],
+          "release_scope": {
+            "quantity": null,
+            "unit": null,
+            "lots": [],
+            "site": "SYN-INTERNAL-LAB",
+            "lines": [],
+            "regions": [
+              "CN"
+            ]
+          },
+          "exception": null
+        }
+      ],
+      "blocked": [],
+      "unknown": [],
+      "conditions": []
+    }
+  },
+  "decisions": [],
+  "proofs": []
+}

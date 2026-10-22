@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-28",
+  "candidate": "0394-working-tree (uncommitted, in-progress)",
+  "scope": "异常发现到处置业务闭环首段真实浏览器走查（入口→事件→建单→办理→独立验证→关闭/重开→质量反馈触发）",
+  "environment": {
+    "database": "localhost:57432/pdos（dev 库；本走查前为仅含 alembic_version@0056 的空壳，已 DROP/CREATE 后 alembic upgrade head 至 0394，seed_pilot_chain 重建 beepump 租户）",
+    "database_boundary": "同实例 57432 上存续联验库 pdos_test（@0377）与 pdos_test_incident_20260927 未被触碰；repo 测试未运行",
+    "server": "uvicorn app.main:app @127.0.0.1:8000，当前工作树，--reload-dir app",
+    "web": "next dev @localhost:3000，当前工作树",
+    "model_calls": "无（本走查不涉及模型调用；应用 worker 因无预算计量配置拒绝启动，属预期可见失能）"
+  },
+  "scenario": "品质赵品质在项目 PRJ-A1（A1 便携气泵，EVT）逐次测试中登记第 2 次失败测试（SN-002，flow 18.9 L/min，目标 22，判定失败，配置未知并留依据），验证从异常发现到处置的全链行为",
+  "steps": [
+    {"step": "business-entry", "result": "pass", "detail": "UI 新增一次测试：结果=失败、样机=SN-002、指标 flow=18.9/22/失败、日期 2026-09-28（日期精度）、配置未知留依据；保存后显示为第 2 次·失败，并回链用例关联问题"},
+    {"step": "event-emission", "result": "pass", "detail": "cehub_event.events 自动产生 TEST_FAILED（row 22，severity=major，test_record_id=e050a8ab）；同事务审计 npi.test_case.failed"},
+    {"step": "auto-issue-creation", "result": "pass", "detail": "业务规则自动创建问题 19d421d1（open/high/test_failure，created_by_ai_principal_id 为空），用例 related_issue 回链；未重复建单，种子问题 350f1303 不受影响"},
+    {"step": "centralized-exception-entry", "result": "pass", "detail": "工作项页'异常来源与已有问题'自动显示'测试失败：台架流量测试·来源已核对'与提示'原事件与当前业务依据一致；自动写入仍须独立核对授权和资格'，并提供'继续办理已有问题'入口与'查看来源记录'深链"},
+    {"step": "ai-suggestion-visible-degradation", "result": "pass", "detail": "'AI 建议与运行记录'显示'本能力尚处独立评测阶段，当前不能请求生成…条件不足时保留逐次确认'，固定依据 6 项可查，运行记录空且不伪造"},
+    {"step": "negative-unassigned-transition", "result": "pass", "detail": "未分派时点击'进入分析'被服务端拒绝：409 ISSUE_ASSIGNMENT_INCOMPLETE（Owner, verifier, target date, and closure criteria are required before analysis）"},
+    {"step": "assignment-in-my-work", "result": "pass", "detail": "分派在 My Work 工作卡完成：Owner=张工(engineer)、Verifier=赵品质(quality)、目标日期 2026-10-10、关闭判据、原因分析、解决措施；项目工作项面板仅有状态推进（无分派表单，见 findings）"},
+    {"step": "state-machine", "result": "pass", "detail": "open→analysis→action→verification→closed→reopen(action) 全链在 UI/工作卡推进；重开后显示'重开 ×1'徽章"},
+    {"step": "four-eyes-ui-negative", "result": "pass", "detail": "高严重问题在待验证状态下，Owner 张工界面'验证通过并关闭/退回行动'按钮禁用；服务端另有 ISSUE_CLOSE_REQUIRES_VERIFIER 兜底"},
+    {"step": "owner-only-submit", "result": "pass", "detail": "张工（Owner）提交验证成功；提交后待办自动流转至验证人赵品质 My Work（'待验证'聚合）"},
+    {"step": "verifier-close-with-evidence", "result": "pass", "detail": "赵品质（Verifier）凭关闭证据 R2-20260928-01 复测报告验证通过并关闭；closed_at、closure_evidence_ref 落库"},
+    {"step": "audit-trail", "result": "pass", "detail": "cehub_audit.audit_log 共 8 条 issue.create/update/transition，actor 覆盖赵品质（创建/分派/进分析/关闭/重开）与张工（进行动/提交验证）；重开保留全部历史审计"},
+    {"step": "quality-feedback-trigger", "result": "pass", "detail": "Issue 关闭同事务触发 knowledge_candidate_jobs（source_kind=issue，快照含 root_cause/resolution/closure_evidence_ref）"},
+    {"step": "knowledge-generation-visible-degradation", "result": "pass", "detail": "run_knowledge_candidates --once 返回 {\"status\": \"disabled\"}，job 保持 pending 不伪造；知识生成能力当前关闭属预期资格边界"}
+  ],
+  "not_exercised_by_design": [
+    "0394 事件队列模型侧派发/执行：需 tiered 写政策（ai_write_policies 当前为空）+ 项目 AI 范围授权 + pdos_agent 身份 + 能力 live key + 预算计量资格；应用 worker 无预算配置拒绝启动（ValueError: application worker requires configured budgeted mode），为预期可见失能而非缺陷",
+    "T0 自动建单、真实模型调用、知识候选生成：均按 DC-11 资格边界未启用"
+  ],
+  "findings": [
+    {"id": "F1", "severity": "medium", "area": "scripts/dev.sh", "detail": "uvicorn --reload 未限定目录，监听含 .venv；uv run 触发包重装时引发 reload 风暴，本次曾导致登录 503。本次以 --reload-dir app 手工重启规避；dev.sh 建议同样限定"},
+    {"id": "F2", "severity": "info", "area": "AGENTS.md 环境段", "detail": "文档称 compose PG 为 55432，实际 pdos-postgres-1 映射 57432（55432 为老 CEHub ce-project-hub-db-1）；且 57432 实例同时承载 dev 库 pdos 与存续联验库 pdos_test，建议修正文档以免目标核对混淆"},
+    {"id": "F3", "severity": "low", "area": "web 工作项面板", "detail": "项目工作项 IssuePanel 无分派/详情表单（分派仅 My Work 工作卡）；项目视图直接办理路径需先去 My Work，属可用性缺口非功能断点"},
+    {"id": "F4", "severity": "info", "area": "dev 数据库", "detail": "走查前 dev 库 pdos 为 alembic_version@0056 空壳（仅 1 表），已重建至 head 0394 并重新种子；旧壳内无业务数据"}
+  ],
+  "artifacts": {
+    "issue_id": "19d421d1-773d-4dc1-a5d9-70d9c599ff4c",
+    "test_run_event_row": 22,
+    "seeded_issue_unaffected": "350f1303-91d4-43ba-8147-b4d68ff51523",
+    "knowledge_candidate_job": "8356b05d-a9b0-486f-870e-4902ba4ad41e"
+  }
+}

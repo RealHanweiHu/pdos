@@ -1,0 +1,1561 @@
+{
+  "status": "root_reviewed_source_delta_coverage",
+  "scope": "modified original runtime/API/contracts files only; frontend excluded; independent M3 preproject files explicitly excluded",
+  "source_delta_manifest": "source-delta-review.json",
+  "source_manifest_limitation": "Frozen manifest stores hashes, not old file contents. Semantic differences use current source and root-confirmed change context; full git HEAD diff is whole-S0 scope and is not represented as the B8 candidate delta.",
+  "excluded_independent_M3_files": [
+    "pdos-next/server/pdos_next/domain/preproject/service.py",
+    "pdos-next/server/pdos_next/domain/preproject/views.py"
+  ],
+  "excluded_frontend_files": 46,
+  "retirement_deleted_original_file": "pdos-next/server/pdos_next/model_gateway/claim.py (covered as archive, not passed obsolete test)",
+  "current_exact_evidence_summaries": {
+    "current-pure-closure.json": {
+      "test_exit": 0,
+      "source_unchanged": true,
+      "collected_count": 142,
+      "passed_count": 142,
+      "evidence_kind": "actual setup/call/teardown metadata, partial passes only if test_exit != 0"
+    },
+    "model-runtime-affected.json": {
+      "test_exit": 0,
+      "source_unchanged": true,
+      "collected_count": 71,
+      "passed_count": 71,
+      "evidence_kind": "actual setup/call/teardown metadata, partial passes only if test_exit != 0"
+    },
+    "current-contract-affected.json": {
+      "test_exit": 1,
+      "source_unchanged": true,
+      "collected_count": 89,
+      "passed_count": 17,
+      "evidence_kind": "actual setup/call/teardown metadata, partial passes only if test_exit != 0"
+    },
+    "current-contract-affected-remaining.json": {
+      "test_exit": 1,
+      "source_unchanged": true,
+      "collected_count": 72,
+      "passed_count": 5,
+      "evidence_kind": "actual setup/call/teardown metadata, partial passes only if test_exit != 0"
+    },
+    "current-contract-affected-rest.json": {
+      "test_exit": 1,
+      "source_unchanged": true,
+      "collected_count": 67,
+      "passed_count": 35,
+      "evidence_kind": "actual setup/call/teardown metadata, partial passes only if test_exit != 0"
+    },
+    "current-contract-affected-tail.json": {
+      "test_exit": 1,
+      "source_unchanged": true,
+      "collected_count": 32,
+      "passed_count": 2,
+      "evidence_kind": "actual setup/call/teardown metadata, partial passes only if test_exit != 0"
+    },
+    "current-contract-affected-final.json": {
+      "test_exit": 1,
+      "source_unchanged": true,
+      "collected_count": 30,
+      "passed_count": 24,
+      "evidence_kind": "actual setup/call/teardown metadata, partial passes only if test_exit != 0"
+    },
+    "final-repairs-and-fences-fixed.json": {
+      "test_exit": 0,
+      "source_unchanged": true,
+      "collected_count": 10,
+      "passed_count": 10,
+      "evidence_kind": "actual setup/call/teardown metadata, partial passes only if test_exit != 0"
+    },
+    "profile-count-guard.json": {
+      "test_exit": 0,
+      "source_unchanged": true,
+      "collected_count": 2,
+      "passed_count": 2,
+      "evidence_kind": "actual setup/call/teardown metadata"
+    },
+    "approval-count-guard.json": {
+      "test_exit": 0,
+      "source_unchanged": true,
+      "collected_count": 1,
+      "passed_count": 1,
+      "evidence_kind": "actual setup/call/teardown metadata"
+    }
+  },
+  "root_confirmed_quality170": {
+    "kind": "actual execution log plus exact invocation scope explicitly confirmed by root; no per-node metadata was captured",
+    "evidence": "quality-followup-affected-continuation.log",
+    "passed": 170,
+    "scope": [
+      {
+        "selector": "tests/quality_followup_transactions",
+        "nodes": 19,
+        "kind": "actual PostgreSQL"
+      },
+      {
+        "selector": "tests/quality_followup_host/test_pure.py",
+        "nodes": 34,
+        "kind": "pure synthetic"
+      },
+      {
+        "selector": "tests/change_coverage_owner",
+        "nodes": 115,
+        "kind": "pure synthetic"
+      },
+      {
+        "selector": "tests/manufacturing_resource_native_transactions/test_native_read.py",
+        "nodes": 2,
+        "kind": "actual PostgreSQL"
+      }
+    ]
+  },
+  "root_confirmed_boundary8": {
+    "kind": "actual execution log plus exact invocation scope explicitly confirmed by root; seven full nodes also printed in warning header; no per-node metadata was captured",
+    "evidence": "current-transaction-boundaries-fixed.log",
+    "passed": 8,
+    "scope": [
+      "category membership revocation selected node (exact name not asserted by this reviewer)",
+      "tests/verification_front/test_read_concurrency_transactions.py::test_project_and_locked_authority_reads_complete_beside_product_gated_command[project]",
+      "tests/verification_front/test_read_concurrency_transactions.py::test_project_and_locked_authority_reads_complete_beside_product_gated_command[locked_access]",
+      "tests/change_coverage_transactions/test_publication.py::test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recovery",
+      "tests/change_execution/test_transactions.py::test_current_issue_capa_create_cross_key_one_receipt_exact_sources_and_private_scope",
+      "tests/change_execution/test_transactions.py::test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualification_aba",
+      "tests/change_execution/test_transactions.py::test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_keeps_capture",
+      "tests/test_resources/test_transactions.py::test_own_run_proof_rechecked_without_new_effects"
+    ]
+  },
+  "files": [
+    {
+      "path": "pdos-next/contracts/operations.json",
+      "classification": "generated_contract_catalog_metadata",
+      "semantic_delta": "\u5bfc\u51fa\u7684\u5b9e\u65bd\u72b6\u6001\u3001\u6709\u6548\u767b\u8bb0\u63a5\u53e3\u7ed1\u5b9a\u548c\u5df2\u5b8c\u6210\u5bf9\u9f50\u8bb0\u5f55\u53cd\u6620\u5f53\u524dS0\u4e3b\u7ebf\uff1b\u6765\u6e90\u6307\u5411\u51bb\u7ed3v1.1\u3002evidence.claim.withdraw \u660e\u786e\u4ecd not_implemented\uff0c\u5c5e\u4e8eM3/S1\uff0c\u4e0d\u88ab\u8bb0\u4e3aS0\u5b9e\u73b0\u3002\u76ee\u5f55\u9879\u4e0d\u80fd\u81ea\u884c\u53d8\u6210\u53ef\u8c03\u7528\u5de5\u5177\u3002",
+      "basis": "current source read plus root-confirmed B8 change scope; hash manifest has no historical source contents, so git HEAD whole-S0 diff is not treated as frozen-candidate delta",
+      "current_sha256": "a014618b8dce2b817ddc4ee689cb9cdf71e0e840afb6341d0c044e18383bfa66",
+      "matches_source_delta_current_hash": true,
+      "coverage": [
+        {
+          "kind": "static generated metadata consistency",
+          "generator": "pdos-next/tools/export_contracts.py",
+          "provenance_document_sha256_matches": true,
+          "operation_count": 86,
+          "endpoint_bindings": [
+            {
+              "operation": "ai.work.start",
+              "binding": {
+                "method": "POST",
+                "path": "/v1/categories/{category_id}/agent-runs"
+              }
+            },
+            {
+              "operation": "ai.run.cancel",
+              "binding": {
+                "method": "POST",
+                "path": "/v1/categories/{category_id}/agent-runs/{run_id}/cancel"
+              }
+            },
+            {
+              "operation": "category.create",
+              "binding": {
+                "method": "POST",
+                "path": "/v1/categories"
+              }
+            },
+            {
+              "operation": "category.member.grant",
+              "binding": {
+                "method": "POST",
+                "path": "/v1/categories/{category_id}/members"
+              }
+            }
+          ],
+          "static_review_is_execution_pass": false
+        },
+        {
+          "kind": "actual unchanged registered-tool boundary tests from full XML",
+          "nodes": [
+            {
+              "node": "tests/agent_kernel/test_graph.py::test_t2_has_no_executing_operation_and_only_prepares",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/agent_kernel/test_graph.py::test_whole_run_revert_target_is_t1_preparation_and_never_execution_identity",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            }
+          ],
+          "runtime_implementation_hashes_unchanged": [
+            "pdos-next/server/pdos_next/agent_kernel/graph.py",
+            "pdos-next/server/pdos_next/agent_kernel/tools.py"
+          ]
+        }
+      ],
+      "remaining_necessary_positive_gap": null
+    },
+    {
+      "path": "pdos-next/server/pdos_next/api.py",
+      "classification": "semantic_runtime",
+      "semantic_delta": "\u542f\u52a8plural host profile\u4ec5\u8981\u6c42\u975e\u7a7alist\u4e14\u6bcf\u9879dict\uff0c\u53bb\u6389\u4efb\u610f\u6761\u6570cap\uff1b\u5355\u6570/\u590d\u6570\u6b67\u4e49\u4ecd\u5728\u4efb\u4f55engine\u6216issuer\u914d\u7f6e\u524d\u62d2\u7edd\uff0c\u771f\u5b9e\u4e34\u65f6\u76ee\u6807\u5b88\u536b\u4ecd\u5fc5\u987b\u751f\u6548\u3002",
+      "basis": "current source read plus root-confirmed B8 change scope; hash manifest has no historical source contents, so git HEAD whole-S0 diff is not treated as frozen-candidate delta",
+      "current_sha256": "3ae62a4891186c27bb2227c04a01c45792cb50b896e12a4002b5787d70f60959",
+      "matches_source_delta_current_hash": true,
+      "coverage": [
+        {
+          "kind": "exact current affected negative nodes",
+          "nodes": [
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-professional_synthetic_scope-professional_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-operational_synthetic_profile-operational_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-quality_synthetic_profile-quality_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid0-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-professional_synthetic_scope-professional_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-operational_synthetic_profile-operational_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-quality_synthetic_profile-quality_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid1-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-professional_synthetic_scope-professional_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-operational_synthetic_profile-operational_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-quality_synthetic_profile-quality_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid2-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-professional_synthetic_scope-professional_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-operational_synthetic_profile-operational_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-quality_synthetic_profile-quality_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[False-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-professional_synthetic_scope-professional_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-operational_synthetic_profile-operational_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-quality_synthetic_profile-quality_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_invalid_plural_choice_fails_before_engine_creation[invalid4-capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            }
+          ]
+        },
+        {
+          "kind": "unchanged full startup ambiguity/target guard nodes (does not demonstrate >20 positive acceptance)",
+          "nodes": [
+            {
+              "node": "tests/test_host_profile_choices.py::test_ambiguous_host_choices_do_not_mutate_engine[professional_synthetic_scope-professional_synthetic_profiles]",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_ambiguous_host_choices_do_not_mutate_engine[operational_synthetic_profile-operational_synthetic_profiles]",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_ambiguous_host_choices_do_not_mutate_engine[test_resource_synthetic_profile-test_resource_synthetic_profiles]",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_ambiguous_host_choices_do_not_mutate_engine[quality_synthetic_profile-quality_synthetic_profiles]",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_ambiguous_host_choices_do_not_mutate_engine[quality_followup_synthetic_profile-quality_followup_synthetic_profiles]",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_ambiguous_host_choices_do_not_mutate_engine[capa_facts_synthetic_profile-capa_facts_synthetic_profiles]",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_explicit_fact_owner_and_publisher_are_ambiguous_before_any_configuration[capa_facts_synthetic_profile]",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_explicit_fact_owner_and_publisher_are_ambiguous_before_any_configuration[capa_facts_synthetic_profiles]",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_professional_plural_requires_real_target_guard_before_issuer_registration",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            }
+          ]
+        },
+        {
+          "kind": "actual common API affected boundaries",
+          "evidence": "current-transaction-boundaries-fixed.log",
+          "scope_ref": "root_confirmed_boundary8"
+        },
+        {
+          "kind": "actual current contract-node evidence",
+          "metadata": [
+            "current-contract-affected-final.json",
+            "final-repairs-and-fences-fixed.json"
+          ]
+        },
+        {
+          "kind": "exact current positive boundary execution",
+          "metadata": "profile-count-guard.json",
+          "junit": "profile-count-guard.xml",
+          "log": "profile-count-guard.log",
+          "test_exit": 0,
+          "source_unchanged": true,
+          "passed_nodes": 2,
+          "nodes": [
+            {
+              "node": "tests/test_host_profile_choices.py::test_professional_plural_requires_real_target_guard_before_issuer_registration[1]",
+              "setup": "passed",
+              "call": "passed",
+              "teardown": "passed"
+            },
+            {
+              "node": "tests/test_host_profile_choices.py::test_professional_plural_requires_real_target_guard_before_issuer_registration[21]",
+              "setup": "passed",
+              "call": "passed",
+              "teardown": "passed"
+            }
+          ],
+          "meaning": "21 startup profiles pass shape checking but require real target guard and produce no state changes"
+        }
+      ],
+      "remaining_necessary_positive_gap": null,
+      "former_positive_gap": {
+        "recommended_selector": "tests/test_host_profile_choices.py::test_plural_profile_list_over_previous_cap_reaches_real_target_guard",
+        "new_test_required": true,
+        "count": 1,
+        "purpose": "21\u4e2adict\u901a\u8fc7API\u901a\u7528shape\u68c0\u67e5\uff0c\u7ee7\u7eed\u5230\u771f\u5b9e\u4e34\u65f6\u76ee\u6807\u6838\u5bf9\uff1b\u6b64\u68c0\u67e5\u7531\u53d7\u63a7sentinel\u7ec8\u6b62\u5e76\u786e\u8ba4\u65e0engine\u83b7\u53d6\u3001issuer\u6ce8\u518c\u6216\u72b6\u6001\u4fee\u6539\u3002\u65e0\u9700PG\u6216\u5047\u9020\u8d44\u683c\uff1b\u4e0d\u6269\u5927\u4e0b\u6e38synthetic bootstrap\u5408\u540c\u3002"
+      }
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/change_coverage_owner/importer.py",
+      "classification": "semantic_runtime",
+      "semantic_delta": "\u4e00\u6b21\u5b8c\u6574\u6765\u6e90/\u95ed\u5305\u6838\u5bf9\u540e\u4fdd\u7559\u540cUOW\u7684\u6700\u7ec8Current\u3001\u6743\u9650\u3001epoch\u548c\u671f\u9650\u68c0\u67e5\uff1b\u8d44\u4ea7/\u578b\u53f7\u9501\u4e0e\u5b9e\u9645\u4f9d\u8d56watermark\u4f7f\u5171\u4eab\u5f15\u7528\u53d8\u5316\u5931\u6548\uff0c\u4e0d\u91cd\u590d\u6574\u56fe\u626b\u63cf\uff1b\u5b8c\u6574\u5171\u540c\u56de\u6267\u7ec4flush\u540e\u68c0\u67e5\uff0c\u5f02\u5e38\u56de\u6eda\u6574\u4e2a\u4e1a\u52a1\u539f\u5b50\u3002",
+      "basis": "current source read plus root-confirmed B8 change scope; hash manifest has no historical source contents, so git HEAD whole-S0 diff is not treated as frozen-candidate delta",
+      "current_sha256": "b44413c4f072afe8cb433ccafd694d7eaff2916febcbae8d9ea576542d5bb58f",
+      "matches_source_delta_current_hash": true,
+      "coverage": [
+        {
+          "kind": "actual module scope",
+          "scope_ref": "root_confirmed_quality170",
+          "selector": "tests/change_coverage_owner",
+          "nodes": 115
+        },
+        {
+          "kind": "actual PG publication/rollback/samekey recovery plus late-owner-SQL drift",
+          "scope_ref": "root_confirmed_boundary8",
+          "selector": "tests/change_coverage_transactions/test_publication.py::test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recovery"
+        },
+        {
+          "kind": "actual current permission fences",
+          "nodes": [
+            {
+              "node": "tests/change_coverage_transactions/test_fences.py::test_actual_publisher_a_reader_b_fenced_until_transaction_end",
+              "outcome": "passed",
+              "metadata": "final-repairs-and-fences-fixed.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/change_coverage_transactions/test_fences.py::test_actual_pending_grant_revocation_never_reset_by_fresh_lock[can_write]",
+              "outcome": "passed",
+              "metadata": "final-repairs-and-fences-fixed.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/change_coverage_transactions/test_fences.py::test_actual_pending_grant_revocation_never_reset_by_fresh_lock[expires_at]",
+              "outcome": "passed",
+              "metadata": "final-repairs-and-fences-fixed.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/change_coverage_transactions/test_fences.py::test_actual_pending_grant_revocation_never_reset_by_fresh_lock[access_epoch]",
+              "outcome": "passed",
+              "metadata": "final-repairs-and-fences-fixed.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            }
+          ]
+        }
+      ],
+      "remaining_necessary_positive_gap": null
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/change_coverage_owner/trust.py",
+      "classification": "semantic_runtime",
+      "semantic_delta": "OriginalApproval\u5217\u8868\u53bb\u6389\u4efb\u610f100\u6761\u4e0a\u9650\uff1b\u4ecd\u8981\u6c42\u975e\u7a7atuple\u3001\u7cbe\u786e\u6765\u6e90\u552f\u4e00\u3001\u5b9e\u9645Engine\u3001\u6ce8\u518c\u4e13\u4e1aissuer\u3001scope\u7ed1\u5b9a\u548c\u4e25\u683c\u6574\u578bepoch\uff0c\u91cd\u65b0\u767b\u8bb0\u65cb\u8f6ccoverage epoch\u3002",
+      "basis": "current source read plus root-confirmed B8 change scope; hash manifest has no historical source contents, so git HEAD whole-S0 diff is not treated as frozen-candidate delta",
+      "current_sha256": "d9f7b307b47b2ca74e6c29d325de42a2aad67423d7479a8d4480ce3bd3f4db80",
+      "matches_source_delta_current_hash": true,
+      "coverage": [
+        {
+          "kind": "actual module scope",
+          "scope_ref": "root_confirmed_quality170",
+          "selector": "tests/change_coverage_owner",
+          "nodes": 115
+        },
+        {
+          "kind": "important coverage distinction",
+          "existing_selector": "tests/change_coverage_owner/test_owner_boundary.py::test_registry_growth_over_previous_cap_retains_full_closure_and_invalidates_old_graph",
+          "actually_exercised": "250\u4e2a graph owned objects\u4f7f\u65e7\u56fe\u8fc7\u671f\uff1b\u8be5\u5939\u5177\u4ecd\u53ea\u67091\u4e2aOriginalApproval\uff0c\u4e0d\u662f101 approvals\u6ce8\u518c\u6b63\u5411\u3002"
+        },
+        {
+          "kind": "exact current positive boundary execution",
+          "metadata": "approval-count-guard.json",
+          "junit": "approval-count-guard.xml",
+          "log": "approval-count-guard.log",
+          "test_exit": 0,
+          "source_unchanged": true,
+          "passed_nodes": 1,
+          "nodes": [
+            {
+              "node": "tests/change_coverage_owner/test_owner_boundary.py::test_original_approval_registry_keeps_pins_beyond_previous_cap",
+              "setup": "passed",
+              "call": "passed",
+              "teardown": "passed"
+            }
+          ],
+          "meaning": "101 exact OriginalApproval pins retained including last pin; current issuer and epoch rotation verified; synthetic ports only"
+        }
+      ],
+      "remaining_necessary_positive_gap": null,
+      "former_positive_gap": {
+        "recommended_selector": "tests/change_coverage_owner/test_owner_boundary.py::test_original_approval_registry_has_no_arbitrary_100_item_cap",
+        "new_test_required": true,
+        "count": 1,
+        "purpose": "\u590d\u7528\u7eafsynthetic env.engine/env.professional/env.scope\uff0c\u914d\u7f6e101\u4e2a\u552f\u4e00SourceRef\u7684OriginalApproval\uff0c\u65ad\u8a00\u6240\u6709pins\u5b8c\u6574\u4fdd\u5b58\u3001current issuer\u4e0eepoch\u7ed1\u5b9a\uff1b\u4e0d\u8fde\u63a5\u6570\u636e\u5e93\u3001\u4e0d\u521b\u5efa\u771f\u5b9e\u8d44\u683c\u3002"
+      }
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/change_execution/service.py",
+      "classification": "semantic_runtime",
+      "semantic_delta": "GraphCapture\u5b8c\u6574flush\u4e0e\u6700\u540eowner.recheck_access\u6267\u884c\u771f\u5b9eSQL\u540e\uff0c\u518d\u6bd4\u8f83\u56fa\u5b9aChange Current\u3001\u4f9d\u8d56closure stamp\u4e0eruntime stamp\uff1b\u907f\u514d\u5f53\u524dSession\u81ea\u8eab\u5199\u5165\u7ed5\u8fc7\u5df2\u6301\u6709\u7684\u884c\u9501\uff0c\u4fdd\u7559\u539fexpires_at\u4e0e\u4e0d\u91cd\u5efa\u6574\u56fe\u3002",
+      "basis": "current source read plus root-confirmed B8 change scope; hash manifest has no historical source contents, so git HEAD whole-S0 diff is not treated as frozen-candidate delta",
+      "current_sha256": "4836d7d3f56d15a0c9e9f3523f094d5c663e57ca584d723ce80e3482d98b83cd",
+      "matches_source_delta_current_hash": true,
+      "coverage": [
+        {
+          "kind": "actual PG three transaction nodes",
+          "scope_ref": "root_confirmed_boundary8",
+          "selectors": [
+            "tests/change_execution/test_transactions.py::test_current_issue_capa_create_cross_key_one_receipt_exact_sources_and_private_scope",
+            "tests/change_execution/test_transactions.py::test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualification_aba",
+            "tests/change_execution/test_transactions.py::test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_keeps_capture"
+          ]
+        },
+        {
+          "kind": "actual late-owner-SQL capture fault and whole rollback",
+          "scope_ref": "root_confirmed_boundary8",
+          "selector": "tests/change_coverage_transactions/test_publication.py::test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recovery"
+        }
+      ],
+      "remaining_necessary_positive_gap": null
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/manufacturing_resource_owner/owner.py",
+      "classification": "semantic_runtime",
+      "semantic_delta": "\u4f7f\u7528\u5f53\u524d\u8c03\u7528\u8005ctx\u8bfb\u53d6\u5e76\u6838\u5bf9\u771f\u5b9eBuild\u8d44\u6e90Fact\uff0c\u5265\u79bbsource watermark\u4e2d\u7684\u5199\u5165\u8005ACL\u6765\u6e90\u8bb0\u8d26\uff1b\u666e\u901aFact\u6709\u6548\u671f\u53ef\u7a7a\uff0c\u5f53\u524d\u8bfb\u53d6\u4ecd\u7531\u6267\u884cwindow/\u5f53\u524d\u771f\u5b9e\u6743\u9650\u4e0e\u5f15\u7528watermark\u7ea6\u675f\uff1b\u4e0d\u53d6\u5f97\u4e13\u4e1a\u8d44\u683c\u6216\u6267\u884c\u6743\u3002",
+      "basis": "current source read plus root-confirmed B8 change scope; hash manifest has no historical source contents, so git HEAD whole-S0 diff is not treated as frozen-candidate delta",
+      "current_sha256": "ab71cd503c5e2036fa07e6bc8ea4d3056611a2d62669ee0caf9115e70adbeb8e",
+      "matches_source_delta_current_hash": true,
+      "coverage": [
+        {
+          "kind": "actual PG native two nodes",
+          "scope_ref": "root_confirmed_quality170",
+          "selectors": [
+            "tests/manufacturing_resource_native_transactions/test_native_read.py::test_ordinary_fact_without_deadline_remains_current_for_the_execution_window[no_deadline]",
+            "tests/manufacturing_resource_native_transactions/test_native_read.py::test_native_source_current_owner_refresh_and_authenticated_post_have_no_effects"
+          ]
+        },
+        {
+          "kind": "current HTTP pure route and caller/scope boundaries",
+          "nodes": [
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[tenant_id]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[product_id]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[build_id]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[scope]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[owner_id]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[actor_id]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[authority]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[source_read_set]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[opaque_token]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[basis]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[accepted]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_body_cannot_supply_scope_authority_proof_or_write_command[command_id]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[missing_process]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[bool_revision]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[string_revision]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[float_quantity]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[bad_window]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[nested_authority]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[partial_fact]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_closed_nested_exact_selection_rejects_ambiguity_before_uow[wrong_kind]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_complete_20_source_readset_and_relation_originals_are_preserved",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_failed_authentication_never_opens_tenant_uow",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_historical_fact_and_exact_resource_are_passed_without_selecting_current",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?resource_id=x]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?revision=1]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_no_parallel_query_selector_or_duplicate_query[?fact_id=x&fact_id=x]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_only_url_and_context_bind_roots_and_opaque_proof_stays_private",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[FORBIDDEN_SCOPE-403]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[RESOURCE_RECHECK_REQUIRED-409]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_owner_failure_propagates_without_unknown_fallback_and_exits_uow[RESOURCE_PEOPLE_NOWAIT_REQUIRED-503]",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/manufacturing_resource_api/test_routes.py::test_real_owner_rejects_agent_context_before_any_owner_io",
+              "outcome": "passed",
+              "metadata": "current-pure-closure.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            }
+          ]
+        }
+      ],
+      "remaining_necessary_positive_gap": null
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification_handoff/service.py",
+      "classification": "docstring_only",
+      "semantic_delta": "\u672c\u6b21\u51bb\u7ed3\u5019\u9009\u540e\u7684\u5dee\u5f02\u4e3a_proof_stamp\u8bf4\u660e\u6587\u5b57\uff1a\u6807\u660e\u5f53\u524dreader\u53ca\u5176\u5f15\u7528authority watermarks\u7531\u4e8b\u52a1\u6301\u6709\uff1b\u6ca1\u6709\u65b0\u589e\u7b97\u6cd5\u6216\u65b0\u4e1a\u52a1\u7ea6\u675f\u3002",
+      "basis": "current source read plus root-confirmed B8 change scope; hash manifest has no historical source contents, so git HEAD whole-S0 diff is not treated as frozen-candidate delta",
+      "current_sha256": "128c96c0c8d6ee260dc25d551c57cf64a7643488489a106dbe23429078686bf0",
+      "matches_source_delta_current_hash": true,
+      "coverage": [
+        {
+          "kind": "no new semantic test needed",
+          "reason": "root-confirmed only docstring delta"
+        },
+        {
+          "kind": "current exact PG source withdrawal/replay closure",
+          "nodes": [
+            {
+              "node": "tests/verification_handoff/test_transactions.py::test_stale_actual_qualification_keeps_real_pair_pointer_and_can_be_renewed",
+              "outcome": "passed",
+              "metadata": "current-contract-affected-final.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 1
+            },
+            {
+              "node": "tests/verification_handoff/test_transactions.py::test_source_withdrawal_keeps_saved_receipt_replay_and_blocks_new_material",
+              "outcome": "passed",
+              "metadata": "final-repairs-and-fences-fixed.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            }
+          ]
+        }
+      ],
+      "remaining_necessary_positive_gap": null
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_configuration/runtime.py",
+      "classification": "semantic_runtime",
+      "semantic_delta": "\u6a21\u578b\u9009\u62e9\u53d1\u751fDomainError\u65f6\u4fdd\u7559\u6536\u655b\u540e\u7684public code\u548c\u5185\u90e8reason\uff1b\u670d\u52a1\u5668\u914d\u7f6e\u3001secret\u6f02\u79fb\u3001\u4e8b\u5b9e\u8bb8\u53ef\u3001\u53d6\u6d88\u53capermit\u63d0\u4ea4\u524d\u671f\u9650\u4ecd fail-closed\u3002",
+      "basis": "current source read plus root-confirmed B8 change scope; hash manifest has no historical source contents, so git HEAD whole-S0 diff is not treated as frozen-candidate delta",
+      "current_sha256": "a851bedb2b18a4a371cd108d98d1f719a01391d3347c1e0a2a1fded89c99673c",
+      "matches_source_delta_current_hash": true,
+      "coverage": [
+        {
+          "kind": "current exact full affected pure configuration module",
+          "nodes": [
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_plan_save_masked_read_runtime_selection[openai-compatible]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_plan_save_masked_read_runtime_selection[anthropic-native]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[tenant_id]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[actor_id]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[run_id]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[grant]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[qualified]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[api_key]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[secret_reference]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[secret_version]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[write_tier]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://user:password@synthetic.invalid/v1]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/v1?api_key=private]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/v1#private]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[http://synthetic.invalid/v1]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[file:///private]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/../v1]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/v1 bad]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid:bad/v1]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/%2e%2e]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid\\\\evil/v1]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[protocol-other]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-True]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-0]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-32769]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[timeout_seconds-nan]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[timeout_seconds-91.0]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[response_bytes-1]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[model-unsafe\\ntext]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[model_version-]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[openai_output_parameter-tools]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_non_admin_and_revocation_between_preview_and_save",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_cross_tenant_and_actor_contexts_cannot_consume_plan",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_expiry_stale_and_same_revision_digest_change",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_secret_rotation_rejects_plan_and_previous_runtime_binding",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_disabled_not_configured_and_missing_secret",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-False-MODEL_PERMISSION_DENIED]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-False-MODEL_QUALIFICATION_REQUIRED]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-False-MODEL_EGRESS_REQUIRED]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-False-MODEL_BUDGET_REQUIRED]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-True-MODEL_CANCELLED]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-None-MODEL_PERMISSION_FACT_MISSING]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-None-MODEL_QUALIFICATION_FACT_MISSING]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-None-MODEL_EGRESS_FACT_MISSING]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-None-MODEL_BUDGET_FACT_MISSING]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-None-MODEL_CANCEL_FACT_MISSING]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-1-MODEL_QUALIFICATION_FACT_MISSING]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value11-MODEL_POLICY_EXPIRED]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value12-MODEL_POLICY_EXPIRED]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[binding_digest-different-MODEL_POLICY_SCOPE_MISMATCH]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tenant_id]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[run_id]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[writer_id]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[operation]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[purpose]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[skill_version]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tool_version]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[cancel_epoch]",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_currentness_compounds_main_guard_and_rechecks_after_cancellation",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_scoped_ports_errors_and_secret_material_drift_fail_closed",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_configuration_change_and_disable_invalidate_old_permit",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_missing_interfaces_do_not_implicitly_enable",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_forged_construct_payload_is_revalidated",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_port_policy_exception_is_redacted_and_missing_facts_are_unavailable",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_unavailable_secret_and_wrong_tenant_storage_are_rejected",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_secret_resolution_exception_and_invalid_credential_never_escape",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_version_and_metadata_are_immutable",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_sensitive_port_exception_tracebacks_and_request_validation_are_redacted",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_main_permit_guard_cannot_outlive_permit_expiry",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_public_common_preview_restores_without_secret_ref_or_second_store",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            },
+            {
+              "node": "tests/model_configuration/test_configuration.py::test_public_preview_reconstruction_rejects_rotated_secret_and_payload_changes",
+              "outcome": "passed",
+              "metadata": "model-runtime-affected.json",
+              "source_unchanged": true,
+              "recorded_test_exit": 0
+            }
+          ],
+          "passed_nodes": 71,
+          "test_exit": 0,
+          "source_unchanged": true
+        }
+      ],
+      "remaining_necessary_positive_gap": null
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_gateway/__init__.py",
+      "classification": "archived_export_removal",
+      "semantic_delta": "\u5220\u9664ClaimGateway\u516c\u5171\u5bfc\u51fa\uff0c\u6a21\u5757\u4ec5\u4fdd\u7559\u590d\u7528permit\u4e0e\u8d39\u7528\u7c7b\u578b\uff1b\u65e7\u76f4\u63a5extract\u2192Claim\u5b9e\u73b0\u79fb\u5165archive/source_work/*.py.txt\uff0c\u4e0d\u518d\u5bfc\u5165/\u6536\u96c6\u3002",
+      "basis": "current source read plus root-confirmed B8 change scope; hash manifest has no historical source contents, so git HEAD whole-S0 diff is not treated as frozen-candidate delta",
+      "current_sha256": "42638408edf2b2a02a60f07638f1d6058860237345b5d2218fcd8ef69fe866d5",
+      "matches_source_delta_current_hash": true,
+      "coverage": [
+        {
+          "kind": "architecture retirement ledger",
+          "evidence": "legacy-gateway-closure-draft.json",
+          "legacy_failure_disposition": "35 retired_interface_archived_not_retested_pass"
+        },
+        {
+          "kind": "actual full replacement and zero-effect retired API boundary nodes",
+          "nodes": [
+            {
+              "node": "tests/agent_kernel/test_gateway.py::test_provider_call_requires_registered_graph_and_replays_saved_request",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/agent_kernel/test_gateway.py::test_private_run_dpa_failure_prevents_network_and_reservation",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/agent_kernel/test_gateway.py::test_generic_capability_graph_cannot_bypass_registered_xiaopai_gateway",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/agent_kernel/test_gateway.py::test_prompt_and_tool_prefixes_are_fixed_per_isolation_across_restart",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/agent_kernel/test_gateway.py::test_scope_revocation_during_call_frees_slot_without_revealing_result",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/agent_kernel/test_gateway.py::test_unknown_network_attempt_frees_slot_and_never_blindly_retries",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/agent_kernel/test_retired_pipeline.py::test_retired_source_work_start_and_resume_have_zero_new_effects",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            },
+            {
+              "node": "tests/agent_kernel/test_retired_pipeline.py::test_legacy_context_cannot_use_common_t0_or_synthetic_qualification_bypass",
+              "outcome": "passed",
+              "evidence": "full-regression-results.json",
+              "candidate": "s0_0720 frozen full regression"
+            }
+          ],
+          "unchanged_mainline_implementation": [
+            "pdos-next/server/pdos_next/agent_kernel/gateway.py",
+            "pdos-next/server/pdos_next/providers/agent_client.py",
+            "pdos-next/server/pdos_next/agent_kernel/execution.py"
+          ]
+        }
+      ],
+      "remaining_necessary_positive_gap": null
+    },
+    {
+      "path": "pdos-next/server/pdos_next/quality_followup_host.py",
+      "classification": "semantic_runtime",
+      "semantic_delta": "\u5b9e\u9645\u5171\u540c\u786e\u8ba4\u6d88\u8d39\u8bc1\u636e\u6309\u64cd\u4f5ctier\u6838\u5bf9\u671f\u9650\uff1aT2\u5177\u540d\u786e\u8ba4\u671f\u9650\u53ef\u7a7a\uff0cT1\u4ecd\u5fc5\u987b\u5b58\u5728\u4e14\u6709\u6548\uff1b\u4fdd\u7559\u540cSession/\u4e8b\u52a1\u3001\u771f\u5b9e\u672aflush False\u2192True\u6d88\u8d39\u3001scope/actor/material\u548cdirty provenance\u68c0\u67e5\u3002",
+      "basis": "current source read plus root-confirmed B8 change scope; hash manifest has no historical source contents, so git HEAD whole-S0 diff is not treated as frozen-candidate delta",
+      "current_sha256": "7fd3292179e5ea288e31362f9f36b2849bd84ce11dfcc1903a1b1fd1d51f4ee1",
+      "matches_source_delta_current_hash": true,
+      "coverage": [
+        {
+          "kind": "actual same module pure and PG scope",
+          "scope_ref": "root_confirmed_quality170",
+          "selectors": [
+            "tests/quality_followup_host/test_pure.py",
+            "tests/quality_followup_transactions"
+          ],
+          "passed_nodes": 53
+        },
+        {
+          "kind": "specific positive pure sample inside confirmed module",
+          "selector": "tests/quality_followup_host/test_pure.py::test_named_t2_consumption_without_deadline_retains_the_same_transaction_binding",
+          "certainty": "root confirmed entire34-node module execution; no per-node junit saved"
+        }
+      ],
+      "remaining_necessary_positive_gap": null
+    }
+  ],
+  "recommended_minimal_additional_positive_pure_tests": [],
+  "additional_test_count": 0,
+  "unresolved_historical_invocations_not_used_as_exact_evidence": [
+    "pure-contract-fixed.log historical151",
+    "error-contract-and-plan-pure-fixed.log historical203",
+    "host-profile-choice-and-public-errors-fixed.log historical99",
+    "legacy-gateway-replacement-fixed.log historical236"
+  ],
+  "assertions": "No actual tests, PostgreSQL or model calls executed by reviewer; module-scope root evidence is distinguished from exact node metadata. Archived interfaces are not test passes. No M2/M3 completion or real qualification is asserted.",
+  "resolved_positive_gaps": [
+    {
+      "metadata": "profile-count-guard.json",
+      "actual_passed_nodes": 2
+    },
+    {
+      "metadata": "approval-count-guard.json",
+      "actual_passed_nodes": 1
+    }
+  ],
+  "coverage_conclusion": "All 10 modified S0 runtime/API/contracts files have classified semantic or doc/archive differences and affected scope evidence. The two necessary positive boundary gaps were filled by root with exact current execution evidence. No additional pure test is recommended by this review; independent M3/frontend and final performance/restoration remain outside this coverage judgment.",
+  "source_hash_scope_manifest": "performance-source-manifest.json"
+}

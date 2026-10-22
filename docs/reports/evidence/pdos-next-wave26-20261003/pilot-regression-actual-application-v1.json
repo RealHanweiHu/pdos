@@ -1,0 +1,6 @@
+{
+  "status": "APPLIED_ACTUAL_SHARED_RULE_REGRESSION_TESTS",
+  "sha256": "e40aa740388f3f859b7d9735c02e1a045ba04435f55fb018c0aa394f3cf68ec3",
+  "stage_manifest_sha256": "76e33a3ab5b84cfb85a80fa4782032ec21c2d58ef4ad905290136481ce1051f7",
+  "pytest_not_yet_executed": true
+}

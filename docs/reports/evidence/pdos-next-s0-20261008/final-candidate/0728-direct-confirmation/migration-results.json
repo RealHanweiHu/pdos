@@ -1,0 +1,102 @@
+{
+  "backups": {
+    "main": {
+      "file": ".local/s0-0728-direct-backups/main-s0_0727-7b0425d7-1b09-4cd7-bee7-b519590feae2.dump",
+      "sha256": "aab95f03f9ecf9d5cf6d3b058ff34d3e250db4710843064de396506c47dad07c",
+      "bytes": 55169002,
+      "format": "custom",
+      "toc_checked": true,
+      "mode": "0600",
+      "head": "s0_0727"
+    },
+    "b8": {
+      "file": ".local/s0-0728-direct-backups/b8-s0_0727-3aff12b7-8940-4cc3-aed4-a15748ba4ff9.dump",
+      "sha256": "4aa435ff5a5eed5f99bf72b784714d343b80ae843e7c7a06d2d70b2750c06b40",
+      "bytes": 40494107,
+      "format": "custom",
+      "toc_checked": true,
+      "mode": "0600",
+      "head": "s0_0727"
+    },
+    "empty": {
+      "file": ".local/s0-0728-direct-backups/empty-s0_0727-b8c6fde5-90aa-4b48-936d-e8970f96d6cd.dump",
+      "sha256": "c758826ca0f018ad9d64ce779a6134f4794fde7d03230fbcb0acd89f0f74f472",
+      "bytes": 2252218,
+      "format": "custom",
+      "toc_checked": true,
+      "mode": "0600",
+      "head": "s0_0727"
+    }
+  },
+  "operations": {
+    "main": [
+      {
+        "direction": "upgrade",
+        "target": "s0_0728",
+        "exit_code": 0,
+        "log": "main-01-upgrade-s0_0728.log"
+      }
+    ],
+    "b8": [
+      {
+        "direction": "upgrade",
+        "target": "s0_0728",
+        "exit_code": 0,
+        "log": "b8-01-upgrade-s0_0728.log"
+      }
+    ],
+    "empty": [
+      {
+        "direction": "upgrade",
+        "target": "s0_0728",
+        "exit_code": 0,
+        "log": "empty-01-upgrade-s0_0728.log"
+      }
+    ]
+  },
+  "catalog_delta": {
+    "triggers_added": [
+      {
+        "relname": "confirmations",
+        "trigger_name": "direct_confirmation_immutable",
+        "tgisinternal": false,
+        "constraint_name": null,
+        "tgtype": 27,
+        "tgenabled": "O",
+        "tgdeferrable": false,
+        "tginitdeferred": false,
+        "attributes": "",
+        "arguments": "",
+        "function": "protect_direct_confirmation()",
+        "condition": null,
+        "tgoldtable": null,
+        "tgnewtable": null,
+        "definition": "CREATE TRIGGER direct_confirmation_immutable BEFORE DELETE OR UPDATE ON public.confirmations FOR EACH ROW EXECUTE FUNCTION protect_direct_confirmation()"
+      }
+    ],
+    "functions_added": [
+      {
+        "identity": "protect_direct_confirmation()",
+        "owner": "pdos_next_owner",
+        "language": "plpgsql",
+        "prokind": "f",
+        "prosecdef": false,
+        "proleakproof": false,
+        "proisstrict": false,
+        "provolatile": "v",
+        "proparallel": "u",
+        "procost": 100.0,
+        "prorows": 0.0,
+        "proconfig": [
+          "search_path=pg_catalog, public"
+        ],
+        "acl": [
+          "pdos_next_owner=X/pdos_next_owner"
+        ],
+        "definition": "CREATE OR REPLACE FUNCTION public.protect_direct_confirmation()\n RETURNS trigger\n LANGUAGE plpgsql\n SET search_path TO 'pg_catalog', 'public'\nAS $function$\nDECLARE\n  old_scoped boolean := OLD.operation IN\n    ('quality.issue.triage','quality.issue.containment.record','test.run.start');\n  new_scoped boolean := false;\nBEGIN\n  IF TG_OP = 'UPDATE' THEN\n    new_scoped := NEW.operation IN\n      ('quality.issue.triage','quality.issue.containment.record','test.run.start');\n  END IF;\n  IF NOT (old_scoped OR new_scoped) THEN\n    IF TG_OP = 'DELETE' THEN RETURN OLD; ELSE RETURN NEW; END IF;\n  END IF;\n  IF TG_OP = 'DELETE' THEN\n    RAISE EXCEPTION 'Direct confirmation must be retained' USING ERRCODE = '23514';\n  END IF;\n  IF NOT (old_scoped AND new_scoped)\n    OR (to_jsonb(NEW) - 'consumed') IS DISTINCT FROM (to_jsonb(OLD) - 'consumed')\n    OR (NEW.consumed IS DISTINCT FROM OLD.consumed\n      AND NOT (OLD.consumed IS FALSE AND NEW.consumed IS TRUE)) THEN\n    RAISE EXCEPTION 'Direct confirmation only permits original material and consumption'\n      USING ERRCODE = '23514';\n  END IF;\n  RETURN NEW;\nEND\n$function$\n"
+      }
+    ]
+  },
+  "source_unchanged": true,
+  "state_files_unchanged": true
+}

@@ -1,0 +1,62 @@
+{
+  "date": "2026-09-10",
+  "scope": "persistent user report mapping runs, fixed request pins, replay and API budget integration",
+  "tests": {
+    "report_import": 26,
+    "chat": 15,
+    "schema_roundtrip": 3,
+    "isolated_real_role_security": 9,
+    "call_identity": 5,
+    "distinct_backend_passed": 58,
+    "frontend_chat_and_api": 10
+  },
+  "checks": {
+    "ruff_files": 9,
+    "format_files": 9,
+    "mypy_files": 4,
+    "exports": "common 4 and runtime 5 passed",
+    "typescript": "full project passed",
+    "eslint": "current run card and prior four Chat files passed"
+  },
+  "migration": "0069_import_mapping_runs",
+  "databases": {
+    "shared": "127.0.0.1:57432/pdos_test",
+    "role_security": "temporary 127.0.0.1:57433/pdos_test; container removed",
+    "shared_role_passwords_changed": false
+  },
+  "real_model_calls": 0,
+  "default_budget_mode": "legacy",
+  "sources": {
+    "server/migrations/versions/0069_import_mapping_runs.py": "0f02857857f104b7625150490e2ecd1706eabb560c91c638debb4743c0ebd752",
+    "server/app/ai/import_mapping_runs.py": "65251de8477f297f73b507fab6a5b3fe65958a879b7b1228497122e82f0b43e6",
+    "server/app/ai/call_identity.py": "d2c69847c62bdc06956ffc7a8b84a0e0cfc85024c666598284e1a0e14759548b",
+    "server/app/db/schema.py": "986c1ebd904704aff91cf2fe7988ac2af55a77e4e620eb06210d73dc4a47da9d",
+    "server/app/domain/test_report_import.py": "48832c626f9005f4c5415528ca9d5ec93e407ba22706769683611992e51c3cb2",
+    "server/app/api/ai.py": "da0efffb35289b97ceb17665a9f4a69029fdc380811031ce3c649f0fc29f2389",
+    "server/app/api/npi_execution.py": "ada0744a091e643957b2c9f564b92ec8fe6b242203053aeba6f4e9c0c8e57e5a",
+    "server/tests/test_chat_requests.py": "639866aec55d8183725946f5904c917d90e3df304fdafa6f8a0745934e52e241",
+    "server/tests/test_test_report_import_api.py": "d7eca63a879f1be9f17d8333c777efc2cf78669a4093eb47ca8cd9c05444debe",
+    "web/src/components/ai/agent-runs-card.tsx": "dacd488ec2c0b9e7a2537797855519679fd6d9c4fb7ff84d8a937c85fbd7a869",
+    "web/tsconfig.json": "3dd23061d2fe379ebac37ba21dcff5b80eed44efbc00ba9212187f425690973e",
+    "docs/runbooks/import-mapping-runs.md": "3422839e21ff0121463a62cf2c6cfd10876bc404e8efde78bf364161fbd80650",
+    "docs/runbooks/application-budget-adoption.md": "794c78a2a1f7cfeb602ddc3d2394ac86bbb4bfca2631bccdf7143261ad10d50e",
+    "docs/reports/2026-09-10-n0-03-import-mapping-runs-validation.md": "91acef8aecbb91077dd8c281057de0be98aa880bc828c6df21e93903b997aae4"
+  },
+  "remaining": [
+    "run creation time budget freezing",
+    "Agent prebinding and factory adoption",
+    "real meter qualification and process draining",
+    "linked run budget adoption, active time and checkpoint recovery",
+    "tool loop"
+  ],
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "fcfa76c2a46f312b18c7769c9b927cc71dc7f5da69f807a8bc80521d1bda804c",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "fc397e6ba1f30e580752315f5c3d4969b58c5043d203b95a7860ee2956f26069",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  }
+}

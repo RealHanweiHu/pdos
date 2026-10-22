@@ -1,0 +1,16 @@
+{
+  "extends": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "incremental": false
+  },
+  "include": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/workspace.tsx",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/builds/build-quality-loop.tsx",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/builds/build-quality-followup.tsx",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/next-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

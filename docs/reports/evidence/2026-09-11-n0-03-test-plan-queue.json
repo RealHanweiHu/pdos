@@ -1,0 +1,73 @@
+{
+  "work_item": "N0-03",
+  "status": "partial",
+  "date": "2026-09-11",
+  "migration": "0093_test_plan_queue",
+  "tests": {
+    "backend_distinct_passed": 9,
+    "new_queue_cases": 4,
+    "existing_wait_cases": 5,
+    "frontend_distinct_passed": 11,
+    "total_distinct_passed": 20,
+    "hydration_restore_recheck": 4,
+    "overlapping_results_excluded": true,
+    "post_backend_type_fixes": "Rename replayed result to avoid variable type collision; use typed SQLAlchemy false()."
+  },
+  "static_checks": {
+    "mypy_files": 6,
+    "ruff_files": 8,
+    "eslint_files": 4,
+    "typescript_full": true,
+    "common_exports": 4,
+    "runtime_exports": 5
+  },
+  "database": {
+    "database": "pdos_test",
+    "head": "0093_test_plan_queue",
+    "constraints": {
+      "ck_agent_runs_event_bounds_consistent": "CHECK (((((((agent_key)::text = 'ai_chat'::text) OR (((agent_key)::text = 'quality_intelligence'::text) AND ((context_version)::text = 'report-mapping-request-v1'::text))) AND (subscription_id IS NULL) AND (first_event_row_id IS NULL) AND (last_event_row_id IS NULL) AND (event_count = 0) AND (event_row_ids = '[]'::jsonb) AND (request_id IS NOT NULL) AND (btrim((request_id)::text) <> ''::text) AND (requested_by_user_id IS NOT NULL) AND (((status)::text = ANY ((ARRAY['running'::character varying, 'succeeded'::character varying, 'degraded'::character varying, 'failed'::character varying])::text[])) OR (((agent_key)::text = 'ai_chat'::text) AND ((status)::text = 'queued'::text)))) OR (((agent_key)::text <> 'ai_chat'::text) AND (subscription_id IS NOT NULL) AND (((request_id IS NULL) AND (requested_by_user_id IS NULL)) OR (((((agent_key)::text = 'project_intelligence'::text) AND ((context_version)::text = 'risk-suggestion-request-v1'::text)) OR (((agent_key)::text = 'quality_intelligence'::text) AND ((context_version)::text = 'test-plan-request-v1'::text))) AND (request_id IS NOT NULL) AND (btrim((request_id)::text) <> ''::text) AND (requested_by_user_id IS NOT NULL))) AND (first_event_row_id IS NOT NULL) AND (last_event_row_id IS NOT NULL) AND\nCASE\n    WHEN (jsonb_typeof(event_row_ids) = 'array'::text) THEN ((event_count > 0) AND (first_event_row_id > 0) AND (last_event_row_id >= first_event_row_id) AND (jsonb_array_length(event_row_ids) = event_count) AND (((event_row_ids ->> 0))::bigint = first_event_row_id) AND (((event_row_ids ->> (event_count - 1)))::bigint = last_event_row_id))\n    ELSE false\nEND)) IS TRUE))",
+      "ck_agent_runs_lifecycle_consistent": "CHECK (((((status)::text = ANY ((ARRAY['debouncing'::character varying, 'queued'::character varying])::text[])) AND (started_at IS NULL) AND (completed_at IS NULL)) OR (((status)::text = ANY ((ARRAY['running'::character varying, 'waiting_input'::character varying])::text[])) AND (started_at IS NOT NULL) AND (completed_at IS NULL)) OR (((status)::text = ANY ((ARRAY['succeeded'::character varying, 'degraded'::character varying, 'failed'::character varying])::text[])) AND (started_at IS NOT NULL) AND (completed_at IS NOT NULL)) OR ((((status)::text = 'failed'::text) AND (started_at IS NULL) AND (completed_at IS NOT NULL) AND ((((dispatch_policy)::text = 'milestone.v1'::text) AND (dispatch_deadline IS NOT NULL) AND ((error_code)::text = 'AGENT_TRIGGER_DEADLINE_EXCEEDED'::text)) OR ((error_code)::text = ANY ((ARRAY['BUDGET_LINEAGE_EXPIRED'::character varying, 'AGENT_AUTHORIZATION_CHANGED'::character varying])::text[])) OR (((agent_key)::text = ANY ((ARRAY['ai_chat'::character varying, 'project_intelligence'::character varying, 'quality_intelligence'::character varying])::text[])) AND ((run_context ->> 'application_queue_version'::text) = '1'::text)))) IS TRUE)))"
+    },
+    "queue_index": "CREATE INDEX ix_application_test_plan_queue ON cehub_ai.agent_runs USING btree (created_at, id) WHERE (((context_version)::text = 'test-plan-request-v1'::text) AND ((status)::text = 'queued'::text))"
+  },
+  "web_snapshot": {
+    "matching_sources": 319,
+    "matching_lockfile_sha256": "4cb2e2e0099c58b7d0b26c4954bb19f57be457629ee63bb76c0c0808aa3fb251"
+  },
+  "source_sha256": {
+    "server/app/ai/test_plan_suggestions.py": "5223fe1e4d795b914da354de7515093250db4ec51d52be5c21b7f7b0d27df983",
+    "server/app/ai/test_plan_queue.py": "57bc3d69dcf70aa10dacf66172e14e6a250ce52781b0cd4bc83e9994f02423e8",
+    "server/app/ai/application_waits.py": "a913e134e8538ddbcda45be527a827731e619c51d43af3109bd108edad2671d7",
+    "server/app/db/schema.py": "d6c06fa9a3cac69ca17c10659601df77427dfae5d62b318367f7af96b760e79f",
+    "server/app/api/npi_execution.py": "64ac33a301d30f40ef4e86beef22bbd08dc4b61c967fb2873b3b4feeefc92faa",
+    "server/scripts/run_application_worker.py": "f0b9b28760ff9bf76d002b8bdb51df995a3943717416d4d20917895a2574a888",
+    "server/migrations/versions/0093_test_plan_queue.py": "572e4b8effe9e55000ce7d78c386f1b8cd9f96a96e287e61c001eec0787c10da",
+    "server/tests/test_test_plan_queue.py": "d9ccb6c24cb83290882df8507e582c9dd9939b6f92ffdaeddbe1abf2d9e97ccb",
+    "web/src/components/projects/project-test-conversation.tsx": "2a4e8f603061cd6824a8a35364ac94434270019d1ad3d8e877ed08cfc7d28305",
+    "web/src/components/projects/project-test-conversation.test.tsx": "01a24a4908519b4dd7f1d0c60e846ca1622d40bae745e3b809f34e888bcdbe5d",
+    "web/src/lib/npi-bff.ts": "5d449a660ab467fedb2b0d8025bb3c559853ae828dbd1e497933f640b47539c4",
+    "web/src/app/api/projects/[projectId]/npi/[[...npiPath]]/route.test.ts": "392cbca0a03347d0c79ec81d071916eb78e2403541d71bd54709b1ed2677946a",
+    ".env.example": "ac973f0d2b1e1d92cda1dea3ac2a1f9c8c2e9ca63bca9c0a978097451c25f902",
+    "docs/runbooks/test-plan-application-queue.md": "f5c8aafa4aad18c35d358a294172106dc5624144c845729036ce3e50a57dfac8",
+    "docs/reports/2026-09-11-n0-03-test-plan-queue-validation.md": "f971f94ed1549ef71865a086d5700a3a1006e1feb06e51c96607d738f7335f64"
+  },
+  "log_sha256": {
+    "/tmp/pdos-test-plan-queue-tests.log": "5978f14c5ae6dfa042086a73567622d2f2d0043c75872ac794663b677bbcc17f",
+    "/tmp/pdos-test-plan-queue-web-tests.log": "74d717275421feabf3fcbfa204367b3f520758b0770e818822e850ec852658e0",
+    "/tmp/pdos-test-plan-queue-web-restore.log": "8220e52363577b1d140b62b34dd51b0f05bad0199975e9e5f2a7c092faf01e56",
+    "/tmp/pdos-test-plan-queue-mypy.log": "ab35ee42183d4d6d3ba483825ab037d18a5a15622d03be01d82220b1564851ff",
+    "/tmp/pdos-test-plan-queue-ruff.log": "b2a588b384f6be753eae1fb893b49b0d33c4931e8a39c6576453bcf908d6e1ed",
+    "/tmp/pdos-test-plan-queue-tsc.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/tmp/pdos-test-plan-queue-eslint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/tmp/pdos-test-plan-queue-migration.log": "de34bf935894dd0e7fa261ce33f4ac5c8b7b2b6c84c79aad09424a236882deb9"
+  },
+  "approved_manifest_sha256": {
+    "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+    "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+  },
+  "temporary_container_removed": "pdos-test-plan-queue-test",
+  "production_changed": false,
+  "real_provider_calls": false,
+  "goal_complete": false,
+  "temporary_web_directory_removed": true
+}

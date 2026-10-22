@@ -1,0 +1,6 @@
+{
+  "path": "pdos-next/tools/wave12_verify.py",
+  "before": "ced97347a1b1f9843280e4a2690be2c0cb43aed5bc0f87a79b1cbd2062dfebf4",
+  "after": "303ccba25e4c91b8679e1c2e53c2328cf74b033887dcaa9b270019a96a4c7cb2",
+  "reason": "Correct misplaced synthetic expired-round recovery phase branch. First invocation assertion failed before domain write. Backend and joint test sources unchanged."
+}

@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0-draft.1",
+  "status": "measurement_design_not_approved_or_instrumented",
+  "files": {
+    "docs/pilots/measurement-v1/README.md": "f7a6a02a9bb25af586b6b06afd82ec5caabf6c2a592e7a44b1181377b8d11dde",
+    "docs/pilots/measurement-v1/golden-candidates.json": "08cf60d6dfbb787b1a4bbf4d92443228ffc16a156ee12ce2b044289614deb4f5",
+    "docs/pilots/measurement-v1/metric-catalog.json": "2a078811bde83304bdd3639b6c2530bc4049de4bd2ba9f8f02bf02a8d9859f1c",
+    "docs/pilots/measurement-v1/pilot-register.json": "732c2bf842570d84bfff6885a4357e87666a1864ba001b7f3db0ec4a2a50405f",
+    "docs/pilots/measurement-v1/sample-fields.json": "36aaf8388fcd720e128f05a792e98c6a792261e2237bd04a2c11400d2eb16440"
+  },
+  "trusted_golden_readonly_snapshot": {
+    "server/golden/model-gateway-v1.json": "9a0ee7c02391940a461c6ceaee60a771e85e5cb3587d3cb5a5dab91361ed01ab",
+    "server/golden/model-qualifications.json": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+    "server/golden/phase-one-agents-v1.json": "334ed8d290ade42eabf490e0da91976a8b05ac115a20ea679f61b8fbd8991aeb",
+    "server/golden/phase-three-agents-v1.json": "301e8f71af4e1196a3e9e1694ae13c71fca00320fda05eb63d7ba607f04ccb00",
+    "server/golden/phase-two-agents-v1.json": "382f42db05ed0139d3dc420c75e7433c3d004775a10cc1b4d70c5d883594f471"
+  },
+  "frozen_common_approval_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+  "validation": "JSON parse / metric and role keys / pending-state consistency / source paths and markdown links; no runtime, DB or model validation"
+}

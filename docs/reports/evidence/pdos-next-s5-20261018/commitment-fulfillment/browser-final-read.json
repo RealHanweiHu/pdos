@@ -1,0 +1,12 @@
+{
+  "finalBuild": true,
+  "desktopLight": true,
+  "mobileDark320": true,
+  "regionWidth": {
+    "client": 288,
+    "scroll": 288
+  },
+  "oldSuccessfulFormHidden": true,
+  "automaticPosts": 0,
+  "receiptUnchanged": "bee9767f-413c-4590-9a66-393080593a88"
+}

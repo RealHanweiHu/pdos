@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-10",
+  "scope": "risk request replay binds authenticated initiating user; corrects previous broad claim that request idempotency was absent",
+  "tests": {
+    "existing_passed": 21,
+    "new_passed": 5,
+    "distinct_total": 26
+  },
+  "checks": {
+    "ruff_files": 2,
+    "format_files": 2,
+    "mypy_files": 1,
+    "exports": "both passed; runtime inventory refreshed"
+  },
+  "test_database": {
+    "host": "127.0.0.1",
+    "port": 57432,
+    "database": "pdos_test",
+    "migration_added": false,
+    "runtime_role_passwords_changed": false
+  },
+  "sources": {
+    "server/app/ai/risk_suggestions.py": "504940b36bc5201f114b05c86b7e4f91f95e26ea159ac85afaa798aff1a0d517",
+    "server/tests/test_ai_api.py": "5cdb29943a1bc9ef2685180d6fabcf6f6ff5c89a796e607b404d1136e7e24771",
+    "server/app/ai/test_plan_suggestions.py": "0b9d72b983a664d50010bfdbe170af8906038898b4f815caebbd663eb62faa78",
+    "server/tests/test_ai_test_plan_changes.py": "383eaf8242aced0c5d3750d4d2a0ff8dfd508f491ea815bc243f51cf5489e290",
+    "docs/reports/2026-09-10-n0-03-risk-request-replay-validation.md": "d2087b755cdd4b767beffba347b42541f6cf12af81d75923d046bb241a3cf838",
+    "docs/reports/2026-09-10-n0-03-model-call-identity-validation.md": "55913c9fb665faf7241e6bdd6624946c7e07d49e4b517ca48518cf75639f8d99"
+  },
+  "real_model_calls": 0,
+  "remaining": [
+    "persistent Chat/import request runs and idempotency",
+    "automatic budget provisioning and linked run accounting",
+    "default budget factory adoption",
+    "real metering publication and recovery"
+  ],
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "88ab4788842ad227e9e9685cd60ec0340f3db13804491486eb64149e1f9c585b",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "bacb038dd1ed30e161274a9a54acd2256cca761e41f4d9c6910274bf4d283066",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  }
+}

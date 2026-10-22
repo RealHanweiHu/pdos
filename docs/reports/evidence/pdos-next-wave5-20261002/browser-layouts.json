@@ -1,0 +1,48 @@
+{
+  "layouts": [
+    {
+      "width": 1440,
+      "height": 1000,
+      "scrollWidth": 1440,
+      "theme": "light",
+      "screenshot": "supply-results-light.png"
+    },
+    {
+      "height": 1000,
+      "scrollWidth": 1440,
+      "theme": "dark",
+      "width": 1440,
+      "screenshot": "supply-results-dark.png"
+    },
+    {
+      "height": 844,
+      "scrollWidth": 390,
+      "theme": "dark",
+      "width": 390,
+      "screenshot": "supply-390-dark.png"
+    },
+    {
+      "height": 844,
+      "scrollWidth": 390,
+      "theme": "light",
+      "width": 390,
+      "screenshot": "supply-390-light.png"
+    },
+    {
+      "height": 844,
+      "scrollWidth": 320,
+      "theme": "dark",
+      "width": 320,
+      "screenshot": "supply-320-dark.png"
+    },
+    {
+      "height": 844,
+      "scrollWidth": 320,
+      "theme": "light",
+      "width": 320,
+      "screenshot": "supply-320-light.png"
+    }
+  ],
+  "history": "Old kit remains visible and requires recalculation; current kit selected again",
+  "scope": "Supply snapshot and kit results only"
+}

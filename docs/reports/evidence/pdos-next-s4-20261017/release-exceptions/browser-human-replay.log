@@ -1,0 +1,7 @@
+### Result
+{"posts":[{"command_id":"47fb3b3f-3785-4bd9-b720-392a2089e14e","operation":"release.exception.decide","status":200,"subject_id":"4fb416d4-775d-45fa-8bde-1c4e0876325e","same_original":true},{"command_id":"47fb3b3f-3785-4bd9-b720-392a2089e14e","operation":"release.exception.decide","status":200,"subject_id":"4fb416d4-775d-45fa-8bde-1c4e0876325e","same_original":true}],"dropped":true,"status":["已保存本人具名例外决定；限制和风险控制保留，原检查状态不变。","本次已取得登记回执 aaa11be8-ec8a-4eb6-8077-41bcdb914565。继续办理须明确开启新草稿。"],"saved":"4fb416d4-775d-45fa-8bde-1c4e0876325e"}
+### Ran Playwright code
+```js
+await (async page => ({posts:page.__exceptionBrowser.posts,dropped:page.__exceptionBrowser.dropped,status:await page.getByRole("region",{name:"具名例外决定与撤回",exact:true}).getByRole("status").allTextContents(),saved:await page.getByRole("region",{name:"具名例外决定与撤回",exact:true}).getByRole("combobox",{name:"已保存例外决定",exact:true}).inputValue()}))(page);
+```
+

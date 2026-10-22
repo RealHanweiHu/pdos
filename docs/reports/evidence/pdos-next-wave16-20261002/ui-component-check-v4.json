@@ -1,0 +1,93 @@
+{
+  "candidate": "Wave16 owned UI v4; real output-owner proof integration gaps",
+  "recorded_at": "2026-10-03T08:24:54.468894+00:00",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "b00f6c5be2302a58882a2540a86cdc1a14cbe0a6c6bda54b0f4e76454ae1f4d6"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "c44ea7a6957570350d7af248095a2e6091787dc56906ba165ddabc9108c9f4e3"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "88054bac3a979d0213b21b6f3a703ba34846f58b76904a6d8d3d0cd0741c42ca"
+    }
+  ],
+  "baseline": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "7e162684371d1127fccd21816b86c1b6b3cde918b830d541e7ec03ae84e89c31",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v3-source/build-quality-followup.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "c1bf9bad3a2d2d27605fcaa969d283d9c604b2900146a69a9e65db5054029ba7",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v3-source/build-quality-followup-view.ts"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "b3a089884e2c53ef4e0e4e7711fd4f3765405ecd7854a2b523e1c9fc512f8b74",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v3-source/build-quality-followup-view.test.ts"
+    }
+  ],
+  "delta_file": "ui-v3-to-v4.diff",
+  "public_paths_changed": false,
+  "public_patches_modified": false,
+  "helper_checks": {
+    "tests": 43,
+    "passed": 43,
+    "failed": 0,
+    "exit_code": 0,
+    "raw_output": "ui-helper-v4-checks.log",
+    "prepare_command": "node /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v4-ia65wdc4/prepare-tests.cjs",
+    "command": "node --test /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v4-ia65wdc4/build-quality-followup-view.test.js",
+    "transpilation": "bundled TypeScript.transpileModule ES2022/CommonJS/esModuleInterop for product-view.ts + owned helper/test to tmp only",
+    "no_src_javascript_created": true
+  },
+  "typecheck": {
+    "command": "node_modules/.bin/tsc --project /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v4-ia65wdc4/tsconfig.json",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+    "exit_code": 0,
+    "raw_output": "ui-type-v4-check.log",
+    "configuration": "ui-local-v4-type-config.json"
+  },
+  "lint": {
+    "command": "node_modules/.bin/eslint src/components/builds/build-quality-followup.tsx src/lib/build-quality-followup-view.ts src/lib/build-quality-followup-view.test.ts --format json --output-file /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-v4-ia65wdc4/lint-result.json",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+    "exit_code": 0,
+    "errors": 0,
+    "warnings": 0,
+    "raw_output": "ui-lint-v4-result.json"
+  },
+  "changes": [
+    "Typed integration.missing requires array of nonempty string code/detail; malformed or omitted gaps fail closed, future valid codes remain readable.",
+    "Shows current output-owner proof and independent verification gap details directly from server without leaking technical code or inferring authority.",
+    "PAIRED_FORMAL_OWNER_PROOF_NOT_CONFIGURED warning may coexist with a real direct-receipt draft option; no old-version or cross-operation receipt fallback."
+  ],
+  "new_meaningful_checks": [
+    "Actual paired-owner proof limitation retained with independently valid draft output",
+    "Malformed or missing gap array/code/detail is rejected",
+    "Future valid gap remains readable without granting unavailable capability; explicit empty list remains valid"
+  ],
+  "preserved_behavior": [
+    "v3 committed 401/403 privacy cleanup and known-success no-retry notice",
+    "Original unresolved command/key exact recovery",
+    "T1/T2 server preview and exact returned command submission",
+    "Existing full-precision event clocks and read/history gates"
+  ],
+  "preserved_evidence": [
+    "ui-component-check-v3.json",
+    "ui-source-v3-manifest.json",
+    "ui-public-cross-review.md",
+    "ui-v3-source-manifest.json",
+    "ui-v3-source/*"
+  ],
+  "boundaries": {
+    "db_http_browser_public_build_run": false,
+    "shared_api_bff_parent_modified": false,
+    "backend_migration_or_proof_gate_modified": false,
+    "effectiveness_close_formal_release_enabled": false
+  }
+}

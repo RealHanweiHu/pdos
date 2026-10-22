@@ -1,0 +1,16 @@
+{
+  "checked_at": "2026-10-03T07:32:42.660743+00:00",
+  "status": 200,
+  "body": {
+    "status": "ok",
+    "model_available": false,
+    "slice": "wave1-source-definition",
+    "durable_queue_enabled": true
+  },
+  "api_port": 8898,
+  "database_port": 62513,
+  "candidate": "backend-candidate-v4-source.json",
+  "candidate_sha256": "fb4829a123970927440e7770fa19accbc5a890da7069ad95541605c1e14ee902",
+  "source_stable": true,
+  "ready_log": "API v4 startup completed, session 93119, PID 38629; prior v3 stopped gracefully."
+}

@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "steps": [
+    {
+      "step": [
+        "downgrade",
+        "next_0024"
+      ],
+      "exit_code": 0
+    },
+    {
+      "step": [
+        "upgrade",
+        "next_0025"
+      ],
+      "exit_code": 0
+    },
+    {
+      "step": [
+        "check"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "scope": "Locked conservative downgrade guard before any three-op business facts; no data deletion",
+  "migration_sha256": "321f54e31292e2f2c6b5321663432d781e3376f3aac41c051d0b308a246a7108"
+}

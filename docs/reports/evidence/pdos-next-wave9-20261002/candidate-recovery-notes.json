@@ -1,0 +1,17 @@
+{
+  "recorded_at": "2026-10-02T15:48:38.729812+00:00",
+  "evidence_helper_correction": "Scope model-call evidence to actual preview tenant; concurrent isolated fixture invocations are not preview calls. No runtime or test changes.",
+  "initial_schema_correction": "0011 expression index was missing from metadata, then SQL expression normalized to actual PostgreSQL definition; schema-match passed. Migration DDL not rewritten.",
+  "initial_collection_correction": "Add package marker to separate lifecycle and scanner test_runtime modules. No test behavior changed.",
+  "actual_workflow_correction": "Inbox delivery INSERT/ack advanced reference version. Initial pending intent had no permit or byte effect; cancelled via named T1. Append next_0012 removes transport-only trigger; 0012 up/down/up and schema passed. Original isolation/restoration then both applied once.",
+  "initial_joint_run": "Stopped after actual workflow exposed the delivery defect; no pass claimed.",
+  "boundaries": [
+    "reversible access marker only; no byte move or deletion",
+    "reviewed current schema with bounded closure; unknown table/column/guard/inventory or capacity overflow protects",
+    "Outbox subject binding follows common guarded domain service; not a claim of arbitrary SQL write resistance",
+    "local synthetic retention policy only; no production qualification"
+  ],
+  "prior_joint_fixture_failure": "The previous run was stopped after 980 passing tests, one BrokenBarrierError and a second old callback deadlock. Both callbacks performed concurrency/revocation inside the new locked byte-read transaction. No joint pass claimed.",
+  "fixture_correction": "Move the test Barrier and grant revocation into injected parser callbacks outside byte-read transactions, preserving one-fact/one-receipt and revoked final-commit rejection assertions. Whole durable evidence file: 18 passed in 9.69s. Production guard unchanged.",
+  "new_candidate": "325 source/config files refrozen after all corrections. Fresh joint validation uses separate test processes on unique tenant fixtures; lifecycle schema mutation checks run alone after other processes finish. No historical passing counts stitched together."
+}

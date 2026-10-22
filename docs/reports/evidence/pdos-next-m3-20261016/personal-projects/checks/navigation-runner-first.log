@@ -1,0 +1,12 @@
+3 | import { globalHref, normalizeGlobalSearch, resolveGlobalLocation } from "./global-navigation";
+4 |
+5 | const category = "11111111-2222-4333-8444-555555555555";
+6 | const project = "66666666-7777-4888-8999-aaaaaaaaaaaa";
+7 |
+8 | test("全局七入口解析与往返保持", () => {
+    ^
+error: Cannot use test outside of the test runner. Run "bun test" to run tests.
+      at addTest (node:test:1653:9)
+      at /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/lib/global-navigation.test.ts:8:1
+
+Bun v1.4.0 (macOS arm64)

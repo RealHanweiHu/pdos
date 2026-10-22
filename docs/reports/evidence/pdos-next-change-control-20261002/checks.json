@@ -1,0 +1,39 @@
+{
+  "backend_tests": {
+    "count": 105,
+    "status": "passed",
+    "output": "backend-pytest.txt",
+    "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest --confcutdir=tests/change_control -p no:cacheprovider tests/change_control -q --tb=short",
+    "cwd": "pdos-next/server"
+  },
+  "backend_static": {
+    "status": "passed",
+    "output": "backend-ruff.txt",
+    "command": "ruff check --no-cache domain/change_control schemas/change_control tests/change_control"
+  },
+  "ui_tests": {
+    "count": 22,
+    "status": "passed",
+    "output": "ui-component-checks.log"
+  },
+  "ui_typecheck": {
+    "status": "passed",
+    "output": "ui-typecheck.log",
+    "incremental": false,
+    "noEmit": true
+  },
+  "ui_eslint": {
+    "status": "passed",
+    "output": "ui-eslint.log",
+    "cache": false
+  },
+  "candidate": "f53cb889ceda0c539487f0bbae25142630e3bfa196761f3fdbdb15a5a1886fa3",
+  "file_count": 18,
+  "consumption_drift": {
+    "pdos-next/server/pdos_next/contracts.py": {
+      "initial": "29c903fec3e8924b0ed53b04791dab1dc39a9b583dac40b6483ba74033d06d20",
+      "final": "711334e08663d8f09157605c9a651a6487755d23127fd7e8b0374e1411a63282"
+    }
+  },
+  "scope": "Pure synthetic domain/fake caller transaction and local static/SSR component checks only. No database, HTTP, browser or G/N/P/Q exit."
+}

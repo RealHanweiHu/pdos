@@ -1,0 +1,343 @@
+{
+  "version": "pai-upload-bff-http-check/v1",
+  "executed_at": "2026-10-18T02:11:51.067587+00:00",
+  "base_url": "http://127.0.0.1:55210",
+  "principal_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+  "scope": {
+    "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+    "product_id": null,
+    "proposal_id": null
+  },
+  "helper_sha256": "159076113b374ac83d7318a231316ec4edbdb186c8330392baa80d391bd03768",
+  "proxy_sha256": "ba6cb1c34c0df0eb9c6e13a424b5c237cbe009d6890610641dc3f0430d24d114",
+  "upstream_observation": "Completed domain middleware rows, matched by method and exact path.",
+  "ui_request": {
+    "request_key": "87c2015f-9572-42b3-a35b-6605b6d7f020",
+    "request_digest": "c126299fa60b8b76d1ca0eab51e8ec3519a5fc0b440c0d701efc1f9e2b67c35b",
+    "byte_count": 159
+  },
+  "cases": [
+    {
+      "case": "target",
+      "method": "GET",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-target",
+      "expected_status": 200,
+      "status": 200,
+      "expected_api_calls": 1,
+      "observed_api_calls": 1,
+      "response_format": "json",
+      "response_metadata": {
+        "version": "agent-upload-target/v1",
+        "principal_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+        "scope": {
+          "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+          "product_id": null,
+          "proposal_id": null
+        },
+        "as_of": "2026-10-18T02:11:51.343220+00:00",
+        "target": {
+          "kind": "category",
+          "id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+          "revision": 1
+        },
+        "authorization": {
+          "can_write": true,
+          "code": null
+        },
+        "constraints": {
+          "max_bytes": 8388608,
+          "extensions": [
+            ".txt",
+            ".md",
+            ".pdf",
+            ".xlsx"
+          ],
+          "default_visibility": "private"
+        }
+      },
+      "api_response_metadata": [
+        {
+          "method": "GET",
+          "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-target",
+          "status": 200
+        }
+      ],
+      "passed": true
+    },
+    {
+      "case": "ui_receipt",
+      "method": "GET",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020",
+      "expected_status": 200,
+      "status": 200,
+      "expected_api_calls": 1,
+      "observed_api_calls": 1,
+      "response_format": "json",
+      "response_metadata": {
+        "version": "agent-upload-receipt/v1",
+        "principal_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+        "scope": {
+          "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+          "product_id": null,
+          "proposal_id": null
+        },
+        "as_of": "2026-10-18T02:11:51.471197+00:00",
+        "request_key": "87c2015f-9572-42b3-a35b-6605b6d7f020",
+        "request_digest": "c126299fa60b8b76d1ca0eab51e8ec3519a5fc0b440c0d701efc1f9e2b67c35b",
+        "state": "committed",
+        "receipt": {
+          "id": "5f082ca9-480a-49dc-957f-b8de123395db",
+          "operation": "evidence.original.upload",
+          "subject_type": "uploaded_original",
+          "subject_id": "b5321584-6dbf-49b7-8819-513d19317e87",
+          "subject_revision": 1,
+          "writer_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+          "requester_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+          "created_at": "2026-10-18T02:11:18.592133+00:00"
+        },
+        "attempt": {
+          "id": "b5321584-6dbf-49b7-8819-513d19317e87",
+          "revision": 2,
+          "status": "committed"
+        },
+        "original": {
+          "id": "b5321584-6dbf-49b7-8819-513d19317e87",
+          "revision": 1,
+          "title": "pai-upload-browser-note.txt",
+          "filename": "pai-upload-browser-note.txt",
+          "parse_status": "uploaded",
+          "parse_code": null,
+          "scan_status": "not_scanned",
+          "security": {
+            "state": "not_scanned",
+            "reasons": [
+              "SCAN_REQUIRED"
+            ],
+            "epoch": 1,
+            "source_state": "active"
+          }
+        },
+        "source": null
+      },
+      "api_response_metadata": [
+        {
+          "method": "GET",
+          "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020",
+          "status": 200
+        }
+      ],
+      "passed": true,
+      "identity_and_digest_valid": true
+    },
+    {
+      "case": "receipt_wrong_digest",
+      "method": "GET",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020",
+      "expected_status": 409,
+      "status": 409,
+      "expected_api_calls": 1,
+      "observed_api_calls": 1,
+      "response_format": "json",
+      "response_metadata": {
+        "code": "DUPLICATE_INTENT_CONFLICT"
+      },
+      "api_response_metadata": [
+        {
+          "method": "GET",
+          "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020",
+          "status": 409
+        }
+      ],
+      "passed": true
+    },
+    {
+      "case": "receipt_duplicate_query",
+      "method": "GET",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020",
+      "expected_status": 422,
+      "status": 422,
+      "expected_api_calls": 0,
+      "observed_api_calls": 0,
+      "response_format": "json",
+      "response_metadata": {
+        "code": "VALIDATION_FAILED"
+      },
+      "api_response_metadata": [],
+      "passed": true
+    },
+    {
+      "case": "receipt_extra_query",
+      "method": "GET",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020",
+      "expected_status": 422,
+      "status": 422,
+      "expected_api_calls": 0,
+      "observed_api_calls": 0,
+      "response_format": "json",
+      "response_metadata": {
+        "code": "VALIDATION_FAILED"
+      },
+      "api_response_metadata": [],
+      "passed": true
+    },
+    {
+      "case": "receipt_missing_cookie",
+      "method": "GET",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/agent-upload-receipts/87c2015f-9572-42b3-a35b-6605b6d7f020",
+      "expected_status": 401,
+      "status": 401,
+      "expected_api_calls": 0,
+      "observed_api_calls": 0,
+      "response_format": "json",
+      "response_metadata": {
+        "code": "FORBIDDEN_SCOPE"
+      },
+      "api_response_metadata": [],
+      "passed": true
+    },
+    {
+      "case": "upload_missing_cookie",
+      "method": "POST",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/originals",
+      "expected_status": 401,
+      "status": 401,
+      "expected_api_calls": 0,
+      "observed_api_calls": 0,
+      "response_format": "json",
+      "response_metadata": {
+        "code": "FORBIDDEN_SCOPE"
+      },
+      "api_response_metadata": [],
+      "passed": true
+    },
+    {
+      "case": "upload_wrong_origin",
+      "method": "POST",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/originals",
+      "expected_status": 403,
+      "status": 403,
+      "expected_api_calls": 0,
+      "observed_api_calls": 0,
+      "response_format": "json",
+      "response_metadata": {
+        "code": "FORBIDDEN_SCOPE"
+      },
+      "api_response_metadata": [],
+      "passed": true
+    },
+    {
+      "case": "upload_non_json",
+      "method": "POST",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/originals",
+      "expected_status": 415,
+      "status": 415,
+      "expected_api_calls": 0,
+      "observed_api_calls": 0,
+      "response_format": "json",
+      "response_metadata": {
+        "code": "UNSUPPORTED_MEDIA_TYPE"
+      },
+      "api_response_metadata": [],
+      "passed": true
+    },
+    {
+      "case": "upload_invalid_schema",
+      "method": "POST",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/originals",
+      "expected_status": 422,
+      "status": 422,
+      "expected_api_calls": 0,
+      "observed_api_calls": 0,
+      "response_format": "json",
+      "response_metadata": {
+        "code": "VALIDATION_FAILED"
+      },
+      "api_response_metadata": [],
+      "passed": true
+    },
+    {
+      "case": "upload_json_over_cap",
+      "method": "POST",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/originals",
+      "expected_status": 413,
+      "status": null,
+      "expected_api_calls": 0,
+      "observed_api_calls": 0,
+      "response_format": null,
+      "response_metadata": null,
+      "api_response_metadata": [],
+      "passed": false,
+      "transport_error": "URLError"
+    },
+    {
+      "case": "boundary_exact",
+      "method": "POST",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/originals",
+      "expected_status": 200,
+      "status": 200,
+      "expected_api_calls": 1,
+      "observed_api_calls": 1,
+      "response_format": "json",
+      "response_metadata": {
+        "id": "1952c105-173b-4f7d-8416-6c4c06662fb6",
+        "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+        "product_id": null,
+        "operation": "evidence.original.upload",
+        "subject_type": "uploaded_original",
+        "subject_id": "5f36d181-0340-4d96-b576-276a62ede990",
+        "subject_revision": 1,
+        "writer_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+        "requester_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+        "created_at": "2026-10-18T02:11:52.108514+00:00",
+        "agent_run_id": null
+      },
+      "api_response_metadata": [
+        {
+          "method": "POST",
+          "path": "/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/originals",
+          "status": 200,
+          "case": "boundary_exact",
+          "original_id": "5f36d181-0340-4d96-b576-276a62ede990"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "case": "boundary_large",
+      "method": "POST",
+      "path": "/api/v1/categories/eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc/originals",
+      "expected_status": 413,
+      "status": 413,
+      "expected_api_calls": 0,
+      "observed_api_calls": 0,
+      "response_format": "json",
+      "response_metadata": {
+        "code": "FILE_TOO_LARGE"
+      },
+      "api_response_metadata": [],
+      "passed": true
+    }
+  ],
+  "passed": false,
+  "target_revision": 1,
+  "boundary_intents": [
+    {
+      "case": "boundary_exact",
+      "request_key": "1c959c69-4e01-48a0-80a4-9e7b0672067c",
+      "filename": "boundary-eight-mib.txt",
+      "byte_count": 8388608,
+      "json_byte_count": 11185050,
+      "expected_revision": 1,
+      "visibility": "private"
+    },
+    {
+      "case": "boundary_large",
+      "request_key": "ecf5cfa5-2050-466f-8236-38380bace3a0",
+      "filename": "boundary-too-large.txt",
+      "byte_count": 8388609,
+      "json_byte_count": 11185054,
+      "expected_revision": 1,
+      "visibility": "private"
+    }
+  ]
+}

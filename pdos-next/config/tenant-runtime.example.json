@@ -1,0 +1,43 @@
+{
+  "format_version": 1,
+  "kms": {
+    "region": "cn-hangzhou",
+    "endpoint": "kms-vpc.cn-hangzhou.aliyuncs.com"
+  },
+  "secrets": [
+    {
+      "tenant_id": "00000000-0000-4000-8000-000000000001",
+      "protocol": "openai-compatible",
+      "reference": "00000000-0000-4000-8000-000000000002",
+      "secret_arn": "acs:kms:cn-hangzhou:000000000000:secret/replace-with-tenant-model-key"
+    }
+  ],
+  "research": null,
+  "mcp": null,
+  "models": [
+    {
+      "tenant_id": "00000000-0000-4000-8000-000000000001",
+      "protocol": "openai-compatible",
+      "base_url": "https://synthetic.invalid/v1",
+      "model": "synthetic-model",
+      "model_version": "synthetic@1",
+      "provider": "synthetic-provider",
+      "pricing": {
+        "source": "Example only; replace with verified current provider prices",
+        "verified_at": "2000-01-01T00:00:00Z",
+        "valid_until": "2000-01-02T00:00:00Z",
+        "input_per_million": "0",
+        "output_per_million": "0",
+        "cache_read_per_million": "0",
+        "cache_creation_per_million": "0",
+        "request_fee": "0",
+        "currency": "USD",
+        "text_tokens_per_utf8_byte": "1",
+        "text_framing_tokens": 0,
+        "text_billing_source": "Replace with this model's verified text billing boundary",
+        "output_cap_covers_all_billing": false,
+        "covers_all_fees": false
+      }
+    }
+  ]
+}

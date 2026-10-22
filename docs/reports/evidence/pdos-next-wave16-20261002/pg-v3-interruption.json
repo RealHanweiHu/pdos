@@ -1,0 +1,190 @@
+{
+  "recorded_at": "2026-10-03T10:24:23.278521+00:00",
+  "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+  "backend_480_stable_before_stop": true,
+  "completed": 13,
+  "passed": 11,
+  "failed": 2,
+  "completed_results": {
+    "00": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_t2_named_root_cause_uses_actual_common_uuid_and_atomic_shared_receipt",
+      "exit_code": 0,
+      "seconds": 1866.7,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-00.log",
+      "log_sha256": "06744b58ab58b4b96f40d0349166c4cb67ecca0464afb18ce0dc863086f55132"
+    },
+    "01": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution",
+      "exit_code": 1,
+      "seconds": 2345.52,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-01.log",
+      "log_sha256": "39c77cc3fc5914cf51a6efe86b1b70a58f23b1dde19987f870388ed9933920bd"
+    },
+    "02": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.capa.actions.complete-capa.actions_completed]",
+      "exit_code": 0,
+      "seconds": 2015.72,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-02.log",
+      "log_sha256": "f0c36270a303170dd51aff8ae9323bec835571f3dfd623778e08f544d5d645e8"
+    },
+    "03": {
+      "node": "tests/quality_followup_root/test_savepoint.py::test_actual_followup_savepoint_commits_and_orphan_consumption_rolls_back",
+      "exit_code": 0,
+      "seconds": 1963.16,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-03.log",
+      "log_sha256": "391469273da63ef9dfb4eafac795c0de5641007d4a276de3037eb8a0db621808"
+    },
+    "04": {
+      "node": "tests/quality_followup_root/test_expired_recovery.py::test_expired_followup_proof_has_bound_no_saved_repreview_and_saved_replay",
+      "exit_code": 0,
+      "seconds": 2249.97,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-04.log",
+      "log_sha256": "5046f370ae0f43f8cb6c62192aef90e0e54b072903a37f84e02a3b9b90c580cf"
+    },
+    "05": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_real_consumption_marker_requires_no_sql_gap_and_cannot_cross_transaction",
+      "exit_code": 0,
+      "seconds": 1726.91,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-05.log",
+      "log_sha256": "a8c99d76dba1c15ecc88a29a3653e55bdb31c41c6ea2c6c620fda87b894acb45"
+    },
+    "06": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.issue.root_cause.decide]",
+      "exit_code": 0,
+      "seconds": 1891.78,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-06.log",
+      "log_sha256": "8eae185cc2be84507e942f57bd0bff92f6ceddc648168ba5c146de48132b80e6"
+    },
+    "07": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.capa.actions.complete]",
+      "exit_code": 0,
+      "seconds": 1903.33,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-07.log",
+      "log_sha256": "55d58a723ae69b42285bf721f34563f5595774e1511cfe3f7e75ae78d630030b"
+    },
+    "08": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.capa.followup.link]",
+      "exit_code": 1,
+      "seconds": 2636.78,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-08.log",
+      "log_sha256": "8d093ab1c0e401f708a56d3a2e265b5e19910645cfa36ddf39591f3c557d3b97"
+    },
+    "09": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_exact_nine_fields_and_named_executor_cannot_change_after_review[executor]",
+      "exit_code": 0,
+      "seconds": 1710.03,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-09.log",
+      "log_sha256": "3aa4748503889c5cc10172cf42e527b50543d78ef191e50e136064858c0d53be"
+    },
+    "10": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_exact_nine_fields_and_named_executor_cannot_change_after_review[event_clock]",
+      "exit_code": 0,
+      "seconds": 1728.87,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-10.log",
+      "log_sha256": "f54188b9961aafc711b648ca410fc97238acdb03456d5bfe54510a206fc5b425"
+    },
+    "11": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_exact_nine_fields_and_named_executor_cannot_change_after_review[event_text]",
+      "exit_code": 0,
+      "seconds": 1740.95,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-11.log",
+      "log_sha256": "c3bc444830a4a8dc905a0600e16d5a7167aff9beecd9c6612f03e320f719bfe9"
+    },
+    "12": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_and_history[completion_original]",
+      "exit_code": 0,
+      "seconds": 1679.53,
+      "source_stable": true,
+      "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+      "log_file": "pg-v3-12.log",
+      "log_sha256": "84db35ca080385d0a2b9ee0ca22511595c3c37bdbaf9294f6b15deeb507c86dc"
+    }
+  },
+  "unfinished": [
+    {
+      "index": 13,
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_and_history[classification]",
+      "status": "interrupted_in_flight",
+      "log": "pg-v3-13.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": false
+    },
+    {
+      "index": 14,
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[original_epoch]",
+      "status": "interrupted_in_flight",
+      "log": "pg-v3-14.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": false
+    },
+    {
+      "index": 15,
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[policy_epoch]",
+      "status": "interrupted_in_flight",
+      "log": "pg-v3-15.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": false
+    },
+    {
+      "index": 16,
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_link_t1_preserves_issue_pointer_and_records_exact_scoped_owner_output",
+      "status": "interrupted_in_flight",
+      "log": "pg-v3-16.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": false
+    },
+    {
+      "index": 17,
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_classification_profile_aba_during_actual_source_checks_cannot_reuse_old_closure",
+      "status": "interrupted_in_flight",
+      "log": "pg-v3-17.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": false
+    },
+    {
+      "index": 18,
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.issue.root_cause.decide-issue.root_cause_decided]",
+      "status": "interrupted_in_flight",
+      "log": "pg-v3-18.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": false
+    },
+    {
+      "index": 19,
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.capa.followup.link-capa.followup_linked]",
+      "status": "not_started",
+      "log": null,
+      "log_sha256": null,
+      "passed": false
+    }
+  ],
+  "runner_exit_code": 143,
+  "stop_signal": "SIGTERM verified runner-only process group",
+  "reason": "New actual Link COMMIT proof failure invalidates closeout; prevent repeat work on known faulty candidate, prepare scoped repair and replacement checks. Prior source-freeze plan superseded at this checkpoint.",
+  "api_worker_user_tabs_untouched": true,
+  "old_results_are_new_candidate_joint_pass": false
+}

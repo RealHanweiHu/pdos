@@ -1,0 +1,57 @@
+{
+  "actual_candidate_id": "2d7a93f0-4940-55fe-9790-2b766244df9f",
+  "actual_rule_id": "228b6680-da4b-5006-8cbb-68900bb0ffab",
+  "candidate_revision": {
+    "before": 3,
+    "after": 4
+  },
+  "rule_revision": {
+    "before": 1,
+    "after": 2
+  },
+  "actual_receipts": {
+    "candidate": "ba2fc189-5b97-4a76-afa2-293020da60f4",
+    "rule": "f6407b55-c23d-4fa8-a6f8-ce09534108fb",
+    "assessment": "2702f5e6-d7ca-593a-8a62-4e1d33e6dfd5"
+  },
+  "actual_commands": {
+    "candidate": "1029d083-3a5e-4173-bc20-6a4b4d571f60",
+    "rule": "c1be48d4-39c9-469c-be16-1209fbea8b02"
+  },
+  "candidate_actual_success_response_replaced_with_503": true,
+  "injection_fulfilled_before_reload": true,
+  "reload_auto_POSTs": 0,
+  "candidate_explicit_replay_exact_command_and_key": true,
+  "candidate_replay_same_receipt": true,
+  "old_published_rule_candidate_binding_unchanged_until_explicit_publication": true,
+  "rule_T2_actual_preview_then_one_named_confirmation": true,
+  "rule_execution_exact_actual_preview_command": true,
+  "latest_candidate_explicitly_adopted": true,
+  "read_refresh_POSTs": 0,
+  "frames": [
+    {
+      "width": 1440,
+      "dark": false,
+      "overflow": false,
+      "viewport_screenshot": true,
+      "card_box": {
+        "x": 256,
+        "y": 280.078125,
+        "width": 1152,
+        "height": 535.6875
+      }
+    },
+    {
+      "width": 320,
+      "dark": true,
+      "overflow": false,
+      "viewport_screenshot": true,
+      "card_box": {
+        "x": 16,
+        "y": 279.515625,
+        "width": 288,
+        "height": 1195.609375
+      }
+    }
+  ]
+}

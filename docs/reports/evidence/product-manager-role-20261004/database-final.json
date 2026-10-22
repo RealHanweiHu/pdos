@@ -1,0 +1,6 @@
+{
+  "database": "pdos_test",
+  "head": "0417_product_manager_role",
+  "agent_business_write_tables": 0,
+  "role_constraint": "CHECK (((role)::text = ANY ((ARRAY['owner'::character varying, 'admin'::character varying, 'product_manager'::character varying, 'project_manager'::character varying, 'engineer'::character varying, 'quality'::character varying, 'supplier'::character varying, 'customer'::character varying])::text[])))"
+}

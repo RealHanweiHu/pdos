@@ -1,0 +1,7 @@
+[
+  "tests/sample_handoff/test_transactions.py::test_targeted_execution_projection_preserves_qualification_stop_and_source_guards",
+  "tests/sample_handoff/test_transactions.py::test_watched_owner_projection_reloads_legal_raw_current_successor_without_python_epoch",
+  "tests/sample_handoff/test_transactions.py::test_watched_owner_projection_rejects_changed_actual_actor_scope_and_regates_after_rollback",
+  "tests/sample_handoff/test_transactions.py::test_new_observation_source_withdrawal_blocks_current_ready_and_new_ready_write",
+  "tests/sample_handoff/test_transactions.py::test_signer_qualification_revoke_restore_epoch_does_not_revive_readiness"
+]

@@ -1,0 +1,99 @@
+...F.................................................................... [ 22%]
+........................................................................ [ 44%]
+........................................................................ [ 66%]
+........................................................................ [ 88%]
+.............................EEEEEEE                                     [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_provider_call_requires_registered_graph_and_replays_saved_request _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_private_run_without_agreement_proceeds_and_receipts_none _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_run_provider_identity_cannot_change_between_model_calls _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_generic_capability_graph_cannot_bypass_registered_xiaopai_gateway _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_prompt_and_tool_prefixes_are_fixed_per_isolation_across_restart _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_scope_revocation_during_call_frees_slot_without_revealing_result _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_unknown_network_attempt_frees_slot_and_never_blindly_retries _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+=================================== FAILURES ===================================
+_____________ test_no_description_is_generated_from_the_name_alone _____________
+
+    def test_no_description_is_generated_from_the_name_alone():
+        for item in default_registry().definitions("main"):
+            description = item["description"]
+            # Either a written note, or an explicit statement that it is unwritten.
+            assert description.rstrip("。") != item["name"]
+            assert len(description) > len(item["name"]) + 4
+            if item["name"] not in registry() or not registry()[item["name"]].written:
+>               assert "何时调用尚未登记" in description or "；" in description
+E               AssertionError: assert ('何时调用尚未登记' in '调用获授权的 MCP 只读工具，由隔离子任务返回有原文依据的行。' or '；' in '调用获授权的 MCP 只读工具，由隔离子任务返回有原文依据的行。')
+
+tests/agent_kernel/test_command_usage.py:38: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_session_presentation.py::test_search_compiles_with_current_actual_parents_and_project_before_pagination
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/session_presentation.py:122: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(presentation.session_id)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_command_usage.py::test_no_description_is_generated_from_the_name_alone
+ERROR tests/agent_kernel/test_gateway.py::test_provider_call_requires_registered_graph_and_replays_saved_request
+ERROR tests/agent_kernel/test_gateway.py::test_private_run_without_agreement_proceeds_and_receipts_none
+ERROR tests/agent_kernel/test_gateway.py::test_run_provider_identity_cannot_change_between_model_calls
+ERROR tests/agent_kernel/test_gateway.py::test_generic_capability_graph_cannot_bypass_registered_xiaopai_gateway
+ERROR tests/agent_kernel/test_gateway.py::test_prompt_and_tool_prefixes_are_fixed_per_isolation_across_restart
+ERROR tests/agent_kernel/test_gateway.py::test_scope_revocation_during_call_frees_slot_without_revealing_result
+ERROR tests/agent_kernel/test_gateway.py::test_unknown_network_attempt_frees_slot_and_never_blindly_retries
+1 failed, 316 passed, 1 warning, 7 errors in 8.00s

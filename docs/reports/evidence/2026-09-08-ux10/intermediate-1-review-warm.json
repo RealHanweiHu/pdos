@@ -1,0 +1,2507 @@
+{
+  "config": {
+    "phase": "after",
+    "kind": "review",
+    "cache": "warm",
+    "url": "http://127.0.0.1:3314/ai-review?finding=83c32d55-e562-4503-ae3d-c99acd0a6778",
+    "projectId": "b1355164-1e83-41f6-80ac-835d50d46f87",
+    "projectIds": [
+      "b1355164-1e83-41f6-80ac-835d50d46f87",
+      "682e85de-d005-431d-bf09-f1e8ca1aa04d",
+      "b606161e-be6a-4df3-b1f4-4344da932a14",
+      "4d8f00d8-4015-4fb6-9e35-2c5b9f6692c7",
+      "e95285f6-4304-4844-a292-2a277010be37",
+      "1abf93f9-74fb-4257-878b-41bca13c8d7b",
+      "dcf7117e-c3fb-47b3-9497-97c3c884d387",
+      "c97ec065-d098-4669-8441-f4ef3bd77598",
+      "a98401cf-f435-4d2f-8057-5cbc5f70a086",
+      "a760125b-b7e3-4307-913b-1c5fba48a7cc",
+      "b85e9a20-14cf-4496-a51e-49969bb7ce2d",
+      "666a6669-81fe-4856-b72b-816c40049adf",
+      "f79108fa-a6bb-4ec2-8fa0-18d703279bff",
+      "17fa022b-b4a8-40a3-9600-a92b04cf4c88",
+      "7d586a25-d79f-4272-be6a-0d1383af762a",
+      "7bfc8229-4bcf-44cb-a143-6c098a7ababf",
+      "041e1d30-e7db-4414-9fc6-d06cd6f5eadc",
+      "debea322-3516-4121-a80e-962661f8f4fa",
+      "2b94cc83-a5e7-4229-b944-af8b7d02c977",
+      "831a100c-ff52-40d0-b075-9c8a285d008e",
+      "ca9cd244-688a-42e3-ac76-f2e0d84285e5",
+      "6e984fba-e81b-44ba-8c59-20ab28678dba",
+      "43d89122-ea4a-4205-9cb8-30aa00ee757b",
+      "a6df4367-7158-4783-83bf-7947f2c099d7",
+      "ab1eef5f-339f-4154-ae49-6b3391bc08b2"
+    ]
+  },
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "browser": "152.0.7977.76",
+  "samples": [
+    {
+      "ms": 127.90000000037253,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 16,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 28,
+          "duration": 43,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 28,
+          "duration": 43,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 28,
+          "duration": 66,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 29,
+          "duration": 61,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 0
+    },
+    {
+      "ms": 132.19999999925494,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 15,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 28,
+          "duration": 41,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 28,
+          "duration": 65,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 28,
+          "duration": 42,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 28,
+          "duration": 61,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 1
+    },
+    {
+      "ms": 160.90000000037253,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 16,
+          "duration": 27,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 44,
+          "duration": 75,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 44,
+          "duration": 49,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 44,
+          "duration": 49,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 44,
+          "duration": 74,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 2
+    },
+    {
+      "ms": 162.7000000011176,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 18,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 31,
+          "duration": 108,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 31,
+          "duration": 55,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 31,
+          "duration": 58,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 31,
+          "duration": 66,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 3
+    },
+    {
+      "ms": 136.09999999962747,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 15,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 31,
+          "duration": 77,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 31,
+          "duration": 54,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 31,
+          "duration": 40,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 31,
+          "duration": 71,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 4
+    },
+    {
+      "ms": 135.5,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 15,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 29,
+          "duration": 53,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 29,
+          "duration": 77,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 29,
+          "duration": 38,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 29,
+          "duration": 69,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 5
+    },
+    {
+      "ms": 125.69999999925494,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 13,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 26,
+          "duration": 47,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 26,
+          "duration": 48,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 26,
+          "duration": 67,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 26,
+          "duration": 59,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 6
+    },
+    {
+      "ms": 127.5,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 14,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 26,
+          "duration": 68,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 26,
+          "duration": 40,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 26,
+          "duration": 47,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 26,
+          "duration": 62,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 7
+    },
+    {
+      "ms": 126,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 14,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 24,
+          "duration": 70,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 24,
+          "duration": 53,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 24,
+          "duration": 54,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 24,
+          "duration": 63,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 8
+    },
+    {
+      "ms": 134.09999999962747,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 16,
+          "duration": 23,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 39,
+          "duration": 37,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 39,
+          "duration": 63,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 39,
+          "duration": 39,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 39,
+          "duration": 64,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 9
+    },
+    {
+      "ms": 137.30000000074506,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 19,
+          "duration": 13,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 32,
+          "duration": 42,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 32,
+          "duration": 44,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 32,
+          "duration": 66,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 32,
+          "duration": 63,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 10
+    },
+    {
+      "ms": 142.59999999962747,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 15,
+          "duration": 13,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 33,
+          "duration": 38,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 33,
+          "duration": 43,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 33,
+          "duration": 67,
+          "bytes": 339517
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 33,
+          "duration": 77,
+          "bytes": 51975
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 11
+    },
+    {
+      "ms": 132,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 18,
+          "duration": 16,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 35,
+          "duration": 44,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 35,
+          "duration": 66,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 35,
+          "duration": 45,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 35,
+          "duration": 59,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 12
+    },
+    {
+      "ms": 129.40000000037253,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 15,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 33,
+          "duration": 33,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 33,
+          "duration": 67,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 33,
+          "duration": 34,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 33,
+          "duration": 68,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 13
+    },
+    {
+      "ms": 143.40000000037253,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 14,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 32,
+          "duration": 40,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 32,
+          "duration": 67,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 32,
+          "duration": 53,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 32,
+          "duration": 65,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 14
+    },
+    {
+      "ms": 134.2000000011176,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 14,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 33,
+          "duration": 69,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 33,
+          "duration": 41,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 33,
+          "duration": 42,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 33,
+          "duration": 69,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 15
+    },
+    {
+      "ms": 136.40000000037253,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 13,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 25,
+          "duration": 49,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 25,
+          "duration": 74,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 25,
+          "duration": 57,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 25,
+          "duration": 71,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 16
+    },
+    {
+      "ms": 149.19999999925494,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 15,
+          "duration": 16,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 32,
+          "duration": 51,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 32,
+          "duration": 91,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 32,
+          "duration": 60,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 32,
+          "duration": 68,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 17
+    },
+    {
+      "ms": 147.89999999850988,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 16,
+          "duration": 15,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 35,
+          "duration": 48,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 35,
+          "duration": 49,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 35,
+          "duration": 73,
+          "bytes": 339517
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 35,
+          "duration": 86,
+          "bytes": 51975
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 18
+    },
+    {
+      "ms": 135,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 19,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/projects",
+          "start": 32,
+          "duration": 38,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 32,
+          "duration": 40,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 32,
+          "duration": 70,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 32,
+          "duration": 64,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 19
+    },
+    {
+      "ms": 146.59999999962747,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 15,
+          "duration": 13,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 38,
+          "duration": 35,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 38,
+          "duration": 73,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 38,
+          "duration": 38,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 38,
+          "duration": 73,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 20
+    },
+    {
+      "ms": 145.30000000074506,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 21,
+          "duration": 16,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 38,
+          "duration": 48,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 38,
+          "duration": 76,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 38,
+          "duration": 53,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 38,
+          "duration": 64,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 21
+    },
+    {
+      "ms": 143.5,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 22,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 34,
+          "duration": 78,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 35,
+          "duration": 49,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 35,
+          "duration": 58,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 35,
+          "duration": 67,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 22
+    },
+    {
+      "ms": 139.2000000011176,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 19,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 31,
+          "duration": 72,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 32,
+          "duration": 44,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 32,
+          "duration": 59,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 32,
+          "duration": 72,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 23
+    },
+    {
+      "ms": 147.60000000149012,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 16,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 33,
+          "duration": 85,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 33,
+          "duration": 56,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 33,
+          "duration": 56,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 33,
+          "duration": 77,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 24
+    },
+    {
+      "ms": 218.90000000037253,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 21,
+          "duration": 13,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 35,
+          "duration": 145,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/projects",
+          "start": 35,
+          "duration": 40,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 35,
+          "duration": 41,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 35,
+          "duration": 142,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 25
+    },
+    {
+      "ms": 132.09999999962747,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 13,
+          "duration": 16,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 30,
+          "duration": 43,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 30,
+          "duration": 54,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 30,
+          "duration": 65,
+          "bytes": 339517
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 30,
+          "duration": 68,
+          "bytes": 51975
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 26
+    },
+    {
+      "ms": 146.59999999962747,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 16,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 34,
+          "duration": 78,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 34,
+          "duration": 41,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 34,
+          "duration": 54,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 34,
+          "duration": 73,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 27
+    },
+    {
+      "ms": 136.2000000011176,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 22,
+          "duration": 16,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 38,
+          "duration": 30,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 38,
+          "duration": 42,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 38,
+          "duration": 64,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 38,
+          "duration": 66,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 28
+    },
+    {
+      "ms": 137.90000000037253,
+      "boxes": [
+        {
+          "selector": "article[aria-label=\"Finding 详情\"] h2",
+          "text": "UX10 待审建议 01-01",
+          "top": 328.546875,
+          "bottom": 352.546875,
+          "left": 589,
+          "right": 1363,
+          "inViewport": true
+        },
+        {
+          "selector": "button",
+          "text": "接受建议 A",
+          "top": 927.046875,
+          "bottom": 971.046875,
+          "left": 589,
+          "right": 705.0234375,
+          "inViewport": false
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 16,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "start": 29,
+          "duration": 76,
+          "bytes": 51975
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "start": 29,
+          "duration": 46,
+          "bytes": 90161
+        },
+        {
+          "path": "/api/projects",
+          "start": 29,
+          "duration": 47,
+          "bytes": 18886
+        },
+        {
+          "path": "/api/ai/findings",
+          "start": 29,
+          "duration": 69,
+          "bytes": 339517
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/risk-candidates",
+          "status": 200
+        },
+        {
+          "path": "/api/projects",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/findings",
+          "status": 200
+        },
+        {
+          "path": "/api/ai/review-inbox",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 29
+    }
+  ],
+  "p50": 136.40000000037253,
+  "p95": 162.7000000011176,
+  "max": 218.90000000037253,
+  "success": 30
+}

@@ -1,0 +1,244 @@
+{
+  "work_item": "N0-03",
+  "status": "partial",
+  "date": "2026-09-11",
+  "migration": "0085_application_results",
+  "tests": {
+    "application_distinct_passed": 113,
+    "restricted_distinct_passed": 36,
+    "total_distinct_passed": 149,
+    "new_cases": 17,
+    "final_application_batch": {
+      "passed": 112,
+      "failed": 1
+    },
+    "repair_batch": {
+      "passed": 3,
+      "previously_passed_overlap": 2
+    },
+    "repaired_failure": "Old 0067 head assertion replaced with original-head rollback invariant",
+    "intermediate_batches_excluded": true
+  },
+  "static_checks": {
+    "ruff_files": 15,
+    "mypy_files": 3,
+    "common_export_checks": 4,
+    "runtime_export_checks": 5
+  },
+  "source_sha256": {
+    "server/app/ai/application_checkpoints.py": "c59ada31f25afc0d87d5f0f6daf521bb8dd3d759e5a47d359dfcfaedc348c36a",
+    "server/app/ai/model_call_fence.py": "a385cb182f57de664db9415becb5e638116baa0785202c41601b4ef3adf5199f",
+    "server/app/ai/gateway.py": "ddf57907b1aba39cc629961095f8445855f97edc2d6cda495ce0485307df92eb",
+    "server/app/db/schema.py": "58706126f95c1901e69dbce7e1f547aa08a3e6e50d6382129e87baed3ca2a13c",
+    "server/migrations/versions/0085_application_results.py": "3798d30d72b01fd960631e926972124104a6e74dc4eb9168fba3bd8bfa627f19",
+    "server/tests/test_application_checkpoints.py": "1045c2ca7e0088e5b49f1b464778468aca408bea543166774221b5a326baba1f",
+    "server/tests/test_application_authorization_security.py": "57d12368632527bdc62819d3528a4120545866725384801fd1d0b3d4a7d0ed58",
+    "server/tests/test_model_call_fence_security.py": "791771196846ddae7a047ad950a3a6c7cfcf7dd1803eb7bcc3f49e2a139e5be7",
+    "server/tests/test_application_context.py": "ae47f9db9e4f425a7696a76f6b65ebb82a2c48d1483beee751d928a371405dc2",
+    "server/tests/test_application_authorization.py": "59cab462ce6aecadf7ebe408e71a6e5da9d355ea2fca97a867721d772714bcd4",
+    "server/tests/test_application_domain_context.py": "afc52968f414e9f873c150b5e7198e01f6147c498178da9e441aa654319800be",
+    "server/tests/test_application_run_budget_api.py": "258aea5c61c5b53ea7ff2bbcb1b8c7b18d799b7f49a1b4c86792f7bd8e88eaad",
+    "server/tests/test_test_report_import_api.py": "27e2e522c04fa495dcdf76a94ad46f1bc87543a1cf375779ed24d57afb894884",
+    "server/tests/test_agent_runtime_schema.py": "629212878fa9339f546ae682cb74be9062b6fb6ce1a9edae2ec7ac313afda90f",
+    "server/tests/test_model_call_fence.py": "e4f934463af9de46a5a065beba996fae7b04c004d44774c42723bc275f9cb19e",
+    "docs/runbooks/application-result-checkpoints.md": "41d3233c0267113a341c1397e8e22992de2d7edc02a9c2731c02f22cc4d375d3",
+    "docs/reports/2026-09-11-n0-03-application-results-validation.md": "cfd7c623b1a2b714ea3e790d14d7e27e036e2dc3438cbd2860c08efc129632d3"
+  },
+  "log_sha256": {
+    "/tmp/pdos-application-results-focused.log": "5895a4eb528ff0b3d33782fa99a8fa0ca0aee7f7a23d782d3e7d0028e318ead2",
+    "/tmp/pdos-application-results-regression.log": "7e7230d4b5ce289fb763448bf78d932aacb7e2bc9374b5841fe07a0ed765eafd",
+    "/tmp/pdos-application-results-regression-final.log": "3754443953d3b1c8448d33c3325ca6582c5489abe2e35aa5e210ad01cf94aa90",
+    "/tmp/pdos-application-results-roles.log": "897b90c5ef2803da96a28019ba55c2ce504b8520d2ee41cc0f9590874781a0e4",
+    "/tmp/pdos-application-results-roles-final.log": "f0f55767290a4245125ed60ea93bb2d6bf6d45662f77601fa6217acd2278af29",
+    "/tmp/pdos-application-results-restricted-final.log": "5564043be497e17232abfb05be9504f62cd50abe480137f179fecc54afb8de87",
+    "/tmp/pdos-application-results-repairs-final.log": "c55dc1df5137674eb30642f59ce0dc0718c64f6647e26d33a19495caedeb2eed",
+    "/tmp/pdos-application-results-mypy.log": "8228fcc5ce46d42d01caf3cd941f4e9c5f2bcc372bb5b147a2f0572d2dd675a8",
+    "/tmp/pdos-application-results-lint.log": "b86d7323bf6f6f5ceac3673844ebed5cd0a005b114af538e052ac2429dee588c"
+  },
+  "databases": [
+    {
+      "database": "pdos_test",
+      "port": 57432,
+      "head": "0085_application_results",
+      "functions": [
+        {
+          "name": "application_result_receipt_valid",
+          "sha256": "115e67608efb67651dec04590c2adcbb31c058d467ac597fc59b90dd9dea66be",
+          "security_definer": true,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        {
+          "name": "require_application_result_receipt",
+          "sha256": "1c88b43477bd62bfd9472505d9b935b9015f07c76f510b67e6365f38ccdf6e5b",
+          "security_definer": true,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "conname": "ck_application_result_checkpoints_result_body",
+          "contype": "c",
+          "definition": "CHECK (((((body ->> 'version'::text) = 'application-result.v1'::text) AND ((body ->> 'status'::text) = 'succeeded'::text) AND (jsonb_typeof((body -> 'output'::text)) = 'object'::text) AND (jsonb_typeof((body -> 'removed_context_paths'::text)) = 'array'::text) AND (jsonb_typeof((body -> 'structured_attempts'::text)) = 'number'::text) AND ((((body ->> 'structured_attempts'::text))::integer >= 1) AND (((body ->> 'structured_attempts'::text))::integer <= 3))) IS TRUE))"
+        },
+        {
+          "conname": "fk_application_result_checkpoints_tenant_id_application_15f2",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, run_id, manifest_id) REFERENCES cehub_ai.application_context_manifests(tenant_id, run_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "fk_application_result_checkpoints_tenant_id_application_4740",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, run_id, owner_lease_id) REFERENCES cehub_ai.application_run_leases(tenant_id, run_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "fk_application_result_checkpoints_tenant_id_application_6a53",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, run_id, observation_id) REFERENCES cehub_ai.application_context_observations(tenant_id, run_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "fk_application_result_checkpoints_tenant_id_model_invocations",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, invocation_id) REFERENCES cehub_ai.model_invocations(tenant_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "pk_application_result_checkpoints",
+          "contype": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "conname": "uq_application_result_call",
+          "contype": "u",
+          "definition": "UNIQUE (tenant_id, run_id, model_call_id)"
+        }
+      ],
+      "table_privileges": {
+        "pdos_agent": {
+          "SELECT": false,
+          "INSERT": false,
+          "UPDATE": false,
+          "DELETE": false
+        },
+        "pdos_worker": {
+          "SELECT": false,
+          "INSERT": false,
+          "UPDATE": false,
+          "DELETE": false
+        }
+      }
+    },
+    {
+      "database": "pdos_test",
+      "port": 57433,
+      "head": "0085_application_results",
+      "functions": [
+        {
+          "name": "application_result_receipt_valid",
+          "sha256": "115e67608efb67651dec04590c2adcbb31c058d467ac597fc59b90dd9dea66be",
+          "security_definer": true,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        },
+        {
+          "name": "require_application_result_receipt",
+          "sha256": "1c88b43477bd62bfd9472505d9b935b9015f07c76f510b67e6365f38ccdf6e5b",
+          "security_definer": true,
+          "config": [
+            "search_path=pg_catalog"
+          ],
+          "execute": {
+            "pdos_agent": false,
+            "pdos_worker": false
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "conname": "ck_application_result_checkpoints_result_body",
+          "contype": "c",
+          "definition": "CHECK (((((body ->> 'version'::text) = 'application-result.v1'::text) AND ((body ->> 'status'::text) = 'succeeded'::text) AND (jsonb_typeof((body -> 'output'::text)) = 'object'::text) AND (jsonb_typeof((body -> 'removed_context_paths'::text)) = 'array'::text) AND (jsonb_typeof((body -> 'structured_attempts'::text)) = 'number'::text) AND ((((body ->> 'structured_attempts'::text))::integer >= 1) AND (((body ->> 'structured_attempts'::text))::integer <= 3))) IS TRUE))"
+        },
+        {
+          "conname": "fk_application_result_checkpoints_tenant_id_application_15f2",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, run_id, manifest_id) REFERENCES cehub_ai.application_context_manifests(tenant_id, run_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "fk_application_result_checkpoints_tenant_id_application_4740",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, run_id, owner_lease_id) REFERENCES cehub_ai.application_run_leases(tenant_id, run_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "fk_application_result_checkpoints_tenant_id_application_6a53",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, run_id, observation_id) REFERENCES cehub_ai.application_context_observations(tenant_id, run_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "fk_application_result_checkpoints_tenant_id_model_invocations",
+          "contype": "f",
+          "definition": "FOREIGN KEY (tenant_id, invocation_id) REFERENCES cehub_ai.model_invocations(tenant_id, id) ON DELETE RESTRICT"
+        },
+        {
+          "conname": "pk_application_result_checkpoints",
+          "contype": "p",
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "conname": "uq_application_result_call",
+          "contype": "u",
+          "definition": "UNIQUE (tenant_id, run_id, model_call_id)"
+        }
+      ],
+      "table_privileges": {
+        "pdos_agent": {
+          "SELECT": false,
+          "INSERT": false,
+          "UPDATE": false,
+          "DELETE": false
+        },
+        "pdos_worker": {
+          "SELECT": false,
+          "INSERT": false,
+          "UPDATE": false,
+          "DELETE": false
+        }
+      }
+    }
+  ],
+  "approved_manifests": {
+    "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+    "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+  },
+  "active_items": 65,
+  "temporary_container": {
+    "name": "pdos-application-results-test",
+    "removed": true
+  },
+  "limitations": [
+    "Current-owner reuse only; no new-owner takeover or HTTP running-request resumption",
+    "Claimable queue, persistent waiting and stepwise recovery remain",
+    "Atomic source/dispatch validation, derived and multi-anchor ACL remain",
+    "Unknown receipts stay conservative; no automatic reconciliation or redispatch",
+    "Synthetic model transports and qualifications only; production delivery=false"
+  ],
+  "production_operations": false,
+  "real_model_calls": false,
+  "golden_changes": false,
+  "git_push": false
+}

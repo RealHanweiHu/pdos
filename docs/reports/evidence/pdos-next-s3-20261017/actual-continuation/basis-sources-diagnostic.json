@@ -1,0 +1,8 @@
+{
+  "same_prior_failed_scope": true,
+  "only_read_synthetic_metadata": true,
+  "issue_sources_missing_from_saved_sources": 0,
+  "issue_source_count": 3,
+  "saved_source_count": 16,
+  "business_writes": 0
+}

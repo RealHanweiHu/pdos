@@ -1,0 +1,38 @@
+{
+  "candidate": "Wave16 owned UI v3; permission-revocation privacy repair",
+  "recorded_at": "2026-10-03T08:05:11.948476+00:00",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "7e162684371d1127fccd21816b86c1b6b3cde918b830d541e7ec03ae84e89c31"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "c1bf9bad3a2d2d27605fcaa969d283d9c604b2900146a69a9e65db5054029ba7"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "b3a089884e2c53ef4e0e4e7711fd4f3765405ecd7854a2b523e1c9fc512f8b74"
+    }
+  ],
+  "baseline": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "00693636cc32fcea7a1ae5acb0cc5ebdae4ca2d0dbaf0f71baf5b3d72c69c6ef",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v2-source/build-quality-followup.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "89c39e5a70dbb648e858a2e5d83b2bbf20bac8b7b4aef5c15d19b9b9e8710406",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v2-source/build-quality-followup-view.ts"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "520cf807f82b9fd28fd256f7557924d1b4a51fec186d60334973ef88d58a88ee",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-v2-source/build-quality-followup-view.test.ts"
+    }
+  ],
+  "delta_file": "ui-v2-to-v3.diff",
+  "public_138_paths_changed": false,
+  "public_patches_modified": false
+}

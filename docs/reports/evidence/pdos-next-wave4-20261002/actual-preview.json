@@ -1,0 +1,832 @@
+{
+  "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+  "schema_head": "next_0006",
+  "business_marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "business_port": 62513,
+  "business_table_count": 42,
+  "plan_and_readiness_unchanged": true,
+  "actual_configuration": {
+    "id": "340681fc-ac4b-46ab-a42c-fe59f44d67ba",
+    "revision": 1,
+    "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+    "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+    "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+    "build_revision": 1,
+    "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+    "visibility": "private",
+    "status": "recorded",
+    "created_at": "2026-10-02T12:18:28.204861+00:00",
+    "reason": "合成观察：采用本轮固定配置，仅登记事实，不代表获准开工或正式放行。",
+    "sources": [
+      {
+        "line": 1,
+        "quote": "合成演练：2026-10-02 11:55 UTC 核对本轮计划工程配置及制造配置，实际采用同一固定版本。",
+        "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+        "expected_revision": 1
+      },
+      {
+        "line": 2,
+        "quote": "合成演练：2026-10-02 12:00 UTC 外部记录 W4-OUTPUT-001 产出3台；本次登记 PDOS-W4-S01 和 PDOS-W4-S02，其中S02待隔离核对。",
+        "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+        "expected_revision": 1
+      }
+    ],
+    "required_source_read_set": [
+      {
+        "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+        "expected_revision": 1
+      }
+    ],
+    "source_status": "current",
+    "qualification_status": "unknown",
+    "authorization_status": "not_authorized",
+    "observation_route": "external_observation",
+    "verification_status": "not_checked",
+    "planned": {
+      "engineering_configuration": {
+        "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+        "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+        "revision": 1,
+        "name": "合成工程配置 · 定义v2",
+        "status": "draft",
+        "visibility": "private",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "created_at": "2026-10-02T11:41:59.876254+00:00",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "line": 2,
+            "quote": "额定压力：150 PSI，条件待确认。",
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "source_status": "current",
+        "series_id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+        "previous_id": null,
+        "expected_previous_revision": null,
+        "reason": "对应既有研发项目固定定义，机械电子固件版本尚待专业确认。",
+        "definition_id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+        "definition_revision": 2,
+        "definition": {
+          "id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+          "revision": 2,
+          "title": "合成资料演练 · 定义草稿",
+          "status": "draft",
+          "visibility": "private",
+          "source_status": "current"
+        },
+        "bom_id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+        "bom_revision": 1,
+        "bom": {
+          "id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "revision": 1,
+          "name": "合成BOM · 初版",
+          "status": "draft",
+          "visibility": "private",
+          "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+          "created_at": "2026-10-02T11:41:47.769153+00:00",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+              "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+              "expected_revision": 1
+            }
+          ],
+          "required_source_read_set": [
+            {
+              "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+              "expected_revision": 1
+            }
+          ],
+          "source_status": "current",
+          "series_id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+          "previous_id": null,
+          "expected_previous_revision": null,
+          "reason": "合成演练：固定电机用量与加损假设，壳体保留未知。",
+          "lines": [
+            {
+              "key": "housing",
+              "part_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+              "expected_part_revision": 1,
+              "part": {
+                "id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+                "revision": 1,
+                "name": "合成壳体 · 用量待确认",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                "created_at": "2026-10-02T11:41:47.776208+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+                    "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "internal_number": null,
+                "erp_number": null,
+                "customer_number": null,
+                "mapping_version": null,
+                "external_design_refs": [],
+                "external_verification": "not_checked",
+                "mapping_status": "unknown"
+              },
+              "quantity": null,
+              "unit": "件",
+              "loss_rate": null,
+              "critical": false,
+              "notes": null
+            },
+            {
+              "key": "motor",
+              "part_id": "94824422-c361-485f-9253-0e0f8753c620",
+              "expected_part_revision": 1,
+              "part": {
+                "id": "94824422-c361-485f-9253-0e0f8753c620",
+                "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+                "revision": 1,
+                "name": "合成电机",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                "created_at": "2026-10-02T11:41:47.772134+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+                    "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "internal_number": null,
+                "erp_number": null,
+                "customer_number": null,
+                "mapping_version": null,
+                "external_design_refs": [],
+                "external_verification": "not_checked",
+                "mapping_status": "unknown"
+              },
+              "quantity": "2",
+              "unit": "件",
+              "loss_rate": "0.1",
+              "critical": true,
+              "notes": null
+            }
+          ]
+        },
+        "design_versions": {
+          "firmware": null,
+          "electronic": null,
+          "mechanical": null
+        },
+        "external_verification": "not_checked"
+      },
+      "manufacturing_configuration": {
+        "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+        "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+        "revision": 1,
+        "name": "合成制造配置 · 装配路线",
+        "status": "draft",
+        "visibility": "private",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "created_at": "2026-10-02T11:42:22.842804+00:00",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "line": 2,
+            "quote": "额定压力：150 PSI，条件待确认。",
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "source_status": "current",
+        "series_id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+        "previous_id": null,
+        "expected_previous_revision": null,
+        "reason": "先固定装配准备范围，场地、节拍、规程与设备资格等待专业核对。",
+        "engineering_configuration_id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+        "engineering_revision": 1,
+        "engineering_configuration": {
+          "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+          "revision": 1,
+          "name": "合成工程配置 · 定义v2",
+          "status": "draft",
+          "definition_id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+          "bom_id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+          "source_status": "current"
+        },
+        "site": null,
+        "line": null,
+        "operations": [
+          {
+            "key": "assembly",
+            "sop": null,
+            "kind": "assembly",
+            "name": "合成电机与壳体装配核对",
+            "notes": "仅声明准备工作，不构成实际生产或验收。",
+            "depends_on": [],
+            "bom_line_keys": [
+              "housing",
+              "motor"
+            ],
+            "cycle_time_minutes": null,
+            "acceptance_criterion": null,
+            "resource_requirements": []
+          }
+        ],
+        "external_verification": "not_checked",
+        "qualification_status": "unknown"
+      }
+    },
+    "actual": {
+      "engineering_configuration": {
+        "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+        "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+        "revision": 1,
+        "name": "合成工程配置 · 定义v2",
+        "status": "draft",
+        "visibility": "private",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "created_at": "2026-10-02T11:41:59.876254+00:00",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "line": 2,
+            "quote": "额定压力：150 PSI，条件待确认。",
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "source_status": "current",
+        "series_id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+        "previous_id": null,
+        "expected_previous_revision": null,
+        "reason": "对应既有研发项目固定定义，机械电子固件版本尚待专业确认。",
+        "definition_id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+        "definition_revision": 2,
+        "definition": {
+          "id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+          "revision": 2,
+          "title": "合成资料演练 · 定义草稿",
+          "status": "draft",
+          "visibility": "private",
+          "source_status": "current"
+        },
+        "bom_id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+        "bom_revision": 1,
+        "bom": {
+          "id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "revision": 1,
+          "name": "合成BOM · 初版",
+          "status": "draft",
+          "visibility": "private",
+          "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+          "created_at": "2026-10-02T11:41:47.769153+00:00",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+              "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+              "expected_revision": 1
+            }
+          ],
+          "required_source_read_set": [
+            {
+              "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+              "expected_revision": 1
+            }
+          ],
+          "source_status": "current",
+          "series_id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+          "previous_id": null,
+          "expected_previous_revision": null,
+          "reason": "合成演练：固定电机用量与加损假设，壳体保留未知。",
+          "lines": [
+            {
+              "key": "housing",
+              "part_id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+              "expected_part_revision": 1,
+              "part": {
+                "id": "cecf395f-6434-47cf-ae2f-85c76631711d",
+                "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+                "revision": 1,
+                "name": "合成壳体 · 用量待确认",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                "created_at": "2026-10-02T11:41:47.776208+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+                    "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "internal_number": null,
+                "erp_number": null,
+                "customer_number": null,
+                "mapping_version": null,
+                "external_design_refs": [],
+                "external_verification": "not_checked",
+                "mapping_status": "unknown"
+              },
+              "quantity": null,
+              "unit": "件",
+              "loss_rate": null,
+              "critical": false,
+              "notes": null
+            },
+            {
+              "key": "motor",
+              "part_id": "94824422-c361-485f-9253-0e0f8753c620",
+              "expected_part_revision": 1,
+              "part": {
+                "id": "94824422-c361-485f-9253-0e0f8753c620",
+                "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+                "revision": 1,
+                "name": "合成电机",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                "created_at": "2026-10-02T11:41:47.772134+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+                    "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "internal_number": null,
+                "erp_number": null,
+                "customer_number": null,
+                "mapping_version": null,
+                "external_design_refs": [],
+                "external_verification": "not_checked",
+                "mapping_status": "unknown"
+              },
+              "quantity": "2",
+              "unit": "件",
+              "loss_rate": "0.1",
+              "critical": true,
+              "notes": null
+            }
+          ]
+        },
+        "design_versions": {
+          "firmware": null,
+          "electronic": null,
+          "mechanical": null
+        },
+        "external_verification": "not_checked"
+      },
+      "manufacturing_configuration": {
+        "id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+        "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+        "revision": 1,
+        "name": "合成制造配置 · 装配路线",
+        "status": "draft",
+        "visibility": "private",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "created_at": "2026-10-02T11:42:22.842804+00:00",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "合成试制：计划10台，每台电机2件，演练加损10%；壳体数量待确认。",
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "line": 2,
+            "quote": "额定压力：150 PSI，条件待确认。",
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          }
+        ],
+        "source_status": "current",
+        "series_id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+        "previous_id": null,
+        "expected_previous_revision": null,
+        "reason": "先固定装配准备范围，场地、节拍、规程与设备资格等待专业核对。",
+        "engineering_configuration_id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+        "engineering_revision": 1,
+        "engineering_configuration": {
+          "id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+          "revision": 1,
+          "name": "合成工程配置 · 定义v2",
+          "status": "draft",
+          "definition_id": "52efd0ee-dfb9-44e5-9d6b-f7be0c7fcf74",
+          "bom_id": "c9481a57-4c26-40c3-a817-5e1345d8e0ba",
+          "source_status": "current"
+        },
+        "site": null,
+        "line": null,
+        "operations": [
+          {
+            "key": "assembly",
+            "sop": null,
+            "kind": "assembly",
+            "name": "合成电机与壳体装配核对",
+            "notes": "仅声明准备工作，不构成实际生产或验收。",
+            "depends_on": [],
+            "bom_line_keys": [
+              "housing",
+              "motor"
+            ],
+            "cycle_time_minutes": null,
+            "acceptance_criterion": null,
+            "resource_requirements": []
+          }
+        ],
+        "external_verification": "not_checked",
+        "qualification_status": "unknown"
+      }
+    },
+    "planned_engineering_configuration_id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+    "planned_manufacturing_configuration_id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+    "actual_engineering_configuration_id": "4542ae73-91b3-481e-9bf9-a240e84b831a",
+    "actual_engineering_revision": 1,
+    "actual_manufacturing_configuration_id": "29cb8a70-3512-45bd-be99-e70fd1eb6de1",
+    "actual_manufacturing_revision": 1,
+    "observed_at": "2026-10-02T11:55:00+00:00",
+    "differences": [],
+    "build_name": "合成原型试制 · 第1轮",
+    "plan_status": "planned"
+  },
+  "lot": {
+    "id": "1bf6dc3f-333e-42c4-90d8-f492f9e941b1",
+    "revision": 1,
+    "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+    "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+    "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+    "build_revision": 1,
+    "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+    "visibility": "private",
+    "status": "observed",
+    "created_at": "2026-10-02T12:19:35.371968+00:00",
+    "reason": "合成外部产出观察：3台尚未品质接收，单独保留发生与接收时刻。",
+    "sources": [
+      {
+        "line": 1,
+        "quote": "合成演练：2026-10-02 11:55 UTC 核对本轮计划工程配置及制造配置，实际采用同一固定版本。",
+        "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+        "expected_revision": 1
+      },
+      {
+        "line": 2,
+        "quote": "合成演练：2026-10-02 12:00 UTC 外部记录 W4-OUTPUT-001 产出3台；本次登记 PDOS-W4-S01 和 PDOS-W4-S02，其中S02待隔离核对。",
+        "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+        "expected_revision": 1
+      }
+    ],
+    "required_source_read_set": [
+      {
+        "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+        "expected_revision": 1
+      }
+    ],
+    "source_status": "current",
+    "qualification_status": "unknown",
+    "authorization_status": "not_authorized",
+    "observation_route": "external_observation",
+    "verification_status": "not_checked",
+    "actual_configuration_id": "340681fc-ac4b-46ab-a42c-fe59f44d67ba",
+    "actual_configuration_revision": 1,
+    "lot_label": "合成实物批次 · 第1轮",
+    "observed_unit_count": 3,
+    "unit": "台",
+    "identified_count": 2,
+    "remaining_unit_count": 1,
+    "build_observed_unit_count": 3,
+    "planned_quantity": "10.00000000",
+    "over_planned_quantity": false,
+    "plan_status": "planned",
+    "build_name": "合成原型试制 · 第1轮",
+    "observation": {
+      "system": "本地合成演练",
+      "external_id": "W4-OUTPUT-001",
+      "nature": "synthetic",
+      "occurred_at": "2026-10-02T12:00:00+00:00",
+      "received_at": "2026-10-02T12:19:35.371968+00:00"
+    },
+    "quality_status": "unknown"
+  },
+  "samples": [
+    {
+      "id": "d9bbdee3-b3c1-4cab-a519-c45128614ca0",
+      "revision": 1,
+      "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+      "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+      "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+      "build_revision": 1,
+      "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+      "visibility": "private",
+      "status": "identified",
+      "created_at": "2026-10-02T12:20:26.624286+00:00",
+      "reason": "合成身份演练：从3台批次分配2件，保留1件未分配，不代表可测试或已消耗。",
+      "sources": [
+        {
+          "line": 1,
+          "quote": "合成演练：2026-10-02 11:55 UTC 核对本轮计划工程配置及制造配置，实际采用同一固定版本。",
+          "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+          "expected_revision": 1
+        },
+        {
+          "line": 2,
+          "quote": "合成演练：2026-10-02 12:00 UTC 外部记录 W4-OUTPUT-001 产出3台；本次登记 PDOS-W4-S01 和 PDOS-W4-S02，其中S02待隔离核对。",
+          "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+          "expected_revision": 1
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+          "expected_revision": 1
+        }
+      ],
+      "source_status": "current",
+      "qualification_status": "unknown",
+      "authorization_status": "not_authorized",
+      "observation_route": "external_observation",
+      "verification_status": "not_checked",
+      "label": "PDOS-W4-S02",
+      "lot_id": "1bf6dc3f-333e-42c4-90d8-f492f9e941b1",
+      "allocation_id": "0958ca38-bd50-4cc4-a2f5-4b32e73ca488",
+      "actual_configuration_id": "340681fc-ac4b-46ab-a42c-fe59f44d67ba",
+      "actual_configuration_revision": 1,
+      "operation_key": null,
+      "cavity": "合成-A2",
+      "custodian_label": null,
+      "location": "合成隔离区",
+      "destination": "等待品质处置",
+      "availability": "hold",
+      "custodian_id": null,
+      "reservation": null,
+      "consumption": null,
+      "observation_nature": "synthetic"
+    },
+    {
+      "id": "1983cafd-87e4-4892-98a5-4a9566e19ee3",
+      "revision": 1,
+      "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+      "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+      "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+      "build_revision": 1,
+      "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+      "visibility": "private",
+      "status": "identified",
+      "created_at": "2026-10-02T12:20:26.624284+00:00",
+      "reason": "合成身份演练：从3台批次分配2件，保留1件未分配，不代表可测试或已消耗。",
+      "sources": [
+        {
+          "line": 1,
+          "quote": "合成演练：2026-10-02 11:55 UTC 核对本轮计划工程配置及制造配置，实际采用同一固定版本。",
+          "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+          "expected_revision": 1
+        },
+        {
+          "line": 2,
+          "quote": "合成演练：2026-10-02 12:00 UTC 外部记录 W4-OUTPUT-001 产出3台；本次登记 PDOS-W4-S01 和 PDOS-W4-S02，其中S02待隔离核对。",
+          "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+          "expected_revision": 1
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+          "expected_revision": 1
+        }
+      ],
+      "source_status": "current",
+      "qualification_status": "unknown",
+      "authorization_status": "not_authorized",
+      "observation_route": "external_observation",
+      "verification_status": "not_checked",
+      "label": "PDOS-W4-S01",
+      "lot_id": "1bf6dc3f-333e-42c4-90d8-f492f9e941b1",
+      "allocation_id": "0958ca38-bd50-4cc4-a2f5-4b32e73ca488",
+      "actual_configuration_id": "340681fc-ac4b-46ab-a42c-fe59f44d67ba",
+      "actual_configuration_revision": 1,
+      "operation_key": "assembly",
+      "cavity": "合成-A1",
+      "custodian_label": null,
+      "location": "合成留样区",
+      "destination": "等待品质核对",
+      "availability": "unknown",
+      "custodian_id": "0a41538d-e721-4783-866a-39c35d382eef",
+      "reservation": null,
+      "consumption": null,
+      "observation_nature": "synthetic"
+    }
+  ],
+  "allocations": [
+    {
+      "id": "0958ca38-bd50-4cc4-a2f5-4b32e73ca488",
+      "revision": 1,
+      "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+      "project_id": "810d76f2-54ba-4c6d-9a7b-980fa5171393",
+      "build_id": "137e82b2-86d3-4874-8a8e-652fbe853ca0",
+      "build_revision": 1,
+      "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+      "visibility": "private",
+      "status": "identified",
+      "created_at": "2026-10-02T12:20:26.621397+00:00",
+      "reason": "合成身份演练：从3台批次分配2件，保留1件未分配，不代表可测试或已消耗。",
+      "sources": [
+        {
+          "line": 1,
+          "quote": "合成演练：2026-10-02 11:55 UTC 核对本轮计划工程配置及制造配置，实际采用同一固定版本。",
+          "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+          "expected_revision": 1
+        },
+        {
+          "line": 2,
+          "quote": "合成演练：2026-10-02 12:00 UTC 外部记录 W4-OUTPUT-001 产出3台；本次登记 PDOS-W4-S01 和 PDOS-W4-S02，其中S02待隔离核对。",
+          "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+          "expected_revision": 1
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "08c10642-5264-4860-9d08-b94697adb687",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "38b28ae2-9f81-4284-ae98-5884e5eb8e64",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+          "expected_revision": 1
+        }
+      ],
+      "source_status": "current",
+      "qualification_status": "unknown",
+      "authorization_status": "not_authorized",
+      "observation_route": "external_observation",
+      "verification_status": "not_checked",
+      "lot_id": "1bf6dc3f-333e-42c4-90d8-f492f9e941b1",
+      "actual_configuration_id": "340681fc-ac4b-46ab-a42c-fe59f44d67ba",
+      "unit_count": 2,
+      "sample_ids": [
+        "1983cafd-87e4-4892-98a5-4a9566e19ee3",
+        "d9bbdee3-b3c1-4cab-a519-c45128614ca0"
+      ],
+      "samples": [
+        {
+          "id": "1983cafd-87e4-4892-98a5-4a9566e19ee3",
+          "label": "PDOS-W4-S01",
+          "availability": "unknown"
+        },
+        {
+          "id": "d9bbdee3-b3c1-4cab-a519-c45128614ca0",
+          "label": "PDOS-W4-S02",
+          "availability": "hold"
+        }
+      ]
+    }
+  ],
+  "receipt_ids": [
+    "e12b3940-08af-4c12-9c00-bcc66ea27ef9",
+    "2d5ceaa0-7e97-46f9-90aa-8e1c67f7c659",
+    "28f62029-4c9b-4284-8f9e-27aa62a3dc80"
+  ],
+  "audit_and_outbox_each_once": true,
+  "model_calls": 0,
+  "agent_business_write_privileges": 0,
+  "backups": {
+    "pre-wave4-next_0005.dump": {
+      "bytes": 3003467,
+      "sha256": "300ec3d2803e7a5da44c13d2a56d88ebe00a3a31d3cee610a8ea8d7ee66b3bcf",
+      "mode": "0o600"
+    },
+    "wave4-business.dump": {
+      "bytes": 5117246,
+      "sha256": "bf091cac118366ab01061cf9942375215f3cbaed1cff6e363d5c9f37395d36e7",
+      "mode": "0o600"
+    }
+  },
+  "limitations": "Recorded observations only; no start authorization or quality reception."
+}

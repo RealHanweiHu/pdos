@@ -1,0 +1,53 @@
+{
+  "synthetic_fixture_only": true,
+  "viewport_checks": [
+    {
+      "width": 390,
+      "height": 844,
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "document_scroll_width": 390
+    },
+    {
+      "width": 1200,
+      "height": 900,
+      "themes": [
+        "light",
+        "dark"
+      ]
+    }
+  ],
+  "scenarios": [
+    "actual private Claim identity hits block confirm, server HTTP409 identity_not_removed",
+    "actual withdrawal receipt, reason trimmed, original item content/version retained",
+    "share preview only one remaining valid private Claim, no hits",
+    "actual intervening proposal.item.patch advances revision 2->3; old share apply HTTP409 evidence_version_moved",
+    "browser full refresh restores version_rejected journal without automatic apply; old request id/key retained",
+    "explicit reread/repreview and second human confirm produces matching share receipt once",
+    "journal contains sealed command only, no Claim body; clears after matching receipt",
+    "refresh displays actual category visibility and revision4",
+    "actual claims collection returns only remaining active Claim",
+    "cleared session cookie produces actual401 on Claim detail and clears prior Claim text/id from share component"
+  ],
+  "screenshots": [
+    "browser/identity-hits-desktop.png",
+    "browser/identity-hits-mobile-dark.png",
+    "browser/identity-hits-mobile-light.png",
+    "browser/restored-original-request-mobile-dark.png",
+    "browser/session-rejected-cleared-desktop-dark.png",
+    "browser/shared-desktop-light.png",
+    "browser/shared-mobile-dark.png",
+    "browser/shared-mobile-light.png",
+    "browser/shared-refresh-desktop-dark.png",
+    "browser/version-rejected-mobile-dark.png",
+    "browser/withdraw-preview-mobile-dark.png",
+    "browser/withdraw-receipt-mobile-dark.png"
+  ],
+  "console": "normal authenticated operations had no errors; explicit stale apply409 and auth401 produced expected failed-resource console entries; pre-login home401 recorded separately",
+  "services": "64746/64747 stopped; browser closed",
+  "private_harness_repairs": "read-only audit initially accessed nonexistent Receipt.idempotency_key, then an expired ORM object outside session; repaired helper only, reused same synthetic business facts, final audit passed; original logs retained",
+  "model_calls": 0,
+  "qualification_granted": false
+}

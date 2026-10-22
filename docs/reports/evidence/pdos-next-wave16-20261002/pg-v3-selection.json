@@ -1,0 +1,28 @@
+{
+  "nodes": [
+    "tests/quality_followup_transactions/test_transactions.py::test_t2_named_root_cause_uses_actual_common_uuid_and_atomic_shared_receipt",
+    "tests/quality_followup_transactions/test_transactions.py::test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution",
+    "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.capa.actions.complete-capa.actions_completed]",
+    "tests/quality_followup_root/test_savepoint.py::test_actual_followup_savepoint_commits_and_orphan_consumption_rolls_back",
+    "tests/quality_followup_root/test_expired_recovery.py::test_expired_followup_proof_has_bound_no_saved_repreview_and_saved_replay",
+    "tests/quality_followup_transactions/test_transactions.py::test_real_consumption_marker_requires_no_sql_gap_and_cannot_cross_transaction",
+    "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.issue.root_cause.decide]",
+    "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.capa.actions.complete]",
+    "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.capa.followup.link]",
+    "tests/quality_followup_transactions/test_transactions.py::test_exact_nine_fields_and_named_executor_cannot_change_after_review[executor]",
+    "tests/quality_followup_transactions/test_transactions.py::test_exact_nine_fields_and_named_executor_cannot_change_after_review[event_clock]",
+    "tests/quality_followup_transactions/test_transactions.py::test_exact_nine_fields_and_named_executor_cannot_change_after_review[event_text]",
+    "tests/quality_followup_transactions/test_transactions.py::test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_and_history[completion_original]",
+    "tests/quality_followup_transactions/test_transactions.py::test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_and_history[classification]",
+    "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[original_epoch]",
+    "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[policy_epoch]",
+    "tests/quality_followup_transactions/test_transactions.py::test_link_t1_preserves_issue_pointer_and_records_exact_scoped_owner_output",
+    "tests/quality_followup_transactions/test_transactions.py::test_classification_profile_aba_during_actual_source_checks_cannot_reuse_old_closure",
+    "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.issue.root_cause.decide-issue.root_cause_decided]",
+    "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.capa.followup.link-capa.followup_linked]"
+  ],
+  "candidate": "backend-candidate-source-v3.json",
+  "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+  "upstream_selection_sha256": "3936692909455125b2c8c7f5893ebaa204c95b01973bf49c764f80e571c87402",
+  "concurrency": 6
+}

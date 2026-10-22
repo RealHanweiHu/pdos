@@ -1,0 +1,24 @@
+{
+  "started_at": "2026-10-17T21:58:29.371012+00:00",
+  "finished_at": "2026-10-17T21:58:31.082449+00:00",
+  "snapshot": "/private/tmp/pdos-s4-release-n9vogeqk",
+  "command": [
+    "-m",
+    "alembic",
+    "downgrade",
+    "s0_0778"
+  ],
+  "exit": 0,
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "before_head": "s0_0779",
+    "after_head": "s0_0778"
+  },
+  "source_changed": [],
+  "real_model_calls": 0,
+  "real_KMS_calls": 0,
+  "performance_acceptance": false
+}

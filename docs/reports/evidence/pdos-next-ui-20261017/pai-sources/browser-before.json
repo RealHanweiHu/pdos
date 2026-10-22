@@ -1,0 +1,39 @@
+{
+  "counts": {
+    "agent_sessions": 1,
+    "agent_runs": 1,
+    "agent_run_events": 1,
+    "agent_tool_calls": 0,
+    "agent_run_inputs": 0,
+    "audit_entries": 7,
+    "action_receipts": 7,
+    "outbox_events": 7,
+    "request_keys": 5,
+    "artifact_versions": 3,
+    "uploaded_originals": 2
+  },
+  "runs": {
+    "5311aa17-a19b-4c96-a7e4-1964f5272637": {
+      "session_id": "11f3c90e-a14a-4f38-be6c-7aad24ced44e",
+      "status": "queued",
+      "intent_key": "1ee34078-8054-4dd4-9056-45f80fe9ef0d",
+      "read_sources": [
+        {
+          "product_id": null,
+          "artifact_id": "435d6bcb-e4bd-477a-95b6-b65871ca5b5e",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "5598cc51-f212-4c40-83e0-23853615211f",
+          "expected_revision": 1
+        }
+      ],
+      "context_snapshots": {},
+      "data_categories": [
+        "customer_original",
+        "internal"
+      ]
+    }
+  }
+}

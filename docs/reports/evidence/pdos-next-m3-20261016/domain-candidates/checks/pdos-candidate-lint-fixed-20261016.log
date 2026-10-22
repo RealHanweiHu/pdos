@@ -1,0 +1,17 @@
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/pai/run-candidates.tsx
+  114:37  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/pai/run-candidates.tsx:114:37
+  112 |       const result = await api<CandidatePreview>("v1/commands/preview", item.command);
+  113 |       if (!boundCandidateCommand(result.command, categoryId, runId) || !sameCandidateCommand(result.command, item.command) || !result.command.payload.confirmation_token || !result.review) throw new Error("预览与原候选不一致，请重新读取核对。");
+> 114 |       if (alive.current) { setClock(Date.now()); setPreview({ ...result, eventId: item.event_id }); }
+      |                                     ^^^^^^^^^^ Cannot call impure function
+  115 |     } catch (failure) { if (alive.current) setError(failureMessage(failure)); }
+  116 |     finally { lock.current = false; if (alive.current) setBusy(false); }
+  117 |   }  react-hooks/purity
+
+✖ 1 problem (1 error, 0 warnings)
+

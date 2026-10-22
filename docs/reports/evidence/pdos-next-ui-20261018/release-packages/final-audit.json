@@ -1,0 +1,103 @@
+{
+  "checkpoint": "project-release-packages/v1",
+  "recorded_utc": "2026-10-18T20:56:28.803774+00:00",
+  "head": "e845e63627cac0c9669b1427ae2590bca97033ca",
+  "owned_source_sha256": {
+    "pdos-next/web/src/lib/project-release-packages.ts": "a0f556cdbea0041d38b3a8e26c2513b9c85e2fd052f9b3efd0f53b45614fbcf3",
+    "pdos-next/web/src/lib/project-release-packages.test.mjs": "b0505bcf0c4b755f91e95691a6d9817f36b4e69b4482065bdb559d95fa2fabcd",
+    "pdos-next/web/src/components/projects/project-release-packages.tsx": "9541d15a283a7a1bce55dcd1084cb9d2682cae3670dbb93daa28786973a9da96",
+    "pdos-next/web/src/components/projects/project-release-packages.module.css": "dc26f41e1e59747fad2e519ed12274b642d4a048000c26876309f0b47f29ce78",
+    "pdos-next/web/src/components/projects/project-release-packages.test.mjs": "01c6fbbaa914f63161b6da8151cd0f459de708dcb96c1ac404354b773c7bab85",
+    "pdos-next/web/src/components/projects/project-workspace.tsx": "d2be2d64c18d267fb4c053cf6fd208dba90ab7fc5ba5baaba94024d60f8c82db",
+    "pdos-next/web/src/components/projects/project-views.test.mjs": "4b2c39dced6906ffdf0e5eaf0070ee91de915fffa111bc85aca0c3509d2df9fa",
+    "pdos-next/web/src/components/my-work-attention.test.mjs": "7cf826164df48a900382e2af5afe90e97696dece85e2db8f282af5b35ed16a75",
+    "pdos-next/server/tests/ui/test_project_release_packages_projection_pg.py": "37cdf42a9dbca174c5535a168ef3ecb6691d14246a77c24cf9409877f83a388d"
+  },
+  "owned_sources_match_checked_candidates": true,
+  "frontend_inputs": 442,
+  "frontend_provenance": {
+    "source": "current frontend including committed personal attention and G0 work plus prior UI and new release pane",
+    "head": "e845e63627cac0c9669b1427ae2590bca97033ca",
+    "excluded_active_external_wait_files": [
+      "src/components/projects/external-waits.tsx",
+      "src/components/projects/external-waits.test.mjs",
+      "src/components/projects/external-waits.module.css",
+      "src/lib/external-waits.ts",
+      "src/lib/external-waits.test.ts",
+      "src/app/api/external-wait-route.test.mjs"
+    ],
+    "head_restored_check_copy_files": [
+      "src/components/projects/project-work.tsx",
+      "src/components/projects/project-work.test.mjs",
+      "src/lib/project-work.ts",
+      "src/lib/project-work.test.ts"
+    ],
+    "retained_frozen_bff_sha256": "5d81f94b317441e5f3af2f5253de80d509c2aff9fea35c08e81b29eea289dc9b",
+    "prior_report_sha256": "c9fab7c5a230a32b052549355c9dc2305b01f48f9a75d2640abcb80d7fe7ba75",
+    "scope": "UI and committed attention/G0 integration plus new release summary; active external-wait excluded without editing working tree"
+  },
+  "frontend_changes_since_copy": [
+    "src/app/api/[...path]/route.ts",
+    "src/components/projects/project-work.test.mjs",
+    "src/components/projects/project-work.tsx"
+  ],
+  "test_only_lint_repair": {
+    "file": "src/components/my-work-attention.test.mjs",
+    "old_sha256": "66ee2afb8db2e80e4e941fd3e8bc1a8e825489e8cca8ec2352d769768e933aa8",
+    "new_sha256": "7cf826164df48a900382e2af5afe90e97696dece85e2db8f282af5b35ed16a75",
+    "comment_free_transpilation_identical": true,
+    "initial_failure": "initial-attention-lint/lint.log",
+    "working_tree_only_change": "one line explanation for isolated hook runner; no production changes"
+  },
+  "backend_checked_source_changes": [],
+  "initial_contract_changes": [
+    "pdos-next/web/src/components/projects/project-workspace.tsx"
+  ],
+  "initial_contract_change_explanation": "Only root-owned workspace integration changed; release domain/shared reader/BFF initial state unchanged. Candidate intentionally uses prior frozen BFF without active external wait.",
+  "dto_dependency_changes": [],
+  "backend_changes_during_check": [],
+  "backend_changes_since_snapshot": [
+    "pdos_next/domain/external_wait/storage_schema.py"
+  ],
+  "checks": {
+    "frontend_tests": 147,
+    "new_actual_pg_cases": 1,
+    "actual_get_responses": 13,
+    "per_phase_count_models": 32,
+    "actual_dto_checks": 36,
+    "actual_dto_offline_calls": 13,
+    "lint": 0,
+    "build": 0,
+    "typecheck": 0
+  },
+  "database": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0796"
+  },
+  "report_sha256": {
+    "initial-contract.json": "05f08c828c0348289d4c8879a54343d813f425baf769743373cbdaa4c8d4ec66",
+    "result.md": "fbf41d36e8f09e6941f984584578670735605637c251a5c4f3f91b9354536102",
+    "lint.log": "fc4c804a85fe75996fca47b029fbaa62cf0e56c09715664d2add1128c272721a",
+    "pg-http-responses.json": "0824f5dc4e6d3f00c91750d9b1304dec5963d8e67abf73f1b5a3641ddf61a6b1",
+    "candidate.json": "a2e286f6562bf9167704be364b65d3dad43a862fee7b6484b1f79b3c72abd872",
+    "typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "initial-static-check-notes.json": "6029451549350c2addc0880b6223949a65c2467f170d4fde585ac50759122c0e",
+    "backend-tests.log": "263a6bd015aa156448ed534a2cb7231699c08de254952fa9826b99142b426ce7",
+    "frontend-tests.log": "476852b3e1c2855adee71156fb36a7fa40c384d0e184fa1e14b296358fc24523",
+    "backend-candidate.json": "7712fc9f832de06f0c82ae12174e3b474e0de5cfbef6898bc2fadff2506299d8",
+    "actual-dto-validation.json": "f9dc89bf3ec55306bddb18d1094b25c4509e693779e19ef4c93a40b113b76c84",
+    "build.log": "5ad6dad147a5f74832d6c964dd65e10277e39ee84def2bd71a646d2a4f9b4ab8"
+  },
+  "excluded_or_not_exercised": [
+    "active external-wait delivery and whole-working-tree acceptance",
+    "actual cursor pagination; actual assessments array shape",
+    "actual nonempty exceptions or BLOCKED/UNKNOWN/READY_WITH_CONDITIONS fixture assessments",
+    "actual BFF requests/actual DTO component SSR/browser/320px/theme checks",
+    "stage reviews/health/templates/freezes and true qualification",
+    "previously denied upload/new Run visual flow; oversized JSON 413 readback",
+    "real model/data egress/golden-case/push/deployment/production/performance sampling"
+  ]
+}

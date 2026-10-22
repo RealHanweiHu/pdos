@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="17" time="37.460" timestamp="2026-10-11T02:54:35.124754-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_consumption_authority_and_same_transaction_checks_are_literal_predecessor" time="0.000" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_private_graph_contract_has_no_generic_content_or_uuid_traversal" time="0.000" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_down_restores_frozen_actual_predecessor_and_drops_only_new_helper" time="0.000" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[spec-voice]" time="4.518" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[spec-metrics]" time="0.739"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;单位与所引参数版本不一致。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;parameter_unit_mismatch&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;, container = 'metrics'
+item_kind = 'spec'
+
+    @pytest.mark.parametrize("container", ["voice", "metrics", "features", "prices"])
+    @pytest.mark.parametrize("item_kind", ["spec", "option"])
+    def test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal(work, container, item_kind):
+        source = artifact(work)
+        claim = record_claim(work, source)
+&gt;       knowledge_ref = knowledge_with_claim(work, container, claim["subject_id"])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_m3_nested_consumption_sql.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_m3_nested_consumption_sql.py:94: in knowledge_with_claim
+    receipt, _ = save(work, request(work, "category.knowledge.add", body))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': 'abb6ef6d-65b2-44f8-9f2b-f5609a85005e', 'idempotency_key': '346364b2-7da4-43fb-a320-6cf221b76f59', 'category_id': '9fda1528-82dd-4ecc-9f84-79b14ef070e6', 'product_id': None, ...}
+actor = None
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+&gt;       assert checked.status_code == 200, checked.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"单位与所引参数版本不一致。","detail":{"reason":"parameter_unit_mismatch"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/preproject/test_g0.py:93: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[spec-features]" time="0.639"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;单位与所引参数版本不一致。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;parameter_unit_mismatch&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;, container = 'features'
+item_kind = 'spec'
+
+    @pytest.mark.parametrize("container", ["voice", "metrics", "features", "prices"])
+    @pytest.mark.parametrize("item_kind", ["spec", "option"])
+    def test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal(work, container, item_kind):
+        source = artifact(work)
+        claim = record_claim(work, source)
+&gt;       knowledge_ref = knowledge_with_claim(work, container, claim["subject_id"])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_m3_nested_consumption_sql.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_m3_nested_consumption_sql.py:94: in knowledge_with_claim
+    receipt, _ = save(work, request(work, "category.knowledge.add", body))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': '5cc8563d-399b-4c75-bb18-8c64ca627ac6', 'idempotency_key': '53845d43-fb72-40f8-907d-cd66573a9853', 'category_id': 'ea94276d-2155-4eb5-91ae-d3000bcf86f7', 'product_id': None, ...}
+actor = None
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+&gt;       assert checked.status_code == 200, checked.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"单位与所引参数版本不一致。","detail":{"reason":"parameter_unit_mismatch"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/preproject/test_g0.py:93: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[spec-prices]" time="2.648" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[option-voice]" time="2.578" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[option-metrics]" time="0.724"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;单位与所引参数版本不一致。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;parameter_unit_mismatch&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;, container = 'metrics'
+item_kind = 'option'
+
+    @pytest.mark.parametrize("container", ["voice", "metrics", "features", "prices"])
+    @pytest.mark.parametrize("item_kind", ["spec", "option"])
+    def test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal(work, container, item_kind):
+        source = artifact(work)
+        claim = record_claim(work, source)
+&gt;       knowledge_ref = knowledge_with_claim(work, container, claim["subject_id"])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_m3_nested_consumption_sql.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_m3_nested_consumption_sql.py:94: in knowledge_with_claim
+    receipt, _ = save(work, request(work, "category.knowledge.add", body))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': '789545cd-746a-40bb-808f-a1e5c171e0b1', 'idempotency_key': 'dc3da09b-bfa7-44f7-9dc8-f6f4e6a51f44', 'category_id': 'a74be429-c778-4e60-a0cf-3fedd4a6b919', 'product_id': None, ...}
+actor = None
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+&gt;       assert checked.status_code == 200, checked.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"单位与所引参数版本不一致。","detail":{"reason":"parameter_unit_mismatch"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/preproject/test_g0.py:93: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[option-features]" time="0.694"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;单位与所引参数版本不一致。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;parameter_unit_mismatch&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;, container = 'features'
+item_kind = 'option'
+
+    @pytest.mark.parametrize("container", ["voice", "metrics", "features", "prices"])
+    @pytest.mark.parametrize("item_kind", ["spec", "option"])
+    def test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal(work, container, item_kind):
+        source = artifact(work)
+        claim = record_claim(work, source)
+&gt;       knowledge_ref = knowledge_with_claim(work, container, claim["subject_id"])
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_m3_nested_consumption_sql.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_m3_nested_consumption_sql.py:94: in knowledge_with_claim
+    receipt, _ = save(work, request(work, "category.knowledge.add", body))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': '61f4549f-257d-4cb2-b214-44b81ce58ff7', 'idempotency_key': '73e63baf-2345-4ddf-9a3a-ffc0708f34d8', 'category_id': 'd7246f59-ff4b-4585-adbd-aa4fa6917a7c', 'product_id': None, ...}
+actor = None
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+&gt;       assert checked.status_code == 200, checked.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"单位与所引参数版本不一致。","detail":{"reason":"parameter_unit_mismatch"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/preproject/test_g0.py:93: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_signed_nested_knowledge_consumption_blocks_claim_withdrawal[option-prices]" time="2.497" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_graph_retains_exact_fixed_version_scope_and_private_acl" time="0.819"><failure message="AssertionError: assert {'type': 'claim', 'id': '5c06aff3-878d-459c-96e4-0838a5a59fd5', 'version': 1} in [{'id': 'b44971ee-8bf6-44cf-967f-ff9d90d775e6', 'type': 'knowledge', 'version': 1}, {'id': '13de2015-03ec-4fe1-bdf8-4a...ublic source', ...}, {'id': '5c06aff3-878d-459c-96e4-0838a5a59fd5', 'line': None, 'type': 'claim', 'quote': None, ...}]">work = &lt;isolated synthetic test scope&gt;
+
+    def test_pg_graph_retains_exact_fixed_version_scope_and_private_acl(work):
+        claim = record_claim(work, artifact(work))
+        knowledge_ref = knowledge_with_claim(work, "prices", claim["subject_id"])
+        statement = text("SELECT m3_reference_graph(:t,:c,CAST(:seeds AS jsonb))")
+        with Session(work.admin) as session:
+            args = {"t": work.tenant, "c": work.category, "seeds": json.dumps([knowledge_ref])}
+            refs = session.scalar(statement, args)
+&gt;           assert {"type": "claim", "id": claim["subject_id"], "version": 1} in refs
+E           AssertionError: assert {'type': 'claim', 'id': '5c06aff3-878d-459c-96e4-0838a5a59fd5', 'version': 1} in [{'id': 'b44971ee-8bf6-44cf-967f-ff9d90d775e6', 'type': 'knowledge', 'version': 1}, {'id': '13de2015-03ec-4fe1-bdf8-4a...ublic source', ...}, {'id': '5c06aff3-878d-459c-96e4-0838a5a59fd5', 'line': None, 'type': 'claim', 'quote': None, ...}]
+
+tests/preproject/test_m3_nested_consumption_sql.py:129: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_opaque_knowledge_material_does_not_make_unrelated_claim_reachable" time="0.650" /><testcase classname="tests.preproject.test_m3_nested_consumption_sql" name="test_pg_unrelated_claim_cannot_be_injected_into_same_g0_transaction" time="1.993" /><testcase classname="tests.preproject.test_g0_downstream_sources_pg" name="test_withdrawn_g0_source_blocks_new_consumers_but_keeps_actual_history_readable[claim-only]" time="7.446" /><testcase classname="tests.preproject.test_g0_downstream_sources_pg" name="test_withdrawn_g0_source_blocks_new_consumers_but_keeps_actual_history_readable[nested-knowledge-claim]" time="7.458" /><testcase classname="tests.preproject.test_m3_lifecycle_concurrency" name="test_pg_product_evidence_and_category_patch_share_category_first_fence" time="3.462" /></testsuite></testsuites>

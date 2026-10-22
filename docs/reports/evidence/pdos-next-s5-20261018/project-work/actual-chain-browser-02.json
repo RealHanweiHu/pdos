@@ -1,0 +1,9 @@
+{
+  "snapshot": "/private/tmp/pdos-s5-work-delivery-r01ikvlk",
+  "exit": 0,
+  "source_changed": [],
+  "fixture_nature": "synthetic source; actual existing owner/peer browser task, per-recipient commitments and acceptance after exact delivery API chain",
+  "real_external_calls": 0,
+  "performance_acceptance": false,
+  "foreign_pending_context_removed": true
+}

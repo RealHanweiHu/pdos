@@ -1,0 +1,17 @@
+{
+  "project_code": "D14-04",
+  "selection": {
+    "template_id": "lithium-bicycle-pump",
+    "version": 1,
+    "product_type": "锂电自行车泵",
+    "exclusions": [
+      {
+        "key": "whole_unit-02",
+        "reason": "D14-04 不带照明灯；用户于 2026-09-08 确认。"
+      }
+    ]
+  },
+  "expected_required": 29,
+  "expected_not_applicable": 1,
+  "evidence_status": "尚未录入本项目实测结果"
+}

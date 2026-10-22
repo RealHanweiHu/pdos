@@ -1,0 +1,75 @@
+{
+  "status": "PASS",
+  "registered_at": "2026-10-03T19:04:33.805732+00:00",
+  "scope": {
+    "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+    "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+    "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0"
+  },
+  "publisher_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+  "actual_receipt": {
+    "id": "8ac17574-0c6d-40e6-b317-763543b0ff9e",
+    "operation": "evidence.artifact.register",
+    "subject_type": "artifact",
+    "subject_id": "c6e6acad-e10f-4a5b-96bb-946f5316017d",
+    "subject_revision": 1,
+    "writer_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+    "requester_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+    "created_at": "2026-10-03T19:04:33.789122+00:00",
+    "result": {
+      "id": "c6e6acad-e10f-4a5b-96bb-946f5316017d",
+      "revision": 1,
+      "status": "active"
+    }
+  },
+  "complete_native_lines": [
+    "{\"applicability\":\"applicable\",\"conditions\":\"23 C, dry\",\"destructive\":false,\"item_id\":\"dimension\",\"kind\":\"method\",\"lower\":\"9.5\",\"method\":\"Independent per-A dimensional raw reading; retain all uploaded original values\",\"nature\":\"synthetic\",\"production_qualification\":false,\"published_at\":\"2026-10-03T19:04:33.474140+00:00\",\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"scope\":{\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"},\"unit\":\"mm\",\"upper\":\"10.5\"}",
+    "{\"actual_configuration_id\":\"a5331fd7-df15-4750-b0b6-dbff97e5d0fd\",\"applicability\":\"applicable\",\"build_id\":\"beb94737-d081-4f0f-a72c-326824126b58\",\"conditions\":\"23 C, dry\",\"item_id\":\"dimension\",\"kind\":\"actual_method\",\"nature\":\"synthetic\",\"production_qualification\":false,\"published_at\":\"2026-10-03T19:04:33.474140+00:00\",\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"reason\":\"Both exact new shared A identities and fixed actual dual configurations match this limited local synthetic dimension method\",\"samples\":[{\"cavity\":\"A\",\"id\":\"88331854-7b73-4561-8a15-b0e6b7eb8a43\",\"lot_id\":\"9eacc0c0-6b05-41cb-af05-bfdd542e17b0\"},{\"cavity\":\"A\",\"id\":\"de79e419-6809-45e4-b7ff-63649239ba0b\",\"lot_id\":\"9eacc0c0-6b05-41cb-af05-bfdd542e17b0\"}],\"scope\":{\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"}}",
+    "{\"capacity\":\"1\",\"environment\":\"Wave22 local synthetic dimension station\",\"equipment_id\":\"263f47dc-155e-5c74-899c-1d0e1cf88597\",\"external_occupancies\":[],\"external_occupancies_complete\":true,\"kind\":\"equipment\",\"lifecycle\":\"active\",\"maintenance\":[],\"nature\":\"synthetic\",\"production_qualification\":false,\"published_at\":\"2026-10-03T19:04:33.474140+00:00\",\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"revision\":1,\"scope\":{\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"}}",
+    "{\"equipment_id\":\"263f47dc-155e-5c74-899c-1d0e1cf88597\",\"kind\":\"calibration\",\"nature\":\"synthetic\",\"production_qualification\":false,\"published_at\":\"2026-10-03T19:04:33.474140+00:00\",\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"reason\":\"Explicit local synthetic calibration ledger only; no real instrument certificate\",\"scope\":{\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"},\"status\":\"accepted\",\"unit\":\"mm\",\"valid_until\":\"2026-10-04T02:34:51.575100Z\"}",
+    "{\"all_resources_declared\":true,\"item_id\":\"dimension\",\"kind\":\"resource_requirements\",\"nature\":\"synthetic\",\"production_qualification\":false,\"published_at\":\"2026-10-03T19:04:33.474140+00:00\",\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"resources\":[{\"id\":\"263f47dc-155e-5c74-899c-1d0e1cf88597\",\"kind\":\"equipment\",\"revision\":1,\"units\":\"1\"},{\"id\":\"a8e4a921-15e6-4420-bc9e-51ed2242f2bf\",\"kind\":\"person\",\"revision\":1,\"units\":\"1\"}],\"scope\":{\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"}}",
+    "{\"calendar\":\"UTC all seven days 00:00 through 24:00\",\"capacity\":\"1\",\"equipment_decisions\":[\"acceptance\",\"calibration\"],\"equipment_id\":\"263f47dc-155e-5c74-899c-1d0e1cf88597\",\"executor_decisions\":[\"qualification\"],\"executor_id\":\"a8e4a921-15e6-4420-bc9e-51ed2242f2bf\",\"external_occupancies\":[],\"external_occupancies_complete\":true,\"kind\":\"finite_resource_publication\",\"nature\":\"synthetic\",\"operation_id\":\"test.run.start\",\"production_qualification\":false,\"published_at\":\"2026-10-03T19:04:33.474140+00:00\",\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"scope\":{\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"},\"statement\":\"Prospective local synthetic only; exact Formal/sample/plan window is separately bound and rechecked by the trusted resource issuer and actual Start owner\",\"status\":\"accepted\",\"valid_until\":\"2026-10-04T02:34:51.575100Z\"}"
+  ],
+  "references": [
+    {
+      "artifact_id": "c6e6acad-e10f-4a5b-96bb-946f5316017d",
+      "expected_revision": 1,
+      "line": 1,
+      "quote": "{\"applicability\":\"applicable\",\"conditions\":\"23 C, dry\",\"destructive\":false,\"item_id\":\"dimension\",\"kind\":\"method\",\"lower\":\"9.5\",\"method\":\"Independent per-A dimensional raw reading; retain all uploaded original values\",\"nature\":\"synthetic\",\"production_qualification\":false,\"published_at\":\"2026-10-03T19:04:33.474140+00:00\",\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"scope\":{\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"},\"unit\":\"mm\",\"upper\":\"10.5\"}"
+    },
+    {
+      "artifact_id": "c6e6acad-e10f-4a5b-96bb-946f5316017d",
+      "expected_revision": 1,
+      "line": 2,
+      "quote": "{\"actual_configuration_id\":\"a5331fd7-df15-4750-b0b6-dbff97e5d0fd\",\"applicability\":\"applicable\",\"build_id\":\"beb94737-d081-4f0f-a72c-326824126b58\",\"conditions\":\"23 C, dry\",\"item_id\":\"dimension\",\"kind\":\"actual_method\",\"nature\":\"synthetic\",\"production_qualification\":false,\"published_at\":\"2026-10-03T19:04:33.474140+00:00\",\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"reason\":\"Both exact new shared A identities and fixed actual dual configurations match this limited local synthetic dimension method\",\"samples\":[{\"cavity\":\"A\",\"id\":\"88331854-7b73-4561-8a15-b0e6b7eb8a43\",\"lot_id\":\"9eacc0c0-6b05-41cb-af05-bfdd542e17b0\"},{\"cavity\":\"A\",\"id\":\"de79e419-6809-45e4-b7ff-63649239ba0b\",\"lot_id\":\"9eacc0c0-6b05-41cb-af05-bfdd542e17b0\"}],\"scope\":{\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"}}"
+    },
+    {
+      "artifact_id": "c6e6acad-e10f-4a5b-96bb-946f5316017d",
+      "expected_revision": 1,
+      "line": 3,
+      "quote": "{\"capacity\":\"1\",\"environment\":\"Wave22 local synthetic dimension station\",\"equipment_id\":\"263f47dc-155e-5c74-899c-1d0e1cf88597\",\"external_occupancies\":[],\"external_occupancies_complete\":true,\"kind\":\"equipment\",\"lifecycle\":\"active\",\"maintenance\":[],\"nature\":\"synthetic\",\"production_qualification\":false,\"published_at\":\"2026-10-03T19:04:33.474140+00:00\",\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"revision\":1,\"scope\":{\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"}}"
+    },
+    {
+      "artifact_id": "c6e6acad-e10f-4a5b-96bb-946f5316017d",
+      "expected_revision": 1,
+      "line": 4,
+      "quote": "{\"equipment_id\":\"263f47dc-155e-5c74-899c-1d0e1cf88597\",\"kind\":\"calibration\",\"nature\":\"synthetic\",\"production_qualification\":false,\"published_at\":\"2026-10-03T19:04:33.474140+00:00\",\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"reason\":\"Explicit local synthetic calibration ledger only; no real instrument certificate\",\"scope\":{\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"},\"status\":\"accepted\",\"unit\":\"mm\",\"valid_until\":\"2026-10-04T02:34:51.575100Z\"}"
+    },
+    {
+      "artifact_id": "c6e6acad-e10f-4a5b-96bb-946f5316017d",
+      "expected_revision": 1,
+      "line": 5,
+      "quote": "{\"all_resources_declared\":true,\"item_id\":\"dimension\",\"kind\":\"resource_requirements\",\"nature\":\"synthetic\",\"production_qualification\":false,\"published_at\":\"2026-10-03T19:04:33.474140+00:00\",\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"resources\":[{\"id\":\"263f47dc-155e-5c74-899c-1d0e1cf88597\",\"kind\":\"equipment\",\"revision\":1,\"units\":\"1\"},{\"id\":\"a8e4a921-15e6-4420-bc9e-51ed2242f2bf\",\"kind\":\"person\",\"revision\":1,\"units\":\"1\"}],\"scope\":{\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"}}"
+    },
+    {
+      "artifact_id": "c6e6acad-e10f-4a5b-96bb-946f5316017d",
+      "expected_revision": 1,
+      "line": 6,
+      "quote": "{\"calendar\":\"UTC all seven days 00:00 through 24:00\",\"capacity\":\"1\",\"equipment_decisions\":[\"acceptance\",\"calibration\"],\"equipment_id\":\"263f47dc-155e-5c74-899c-1d0e1cf88597\",\"executor_decisions\":[\"qualification\"],\"executor_id\":\"a8e4a921-15e6-4420-bc9e-51ed2242f2bf\",\"external_occupancies\":[],\"external_occupancies_complete\":true,\"kind\":\"finite_resource_publication\",\"nature\":\"synthetic\",\"operation_id\":\"test.run.start\",\"production_qualification\":false,\"published_at\":\"2026-10-03T19:04:33.474140+00:00\",\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"scope\":{\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"},\"statement\":\"Prospective local synthetic only; exact Formal/sample/plan window is separately bound and rechecked by the trusted resource issuer and actual Start owner\",\"status\":\"accepted\",\"valid_until\":\"2026-10-04T02:34:51.575100Z\"}"
+    }
+  ],
+  "raw_utf8_sha256": "54eec6b17bc23fcc13bb6be06b690e6966c056b3c0580023457ad6d26f4d89b4",
+  "synthetic_only": true,
+  "future_actual_events": 0,
+  "qualification_granted_by_source": false
+}

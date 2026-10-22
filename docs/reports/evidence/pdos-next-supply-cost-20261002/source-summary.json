@@ -1,0 +1,159 @@
+{
+  "kind": "reference/algorithm adaptation, not byte copy",
+  "legacy_approvals_qualifications_instances_inherited": false,
+  "legacy_imported": false,
+  "records": [
+    {
+      "file_sha256": "c264df235feaf3e461dbe60bf65e74a9dfc2b2f2d1108ee695fc795188ed5dcf",
+      "path": "server/app/domain/material_coverage.py",
+      "symbols": [
+        {
+          "end": 217,
+          "name": "calculate",
+          "sha256": "6422661ef2c51087bda65439cdedb9e764b7fc8e6177686a9232bff19ae07caf",
+          "start": 212
+        },
+        {
+          "end": 504,
+          "name": "_calculate",
+          "sha256": "2a8cdc33c43493630e5bb25d67b85d834d946f1f363c3103c4215b729e1198aa",
+          "start": 220
+        }
+      ],
+      "treatment": "Group repeated BOM demand and separate secured vs unreserved supply; no old schedule/service"
+    },
+    {
+      "file_sha256": "cbcbf5193cdacb8bc1bd4b9ed3adbb19a42f62254b68537f095cfc6389d95059",
+      "path": "server/app/domain/cost_rollups.py",
+      "symbols": [
+        {
+          "end": 135,
+          "name": "calculate",
+          "sha256": "386ff7055ca83cfe1ebb49ca90a005c618ecd94e911cb077a840056b9ac3dbc2",
+          "start": 132
+        },
+        {
+          "end": 419,
+          "name": "_calculate",
+          "sha256": "73ca7d9977e48e9f5fe2ad0c8c571008e5a76347aae2754225d1de950fdf658c",
+          "start": 138
+        }
+      ],
+      "treatment": "Parent-relative quantity, package/child overlap, Decimal, tax/freight/FX, partial totals/NRE"
+    },
+    {
+      "file_sha256": "ae3b6ed8682475bcbd369b2cc5fb06fb18c2b658c13994cbdbcb1eb604102013",
+      "path": "server/app/domain/cost_inputs.py",
+      "symbols": [
+        {
+          "end": 120,
+          "name": "PriceDraft",
+          "sha256": "7ece01568b6de935aaba137dd605ea9ac6001c138b6f804faba4c3539e9ec61a",
+          "start": 41
+        },
+        {
+          "end": 135,
+          "name": "RateDraft",
+          "sha256": "76d5cfe9e321d1e6c939d57778447965db2e4881a660ca8bff35eda4060ae845",
+          "start": 123
+        },
+        {
+          "end": 245,
+          "name": "normalized",
+          "sha256": "42826a6fe0b2bc2eba795346ebc6292394039b140154ce9a1fbee1e8e159cf3b",
+          "start": 220
+        }
+      ],
+      "treatment": "Price denominator, explicit currency/source time/quote tier; no old source/DB lookup"
+    },
+    {
+      "file_sha256": "234444bf2ff3ff0f0bf720aa3691cc9b76a340ca4a45a78898346af6b8b84a37",
+      "path": "server/app/domain/build_materials.py",
+      "symbols": [
+        {
+          "end": 192,
+          "name": "_capture",
+          "sha256": "5d130a64ae9380193e17a195770dee47021435af13bd16fbcefa5cc579226104",
+          "start": 70
+        }
+      ],
+      "treatment": "Only bounded hierarchy and one supply level per leaf path; SQL/business freeze not copied"
+    },
+    {
+      "file_sha256": "38e13159966889a90d1ab4810f7c236d7b98dc37ac1d159ced5da9bdc859aa66",
+      "path": "server/app/domain/material_allocations.py",
+      "symbols": [
+        {
+          "end": 70,
+          "name": "_key",
+          "sha256": "7fe1fc345d96fafffd6554d2b6bb622d0f06d2f9e1cc29781ae449b2f3dd7bff",
+          "start": 69
+        },
+        {
+          "end": 271,
+          "name": "_pools",
+          "sha256": "d0a8a9cea42e03b5140f42e63e79791af5e0c664c830d29fd3fc0a8633d11a0a",
+          "start": 152
+        }
+      ],
+      "treatment": "Semantic reference for unique pool key, held subtraction, stale/frozen/unknown; no SQL/locks"
+    },
+    {
+      "file_sha256": "af8b1fa5b3f02d6af4cc3b0779435fbdeb116648579d71bec2cb690c40f1ca93",
+      "path": "server/app/domain/material_supply_pools.py",
+      "symbols": [
+        {
+          "end": 20,
+          "name": "lock_pools",
+          "sha256": "fd52fb67d05cb15fb42153dca3107851881aa959edda246477289f91883b0f80",
+          "start": 11
+        }
+      ],
+      "treatment": "Pool identity/reference only; lock function NOT copied or imported"
+    },
+    {
+      "file_sha256": "08c939c9bf485ed6f83304ebcfeb32ae96ee4693b8e41d233c1d4ab89bf847ba",
+      "path": "server/tests/test_material_coverage.py",
+      "symbols": [
+        {
+          "end": 88,
+          "name": "test_shared_pool_is_counted_once_but_unallocated_stock_does_not_make_kit_ready",
+          "sha256": "d5b3be6e62d4d83f78cce19bad273549c9898835ab271de8af5183607b11f417",
+          "start": 79
+        },
+        {
+          "end": 131,
+          "name": "test_expected_same_day_and_overdue_supply_stay_out_of_ready_kit",
+          "sha256": "e60d2a131580d24e9257dad0f8cb751ca36f95e9dc8e59556b4c3eadd8ac97ee",
+          "start": 119
+        },
+        {
+          "end": 161,
+          "name": "test_decimal_context_cannot_change_fixed_quantity_or_basis_digest",
+          "sha256": "d8ba12840d6fbedd7bf5618cb746510500dfe48a1fd4bb375581122266f275f4",
+          "start": 148
+        }
+      ],
+      "treatment": "Counterexample semantics re-created in independent synthetic tests; old tests not run"
+    },
+    {
+      "file_sha256": "39dc3bec32c56a139ca3aa7bb15d58e0e2b11f23fc5ccaf466f5d80c3844704e",
+      "path": "server/tests/test_cost_rollups.py",
+      "symbols": [
+        {
+          "end": 95,
+          "name": "test_unit_mismatch_is_visible_gap_in_each_cost_stage",
+          "sha256": "513a610e45ecf72008d8c2bd076880e5657f98374c8a40b4cacd249bc149e79c",
+          "start": 89
+        },
+        {
+          "end": 187,
+          "name": "test_conversion_keeps_selected_rate_and_rejects_stale_rate",
+          "sha256": "43f49efd72431cb5b8da8721aae83698a1b698c9c9c303799f8b635f3944ba58",
+          "start": 151
+        }
+      ],
+      "treatment": "Unit and FX counterexample semantics re-created; old app not imported"
+    }
+  ]
+}

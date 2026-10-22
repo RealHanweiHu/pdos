@@ -1,0 +1,41 @@
+{
+  "status": "PASS_ACTUAL_FACT_READ_AND_FORM_DEFAULTS",
+  "scope": "Actual frozen web159 with saved Rule/Observation history; no browser business save or independent review",
+  "url": "http://localhost:3028/?area=projects&view=issues&product=b1e23421-6c70-4fc5-a87f-96744baab2e8",
+  "viewport": {
+    "width": 1280
+  },
+  "savedDom": {
+    "clocks": [
+      {
+        "label": "实际观察开始（带UTC偏移的ISO时间，保留原精度）",
+        "value": "2026-10-03T15:43:19.675996+00:00"
+      },
+      {
+        "label": "实际观察结束",
+        "value": "2026-10-03T15:43:34.454922+00:00"
+      },
+      {
+        "label": "记录实际观察的事件发生时间",
+        "value": "2026-10-03T15:43:34.454922Z"
+      },
+      {
+        "label": "事件原IANA时区",
+        "value": "UTC"
+      }
+    ],
+    "historyLabels": [
+      "已发布的固定核验规则 · v1 · 第 1 版",
+      "已保存的实际观察 · v1 · 第 1 版"
+    ],
+    "savedFactIdVisible": true
+  },
+  "reviewPreviewDisabled": true,
+  "effectivenessAndCloseUnavailable": true,
+  "modelCalls": 0,
+  "screenshots": [
+    "actual-observation-history-light.jpg",
+    "actual-observation-history-dark.jpg"
+  ],
+  "themeRestored": "light"
+}

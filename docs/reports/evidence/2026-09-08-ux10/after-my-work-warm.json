@@ -1,0 +1,1637 @@
+{
+  "config": {
+    "phase": "after",
+    "kind": "my-work",
+    "cache": "warm",
+    "url": "http://127.0.0.1:3314/my-work",
+    "projectId": "b1355164-1e83-41f6-80ac-835d50d46f87",
+    "projectIds": [
+      "b1355164-1e83-41f6-80ac-835d50d46f87",
+      "682e85de-d005-431d-bf09-f1e8ca1aa04d",
+      "b606161e-be6a-4df3-b1f4-4344da932a14",
+      "4d8f00d8-4015-4fb6-9e35-2c5b9f6692c7",
+      "e95285f6-4304-4844-a292-2a277010be37",
+      "1abf93f9-74fb-4257-878b-41bca13c8d7b",
+      "dcf7117e-c3fb-47b3-9497-97c3c884d387",
+      "c97ec065-d098-4669-8441-f4ef3bd77598",
+      "a98401cf-f435-4d2f-8057-5cbc5f70a086",
+      "a760125b-b7e3-4307-913b-1c5fba48a7cc",
+      "b85e9a20-14cf-4496-a51e-49969bb7ce2d",
+      "666a6669-81fe-4856-b72b-816c40049adf",
+      "f79108fa-a6bb-4ec2-8fa0-18d703279bff",
+      "17fa022b-b4a8-40a3-9600-a92b04cf4c88",
+      "7d586a25-d79f-4272-be6a-0d1383af762a",
+      "7bfc8229-4bcf-44cb-a143-6c098a7ababf",
+      "041e1d30-e7db-4414-9fc6-d06cd6f5eadc",
+      "debea322-3516-4121-a80e-962661f8f4fa",
+      "2b94cc83-a5e7-4229-b944-af8b7d02c977",
+      "831a100c-ff52-40d0-b075-9c8a285d008e",
+      "ca9cd244-688a-42e3-ac76-f2e0d84285e5",
+      "6e984fba-e81b-44ba-8c59-20ab28678dba",
+      "43d89122-ea4a-4205-9cb8-30aa00ee757b",
+      "a6df4367-7158-4783-83bf-7947f2c099d7",
+      "ab1eef5f-339f-4154-ae49-6b3391bc08b2"
+    ]
+  },
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "browser": "152.0.7977.76",
+  "samples": [
+    {
+      "ms": 121.09999999962747,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 16,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 36,
+          "duration": 25,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 36,
+          "duration": 48,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 0
+    },
+    {
+      "ms": 123.19999999925494,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 19,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 30,
+          "duration": 35,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 31,
+          "duration": 58,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 1
+    },
+    {
+      "ms": 118.09999999962747,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 19,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 31,
+          "duration": 29,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 31,
+          "duration": 53,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 2
+    },
+    {
+      "ms": 120.89999999850988,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 21,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 33,
+          "duration": 25,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 33,
+          "duration": 47,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 3
+    },
+    {
+      "ms": 115.29999999888241,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 19,
+          "duration": 13,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 32,
+          "duration": 27,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 32,
+          "duration": 51,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 4
+    },
+    {
+      "ms": 127,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 13,
+          "duration": 15,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 29,
+          "duration": 34,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 29,
+          "duration": 62,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 5
+    },
+    {
+      "ms": 120.09999999962747,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 14,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 31,
+          "duration": 24,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 31,
+          "duration": 55,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 6
+    },
+    {
+      "ms": 113.40000000037253,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 19,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 31,
+          "duration": 23,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 31,
+          "duration": 48,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 7
+    },
+    {
+      "ms": 113.70000000111759,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 13,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 27,
+          "duration": 28,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 28,
+          "duration": 48,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 8
+    },
+    {
+      "ms": 133.80000000074506,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 17,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 33,
+          "duration": 26,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 33,
+          "duration": 60,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 9
+    },
+    {
+      "ms": 124,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 15,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 30,
+          "duration": 29,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 30,
+          "duration": 53,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 10
+    },
+    {
+      "ms": 115.19999999925494,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 24,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 36,
+          "duration": 23,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 36,
+          "duration": 46,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 11
+    },
+    {
+      "ms": 119.69999999925494,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 12,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 26,
+          "duration": 34,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 27,
+          "duration": 57,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 12
+    },
+    {
+      "ms": 120.30000000074506,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 14,
+          "duration": 14,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 28,
+          "duration": 29,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 28,
+          "duration": 54,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 13
+    },
+    {
+      "ms": 131.89999999850988,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 12,
+          "duration": 15,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 28,
+          "duration": 32,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 28,
+          "duration": 73,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 14
+    },
+    {
+      "ms": 119.69999999925494,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 14,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 33,
+          "duration": 22,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 33,
+          "duration": 48,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 15
+    },
+    {
+      "ms": 129.2000000011176,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 17,
+          "duration": 18,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 36,
+          "duration": 25,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 36,
+          "duration": 56,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 16
+    },
+    {
+      "ms": 126.90000000037253,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 21,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 32,
+          "duration": 23,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 32,
+          "duration": 56,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 17
+    },
+    {
+      "ms": 124.20000000111759,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 20,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 31,
+          "duration": 26,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 31,
+          "duration": 49,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 18
+    },
+    {
+      "ms": 108.10000000149012,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 18,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 29,
+          "duration": 22,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 29,
+          "duration": 43,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 19
+    },
+    {
+      "ms": 133.59999999962747,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 20,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 35,
+          "duration": 36,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 35,
+          "duration": 64,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 20
+    },
+    {
+      "ms": 115.69999999925494,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 12,
+          "duration": 13,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 25,
+          "duration": 27,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 25,
+          "duration": 53,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 21
+    },
+    {
+      "ms": 103.40000000037253,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 15,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 25,
+          "duration": 24,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 26,
+          "duration": 46,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 22
+    },
+    {
+      "ms": 122.19999999925494,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 17,
+          "duration": 10,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 28,
+          "duration": 35,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 28,
+          "duration": 56,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 23
+    },
+    {
+      "ms": 112.79999999888241,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 12,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 24,
+          "duration": 26,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 24,
+          "duration": 52,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 24
+    },
+    {
+      "ms": 114.69999999925494,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 19,
+          "duration": 11,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 31,
+          "duration": 26,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 31,
+          "duration": 49,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 25
+    },
+    {
+      "ms": 127.80000000074506,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 20,
+          "duration": 21,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 41,
+          "duration": 25,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 41,
+          "duration": 48,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 26
+    },
+    {
+      "ms": 115.70000000111759,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 19,
+          "duration": 12,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 33,
+          "duration": 26,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 33,
+          "duration": 47,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 27
+    },
+    {
+      "ms": 124.20000000111759,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 12,
+          "duration": 14,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 27,
+          "duration": 32,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 27,
+          "duration": 64,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 28
+    },
+    {
+      "ms": 126.40000000037253,
+      "boxes": [
+        {
+          "selector": "section[aria-label=\"任务\"] a",
+          "text": "UX10 任务 15-001UX-15待开始逾期 9月5日",
+          "top": 315.1953125,
+          "bottom": 359.1953125,
+          "left": 281,
+          "right": 1383,
+          "inViewport": true
+        }
+      ],
+      "overflow": false,
+      "resources": [
+        {
+          "path": "/api/session/me",
+          "start": 19,
+          "duration": 13,
+          "bytes": 600
+        },
+        {
+          "path": "/api/me/notifications",
+          "start": 33,
+          "duration": 29,
+          "bytes": 20533
+        },
+        {
+          "path": "/api/me/work",
+          "start": 34,
+          "duration": 57,
+          "bytes": 47080
+        }
+      ],
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+      "ok": true,
+      "apis": [
+        {
+          "path": "/api/session/me",
+          "status": 200
+        },
+        {
+          "path": "/api/me/notifications",
+          "status": 200
+        },
+        {
+          "path": "/api/me/work",
+          "status": 200
+        }
+      ],
+      "errors": [],
+      "index": 29
+    }
+  ],
+  "p50": 120.30000000074506,
+  "p95": 133.59999999962747,
+  "max": 133.80000000074506,
+  "success": 30
+}

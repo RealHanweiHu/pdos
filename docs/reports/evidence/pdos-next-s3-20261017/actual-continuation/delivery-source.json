@@ -1,0 +1,38 @@
+{
+  "written_at": "2026-10-17T18:07:58.773164+00:00",
+  "base_commit": "8992874342547c203f7466a25f7370b4c07bb13a",
+  "git_head_at_finalization": "8992874342547c203f7466a25f7370b4c07bb13a",
+  "actual_candidate": "/private/tmp/pdos-s3-continuation-oy8f4dze",
+  "owned_source_sha256": {
+    "pdos-next/server/tests/change_execution/approved_configuration_continuation_helpers.py": "17806321c76ca484aa3ebe269fc7c8157492896d1899f5e21e2e1ff18084ea30",
+    "pdos-next/server/tests/change_execution/test_approved_configuration_continuation_chain.py": "63378db2925a07d703368345befd1e3e04767f7aff7a954d79ec70915df9ed8e",
+    "pdos-next/server/tests/change_execution/test_approved_configuration_implementation_chain.py": "9e53926e099f9b406df182b1078307ae3c57d936e2623086e4f86f198182979d",
+    "pdos-next/server/pdos_next/quality_followup_host.py": "a8c31907a4eaed78343f087eb936fc68f41797ee8f9f07126ae5094077565911",
+    "pdos-next/server/tests/quality_followup_host/test_pure.py": "e64b2eb736b16bc81fd5027f368393a8b7662d34111a447a33ff31a06a333599",
+    "pdos-next/server/pdos_next/change_controlled_owner.py": "c69ba10755af02ade0960b724d570207d60bcd942ea7d82854a07f01b922b428",
+    "pdos-next/server/tests/change_execution/test_approved_order_source_basis.py": "3676b340ee134f41e0e58231e7054e832ec42fd59cf00355c84249bc8445ec95",
+    "pdos-next/server/tests/change_execution/test_action_intent_handle.py": "aecc89b12628c054a8f2d4581468979a85fe117d4a28b3f4777a0c3b16ca1681",
+    "pdos-next/server/pdos_next/change_completion_adapter.py": "b64147f56d31f9525fde699ba4141745dd2c7766248ebced244d09646765d56f",
+    "pdos-next/server/tests/change_execution/test_formal_completion_sources.py": "65b084e491ee4af8db1db96d81ebdf834f026df68ddceef392a0035c1402ffaf",
+    "docs/design/2026-10-17-pdos-next-s3-quality-continuation-contract.md": "bd417170855e6fb81bd0c9a7486696211110fe24fee796a7efef9bc97e6798fb"
+  },
+  "executable_sources_exact_to_actual_candidate": [
+    "pdos-next/server/tests/change_execution/approved_configuration_continuation_helpers.py",
+    "pdos-next/server/tests/change_execution/test_approved_configuration_continuation_chain.py",
+    "pdos-next/server/tests/change_execution/test_approved_configuration_implementation_chain.py",
+    "pdos-next/server/pdos_next/quality_followup_host.py",
+    "pdos-next/server/tests/quality_followup_host/test_pure.py",
+    "pdos-next/server/pdos_next/change_controlled_owner.py",
+    "pdos-next/server/tests/change_execution/test_approved_order_source_basis.py",
+    "pdos-next/server/tests/change_execution/test_action_intent_handle.py",
+    "pdos-next/server/pdos_next/change_completion_adapter.py",
+    "pdos-next/server/tests/change_execution/test_formal_completion_sources.py"
+  ],
+  "documentation_finalized_after_execution": "docs/design/2026-10-17-pdos-next-s3-quality-continuation-contract.md",
+  "not_in_delivery": [
+    "next-checkpoint fulfillment/applicability adapter and tests, including capa_applicability_owner.py",
+    "next-checkpoint lineage optional-expiry compatibility and its staging test",
+    "next-checkpoint default startup wiring in api.py and its pure test",
+    "foreign M2/M3/UI edits"
+  ]
+}

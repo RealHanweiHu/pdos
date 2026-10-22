@@ -1,0 +1,22 @@
+{
+  "base_commit": "ace7a384ec82b747378c5f240b7f0ccc9a6e818e",
+  "scope": "Same-run receipt-backed proposal Claim/snapshot reference admission; backend only; no migration",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/proposal_context.py",
+      "sha256": "6248eee2efda5ae6ef7be348049f00a6f135e3cd2bb71f5311a49a570f64874f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/claim_candidate.py",
+      "sha256": "7d5d58c60b271724dd8a520a306fdffc71f83687ba7791397efa1f30cc686f19"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/snapshot_command.py",
+      "sha256": "5606f701da4fda8b6a0188cfea401963dfbbfed17b4430e4213cd4ab758876e5"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_proposal_context_admission_pg.py",
+      "sha256": "01f445241a8d72d9150415bcb8ac1ab0364e12c68a6a9ade34d1d46786cf1c7a"
+    }
+  ]
+}

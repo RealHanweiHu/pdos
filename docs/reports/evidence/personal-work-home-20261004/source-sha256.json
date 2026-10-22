@@ -1,0 +1,17 @@
+{
+  "web/src/components/workspace-experience.ts": "97b34ae52f55ba633883cd8474d7e98d0640faada51a1839f21b4de8a8c326d6",
+  "web/src/components/workspace-home.tsx": "6afa971622c202d13f29eedd007cd8db53b6ccb1169d7d732f7d50a31ff731f7",
+  "web/src/components/workspace-shell.tsx": "d78aab11bdd6e6127604e1b92358c533e54753e9bf2ea043d6ff4d1574991d17",
+  "web/src/components/my-work/my-work-view.tsx": "00386de95f1830f14c4148fe8e6106719424216b53919aa0a57850f60e8dde7c",
+  "web/src/components/auth/auth-screen.tsx": "dd98bff86347f52d0c80a998e4611d14a34a5576007b6800ba9f91bdf7783384",
+  "web/src/components/projects/project-workspace-view.tsx": "d83eca1262445f4745d25ea8830cbe1d5e7859f7de7fe0d3d52079e20ad78cad",
+  "web/src/components/workspace-experience.test.ts": "b0090462514ce7da50fbc1f1e303e0ef3bff8909890efbd17b4cb8bf6b065ac9",
+  "web/src/components/workspace-home.test.tsx": "f6af7512c88d89640e1f29ca2c2192242f1073de21759920ca6286ef44599baf",
+  "web/src/components/workspace-shell.test.tsx": "ab3f7771c019c55cb4cf18c7a396d9d2ff7b571871fda516e2d5f3622c1510e5",
+  "web/src/components/my-work/my-work.test.tsx": "5b20969919fc49ec8e0fd80e4bb7a1468ba460a83086c1bc3a97117df7ef5a2e",
+  "web/src/components/my-work/my-work-scenario.test.tsx": "320207b53dfab7b107bc8483326d229e47c46aa5b21c31e2ab3914a345f48b78",
+  "web/src/components/auth/auth-screen.test.tsx": "13fbd07e2ba5715442d641f7782e182d618b3a770f21a2320e36e374fac4b4f8",
+  "web/src/components/projects/project-workspace.test.tsx": "f55ac3ae768a16238aed7d319c17929bcb07c21116253f8b20643f4ab0609d31",
+  "docs/design/2026-10-01-role-scenario-ui.md": "b3d0ace27b04b45486ab3166f67487d2b506a6d7440152b47ad3f98097ef2a9c",
+  "docs/design/2026-08-09-ui-baseline.md": "b746113ee9358f9572d1ed8408e38924d26434792cd02a27b55cf428aebc7338"
+}

@@ -1,0 +1,16 @@
+{
+  "state": "applied_two_owned_retest_files_not_constructed_or_business_executed",
+  "files": [
+    {
+      "path": "pdos-next/tools/wave22_shared_retest.py",
+      "sha256": "a637e28f39c979e13556745c899e4c8cb6e0f80d1a6c8478bfad5a49c19b49bd"
+    },
+    {
+      "path": "pdos-next/tools/tests/test_wave22_shared_retest.py",
+      "sha256": "6ed0bdfce9254dcf6a42c42615d129f565bad340021daf7ad80e006ca2b16805"
+    }
+  ],
+  "source_manifest_sha256": "67016f8f1d6c50e5565fb25ac6952a50fc06b4cb23b15afaca7e4bbcfebf0497",
+  "explicit_source_required": true,
+  "first_failure_not_yet_saved": true
+}

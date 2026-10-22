@@ -1,0 +1,19 @@
+{
+  "base_commit": "f6db414d1f6688dc53ab03d68d10846c4bb58625",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/agent_kernel/api.py": "0833cdd48d9806ceda1c47530b93df739a4fffa7c76ba4151c120d0567dc2025",
+    "pdos-next/server/pdos_next/agent_kernel/run_feedback.py": "5c3e76e5dfbba89db72aa3d212a8ea97e5544650ad806ca405ada45cc7bbe94f",
+    "pdos-next/server/tests/agent_kernel/test_run_feedback.py": "394a163eae3155e82eb2125998d36e89422963eac7f7388497990852b17c3f36",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "058ce830da542c427a2dc96d7bdb9728894c0bd843be5baebc924d783d89276e",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "53b68b96b20f5e012d2d3802dea8b08127eb27ace2c39122c76719490aa03650",
+    "pdos-next/web/src/app/globals.css": "56ba81af9164ab1105844f43e195d81f2b232ca61c30c549f29509e550d3ffbd",
+    "pdos-next/web/src/components/xiaopai.tsx": "3587f5d07b7e3955aeb3fc2f7d58e689ed1b9740b6807e072cdab981801f050d",
+    "pdos-next/web/src/components/category-create/personal-xiaopai.tsx": "fd89b73ec1d8a74ad2323d21734dac230579895c145eb9d92e8378f74a8de068",
+    "pdos-next/web/src/lib/run-process.ts": "d6add3daf0be7c11a0f4d4b4d2620379cfa33cbba04de5130c925ae38caa829a",
+    "pdos-next/web/src/lib/run-feedback.ts": "1517289973d7624b6df026cfdac1d9450823d4dee2133c39eb070dd146556cb4",
+    "pdos-next/web/src/lib/run-feedback.test.ts": "ed4063af81e46ce4024842ebceec91536f7ccf7b58d9235ae8b5c8d201ba8fc2",
+    "pdos-next/web/src/components/pai/run-feedback.tsx": "87617f0310cd5571923a7d77eb92fb6774c668ac94acd2ca5516d9bf87e484f2",
+    "pdos-next/web/src/components/pai/run-feedback.test.mjs": "8d182849791b009d2020199085e14b2203df977be1847c63fc2b60fe03b49b34",
+    "docs/runbooks/xiaopai-run-feedback.md": "490a7d7499796a72661c695e615c64895f5980a6e9bd0505ad1afa2c03edaa1b"
+  }
+}

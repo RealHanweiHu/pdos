@@ -1,0 +1,15 @@
+{
+  "head": "edae14c",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/domain/configurations/service.py": "ce7dd7dfab301a9cf0a01437a2707fb38cec365ca2e73c55062c7e7012939a5c",
+    "pdos-next/server/pdos_next/domain/configurations/models.py": "8d4545cf807f8d5c7a98f78c3539450b52d6c4ce35896170dcfc9707a9068ea4",
+    "pdos-next/server/pdos_next/domain/configurations/schemas.py": "efd39710d5dc43ca61cc044de9a0f91c6aca497722efc10bc1ef27b40be5a1d5",
+    "pdos-next/server/pdos_next/domain/builds/service.py": "64832dfcb442958612de07cd7d13f62e97bb6d5cc98a4101e3e59de369f4d66b",
+    "pdos-next/server/pdos_next/domain/builds/models.py": "21ba49c2c57ed7e399ee98ecac423ee5dd313654996c9992770fe69cdc3fe3a4",
+    "pdos-next/web/src/lib/project-build-summary.ts": "f313ae12b425e269d4b326ab8897809a57a30f44c27ca7628ab92b2d035ec095",
+    "pdos-next/web/src/components/projects/project-activity.tsx": "603ddffd67162370f4c7908cd5d13b15fa70d250e7376a57bc056150f6e6f2b0",
+    "pdos-next/web/src/lib/project-activity.ts": "4b0b55b9f24ff736ee0bde867006ebf52a7f572914e38006b9bbbbb5ac954ad0",
+    "pdos-next/web/src/components/projects/project-cockpit.tsx": "1159014697b76f39350687b45061919c646805ccbf76e50aaab6f8e90333fad4",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "5d81f94b317441e5f3af2f5253de80d509c2aff9fea35c08e81b29eea289dc9b"
+  }
+}

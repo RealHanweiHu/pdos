@@ -1,0 +1,9 @@
+[
+  "tests/test_retained_execution.py::test_retained_proof_rejects_new_real_observation_of_configuration_deviation",
+  "tests/test_retained_execution.py::test_retained_proof_keeps_history_without_current_manufacturing_qualification",
+  "tests/test_verification_execution.py::test_pointer_first_insert_cannot_skip_a_real_persisted_first_version",
+  "tests/test_verification_execution.py::test_preparation_does_not_grant_professional_or_physical_authority",
+  "tests/test_verification_execution.py::test_request_series_cannot_switch_build_or_use_another_product",
+  "tests/verification_handoff/test_transactions.py::test_source_withdrawal_keeps_saved_receipt_replay_and_blocks_new_material",
+  "tests/change_coverage_transactions/test_fences.py"
+]

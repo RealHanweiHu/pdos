@@ -1,0 +1,29 @@
+{
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "port": 64245,
+  "database": "pdos_test",
+  "head": "s0_0760",
+  "roundtrip": [
+    "s0_0759 → s0_0760",
+    "s0_0760 → s0_0759",
+    "s0_0759 → s0_0760"
+  ],
+  "roundtrip_result": "passed before new confirmed history; frozen actual predecessor and final catalog exactly matched",
+  "prior_guard_sha256": "656b86c3afbe4351c733754b09da2850b946234eee2e9fdb729248ecdb885846",
+  "final_guard_sha256": "b0d0ce983e5cdefbddb1c930dc63bee130a5354725d581152d946207dae0ef2b",
+  "backups": [
+    {
+      "path": "pdos-next/.local/candidate-before-0760.dump",
+      "bytes": 30840657,
+      "sha256": "e812b9e97db0fa4ba082ca108446e18b76daec0794da9b0267d066c5fa60fd80"
+    },
+    {
+      "path": "pdos-next/.local/candidate-after-0760.dump",
+      "bytes": 31047073,
+      "sha256": "9d3bff7fe50294cf8e8f710b5591f3ade732df432d6ecfaebe935204dec1337b"
+    }
+  ],
+  "restoration_test": "not performed for this checkpoint",
+  "database_retained": true,
+  "shared_runtime_modified": false
+}

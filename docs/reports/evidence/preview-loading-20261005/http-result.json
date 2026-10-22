@@ -1,0 +1,30 @@
+{
+  "asset": "/_next/static/chunks/0t_4_next_dist_compiled_next-devtools_index_1yht8jt.js",
+  "cases": [
+    {
+      "case": "127_loopback",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "case": "localhost_loopback",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "case": "untrusted_origin",
+      "status": 403,
+      "expected": 403,
+      "passed": true
+    },
+    {
+      "case": "opaque_origin",
+      "status": 403,
+      "expected": 403,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

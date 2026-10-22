@@ -1,0 +1,59 @@
+--- v2/pdos-next/web/src/components/builds/build-quality-followup.tsx
++++ v3/pdos-next/web/src/components/builds/build-quality-followup.tsx
+@@ -6,7 +6,7 @@
+ import { sourceLines } from "@/lib/product-view";
+ import {
+   blankCompletion, blankFollowupLocal, canFollowup, completesWithoutRoot, completionPayload, emptyFollowupContext,
+-  followupCancelled, followupCommand, followupError, followupNames, followupOutputKey, followupPayloadReads, followupReads, followupRecord, followupSame,
++  followupCancelled, followupCommand, followupError, followupFailureRecovery, followupNames, followupOutputKey, followupPayloadReads, followupReads, followupRecord, followupSame,
+   followupSource, followupSourceKey, followupStable, followupStates, followupSynthetic, followupTier,
+   linkPayload, readBuildFollowupIndex, readFollowupContext, readSelectedFollowup, restoreFollowupLocal, rootCausePayload, selectFollowupBuild, selectFollowupIssue, validFollowupInputs, validFollowupPreview, validFollowupReceipt,
+   type CompletionDraft, type FollowupApi, type FollowupContext, type FollowupExactSource, type FollowupLocal, type FollowupOperation, type FollowupPending, type FollowupPreview, type FollowupSource, type FollowupWork,
+@@ -88,9 +88,10 @@
+       save({ pending: null, selectedIssueId: String(current.command.payload.issue_id), selectedVersionId: "", work: { ...state.current.work, completions: state.current.work.completions.filter(row => !completed.includes(row.actionId)) } }); setPreview(null); dialog.current?.close(); setNotice(current.command.operation === "quality.capa.followup.link" ? "固定输出回链已保存或读取原回执；回链不推进问题版本，不证明正式实施或独立验证通过。" : `${followupNames[current.command.operation]}已保存或读取原回执；原失败、原值和假设保留，未决定有效性或关闭。`);
+       const refreshed = await refresh(true); if (!refreshed) setNotice("已取得成功回执，当前事实刷新尚未完成；请只刷新保存内容，不重复提交。"); await onSaved();
+     } catch (failure) {
+-      if (!alive.current) return; const handled = followupError(failure);
+-      if (committed) { setNotice("已取得成功回执，随后刷新失败；请只刷新保存内容，不重复提交。"); setReadFailed(true); setLoading(false); }
+-      else { if (current.stage === "execute") setPreview(null); if (handled.status === 401 || handled.status === 403) clearSensitive(); setError(failure instanceof Error && handled.status === undefined ? failure.message : handled.message); if ([400, 404, 409, 410, 422].includes(handled.status ?? 0) && !recovering) { save({ pending: null }); setPreview(null); } }
++      if (!alive.current) return; const handled = followupError(failure), recovery = followupFailureRecovery(committed, handled.status);
++      if (recovery.clearPrivate) clearSensitive();
++      if (recovery.mode === "saved_read_failed") { setNotice(recovery.clearPrivate ? "已取得成功回执；当前读取权限不可用，私有内容和本机草稿已清除。请只重新核对读取权限并刷新，不重复提交。" : "已取得成功回执，随后刷新失败；请只刷新保存内容，不重复提交。"); setReadFailed(true); setLoading(false); }
++      else { if (current.stage === "execute") setPreview(null); setError(failure instanceof Error && handled.status === undefined ? failure.message : handled.message); if ([400, 404, 409, 410, 422].includes(handled.status ?? 0) && !recovering) { save({ pending: null }); setPreview(null); } }
+     } finally { lock.current = false; if (alive.current) setBusy(false); }
+   }
+   async function action(operation: FollowupOperation, element: HTMLElement) { if (!can(operation) || !data) return; try { const payload = operation === "quality.issue.root_cause.decide" ? rootCausePayload(data, work) : operation === "quality.capa.actions.complete" ? completionPayload(data, work, principalId) : linkPayload(data, work); const command = followupCommand(product, operation, payload, followupReads(data.required_source_read_set, followupPayloadReads(payload)), crypto.randomUUID(), crypto.randomUUID()); await perform({ stage: "inputs", command }, element); } catch (failure) { setError(failure instanceof Error ? failure.message : "请核对当前范围与内容。"); } }
+--- v2/pdos-next/web/src/lib/build-quality-followup-view.ts
++++ v3/pdos-next/web/src/lib/build-quality-followup-view.ts
+@@ -141,6 +141,10 @@
+ export function followupError(value: unknown, reading = false): { status?: number; message: string } {
+   const status = followupRecord(value) && typeof value.status === "number" ? value.status : undefined;
+   return { status, message: reading ? "当前整改、固定输出或复验事实读取失败，请刷新核对；本次读取未发起操作。" : status === 401 || status === 403 ? "当前范围、来源、职责或专业资格不可用，请重新核对。" : [400, 404, 409, 410, 422].includes(status ?? 0) ? "固定版本、来源、专业或事件依据已变化，请刷新查看明确缺项。" : "尚未取得确定回执，请保留同一命令、载荷与原标识恢复，不另造一次操作。" };
++}
++export function followupFailureRecovery(committed: boolean, status?: number): { clearPrivate: boolean; mode: "saved_read_failed" | "scope_rejected" | "original_request" } {
++  const clearPrivate = status === 401 || status === 403;
++  return { clearPrivate, mode: committed ? "saved_read_failed" : clearPrivate ? "scope_rejected" : "original_request" };
+ }
+ export const followupStates: Record<string, string> = { actioning: "措施办理中", awaiting_verification: "等待独立验证，尚未决定有效性", open: "待具名分诊", triaged: "已具名分诊", closed: "保留已关闭历史", current: "当前来源已核对", needs_recheck: "来源或专业依据需重新核对", not_evaluated_historical: "历史固定版本，当前资格未评估", indeterminate: "不确定，保留复验缺项", unknown: "未知，不能当作已证实", pass: "固定范围数值通过", fail: "确定性判定失败", invalid: "已知无效", draft: "研究草稿，未批准发布", planned: "计划已保存，实际事件未补造", observed: "已有实物观察事实", performed: "已有实际执行事实", real: "真实事实", synthetic: "本地合成演练", server_on_save: "仅在保存时由服务器记录", INTEGRATION_REQUIRED: "所需可信证据接口尚未接入" };
+ 
+--- v2/pdos-next/web/src/lib/build-quality-followup-view.test.ts
++++ v3/pdos-next/web/src/lib/build-quality-followup-view.test.ts
+@@ -2,7 +2,7 @@
+ import test from "node:test";
+ import {
+   blankCompletion, blankFollowupLocal, blankFollowupWork, canFollowup, completesWithoutRoot, completionEvent, completionPayload,
+-  followupCapability, followupCommand, followupError, followupOutputKey, followupPayloadReads, followupReads, followupSame,
++  followupCapability, followupCommand, followupError, followupFailureRecovery, followupOutputKey, followupPayloadReads, followupReads, followupSame,
+   followupSource, followupTier, followupTime, linkPayload, normalizeFollowup, readBuildFollowupIndex, readFollowupContext, readSelectedFollowup, restoreFollowupLocal, rootCausePayload,
+   selectFollowupBuild, selectFollowupIssue, validFollowupInputs, validFollowupPreview, validFollowupReceipt, validOutputRef,
+   type FollowupApi, type FollowupCommand, type FollowupData, type FollowupSource,
+@@ -18,6 +18,9 @@
+ test("closed operations never grant effectiveness or close even if a server-shaped map says true", () => { assert.equal(followupCapability({ "quality.capa.effectiveness.decide": true }, "quality.capa.effectiveness.decide"), false); assert.equal(canFollowup(data(), "quality.issue.close"), false); assert.equal(canFollowup(data(), "quality.issue.root_cause.decide"), true); });
+ test("history, stale sources, changed current pointer and merged issues remain read-only", () => { for (const change of [{ is_current: false }, { source_status: "needs_recheck" }, { id: uuid(99) }]) assert.equal(canFollowup({ ...data(), issue: { ...data().issue, ...change } }, "quality.capa.actions.complete"), false); const row = data(); row.issue.issue.merged_into = uuid(99); assert.equal(canFollowup(row, "quality.capa.followup.link"), false); });
+ test("missing, null or string abilities cannot be treated as server authorization", () => { const row = data(); row.operations["quality.issue.root_cause.decide"].allowed = null as unknown as boolean; assert.equal(canFollowup(row, "quality.issue.root_cause.decide"), false); assert.equal(followupCapability({ "quality.issue.root_cause.decide": "true" }, "quality.issue.root_cause.decide"), false); });
++test("private permission loss after a known commit clears scope without making the write retryable", () => { for (const status of [401, 403]) assert.deepEqual(followupFailureRecovery(true, status), { clearPrivate: true, mode: "saved_read_failed" }); });
++test("a read failure after a successful commit preserves known success even without an HTTP status", () => { for (const status of [undefined, 500, 503]) assert.deepEqual(followupFailureRecovery(true, status), { clearPrivate: false, mode: "saved_read_failed" }); });
++test("permission denial before a confirmed commit clears private recovery while network uncertainty keeps the original request", () => { for (const status of [401, 403]) assert.deepEqual(followupFailureRecovery(false, status), { clearPrivate: true, mode: "scope_rejected" }); for (const status of [undefined, 500, 503]) assert.deepEqual(followupFailureRecovery(false, status), { clearPrivate: false, mode: "original_request" }); });
+ test("whole-line source retains original whitespace and hashes that full UTF8 line", async () => { const quote = "  实际中文事实  ", result = await followupSource({ id: source.id, title: "来源", revision: 1, status: "active", visibility: "private", content: quote }, 1); assert.equal(result.exact.quote, quote); assert.match(result.ref.position, /^line:1;quote_sha256:[a-f0-9]{64}$/); await assert.rejects(followupSource({ id: source.id, title: "来源", revision: 1, status: "withdrawn", visibility: "private", content: quote }, 1)); });
+ test("source union keeps versions exact and rejects oversize without truncation", () => { assert.deepEqual(followupReads(reads, reads), reads); assert.throws(() => followupReads(reads, [{ artifact_id: source.id, expected_revision: 2 }])); assert.throws(() => followupReads(Array.from({ length: 21 }, (_, i) => ({ artifact_id: uuid(i + 100), expected_revision: 1 })))); });
+ test("root cause is T2 and cannot overwrite or use a post-completion state", () => { const work = { ...blankFollowupWork(), rootText: "有来源的具名结论", rootSources: [source] }; assert.equal(followupTier("quality.issue.root_cause.decide"), "T2"); assert.deepEqual(rootCausePayload(data(), work), { issue_id: issueId, expected_issue_revision: 2, text: work.rootText, sources: [source] }); const row = data(); row.issue.issue.status = "awaiting_verification"; assert.throws(() => rootCausePayload(row, work)); row.issue.issue.status = "actioning"; row.issue.issue.root_cause = { text: "已有结论" }; assert.throws(() => rootCausePayload(row, work)); });

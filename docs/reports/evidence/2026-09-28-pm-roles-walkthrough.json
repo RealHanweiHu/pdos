@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-28",
+  "candidate": "0394-working-tree (uncommitted, in-progress)",
+  "scope": "项目经理与产品经理角色视角业务场景走查（承接同日 issue-loop 走查产生的业务事实：2 条高严重开放问题、叶轮改模任务逾期、GATE-EVT 4 缺项）",
+  "environment": "同 2026-09-28-issue-loop-walkthrough.json（57432/pdos @0394+种子；server:8000/web:3000 当前工作树；无模型调用）",
+  "role_note": "RBAC 无独立产品经理角色；PRODUCT_WORK_*/REQUIREMENT_* 动作授予 PROJECT_MANAGER/OWNER/ADMIN，两视角均由 manager（李项目）承担",
+  "steps_project_manager": [
+    {"step": "portfolio-exception-drilldown", "result": "pass", "detail": "组合与阻塞→待办与例外中心：分类计数自动汇总（高严重问题:2，其余 0），两条问题显示负责人/期限/登记时长，各带'打开原记录核对并办理'与'发起升级跟进'；时间口径说明（上海业务日、缺原阻塞事件保留未知）在页"},
+    {"step": "deep-link-back", "result": "pass", "detail": "'打开原记录核对并办理'深链回项目工作项页并锚点定位到目标问题"},
+    {"step": "gate-readiness-no-fake-pass", "result": "pass", "detail": "Gate·交付物：GATE-EVT 准备中，'4 个缺项/4 个例外需要处理'，完整材料包如实列出缺项（缺少已完成试制批次/台架流量测试用例/缺少已批准测试报告），未开签核轮次，不可跳过"},
+    {"step": "decision-full-fields", "result": "pass", "detail": "例会·决策登记：类型/标题/结论/背景/选项逐行/权衡/理由/后果/证据引用/批准人王总/负责人/需要后续执行+目标动作说明（勾选后续执行时强制 follow_up_note，否则按钮禁用——N0-04 目标执行凭据治理）；登记成功后决策日志显示'流程决策·待跟进'"},
+    {"step": "decision-task-linkage", "result": "pass", "detail": "决策关联待执行任务'叶轮改模验证'，提供'查找执行凭据确认执行完成'入口"},
+    {"step": "fmea-candidate-trigger", "result": "pass", "detail": "问题 19d421d1 各状态转换（进分析/提交验证/关闭/重开）分别触发 fmea_revision_candidates（源事件行 37/39/44/52，input_digest 去重字段在）；活动流可见 FMEA_CANDIDATE_RECORDED"}
+  ],
+  "steps_product_manager": [
+    {"step": "requirement-create", "result": "pass", "detail": "需求池新建 REQ-002'连续运转 30 分钟流量衰减 ≤ 5%'（高/远方制造/草稿），来源失败教训；验收标准逐行；列表提供关联机会/定义规格来源/开发案例三个回链"},
+    {"step": "product-workbench-empty-state", "result": "pass", "detail": "产品管理工作台空态带可执行下一步（新建市场空间）；八区标签齐（研究/竞品/细分JTBD/机会树/策略/定义/矩阵路线图/实验决策+导出中心/投入观察）；如实声明'AI 研究运行尚未接入此工作区'"},
+    {"step": "market-space-create", "result": "pass", "detail": "创建 MKT-OUTDOOR-PUMP 户外便携充气设备：用户群/地域/场景/待研究问题逐行登记，含具名责任调整与成员权限入口"},
+    {"step": "pre-project-research-task", "result": "pass", "detail": "立项前研究任务创建（typed scope=市场空间，非虚拟 Project）：研究问题/时间范围/方法/支持决定/停止条件/负责人齐备，状态'待开始·v1'——N1-01'未创建 Project 也能创建合法研究任务'通过"},
+    {"step": "my-work-preproject-linkage", "result": "pass", "detail": "研究任务自动出现在负责人 My Work'立项前研究、专业工作与实验'区（分类计数研究任务·1），与项目执行待办分开计数"}
+  ],
+  "findings": [
+    {"id": "F5", "severity": "low", "area": "web 决策日志渲染", "detail": "种子决策（无跟进）的选项行渲染为原始 dict 文本（{'cost': '中', 'name': '改模'}），应渲染为可读行；新登记决策渲染正常"},
+    {"id": "F6", "severity": "info", "area": "FMEA 候选触发语义", "detail": "问题每次状态转换（进分析/提交/关闭/重开）均生成 FMEA 修订候选（4 条），非仅关闭时；含 input_digest 去重字段。是否符合'未覆盖 Issue 生成候选'预期语义待与 N4-05 判据对账"}
+  ],
+  "artifacts": {
+    "decision_title": "EVT 阶段评审延期一周并重排叶轮改模验证",
+    "requirement": "REQ-002 连续运转 30 分钟流量衰减 ≤ 5%",
+    "market_space": "MKT-OUTDOOR-PUMP 户外便携充气设备",
+    "research_task": "连续运转流量衰减的用户感知阈值与竞品稳定性策略",
+    "fmea_candidates_for_issue_19d421d1": 4
+  }
+}

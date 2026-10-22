@@ -1,0 +1,36 @@
+{
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/ui/button.tsx",
+      "sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24"
+    },
+    {
+      "path": "pdos-next/web/src/lib/utils.ts",
+      "sha256": "64fc84c1be627f0d586fb4ba64d824a1604f44282381f5bae68cdf86e10bb6ec"
+    },
+    {
+      "path": "pdos-next/web/src/app/globals.css",
+      "sha256": "83927e87630415f8ef70438bcd42f20c036eff1c3469c3e64634175dde9a0e16"
+    },
+    {
+      "path": "pdos-next/web/package.json",
+      "sha256": "efaf6569960e954d39d6a7f2ddefc2d87c61d1fbac447f1ebb47d20abe62c9e8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/dto.py",
+      "sha256": "14f3cc902abde9ffcf98639a577812ba8577445a532299899cfb63541718a1d8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/common.py",
+      "sha256": "cd7f43ffb1c46bf8175fe59da3c76b9aeaf598d03def82aa03b8a10d4dab7379"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_cost/read_models.py",
+      "sha256": "c9e5ddfb4cf5406829f51eb985c2086cc2e2a2e2a111c70f4dbece680be3e650"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/supply_cost/dto.py",
+      "sha256": "539f725a0c39df2ebea96ec32c6af8ac332ab99d45f54219c086cdad9c04f3e3"
+    }
+  ]
+}

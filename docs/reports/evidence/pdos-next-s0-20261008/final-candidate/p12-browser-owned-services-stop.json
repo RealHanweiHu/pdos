@@ -1,0 +1,17 @@
+{
+  "only_owned_services": true,
+  "api_pid": 62767,
+  "api_actual_exit": 0,
+  "api_reaped": true,
+  "web_parent_pid": 62768,
+  "web_actual_exit": 1,
+  "pnpm_child_exit": 130,
+  "web_reaped": true,
+  "planned_SIGINT_shutdown": true,
+  "all_owned_processes_gone": true,
+  "browser_sessions_closed": [
+    "pdos-s0-p12",
+    "pdos-s0-p12-final"
+  ],
+  "database_containers_not_stopped_here": true
+}

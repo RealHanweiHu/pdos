@@ -1,0 +1,108 @@
+{
+  "candidate_sha256": "44588c11212888059b0a4061e36046dcbe5aad536ed6c9ef5dd4d335955062a9",
+  "source_file_count": 25,
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification/__init__.py",
+      "sha256": "d6c8524892875ab4826535adf0db845d973e29cb8d0a82a6346a1b389f9b99ea"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification/handlers.py",
+      "sha256": "d4c762cc786b7d46ae488da2ff0832c46191eedb0a2d89e20d993717b6349e48"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification/ports.py",
+      "sha256": "6661a1dd3f13ec071bc842781a48357ea8d4787cf5701f93245fbb13dd738c39"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification/rules.py",
+      "sha256": "17c094742a07eed64ee5dbf9c9a628b611d5feeb2b157e52d0371f335ef280c7"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/verification/__init__.py",
+      "sha256": "9c5d73deba86ef0ba3535f8f8ac6b350382e0c0a4a323283e80a4b401f89a504"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/verification/contracts.py",
+      "sha256": "5262b95c950a20625da5abb54b4c47dc5e77bb790f97518ca21cd3c422039734"
+    },
+    {
+      "path": "pdos-next/server/tests/verification/__init__.py",
+      "sha256": "2a2ebf0b3528de6f42e6856f7993e457b9e7d13d9758c004c8fa9c4769abf1f4"
+    },
+    {
+      "path": "pdos-next/server/tests/verification/conftest.py",
+      "sha256": "1d6c9e8fab06ba603d42486ff05c8e079b447acde1e21f6e6ae09b566583ec26"
+    },
+    {
+      "path": "pdos-next/server/tests/verification/helpers.py",
+      "sha256": "9bc5736ac16610f48eeb21b27f3e88d03351bc08d4ffa1fce9a4765e29da461c"
+    },
+    {
+      "path": "pdos-next/server/tests/verification/test_contracts.py",
+      "sha256": "279443de02bb10303cd09834d73f2d68da300d5958a54c7bd85b4c81189da932"
+    },
+    {
+      "path": "pdos-next/server/tests/verification/test_handlers.py",
+      "sha256": "fa1580acab40b5bba19cdf588492313f1a1bad6701b650084f1a5be1673955aa"
+    },
+    {
+      "path": "pdos-next/server/tests/verification/test_partial_result_responsibility.py",
+      "sha256": "1412f4aa3804737928e19e0655bfe723e1884599b241238d859468253d97481b"
+    },
+    {
+      "path": "pdos-next/server/tests/verification/test_preview_order.py",
+      "sha256": "3dd0611f8a28fc110b481c83a75ae4379bc4a0dc9cd7f9236127cfb6f76ca101"
+    },
+    {
+      "path": "pdos-next/server/tests/verification/test_rules.py",
+      "sha256": "bfd6f332c4b083a7cf7cba53163068e5f3995832ae5b97ee426189e1b4db3fd1"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/__tests__/fixtures.ts",
+      "sha256": "0f734c9e64016e91fdcb2b3b396eedf5c594d5c93cf8187233e6df95fa035495"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/contracts.test.ts",
+      "sha256": "2482c901d5cea394235d4c3250211f9702655f7461cbcad3be98a041b2dc7c58"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/contracts.ts",
+      "sha256": "33725420bdc10f8560366b7a879f25be1b2d96f43058398b4d3e3fa10816da3a"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/event-time.tsx",
+      "sha256": "714000f68e7eea724edcf98eda0c59830b25169f2cdc1bbf91db53aa8578ba92"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/handoff.tsx",
+      "sha256": "60aefcc89f057fc3cf3fbeffd3106dfd7a91cb63826a84bbaae561124d9ecd12"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/index.ts",
+      "sha256": "d4f9e2830486c6b85767d2bf880871cbce659daba628190ee45099294f273f0c"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/preview.tsx",
+      "sha256": "6b9ab998151c70d70e7c9454fe6fa9c06a68c5b97de57f01de60c3a998a706d6"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/render.test.mjs",
+      "sha256": "05e6974534252843b2da99d22523d2bd4aaa5d6efa095e2b7e5a15b30a708e38"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/request-reading.tsx",
+      "sha256": "735379e3d12e70013b2eb9162c1b5f51f5718d85fce1d9089c81374541461b41"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/test-runs.tsx",
+      "sha256": "46bd1b988fee91690b40f4de40922b3cba60f9e82815cb78f58a6a08678b0d6e"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/tsconfig.check.json",
+      "sha256": "b8da5d8c4a19b50ef51fafcd5658a855f998c5d1b8f73afcaa68b598986adbaf"
+    }
+  ],
+  "checks": "checks.json",
+  "note": "Hashes include package production code, synthetic fixtures/tests and local check configuration. No shared interfaces are declared frozen."
+}

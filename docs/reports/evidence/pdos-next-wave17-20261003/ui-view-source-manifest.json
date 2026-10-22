@@ -1,0 +1,35 @@
+{
+  "scope": "staged React presentation only; not public API or live business delivery",
+  "owned_files": [
+    {
+      "path": "pdos-next/staging/wave17/ui-view.tsx",
+      "sha256": "701ecc42b6d01cdefca73598b2c220b864358c3f6bad36559e70ac7fd929a609"
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-view-contract.md",
+      "sha256": "0f1191fd7289dc90798fce1c5fc12ce99658378adf1d0a91f8ad46f1dba7c411"
+    }
+  ],
+  "frozen_dependencies": [
+    {
+      "path": "pdos-next/staging/wave17/ui-contract.ts",
+      "sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-state.ts",
+      "sha256": "a7983c72185edc561d6c563b9b971dbed4aa11b7013b217d32b085ec17db941e",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-state.test.ts",
+      "sha256": "f8cb21508784b1677820921419e16321b8deee0238196628cdc5fdc0359062b7",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/staging/wave17/ui-state-contract.md",
+      "sha256": "ea4003d79242b803905db0a97520f66e37d69d6af5cc9fa89a3ab0b95bb11cf7",
+      "unchanged": true
+    }
+  ]
+}

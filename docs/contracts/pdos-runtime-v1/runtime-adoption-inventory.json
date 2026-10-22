@@ -1,0 +1,4370 @@
+{
+  "apply_adapters": [
+    {
+      "payload": "RiskSuggestionPayload",
+      "source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "adapter",
+        "line": 949,
+        "path": "server/app/domain/findings.py",
+        "sha256": "222d5415b7fbea9dda4bd650fb2e6f744aa376da09fcde741b81b4a4e169b1fa",
+        "status": "present",
+        "symbol": "_apply_risk_adapter",
+        "version": null
+      },
+      "target": "risk"
+    },
+    {
+      "payload": "KnowledgeDraftPayload",
+      "source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "adapter",
+        "line": 953,
+        "path": "server/app/domain/findings.py",
+        "sha256": "222d5415b7fbea9dda4bd650fb2e6f744aa376da09fcde741b81b4a4e169b1fa",
+        "status": "present",
+        "symbol": "_apply_memory_adapter",
+        "version": null
+      },
+      "target": "memory"
+    },
+    {
+      "payload": "TestPlanChangePayload",
+      "source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "adapter",
+        "line": 957,
+        "path": "server/app/domain/findings.py",
+        "sha256": "222d5415b7fbea9dda4bd650fb2e6f744aa376da09fcde741b81b4a4e169b1fa",
+        "status": "present",
+        "symbol": "_apply_test_plan_adapter",
+        "version": null
+      },
+      "target": "test_plan"
+    }
+  ],
+  "authorization_divergence": "ProjectAccessService supports delegated membership; FindingService currently requires direct membership. Unify under approved intersection policy.",
+  "current_dispatcher": {
+    "evidence_level": "source_present_not_runtime_verified",
+    "implementation_work": "N0-03",
+    "key": "dispatcher",
+    "line": 49,
+    "path": "server/app/worker/dispatcher.py",
+    "sha256": "4ca459b82bfc16465fd7134b1e17f9adefada0a1fb050799905f5dedc192fa06",
+    "status": "present",
+    "symbol": "AgentDispatcher",
+    "version": null
+  },
+  "current_dispatcher_limitation": "15-minute event debounce; project_id required",
+  "engines": [
+    {
+      "key": "gate_readiness",
+      "reuse_boundary": "existing project gate only",
+      "source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "gate_readiness",
+        "line": 722,
+        "path": "server/app/domain/gates.py",
+        "sha256": "829b80435cff22881cdafd751c8b5dfc0973ba89c0669a097e50660ae4e4b75b",
+        "status": "present",
+        "symbol": "GateService._readiness",
+        "version": null
+      }
+    },
+    {
+      "key": "test_plan_validation",
+      "reuse_boundary": "test plan changes only",
+      "source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "test_plan_validation",
+        "line": 217,
+        "path": "server/app/domain/test_plan_changes.py",
+        "sha256": "3c05fbd1257b2a9163f6da237a05d05e6b2e24494e27eb64db766070cad8216c",
+        "status": "present",
+        "symbol": "validate_changes",
+        "version": null
+      }
+    },
+    {
+      "key": "raw_mapping",
+      "reuse_boundary": "deterministic original cells, model mapping separate",
+      "source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "raw_mapping",
+        "line": 144,
+        "path": "server/app/domain/test_report_import.py",
+        "sha256": "16390ba4f57b3e9c58cc420dfef4ef9c53549121c96ef78e17040c24709581ab",
+        "status": "present",
+        "symbol": "_apply_mapping",
+        "version": null
+      }
+    }
+  ],
+  "events": [
+    {
+      "current_capabilities": [],
+      "event": "AI_FEEDBACK_RECEIVED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "AI_FINDING_CREATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "CAPA_ACTION_CREATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "CAPA_ACTION_STATUS_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [
+        "engineering_intelligence.bom_impact_suggestion",
+        "engineering_intelligence.change_impact_suggestion"
+      ],
+      "event": "CHANGE_RECORD_CHANGED",
+      "proposed_trigger_policy": "milestone",
+      "reason": "current routed milestone/change needs prompt outcome",
+      "status": "local_event_policy_wired"
+    },
+    {
+      "current_capabilities": [
+        "quality_intelligence.quality_cluster_alert",
+        "quality_intelligence.capa_suggestion"
+      ],
+      "event": "COMPLAINT_CREATED",
+      "proposed_trigger_policy": "milestone",
+      "reason": "current routed milestone/change needs prompt outcome",
+      "status": "local_event_policy_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "COMPLAINT_STATUS_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "CRM_REQUIREMENT_RECEIVED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "CUSTOMER_CREATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "DEBATE_STATE_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "DECISION_RECORDED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "DELIVERABLE_CHECK_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "DEPARTMENT_CREATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [
+        "engineering_intelligence.bom_impact_suggestion",
+        "engineering_intelligence.change_impact_suggestion"
+      ],
+      "event": "DEVELOPMENT_BOM_CREATED",
+      "proposed_trigger_policy": "frequent_edit",
+      "reason": "coalesce document/BOM edits; explicit user request stays immediate",
+      "status": "local_event_policy_wired"
+    },
+    {
+      "current_capabilities": [
+        "engineering_intelligence.bom_impact_suggestion",
+        "engineering_intelligence.change_impact_suggestion"
+      ],
+      "event": "DEVELOPMENT_BOM_ITEM_ADDED",
+      "proposed_trigger_policy": "frequent_edit",
+      "reason": "coalesce document/BOM edits; explicit user request stays immediate",
+      "status": "local_event_policy_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "DEVELOPMENT_CASE_CREATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "DEVELOPMENT_CASE_STATUS_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "DEVELOPMENT_CASE_UPDATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "DINGTALK_APPROVAL_UPDATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "DINGTALK_CARD_ACTION_RECEIVED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "DINGTALK_IDENTITY_LINKED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "DINGTALK_NOTIFICATION_DELIVERED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [
+        "knowledge_lite.knowledge_draft"
+      ],
+      "event": "DOCUMENT_UPLOADED",
+      "proposed_trigger_policy": "frequent_edit",
+      "reason": "coalesce document/BOM edits; explicit user request stays immediate",
+      "status": "local_event_policy_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "EFFECTIVENESS_REVIEWED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "ERP_BOM_REFERENCE_ADDED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "EVIDENCE_SNAPSHOT_CAPTURED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [
+        "knowledge_lite.knowledge_draft",
+        "executive_intelligence.executive_portfolio_brief"
+      ],
+      "event": "GATE_APPROVED",
+      "proposed_trigger_policy": "milestone",
+      "reason": "current routed milestone/change needs prompt outcome",
+      "status": "local_event_policy_wired"
+    },
+    {
+      "current_capabilities": [
+        "project_intelligence.risk_suggestion",
+        "project_intelligence.blocker_alert",
+        "project_intelligence.gate_readiness_anomaly"
+      ],
+      "event": "ISSUE_CREATED",
+      "proposed_trigger_policy": "milestone",
+      "reason": "current routed milestone/change needs prompt outcome",
+      "status": "local_event_policy_wired"
+    },
+    {
+      "current_capabilities": [
+        "project_intelligence.risk_suggestion",
+        "project_intelligence.blocker_alert",
+        "project_intelligence.gate_readiness_anomaly"
+      ],
+      "event": "ISSUE_STATUS_CHANGED",
+      "proposed_trigger_policy": "milestone",
+      "reason": "current routed milestone/change needs prompt outcome",
+      "status": "local_event_policy_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "ISSUE_UPDATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "MEETING_STATE_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "MEMORY_ARCHIVED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "MEMORY_DRAFT_CREATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "MEMORY_DRAFT_UPDATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "MEMORY_EMBEDDED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "MEMORY_VERIFIED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [
+        "quality_intelligence.quality_cluster_alert",
+        "quality_intelligence.capa_suggestion"
+      ],
+      "event": "NCR_CREATED",
+      "proposed_trigger_policy": "milestone",
+      "reason": "current routed milestone/change needs prompt outcome",
+      "status": "local_event_policy_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "NCR_PREVENTIVE_DISPOSITION_APPROVED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "NCR_STATUS_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "NPI_RECORD_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "PROJECT_CREATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [
+        "project_intelligence.risk_suggestion",
+        "project_intelligence.blocker_alert",
+        "project_intelligence.gate_readiness_anomaly",
+        "executive_intelligence.executive_portfolio_brief"
+      ],
+      "event": "PROJECT_STAGE_CHANGED",
+      "proposed_trigger_policy": "milestone",
+      "reason": "current routed milestone/change needs prompt outcome",
+      "status": "local_event_policy_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "PROJECT_STATUS_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "PROJECT_UPDATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "REMINDER_STATE_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "REQUIREMENT_CONVERTED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "REQUIREMENT_CREATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "REQUIREMENT_UPDATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "RESEARCH_SOURCE_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "RISK_CREATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "RISK_STATUS_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "RISK_UPDATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "ROOT_CAUSE_ANALYSIS_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "SPECIFICATION_CREATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [
+        "supplier_intelligence.supplier_delay_risk"
+      ],
+      "event": "SUPPLIER_DELAY_REPORTED",
+      "proposed_trigger_policy": "milestone",
+      "reason": "current routed milestone/change needs prompt outcome",
+      "status": "local_event_policy_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "TASK_CREATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "TASK_STATUS_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "TASK_UPDATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "TENANT_BOOTSTRAPPED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "TENANT_MODEL_SETTINGS_UPDATED",
+      "proposed_trigger_policy": "control",
+      "reason": "refresh/revoke affected authorization; no model on cleanup",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [
+        "project_intelligence.risk_suggestion",
+        "project_intelligence.blocker_alert",
+        "project_intelligence.gate_readiness_anomaly",
+        "quality_intelligence.quality_cluster_alert",
+        "quality_intelligence.capa_suggestion"
+      ],
+      "event": "TEST_FAILED",
+      "proposed_trigger_policy": "milestone",
+      "reason": "current routed milestone/change needs prompt outcome",
+      "status": "local_event_policy_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "USER_CREATED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "USER_DELEGATION_GRANTED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "USER_DELEGATION_REVOKED",
+      "proposed_trigger_policy": "control",
+      "reason": "refresh/revoke affected authorization; no model on cleanup",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "USER_PASSWORD_CHANGED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "USER_PASSWORD_RESET",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "USER_RESPONSIBILITY_TRANSFERRED",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "USER_SIGNED_IN",
+      "proposed_trigger_policy": "no_model_route",
+      "reason": "preserve current no-route; domain rule/event consumers unaffected",
+      "status": "candidate_not_dispatcher_wired"
+    },
+    {
+      "current_capabilities": [],
+      "event": "USER_UPDATED",
+      "proposed_trigger_policy": "control",
+      "reason": "refresh/revoke affected authorization; no model on cleanup",
+      "status": "candidate_not_dispatcher_wired"
+    }
+  ],
+  "human_actions": [
+    {
+      "additional_guards": "actor/source/target/policy and applicable independent signoff",
+      "api_contract": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "api_contract",
+        "line": 95,
+        "path": "server/app/api/findings.py",
+        "sha256": "e1eadad1e0b7bb73ceee6c7b420bf743424d2ab985748c7d5c927c70381f4cc2",
+        "status": "present",
+        "symbol": "FindingReviewRequest",
+        "version": null
+      },
+      "current_permission": "finding.review",
+      "current_role_candidates": [
+        "owner",
+        "admin",
+        "project_manager",
+        "engineer",
+        "quality"
+      ],
+      "current_scope": "project; further current membership/domain guards required",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 296,
+        "path": "server/app/domain/findings.py",
+        "sha256": "222d5415b7fbea9dda4bd650fb2e6f744aa376da09fcde741b81b4a4e169b1fa",
+        "status": "present",
+        "symbol": "FindingService.review",
+        "version": null
+      },
+      "key": "finding.review",
+      "model_callable": false,
+      "target_permission_change": null
+    },
+    {
+      "additional_guards": "actor/source/target/policy and applicable independent signoff",
+      "api_contract": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "api_contract",
+        "line": 121,
+        "path": "server/app/api/findings.py",
+        "sha256": "e1eadad1e0b7bb73ceee6c7b420bf743424d2ab985748c7d5c927c70381f4cc2",
+        "status": "present",
+        "symbol": "FindingApplyResponse",
+        "version": null
+      },
+      "current_permission": "finding.apply",
+      "current_role_candidates": [
+        "owner",
+        "admin",
+        "project_manager",
+        "engineer",
+        "quality"
+      ],
+      "current_scope": "project; further current membership/domain guards required",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 388,
+        "path": "server/app/domain/findings.py",
+        "sha256": "222d5415b7fbea9dda4bd650fb2e6f744aa376da09fcde741b81b4a4e169b1fa",
+        "status": "present",
+        "symbol": "FindingService.apply",
+        "version": null
+      },
+      "key": "finding.apply",
+      "model_callable": false,
+      "target_permission_change": null
+    },
+    {
+      "additional_guards": "actor/source/target/policy and applicable independent signoff",
+      "api_contract": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "api_contract",
+        "line": 136,
+        "path": "server/app/api/gates.py",
+        "sha256": "e38a13d29f870ec06e7799ffe101f827cf347c81bf0fa63aef1d2b37f39ba8cc",
+        "status": "present",
+        "symbol": "GateSignRequest",
+        "version": null
+      },
+      "current_permission": "gate.sign",
+      "current_role_candidates": [
+        "owner",
+        "admin",
+        "project_manager",
+        "engineer",
+        "quality"
+      ],
+      "current_scope": "project; further current membership/domain guards required",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 1077,
+        "path": "server/app/domain/gates.py",
+        "sha256": "829b80435cff22881cdafd751c8b5dfc0973ba89c0669a097e50660ae4e4b75b",
+        "status": "present",
+        "symbol": "GateService.sign",
+        "version": null
+      },
+      "key": "gate.sign",
+      "model_callable": false,
+      "target_permission_change": null
+    },
+    {
+      "additional_guards": "actor/source/target/policy and applicable independent signoff",
+      "api_contract": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "api_contract",
+        "line": 178,
+        "path": "server/app/api/gates.py",
+        "sha256": "e38a13d29f870ec06e7799ffe101f827cf347c81bf0fa63aef1d2b37f39ba8cc",
+        "status": "present",
+        "symbol": "GateDecisionRequest",
+        "version": null
+      },
+      "current_permission": "gate.manage",
+      "current_role_candidates": [
+        "owner",
+        "admin",
+        "project_manager"
+      ],
+      "current_scope": "project; further current membership/domain guards required",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 1302,
+        "path": "server/app/domain/gates.py",
+        "sha256": "829b80435cff22881cdafd751c8b5dfc0973ba89c0669a097e50660ae4e4b75b",
+        "status": "present",
+        "symbol": "GateService.decide",
+        "version": null
+      },
+      "key": "gate.decide",
+      "model_callable": false,
+      "target_permission_change": null
+    },
+    {
+      "additional_guards": "actor/source/target/policy and applicable independent signoff",
+      "api_contract": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "api_contract",
+        "line": 63,
+        "path": "server/app/api/change_governance.py",
+        "sha256": "3399efffeae1a81a1ea2049ac8d26951bb14cdd401bef14fb3daa33836dad962",
+        "status": "present",
+        "symbol": "EffectivityDecisionRequest",
+        "version": null
+      },
+      "current_permission": "change.approve",
+      "current_role_candidates": [
+        "owner",
+        "admin",
+        "project_manager"
+      ],
+      "current_scope": "project; further current membership/domain guards required",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 577,
+        "path": "server/app/domain/change_governance.py",
+        "sha256": "86ca185d716c0728351b897877b01b2db181226bfe56d8820ae62cb698402e1b",
+        "status": "present",
+        "symbol": "ChangeGovernanceService.decide_effectivity",
+        "version": null
+      },
+      "key": "ecn.effectivity",
+      "model_callable": false,
+      "target_permission_change": null
+    },
+    {
+      "additional_guards": "actor/source/target/policy and applicable independent signoff",
+      "api_contract": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "api_contract",
+        "line": null,
+        "path": "server/app/api/issue_risks.py",
+        "sha256": "3cc777b5b102fedf29b1c0065337014058f3429866a7e46ab97801c9869ef8e7",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "current_permission": "issue.verify",
+      "current_role_candidates": [
+        "owner",
+        "admin",
+        "project_manager",
+        "engineer",
+        "quality"
+      ],
+      "current_scope": "project; further current membership/domain guards required",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 533,
+        "path": "server/app/domain/issues.py",
+        "sha256": "b23d4d7ee4a4af12651176314249e04aae7227533ab38e5d73fa3f697c66dfa9",
+        "status": "present",
+        "symbol": "IssueService.transition",
+        "version": null
+      },
+      "key": "issue.close",
+      "model_callable": false,
+      "target_permission_change": null
+    },
+    {
+      "additional_guards": "actor/source/target/policy and applicable independent signoff",
+      "api_contract": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "api_contract",
+        "line": 605,
+        "path": "server/app/api/npi_execution.py",
+        "sha256": "046872210c51e044a3f53abb50895abf3e7f76b31b96bc4543808c08c7461659",
+        "status": "present",
+        "symbol": "TestRunCreateRequest",
+        "version": null
+      },
+      "current_permission": "product_engineering.edit",
+      "current_role_candidates": [
+        "owner",
+        "admin",
+        "project_manager",
+        "engineer"
+      ],
+      "current_scope": "project; further current membership/domain guards required",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 736,
+        "path": "server/app/api/npi_execution.py",
+        "sha256": "046872210c51e044a3f53abb50895abf3e7f76b31b96bc4543808c08c7461659",
+        "status": "present",
+        "symbol": "record_test_run",
+        "version": null
+      },
+      "key": "test_run.record",
+      "model_callable": false,
+      "target_permission_change": "narrow Quality test_run/import permissions in N0-04"
+    },
+    {
+      "additional_guards": "actor/source/target/policy and applicable independent signoff",
+      "api_contract": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "api_contract",
+        "line": 619,
+        "path": "server/app/api/npi_execution.py",
+        "sha256": "046872210c51e044a3f53abb50895abf3e7f76b31b96bc4543808c08c7461659",
+        "status": "present",
+        "symbol": "TestRunCompleteRequest",
+        "version": null
+      },
+      "current_permission": "product_engineering.edit",
+      "current_role_candidates": [
+        "owner",
+        "admin",
+        "project_manager",
+        "engineer"
+      ],
+      "current_scope": "project; further current membership/domain guards required",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 770,
+        "path": "server/app/api/npi_execution.py",
+        "sha256": "046872210c51e044a3f53abb50895abf3e7f76b31b96bc4543808c08c7461659",
+        "status": "present",
+        "symbol": "complete_test_run",
+        "version": null
+      },
+      "key": "test_run.complete",
+      "model_callable": false,
+      "target_permission_change": "narrow Quality test_run/import permissions in N0-04"
+    },
+    {
+      "additional_guards": "actor/source/target/policy and applicable independent signoff",
+      "api_contract": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "api_contract",
+        "line": 798,
+        "path": "server/app/api/npi_execution.py",
+        "sha256": "046872210c51e044a3f53abb50895abf3e7f76b31b96bc4543808c08c7461659",
+        "status": "present",
+        "symbol": "ImportBatchResponse",
+        "version": null
+      },
+      "current_permission": "product_engineering.edit",
+      "current_role_candidates": [
+        "owner",
+        "admin",
+        "project_manager",
+        "engineer"
+      ],
+      "current_scope": "project; further current membership/domain guards required",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 955,
+        "path": "server/app/domain/test_report_import.py",
+        "sha256": "16390ba4f57b3e9c58cc420dfef4ef9c53549121c96ef78e17040c24709581ab",
+        "status": "present",
+        "symbol": "TestReportImportService.confirm",
+        "version": null
+      },
+      "key": "report_import.confirm",
+      "model_callable": false,
+      "target_permission_change": "narrow Quality test_run/import permissions in N0-04"
+    }
+  ],
+  "legacy_components": [
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 41,
+        "path": "server/app/ai/context_builder.py",
+        "sha256": "98a5f92bade1ed720be16ea393e7f2a3c1d7eb22bdda42018ef7314ff34867d7",
+        "status": "present",
+        "symbol": "RunContextBuilder.build",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "live",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 386,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentExecutor.execute_next",
+        "version": null
+      },
+      "key": "project_intelligence.risk_suggestion",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 126,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentAssessment",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/project_intelligence_v1.json",
+        "sha256": "607407bdd7ae8a79eda80af038180e5b3b186887ce6b0337136773358c50ca86",
+        "status": "present",
+        "symbol": null,
+        "version": "project-intelligence-v1"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    },
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 41,
+        "path": "server/app/ai/context_builder.py",
+        "sha256": "98a5f92bade1ed720be16ea393e7f2a3c1d7eb22bdda42018ef7314ff34867d7",
+        "status": "present",
+        "symbol": "RunContextBuilder.build",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "live",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 386,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentExecutor.execute_next",
+        "version": null
+      },
+      "key": "project_intelligence.blocker_alert",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 126,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentAssessment",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/project_intelligence_v1.json",
+        "sha256": "607407bdd7ae8a79eda80af038180e5b3b186887ce6b0337136773358c50ca86",
+        "status": "present",
+        "symbol": null,
+        "version": "project-intelligence-v1"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    },
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 41,
+        "path": "server/app/ai/context_builder.py",
+        "sha256": "98a5f92bade1ed720be16ea393e7f2a3c1d7eb22bdda42018ef7314ff34867d7",
+        "status": "present",
+        "symbol": "RunContextBuilder.build",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "live",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 386,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentExecutor.execute_next",
+        "version": null
+      },
+      "key": "project_intelligence.gate_readiness_anomaly",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 126,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentAssessment",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/project_intelligence_v1.json",
+        "sha256": "607407bdd7ae8a79eda80af038180e5b3b186887ce6b0337136773358c50ca86",
+        "status": "present",
+        "symbol": null,
+        "version": "project-intelligence-v1"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    },
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 469,
+        "path": "server/app/ai/risk_suggestions.py",
+        "sha256": "317f73b0d64adbb39ed2ca99833a7ff97bef154f7f935f383d93b3d890cc928b",
+        "status": "present",
+        "symbol": "RiskSuggestionService._build_context",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "live",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 67,
+        "path": "server/app/ai/risk_suggestions.py",
+        "sha256": "317f73b0d64adbb39ed2ca99833a7ff97bef154f7f935f383d93b3d890cc928b",
+        "status": "present",
+        "symbol": "RiskSuggestionService.create",
+        "version": null
+      },
+      "key": "project_intelligence.risk_suggestion_api",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 126,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentAssessment",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/risk_suggestion_api_v1.json",
+        "sha256": "e41d6851443c5d1ab5dc1100253c4e5696e230236c39850d107e61a4ad721a62",
+        "status": "present",
+        "symbol": null,
+        "version": "risk-suggestion-api-v1"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    },
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 41,
+        "path": "server/app/ai/context_builder.py",
+        "sha256": "98a5f92bade1ed720be16ea393e7f2a3c1d7eb22bdda42018ef7314ff34867d7",
+        "status": "present",
+        "symbol": "RunContextBuilder.build",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "live",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 386,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentExecutor.execute_next",
+        "version": null
+      },
+      "key": "knowledge_lite.knowledge_draft",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 126,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentAssessment",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/knowledge_lite_v1.json",
+        "sha256": "49a6476a9ddf3081883efa482ca9867472ce618a3a244684791feaebd823fae9",
+        "status": "present",
+        "symbol": null,
+        "version": "knowledge-lite-v1"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    },
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 41,
+        "path": "server/app/ai/context_builder.py",
+        "sha256": "98a5f92bade1ed720be16ea393e7f2a3c1d7eb22bdda42018ef7314ff34867d7",
+        "status": "present",
+        "symbol": "RunContextBuilder.build",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "live",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 386,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentExecutor.execute_next",
+        "version": null
+      },
+      "key": "engineering_intelligence.bom_impact_suggestion",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 126,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentAssessment",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/engineering_intelligence_v1.json",
+        "sha256": "e8c10a8f356509d841a1b2efa854c338ae34101d71e88e2fb6564e1903ca725c",
+        "status": "present",
+        "symbol": null,
+        "version": "engineering-intelligence-v1"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    },
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 41,
+        "path": "server/app/ai/context_builder.py",
+        "sha256": "98a5f92bade1ed720be16ea393e7f2a3c1d7eb22bdda42018ef7314ff34867d7",
+        "status": "present",
+        "symbol": "RunContextBuilder.build",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "live",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 386,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentExecutor.execute_next",
+        "version": null
+      },
+      "key": "engineering_intelligence.change_impact_suggestion",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 126,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentAssessment",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/engineering_intelligence_v1.json",
+        "sha256": "e8c10a8f356509d841a1b2efa854c338ae34101d71e88e2fb6564e1903ca725c",
+        "status": "present",
+        "symbol": null,
+        "version": "engineering-intelligence-v1"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    },
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 41,
+        "path": "server/app/ai/context_builder.py",
+        "sha256": "98a5f92bade1ed720be16ea393e7f2a3c1d7eb22bdda42018ef7314ff34867d7",
+        "status": "present",
+        "symbol": "RunContextBuilder.build",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "live",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 386,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentExecutor.execute_next",
+        "version": null
+      },
+      "key": "quality_intelligence.quality_cluster_alert",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 126,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentAssessment",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/quality_intelligence_v1.json",
+        "sha256": "a243bde94036dc8001f30f7b9c77140d48c76899cd32ad8f8f0c12490127d6e7",
+        "status": "present",
+        "symbol": null,
+        "version": "quality-intelligence-v1"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    },
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 41,
+        "path": "server/app/ai/context_builder.py",
+        "sha256": "98a5f92bade1ed720be16ea393e7f2a3c1d7eb22bdda42018ef7314ff34867d7",
+        "status": "present",
+        "symbol": "RunContextBuilder.build",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "live",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 386,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentExecutor.execute_next",
+        "version": null
+      },
+      "key": "quality_intelligence.capa_suggestion",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 126,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentAssessment",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/quality_intelligence_v1.json",
+        "sha256": "a243bde94036dc8001f30f7b9c77140d48c76899cd32ad8f8f0c12490127d6e7",
+        "status": "present",
+        "symbol": null,
+        "version": "quality-intelligence-v1"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    },
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 124,
+        "path": "server/app/domain/test_plan_changes.py",
+        "sha256": "3c05fbd1257b2a9163f6da237a05d05e6b2e24494e27eb64db766070cad8216c",
+        "status": "present",
+        "symbol": "plan_state",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "live",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 53,
+        "path": "server/app/ai/test_plan_suggestions.py",
+        "sha256": "5223fe1e4d795b914da354de7515093250db4ec51d52be5c21b7f7b0d27df983",
+        "status": "present",
+        "symbol": "TestPlanSuggestionService.create",
+        "version": null
+      },
+      "key": "quality_intelligence.test_plan_change",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 72,
+        "path": "server/app/domain/test_plan_changes.py",
+        "sha256": "3c05fbd1257b2a9163f6da237a05d05e6b2e24494e27eb64db766070cad8216c",
+        "status": "present",
+        "symbol": "TestPlanModelAssessment",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/test_plan_change_v5.json",
+        "sha256": "b7cfba9cfe1c50bee39aebd941224626a83ffb7a90ced46cba2dfaebc526bb4c",
+        "status": "present",
+        "symbol": null,
+        "version": "test-plan-change-v5"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    },
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 702,
+        "path": "server/app/domain/test_report_import.py",
+        "sha256": "16390ba4f57b3e9c58cc420dfef4ef9c53549121c96ef78e17040c24709581ab",
+        "status": "present",
+        "symbol": "TestReportImportService._parse_import",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "live",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 702,
+        "path": "server/app/domain/test_report_import.py",
+        "sha256": "16390ba4f57b3e9c58cc420dfef4ef9c53549121c96ef78e17040c24709581ab",
+        "status": "present",
+        "symbol": "TestReportImportService._parse_import",
+        "version": null
+      },
+      "key": "quality_intelligence.test_report_import",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 71,
+        "path": "server/app/domain/test_report_import.py",
+        "sha256": "16390ba4f57b3e9c58cc420dfef4ef9c53549121c96ef78e17040c24709581ab",
+        "status": "present",
+        "symbol": "ExcelImportMapping",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/test_report_import_v1.json",
+        "sha256": "74095228b300cf9b07432531ab2278e5d80f3e000b6d137cf7fbb2fb722242aa",
+        "status": "present",
+        "symbol": null,
+        "version": "test-report-import-v1"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    },
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 41,
+        "path": "server/app/ai/context_builder.py",
+        "sha256": "98a5f92bade1ed720be16ea393e7f2a3c1d7eb22bdda42018ef7314ff34867d7",
+        "status": "present",
+        "symbol": "RunContextBuilder.build",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "shadow",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 386,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentExecutor.execute_next",
+        "version": null
+      },
+      "key": "supplier_intelligence.supplier_delay_risk",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 126,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentAssessment",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/supplier_intelligence_v1.json",
+        "sha256": "9fd54f2d0edaf5ab08071d85772322198ba0ba56a51a282a6a6055a0f1f9173a",
+        "status": "present",
+        "symbol": null,
+        "version": "supplier-intelligence-v1"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    },
+    {
+      "activation": "keep_current_version_until_candidate_bundle_verified_and_adopted",
+      "adoption_work": "N0-03 plus mapped domain items",
+      "context": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "context",
+        "line": 41,
+        "path": "server/app/ai/context_builder.py",
+        "sha256": "98a5f92bade1ed720be16ea393e7f2a3c1d7eb22bdda42018ef7314ff34867d7",
+        "status": "present",
+        "symbol": "RunContextBuilder.build",
+        "version": null
+      },
+      "current_qualification": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "provider_qualification",
+        "line": null,
+        "path": "server/golden/model-qualifications.json",
+        "sha256": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9",
+        "status": "present",
+        "symbol": null,
+        "version": "s2-model-gateway-v1"
+      },
+      "current_rollout": "shadow",
+      "handler": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "handler",
+        "line": 386,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentExecutor.execute_next",
+        "version": null
+      },
+      "key": "executive_intelligence.executive_portfolio_brief",
+      "model_output": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "model_output",
+        "line": 126,
+        "path": "server/app/ai/executor.py",
+        "sha256": "134cf51077151d485aeb05b5b074ff814863404859347431e2104568c6868548",
+        "status": "present",
+        "symbol": "AgentAssessment",
+        "version": null
+      },
+      "projection": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "projection",
+        "line": 211,
+        "path": "server/app/ai/context_projection.py",
+        "sha256": "768ae769eead2498f53b3775ad3b3d187b3b3c6ab5705ee42d900a51ad6acafe",
+        "status": "present",
+        "symbol": "project_gateway_context",
+        "version": null
+      },
+      "prompt": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "prompt",
+        "line": null,
+        "path": "server/app/ai/prompts/executive_intelligence_v1.json",
+        "sha256": "f2a38878fae0b2626b03ff091486ed8b010d7f71fd099acc5f88011947179a3e",
+        "status": "present",
+        "symbol": null,
+        "version": "executive-intelligence-v1"
+      },
+      "qualification_limitation": "provider suite only; capability qualification pending",
+      "quality": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "quality",
+        "line": 43,
+        "path": "server/app/ai/quality.py",
+        "sha256": "c48be53838d5828b0f6cfb39602e6c35b91c6ff3d2ac3e34f75687b1a784570d",
+        "status": "present",
+        "symbol": "FindingQualityService",
+        "version": null
+      },
+      "tool_declarations": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-03",
+        "key": "toolset",
+        "line": 180,
+        "path": "server/app/ai/tools.py",
+        "sha256": "bbf46599463fc3faa5fa97aeb8710d28dc82b79967d7b90f20d454a747d6c490",
+        "status": "present",
+        "symbol": "tool_definitions_for_agent",
+        "version": null
+      }
+    }
+  ],
+  "planned_engines": [
+    {
+      "implementation_work": "N2-01/02/05/N6-01/02",
+      "key": "schedule_capacity",
+      "path": null,
+      "sha256": null,
+      "status": "planned",
+      "symbol": null,
+      "version": null
+    },
+    {
+      "implementation_work": "N5-02",
+      "key": "supply_kit",
+      "path": null,
+      "sha256": null,
+      "status": "planned",
+      "symbol": null,
+      "version": null
+    },
+    {
+      "implementation_work": "N5-06/N6-03",
+      "key": "cost_scenario",
+      "path": null,
+      "sha256": null,
+      "status": "planned",
+      "symbol": null,
+      "version": null
+    },
+    {
+      "implementation_work": "N4-01/02",
+      "key": "professional_metrics",
+      "path": null,
+      "sha256": null,
+      "status": "planned",
+      "symbol": null,
+      "version": null
+    }
+  ],
+  "qualification_format": {
+    "evidence_level": "source_present_not_runtime_verified",
+    "implementation_work": "N0-03",
+    "key": "qualification_format",
+    "line": 26,
+    "path": "server/app/ai/qualifications.py",
+    "sha256": "381a59b8d92519fb2958d3f73b21f5defce6e3902252fdbe5a31f6d333fd9bcd",
+    "status": "present",
+    "symbol": "QualificationDocument",
+    "version": null
+  },
+  "role_policy": {
+    "evidence_level": "source_present_not_runtime_verified",
+    "implementation_work": "N0-03",
+    "key": "role_policy",
+    "line": 255,
+    "path": "server/app/auth/roles.py",
+    "sha256": "1cd16c6bd106a5017f3a567b5f3e3f182af417fa74b3b0bfdf26e6ee352ed4d3",
+    "status": "present",
+    "symbol": "allowed_actions",
+    "version": null
+  },
+  "status": "candidate_adoption_contract_not_runtime_enablement",
+  "target_components": [
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N1-07/N2-03",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N1-07/N2-03",
+          "key": "requirement_readiness.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-07/N2-03",
+          "key": "requirement_readiness.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-07/N2-03",
+          "key": "requirement_readiness.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-07/N2-03",
+          "key": "requirement_readiness.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-07/N2-03",
+          "key": "requirement_readiness.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N1-07/N2-03",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "project_intelligence.risk_suggestion"
+      ],
+      "semantic": "requirement_readiness"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N2-03/06",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N2-03/06",
+          "key": "schedule_control.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N2-03/06",
+          "key": "schedule_control.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N2-03/06",
+          "key": "schedule_control.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N2-03/06",
+          "key": "schedule_control.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N2-03/06",
+          "key": "schedule_control.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N2-03/06",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "project_intelligence.risk_suggestion",
+        "project_intelligence.blocker_alert"
+      ],
+      "semantic": "schedule_control"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N2-07/N3-02",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N2-07/N3-02",
+          "key": "execution_followup.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N2-07/N3-02",
+          "key": "execution_followup.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N2-07/N3-02",
+          "key": "execution_followup.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N2-07/N3-02",
+          "key": "execution_followup.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N2-07/N3-02",
+          "key": "execution_followup.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N2-07/N3-02",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "project_intelligence.blocker_alert",
+        "project_intelligence.risk_suggestion_api"
+      ],
+      "semantic": "execution_followup"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-04/N4-07",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N0-04/N4-07",
+          "key": "gate_readiness.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N0-04/N4-07",
+          "key": "gate_readiness.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N0-04/N4-07",
+          "key": "gate_readiness.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N0-04/N4-07",
+          "key": "gate_readiness.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N0-04/N4-07",
+          "key": "gate_readiness.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N0-04/N4-07",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "project_intelligence.gate_readiness_anomaly"
+      ],
+      "semantic": "gate_readiness"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N3-06",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N3-06",
+          "key": "meeting_minutes.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N3-06",
+          "key": "meeting_minutes.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N3-06",
+          "key": "meeting_minutes.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N3-06",
+          "key": "meeting_minutes.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N3-06",
+          "key": "meeting_minutes.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N3-06",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "knowledge_lite.knowledge_draft"
+      ],
+      "semantic": "meeting_minutes"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N1-02/N3-08/10/N4-01",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N1-02/N3-08/10/N4-01",
+          "key": "document_extract.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-02/N3-08/10/N4-01",
+          "key": "document_extract.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-02/N3-08/10/N4-01",
+          "key": "document_extract.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-02/N3-08/10/N4-01",
+          "key": "document_extract.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-02/N3-08/10/N4-01",
+          "key": "document_extract.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N1-02/N3-08/10/N4-01",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "knowledge_lite.knowledge_draft",
+        "quality_intelligence.test_report_import"
+      ],
+      "semantic": "document_extract"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N3-03/N6-05",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N3-03/N6-05",
+          "key": "project_memory.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N3-03/N6-05",
+          "key": "project_memory.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N3-03/N6-05",
+          "key": "project_memory.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N3-03/N6-05",
+          "key": "project_memory.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N3-03/N6-05",
+          "key": "project_memory.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N3-03/N6-05",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "knowledge_lite.knowledge_draft"
+      ],
+      "semantic": "project_memory"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N4-03",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N4-03",
+          "key": "spec_bom.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-03",
+          "key": "spec_bom.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-03",
+          "key": "spec_bom.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-03",
+          "key": "spec_bom.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-03",
+          "key": "spec_bom.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N4-03",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "engineering_intelligence.bom_impact_suggestion"
+      ],
+      "semantic": "spec_bom"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N4-03/N5-05/06",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N4-03/N5-05/06",
+          "key": "material_substitution.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-03/N5-05/06",
+          "key": "material_substitution.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-03/N5-05/06",
+          "key": "material_substitution.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-03/N5-05/06",
+          "key": "material_substitution.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-03/N5-05/06",
+          "key": "material_substitution.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N4-03/N5-05/06",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "engineering_intelligence.bom_impact_suggestion"
+      ],
+      "semantic": "material_substitution"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N4-04/06",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N4-04/06",
+          "key": "change_impact.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-04/06",
+          "key": "change_impact.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-04/06",
+          "key": "change_impact.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-04/06",
+          "key": "change_impact.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-04/06",
+          "key": "change_impact.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N4-04/06",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "engineering_intelligence.change_impact_suggestion"
+      ],
+      "semantic": "change_impact"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N4-01/02",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N4-01/02",
+          "key": "test_quality.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-01/02",
+          "key": "test_quality.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-01/02",
+          "key": "test_quality.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-01/02",
+          "key": "test_quality.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-01/02",
+          "key": "test_quality.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N4-01/02",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "quality_intelligence.quality_cluster_alert",
+        "quality_intelligence.test_plan_change"
+      ],
+      "semantic": "test_quality"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N0-04/N4-05",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N0-04/N4-05",
+          "key": "issue_verification.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N0-04/N4-05",
+          "key": "issue_verification.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N0-04/N4-05",
+          "key": "issue_verification.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N0-04/N4-05",
+          "key": "issue_verification.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N0-04/N4-05",
+          "key": "issue_verification.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N0-04/N4-05",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "quality_intelligence.quality_cluster_alert"
+      ],
+      "semantic": "issue_verification"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N4-05/N6-05",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N4-05/N6-05",
+          "key": "capa_recurrence.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-05/N6-05",
+          "key": "capa_recurrence.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-05/N6-05",
+          "key": "capa_recurrence.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-05/N6-05",
+          "key": "capa_recurrence.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N4-05/N6-05",
+          "key": "capa_recurrence.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N4-05/N6-05",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "quality_intelligence.capa_suggestion"
+      ],
+      "semantic": "capa_recurrence"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N5-02/03",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N5-02/03",
+          "key": "material_readiness.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N5-02/03",
+          "key": "material_readiness.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N5-02/03",
+          "key": "material_readiness.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N5-02/03",
+          "key": "material_readiness.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N5-02/03",
+          "key": "material_readiness.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N5-02/03",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "supplier_intelligence.supplier_delay_risk"
+      ],
+      "semantic": "material_readiness"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N5-03/05",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N5-03/05",
+          "key": "supplier_delay.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N5-03/05",
+          "key": "supplier_delay.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N5-03/05",
+          "key": "supplier_delay.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N5-03/05",
+          "key": "supplier_delay.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N5-03/05",
+          "key": "supplier_delay.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N5-03/05",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "supplier_intelligence.supplier_delay_risk"
+      ],
+      "semantic": "supplier_delay"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N5-04/05",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N5-04/05",
+          "key": "sourcing_risk.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N5-04/05",
+          "key": "sourcing_risk.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N5-04/05",
+          "key": "sourcing_risk.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N5-04/05",
+          "key": "sourcing_risk.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N5-04/05",
+          "key": "sourcing_risk.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N5-04/05",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "supplier_intelligence.supplier_delay_risk"
+      ],
+      "semantic": "sourcing_risk"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N6-02/03",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N6-02/03",
+          "key": "portfolio_schedule.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N6-02/03",
+          "key": "portfolio_schedule.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N6-02/03",
+          "key": "portfolio_schedule.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N6-02/03",
+          "key": "portfolio_schedule.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N6-02/03",
+          "key": "portfolio_schedule.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N6-02/03",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "executive_intelligence.executive_portfolio_brief"
+      ],
+      "semantic": "portfolio_schedule"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N6-01/02",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N6-01/02",
+          "key": "resource_conflict.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N6-01/02",
+          "key": "resource_conflict.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N6-01/02",
+          "key": "resource_conflict.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N6-01/02",
+          "key": "resource_conflict.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N6-01/02",
+          "key": "resource_conflict.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N6-01/02",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "executive_intelligence.executive_portfolio_brief"
+      ],
+      "semantic": "resource_conflict"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N3-07/N6-03",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N3-07/N6-03",
+          "key": "decision_brief.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N3-07/N6-03",
+          "key": "decision_brief.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N3-07/N6-03",
+          "key": "decision_brief.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N3-07/N6-03",
+          "key": "decision_brief.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N3-07/N6-03",
+          "key": "decision_brief.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N3-07/N6-03",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [
+        "executive_intelligence.executive_portfolio_brief"
+      ],
+      "semantic": "decision_brief"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N1-02",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N1-02",
+          "key": "research_planning.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-02",
+          "key": "research_planning.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-02",
+          "key": "research_planning.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-02",
+          "key": "research_planning.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-02",
+          "key": "research_planning.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N1-02",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [],
+      "semantic": "research_planning"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N1-03",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N1-03",
+          "key": "competitor_analysis.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-03",
+          "key": "competitor_analysis.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-03",
+          "key": "competitor_analysis.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-03",
+          "key": "competitor_analysis.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-03",
+          "key": "competitor_analysis.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N1-03",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [],
+      "semantic": "competitor_analysis"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N1-04",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N1-04",
+          "key": "market_analysis.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-04",
+          "key": "market_analysis.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-04",
+          "key": "market_analysis.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-04",
+          "key": "market_analysis.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-04",
+          "key": "market_analysis.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N1-04",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [],
+      "semantic": "market_analysis"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N1-04",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N1-04",
+          "key": "opportunity_mapping.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-04",
+          "key": "opportunity_mapping.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-04",
+          "key": "opportunity_mapping.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-04",
+          "key": "opportunity_mapping.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-04",
+          "key": "opportunity_mapping.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N1-04",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [],
+      "semantic": "opportunity_mapping"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N1-04",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N1-04",
+          "key": "experiment_design.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-04",
+          "key": "experiment_design.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-04",
+          "key": "experiment_design.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-04",
+          "key": "experiment_design.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-04",
+          "key": "experiment_design.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N1-04",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [],
+      "semantic": "experiment_design"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N1-05",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N1-05",
+          "key": "product_strategy.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-05",
+          "key": "product_strategy.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-05",
+          "key": "product_strategy.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-05",
+          "key": "product_strategy.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-05",
+          "key": "product_strategy.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N1-05",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [],
+      "semantic": "product_strategy"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N1-06/07",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N1-06/07",
+          "key": "product_definition.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-06/07",
+          "key": "product_definition.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-06/07",
+          "key": "product_definition.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-06/07",
+          "key": "product_definition.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N1-06/07",
+          "key": "product_definition.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N1-06/07",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [],
+      "semantic": "product_definition"
+    },
+    {
+      "candidate_activation": "disabled_until_all_components_and_qualification_verified",
+      "common_tool_payload_source": {
+        "evidence_level": "source_present_not_runtime_verified",
+        "implementation_work": "N6-04",
+        "key": "tool_payloads",
+        "line": null,
+        "path": "server/app/contracts/tool_payloads.py",
+        "sha256": "795eee9f591f64736d68250f2f0ed5b703d41edbb6d88100119494d7216fd923",
+        "status": "present",
+        "symbol": null,
+        "version": null
+      },
+      "components": [
+        {
+          "implementation_work": "N6-04",
+          "key": "product_matrix.context",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N6-04",
+          "key": "product_matrix.prompt",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N6-04",
+          "key": "product_matrix.model_output",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N6-04",
+          "key": "product_matrix.handler",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        },
+        {
+          "implementation_work": "N6-04",
+          "key": "product_matrix.quality_suite",
+          "path": null,
+          "sha256": null,
+          "status": "planned",
+          "symbol": null,
+          "version": null
+        }
+      ],
+      "domain_adoption_requires": [
+        "typed_payload_not_generic_risk",
+        "current_scope_acl",
+        "source_validity",
+        "qualified_model_and_golden",
+        "budget_and_trace",
+        "manual_fallback",
+        "human_review_apply_if_business"
+      ],
+      "implementation_work": "N6-04",
+      "model_qualification": null,
+      "partial_reuse_legacy_keys": [],
+      "semantic": "product_matrix"
+    }
+  ],
+  "trigger_policies": [
+    {
+      "cancellation_preempts": true,
+      "coalesce_seconds": 0,
+      "deadline_includes_queue_and_debounce": true,
+      "deduplication": "tenant_scope_capability_goal_source_versions",
+      "error_cleanup_model_calls": 0,
+      "key": "user_request",
+      "model_allowed": true,
+      "origin": "user",
+      "outcome_deadline_seconds": null,
+      "priority": "interactive",
+      "queue_visible_seconds": 5
+    },
+    {
+      "cancellation_preempts": true,
+      "coalesce_seconds": 0,
+      "deadline_includes_queue_and_debounce": true,
+      "deduplication": "tenant_scope_capability_goal_source_versions",
+      "error_cleanup_model_calls": 0,
+      "key": "milestone",
+      "model_allowed": true,
+      "origin": "event",
+      "outcome_deadline_seconds": 180,
+      "priority": "milestone",
+      "queue_visible_seconds": 5
+    },
+    {
+      "cancellation_preempts": true,
+      "coalesce_seconds": 900,
+      "deadline_includes_queue_and_debounce": true,
+      "deduplication": "tenant_scope_capability_goal_source_versions",
+      "error_cleanup_model_calls": 0,
+      "key": "frequent_edit",
+      "model_allowed": true,
+      "origin": "event",
+      "outcome_deadline_seconds": null,
+      "priority": "background",
+      "queue_visible_seconds": 5
+    },
+    {
+      "cancellation_preempts": true,
+      "coalesce_seconds": 0,
+      "deadline_includes_queue_and_debounce": true,
+      "deduplication": "tenant_scope_capability_goal_source_versions",
+      "error_cleanup_model_calls": 0,
+      "key": "scheduled",
+      "model_allowed": true,
+      "origin": "scheduled",
+      "outcome_deadline_seconds": null,
+      "priority": "background",
+      "queue_visible_seconds": 5
+    },
+    {
+      "cancellation_preempts": true,
+      "coalesce_seconds": 0,
+      "deadline_includes_queue_and_debounce": true,
+      "deduplication": "tenant_scope_capability_goal_source_versions",
+      "error_cleanup_model_calls": 0,
+      "key": "control",
+      "model_allowed": false,
+      "origin": "control",
+      "outcome_deadline_seconds": null,
+      "priority": "control",
+      "queue_visible_seconds": 5
+    }
+  ]
+}

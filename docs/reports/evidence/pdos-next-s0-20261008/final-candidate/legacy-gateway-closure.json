@@ -1,0 +1,3090 @@
+{
+  "status": "root_reviewed_archival_dispositions_and_current_replacement_coverage",
+  "scope": "Only archived ClaimGateway 35 failures; no implementation changes, no PG, no actual tests executed by this reviewer.",
+  "primary_evidence": "full-regression-results.json (actual full-regression.xml node identities)",
+  "source_authority": [
+    "pdos-next/server/archive/source_work/README.md",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md \u00a706.9\u2013\u00a706.11, I16/I18/I24, \u00a708.7"
+  ],
+  "archived_files": [
+    "pdos-next/server/archive/source_work/claim_gateway.py.txt",
+    "pdos-next/server/archive/source_work/test_claim_gateway.py.txt"
+  ],
+  "runtime_replacement": [
+    "pdos-next/server/pdos_next/agent_kernel/gateway.py",
+    "pdos-next/server/pdos_next/providers/agent_client.py",
+    "pdos-next/server/pdos_next/agent_kernel/execution.py",
+    "pdos-next/server/pdos_next/agent_kernel/domain_adapter.py"
+  ],
+  "legacy_full_counts": {
+    "passed": 21,
+    "failure": 35
+  },
+  "failed_disposition_counts": {
+    "retired_interface_archived_not_retested_pass": 35
+  },
+  "no_inferred_236_claim": "legacy-gateway-replacement-fixed.log historical 236 passed invocation scope remains unresolved; it is not used as evidence.",
+  "source_delta_audit": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/__init__.py",
+      "full_candidate_sha256": "2db2cb9c080323d4452a150c88b3d0fff4b550ed24d259602681d238066796e2",
+      "current_sha256": "2db2cb9c080323d4452a150c88b3d0fff4b550ed24d259602681d238066796e2",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/activities.py",
+      "full_candidate_sha256": "b426ffcb288148fb3765bfe62fab42b4453ae76f603e63020b2cb8fae14e9639",
+      "current_sha256": "b426ffcb288148fb3765bfe62fab42b4453ae76f603e63020b2cb8fae14e9639",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/api.py",
+      "full_candidate_sha256": "7ea979c588aa4c456b263a0e4a65632ae36d80801db9fba944f3247a8cd9c414",
+      "current_sha256": "7ea979c588aa4c456b263a0e4a65632ae36d80801db9fba944f3247a8cd9c414",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/bindings.py",
+      "full_candidate_sha256": "5f6f20e45790be017d4aa56d16fcfd81b08f5e5f55a50fb528d605d842fae1d6",
+      "current_sha256": "5f6f20e45790be017d4aa56d16fcfd81b08f5e5f55a50fb528d605d842fae1d6",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/bootstrap.py",
+      "full_candidate_sha256": "5e8d6a8c4319bbc25189952847541480b1879944c47ac7f38cc62e81caece9fb",
+      "current_sha256": "5e8d6a8c4319bbc25189952847541480b1879944c47ac7f38cc62e81caece9fb",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/claim_candidate.py",
+      "full_candidate_sha256": "0347a7ca1b130b2bb8fea39578c3bab8404691d3c70b77651d84ec6d0891e6a7",
+      "current_sha256": "0347a7ca1b130b2bb8fea39578c3bab8404691d3c70b77651d84ec6d0891e6a7",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/domain_adapter.py",
+      "full_candidate_sha256": "78e1dfd670972f62302ba23a640df06ffa08443e272bd5670b913dfe356cfeeb",
+      "current_sha256": "78e1dfd670972f62302ba23a640df06ffa08443e272bd5670b913dfe356cfeeb",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/domain_reads.py",
+      "full_candidate_sha256": "a7ee8ca7343673a89c3eac50ea44144db2658175226f9926ca0481de1149f647",
+      "current_sha256": "a7ee8ca7343673a89c3eac50ea44144db2658175226f9926ca0481de1149f647",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/execution.py",
+      "full_candidate_sha256": "c55cf9cfdf1d99d5211f5723811fd95aa5dcb2ecb6ef614d805ef436625fb789",
+      "current_sha256": "c55cf9cfdf1d99d5211f5723811fd95aa5dcb2ecb6ef614d805ef436625fb789",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/execution_schema.py",
+      "full_candidate_sha256": "c5bfa70d8d36ddfab2d1aacf8e8867b2cec9c5c57346f6c8e60c8007394e62c4",
+      "current_sha256": "c5bfa70d8d36ddfab2d1aacf8e8867b2cec9c5c57346f6c8e60c8007394e62c4",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/gateway.py",
+      "full_candidate_sha256": "9b32c03049aee885efa05922fb2172776fc39c058c0ace5c7d63077d89718e27",
+      "current_sha256": "9b32c03049aee885efa05922fb2172776fc39c058c0ace5c7d63077d89718e27",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/graph.py",
+      "full_candidate_sha256": "29af1f640019ffddd9e730f654cd3916eca065e6b3e1fd093e8bbcf98e5ae958",
+      "current_sha256": "29af1f640019ffddd9e730f654cd3916eca065e6b3e1fd093e8bbcf98e5ae958",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/host.py",
+      "full_candidate_sha256": "dd1089af1867fc8e1febd43d6826c7a2db7fe8dff6f6f0cb5211841877766265",
+      "current_sha256": "dd1089af1867fc8e1febd43d6826c7a2db7fe8dff6f6f0cb5211841877766265",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/management.py",
+      "full_candidate_sha256": "6e65edb36c6aa4efa51509b688398765cdb2315e9801b1f4252395ff9ea90dba",
+      "current_sha256": "6e65edb36c6aa4efa51509b688398765cdb2315e9801b1f4252395ff9ea90dba",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/mcp.py",
+      "full_candidate_sha256": "35169ce8e1cffc73996fd63c4a3e2bcb2ea355b09b3a4cb8cd47044dbe1c839f",
+      "current_sha256": "35169ce8e1cffc73996fd63c4a3e2bcb2ea355b09b3a4cb8cd47044dbe1c839f",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/models.py",
+      "full_candidate_sha256": "320724d2abf65c5821c2a5acfe8ee907b7166ca981c4614dac33b4b732990e38",
+      "current_sha256": "320724d2abf65c5821c2a5acfe8ee907b7166ca981c4614dac33b4b732990e38",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/persistence.py",
+      "full_candidate_sha256": "9802d0053fe7537a9c25f7a10fff018841fd3179589bbeac351ec191a36d2cfc",
+      "current_sha256": "9802d0053fe7537a9c25f7a10fff018841fd3179589bbeac351ec191a36d2cfc",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/policy.py",
+      "full_candidate_sha256": "bcc2fa339ccf309a73efb43bfd91ce93678b4739c7bbeb23b584dd9204820454",
+      "current_sha256": "bcc2fa339ccf309a73efb43bfd91ce93678b4739c7bbeb23b584dd9204820454",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/pricing.py",
+      "full_candidate_sha256": "a046c492c59f225e1b99496448dd97be5e3fbb7688c4a7cb618a89bd7fa1da7f",
+      "current_sha256": "a046c492c59f225e1b99496448dd97be5e3fbb7688c4a7cb618a89bd7fa1da7f",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/registry.py",
+      "full_candidate_sha256": "035496dbfdd44da1ff81b6aa0d2a9d50bae3be7bdea7f5ce0217970d57cf734c",
+      "current_sha256": "035496dbfdd44da1ff81b6aa0d2a9d50bae3be7bdea7f5ce0217970d57cf734c",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/research_adapter.py",
+      "full_candidate_sha256": "274f36275fca4712284fb00524e6b8204bb07fe4d39682b589da528e4b54220e",
+      "current_sha256": "274f36275fca4712284fb00524e6b8204bb07fe4d39682b589da528e4b54220e",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/research_graph.py",
+      "full_candidate_sha256": "79f05bae2f4b4cd5fc1518c1d95cf04fe8b17b8514bdf0b63104848097438d16",
+      "current_sha256": "79f05bae2f4b4cd5fc1518c1d95cf04fe8b17b8514bdf0b63104848097438d16",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/skills.py",
+      "full_candidate_sha256": "9a5d6fd0d31844b9648c4f04ad3287803e90b0bf5030f35feb6a916316adf97b",
+      "current_sha256": "9a5d6fd0d31844b9648c4f04ad3287803e90b0bf5030f35feb6a916316adf97b",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/snapshots.py",
+      "full_candidate_sha256": "d0dfe55a7d1195a6b799f78f2fddcdb30d0230d984484ee168210bc145a86dfb",
+      "current_sha256": "d0dfe55a7d1195a6b799f78f2fddcdb30d0230d984484ee168210bc145a86dfb",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/temporal_port.py",
+      "full_candidate_sha256": "868c25b33a8a3cb93f6755b5e4994c9fd5dc3a928ce5db3584e5b831d75252f8",
+      "current_sha256": "868c25b33a8a3cb93f6755b5e4994c9fd5dc3a928ce5db3584e5b831d75252f8",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/tools.py",
+      "full_candidate_sha256": "3d3826b2ba17da389b930b419ca1ef5f294bdf9bc722472c2b0e5cb3a6da2a55",
+      "current_sha256": "3d3826b2ba17da389b930b419ca1ef5f294bdf9bc722472c2b0e5cb3a6da2a55",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/types.py",
+      "full_candidate_sha256": "aab9c330f051ad2616ae3263a10aa21063b481cf63319a2ad1bd6cc4463bbe05",
+      "current_sha256": "aab9c330f051ad2616ae3263a10aa21063b481cf63319a2ad1bd6cc4463bbe05",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/verification.py",
+      "full_candidate_sha256": "f1b1ee54a2e5ab326303c3aa412ae0e8e0f89c98cef3c87760b1f13a0501338e",
+      "current_sha256": "f1b1ee54a2e5ab326303c3aa412ae0e8e0f89c98cef3c87760b1f13a0501338e",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/contracts.py",
+      "full_candidate_sha256": "1b1f035f1b83071ca53c97126736ebfd3c2b3d5ac8791e89ca47dec0e6db8ade",
+      "current_sha256": "1b1f035f1b83071ca53c97126736ebfd3c2b3d5ac8791e89ca47dec0e6db8ade",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/errors.py",
+      "full_candidate_sha256": "5d63d61c4d548071b830d461de6d16ec8d71d7befb288e8de0cc422852f5be28",
+      "current_sha256": "5d63d61c4d548071b830d461de6d16ec8d71d7befb288e8de0cc422852f5be28",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_configuration/__init__.py",
+      "full_candidate_sha256": "852d001f107921fa7b16d39e560c7bd34f4ca9efebcb5bee2c667cabd7a0c0b1",
+      "current_sha256": "852d001f107921fa7b16d39e560c7bd34f4ca9efebcb5bee2c667cabd7a0c0b1",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_configuration/commands.py",
+      "full_candidate_sha256": "f3e4d3416f6217d06d6ed928c98f44738b361d1aebe8641e524ee086a8e019ec",
+      "current_sha256": "f3e4d3416f6217d06d6ed928c98f44738b361d1aebe8641e524ee086a8e019ec",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_configuration/persistence.py",
+      "full_candidate_sha256": "28342e82dc766a7cd7fdc7c8d2d24e8541b9d7a524fccbdaef33427563f413e8",
+      "current_sha256": "28342e82dc766a7cd7fdc7c8d2d24e8541b9d7a524fccbdaef33427563f413e8",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_configuration/ports.py",
+      "full_candidate_sha256": "6546c8c676f801080b2c1d5f201d5fa515d4ea8beeee37f7abffc9413487085a",
+      "current_sha256": "6546c8c676f801080b2c1d5f201d5fa515d4ea8beeee37f7abffc9413487085a",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_configuration/runtime.py",
+      "full_candidate_sha256": "a3b5d783583f184731521d0c7f450363ca88d5dcc89c9618b6a115771bb123cf",
+      "current_sha256": "a851bedb2b18a4a371cd108d98d1f719a01391d3347c1e0a2a1fded89c99673c",
+      "state": "changed"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_configuration/service.py",
+      "full_candidate_sha256": "2d72dfc56f91bc5285ef3c6a8de1519c0e5e58702c3cf5cb7e037909912de86d",
+      "current_sha256": "2d72dfc56f91bc5285ef3c6a8de1519c0e5e58702c3cf5cb7e037909912de86d",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_gateway/__init__.py",
+      "full_candidate_sha256": "036d626fc218bab50de629fe5db6020f1f2539751122ab676beddf423534f101",
+      "current_sha256": "42638408edf2b2a02a60f07638f1d6058860237345b5d2218fcd8ef69fe866d5",
+      "state": "changed"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_gateway/claim.py",
+      "full_candidate_sha256": "6c385f5c6aee5ca781b9169b9f69ad0b0831f6b9709eb5cf40563adb2d0f17a8",
+      "current_sha256": null,
+      "state": "absent_archived"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_gateway/persistent_budget.py",
+      "full_candidate_sha256": "6d3e7279e758d8ece87fc21d324f682c8a0b8cdc36f68f5896ba6a24a16f8603",
+      "current_sha256": "6d3e7279e758d8ece87fc21d324f682c8a0b8cdc36f68f5896ba6a24a16f8603",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_gateway/ports.py",
+      "full_candidate_sha256": "6484e82d7918c3f38824b6f78655cbefb1e09d79082ee64a38cc5e02bafed81b",
+      "current_sha256": "6484e82d7918c3f38824b6f78655cbefb1e09d79082ee64a38cc5e02bafed81b",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_gateway/reconciliation.py",
+      "full_candidate_sha256": "3cb500e849bc13a52b18e293f55a012e0bc18583b72fd5bee39715bd2e156554",
+      "current_sha256": "3cb500e849bc13a52b18e293f55a012e0bc18583b72fd5bee39715bd2e156554",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_gateway/reconciliation_schema.py",
+      "full_candidate_sha256": "9b06651833b85284c84bd8814a3b120b698ad4e6f8b6b59d5664ccbf490231a3",
+      "current_sha256": "9b06651833b85284c84bd8814a3b120b698ad4e6f8b6b59d5664ccbf490231a3",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/providers/__init__.py",
+      "full_candidate_sha256": "6986a5320a4dc0c8003ec48c093f06a1b2c6db691f98911b94864d50da97e73d",
+      "current_sha256": "6986a5320a4dc0c8003ec48c093f06a1b2c6db691f98911b94864d50da97e73d",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/providers/agent_client.py",
+      "full_candidate_sha256": "2a6437622648c001f62a739534f1e185e8afbf820ed40be8535646d0a501c0b8",
+      "current_sha256": "2a6437622648c001f62a739534f1e185e8afbf820ed40be8535646d0a501c0b8",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/providers/client.py",
+      "full_candidate_sha256": "d7a0b564d2391220ca6f46cd5e8f27d88bda3d0882ab7757a7ac87ecdbe9fba2",
+      "current_sha256": "d7a0b564d2391220ca6f46cd5e8f27d88bda3d0882ab7757a7ac87ecdbe9fba2",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/providers/types.py",
+      "full_candidate_sha256": "795375ff58be3d06884be723981fe7afe92e3256cbf35dec15de4b10b7921336",
+      "current_sha256": "795375ff58be3d06884be723981fe7afe92e3256cbf35dec15de4b10b7921336",
+      "state": "unchanged"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "full_candidate_sha256": "73282918fb2b138c4b56b4b33d39484d4d8f3311037b6be941182a7c3e229aec",
+      "current_sha256": "73282918fb2b138c4b56b4b33d39484d4d8f3311037b6be941182a7c3e229aec",
+      "state": "unchanged"
+    }
+  ],
+  "actual_full_gateway_and_retirement_nodes": [
+    {
+      "node": "tests/agent_kernel/test_gateway.py::test_provider_call_requires_registered_graph_and_replays_saved_request",
+      "outcome": "passed",
+      "evidence": "full-regression-results.json",
+      "candidate": "frozen s0_0720 backend full regression",
+      "current_candidate_claim": "historical actual result; source-delta qualification required"
+    },
+    {
+      "node": "tests/agent_kernel/test_gateway.py::test_private_run_dpa_failure_prevents_network_and_reservation",
+      "outcome": "passed",
+      "evidence": "full-regression-results.json",
+      "candidate": "frozen s0_0720 backend full regression",
+      "current_candidate_claim": "historical actual result; source-delta qualification required"
+    },
+    {
+      "node": "tests/agent_kernel/test_gateway.py::test_generic_capability_graph_cannot_bypass_registered_xiaopai_gateway",
+      "outcome": "passed",
+      "evidence": "full-regression-results.json",
+      "candidate": "frozen s0_0720 backend full regression",
+      "current_candidate_claim": "historical actual result; source-delta qualification required"
+    },
+    {
+      "node": "tests/agent_kernel/test_gateway.py::test_prompt_and_tool_prefixes_are_fixed_per_isolation_across_restart",
+      "outcome": "passed",
+      "evidence": "full-regression-results.json",
+      "candidate": "frozen s0_0720 backend full regression",
+      "current_candidate_claim": "historical actual result; source-delta qualification required"
+    },
+    {
+      "node": "tests/agent_kernel/test_gateway.py::test_scope_revocation_during_call_frees_slot_without_revealing_result",
+      "outcome": "passed",
+      "evidence": "full-regression-results.json",
+      "candidate": "frozen s0_0720 backend full regression",
+      "current_candidate_claim": "historical actual result; source-delta qualification required"
+    },
+    {
+      "node": "tests/agent_kernel/test_gateway.py::test_unknown_network_attempt_frees_slot_and_never_blindly_retries",
+      "outcome": "passed",
+      "evidence": "full-regression-results.json",
+      "candidate": "frozen s0_0720 backend full regression",
+      "current_candidate_claim": "historical actual result; source-delta qualification required"
+    },
+    {
+      "node": "tests/agent_kernel/test_retired_pipeline.py::test_retired_source_work_start_and_resume_have_zero_new_effects",
+      "outcome": "passed",
+      "evidence": "full-regression-results.json",
+      "candidate": "frozen s0_0720 backend full regression",
+      "current_candidate_claim": "historical actual result; source-delta qualification required"
+    },
+    {
+      "node": "tests/agent_kernel/test_retired_pipeline.py::test_legacy_context_cannot_use_common_t0_or_synthetic_qualification_bypass",
+      "outcome": "passed",
+      "evidence": "full-regression-results.json",
+      "candidate": "frozen s0_0720 backend full regression",
+      "current_candidate_claim": "historical actual result; source-delta qualification required"
+    }
+  ],
+  "pure_collection": {
+    "executed": "collect-only, no PostgreSQL or model calls",
+    "exit_code": 0,
+    "nodes_collected": 161,
+    "files": [
+      "tests/agent_kernel/test_native_protocols.py",
+      "tests/model_configuration/test_configuration.py",
+      "tests/model_configuration/test_persistence_contract.py",
+      "tests/agent_kernel/test_execution_binding.py",
+      "tests/agent_kernel/test_common_binding.py",
+      "tests/agent_kernel/test_graph.py"
+    ],
+    "extra_selector": "tests/agent_kernel/test_cost_budget.py::test_cache_usage_is_priced_by_exact_decimal_with_separate_creation_and_read",
+    "collection_is_test_pass_evidence": false,
+    "actual_full_nodes_in_same_scope": [
+      {
+        "node": "tests/agent_kernel/test_common_binding.py::test_execution_context_cannot_borrow_two_run_namespaces_or_an_unowned_call",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_common_binding.py::test_command_fingerprint_is_normalized_and_binds_the_actual_category",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_common_binding.py::test_configuration_rotation_changes_route_binding_without_inventing_a_model_version",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_selected_skill_and_response_index_use_server_model_identity",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_loading_skill_in_same_reply_does_not_authorize_that_output",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_missing_actual_model_ledger_cannot_execute_t0",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_generic_store_cannot_claim_t0_in_its_separate_transaction",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_generic_store_cannot_finish_or_reconcile_domain_call[settle]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_generic_store_cannot_finish_or_reconcile_domain_call[reconcile]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_duplicate_protocol_ids_are_rejected_before_any_tool_dispatch",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_checkpoint_restore_rejects_skill_drift_before_another_model_turn[version]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_checkpoint_restore_rejects_skill_drift_before_another_model_turn[content]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_checkpoint_restore_rejects_skill_drift_before_another_model_turn[operations]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[run_id-FORBIDDEN_SCOPE]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[tenant_id-FORBIDDEN_SCOPE]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[state-FORBIDDEN_SCOPE]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[result_index-FORBIDDEN_SCOPE]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[arguments-DUPLICATE_INTENT_CONFLICT]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[skill-FORBIDDEN_SCOPE]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[model_version-VERSION_CONFLICT]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[route_digest-VERSION_CONFLICT]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[epoch-CANCELLED_RUN]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[reverted-CANCELLED_RUN]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_in_session_call_completion_and_replay_keep_actual_receipt_and_single_call",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_completed_result_recovery_needs_read_authority_not_new_write_qualification[running]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_completed_result_recovery_needs_read_authority_not_new_write_qualification[completed]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_completed_result_recovery_needs_read_authority_not_new_write_qualification[partial]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_completed_result_recovery_needs_read_authority_not_new_write_qualification[failed]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_completed_result_recovery_fails_without_current_read_authority[missing]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_completed_result_recovery_fails_without_current_read_authority[denied]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_recovery_port_has_no_new_write_dependencies_or_ledger_mutation",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_completed_recovery_rejects_new_intents_and_cancelled_or_reverted_runs[arguments]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_completed_recovery_rejects_new_intents_and_cancelled_or_reverted_runs[command_digest]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_completed_recovery_rejects_new_intents_and_cancelled_or_reverted_runs[epoch]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_completed_recovery_rejects_new_intents_and_cancelled_or_reverted_runs[reverted]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_prepare_refuses_revoked_qualification_unbound_load_and_borrowed_session[qualification]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_prepare_refuses_revoked_qualification_unbound_load_and_borrowed_session[loaded_event]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_prepare_refuses_revoked_qualification_unbound_load_and_borrowed_session[wrong_session]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_other_receipt_cannot_be_reparented_or_complete_call[agent_run_id]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_other_receipt_cannot_be_reparented_or_complete_call[category_id]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_other_receipt_cannot_be_reparented_or_complete_call[actor_id]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_other_receipt_cannot_be_reparented_or_complete_call[request_digest]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_prepared_call_cannot_change_payload_or_command_on_replay",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_actual_route_is_rechecked_through_the_same_domain_session_callback",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_loading_event_binding_is_actual_immutable_event_not_latest_name",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_cancellation_or_revert_after_prepare_cannot_finish_call[epoch]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_cancellation_or_revert_after_prepare_cannot_finish_call[reverted]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_skill_load_event_from_another_scope_is_not_a_loading_fact[tenant_id]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_skill_load_event_from_another_scope_is_not_a_loading_fact[run_id]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_execution_binding.py::test_gateway_returns_actual_model_ledger_and_keeps_binding_out_of_native_payload",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_graph.py::test_progressive_load_preserves_prefix_and_unqualified_t0_becomes_candidate",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_graph.py::test_raw_read_and_model_authority_are_rejected_before_host_callback",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_graph.py::test_t2_has_no_executing_operation_and_only_prepares",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_graph.py::test_whole_run_revert_target_is_t1_preparation_and_never_execution_identity",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_graph.py::test_private_context_cannot_promote_shared_knowledge",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_graph.py::test_interrupt_resumes_same_thread_without_repeating_model_or_actions",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_graph.py::test_graph_resume_answer_cannot_replace_actual_category_run_or_identity",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_graph.py::test_budget_forced_partial_keeps_actual_tool_results",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_graph.py::test_cancel_never_calls_model",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_graph.py::test_durable_wallet_limit_returns_partial_without_retrying_model",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_graph.py::test_interleaved_runs_in_same_session_cannot_resume_each_others_checkpoint",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_refusal_truncation_and_http_errors_keep_sanitized_request_id[openai-compatible]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_refusal_truncation_and_http_errors_keep_sanitized_request_id[anthropic-native]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_native_tool_roundtrip_schema_and_server_secret[False-openai-compatible]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_native_tool_roundtrip_schema_and_server_secret[False-anthropic-native]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_native_tool_roundtrip_schema_and_server_secret[True-openai-compatible]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_native_tool_roundtrip_schema_and_server_secret[True-anthropic-native]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_tool_results_are_native_and_prefix_is_unchanged[openai-compatible]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_tool_results_are_native_and_prefix_is_unchanged[anthropic-native]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\n-False-openai-compatible]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\n-False-anthropic-native]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\n-True-openai-compatible]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\n-True-anthropic-native]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\r\\n-False-openai-compatible]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\r\\n-False-anthropic-native]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\r\\n-True-openai-compatible]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\r\\n-True-anthropic-native]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_transport_never_repeats_unknown_or_redirect[429-PROVIDER_RATE_LIMITED-False]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_transport_never_repeats_unknown_or_redirect[503-PROVIDER_SERVER_ERROR-True]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_transport_never_repeats_unknown_or_redirect[302-PROVIDER_REDIRECT_DENIED-False]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_native_wire_schema_has_finite_strict_objects_and_decodes_domain_json",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_native_name_encoding_is_bijective_for_underscores_and_dots[category.read]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_native_name_encoding_is_bijective_for_underscores_and_dots[mcp.private_dot_name]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_native_protocols.py::test_native_name_encoding_is_bijective_for_underscores_and_dots[mcp._0__1.lookup]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_plan_save_masked_read_runtime_selection[openai-compatible]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_plan_save_masked_read_runtime_selection[anthropic-native]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[tenant_id]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[actor_id]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[run_id]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[grant]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[qualified]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[api_key]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[secret_reference]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[secret_version]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[write_tier]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://user:password@synthetic.invalid/v1]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/v1?api_key=private]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/v1#private]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[http://synthetic.invalid/v1]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[file:///private]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/../v1]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/v1 bad]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid:bad/v1]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/%2e%2e]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid\\\\evil/v1]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[protocol-other]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-True]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-0]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-32769]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[timeout_seconds-nan]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[timeout_seconds-91.0]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[response_bytes-1]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[model-unsafe\\ntext]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[model_version-]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[openai_output_parameter-tools]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_non_admin_and_revocation_between_preview_and_save",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_cross_tenant_and_actor_contexts_cannot_consume_plan",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_expiry_stale_and_same_revision_digest_change",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_secret_rotation_rejects_plan_and_previous_runtime_binding",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_disabled_not_configured_and_missing_secret",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-False-MODEL_PERMISSION_DENIED]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-False-MODEL_QUALIFICATION_REQUIRED]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-False-MODEL_EGRESS_REQUIRED]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-False-MODEL_BUDGET_REQUIRED]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-True-MODEL_CANCELLED]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-None-MODEL_PERMISSION_FACT_MISSING]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-None-MODEL_QUALIFICATION_FACT_MISSING]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-None-MODEL_EGRESS_FACT_MISSING]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-None-MODEL_BUDGET_FACT_MISSING]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-None-MODEL_CANCEL_FACT_MISSING]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-1-MODEL_QUALIFICATION_FACT_MISSING]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value11-MODEL_POLICY_EXPIRED]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value12-MODEL_POLICY_EXPIRED]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[binding_digest-different-MODEL_POLICY_SCOPE_MISMATCH]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tenant_id]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[run_id]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[writer_id]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[operation]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[purpose]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[skill_version]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tool_version]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[cancel_epoch]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_currentness_compounds_main_guard_and_rechecks_after_cancellation",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_scoped_ports_errors_and_secret_material_drift_fail_closed",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_configuration_change_and_disable_invalidate_old_permit",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_missing_interfaces_do_not_implicitly_enable",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_forged_construct_payload_is_revalidated",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_port_policy_exception_is_redacted_and_missing_facts_are_unavailable",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_unavailable_secret_and_wrong_tenant_storage_are_rejected",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_secret_resolution_exception_and_invalid_credential_never_escape",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_version_and_metadata_are_immutable",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_sensitive_port_exception_tracebacks_and_request_validation_are_redacted",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_main_permit_guard_cannot_outlive_permit_expiry",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_public_common_preview_restores_without_secret_ref_or_second_store",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_public_preview_reconstruction_rejects_rotated_secret_and_payload_changes",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_persistence_contract.py::test_append_tenant_lock_cas_roundtrip_no_commit",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_persistence_contract.py::test_failed_cas_never_flushes_or_appends[None]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_persistence_contract.py::test_failed_cas_never_flushes_or_appends[head1]",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_persistence_contract.py::test_provisioned_revision_zero_is_explicitly_unconfigured",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/model_configuration/test_persistence_contract.py::test_reading_tenant_and_exact_head_revision_no_fallback",
+        "outcome": "passed"
+      },
+      {
+        "node": "tests/agent_kernel/test_cost_budget.py::test_cache_usage_is_priced_by_exact_decimal_with_separate_creation_and_read",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      }
+    ]
+  },
+  "minimal_current_pure_revalidation_recommendation": {
+    "why": "model_configuration/runtime.py differs from the frozen full candidate; changed canonical reason selection/currentness must be verified in its actual current tests. Other relevant mainline gateway/protocol/execution implementation hashes are unchanged.",
+    "selectors": [
+      "tests/model_configuration/test_configuration.py::test_plan_save_masked_read_runtime_selection",
+      "tests/model_configuration/test_configuration.py::test_secret_rotation_rejects_plan_and_previous_runtime_binding",
+      "tests/model_configuration/test_configuration.py::test_disabled_not_configured_and_missing_secret",
+      "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution",
+      "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions",
+      "tests/model_configuration/test_configuration.py::test_currentness_compounds_main_guard_and_rechecks_after_cancellation",
+      "tests/model_configuration/test_configuration.py::test_scoped_ports_errors_and_secret_material_drift_fail_closed",
+      "tests/model_configuration/test_configuration.py::test_configuration_change_and_disable_invalidate_old_permit",
+      "tests/model_configuration/test_configuration.py::test_missing_interfaces_do_not_implicitly_enable",
+      "tests/model_configuration/test_configuration.py::test_port_policy_exception_is_redacted_and_missing_facts_are_unavailable",
+      "tests/model_configuration/test_configuration.py::test_unavailable_secret_and_wrong_tenant_storage_are_rejected",
+      "tests/model_configuration/test_configuration.py::test_secret_resolution_exception_and_invalid_credential_never_escape",
+      "tests/model_configuration/test_configuration.py::test_main_permit_guard_cannot_outlive_permit_expiry"
+    ],
+    "exact_nodes": [
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_plan_save_masked_read_runtime_selection[openai-compatible]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_plan_save_masked_read_runtime_selection[anthropic-native]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_secret_rotation_rejects_plan_and_previous_runtime_binding",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_disabled_not_configured_and_missing_secret",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-False-MODEL_PERMISSION_DENIED]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-False-MODEL_QUALIFICATION_REQUIRED]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-False-MODEL_EGRESS_REQUIRED]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-False-MODEL_BUDGET_REQUIRED]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-True-MODEL_CANCELLED]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-None-MODEL_PERMISSION_FACT_MISSING]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-None-MODEL_QUALIFICATION_FACT_MISSING]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-None-MODEL_EGRESS_FACT_MISSING]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-None-MODEL_BUDGET_FACT_MISSING]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-None-MODEL_CANCEL_FACT_MISSING]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-1-MODEL_QUALIFICATION_FACT_MISSING]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value11-MODEL_POLICY_EXPIRED]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value12-MODEL_POLICY_EXPIRED]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[binding_digest-different-MODEL_POLICY_SCOPE_MISMATCH]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tenant_id]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[run_id]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[writer_id]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[operation]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[purpose]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[skill_version]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tool_version]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[cancel_epoch]",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_currentness_compounds_main_guard_and_rechecks_after_cancellation",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_scoped_ports_errors_and_secret_material_drift_fail_closed",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_configuration_change_and_disable_invalidate_old_permit",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_missing_interfaces_do_not_implicitly_enable",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_port_policy_exception_is_redacted_and_missing_facts_are_unavailable",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_unavailable_secret_and_wrong_tenant_storage_are_rejected",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_secret_resolution_exception_and_invalid_credential_never_escape",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      },
+      {
+        "node": "tests/model_configuration/test_configuration.py::test_main_permit_guard_cannot_outlive_permit_expiry",
+        "outcome": "passed",
+        "evidence": "full-regression-results.json",
+        "candidate": "frozen s0_0720 backend full regression",
+        "current_candidate_claim": "historical actual result; source-delta qualification required"
+      }
+    ],
+    "node_count": 34,
+    "already_executed_by_reviewer": false,
+    "run_environment": "pure synthetic configuration ports; no app/env/database/provider startup",
+    "not_required_to_repeat_unchanged_scope": "native23 + execution47 + common3 + persistence5 + graph11 + pure exact pricing1 already have actual full passed nodes; no guessed 236 retest needed.",
+    "resolution": "Root completed the full affected model configuration module with exact current node metadata; no additional execution is needed for this review.",
+    "current_root_evidence": {
+      "metadata": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "log": "model-runtime-affected.log",
+      "passed_nodes": 71,
+      "test_exit": 0,
+      "source_unchanged": true
+    },
+    "additional_required_pure_execution_nodes": 0
+  },
+  "retained_duty_groups": {
+    "permit_binding": {
+      "retained_duty": "\u670d\u52a1\u5668\u7ed1\u5b9a\u79df\u6237/\u8fd0\u884c/\u8eab\u4efd/\u914d\u7f6e/\u7528\u9014\u3001\u68c0\u67e5\u5f53\u524d\u8d44\u683c/\u51fa\u7ad9/\u9884\u7b97\u4e0e\u53d6\u6d88\uff1b\u65e7\u5355\u72ec ExtractionInput/CallPermit \u63d0\u53d6\u63a5\u53e3\u5e9f\u5f03\u3002",
+      "specific_limit": "\u914d\u7f6e runtime.py \u5df2\u7531 root model-runtime-affected.json \u7cbe\u786e71\u5f53\u524d\u8282\u70b9\u5168\u90e8\u901a\u8fc7\u3001source_unchanged true \u8865\u5145\uff1b\u65e7 8 ClaimGateway \u5931\u8d25\u4ecd\u767b\u8bb0\u5f52\u6863\uff0c\u4e0d\u8bb0\u590d\u9a8c\u901a\u8fc7\u3002",
+      "actual_historical_replacement_nodes": [
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-False-MODEL_PERMISSION_DENIED]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-False-MODEL_QUALIFICATION_REQUIRED]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-False-MODEL_EGRESS_REQUIRED]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-False-MODEL_BUDGET_REQUIRED]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-True-MODEL_CANCELLED]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-None-MODEL_PERMISSION_FACT_MISSING]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-None-MODEL_QUALIFICATION_FACT_MISSING]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-None-MODEL_EGRESS_FACT_MISSING]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-None-MODEL_BUDGET_FACT_MISSING]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-None-MODEL_CANCEL_FACT_MISSING]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-1-MODEL_QUALIFICATION_FACT_MISSING]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value11-MODEL_POLICY_EXPIRED]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value12-MODEL_POLICY_EXPIRED]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[binding_digest-different-MODEL_POLICY_SCOPE_MISMATCH]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tenant_id]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[run_id]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[writer_id]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[operation]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[purpose]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[skill_version]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tool_version]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[cancel_epoch]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_currentness_compounds_main_guard_and_rechecks_after_cancellation",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_main_permit_guard_cannot_outlive_permit_expiry",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[run_id-FORBIDDEN_SCOPE]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[tenant_id-FORBIDDEN_SCOPE]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[state-FORBIDDEN_SCOPE]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[result_index-FORBIDDEN_SCOPE]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[arguments-DUPLICATE_INTENT_CONFLICT]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[skill-FORBIDDEN_SCOPE]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[model_version-VERSION_CONFLICT]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[route_digest-VERSION_CONFLICT]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[epoch-CANCELLED_RUN]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[reverted-CANCELLED_RUN]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        }
+      ],
+      "actual_current_configuration_nodes": [
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-False-MODEL_PERMISSION_DENIED]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-False-MODEL_QUALIFICATION_REQUIRED]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-False-MODEL_EGRESS_REQUIRED]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-False-MODEL_BUDGET_REQUIRED]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-True-MODEL_CANCELLED]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-None-MODEL_PERMISSION_FACT_MISSING]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-None-MODEL_QUALIFICATION_FACT_MISSING]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-None-MODEL_EGRESS_FACT_MISSING]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-None-MODEL_BUDGET_FACT_MISSING]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-None-MODEL_CANCEL_FACT_MISSING]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-1-MODEL_QUALIFICATION_FACT_MISSING]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value11-MODEL_POLICY_EXPIRED]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value12-MODEL_POLICY_EXPIRED]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[binding_digest-different-MODEL_POLICY_SCOPE_MISMATCH]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tenant_id]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[run_id]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[writer_id]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[operation]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[purpose]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[skill_version]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tool_version]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[cancel_epoch]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_currentness_compounds_main_guard_and_rechecks_after_cancellation",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_main_permit_guard_cannot_outlive_permit_expiry",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        }
+      ]
+    },
+    "http_failure": {
+      "retained_duty": "\u534f\u8bae\u5c42\u6709\u6709\u754c\u5355\u6b21\u5c1d\u8bd5\u3001\u8131\u654f\u9519\u8bef\u4e0e request_id\uff1b\u5916\u90e8\u7ed3\u679c\u672a\u77e5\u4e0d\u80fd\u76f2\u76ee\u91cd\u53d1\u3002",
+      "specific_limit": "\u65e7\u9519\u8bef\u7801\u4f5c\u4e3a\u9876\u5c42 code \u7684\u65ad\u8a00\u5e9f\u5f03\uff1b\u65e7\u201c\u4e00\u5207\u72b6\u6001\u6c38\u4e0d\u91cd\u8bd5\u201d\u4e0d\u4f5c\u4e3a v1.1 \u65b0\u5408\u540c\uff08\u00a706.9 \u5bf9\u5df2\u77e5 429/5xx \u7684\u9000\u907f\u89c4\u5219\u7531\u73b0\u884c\u8fd0\u884c\u7b56\u7565\u8d1f\u8d23\uff0c\u672c\u5ba1\u9605\u4e0d\u8bc4\u4ef7\u6216\u6269\u5efa M2 \u91cd\u8bd5\u7b56\u7565\uff09\uff1b\u73b0 native \u7528\u4f8b\u8986\u76d6 302/429/503\uff0c\u4e0d\u8986\u76d6\u65e7 401 \u53c2\u6570\u3002",
+      "actual_historical_replacement_nodes": [
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_transport_never_repeats_unknown_or_redirect[429-PROVIDER_RATE_LIMITED-False]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_transport_never_repeats_unknown_or_redirect[503-PROVIDER_SERVER_ERROR-True]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_transport_never_repeats_unknown_or_redirect[302-PROVIDER_REDIRECT_DENIED-False]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_refusal_truncation_and_http_errors_keep_sanitized_request_id[openai-compatible]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_refusal_truncation_and_http_errors_keep_sanitized_request_id[anthropic-native]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_gateway.py::test_unknown_network_attempt_frees_slot_and_never_blindly_retries",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        }
+      ],
+      "actual_current_configuration_nodes": []
+    },
+    "unknown_attempt": {
+      "retained_duty": "\u5b9e\u9645\u6301\u4e45\u6a21\u578b ledger \u5bf9\u672a\u77e5\u8c03\u7528\u4fdd\u7559\u72b6\u6001\u3001\u91ca\u653e\u540d\u989d\u5e76\u963b\u6b62\u540c\u610f\u56fe\u76f2\u76ee\u91cd\u53d1\u3002",
+      "specific_limit": "\u73b0\u884c gateway \u5b9e\u9645 PG \u6d4b\u8bd5\u629b ProviderError(unknown=True)\uff0c\u4e0d\u58f0\u79f0\u8986\u76d6\u771f\u5b9e httpx.ReadTimeout \u8d1f\u9762\u4f20\u8f93\u6837\u672c\u3002",
+      "actual_historical_replacement_nodes": [
+        {
+          "node": "tests/agent_kernel/test_gateway.py::test_unknown_network_attempt_frees_slot_and_never_blindly_retries",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_transactions.py::test_unknown_call_releases_slot_and_has_explicit_reconciliation_exit",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_cost_budget.py::test_unknown_cost_is_estimated_and_retained_after_slot_release_and_final_close",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        }
+      ],
+      "actual_current_configuration_nodes": []
+    },
+    "invalid_usage": {
+      "retained_duty": "\u6a21\u578b\u7528\u91cf\u5fc5\u987b\u6709\u786e\u5207\u975e\u8d1f\u6574\u6570\uff1b\u65e0\u7ec8\u6b62\u6216\u65e0\u6700\u7ec8\u7528\u91cf\u7684\u6d41\u4e0d\u80fd\u88ab\u5f53\u6210\u5b8c\u6210\u7ed3\u679c\u3002",
+      "specific_limit": "\u65e7\u4e09\u79cd bool/\u7f3a\u5931 usage/\u975e\u6570\u7ec4 choices \u8f93\u5165\u7684 ClaimGateway \u53c2\u6570\u6d4b\u8bd5\u5df2\u5f52\u6863\uff1b_usage/parse_turn \u4fdd\u7559\u9759\u6001\u5b88\u536b\uff0c\u5f53\u524d native \u6d4b\u8bd5\u4e0d\u9010\u9879\u8986\u76d6\u8fd9\u4e09\u4e2a\u65e7\u8d1f\u9762\u6837\u672c\u3002",
+      "actual_historical_replacement_nodes": [
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\n-False-openai-compatible]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\n-False-anthropic-native]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\n-True-openai-compatible]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\n-True-anthropic-native]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\r\\n-False-openai-compatible]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\r\\n-False-anthropic-native]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\r\\n-True-openai-compatible]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\\r\\n-True-anthropic-native]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        }
+      ],
+      "actual_current_configuration_nodes": []
+    },
+    "claim_candidate": {
+      "retained_duty": "\u4e0d\u53ef\u4fe1\u6a21\u578b\u53c2\u6570\u4e0d\u80fd\u6388\u4e88\u6743\u9650\uff1b\u6765\u6e90\u3001\u539f\u6587\u5b9a\u4f4d\u548c\u53d7\u4f17\u7531\u9886\u57df\u547d\u4ee4\u4e0e\u5b9e\u9645\u6a21\u578b ledger \u68c0\u67e5\u3002",
+      "specific_limit": "\u65e7 extract \u8fd4\u56de ClaimPayload \u7684\u4e13\u6709\u5341\u4e2a\u5019\u9009\u53d8\u4f53\u4e0d\u662f\u65b0\u7f51\u5173\u8f93\u51fa\u5408\u540c\uff1b\u4e0d\u80fd\u628a\u4e0a\u8ff0\u5e7f\u4e49\u9886\u57df\u8986\u76d6\u79f0\u4e3a\u5341\u4e2a\u65e7\u53c2\u6570\u9010\u9879\u590d\u9a8c\u901a\u8fc7\uff0c\u5c24\u5176 line \u7c7b\u578b/\u4e0d\u540c artifact_id \u7684\u540c\u5f62\u53d8\u4f53\u672a\u5728\u672c\u5ba1\u9605\u8865\u6d4b\u3002",
+      "actual_historical_replacement_nodes": [
+        {
+          "node": "tests/agent_kernel/test_graph.py::test_raw_read_and_model_authority_are_rejected_before_host_callback",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[run_id-FORBIDDEN_SCOPE]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[tenant_id-FORBIDDEN_SCOPE]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[state-FORBIDDEN_SCOPE]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[result_index-FORBIDDEN_SCOPE]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[arguments-DUPLICATE_INTENT_CONFLICT]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[skill-FORBIDDEN_SCOPE]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[model_version-VERSION_CONFLICT]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[route_digest-VERSION_CONFLICT]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[epoch-CANCELLED_RUN]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[reverted-CANCELLED_RUN]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/test_trusted_source_work.py::test_client_cannot_supply_trusted_identity[tenant]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/test_trusted_source_work.py::test_client_cannot_supply_trusted_identity[tenant_id]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/test_trusted_source_work.py::test_client_cannot_supply_trusted_identity[actor]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/test_trusted_source_work.py::test_client_cannot_supply_trusted_identity[requester]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/test_trusted_source_work.py::test_client_cannot_supply_trusted_identity[run]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/test_trusted_source_work.py::test_client_cannot_supply_trusted_identity[grant]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/test_trusted_source_work.py::test_client_cannot_supply_trusted_identity[cancel_epoch]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/test_trusted_source_work.py::test_exact_source_locator_required[change0-MISSING_REQUIRED_EVIDENCE]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/test_trusted_source_work.py::test_exact_source_locator_required[change1-MISSING_REQUIRED_EVIDENCE]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/test_trusted_source_work.py::test_private_source_does_not_leak_or_expand_audience",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_domain_adapter_transactions.py::test_actual_model_arguments_and_current_route_cannot_be_substituted",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        }
+      ],
+      "actual_current_configuration_nodes": []
+    },
+    "response_size": {
+      "retained_duty": "\u914d\u7f6e\u54cd\u5e94\u4f53\u5927\u5c0f\u8fb9\u754c\uff0c\u4f20\u8f93\u5904\u7406\u524d\u540e\u4fdd\u6301\u6709\u754c\u3002",
+      "specific_limit": "\u914d\u7f6e\u5143\u6570\u636e response_bytes \u8fb9\u754c\u6709\u5b9e\u9645 full \u8282\u70b9\uff1b\u4f20\u8f93\u8d85\u5927\u54cd\u5e94\u4f53\u5206\u652f\u4ec5\u9759\u6001\u68c0\u67e5\u5b58\u5728\uff0c\u672a\u627e\u5230\u73b0\u884c dedicated \u8d1f\u9762\u8282\u70b9\uff0c\u4e0d\u80fd\u7b97\u6267\u884c\u901a\u8fc7\u3002",
+      "actual_historical_replacement_nodes": [
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[protocol-other]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-True]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-0]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-32769]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[timeout_seconds-nan]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[timeout_seconds-91.0]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[response_bytes-1]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[model-unsafe\\ntext]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[model_version-]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[openai_output_parameter-tools]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        }
+      ],
+      "actual_current_configuration_nodes": [
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[protocol-other]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-True]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-0]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-32769]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[timeout_seconds-nan]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[timeout_seconds-91.0]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[response_bytes-1]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[model-unsafe\\ntext]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[model_version-]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        },
+        {
+          "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[openai_output_parameter-tools]",
+          "outcome": "passed",
+          "evidence": "model-runtime-affected.json",
+          "junit": "model-runtime-affected.xml",
+          "phase_count": 3,
+          "source_unchanged": true
+        }
+      ]
+    },
+    "anthropic_shape": {
+      "retained_duty": "\u539f\u751f\u5408\u6cd5\u5de5\u5177\u8f93\u51fa\u5c5e\u4e8e\u5de5\u5177\u8c03\u7528\uff1b\u6700\u7ec8\u7ed3\u6784\u5316\u7ed3\u679c\u5fc5\u987b\u53ef\u89e3\u6790\uff1b\u622a\u65ad/\u62d2\u7edd\u4e0d\u80fd\u5e94\u7528\u4e3a\u5b8c\u6574\u4e1a\u52a1\u4e8b\u5b9e\u3002",
+      "specific_limit": "\u65e7\u201c\u4e00\u5207 tool_use \u90fd\u4e0d\u80fd\u662f Claim\u201d\u662f\u5df2\u5220\u9664 text-only Claim \u9002\u914d\u5668\u5408\u540c\uff1b\u65b0\u539f\u751f\u5408\u6cd5\u5de5\u5177\u8c03\u7528\u5e94\u63a5\u53d7\u3002\u65e7 malformed tool input/thinking/empty blocks/refusal \u9010\u4e2a\u8d1f\u9762\u6837\u672c\u4ec5\u53ef\u6807\u4e3a\u5f52\u6863\uff1bparse_turn \u4fdd\u7559\u9759\u6001\u62d2\u7edd\u5206\u652f\uff0c\u4e0d\u79f0\u4e3a\u65e7\u6837\u672c\u91cd\u6d4b\u901a\u8fc7\u3002",
+      "actual_historical_replacement_nodes": [
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_native_tool_roundtrip_schema_and_server_secret[False-openai-compatible]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_native_tool_roundtrip_schema_and_server_secret[False-anthropic-native]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_native_tool_roundtrip_schema_and_server_secret[True-openai-compatible]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_native_tool_roundtrip_schema_and_server_secret[True-anthropic-native]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_refusal_truncation_and_http_errors_keep_sanitized_request_id[openai-compatible]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_native_protocols.py::test_refusal_truncation_and_http_errors_keep_sanitized_request_id[anthropic-native]",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        },
+        {
+          "node": "tests/agent_kernel/test_execution_binding.py::test_duplicate_protocol_ids_are_rejected_before_any_tool_dispatch",
+          "outcome": "passed",
+          "evidence": "full-regression-results.json",
+          "candidate": "frozen s0_0720 backend full regression",
+          "current_candidate_claim": "historical actual result; source-delta qualification required"
+        }
+      ],
+      "actual_current_configuration_nodes": []
+    },
+    "compression": {
+      "retained_duty": "\u4f20\u8f93\u62d2\u7edd\u975e identity \u7f16\u7801\uff0c\u907f\u514d\u65e0\u754c\u89e3\u538b\u3002",
+      "specific_limit": "AgentProviderClient \u5728\u8fed\u4ee3\u54cd\u5e94\u524d\u68c0\u67e5 content-encoding \u5e76\u53d1 Accept-Encoding: identity\uff1b\u73b0\u884c\u672a\u627e\u5230\u8be5\u5206\u652f\u4e13\u7528\u7eaf\u6d4b\u8bd5\uff0c\u9759\u6001\u5b58\u5728\u4e0d\u7b49\u4e8e\u6267\u884c\u8bc1\u636e\u3002",
+      "actual_historical_replacement_nodes": [],
+      "actual_current_configuration_nodes": []
+    },
+    "duplicate_json": {
+      "retained_duty": "\u4e0d\u786e\u5b9a\u7ed3\u6784\u4e0d\u80fd\u5f62\u6210\u6709\u6548\u6a21\u578b\u8f93\u51fa\uff1b\u91cd\u590d JSON key \u62d2\u7edd\u89e3\u6790\u3002",
+      "specific_limit": "AgentProviderClient/parse_turn \u590d\u7528 providers.client.json_value \u7684 _unique_object\uff1b\u5f53\u524d\u672a\u627e\u5230 duplicate JSON key \u4e13\u7528\u7eaf\u8282\u70b9\uff0c\u9759\u6001\u5b58\u5728\u4e0d\u7b49\u4e8e\u6267\u884c\u8bc1\u636e\u3002",
+      "actual_historical_replacement_nodes": [],
+      "actual_current_configuration_nodes": []
+    }
+  },
+  "legacy_failed_nodes": [
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>0]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "permit_binding",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>1]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "permit_binding",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>2]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "permit_binding",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>3]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "permit_binding",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>4]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "permit_binding",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>5]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "permit_binding",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>6]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "permit_binding",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_endpoint_permission_never_substitutes_for_exact_material_permit[<lambda>7]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "permit_binding",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_http_failures_are_bounded_and_not_retried[302-PROVIDER_REDIRECT_DENIED-settle]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "http_failure",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_http_failures_are_bounded_and_not_retried[401-PROVIDER_REQUEST_REJECTED-settle]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "http_failure",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_http_failures_are_bounded_and_not_retried[429-PROVIDER_RATE_LIMITED-settle]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "http_failure",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_http_failures_are_bounded_and_not_retried[503-PROVIDER_SERVER_ERROR-unknown]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "http_failure",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_timeout_records_unknown_and_same_call_cannot_be_resent",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "unknown_attempt",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_invalid_usage_or_response_is_unknown[<lambda>0]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "invalid_usage",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_invalid_usage_or_response_is_unknown[<lambda>1]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "invalid_usage",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_invalid_usage_or_response_is_unknown[<lambda>2]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "invalid_usage",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes0]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "claim_candidate",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes1]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "claim_candidate",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes2]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "claim_candidate",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes3]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "claim_candidate",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes4]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "claim_candidate",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes5]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "claim_candidate",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes6]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "claim_candidate",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes7]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "claim_candidate",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes8]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "claim_candidate",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_candidate_trusted_fields_and_bad_source_are_rejected[changes9]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "claim_candidate",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_response_size_bound_rejects_without_leaking_source",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "response_size",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_anthropic_nonfinal_or_nontext_content_is_never_a_claim[max_tokens-blocks0-PROVIDER_OUTPUT_TRUNCATED]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "anthropic_shape",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_anthropic_nonfinal_or_nontext_content_is_never_a_claim[refusal-blocks1-PROVIDER_REFUSAL]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "anthropic_shape",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_anthropic_nonfinal_or_nontext_content_is_never_a_claim[tool_use-blocks2-PROVIDER_INVALID_RESPONSE]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "anthropic_shape",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_anthropic_nonfinal_or_nontext_content_is_never_a_claim[end_turn-blocks3-PROVIDER_INVALID_RESPONSE]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "anthropic_shape",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_anthropic_nonfinal_or_nontext_content_is_never_a_claim[end_turn-blocks4-PROVIDER_INVALID_RESPONSE]",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "anthropic_shape",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_persistent_port_blocks_unknown_call_across_gateway_instances",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "unknown_attempt",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_compressed_response_is_refused_before_unbounded_decompression",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "compression",
+      "new_pass_claim_for_old_node": false
+    },
+    {
+      "old_node": "tests/providers/test_claim_gateway.py::test_duplicate_provider_json_keys_are_rejected_as_unknown",
+      "old_outcome": "failure",
+      "disposition": "retired_interface_archived_not_retested_pass",
+      "replacement_duty_group": "duplicate_json",
+      "new_pass_claim_for_old_node": false
+    }
+  ],
+  "boundary": "Retirement closes the obsolete interface obligation, not the failed node outcome. Current broad responsibilities are tied to exact replacement evidence. Static preserved branches are labeled separately; no Claim text-only parser contract is automatically promoted to new S0 acceptance scope. No real qualification, external provider reliability, or M2 completion claim is made.",
+  "current_root_configuration_execution": [
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_plan_save_masked_read_runtime_selection[openai-compatible]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_plan_save_masked_read_runtime_selection[anthropic-native]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[tenant_id]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[actor_id]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[run_id]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[grant]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[qualified]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[api_key]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[secret_reference]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[secret_version]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_trusted_and_secret_field_injection_forbidden[write_tier]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://user:password@synthetic.invalid/v1]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/v1?api_key=private]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/v1#private]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[http://synthetic.invalid/v1]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[file:///private]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/../v1]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/v1 bad]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid:bad/v1]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid/%2e%2e]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_provider_target_policy_reused[https://synthetic.invalid\\\\evil/v1]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[protocol-other]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-True]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-0]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[max_output_tokens-32769]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[timeout_seconds-nan]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[timeout_seconds-91.0]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[response_bytes-1]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[model-unsafe\\ntext]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[model_version-]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_closed_metadata_limits[openai_output_parameter-tools]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_non_admin_and_revocation_between_preview_and_save",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_cross_tenant_and_actor_contexts_cannot_consume_plan",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_expiry_stale_and_same_revision_digest_change",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_secret_rotation_rejects_plan_and_previous_runtime_binding",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_disabled_not_configured_and_missing_secret",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-False-MODEL_PERMISSION_DENIED]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-False-MODEL_QUALIFICATION_REQUIRED]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-False-MODEL_EGRESS_REQUIRED]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-False-MODEL_BUDGET_REQUIRED]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-True-MODEL_CANCELLED]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[permitted-None-MODEL_PERMISSION_FACT_MISSING]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-None-MODEL_QUALIFICATION_FACT_MISSING]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[egress_allowed-None-MODEL_EGRESS_FACT_MISSING]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[budget_available-None-MODEL_BUDGET_FACT_MISSING]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[cancelled-None-MODEL_CANCEL_FACT_MISSING]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[qualified-1-MODEL_QUALIFICATION_FACT_MISSING]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value11-MODEL_POLICY_EXPIRED]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[expires_at-value12-MODEL_POLICY_EXPIRED]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_current_facts_fail_closed_before_secret_resolution[binding_digest-different-MODEL_POLICY_SCOPE_MISMATCH]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tenant_id]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[run_id]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[writer_id]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[operation]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[purpose]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[skill_version]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[tool_version]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_policy_query_must_match_all_bound_dimensions[cancel_epoch]",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_currentness_compounds_main_guard_and_rechecks_after_cancellation",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_scoped_ports_errors_and_secret_material_drift_fail_closed",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_configuration_change_and_disable_invalidate_old_permit",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_missing_interfaces_do_not_implicitly_enable",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_forged_construct_payload_is_revalidated",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_port_policy_exception_is_redacted_and_missing_facts_are_unavailable",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_unavailable_secret_and_wrong_tenant_storage_are_rejected",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_secret_resolution_exception_and_invalid_credential_never_escape",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_version_and_metadata_are_immutable",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_sensitive_port_exception_tracebacks_and_request_validation_are_redacted",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_main_permit_guard_cannot_outlive_permit_expiry",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_public_common_preview_restores_without_secret_ref_or_second_store",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    },
+    {
+      "node": "tests/model_configuration/test_configuration.py::test_public_preview_reconstruction_rejects_rotated_secret_and_payload_changes",
+      "outcome": "passed",
+      "evidence": "model-runtime-affected.json",
+      "junit": "model-runtime-affected.xml",
+      "phase_count": 3,
+      "source_unchanged": true
+    }
+  ]
+}

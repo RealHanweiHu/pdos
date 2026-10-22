@@ -1,0 +1,15 @@
+{
+  "command": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+    "check",
+    "--fix",
+    "--config",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+    "wave22_shared_authority.py",
+    "test_wave22_shared_authority.py"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 0.021,
+  "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave22-authority-staged",
+  "created_at": "2026-10-03T18:21:21.269637+00:00"
+}

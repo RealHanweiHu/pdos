@@ -1,0 +1,82 @@
+{
+  "database": "localhost:57432/pdos",
+  "human_approval": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/preproject-research-runtime-20261006/legacy-bound-approval.json",
+  "stages": [
+    {
+      "stage": "budget_factory_prevalidated",
+      "at": "2026-10-07T02:48:38.760881+00:00",
+      "profile": "research_discussion",
+      "dns": "cloudflare_doh"
+    },
+    {
+      "stage": "owner_authenticated_normally",
+      "at": "2026-10-07T02:48:39.047233+00:00",
+      "actor_id": "5aac9a5f-6704-47c3-b81c-8d294e72c4f5",
+      "role": "owner",
+      "token_logged": false
+    },
+    {
+      "stage": "admission_draining",
+      "at": "2026-10-07T02:48:39.068300+00:00",
+      "revision": 1
+    },
+    {
+      "stage": "old_preview_processes_drained",
+      "at": "2026-10-07T02:48:48.670639+00:00",
+      "previous_dev_pid": 25365,
+      "tracked_processes": [
+        25365,
+        25487,
+        25488,
+        25489,
+        25492,
+        25493,
+        25494,
+        25511,
+        25512,
+        25517,
+        38269,
+        38298,
+        83165,
+        83253
+      ]
+    },
+    {
+      "stage": "migration_applied",
+      "at": "2026-10-07T02:48:48.995569+00:00",
+      "head": "0429_preview_legacy_usage_holds"
+    },
+    {
+      "stage": "three_conservative_holds_adopted",
+      "at": "2026-10-07T02:48:49.048331+00:00",
+      "hold_ids": {
+        "95fe9204-c8f3-4aa6-a870-c51123a08833": "8a2ac361-6e72-4bcd-a1d0-9456d616a680",
+        "a3b1253d-1c28-4272-92e9-4175ab9fdbfc": "0078f6b2-a59e-41c2-9ce9-e1cbb9f5e262",
+        "c5ac39e4-af83-4911-b40c-236ee4066c24": "4cad2eeb-f162-459e-824f-c230ace6a3a0"
+      },
+      "actual_usage_status": "unknown",
+      "original_utc_period": "2026-10-06",
+      "total_bound": 4572864
+    },
+    {
+      "stage": "admission_budgeted",
+      "at": "2026-10-07T02:48:49.065445+00:00",
+      "revision": 2
+    },
+    {
+      "stage": "configuration_applied_and_original_data_preserved",
+      "at": "2026-10-07T02:48:49.093509+00:00",
+      "keys": [
+        "PDOS_APPLICATION_MODEL_BUDGET_MODE",
+        "PDOS_APPLICATION_MODEL_BUDGET_PROFILE",
+        "PDOS_APPLICATION_MODEL_METER_PATH",
+        "PDOS_APPLICATION_MODEL_METER_SHA256",
+        "PDOS_RESEARCH_DNS_MODE"
+      ],
+      "business_counts_equal": true,
+      "original_invocations_equal": true,
+      "current_unbound_tokens": 11295
+    }
+  ],
+  "llm_calls": 0
+}

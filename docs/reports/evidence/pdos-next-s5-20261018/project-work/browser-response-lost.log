@@ -1,0 +1,13 @@
+### Result
+{"posts":[{"status":200,"id":"8e55c5a9-80f0-4efa-836c-ca6b65cce547","subject_id":"351d7cab-b525-4310-8e5c-aaf86a6da199","same_original":true}],"dropped":true,"replayVisible":true}
+### Ran Playwright code
+```js
+await (async page => { page.__s5={posts:[],original:null,dropped:false}; await page.route("**/api/**/commands",async route=>{ const req=route.request(); const raw=req.postData(); let body;try{body=JSON.parse(raw??"{}");}catch{await route.continue();return;} if(body.operation!=="work.task.assign"){await route.continue();return;} const r=await route.fetch();const result=await r.json(); if(page.__s5.original===null)page.__s5.original=raw;page.__s5.posts.push({status:r.status(),id:result.id,subject_id:result.subject_id,same_original:raw===page.__s5.original}); if(!page.__s5.dropped&&r.status()===200){page.__s5.dropped=true;await route.abort("failed");}else await route.fulfill({response:r}); }); await page.getByRole("dialog",{name:"确认本次任务办理",exact:true}).getByRole("button",{name:"确认保存本次办理",exact:true}).click(); await page.getByText("保存结果尚待核实。原请求、编号和确认凭据已保留，请显式按原请求重放。",{exact:true}).waitFor(); return {posts:page.__s5.posts,dropped:page.__s5.dropped,replayVisible:await page.getByRole("button",{name:"按原请求核对保存结果",exact:true}).isVisible()}; })(page);
+```
+### Page
+- Page URL: http://127.0.0.1:56051/?area=category&category=4005cc53-21fc-4e3b-bb4a-4f9b7179a121&bench=projects&view=plan&product=5c5b1613-08a1-4ca4-8d47-548f29ea13b1&project=c51618c9-5a5e-4fb6-854d-511eab271c1d
+- Page Title: PDOS · 研发工作区
+- Console: 2 errors, 0 warnings
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T00-44-12-218Z.log#L2
+

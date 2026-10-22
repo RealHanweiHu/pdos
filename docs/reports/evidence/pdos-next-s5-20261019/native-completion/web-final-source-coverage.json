@@ -1,0 +1,34 @@
+{
+  "web-lib": {
+    "web_differences_from_final": [
+      "pdos-next/web/src/app/api/[...path]/route.ts",
+      "pdos-next/web/src/app/api/[...path]/route.test.ts",
+      "pdos-next/web/src/components/builds/build-change-completion.tsx"
+    ]
+  },
+  "web-component": {
+    "web_differences_from_final": [
+      "pdos-next/web/src/app/api/[...path]/route.ts",
+      "pdos-next/web/src/app/api/[...path]/route.test.ts"
+    ]
+  },
+  "web-tsc": {
+    "web_differences_from_final": [
+      "pdos-next/web/src/app/api/[...path]/route.ts",
+      "pdos-next/web/src/app/api/[...path]/route.test.ts",
+      "pdos-next/web/src/components/builds/build-change-completion.tsx"
+    ]
+  },
+  "web-lint": {
+    "web_differences_from_final": [
+      "pdos-next/web/src/app/api/[...path]/route.ts",
+      "pdos-next/web/src/app/api/[...path]/route.test.ts"
+    ]
+  },
+  "bff": {
+    "web_differences_from_final": []
+  },
+  "web-build": {
+    "web_differences_from_final": []
+  }
+}

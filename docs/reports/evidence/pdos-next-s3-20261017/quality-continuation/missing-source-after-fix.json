@@ -1,0 +1,29 @@
+{
+  "operation": "verification.schedule.promise",
+  "storage_read_completed": true,
+  "live_authorization_attested": false,
+  "pre_fix_projection_missing": [
+    {
+      "artifact_id": "b1a9c2e2-fe6c-4230-9988-3f115a2dbff4",
+      "expected_revision": 1
+    }
+  ],
+  "pre_fix_projection_paths": [
+    {
+      "path": "material.request_before.snapshot.timeline.offered.source",
+      "artifact_id": "b1a9c2e2-fe6c-4230-9988-3f115a2dbff4",
+      "revision": 1
+    },
+    {
+      "path": "material.request_after.snapshot.timeline.offered.source",
+      "artifact_id": "b1a9c2e2-fe6c-4230-9988-3f115a2dbff4",
+      "revision": 1
+    },
+    {
+      "path": "material.origin_request.snapshot.timeline.offered.source",
+      "artifact_id": "b1a9c2e2-fe6c-4230-9988-3f115a2dbff4",
+      "revision": 1
+    }
+  ],
+  "note": "Read-only replay used actual repaired verify_paired_material and completed without DomainError. The diagnostic enumerator intentionally still shows the old offered-source projection; it is not the repaired current-consumption set."
+}

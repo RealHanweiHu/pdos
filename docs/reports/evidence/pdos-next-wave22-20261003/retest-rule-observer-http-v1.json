@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-10-04T02:40:22.043599+00:00",
+  "actual_http": 200,
+  "role": "observer",
+  "caller_id": "a8e4a921-15e6-4420-bc9e-51ed2242f2bf",
+  "current_rules": 1,
+  "history_rules": 1,
+  "observations": 0,
+  "named_reviews": 0,
+  "observation_allowed": true,
+  "current_rule_refs": [
+    {
+      "id": "2d24e72d-5d51-419e-aa69-f1ac4add68f1",
+      "revision": 1,
+      "sha256": "09dc7c829e768e90a2089b4b09cdfbe952e950db1febce5a23c93fc024d9828b"
+    }
+  ],
+  "complete_source_count": 16,
+  "private_actual_response": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave22-root-rule-observer-http-v1.json",
+  "no_business_write": true,
+  "rule_is_not_observation_or_effectiveness": true
+}

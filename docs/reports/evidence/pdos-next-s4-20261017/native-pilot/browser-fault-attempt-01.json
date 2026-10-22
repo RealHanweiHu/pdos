@@ -1,0 +1,5 @@
+{
+  "fault_triggered": false,
+  "counted_as_recovery_pass": false,
+  "reason": "Interception used unscoped /api/v1/commands; actual category transport uses /api/v1/categories/:category/commands. Browser creation was a normal actual save. Will verify loss on first result using actual observed URL."
+}

@@ -1,0 +1,30 @@
+{
+  "command": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+    "-m",
+    "pytest",
+    "--noconftest",
+    "-p",
+    "no:cacheprovider",
+    "-q",
+    "-o",
+    "addopts=",
+    "--rootdir",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged",
+    "tests/test_operational_bootstrap_profiles.py",
+    "tests/test_test_resource_bootstrap_profiles.py",
+    "tests/test_quality_bootstrap_profiles.py"
+  ],
+  "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged",
+  "exit_code": 0,
+  "created_at": "2026-10-03T18:02:43.040614+00:00",
+  "scope": [
+    "pdos_next/operational_bootstrap.py",
+    "pdos_next/test_resource_bootstrap.py",
+    "pdos_next/quality_bootstrap.py",
+    "tests/test_operational_bootstrap_profiles.py",
+    "tests/test_test_resource_bootstrap_profiles.py",
+    "tests/test_quality_bootstrap_profiles.py"
+  ],
+  "no_connections": true
+}

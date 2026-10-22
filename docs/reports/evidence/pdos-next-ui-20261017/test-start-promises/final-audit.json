@@ -1,0 +1,24 @@
+{
+  "web_inputs": 308,
+  "web_changed_since_final_candidate": [],
+  "frontend_changed_since_initial_check": [
+    "src/components/my-work-promises.test.mjs",
+    "src/components/my-work-promises.tsx"
+  ],
+  "navigation_changed_since_recheck": [],
+  "backend_changed_since_recheck": [],
+  "backend_changes_between_checks": [
+    "tests/preproject/test_personal_test_start_promises_pg.py"
+  ],
+  "domain_http_total": 57,
+  "methods": {
+    "GET": 57
+  },
+  "statuses": {
+    "200": 55,
+    "403": 1,
+    "401": 1
+  },
+  "migrations_executed": false,
+  "models_called": false
+}

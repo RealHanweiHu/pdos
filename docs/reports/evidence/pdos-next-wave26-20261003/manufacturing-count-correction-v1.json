@@ -1,0 +1,7 @@
+{
+  "status": "ACTUAL_SHARED_COUNT_GUARD_CORRECTED",
+  "before_sha256": "7309094e743855b5b88c1285f7bd7ad9dd47a723e5e5ce02e06d8830b636b543",
+  "after_sha256": "056185df48786016f4255c1f2643cf498b248533118cc617a1027fb73f3db381",
+  "reason": "Complete first-pass facts cannot report additional final-good units without reworked-good facts; same rule as per-unit fail-to-good guard",
+  "unknown_fields_not_filled": true
+}

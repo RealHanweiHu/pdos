@@ -1,0 +1,551 @@
+{
+  "provenance": {
+    "kind": "derived_from_consolidated_markdown",
+    "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
+    "sha256": "eb9f156e46cc77a4653e4b823aca92e41bb58831a03731817002c08415ccb64d",
+    "original_contract_package_received": false,
+    "revision": "v1.1 (approved 2026-10-08)",
+    "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
+    "stage_note": "Build stages renamed G0-G5 -> S0-S5 (same order); G0/G1 are now business gates (G0 立项评审, G1 计划基线)."
+  },
+  "items": [
+    {
+      "type": "artifact.registered",
+      "operation": "evidence.artifact.register",
+      "stage": "S0",
+      "schema_version": 1
+    },
+    {
+      "type": "claim.recorded",
+      "operation": "evidence.claim.record",
+      "stage": "S0",
+      "schema_version": 1
+    },
+    {
+      "type": "claim.withdrawn",
+      "operation": "evidence.claim.withdraw",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "evidence.linked",
+      "operation": "evidence.link.create",
+      "stage": "S0",
+      "schema_version": 1
+    },
+    {
+      "type": "source.withdrawn",
+      "operation": "evidence.source.withdraw",
+      "stage": "S0",
+      "schema_version": 1
+    },
+    {
+      "type": "definition.draft_created",
+      "operation": "product.definition.draft",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "definition.updated",
+      "operation": "product.definition.update",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "definition.published",
+      "operation": "product.definition.publish",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "variant.derived",
+      "operation": "product.variant.derive",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "project.created",
+      "operation": "project.create",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "task.created",
+      "operation": "work.task.create",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "task.assigned",
+      "operation": "work.task.assign",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "commitment.accepted",
+      "operation": "work.commitment.accept",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "plan.proposed",
+      "operation": "work.plan.propose",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "plan.applied",
+      "operation": "work.plan.apply",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "baseline.approved",
+      "operation": "work.baseline.approve",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "forecast.refreshed",
+      "operation": "work.forecast.refresh",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "external_wait.recorded",
+      "operation": "work.external_wait.record",
+      "stage": "S1",
+      "schema_version": 1
+    },
+    {
+      "type": "project.status_updated",
+      "operation": "work.status_update.create",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "configuration.created",
+      "operation": "engineering.configuration.create",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "interface.updated",
+      "operation": "engineering.interface.update",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "bom.revised",
+      "operation": "engineering.bom.revise",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "build.created",
+      "operation": "build.create",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "readiness.computed",
+      "operation": "build.readiness.compute",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "build.started",
+      "operation": "build.start",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "build.output_recorded",
+      "operation": "build.output.record",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "sample.allocated",
+      "operation": "build.sample.allocate",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "actual_configuration.recorded",
+      "operation": "build.configuration.actual.record",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "verification.requested",
+      "operation": "verification.request.create",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "handoff.offered",
+      "operation": "verification.handoff.offer",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "handoff.accepted",
+      "operation": "verification.handoff.accept",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "verification.schedule_proposed",
+      "operation": "verification.schedule.propose",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "test.results_imported",
+      "operation": "test.results.import",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "test.result_computed",
+      "operation": "test.result.compute",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "test.disposition_decided",
+      "operation": "test.disposition.decide",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "issue.created",
+      "operation": "quality.issue.create",
+      "stage": "S3",
+      "schema_version": 1
+    },
+    {
+      "type": "issues.merged",
+      "operation": "quality.issue.merge",
+      "stage": "S3",
+      "schema_version": 1
+    },
+    {
+      "type": "capa.drafted",
+      "operation": "quality.capa.draft",
+      "stage": "S3",
+      "schema_version": 1
+    },
+    {
+      "type": "capa.effectiveness_decided",
+      "operation": "quality.capa.effectiveness.decide",
+      "stage": "S3",
+      "schema_version": 1
+    },
+    {
+      "type": "process.revised",
+      "operation": "npi.process.revise",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "tooltrial.created",
+      "operation": "npi.tooltrial.create",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "fixture.accepted",
+      "operation": "npi.fixture.accept",
+      "stage": "S2",
+      "schema_version": 1
+    },
+    {
+      "type": "pilot.created",
+      "operation": "npi.pilot.create",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "pilot.results_recorded",
+      "operation": "npi.pilot.result.record",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "change.requested",
+      "operation": "change.request.create",
+      "stage": "S3",
+      "schema_version": 1
+    },
+    {
+      "type": "change.impact_created",
+      "operation": "change.impact.compute",
+      "stage": "S3",
+      "schema_version": 1
+    },
+    {
+      "type": "change.approved",
+      "operation": "change.order.approve",
+      "stage": "S3",
+      "schema_version": 1
+    },
+    {
+      "type": "change.implementation_recorded",
+      "operation": "change.implementation.record",
+      "stage": "S3",
+      "schema_version": 1
+    },
+    {
+      "type": "release.package_assembled",
+      "operation": "release.package.assemble",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "release.engineering_approved",
+      "operation": "release.engineering.approve",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "release.manufacturing_approved",
+      "operation": "release.manufacturing.approve",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "customer.sample_send_authorized",
+      "operation": "customer.sample.send",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "customer.acceptance_recorded",
+      "operation": "customer.acceptance.record",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "supply.commitment_recorded",
+      "operation": "supply.commitment.record",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "kit.computed",
+      "operation": "supply.kit.compute",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "alternate.approved",
+      "operation": "supply.alternate.approve",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "cost.estimated",
+      "operation": "cost.estimate.compute",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "external_handoff.authorized",
+      "operation": "integration.handoff.authorize",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "external_receipt.recorded",
+      "operation": "integration.receipt.record",
+      "stage": "S4",
+      "schema_version": 1
+    },
+    {
+      "type": "knowledge.candidate_created",
+      "operation": "knowledge.candidate.create",
+      "stage": "S5",
+      "schema_version": 1
+    },
+    {
+      "type": "knowledge.rule_published",
+      "operation": "knowledge.rule.publish",
+      "stage": "S5",
+      "schema_version": 1
+    },
+    {
+      "type": "ai.work_started",
+      "operation": "ai.work.start",
+      "stage": "S0",
+      "schema_version": 1
+    },
+    {
+      "type": "ai.run_cancelled",
+      "operation": "ai.run.cancel",
+      "stage": "S0",
+      "schema_version": 1
+    },
+    {
+      "type": "ai.run_reverted",
+      "operation": "ai.run.revert",
+      "stage": "S0",
+      "schema_version": 1
+    },
+    {
+      "type": "ai.automation_activated",
+      "operation": "ai.automation.activate",
+      "stage": "S5",
+      "schema_version": 1
+    },
+    {
+      "type": "ai.automation_paused",
+      "operation": "ai.automation.pause",
+      "stage": "S5",
+      "schema_version": 1
+    },
+    {
+      "type": "research.snapshot_registered",
+      "operation": "research.snapshot.register",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "category.created",
+      "operation": "category.create",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "category.member_granted",
+      "operation": "category.member.grant",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "category.knowledge_added",
+      "operation": "category.knowledge.add",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "category.knowledge_promoted",
+      "operation": "category.knowledge.promote",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "category.knowledge_withdrawn",
+      "operation": "category.knowledge.withdraw",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "category.parameter_published",
+      "operation": "category.parameter.publish",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "proposal.created",
+      "operation": "proposal.create",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "proposal.item_patched",
+      "operation": "proposal.item.patch",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "proposal.question_created",
+      "operation": "proposal.question.create",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "proposal.shared",
+      "operation": "proposal.share",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "proposal.g0_submitted",
+      "operation": "proposal.g0.submit",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "proposal.g0_decided",
+      "operation": "proposal.g0.decide",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "platform.linked",
+      "operation": "platform.link.create",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "definition.item_patched",
+      "operation": "product.definition.item.patch",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "ai.skill_enabled",
+      "operation": "ai.skill.enable",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "ai.skill_qualified",
+      "operation": "ai.skill.qualify",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "provider.agreement_registered",
+      "operation": "provider.agreement.register",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "mcp.connector_allowed",
+      "operation": "mcp.connector.allow",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    },
+    {
+      "type": "mcp.tool_granted",
+      "operation": "mcp.tool.grant",
+      "stage": "S1",
+      "schema_version": 1,
+      "v1_1": "added"
+    }
+  ]
+}

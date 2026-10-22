@@ -1,0 +1,429 @@
+{
+  "schema_head": "next_0010",
+  "business_marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "business_port": 62513,
+  "originals": [
+    {
+      "id": "0f81bea9-bc22-495d-9530-63b3548e872b",
+      "title": "browser-synthetic.txt",
+      "filename": "browser-synthetic.txt",
+      "source_label": "浏览器上传合成测试",
+      "media_type": "text/plain",
+      "byte_count": 109,
+      "content_hash": "83b254d22e51363f6b5434c82e8df2e405962ebabd1b27a24a464610d46126a5",
+      "status": "parsed",
+      "parse_code": null,
+      "scan_status": "clean",
+      "revision": 2,
+      "visibility": "private",
+      "artifact_id": "d0240e21-3ef2-400c-9c0e-08740e581c3f",
+      "locator_map": [
+        {
+          "location": {
+            "row": null,
+            "cell": null,
+            "kind": "line",
+            "line": 1,
+            "page": null,
+            "sheet": null,
+            "column": null
+          },
+          "value_kind": "text",
+          "derived_line_end": 1,
+          "derived_line_start": 1
+        },
+        {
+          "location": {
+            "row": null,
+            "cell": null,
+            "kind": "line",
+            "line": 2,
+            "page": null,
+            "sheet": null,
+            "column": null
+          },
+          "value_kind": "text",
+          "derived_line_end": 2,
+          "derived_line_start": 2
+        },
+        {
+          "location": {
+            "row": null,
+            "cell": null,
+            "kind": "line",
+            "line": 3,
+            "page": null,
+            "sheet": null,
+            "column": null
+          },
+          "value_kind": "text",
+          "derived_line_end": 3,
+          "derived_line_start": 3
+        }
+      ],
+      "security": {
+        "state": "clean",
+        "reasons": [],
+        "epoch": 2,
+        "source_state": "active",
+        "scan": {
+          "id": "94b5e6b0-7447-4164-866c-862916538f58",
+          "status": "clean",
+          "scanner": "clamav-container:sha256:388419d4ffc5caaa9c1557b81adf4608462d739560506a1288311e762978549e",
+          "engine_version": "1.5.4",
+          "rules_version": "28123/Mon Sep 14 06:24:19 2026",
+          "policy_version": "pdos-local-synthetic-file-policy-v1",
+          "requested_at": "2026-10-02T14:40:30.422667+00:00",
+          "completed_at": "2026-10-02T14:40:39.057712+00:00",
+          "error_code": null
+        },
+        "capabilities": {
+          "scan": true,
+          "download": true,
+          "withdraw": true
+        },
+        "lifecycle": {
+          "disposition": "active",
+          "registered": true,
+          "protection_reasons": [
+            "REGISTERED_ORIGINAL",
+            "REFERENCE_COVERAGE_UNPROVEN"
+          ],
+          "journal_state": "unknown",
+          "physical_actions_available": false
+        }
+      }
+    },
+    {
+      "id": "75d79fb7-09d2-4786-ab5e-95493d40b894",
+      "title": "browser-synthetic.pdf",
+      "filename": "browser-synthetic.pdf",
+      "source_label": "本地合成PDF/XLSX联验",
+      "media_type": "application/pdf",
+      "byte_count": 1047,
+      "content_hash": "e768c5b1ca48165c19816b4cdd54becf0f0bf8fc533c4d311ced0e2d73add98f",
+      "status": "parsed",
+      "parse_code": null,
+      "scan_status": "clean",
+      "revision": 2,
+      "visibility": "private",
+      "artifact_id": "18afc895-25ee-42a8-9974-cb4a7aaff6c3",
+      "locator_map": [
+        {
+          "location": {
+            "row": null,
+            "cell": null,
+            "kind": "page",
+            "line": null,
+            "page": 1,
+            "sheet": null,
+            "column": null
+          },
+          "value_kind": "text",
+          "derived_line_end": 1,
+          "derived_line_start": 1
+        },
+        {
+          "location": {
+            "row": null,
+            "cell": null,
+            "kind": "page",
+            "line": null,
+            "page": 2,
+            "sheet": null,
+            "column": null
+          },
+          "value_kind": "text",
+          "derived_line_end": 3,
+          "derived_line_start": 3
+        }
+      ],
+      "security": {
+        "state": "clean",
+        "reasons": [],
+        "epoch": 2,
+        "source_state": "active",
+        "scan": {
+          "id": "250f131d-0d8d-4bf9-92df-cbda562c97bb",
+          "status": "clean",
+          "scanner": "clamav-container:sha256:388419d4ffc5caaa9c1557b81adf4608462d739560506a1288311e762978549e",
+          "engine_version": "1.5.4",
+          "rules_version": "28123/Mon Sep 14 06:24:19 2026",
+          "policy_version": "pdos-local-synthetic-file-policy-v1",
+          "requested_at": "2026-10-02T14:40:58.892702+00:00",
+          "completed_at": "2026-10-02T14:41:09.607101+00:00",
+          "error_code": null
+        },
+        "capabilities": {
+          "scan": true,
+          "download": true,
+          "withdraw": true
+        },
+        "lifecycle": {
+          "disposition": "active",
+          "registered": true,
+          "protection_reasons": [
+            "REGISTERED_ORIGINAL",
+            "REFERENCE_COVERAGE_UNPROVEN"
+          ],
+          "journal_state": "unknown",
+          "physical_actions_available": false
+        }
+      }
+    },
+    {
+      "id": "25ec7493-a421-4fb1-905f-b1de03b7df87",
+      "title": "browser-synthetic.xlsx",
+      "filename": "browser-synthetic.xlsx",
+      "source_label": "本地合成PDF/XLSX联验",
+      "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "byte_count": 4878,
+      "content_hash": "2bff9e106e77d0a9ab5aace2f0947450e37c0956076d9a62706802345e7c2551",
+      "status": "parsed",
+      "parse_code": null,
+      "scan_status": "clean",
+      "revision": 2,
+      "visibility": "private",
+      "artifact_id": "0f9bfbda-481b-49a4-8508-550e27526423",
+      "locator_map": [
+        {
+          "location": {
+            "row": 1,
+            "cell": "A1",
+            "kind": "cell",
+            "line": null,
+            "page": null,
+            "sheet": "合成规格",
+            "column": 1
+          },
+          "value_kind": "text",
+          "derived_line_end": 1,
+          "derived_line_start": 1
+        },
+        {
+          "location": {
+            "row": 1,
+            "cell": "B1",
+            "kind": "cell",
+            "line": null,
+            "page": null,
+            "sheet": "合成规格",
+            "column": 2
+          },
+          "value_kind": "text",
+          "derived_line_end": 2,
+          "derived_line_start": 2
+        }
+      ],
+      "security": {
+        "state": "clean",
+        "reasons": [],
+        "epoch": 2,
+        "source_state": "active",
+        "scan": {
+          "id": "94fc9d0b-7b1a-483f-a8ae-21997f5ae7b3",
+          "status": "clean",
+          "scanner": "clamav-container:sha256:388419d4ffc5caaa9c1557b81adf4608462d739560506a1288311e762978549e",
+          "engine_version": "1.5.4",
+          "rules_version": "28123/Mon Sep 14 06:24:19 2026",
+          "policy_version": "pdos-local-synthetic-file-policy-v1",
+          "requested_at": "2026-10-02T14:40:59.155205+00:00",
+          "completed_at": "2026-10-02T14:41:09.844633+00:00",
+          "error_code": null
+        },
+        "capabilities": {
+          "scan": true,
+          "download": true,
+          "withdraw": true
+        },
+        "lifecycle": {
+          "disposition": "active",
+          "registered": true,
+          "protection_reasons": [
+            "REGISTERED_ORIGINAL",
+            "REFERENCE_COVERAGE_UNPROVEN"
+          ],
+          "journal_state": "unknown",
+          "physical_actions_available": false
+        }
+      }
+    },
+    {
+      "id": "34dd41aa-486f-4fe3-a4ff-ab9b9347be70",
+      "title": "wave8-source.txt",
+      "filename": "wave8-source.txt",
+      "source_label": "第八波合成原件：安全扫描、隔离解析与具名撤回演练",
+      "media_type": "text/plain",
+      "byte_count": 178,
+      "content_hash": "4f5d4edbfaf26c77c3a2ea49f94464619e2903740d1c62f617353853b712b32b",
+      "status": "parsed",
+      "parse_code": null,
+      "scan_status": "clean",
+      "revision": 3,
+      "visibility": "private",
+      "artifact_id": "f101cf40-a34e-487c-bf98-66f170311d3c",
+      "locator_map": [
+        {
+          "location": {
+            "row": null,
+            "cell": null,
+            "kind": "line",
+            "line": 1,
+            "page": null,
+            "sheet": null,
+            "column": null
+          },
+          "value_kind": "text",
+          "derived_line_end": 1,
+          "derived_line_start": 1
+        },
+        {
+          "location": {
+            "row": null,
+            "cell": null,
+            "kind": "line",
+            "line": 2,
+            "page": null,
+            "sheet": null,
+            "column": null
+          },
+          "value_kind": "text",
+          "derived_line_end": 2,
+          "derived_line_start": 2
+        },
+        {
+          "location": {
+            "row": null,
+            "cell": null,
+            "kind": "line",
+            "line": 3,
+            "page": null,
+            "sheet": null,
+            "column": null
+          },
+          "value_kind": "text",
+          "derived_line_end": 3,
+          "derived_line_start": 3
+        }
+      ],
+      "security": {
+        "state": "stale",
+        "reasons": [
+          "SOURCE_WITHDRAWN"
+        ],
+        "epoch": 3,
+        "source_state": "withdrawn",
+        "scan": {
+          "id": "749ef478-f331-4a10-be8e-81133f35e6b0",
+          "status": "clean",
+          "scanner": "clamav-container:sha256:388419d4ffc5caaa9c1557b81adf4608462d739560506a1288311e762978549e",
+          "engine_version": "1.5.4",
+          "rules_version": "28123/Mon Sep 14 06:24:19 2026",
+          "policy_version": "pdos-local-synthetic-file-policy-v1",
+          "requested_at": "2026-10-02T14:42:12.621131+00:00",
+          "completed_at": "2026-10-02T14:42:26.442913+00:00",
+          "error_code": null
+        },
+        "capabilities": {
+          "scan": false,
+          "download": false,
+          "withdraw": false
+        },
+        "lifecycle": {
+          "disposition": "active",
+          "registered": true,
+          "protection_reasons": [
+            "REGISTERED_ORIGINAL",
+            "REFERENCE_COVERAGE_UNPROVEN"
+          ],
+          "journal_state": "registered",
+          "physical_actions_available": false
+        }
+      }
+    },
+    {
+      "id": "5053957e-26ce-4d1f-b999-e97516ede236",
+      "title": "合成防病毒标记 · 禁止作为业务来源",
+      "filename": "wave8-antivirus-test.txt",
+      "source_label": "仅EICAR标准检测演练，无真实业务资料",
+      "media_type": "text/plain",
+      "byte_count": 68,
+      "content_hash": "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f",
+      "status": "uploaded",
+      "parse_code": null,
+      "scan_status": "infected",
+      "revision": 1,
+      "visibility": "private",
+      "artifact_id": null,
+      "locator_map": [],
+      "security": {
+        "state": "quarantined",
+        "reasons": [
+          "MALWARE_DETECTED"
+        ],
+        "epoch": 2,
+        "source_state": "active",
+        "scan": {
+          "id": "1ed7949e-8b85-4562-a052-a750588f9c0d",
+          "status": "infected",
+          "scanner": "clamav-container:sha256:388419d4ffc5caaa9c1557b81adf4608462d739560506a1288311e762978549e",
+          "engine_version": "1.5.4",
+          "rules_version": "28123/Mon Sep 14 06:24:19 2026",
+          "policy_version": "pdos-local-synthetic-file-policy-v1",
+          "requested_at": "2026-10-02T14:45:31.582082+00:00",
+          "completed_at": "2026-10-02T14:45:42.705840+00:00",
+          "error_code": "MALWARE_DETECTED"
+        },
+        "capabilities": {
+          "scan": true,
+          "download": false,
+          "withdraw": true
+        },
+        "lifecycle": {
+          "disposition": "active",
+          "registered": true,
+          "protection_reasons": [
+            "REGISTERED_ORIGINAL",
+            "REFERENCE_COVERAGE_UNPROVEN"
+          ],
+          "journal_state": "registered",
+          "physical_actions_available": false
+        }
+      }
+    }
+  ],
+  "legacy_scans_and_exact_downloads": 3,
+  "actual_scanner_results": {
+    "clean": 4,
+    "infected": 1
+  },
+  "new_clean_original_parsed_then_named_withdrawn": true,
+  "infected_original_never_parsed_or_downloaded": true,
+  "withdrawn_bytes_and_history_retained": true,
+  "audit_and_outbox_each_once": true,
+  "wave8_receipts": [
+    "4101c709-dd91-47ce-92bf-769fb88bbe49",
+    "4bc28d5c-6429-4955-b5a0-cb5a94775803",
+    "facd55d7-04d6-48e2-883f-b0a1d361af86",
+    "b29e6a03-67df-4411-bc97-0ff5cf0c04a7",
+    "3e4b1477-c0e1-4756-accc-ce8d201cde26",
+    "28cf4150-b484-4890-8e4d-d95cbab3d3f0",
+    "8e6f5d90-5371-4a1d-aa7b-82ce7b70f2c4",
+    "7289814c-307e-42e9-97e9-9fd807f680b3",
+    "f4892a29-98dd-4f68-a665-5201c88cd753",
+    "35ac0013-5b87-47af-af72-3c13ca2683ea",
+    "fec39413-e56a-4484-9eee-219919bbbafe"
+  ],
+  "plan_unchanged": true,
+  "verification_unchanged": true,
+  "model_calls": 0,
+  "agent_business_write_privileges": 0,
+  "business_table_count": 55,
+  "backup_bytes": 15508282,
+  "limitations": [
+    "Local synthetic profile, not production qualification",
+    "Legacy journal coverage remains unknown",
+    "Physical lifecycle actions/OCR/S3 runtime are not completed",
+    "No real model or business egress"
+  ]
+}

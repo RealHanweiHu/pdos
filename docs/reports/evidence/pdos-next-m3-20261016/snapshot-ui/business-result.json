@@ -1,0 +1,38 @@
+{
+  "browser_success": {
+    "run_id": "8406d046-2bc7-43dc-ad94-46a8710fa84c",
+    "state": "completed",
+    "snapshot_count": 1,
+    "snapshot_id": "4f781384-2ca9-452b-94b2-96d3a3a942c9",
+    "receipt_count": 1,
+    "receipt_id": "e752fb03-3ec8-460f-8ee0-42cf089a5340",
+    "same_original_command_and_request_key": true,
+    "human_confirmation": true,
+    "confirmation_consumed": true,
+    "browser_preview_posts": 1,
+    "browser_save_posts": 1,
+    "model_calls": 7,
+    "cost_micro_usd": 840,
+    "held_micro_usd": 0,
+    "held_tokens": 0,
+    "external_calls": 0
+  },
+  "browser_recovery": {
+    "run_id": "de1e34d3-7d3a-409d-8221-91a56acc42b6",
+    "state": "completed",
+    "snapshot_count": 1,
+    "snapshot_id": "3b094157-6732-462b-80db-d0a35fe9c5c2",
+    "receipt_count": 1,
+    "receipt_id": "d197631d-7242-4eba-aa26-568d122cb2cf",
+    "same_original_command_and_request_key": true,
+    "human_confirmation": true,
+    "confirmation_consumed": true,
+    "browser_preview_posts": 1,
+    "browser_save_posts": 1,
+    "model_calls": 7,
+    "cost_micro_usd": 840,
+    "held_micro_usd": 0,
+    "held_tokens": 0,
+    "external_calls": 0
+  }
+}

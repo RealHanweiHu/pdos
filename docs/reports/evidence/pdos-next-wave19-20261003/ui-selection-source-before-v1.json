@@ -1,0 +1,25 @@
+{
+  "scope": "Explicit candidate selection before owned Wave19 change",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-panel.tsx",
+      "sha256": "386aae53606711bcdd1436e986f53a9683344cc28a1823dbda3fe8aebc200ebc"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-workflow-contract.ts",
+      "sha256": "06a42c79bae5a85e4f0dcfbfd55f472c823b0894615c85c7a08953156a229b73"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/fact-workflow-state.test.ts",
+      "sha256": "49719be13e1218bddaae89351bad9cc6eecd7341ea156e698fd64c0d4010fed3"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "sha256": "58e27a74a94ab1af9360f746ec38b2082335daef2a46a1e0e4f50621ac8ab9cf"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.test.ts",
+      "sha256": "956108a44158d1b94997ca4ef3bdb4fc09408a57b59632f4eb85450bb8cd40d5"
+    }
+  ]
+}

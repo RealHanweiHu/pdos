@@ -1,0 +1,108 @@
+F.....                                                                   [100%]
+=================================== FAILURES ===================================
+_ test_pending_product_original_blocks_category_reference_without_committing_fake_state[claim] _
+
+work = <isolated synthetic test scope>
+lifecycle_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.original_store.OriginalStore object at 0x1246d3f20>,...ays=1), effect_timeout=datetime.timedelta(seconds=20)), client=<starlette.testclient.TestClient object at 0x1248d1670>)
+consumer = 'claim'
+
+    @pytest.mark.parametrize("consumer", ["claim", "proposal"])
+    def test_pending_product_original_blocks_category_reference_without_committing_fake_state(
+        work,
+        lifecycle_work,
+        consumer,
+    ):
+        f = bound(work)
+        original_id, artifact_id = lifecycle_uploaded(lifecycle_work, True)
+        # This intentionally rolls back synthetic lifecycle metadata after exercising
+        # the ordinary app trigger; it is not a physical retention decision.
+        reason = (
+            "Pending or isolated original" if consumer == "claim" else "Pending original prohibits M3"
+        )
+        with pytest.raises(DBAPIError, match=reason):
+            with lifecycle_session(work, admin=True) as session:
+                session.add(
+                    LifecycleObject(
+                        id=original_id,
+                        tenant_id=work.tenant,
+                        category_id=work.category,
+                        product_id=work.product,
+                        owner_id=work.human,
+                        reference={},
+                        state={"value": {"pending_intent_id": str(uuid4()), "disposition": "active"}},
+                    )
+                )
+                session.flush()
+                session.execute(text("SET LOCAL ROLE pdos_next_app"))
+                if consumer == "claim":
+                    command = request(
+                        work,
+                        "evidence.claim.record",
+                        {
+                            "proposal_id": str(f.scope.proposal_id),
+                            "nature": "extracted",
+                            "content": {"text": "Synthetic exact M3 lifecycle source"},
+                            "source": {
+                                "kind": "artifact",
+                                "id": str(artifact_id),
+                                "version": 1,
+                                "line": 1,
+                                "quote": "Synthetic exact M3 lifecycle source",
+                            },
+                        },
+                    )
+                    command["source_read_set"] = [
+                        {
+                            "artifact_id": str(artifact_id),
+                            "expected_revision": 1,
+                        }
+                    ]
+>                   execute(session, work.ctx, Command.model_validate(command))
+
+tests/agent_kernel/test_category_source_writeback_pg.py:364:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+pdos_next/service.py:1000: in execute
+    prove_sources(s, ctx, product.id, command.source_read_set)
+pdos_next/service.py:513: in prove_sources
+    source_for(s, ctx, product_id, artifact_id, revision)
+pdos_next/service.py:480: in source_for
+    require_safe(s, ctx, original, lock=writing)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+s = <sqlalchemy.orm.session.Session object at 0x12508ff80>
+ctx = Context(tenant_id=UUID('1a564b80-39d4-4e43-afc3-4a50a2f51477'), actor_id=UUID('c10cb8f7-5349-4176-b355-1d4f25eb7cca'),...ne, cancel_epoch=None, category_id=UUID('b9a30921-99ed-4209-93f1-82594337d12a'), agent_run_id=None, agent_call_id=None)
+original = <pdos_next.models.UploadedOriginal object at 0x125a64a10>
+lock = True
+
+    def require_safe(s, ctx, original, *, lock=True):
+        from pdos_next.service import require_access
+
+        require_access(s, ctx, original.product_id, lock=lock)
+        state = security_row(s, original, lock=lock)
+        gate, _, _ = decision(s, original, state, lock=lock)
+        if (
+            not gate
+            or not gate.allow_parse
+            or state.source_state != "active"
+            or state.disposition != "active"
+        ):
+>           raise DomainError(
+                "ORIGINAL_SECURITY_BLOCKED", "原件尚无当前有效的安全扫描，或来源已失效。", 409
+            )
+E           pdos_next.errors.DomainError: 原件尚无当前有效的安全扫描，或来源已失效。
+
+pdos_next/original_security.py:260: DomainError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_category_source_writeback_pg.py::test_pending_product_original_blocks_category_reference_without_committing_fake_state[claim]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_pending_product_original_blocks_category_reference_without_committing_fake_state[proposal]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_source_writeback_pg.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_category_source_writeback_pg.py::test_pending_product_original_blocks_category_reference_without_committing_fake_state[claim]
+1 failed, 5 passed, 14 warnings in 12.50s

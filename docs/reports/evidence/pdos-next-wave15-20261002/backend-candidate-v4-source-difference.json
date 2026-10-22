@@ -1,0 +1,30 @@
+{
+  "changes": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/change_execution/graph.py",
+      "before_sha256": "3fe9b7988ee504f4310858754082baf565914457e1ca7518a5ccc00c7eb0b6bb",
+      "after_sha256": "184a3d097eeb21d2080167ccd4516dea50abb4521e4694efcc5b0b724a697846",
+      "reason": "Phase-local same-Issue reuse, lean factual owner reads and complete current policy fingerprint; fresh final guards and TTL retained"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/change_execution/service.py",
+      "before_sha256": "40448bde0b3cae0bb944e4e68ad41a4d5ec3047b137917794741c1bed04cc69f",
+      "after_sha256": "85781f6e73eab4763ff1f54af56185457bf5863a80f65b6ee16318520e3409bd",
+      "reason": "Phase-local same-Issue reuse, lean factual owner reads and complete current policy fingerprint; fresh final guards and TTL retained"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/quality_execution/service.py",
+      "before_sha256": "4808a93ec42468f5d29cd1fcd6783f0fc98463d1d505a849a59eb79d29773d3f",
+      "after_sha256": "131edca7957a49ef5de63f8addfbca47444adbd3694551c42ed9404d1dcffa99",
+      "reason": "Phase-local same-Issue reuse, lean factual owner reads and complete current policy fingerprint; fresh final guards and TTL retained"
+    },
+    {
+      "path": "pdos-next/server/tests/change_execution/test_pure.py",
+      "before_sha256": "daa6705911eb68bbbff6981305dfd4220df389a7b6ce1a7dbb50c60504c52422",
+      "after_sha256": "3196598d265147ea4a6cc6f87cabebed452f7530dfe3faf6dd4db07e44055b32",
+      "reason": "Phase-local same-Issue reuse, lean factual owner reads and complete current policy fingerprint; fresh final guards and TTL retained"
+    }
+  ],
+  "unchanged": 299,
+  "paths": 303
+}

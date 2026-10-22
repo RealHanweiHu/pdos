@@ -1,0 +1,9 @@
+.............                                                            [100%]
+=============================== warnings summary ===============================
+tests/preproject/test_material_proofs_pg.py::test_t0_material_actual_controlled_call_adds_replays_and_supersedes_ai_draft
+tests/preproject/test_material_proofs_pg.py::test_t0_material_actual_controlled_call_adds_replays_and_supersedes_ai_draft
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:557: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+13 passed, 2 warnings in 10.28s

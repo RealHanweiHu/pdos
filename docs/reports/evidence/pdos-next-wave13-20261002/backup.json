@@ -1,0 +1,9 @@
+{
+  "result": "directory_check_passed",
+  "path": "pdos-next/.local/post-wave13-next_0018.dump",
+  "mode": "0o600",
+  "sha256": "5665ce8b3ae5e6ce391f71a3fd12825330dbf64786431595093b0516c596929a",
+  "restore_overwrite_performed": false,
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "port": 62513
+}

@@ -1,0 +1,17 @@
+...                                                                      [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_extracted_match_pg.py::test_private_extracted_rows_match_actual_published_model_and_replay_without_writes
+tests/agent_kernel/test_extracted_match_pg.py::test_private_extracted_rows_match_actual_published_model_and_replay_without_writes
+tests/agent_kernel/test_extracted_match_pg.py::test_extraction_omissions_remain_unknown_even_when_dictionary_has_defaults
+tests/agent_kernel/test_extracted_match_pg.py::test_non_spec_rows_and_changed_original_never_become_all_requirements_satisfied
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:512: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_extracted_match_pg.py::test_private_extracted_rows_match_actual_published_model_and_replay_without_writes
+tests/agent_kernel/test_extracted_match_pg.py::test_extraction_omissions_remain_unknown_even_when_dictionary_has_defaults
+tests/agent_kernel/test_extracted_match_pg.py::test_non_spec_rows_and_changed_original_never_become_all_requirements_satisfied
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:689: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+3 passed, 7 warnings in 17.37s

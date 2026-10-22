@@ -1,0 +1,42 @@
+{
+  "synthetic": true,
+  "database": "pdos_test",
+  "endpoint": "127.0.0.1:65287",
+  "container": "pdos-work-modules-test-20261004-a419",
+  "head": "0419_user_work_modules",
+  "member_after_revocation": {
+    "role": "engineer",
+    "work_modules": []
+  },
+  "named_audits": [
+    {
+      "actor_user_id": "9f41e42b-6b2b-461c-9f88-a877b2be69f1",
+      "before_snapshot": {
+        "work_modules": []
+      },
+      "after_snapshot": {
+        "work_modules": [
+          "product",
+          "quality",
+          "introduction",
+          "supply"
+        ]
+      }
+    },
+    {
+      "actor_user_id": "9f41e42b-6b2b-461c-9f88-a877b2be69f1",
+      "before_snapshot": {
+        "work_modules": [
+          "product",
+          "quality",
+          "introduction",
+          "supply"
+        ]
+      },
+      "after_snapshot": {
+        "work_modules": []
+      }
+    }
+  ],
+  "agent_effective_business_write_tables": 0
+}

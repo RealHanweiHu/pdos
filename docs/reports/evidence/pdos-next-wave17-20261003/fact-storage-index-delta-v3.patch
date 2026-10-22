@@ -1,0 +1,158 @@
+--- original-c5e19/fact_storage_models.py
++++ final-index-bounds-v3/fact_storage_models.py
+@@ -35,6 +35,9 @@
+     "anchor_sha256",
+     "requirement_sha256",
+ )
++# Readers retain the complete semantic binding. Only physical B-tree/FK keys
++# exclude long purpose; the row/body/full anchor and actual guards preserve it.
++INDEX_BINDING = tuple(column for column in BINDING if column != "purpose")
+ BODY = "(fact_body->'body')"
+ 
+ 
+@@ -223,11 +226,11 @@
+ def _series_constraints(table):
+     return (
+         UniqueConstraint(*SCOPE, "series_id", "revision"),
+-        UniqueConstraint(*BINDING, "series_id", "id", "revision"),
+-        _fk(
+-            BINDING + ("series_id", "previous_fact_id", "previous_revision"),
++        UniqueConstraint(*INDEX_BINDING, "series_id", "id", "revision"),
++        _fk(
++            INDEX_BINDING + ("series_id", "previous_fact_id", "previous_revision"),
+             table,
+-            BINDING + ("series_id", "id", "revision"),
++            INDEX_BINDING + ("series_id", "id", "revision"),
+         ),
+         CheckConstraint(
+             "(revision=1 AND series_id=id AND previous_fact_id IS NULL "
+@@ -246,8 +249,8 @@
+ 
+ class RuleFact(_Series, _Fact, Row, Base):
+     __tablename__ = "capa_verification_rule_facts"
+-    issuer_key: Mapped[str] = mapped_column(String(2000))
+-    issuer_version: Mapped[str] = mapped_column(String(2000))
++    issuer_key: Mapped[str] = mapped_column(String(100))
++    issuer_version: Mapped[str] = mapped_column(String(100))
+     issuer_epoch: Mapped[int] = mapped_column(Integer)
+     external_id: Mapped[str] = mapped_column(String(200))
+     valid_from: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+@@ -258,9 +261,19 @@
+         ),
+         *_series_constraints(__tablename__),
+         UniqueConstraint(
+-            *BINDING, "series_id", "issuer_key", "issuer_version", "external_id", "id", "revision"
+-        ),
+-        CheckConstraint("issuer_epoch>0 AND valid_until>valid_from AND length(external_id)>0"),
++            *INDEX_BINDING,
++            "series_id",
++            "issuer_key",
++            "issuer_version",
++            "external_id",
++            "id",
++            "revision",
++        ),
++        CheckConstraint(
++            "issuer_epoch>0 AND valid_until>valid_from AND length(external_id)>0 "
++            "AND length(issuer_key) BETWEEN 1 AND 100 "
++            "AND length(issuer_version) BETWEEN 1 AND 100"
++        ),
+         CheckConstraint(
+             f"COALESCE({BODY}->'issuer'->>'key'=issuer_key "
+             f"AND {BODY}->'issuer'->>'version'=issuer_version "
+@@ -284,9 +297,9 @@
+         *_bound_constraints(),
+         UniqueConstraint(*SCOPE, "series_id"),
+         _fk(
+-            BINDING + ("series_id", "fact_id", "fact_revision"),
++            INDEX_BINDING + ("series_id", "fact_id", "fact_revision"),
+             table,
+-            BINDING + ("series_id", "id", "revision"),
++            INDEX_BINDING + ("series_id", "id", "revision"),
+         ),
+         CheckConstraint("fact_revision>0 AND epoch>0"),
+     )
+@@ -294,13 +307,13 @@
+ 
+ class RuleCurrent(_Current, Row, Base):
+     __tablename__ = "capa_current_verification_rules"
+-    issuer_key: Mapped[str] = mapped_column(String(2000))
+-    issuer_version: Mapped[str] = mapped_column(String(2000))
++    issuer_key: Mapped[str] = mapped_column(String(100))
++    issuer_version: Mapped[str] = mapped_column(String(100))
+     external_id: Mapped[str] = mapped_column(String(200))
+     __table_args__ = (
+         *_current_constraints(RuleFact.__tablename__),
+         _fk(
+-            BINDING
++            INDEX_BINDING
+             + (
+                 "series_id",
+                 "issuer_key",
+@@ -310,12 +323,13 @@
+                 "fact_revision",
+             ),
+             RuleFact.__tablename__,
+-            BINDING
++            INDEX_BINDING
+             + ("series_id", "issuer_key", "issuer_version", "external_id", "id", "revision"),
+         ),
+-        UniqueConstraint(*SCOPE, "purpose", "anchor_sha256", "issuer_key", "external_id"),
+-        CheckConstraint(
+-            "length(issuer_key)>0 AND length(issuer_version)>0 AND length(external_id)>0"
++        UniqueConstraint(*SCOPE, "anchor_sha256", "issuer_key", "external_id"),
++        CheckConstraint(
++            "length(issuer_key) BETWEEN 1 AND 100 "
++            "AND length(issuer_version) BETWEEN 1 AND 100 AND length(external_id)>0"
+         ),
+     )
+ 
+@@ -325,8 +339,8 @@
+     rule_fact_id: Mapped[UUID]
+     rule_revision: Mapped[int] = mapped_column(Integer)
+     rule_sha256: Mapped[str] = mapped_column(String(64))
+-    issuer_key: Mapped[str] = mapped_column(String(2000))
+-    issuer_version: Mapped[str] = mapped_column(String(2000))
++    issuer_key: Mapped[str] = mapped_column(String(100))
++    issuer_version: Mapped[str] = mapped_column(String(100))
+     issuer_epoch: Mapped[int] = mapped_column(Integer)
+     executor_id: Mapped[UUID]
+     observed_from: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+@@ -335,7 +349,7 @@
+         *_fact_constraints("observation", "quality.capa.observation.record", "T1", "recorded"),
+         *_series_constraints(__tablename__),
+         UniqueConstraint(
+-            *BINDING,
++            *INDEX_BINDING,
+             "series_id",
+             "rule_fact_id",
+             "rule_revision",
+@@ -345,7 +359,7 @@
+             "revision",
+         ),
+         _fk(
+-            BINDING
++            INDEX_BINDING
+             + (
+                 "series_id",
+                 "rule_fact_id",
+@@ -356,7 +370,7 @@
+                 "previous_revision",
+             ),
+             __tablename__,
+-            BINDING
++            INDEX_BINDING
+             + (
+                 "series_id",
+                 "rule_fact_id",
+@@ -375,7 +389,9 @@
+         _fk(("tenant_id", "executor_id"), "principals", ("tenant_id", "id")),
+         CheckConstraint(
+             "rule_revision>0 AND rule_sha256 ~ '^[0-9a-f]{64}$' AND issuer_epoch>0 "
+-            "AND executor_id=writer_id AND observed_until>observed_from"
++            "AND executor_id=writer_id AND observed_until>observed_from "
++            "AND length(issuer_key) BETWEEN 1 AND 100 "
++            "AND length(issuer_version) BETWEEN 1 AND 100"
+         ),
+         CheckConstraint(
+             f"COALESCE({BODY}->'rule'->>'id'=rule_fact_id::text "

@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-04T02:01:09.560606+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "scope_count": 2,
+  "original_profile_preserved_exact": true,
+  "actual_source_verified": true,
+  "new_action_sha256": "a1d78b97d60ef7656f7a3d2f8f2daac268c861f7cb9aa2431d6fdcf4d3c3769c",
+  "api_reload_required": true,
+  "synthetic_only": true,
+  "physical_implementation": false,
+  "business_writes": 0,
+  "script_sha256": "e44c49ef13d7628f035ec1005acd418b2887a98425ab1069ef1e6cbdbfa30311"
+}

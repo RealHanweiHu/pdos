@@ -1,0 +1,13 @@
+{
+  "pdos-next/server/pdos_next/schemas/verification/contracts.py": "5262b95c950a20625da5abb54b4c47dc5e77bb790f97518ca21cd3c422039734",
+  "pdos-next/server/pdos_next/schemas/quality_issues/contracts.py": "ea567a91cffb6cf824dbeaac4d9202a63121a2cb8d17968267295e95034f8aea",
+  "pdos-next/server/pdos_next/domain/quality_issues/ports.py": "e4c614577b0483c2123e8dcaadaa8f55a53a0fb8d60290152198ed43afe43857",
+  "docs/reports/evidence/pdos-next-quality-issues-20261002/integration.md": "c784bbc4fa297184981b8fe0701a3762fec771bf6ec34267808f104b6b46e201",
+  "pdos-next/server/pdos_next/domain/configurations/schemas.py": "b8b42023631664f401bfb6537f2cb98e80838bfe093eeda66ef69568f65bbdf8",
+  "pdos-next/server/pdos_next/domain/configurations/service.py": "ed445a6b176c1d45f699c17cb39bc62a7734dde149ac2df2ad0aab5643377cd2",
+  "pdos-next/server/pdos_next/domain/build_execution/schemas.py": "6570827c0c286e57a3264cd190ce731ae0e1950daccbf6caf297073bdedd8b81",
+  "pdos-next/server/pdos_next/domain/build_execution/service.py": "62d73d7bb408686f1fc19431daf425f149327a9c63c3253d6a01b6c4c8df63e0",
+  "pdos-next/server/pdos_next/domain/supply_cost/ports.py": "6a418b8a0b71458eb1f315e874456f3b0c83f2c3462229d1cdf0321dcabb4d25",
+  "pdos-next/server/pdos_next/errors.py": "156ed50d73580761af3203a586bcc31aa5e251c9109d2a8d0d9b978a92c5a7fd",
+  "pdos-next/server/pdos_next/contracts.py": "29c903fec3e8924b0ed53b04791dab1dc39a9b583dac40b6483ba74033d06d20"
+}

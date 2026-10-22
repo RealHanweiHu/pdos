@@ -1,0 +1,20 @@
+{
+  "status": "PASS_FROZEN_SOURCE_AND_RUNNING_PREVIEW",
+  "recorded_at": "2026-10-04T03:42:08.223211+00:00",
+  "source_manifest": "actual-core-source-v3.json",
+  "source_manifest_sha256": "b1911543755cb50d9442797e7adce53d83e9d9c3ddae3c37afcee63590bd4eef",
+  "verified_unique_source_paths": 591,
+  "unchanged_source_hashes": true,
+  "health_observations": [
+    {
+      "url": "http://127.0.0.1:8898/health",
+      "http_status": 200
+    },
+    {
+      "url": "http://127.0.0.1:3028/",
+      "http_status": 200
+    }
+  ],
+  "server_process_snapshot": "ps verified API57547/worker57556/web56358/Temporal85096",
+  "health_reads_are_not_business_qualification_or_full_joint_validation": true
+}

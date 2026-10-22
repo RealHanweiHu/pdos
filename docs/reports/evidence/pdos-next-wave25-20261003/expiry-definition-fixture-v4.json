@@ -1,0 +1,8 @@
+{
+  "status": "TEST_FIXTURE_ADAPTED_WITH_ASSERTIONS_UNCHANGED",
+  "reason": "expiry source-IO test used a definition DTO field absent from the real view; now uses real sources/current status and an already supplied payload source",
+  "before_sha256": "3dd0a422a937a1699dc63fe1d853431184acc11dadda0d54244013bc378266e4",
+  "after_sha256": "715c30469a8302da5b0d2fc21a42a86285f4deb70afb224a52d9b45c4c3471f5",
+  "unchanged_expected_code": "SOURCE_STALE",
+  "production_guard_relaxed": false
+}

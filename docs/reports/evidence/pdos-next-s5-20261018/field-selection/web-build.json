@@ -1,0 +1,25 @@
+{
+  "exit": 0,
+  "output": "▲ Next.js 16.3.3 (webpack)\n✓ Running next.config.ts took 17ms\n\n  Creating an optimized production build ...\n✓ Compiled successfully in 16.7s\n  Running TypeScript ...\n  Finished TypeScript in 12.7s ...\n  Collecting page data using 9 workers ...\n  Generating static pages using 9 workers (0/5) ...\n  Generating static pages using 9 workers (1/5) \n  Generating static pages using 9 workers (2/5) \n  Generating static pages using 9 workers (3/5) \n✓ Generating static pages using 9 workers (5/5) in 685ms\n  Finalizing page optimization ...\n  Collecting build traces ...\n\nRoute (app)\n┌ ○ /\n├ ○ /_not-found\n├ ƒ /api/[...path]\n├ ƒ /api/local-session\n├ ƒ /api/v1/personal/attention\n├ ƒ /categories/[categoryId]/proposals/[proposalId]\n└ ƒ /plan\n\n\n○  (Static)   prerendered as static content\nƒ  (Dynamic)  server-rendered on demand\n\n",
+  "snapshot": "/private/tmp/pdos-field-plan-31ikgap_",
+  "web_manifest": {
+    "pdos-next/web/src/lib/build-quality-loop-view.ts": "d247ed79102315afa5e081fd2e7c42ba2d1d098f69be70f508906fc1625b4ad4",
+    "pdos-next/web/src/lib/build-quality-loop-view.test.ts": "5b6f290ba4ff869b1330004c5f70461cf4d1653aca5e9a6b2c8d91ea5d0527a5",
+    "pdos-next/web/src/lib/build-change-orders-view.test.ts": "bf25feb638703845bfa54a1897f51d0064bd45c7ecc4240408c602f6b058e3ff",
+    "pdos-next/web/src/lib/build-change-orders-view.ts": "18eead7152f93420b5be67f060863bf6f086b83b59ab5815fac8749fdb4ada55",
+    "pdos-next/web/src/lib/build-change-implementations-view.ts": "909823b19831986c2c811f33021ce75947aa46cc17fe271cbaf74e115dc32359",
+    "pdos-next/web/src/lib/build-change-implementations-view.test.ts": "671c4c0f3528be55db67a21bb19f06eb7be3394913ba7ebb3d3c650ab10918f7",
+    "pdos-next/web/src/lib/change-source-material.ts": "2610c9b3ce723d7bf0c9cedc5a1941a2c335e549376d69bb415056d17975c09d",
+    "pdos-next/web/src/lib/change-source-material.test.ts": "548ed0283f161d75ac48f2a3c0de509babc848e85494211694e31fbdff9d094c",
+    "pdos-next/web/src/components/builds/build-change-orders.tsx": "3418388a6027693d8410097ad3ce394f0d64ea51587cd672e7e11da05f9aef90",
+    "pdos-next/web/src/components/builds/build-change-orders.test.mjs": "268a2f457860fdcdb60431f1e72422c833f344b10cf9e399d64cad00f5331c75",
+    "pdos-next/web/src/components/builds/build-change-implementations.tsx": "957db58b3e31f4923350b89998e5d608cb57ab77c253bc21d945b78ec6daa517",
+    "pdos-next/web/src/components/builds/change-source-material.tsx": "4a84a88aeb0b12df0e8084d45d5354721bcb280eb3d0380bf65bdff643a9f919",
+    "pdos-next/web/src/components/builds/build-change-approvals.tsx": "cdae85493ca56d11ce8be36c02e8f67c16c1f7f0b6eb50440a94adc28e50c67d",
+    "pdos-next/web/src/components/field/field-feedback.tsx": "bc62e0b5b79dedfbab151ab2bd601901f1a275d145b253f3171ead3213bb3f46",
+    "pdos-next/web/src/components/field/field-feedback.test.mjs": "46bdec3e5af14a038aa75ab7e81671b6670ea4323ab0dd56da29030eee51a5fb",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "e2c7b28a4198986f25b09fc5f2bb96d9453f17fd758d79e077a61d8c3b7e6db3",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "21aed6e4b8b0fb129d33243df1f165ffc910b57ac0380e7a45b80244ec7c1c30"
+  },
+  "network_scope": "public font assets required by the existing Next build"
+}

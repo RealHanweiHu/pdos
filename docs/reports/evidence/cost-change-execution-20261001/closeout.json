@@ -1,0 +1,35 @@
+{
+  "schema_head": "0416_product_evidence_item_decisions",
+  "migration_change": false,
+  "database": "exclusive 127.0.0.1:57440/pdos_test",
+  "container": "pdos-parallel-closure-20260930-pg",
+  "id": "4a4d9bce396f5739732afdbfb5c95907953ea8ac5508260851d3c495491a8a1f",
+  "running": false,
+  "volume_preserved": "0b56f2911e7758fc60a8e9a98fbd74118b5502917ab27d67f363ebc223604512",
+  "own_ports_closed": [
+    3040,
+    8840,
+    57440
+  ],
+  "other_services_untouched": true,
+  "backups": {
+    "before-change-execution.dump": {
+      "path": "output/cost-change-execution-20261001/before-change-execution.dump",
+      "bytes": 6406563,
+      "sha256": "2c52995bbe800d2ec67c2e8e6b7c88629a1cfe77eb7f794694746234d30ca214",
+      "mode": "0o600"
+    },
+    "after-final-checks.dump": {
+      "path": "output/cost-change-execution-20261001/after-final-checks.dump",
+      "bytes": 7905508,
+      "sha256": "a70c1ce2909be95a11709b10a4a7ed2df07cf8db62742910cc4af78182cad908",
+      "mode": "0o600"
+    }
+  },
+  "final_backup_catalog_readable": true,
+  "catalog_rows": 6061,
+  "restoration_rehearsal_performed": false,
+  "repo_head": "7922b460f58cf7bff3479bffe302861f13438c1d",
+  "git_push": false,
+  "production_or_model_calls": false
+}

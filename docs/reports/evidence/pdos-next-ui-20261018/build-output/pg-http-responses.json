@@ -1,0 +1,2111 @@
+{
+  "version": "project-build-output-projection-qa/v1",
+  "fixture_nature": "actual HTTP/domain commands over isolated synthetic evidence",
+  "scope": {
+    "category_id": "5ff2c048-df46-4e22-b7d0-a633ed1a2bdc",
+    "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+    "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728",
+    "build_id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+    "build_revision": 1,
+    "actual_configuration_id": "6b389914-9976-4ffe-bdb3-37299ce788a5",
+    "lot_ids": [
+      "58f5f7c6-31da-4fa1-b019-1e318e24f250",
+      "74a318ea-7d27-4828-a8ef-c087381c79c4"
+    ],
+    "allocation_ids": [
+      "44ae01db-e63e-4efe-963e-1a615fc74fd4",
+      "797d2f93-2944-4e11-bcb9-54902ef2e859"
+    ],
+    "sample_ids": [
+      "26f9cdfb-9f00-42cc-8286-2bf0338defae",
+      "86412b76-8783-46e6-8017-d59dc31441e1"
+    ],
+    "other_project_id": "ff0ceba7-3583-4d72-8e11-317984adea00",
+    "other_build_id": "db94591a-1376-4de7-a944-6502389ca84a"
+  },
+  "reads": {
+    "project_builds": {
+      "route": "/v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds",
+      "params": {
+        "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728"
+      },
+      "status_code": 200,
+      "body": {
+        "items": [
+          {
+            "id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+            "revision": 1,
+            "status": "planned",
+            "source_status": "current",
+            "name": "Synthetic two-lot output summary",
+            "type": "prototype",
+            "purpose": "Verify preparation",
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728",
+            "project_name": "Synthetic development",
+            "project_revision": 1,
+            "planned_quantity": "10.00000000",
+            "unit": "ea",
+            "planned_start": null,
+            "planned_end": null,
+            "verification_objectives": "Verify motor and housing fit",
+            "disposition_plan": "Retain synthetic samples for review",
+            "previous_build_id": null,
+            "engineering_configuration": {
+              "id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+              "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+              "revision": 1,
+              "name": "Synthetic engineering configuration",
+              "status": "draft",
+              "visibility": "private",
+              "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+              "created_at": "2026-10-18T18:48:01.233585+00:00",
+              "sources": [
+                {
+                  "line": 1,
+                  "quote": "Synthetic requirement is unverified",
+                  "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                  "expected_revision": 1
+                }
+              ],
+              "required_source_read_set": [
+                {
+                  "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                  "expected_revision": 1
+                }
+              ],
+              "source_status": "current",
+              "series_id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+              "previous_id": null,
+              "expected_previous_revision": null,
+              "reason": "Synthetic fixed preparation",
+              "definition_id": "7ae511da-27e8-4ffb-9b00-9e4e2c99f068",
+              "definition_revision": 1,
+              "definition": {
+                "id": "7ae511da-27e8-4ffb-9b00-9e4e2c99f068",
+                "revision": 1,
+                "title": "Synthetic development",
+                "status": "draft",
+                "visibility": "private",
+                "source_status": "current"
+              },
+              "bom_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+              "bom_revision": 1,
+              "bom": {
+                "id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                "revision": 1,
+                "name": "Synthetic BOM",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                "created_at": "2026-10-18T18:47:59.169850+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "Synthetic fixed preparation",
+                "lines": [
+                  {
+                    "key": "motor",
+                    "part_id": "39d60f3e-e618-48de-bff2-f141fe95e565",
+                    "expected_part_revision": 1,
+                    "part": {
+                      "id": "39d60f3e-e618-48de-bff2-f141fe95e565",
+                      "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                      "revision": 1,
+                      "name": "Synthetic motor",
+                      "status": "draft",
+                      "visibility": "private",
+                      "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                      "created_at": "2026-10-18T18:47:59.190693+00:00",
+                      "sources": [
+                        {
+                          "line": 1,
+                          "quote": "Synthetic requirement is unverified",
+                          "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                          "expected_revision": 1
+                        }
+                      ],
+                      "required_source_read_set": [
+                        {
+                          "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                          "expected_revision": 1
+                        }
+                      ],
+                      "source_status": "current",
+                      "internal_number": "RD-MOTOR",
+                      "erp_number": null,
+                      "customer_number": null,
+                      "mapping_version": null,
+                      "external_design_refs": [],
+                      "external_verification": "not_checked",
+                      "mapping_status": "unknown"
+                    },
+                    "quantity": "2",
+                    "unit": "ea",
+                    "loss_rate": "0.1",
+                    "critical": true,
+                    "notes": null
+                  },
+                  {
+                    "key": "unknown",
+                    "part_id": "76b3d40b-6728-4083-b63d-c53f92316701",
+                    "expected_part_revision": 1,
+                    "part": {
+                      "id": "76b3d40b-6728-4083-b63d-c53f92316701",
+                      "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                      "revision": 1,
+                      "name": "Unknown housing",
+                      "status": "draft",
+                      "visibility": "private",
+                      "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                      "created_at": "2026-10-18T18:47:59.246893+00:00",
+                      "sources": [
+                        {
+                          "line": 1,
+                          "quote": "Synthetic requirement is unverified",
+                          "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                          "expected_revision": 1
+                        }
+                      ],
+                      "required_source_read_set": [
+                        {
+                          "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                          "expected_revision": 1
+                        }
+                      ],
+                      "source_status": "current",
+                      "internal_number": null,
+                      "erp_number": null,
+                      "customer_number": null,
+                      "mapping_version": null,
+                      "external_design_refs": [],
+                      "external_verification": "not_checked",
+                      "mapping_status": "unknown"
+                    },
+                    "quantity": null,
+                    "unit": "ea",
+                    "loss_rate": null,
+                    "critical": false,
+                    "notes": null
+                  }
+                ]
+              },
+              "design_versions": {
+                "firmware": null,
+                "electronic": null,
+                "mechanical": null
+              },
+              "external_verification": "not_checked"
+            },
+            "manufacturing_configuration": {
+              "id": "538f8870-6259-4108-a62e-4dc650195ec8",
+              "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+              "revision": 1,
+              "name": "Synthetic manufacturing configuration",
+              "status": "draft",
+              "visibility": "private",
+              "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+              "created_at": "2026-10-18T18:48:02.444046+00:00",
+              "sources": [
+                {
+                  "line": 1,
+                  "quote": "Synthetic requirement is unverified",
+                  "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                  "expected_revision": 1
+                }
+              ],
+              "required_source_read_set": [
+                {
+                  "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                  "expected_revision": 1
+                }
+              ],
+              "source_status": "current",
+              "series_id": "538f8870-6259-4108-a62e-4dc650195ec8",
+              "previous_id": null,
+              "expected_previous_revision": null,
+              "reason": "Synthetic fixed preparation",
+              "engineering_configuration_id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+              "engineering_revision": 1,
+              "engineering_configuration": {
+                "id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+                "revision": 1,
+                "name": "Synthetic engineering configuration",
+                "status": "draft",
+                "definition_id": "7ae511da-27e8-4ffb-9b00-9e4e2c99f068",
+                "bom_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                "source_status": "current"
+              },
+              "site": null,
+              "line": null,
+              "operations": [
+                {
+                  "key": "assembly",
+                  "sop": null,
+                  "kind": "assembly",
+                  "name": "Synthetic assembly",
+                  "notes": null,
+                  "depends_on": [],
+                  "bom_line_keys": [
+                    "motor"
+                  ],
+                  "cycle_time_minutes": null,
+                  "acceptance_criterion": null,
+                  "resource_requirements": []
+                }
+              ],
+              "external_verification": "not_checked",
+              "qualification_status": "unknown"
+            },
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "created_at": "2026-10-18T18:48:21.269362+00:00",
+            "readiness": null
+          }
+        ],
+        "unavailable_count": 0,
+        "has_more": false
+      }
+    },
+    "other_project_builds": {
+      "route": "/v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds",
+      "params": {
+        "project_id": "ff0ceba7-3583-4d72-8e11-317984adea00"
+      },
+      "status_code": 200,
+      "body": {
+        "items": [
+          {
+            "id": "db94591a-1376-4de7-a944-6502389ca84a",
+            "revision": 1,
+            "status": "planned",
+            "source_status": "current",
+            "name": "Synthetic other-project output stays separate",
+            "type": "prototype",
+            "purpose": "Verify preparation",
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "project_id": "ff0ceba7-3583-4d72-8e11-317984adea00",
+            "project_name": "Synthetic second trial project",
+            "project_revision": 1,
+            "planned_quantity": "10.00000000",
+            "unit": "ea",
+            "planned_start": null,
+            "planned_end": null,
+            "verification_objectives": "Verify motor and housing fit",
+            "disposition_plan": "Retain synthetic samples for review",
+            "previous_build_id": null,
+            "engineering_configuration": {
+              "id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+              "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+              "revision": 1,
+              "name": "Synthetic second project engineering configuration",
+              "status": "draft",
+              "visibility": "private",
+              "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+              "created_at": "2026-10-18T18:48:15.534178+00:00",
+              "sources": [
+                {
+                  "line": 1,
+                  "quote": "Synthetic requirement is unverified",
+                  "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                  "expected_revision": 1
+                }
+              ],
+              "required_source_read_set": [
+                {
+                  "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                  "expected_revision": 1
+                }
+              ],
+              "source_status": "current",
+              "series_id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+              "previous_id": null,
+              "expected_previous_revision": null,
+              "reason": "Synthetic fixed preparation",
+              "definition_id": "82106bf3-a9da-4bd3-8914-90f7fec7625d",
+              "definition_revision": 1,
+              "definition": {
+                "id": "82106bf3-a9da-4bd3-8914-90f7fec7625d",
+                "revision": 1,
+                "title": "Synthetic second project for the same model",
+                "status": "draft",
+                "visibility": "private",
+                "source_status": "current"
+              },
+              "bom_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+              "bom_revision": 1,
+              "bom": {
+                "id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                "revision": 1,
+                "name": "Synthetic BOM",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                "created_at": "2026-10-18T18:47:59.169850+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "Synthetic fixed preparation",
+                "lines": [
+                  {
+                    "key": "motor",
+                    "part_id": "39d60f3e-e618-48de-bff2-f141fe95e565",
+                    "expected_part_revision": 1,
+                    "part": {
+                      "id": "39d60f3e-e618-48de-bff2-f141fe95e565",
+                      "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                      "revision": 1,
+                      "name": "Synthetic motor",
+                      "status": "draft",
+                      "visibility": "private",
+                      "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                      "created_at": "2026-10-18T18:47:59.190693+00:00",
+                      "sources": [
+                        {
+                          "line": 1,
+                          "quote": "Synthetic requirement is unverified",
+                          "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                          "expected_revision": 1
+                        }
+                      ],
+                      "required_source_read_set": [
+                        {
+                          "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                          "expected_revision": 1
+                        }
+                      ],
+                      "source_status": "current",
+                      "internal_number": "RD-MOTOR",
+                      "erp_number": null,
+                      "customer_number": null,
+                      "mapping_version": null,
+                      "external_design_refs": [],
+                      "external_verification": "not_checked",
+                      "mapping_status": "unknown"
+                    },
+                    "quantity": "2",
+                    "unit": "ea",
+                    "loss_rate": "0.1",
+                    "critical": true,
+                    "notes": null
+                  },
+                  {
+                    "key": "unknown",
+                    "part_id": "76b3d40b-6728-4083-b63d-c53f92316701",
+                    "expected_part_revision": 1,
+                    "part": {
+                      "id": "76b3d40b-6728-4083-b63d-c53f92316701",
+                      "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                      "revision": 1,
+                      "name": "Unknown housing",
+                      "status": "draft",
+                      "visibility": "private",
+                      "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                      "created_at": "2026-10-18T18:47:59.246893+00:00",
+                      "sources": [
+                        {
+                          "line": 1,
+                          "quote": "Synthetic requirement is unverified",
+                          "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                          "expected_revision": 1
+                        }
+                      ],
+                      "required_source_read_set": [
+                        {
+                          "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                          "expected_revision": 1
+                        }
+                      ],
+                      "source_status": "current",
+                      "internal_number": null,
+                      "erp_number": null,
+                      "customer_number": null,
+                      "mapping_version": null,
+                      "external_design_refs": [],
+                      "external_verification": "not_checked",
+                      "mapping_status": "unknown"
+                    },
+                    "quantity": null,
+                    "unit": "ea",
+                    "loss_rate": null,
+                    "critical": false,
+                    "notes": null
+                  }
+                ]
+              },
+              "design_versions": {
+                "firmware": null,
+                "electronic": null,
+                "mechanical": null
+              },
+              "external_verification": "not_checked"
+            },
+            "manufacturing_configuration": {
+              "id": "ec418850-7320-4a6c-8901-bc8af0c5f1fd",
+              "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+              "revision": 1,
+              "name": "Synthetic second project manufacturing configuration",
+              "status": "draft",
+              "visibility": "private",
+              "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+              "created_at": "2026-10-18T18:48:18.134801+00:00",
+              "sources": [
+                {
+                  "line": 1,
+                  "quote": "Synthetic requirement is unverified",
+                  "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                  "expected_revision": 1
+                }
+              ],
+              "required_source_read_set": [
+                {
+                  "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                  "expected_revision": 1
+                }
+              ],
+              "source_status": "current",
+              "series_id": "ec418850-7320-4a6c-8901-bc8af0c5f1fd",
+              "previous_id": null,
+              "expected_previous_revision": null,
+              "reason": "Synthetic fixed preparation",
+              "engineering_configuration_id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+              "engineering_revision": 1,
+              "engineering_configuration": {
+                "id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+                "revision": 1,
+                "name": "Synthetic second project engineering configuration",
+                "status": "draft",
+                "definition_id": "82106bf3-a9da-4bd3-8914-90f7fec7625d",
+                "bom_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                "source_status": "current"
+              },
+              "site": null,
+              "line": null,
+              "operations": [
+                {
+                  "key": "assembly",
+                  "sop": null,
+                  "kind": "assembly",
+                  "name": "Synthetic assembly",
+                  "notes": null,
+                  "depends_on": [],
+                  "bom_line_keys": [
+                    "motor"
+                  ],
+                  "cycle_time_minutes": null,
+                  "acceptance_criterion": null,
+                  "resource_requirements": []
+                }
+              ],
+              "external_verification": "not_checked",
+              "qualification_status": "unknown"
+            },
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "created_at": "2026-10-18T18:48:28.363546+00:00",
+            "readiness": null
+          }
+        ],
+        "unavailable_count": 0,
+        "has_more": false
+      }
+    },
+    "build_execution": {
+      "route": "/v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/build-execution",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "actual_configurations": [
+          {
+            "id": "dbff8ec7-1ba9-4d1d-8e2c-a7027c43542b",
+            "revision": 1,
+            "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+            "project_id": "ff0ceba7-3583-4d72-8e11-317984adea00",
+            "build_id": "db94591a-1376-4de7-a944-6502389ca84a",
+            "build_revision": 1,
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "status": "recorded",
+            "created_at": "2026-10-18T18:48:30.997418+00:00",
+            "reason": "Record external synthetic facts without authorization",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "Synthetic requirement is unverified",
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "qualification_status": "unknown",
+            "authorization_status": "not_authorized",
+            "observation_route": "external_observation",
+            "verification_status": "not_checked",
+            "planned": {
+              "engineering_configuration": {
+                "id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+                "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                "revision": 1,
+                "name": "Synthetic second project engineering configuration",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                "created_at": "2026-10-18T18:48:15.534178+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "Synthetic fixed preparation",
+                "definition_id": "82106bf3-a9da-4bd3-8914-90f7fec7625d",
+                "definition_revision": 1,
+                "definition": {
+                  "id": "82106bf3-a9da-4bd3-8914-90f7fec7625d",
+                  "revision": 1,
+                  "title": "Synthetic second project for the same model",
+                  "status": "draft",
+                  "visibility": "private",
+                  "source_status": "current"
+                },
+                "bom_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                "bom_revision": 1,
+                "bom": {
+                  "id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                  "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                  "revision": 1,
+                  "name": "Synthetic BOM",
+                  "status": "draft",
+                  "visibility": "private",
+                  "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                  "created_at": "2026-10-18T18:47:59.169850+00:00",
+                  "sources": [
+                    {
+                      "line": 1,
+                      "quote": "Synthetic requirement is unverified",
+                      "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "required_source_read_set": [
+                    {
+                      "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "source_status": "current",
+                  "series_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                  "previous_id": null,
+                  "expected_previous_revision": null,
+                  "reason": "Synthetic fixed preparation",
+                  "lines": [
+                    {
+                      "key": "motor",
+                      "part_id": "39d60f3e-e618-48de-bff2-f141fe95e565",
+                      "expected_part_revision": 1,
+                      "part": {
+                        "id": "39d60f3e-e618-48de-bff2-f141fe95e565",
+                        "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                        "revision": 1,
+                        "name": "Synthetic motor",
+                        "status": "draft",
+                        "visibility": "private",
+                        "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                        "created_at": "2026-10-18T18:47:59.190693+00:00",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "Synthetic requirement is unverified",
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "required_source_read_set": [
+                          {
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "source_status": "current",
+                        "internal_number": "RD-MOTOR",
+                        "erp_number": null,
+                        "customer_number": null,
+                        "mapping_version": null,
+                        "external_design_refs": [],
+                        "external_verification": "not_checked",
+                        "mapping_status": "unknown"
+                      },
+                      "quantity": "2",
+                      "unit": "ea",
+                      "loss_rate": "0.1",
+                      "critical": true,
+                      "notes": null
+                    },
+                    {
+                      "key": "unknown",
+                      "part_id": "76b3d40b-6728-4083-b63d-c53f92316701",
+                      "expected_part_revision": 1,
+                      "part": {
+                        "id": "76b3d40b-6728-4083-b63d-c53f92316701",
+                        "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                        "revision": 1,
+                        "name": "Unknown housing",
+                        "status": "draft",
+                        "visibility": "private",
+                        "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                        "created_at": "2026-10-18T18:47:59.246893+00:00",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "Synthetic requirement is unverified",
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "required_source_read_set": [
+                          {
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "source_status": "current",
+                        "internal_number": null,
+                        "erp_number": null,
+                        "customer_number": null,
+                        "mapping_version": null,
+                        "external_design_refs": [],
+                        "external_verification": "not_checked",
+                        "mapping_status": "unknown"
+                      },
+                      "quantity": null,
+                      "unit": "ea",
+                      "loss_rate": null,
+                      "critical": false,
+                      "notes": null
+                    }
+                  ]
+                },
+                "design_versions": {
+                  "firmware": null,
+                  "electronic": null,
+                  "mechanical": null
+                },
+                "external_verification": "not_checked"
+              },
+              "manufacturing_configuration": {
+                "id": "ec418850-7320-4a6c-8901-bc8af0c5f1fd",
+                "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                "revision": 1,
+                "name": "Synthetic second project manufacturing configuration",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                "created_at": "2026-10-18T18:48:18.134801+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "ec418850-7320-4a6c-8901-bc8af0c5f1fd",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "Synthetic fixed preparation",
+                "engineering_configuration_id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+                "engineering_revision": 1,
+                "engineering_configuration": {
+                  "id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+                  "revision": 1,
+                  "name": "Synthetic second project engineering configuration",
+                  "status": "draft",
+                  "definition_id": "82106bf3-a9da-4bd3-8914-90f7fec7625d",
+                  "bom_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                  "source_status": "current"
+                },
+                "site": null,
+                "line": null,
+                "operations": [
+                  {
+                    "key": "assembly",
+                    "sop": null,
+                    "kind": "assembly",
+                    "name": "Synthetic assembly",
+                    "notes": null,
+                    "depends_on": [],
+                    "bom_line_keys": [
+                      "motor"
+                    ],
+                    "cycle_time_minutes": null,
+                    "acceptance_criterion": null,
+                    "resource_requirements": []
+                  }
+                ],
+                "external_verification": "not_checked",
+                "qualification_status": "unknown"
+              }
+            },
+            "actual": {
+              "engineering_configuration": {
+                "id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+                "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                "revision": 1,
+                "name": "Synthetic second project engineering configuration",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                "created_at": "2026-10-18T18:48:15.534178+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "Synthetic fixed preparation",
+                "definition_id": "82106bf3-a9da-4bd3-8914-90f7fec7625d",
+                "definition_revision": 1,
+                "definition": {
+                  "id": "82106bf3-a9da-4bd3-8914-90f7fec7625d",
+                  "revision": 1,
+                  "title": "Synthetic second project for the same model",
+                  "status": "draft",
+                  "visibility": "private",
+                  "source_status": "current"
+                },
+                "bom_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                "bom_revision": 1,
+                "bom": {
+                  "id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                  "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                  "revision": 1,
+                  "name": "Synthetic BOM",
+                  "status": "draft",
+                  "visibility": "private",
+                  "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                  "created_at": "2026-10-18T18:47:59.169850+00:00",
+                  "sources": [
+                    {
+                      "line": 1,
+                      "quote": "Synthetic requirement is unverified",
+                      "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "required_source_read_set": [
+                    {
+                      "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "source_status": "current",
+                  "series_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                  "previous_id": null,
+                  "expected_previous_revision": null,
+                  "reason": "Synthetic fixed preparation",
+                  "lines": [
+                    {
+                      "key": "motor",
+                      "part_id": "39d60f3e-e618-48de-bff2-f141fe95e565",
+                      "expected_part_revision": 1,
+                      "part": {
+                        "id": "39d60f3e-e618-48de-bff2-f141fe95e565",
+                        "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                        "revision": 1,
+                        "name": "Synthetic motor",
+                        "status": "draft",
+                        "visibility": "private",
+                        "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                        "created_at": "2026-10-18T18:47:59.190693+00:00",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "Synthetic requirement is unverified",
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "required_source_read_set": [
+                          {
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "source_status": "current",
+                        "internal_number": "RD-MOTOR",
+                        "erp_number": null,
+                        "customer_number": null,
+                        "mapping_version": null,
+                        "external_design_refs": [],
+                        "external_verification": "not_checked",
+                        "mapping_status": "unknown"
+                      },
+                      "quantity": "2",
+                      "unit": "ea",
+                      "loss_rate": "0.1",
+                      "critical": true,
+                      "notes": null
+                    },
+                    {
+                      "key": "unknown",
+                      "part_id": "76b3d40b-6728-4083-b63d-c53f92316701",
+                      "expected_part_revision": 1,
+                      "part": {
+                        "id": "76b3d40b-6728-4083-b63d-c53f92316701",
+                        "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                        "revision": 1,
+                        "name": "Unknown housing",
+                        "status": "draft",
+                        "visibility": "private",
+                        "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                        "created_at": "2026-10-18T18:47:59.246893+00:00",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "Synthetic requirement is unverified",
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "required_source_read_set": [
+                          {
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "source_status": "current",
+                        "internal_number": null,
+                        "erp_number": null,
+                        "customer_number": null,
+                        "mapping_version": null,
+                        "external_design_refs": [],
+                        "external_verification": "not_checked",
+                        "mapping_status": "unknown"
+                      },
+                      "quantity": null,
+                      "unit": "ea",
+                      "loss_rate": null,
+                      "critical": false,
+                      "notes": null
+                    }
+                  ]
+                },
+                "design_versions": {
+                  "firmware": null,
+                  "electronic": null,
+                  "mechanical": null
+                },
+                "external_verification": "not_checked"
+              },
+              "manufacturing_configuration": {
+                "id": "ec418850-7320-4a6c-8901-bc8af0c5f1fd",
+                "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                "revision": 1,
+                "name": "Synthetic second project manufacturing configuration",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                "created_at": "2026-10-18T18:48:18.134801+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "ec418850-7320-4a6c-8901-bc8af0c5f1fd",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "Synthetic fixed preparation",
+                "engineering_configuration_id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+                "engineering_revision": 1,
+                "engineering_configuration": {
+                  "id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+                  "revision": 1,
+                  "name": "Synthetic second project engineering configuration",
+                  "status": "draft",
+                  "definition_id": "82106bf3-a9da-4bd3-8914-90f7fec7625d",
+                  "bom_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                  "source_status": "current"
+                },
+                "site": null,
+                "line": null,
+                "operations": [
+                  {
+                    "key": "assembly",
+                    "sop": null,
+                    "kind": "assembly",
+                    "name": "Synthetic assembly",
+                    "notes": null,
+                    "depends_on": [],
+                    "bom_line_keys": [
+                      "motor"
+                    ],
+                    "cycle_time_minutes": null,
+                    "acceptance_criterion": null,
+                    "resource_requirements": []
+                  }
+                ],
+                "external_verification": "not_checked",
+                "qualification_status": "unknown"
+              }
+            },
+            "planned_engineering_configuration_id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+            "planned_manufacturing_configuration_id": "ec418850-7320-4a6c-8901-bc8af0c5f1fd",
+            "actual_engineering_configuration_id": "6ea05e43-24c4-49fd-b6b7-039cf5f0bd9c",
+            "actual_engineering_revision": 1,
+            "actual_manufacturing_configuration_id": "ec418850-7320-4a6c-8901-bc8af0c5f1fd",
+            "actual_manufacturing_revision": 1,
+            "observed_at": "2026-10-18T18:43:28.846392+00:00",
+            "differences": [],
+            "build_name": "Synthetic other-project output stays separate",
+            "plan_status": "planned"
+          },
+          {
+            "id": "6b389914-9976-4ffe-bdb3-37299ce788a5",
+            "revision": 1,
+            "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+            "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728",
+            "build_id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+            "build_revision": 1,
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "status": "recorded",
+            "created_at": "2026-10-18T18:48:23.796608+00:00",
+            "reason": "Record external synthetic facts without authorization",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "Synthetic requirement is unverified",
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "qualification_status": "unknown",
+            "authorization_status": "not_authorized",
+            "observation_route": "external_observation",
+            "verification_status": "not_checked",
+            "planned": {
+              "engineering_configuration": {
+                "id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+                "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                "revision": 1,
+                "name": "Synthetic engineering configuration",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                "created_at": "2026-10-18T18:48:01.233585+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "Synthetic fixed preparation",
+                "definition_id": "7ae511da-27e8-4ffb-9b00-9e4e2c99f068",
+                "definition_revision": 1,
+                "definition": {
+                  "id": "7ae511da-27e8-4ffb-9b00-9e4e2c99f068",
+                  "revision": 1,
+                  "title": "Synthetic development",
+                  "status": "draft",
+                  "visibility": "private",
+                  "source_status": "current"
+                },
+                "bom_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                "bom_revision": 1,
+                "bom": {
+                  "id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                  "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                  "revision": 1,
+                  "name": "Synthetic BOM",
+                  "status": "draft",
+                  "visibility": "private",
+                  "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                  "created_at": "2026-10-18T18:47:59.169850+00:00",
+                  "sources": [
+                    {
+                      "line": 1,
+                      "quote": "Synthetic requirement is unverified",
+                      "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "required_source_read_set": [
+                    {
+                      "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "source_status": "current",
+                  "series_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                  "previous_id": null,
+                  "expected_previous_revision": null,
+                  "reason": "Synthetic fixed preparation",
+                  "lines": [
+                    {
+                      "key": "motor",
+                      "part_id": "39d60f3e-e618-48de-bff2-f141fe95e565",
+                      "expected_part_revision": 1,
+                      "part": {
+                        "id": "39d60f3e-e618-48de-bff2-f141fe95e565",
+                        "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                        "revision": 1,
+                        "name": "Synthetic motor",
+                        "status": "draft",
+                        "visibility": "private",
+                        "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                        "created_at": "2026-10-18T18:47:59.190693+00:00",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "Synthetic requirement is unverified",
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "required_source_read_set": [
+                          {
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "source_status": "current",
+                        "internal_number": "RD-MOTOR",
+                        "erp_number": null,
+                        "customer_number": null,
+                        "mapping_version": null,
+                        "external_design_refs": [],
+                        "external_verification": "not_checked",
+                        "mapping_status": "unknown"
+                      },
+                      "quantity": "2",
+                      "unit": "ea",
+                      "loss_rate": "0.1",
+                      "critical": true,
+                      "notes": null
+                    },
+                    {
+                      "key": "unknown",
+                      "part_id": "76b3d40b-6728-4083-b63d-c53f92316701",
+                      "expected_part_revision": 1,
+                      "part": {
+                        "id": "76b3d40b-6728-4083-b63d-c53f92316701",
+                        "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                        "revision": 1,
+                        "name": "Unknown housing",
+                        "status": "draft",
+                        "visibility": "private",
+                        "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                        "created_at": "2026-10-18T18:47:59.246893+00:00",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "Synthetic requirement is unverified",
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "required_source_read_set": [
+                          {
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "source_status": "current",
+                        "internal_number": null,
+                        "erp_number": null,
+                        "customer_number": null,
+                        "mapping_version": null,
+                        "external_design_refs": [],
+                        "external_verification": "not_checked",
+                        "mapping_status": "unknown"
+                      },
+                      "quantity": null,
+                      "unit": "ea",
+                      "loss_rate": null,
+                      "critical": false,
+                      "notes": null
+                    }
+                  ]
+                },
+                "design_versions": {
+                  "firmware": null,
+                  "electronic": null,
+                  "mechanical": null
+                },
+                "external_verification": "not_checked"
+              },
+              "manufacturing_configuration": {
+                "id": "538f8870-6259-4108-a62e-4dc650195ec8",
+                "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                "revision": 1,
+                "name": "Synthetic manufacturing configuration",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                "created_at": "2026-10-18T18:48:02.444046+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "538f8870-6259-4108-a62e-4dc650195ec8",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "Synthetic fixed preparation",
+                "engineering_configuration_id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+                "engineering_revision": 1,
+                "engineering_configuration": {
+                  "id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+                  "revision": 1,
+                  "name": "Synthetic engineering configuration",
+                  "status": "draft",
+                  "definition_id": "7ae511da-27e8-4ffb-9b00-9e4e2c99f068",
+                  "bom_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                  "source_status": "current"
+                },
+                "site": null,
+                "line": null,
+                "operations": [
+                  {
+                    "key": "assembly",
+                    "sop": null,
+                    "kind": "assembly",
+                    "name": "Synthetic assembly",
+                    "notes": null,
+                    "depends_on": [],
+                    "bom_line_keys": [
+                      "motor"
+                    ],
+                    "cycle_time_minutes": null,
+                    "acceptance_criterion": null,
+                    "resource_requirements": []
+                  }
+                ],
+                "external_verification": "not_checked",
+                "qualification_status": "unknown"
+              }
+            },
+            "actual": {
+              "engineering_configuration": {
+                "id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+                "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                "revision": 1,
+                "name": "Synthetic engineering configuration",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                "created_at": "2026-10-18T18:48:01.233585+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "Synthetic fixed preparation",
+                "definition_id": "7ae511da-27e8-4ffb-9b00-9e4e2c99f068",
+                "definition_revision": 1,
+                "definition": {
+                  "id": "7ae511da-27e8-4ffb-9b00-9e4e2c99f068",
+                  "revision": 1,
+                  "title": "Synthetic development",
+                  "status": "draft",
+                  "visibility": "private",
+                  "source_status": "current"
+                },
+                "bom_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                "bom_revision": 1,
+                "bom": {
+                  "id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                  "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                  "revision": 1,
+                  "name": "Synthetic BOM",
+                  "status": "draft",
+                  "visibility": "private",
+                  "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                  "created_at": "2026-10-18T18:47:59.169850+00:00",
+                  "sources": [
+                    {
+                      "line": 1,
+                      "quote": "Synthetic requirement is unverified",
+                      "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "required_source_read_set": [
+                    {
+                      "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "source_status": "current",
+                  "series_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                  "previous_id": null,
+                  "expected_previous_revision": null,
+                  "reason": "Synthetic fixed preparation",
+                  "lines": [
+                    {
+                      "key": "motor",
+                      "part_id": "39d60f3e-e618-48de-bff2-f141fe95e565",
+                      "expected_part_revision": 1,
+                      "part": {
+                        "id": "39d60f3e-e618-48de-bff2-f141fe95e565",
+                        "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                        "revision": 1,
+                        "name": "Synthetic motor",
+                        "status": "draft",
+                        "visibility": "private",
+                        "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                        "created_at": "2026-10-18T18:47:59.190693+00:00",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "Synthetic requirement is unverified",
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "required_source_read_set": [
+                          {
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "source_status": "current",
+                        "internal_number": "RD-MOTOR",
+                        "erp_number": null,
+                        "customer_number": null,
+                        "mapping_version": null,
+                        "external_design_refs": [],
+                        "external_verification": "not_checked",
+                        "mapping_status": "unknown"
+                      },
+                      "quantity": "2",
+                      "unit": "ea",
+                      "loss_rate": "0.1",
+                      "critical": true,
+                      "notes": null
+                    },
+                    {
+                      "key": "unknown",
+                      "part_id": "76b3d40b-6728-4083-b63d-c53f92316701",
+                      "expected_part_revision": 1,
+                      "part": {
+                        "id": "76b3d40b-6728-4083-b63d-c53f92316701",
+                        "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                        "revision": 1,
+                        "name": "Unknown housing",
+                        "status": "draft",
+                        "visibility": "private",
+                        "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                        "created_at": "2026-10-18T18:47:59.246893+00:00",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "Synthetic requirement is unverified",
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "required_source_read_set": [
+                          {
+                            "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "source_status": "current",
+                        "internal_number": null,
+                        "erp_number": null,
+                        "customer_number": null,
+                        "mapping_version": null,
+                        "external_design_refs": [],
+                        "external_verification": "not_checked",
+                        "mapping_status": "unknown"
+                      },
+                      "quantity": null,
+                      "unit": "ea",
+                      "loss_rate": null,
+                      "critical": false,
+                      "notes": null
+                    }
+                  ]
+                },
+                "design_versions": {
+                  "firmware": null,
+                  "electronic": null,
+                  "mechanical": null
+                },
+                "external_verification": "not_checked"
+              },
+              "manufacturing_configuration": {
+                "id": "538f8870-6259-4108-a62e-4dc650195ec8",
+                "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+                "revision": 1,
+                "name": "Synthetic manufacturing configuration",
+                "status": "draft",
+                "visibility": "private",
+                "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+                "created_at": "2026-10-18T18:48:02.444046+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic requirement is unverified",
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "538f8870-6259-4108-a62e-4dc650195ec8",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "Synthetic fixed preparation",
+                "engineering_configuration_id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+                "engineering_revision": 1,
+                "engineering_configuration": {
+                  "id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+                  "revision": 1,
+                  "name": "Synthetic engineering configuration",
+                  "status": "draft",
+                  "definition_id": "7ae511da-27e8-4ffb-9b00-9e4e2c99f068",
+                  "bom_id": "5af782df-852d-4a1a-b66d-ee6e924c2d62",
+                  "source_status": "current"
+                },
+                "site": null,
+                "line": null,
+                "operations": [
+                  {
+                    "key": "assembly",
+                    "sop": null,
+                    "kind": "assembly",
+                    "name": "Synthetic assembly",
+                    "notes": null,
+                    "depends_on": [],
+                    "bom_line_keys": [
+                      "motor"
+                    ],
+                    "cycle_time_minutes": null,
+                    "acceptance_criterion": null,
+                    "resource_requirements": []
+                  }
+                ],
+                "external_verification": "not_checked",
+                "qualification_status": "unknown"
+              }
+            },
+            "planned_engineering_configuration_id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+            "planned_manufacturing_configuration_id": "538f8870-6259-4108-a62e-4dc650195ec8",
+            "actual_engineering_configuration_id": "e2243d89-1714-45c2-9117-2f4e7307c79b",
+            "actual_engineering_revision": 1,
+            "actual_manufacturing_configuration_id": "538f8870-6259-4108-a62e-4dc650195ec8",
+            "actual_manufacturing_revision": 1,
+            "observed_at": "2026-10-18T18:43:21.554882+00:00",
+            "differences": [],
+            "build_name": "Synthetic two-lot output summary",
+            "plan_status": "planned"
+          }
+        ],
+        "lots": [
+          {
+            "id": "1ee01b5f-89f9-44ef-bec8-472c31223a2a",
+            "revision": 1,
+            "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+            "project_id": "ff0ceba7-3583-4d72-8e11-317984adea00",
+            "build_id": "db94591a-1376-4de7-a944-6502389ca84a",
+            "build_revision": 1,
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "status": "observed",
+            "created_at": "2026-10-18T18:48:43.299976+00:00",
+            "reason": "Record the observed quantity without starting a Build",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "Synthetic requirement is unverified",
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "qualification_status": "unknown",
+            "authorization_status": "not_authorized",
+            "observation_route": "external_observation",
+            "verification_status": "not_checked",
+            "actual_configuration_id": "dbff8ec7-1ba9-4d1d-8e2c-a7027c43542b",
+            "actual_configuration_revision": 1,
+            "lot_label": "SYN-OTHER-PROJECT-LOT",
+            "observed_unit_count": 1,
+            "unit": "ea",
+            "identified_count": 1,
+            "remaining_unit_count": 0,
+            "build_observed_unit_count": 1,
+            "planned_quantity": "10.00000000",
+            "over_planned_quantity": false,
+            "plan_status": "planned",
+            "build_name": "Synthetic other-project output stays separate",
+            "observation": {
+              "system": "Synthetic external observation",
+              "external_id": "31469cb6-0c62-481f-b942-01f3cd3f552d",
+              "nature": "synthetic",
+              "occurred_at": "2026-10-18T18:47:41.465077+00:00",
+              "received_at": "2026-10-18T18:48:43.299976+00:00"
+            },
+            "quality_status": "unknown"
+          },
+          {
+            "id": "74a318ea-7d27-4828-a8ef-c087381c79c4",
+            "revision": 1,
+            "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+            "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728",
+            "build_id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+            "build_revision": 1,
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "status": "observed",
+            "created_at": "2026-10-18T18:48:38.617827+00:00",
+            "reason": "Record the observed quantity without starting a Build",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "Synthetic requirement is unverified",
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "qualification_status": "unknown",
+            "authorization_status": "not_authorized",
+            "observation_route": "external_observation",
+            "verification_status": "not_checked",
+            "actual_configuration_id": "6b389914-9976-4ffe-bdb3-37299ce788a5",
+            "actual_configuration_revision": 1,
+            "lot_label": "SYN-OUTPUT-LOT-2",
+            "observed_unit_count": 3,
+            "unit": "ea",
+            "identified_count": 1,
+            "remaining_unit_count": 2,
+            "build_observed_unit_count": 5,
+            "planned_quantity": "10.00000000",
+            "over_planned_quantity": false,
+            "plan_status": "planned",
+            "build_name": "Synthetic two-lot output summary",
+            "observation": {
+              "system": "Synthetic external observation",
+              "external_id": "6d84f890-d85d-4ee0-8656-3049290f741a",
+              "nature": "synthetic",
+              "occurred_at": "2026-10-18T18:47:36.224889+00:00",
+              "received_at": "2026-10-18T18:48:38.617827+00:00"
+            },
+            "quality_status": "unknown"
+          },
+          {
+            "id": "58f5f7c6-31da-4fa1-b019-1e318e24f250",
+            "revision": 1,
+            "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+            "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728",
+            "build_id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+            "build_revision": 1,
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "status": "observed",
+            "created_at": "2026-10-18T18:48:33.073695+00:00",
+            "reason": "Record the observed quantity without starting a Build",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "Synthetic requirement is unverified",
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "qualification_status": "unknown",
+            "authorization_status": "not_authorized",
+            "observation_route": "external_observation",
+            "verification_status": "not_checked",
+            "actual_configuration_id": "6b389914-9976-4ffe-bdb3-37299ce788a5",
+            "actual_configuration_revision": 1,
+            "lot_label": "SYN-OUTPUT-LOT-1",
+            "observed_unit_count": 2,
+            "unit": "ea",
+            "identified_count": 1,
+            "remaining_unit_count": 1,
+            "build_observed_unit_count": 5,
+            "planned_quantity": "10.00000000",
+            "over_planned_quantity": false,
+            "plan_status": "planned",
+            "build_name": "Synthetic two-lot output summary",
+            "observation": {
+              "system": "Synthetic external observation",
+              "external_id": "2b448ea5-11f3-4d8c-924a-b1ffe7ff57c3",
+              "nature": "synthetic",
+              "occurred_at": "2026-10-18T18:47:31.318854+00:00",
+              "received_at": "2026-10-18T18:48:33.073695+00:00"
+            },
+            "quality_status": "unknown"
+          }
+        ],
+        "allocations": [
+          {
+            "id": "e64f31d4-11e8-4b80-adee-c9b16e5bcfc5",
+            "revision": 1,
+            "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+            "project_id": "ff0ceba7-3583-4d72-8e11-317984adea00",
+            "build_id": "db94591a-1376-4de7-a944-6502389ca84a",
+            "build_revision": 1,
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "status": "identified",
+            "created_at": "2026-10-18T18:48:46.074931+00:00",
+            "reason": "Identify synthetic units; testing remains unavailable",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "Synthetic requirement is unverified",
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "qualification_status": "unknown",
+            "authorization_status": "not_authorized",
+            "observation_route": "external_observation",
+            "verification_status": "not_checked",
+            "lot_id": "1ee01b5f-89f9-44ef-bec8-472c31223a2a",
+            "actual_configuration_id": "dbff8ec7-1ba9-4d1d-8e2c-a7027c43542b",
+            "unit_count": 1,
+            "sample_ids": [
+              "d5f3de73-0b06-485d-9c58-7c84e77e8ba3"
+            ],
+            "samples": [
+              {
+                "id": "d5f3de73-0b06-485d-9c58-7c84e77e8ba3",
+                "label": "SYN-OTHER-PROJECT-SAMPLE",
+                "availability": "unknown"
+              }
+            ]
+          },
+          {
+            "id": "797d2f93-2944-4e11-bcb9-54902ef2e859",
+            "revision": 1,
+            "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+            "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728",
+            "build_id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+            "build_revision": 1,
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "status": "identified",
+            "created_at": "2026-10-18T18:48:41.124308+00:00",
+            "reason": "Identify synthetic units; testing remains unavailable",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "Synthetic requirement is unverified",
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "qualification_status": "unknown",
+            "authorization_status": "not_authorized",
+            "observation_route": "external_observation",
+            "verification_status": "not_checked",
+            "lot_id": "74a318ea-7d27-4828-a8ef-c087381c79c4",
+            "actual_configuration_id": "6b389914-9976-4ffe-bdb3-37299ce788a5",
+            "unit_count": 1,
+            "sample_ids": [
+              "86412b76-8783-46e6-8017-d59dc31441e1"
+            ],
+            "samples": [
+              {
+                "id": "86412b76-8783-46e6-8017-d59dc31441e1",
+                "label": "SYN-OUTPUT-UNKNOWN",
+                "availability": "unknown"
+              }
+            ]
+          },
+          {
+            "id": "44ae01db-e63e-4efe-963e-1a615fc74fd4",
+            "revision": 1,
+            "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+            "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728",
+            "build_id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+            "build_revision": 1,
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "status": "identified",
+            "created_at": "2026-10-18T18:48:35.883572+00:00",
+            "reason": "Identify synthetic units; testing remains unavailable",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "Synthetic requirement is unverified",
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "qualification_status": "unknown",
+            "authorization_status": "not_authorized",
+            "observation_route": "external_observation",
+            "verification_status": "not_checked",
+            "lot_id": "58f5f7c6-31da-4fa1-b019-1e318e24f250",
+            "actual_configuration_id": "6b389914-9976-4ffe-bdb3-37299ce788a5",
+            "unit_count": 1,
+            "sample_ids": [
+              "26f9cdfb-9f00-42cc-8286-2bf0338defae"
+            ],
+            "samples": [
+              {
+                "id": "26f9cdfb-9f00-42cc-8286-2bf0338defae",
+                "label": "SYN-OUTPUT-KNOWN",
+                "availability": "hold"
+              }
+            ]
+          }
+        ],
+        "samples": [
+          {
+            "id": "d5f3de73-0b06-485d-9c58-7c84e77e8ba3",
+            "revision": 1,
+            "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+            "project_id": "ff0ceba7-3583-4d72-8e11-317984adea00",
+            "build_id": "db94591a-1376-4de7-a944-6502389ca84a",
+            "build_revision": 1,
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "status": "identified",
+            "created_at": "2026-10-18T18:48:46.117807+00:00",
+            "reason": "Identify synthetic units; testing remains unavailable",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "Synthetic requirement is unverified",
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "qualification_status": "unknown",
+            "authorization_status": "not_authorized",
+            "observation_route": "external_observation",
+            "verification_status": "not_checked",
+            "label": "SYN-OTHER-PROJECT-SAMPLE",
+            "lot_id": "1ee01b5f-89f9-44ef-bec8-472c31223a2a",
+            "allocation_id": "e64f31d4-11e8-4b80-adee-c9b16e5bcfc5",
+            "actual_configuration_id": "dbff8ec7-1ba9-4d1d-8e2c-a7027c43542b",
+            "actual_configuration_revision": 1,
+            "operation_key": null,
+            "cavity": null,
+            "custodian_label": null,
+            "location": null,
+            "destination": null,
+            "availability": "unknown",
+            "custodian_id": null,
+            "reservation": null,
+            "consumption": null,
+            "observation_nature": "synthetic"
+          },
+          {
+            "id": "86412b76-8783-46e6-8017-d59dc31441e1",
+            "revision": 1,
+            "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+            "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728",
+            "build_id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+            "build_revision": 1,
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "status": "identified",
+            "created_at": "2026-10-18T18:48:41.150878+00:00",
+            "reason": "Identify synthetic units; testing remains unavailable",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "Synthetic requirement is unverified",
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "qualification_status": "unknown",
+            "authorization_status": "not_authorized",
+            "observation_route": "external_observation",
+            "verification_status": "not_checked",
+            "label": "SYN-OUTPUT-UNKNOWN",
+            "lot_id": "74a318ea-7d27-4828-a8ef-c087381c79c4",
+            "allocation_id": "797d2f93-2944-4e11-bcb9-54902ef2e859",
+            "actual_configuration_id": "6b389914-9976-4ffe-bdb3-37299ce788a5",
+            "actual_configuration_revision": 1,
+            "operation_key": null,
+            "cavity": null,
+            "custodian_label": null,
+            "location": null,
+            "destination": "Synthetic intended lab B; receipt unknown",
+            "availability": "unknown",
+            "custodian_id": null,
+            "reservation": null,
+            "consumption": null,
+            "observation_nature": "synthetic"
+          },
+          {
+            "id": "26f9cdfb-9f00-42cc-8286-2bf0338defae",
+            "revision": 1,
+            "product_id": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+            "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728",
+            "build_id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+            "build_revision": 1,
+            "owner_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "visibility": "private",
+            "status": "identified",
+            "created_at": "2026-10-18T18:48:35.911319+00:00",
+            "reason": "Identify synthetic units; testing remains unavailable",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "Synthetic requirement is unverified",
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "d2137d3a-6880-4418-8a7e-af5c99e6a142",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "qualification_status": "unknown",
+            "authorization_status": "not_authorized",
+            "observation_route": "external_observation",
+            "verification_status": "not_checked",
+            "label": "SYN-OUTPUT-KNOWN",
+            "lot_id": "58f5f7c6-31da-4fa1-b019-1e318e24f250",
+            "allocation_id": "44ae01db-e63e-4efe-963e-1a615fc74fd4",
+            "actual_configuration_id": "6b389914-9976-4ffe-bdb3-37299ce788a5",
+            "actual_configuration_revision": 1,
+            "operation_key": "assembly",
+            "cavity": "SYN-CAVITY-A",
+            "custodian_label": "Synthetic allocation custodian",
+            "location": "Synthetic cabinet A at allocation",
+            "destination": "Synthetic intended lab A",
+            "availability": "hold",
+            "custodian_id": "a0cb1b20-0c35-4004-a1a8-2e96095e19cb",
+            "reservation": null,
+            "consumption": null,
+            "observation_nature": "synthetic"
+          }
+        ],
+        "unavailable_count": 0,
+        "has_more": false,
+        "authorization_status": "not_authorized",
+        "qualification_status": "unknown"
+      }
+    },
+    "peer_project_builds": {
+      "route": "/v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds",
+      "params": {
+        "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728"
+      },
+      "status_code": 200,
+      "body": {
+        "items": [],
+        "unavailable_count": 0,
+        "has_more": false
+      }
+    },
+    "peer_build_execution": {
+      "route": "/v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/build-execution",
+      "params": {},
+      "status_code": 200,
+      "body": {
+        "actual_configurations": [],
+        "lots": [],
+        "allocations": [],
+        "samples": [],
+        "unavailable_count": 0,
+        "has_more": false,
+        "authorization_status": "not_authorized",
+        "qualification_status": "unknown"
+      }
+    },
+    "missing_project": {
+      "route": "/v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds",
+      "params": {
+        "project_id": "cc177e7b-9ec9-4f19-93fe-5bb57584703d"
+      },
+      "status_code": 403,
+      "body": {
+        "code": "FORBIDDEN_SCOPE",
+        "message": "当前项目不可用，首版计划由项目负责人建立。",
+        "detail": {
+          "reason": "FORBIDDEN_SCOPE"
+        }
+      }
+    },
+    "foreign_tenant_builds": {
+      "route": "/v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds",
+      "params": {
+        "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728"
+      },
+      "status_code": 403,
+      "body": {
+        "code": "FORBIDDEN_SCOPE",
+        "message": "品类不在当前授权范围。",
+        "detail": {
+          "reason": "FORBIDDEN_SCOPE"
+        }
+      }
+    },
+    "foreign_tenant_execution": {
+      "route": "/v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/build-execution",
+      "params": {},
+      "status_code": 403,
+      "body": {
+        "code": "FORBIDDEN_SCOPE",
+        "message": "品类不在当前授权范围。",
+        "detail": {
+          "reason": "FORBIDDEN_SCOPE"
+        }
+      }
+    }
+  },
+  "read_only_counts": {
+    "before": {
+      "products": 2,
+      "projects": 2,
+      "project_product_links": 2,
+      "definition_revisions": 3,
+      "bom_revisions": 1,
+      "engineering_configurations": 2,
+      "process_revisions": 2,
+      "builds": 2,
+      "build_readiness": 0,
+      "actual_configurations": 2,
+      "build_lots": 3,
+      "sample_allocations": 3,
+      "sample_units": 3,
+      "artifact_versions": 1,
+      "grants": 3,
+      "object_audiences": 16,
+      "confirmations": 21,
+      "request_keys": 22,
+      "action_receipts": 23,
+      "audit_entries": 22,
+      "outbox_events": 24
+    },
+    "after": {
+      "products": 2,
+      "projects": 2,
+      "project_product_links": 2,
+      "definition_revisions": 3,
+      "bom_revisions": 1,
+      "engineering_configurations": 2,
+      "process_revisions": 2,
+      "builds": 2,
+      "build_readiness": 0,
+      "actual_configurations": 2,
+      "build_lots": 3,
+      "sample_allocations": 3,
+      "sample_units": 3,
+      "artifact_versions": 1,
+      "grants": 3,
+      "object_audiences": 16,
+      "confirmations": 21,
+      "request_keys": 22,
+      "action_receipts": 23,
+      "audit_entries": 22,
+      "outbox_events": 24
+    },
+    "unchanged": true
+  },
+  "limitations": [
+    "Every body is an original unmodified actual GET JSON response.",
+    "build-execution is product-wide; the selected Build is bound through project Builds.",
+    "Separate GETs do not imply one atomic shared snapshot.",
+    "Custodian/location/destination/availability are allocation-time registration facts.",
+    "Null reservation/consumption are DTO placeholders, not proof of absence.",
+    "Synthetic observations confer no Build start, quality or production qualification."
+  ]
+}

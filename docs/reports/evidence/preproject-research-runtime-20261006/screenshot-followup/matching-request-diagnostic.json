@@ -1,0 +1,55 @@
+{
+  "at": "2026-10-07T05:17:48.431653+00:00",
+  "database": "localhost:57432/pdos",
+  "read_only": true,
+  "rows": [
+    {
+      "message_id": "7135455b-1aaf-469d-8076-71ffc087e2c7",
+      "conversation_id": "3e4285c2-043e-5c0f-83aa-b52e3ea3ae7b",
+      "created_at": "2026-10-07 05:16:43.523317+00:00",
+      "body": "开发桨板泵",
+      "preproject_goal": "category",
+      "run_id": "9fe06d33-c223-5f0b-9f0e-df9e4be991a1",
+      "status": "degraded",
+      "error_code": "BUDGET_TENANT_CALL_BUSY",
+      "reply_error": "BUDGET_TENANT_CALL_BUSY",
+      "process": {
+        "state": "failed",
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "正在分析问题与当前资料",
+            "state": "failed",
+            "detail": "已读取本轮问题、1条历史消息和0条当前资料引用。"
+          }
+        ],
+        "elapsed_ms": 799
+      }
+    },
+    {
+      "message_id": "9d8dee22-a871-4359-940a-36af17f14069",
+      "conversation_id": "3e4285c2-043e-5c0f-83aa-b52e3ea3ae7b",
+      "created_at": "2026-10-07 05:16:26.575029+00:00",
+      "body": "桨板泵",
+      "preproject_goal": "category",
+      "run_id": "c9f95f9b-bb32-54c6-8636-224be8e63df9",
+      "status": "degraded",
+      "error_code": "BUDGET_TENANT_CALL_BUSY",
+      "reply_error": "BUDGET_TENANT_CALL_BUSY",
+      "process": {
+        "state": "failed",
+        "steps": [
+          {
+            "key": "understand",
+            "at_ms": 0,
+            "label": "正在分析问题与当前资料",
+            "state": "failed",
+            "detail": "已读取本轮问题、0条历史消息和0条当前资料引用。"
+          }
+        ],
+        "elapsed_ms": 1318
+      }
+    }
+  ]
+}

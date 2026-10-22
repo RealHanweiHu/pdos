@@ -1,0 +1,29 @@
+{
+  "schema": "wave16-readonly-closeout-v1",
+  "checked_at": "2026-10-03T10:49:25.812371+00:00",
+  "status": "passed_as_of_read_only_synthetic_scope",
+  "read_only": true,
+  "checks": [
+    "issue4_external_baseline_and_fixed_failures_intact",
+    "issue_current_exact_root5_then_complete6",
+    "root_T2_and_completion_T1_single_consumed_material_proof",
+    "each_issue_version_exact_receipt_audit_outbox",
+    "original_completion_line_microseconds_offset_and_independent_receive_clock",
+    "original_action_root_before_all_completion_effectiveness_and_close_absent",
+    "original_fixed_run_measurement_fail_event_projection_and_current_safe_bytes",
+    "fresh_current_direct_receipt_draft_empty_physical_samples_and_clocks",
+    "link_T1_exact_issue6_action_basis_and_direct_new_formal_output",
+    "link_single_receipt_audit_outbox_and_consumed_material_proof",
+    "link_keeps_issue_current_no_candidate_no_effectiveness_or_closure",
+    "fresh_snapshot_basis_access_container_scanner_unchanged"
+  ],
+  "limits": [
+    "As-of synthetic evidence observation; not production qualification or manual Exit.",
+    "No new scan, confirmation, replay, application, migration or HTTP operation.",
+    "OriginalStore read gate may use bounded control locks; no business byte mutation.",
+    "Original token preimage and false-to-true same-UOW transition not reconstructed.",
+    "Current professional issuer/qualification is not reassessed by this historical check.",
+    "Public candidates/integration HTTP projection not executed; physical absence checked."
+  ],
+  "selection_sha256": "403af343f74c210bde9868f3da5b07ef470497dce1419796ec9cd7fc9d43deac"
+}

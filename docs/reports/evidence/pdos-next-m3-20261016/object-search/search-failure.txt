@@ -1,0 +1,28 @@
+Browser tab: 5, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3046/".
+0 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3046/
+	1 container 搜索对象
+		2 heading 搜索对象, Value: 2
+			3 text 搜索对象
+		4 button 关闭搜索
+			5 image
+		6 text 按名称或完整 ID 查找你当前可读的项目、型号、立项提案和品类。
+		7 container
+			8 text 名称或完整 ID
+			9 text field (settable) 名称或完整 ID, Value: 充气
+			10 text 对象类型
+			11 pop up button (collapsed, settable) 对象类型, Value: 全部对象, Secondary Actions: Expand
+				12 menu
+					13 (selected) 全部对象
+					14 项目
+					15 型号
+					16 立项提案
+					17 品类
+			18 button 搜索
+				19 image
+				20 text 搜索
+		23 container
+			24 text 合成检查：搜索暂不可用，请重试。
+			25 button 重试搜索
+		22 content list 搜索结果
+
+The focused UI element is 9 text field (settable) 名称或完整 ID, Value: 充气

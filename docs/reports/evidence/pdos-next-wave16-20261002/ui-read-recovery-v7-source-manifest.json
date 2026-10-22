@@ -1,0 +1,37 @@
+{
+  "candidate": "Wave16 owned UI read recovery v7; Root public web v5 candidate increment",
+  "recorded_at": "2026-10-03T09:48:06.692567+00:00",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/workspace.tsx",
+      "sha256": "c003462188e93c29bb9b426748143af868b654912306daca6ce73142eefa088c"
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+      "sha256": "20a1a0e685e4a060e490fbe76e28f92ea8d47a4ddd723147abe04fe83fdebe56"
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "c459e5bc07b5e66f84acd17081c572aab9fce8fe543839dc44dcec7989bb4a40"
+    }
+  ],
+  "baseline": [
+    {
+      "path": "pdos-next/web/src/components/workspace.tsx",
+      "sha256": "b152e0a9ae7e96942513f7a1df711abc3c74c5dac80919c87a653dbe174a07b7",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-before-read-recovery-v7-source/workspace.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+      "sha256": "0f62a4d0f3c7f792c5e02e7c1e9cfbf057f68e4fb8ebb55953b0e1d2fb174c46",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-before-read-recovery-v7-source/build-quality-loop.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "aad32a09053227f1ac7007a3a8430f2a04cb2bbb8d20ef76469509a75b320922",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-before-read-recovery-v7-source/build-quality-followup.tsx"
+    }
+  ],
+  "delta_file": "ui-read-recovery-v7.diff",
+  "only_3_authorized_sources_changed": true
+}

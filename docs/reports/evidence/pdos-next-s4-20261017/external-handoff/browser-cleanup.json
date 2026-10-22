@@ -1,0 +1,12 @@
+{
+  "browser_cookie_cleared": true,
+  "dedicated_browser_closed": true,
+  "own_preview_stopped": true,
+  "private_seed_removed": true,
+  "read_only_fixture_api_stopped": true,
+  "database_and_backups_preserved": true,
+  "failure_after_read_only_checkpoint": "unrelated policy replay source basis changed after introducing handoff-specific qualification; pending fixture order correction",
+  "browser_full_chain_exit": 1,
+  "final_api_chain_exit": 0,
+  "final_api_chain": "actual-chain-final-04.json"
+}

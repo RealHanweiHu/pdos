@@ -1,0 +1,55 @@
+{
+  "environment": "local production Next.js + ordinary synthetic human session + verified independent pdos_test",
+  "api": "127.0.0.1:8037",
+  "web": "127.0.0.1:3037",
+  "fixture": {
+    "actual_g0_projects": 2,
+    "categories": 2,
+    "actual_applied_plans": 1,
+    "scheduled_tasks": 2,
+    "actual_queued_personal_runs": 1,
+    "workflows_enabled": false,
+    "real_model_calls": 0
+  },
+  "checked": [
+    {
+      "path": "我的工作",
+      "observed": "2 actual task/risk items, 2 projects and 1 actual queued personal Run"
+    },
+    {
+      "path": "待办 → 单项目驾驶舱",
+      "observed": "exact personal project GET, actual owner name, fixed definition v1, plan v1, 2 tasks; unknown forecasts stay unknown"
+    },
+    {
+      "path": "单项目 → 经营总览",
+      "observed": "project URL cleared, cockpit area retained, 2 visible projects"
+    },
+    {
+      "path": "项目列表 → 另一品类项目",
+      "observed": "direct project GET and selected category updates"
+    },
+    {
+      "path": "已选品类 → 我的工作 → 个人Run",
+      "observed": "category URL cleared, rail shows 个人工作（跨品类） and original queued Run; no new run command"
+    },
+    {
+      "path": "项目读取失败 → 刷新",
+      "observed": "browser-only synthetic 503, explicit unreadable state without stale rows or false zero, mock removed then actual GET 200 restores 2 projects"
+    },
+    {
+      "path": "320px dark",
+      "observed": "MyWork, exact cockpit, overview and final list document widths all 320px"
+    },
+    {
+      "path": "final project list reload",
+      "observed": "global area=projects with category retained; no legacy workbench redirect"
+    },
+    {
+      "path": "final list layout",
+      "observed": "320px names occupy full readable row, actions wrap; 1440px desktop remains one row"
+    }
+  ],
+  "coverage_note": "Business and mobile screenshots precede only the final list layout/navigation fix; the affected list direct load/reload, mobile and desktop were repeated on the final build. Earlier browser checks and final tests are explicitly incremental, not a full-stage acceptance.",
+  "console": "Expected initial unauthenticated 401 and one browser-simulated 503 only; final page reload has no new console errors.",
+  "scope": "No real provider, worker execution, production, push or qualification; shared test/runtime services retained."
+}

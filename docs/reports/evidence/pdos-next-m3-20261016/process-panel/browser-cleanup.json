@@ -1,0 +1,43 @@
+{
+  "target": "verified independent 64245/pdos_test",
+  "head": "s0_0771",
+  "category_run_id": "5f6b8fff-ece2-4897-a7b9-d22cd1077f39",
+  "personal_run_id": "b9b4d3b3-22ec-4402-8bce-578ea5f59732",
+  "category_status": "partial",
+  "personal_status": "cancelled",
+  "business_claims": 1,
+  "actual_receipt_id": "40724f48-8eb2-4c7d-9a2a-2d45d4144b09",
+  "browser_posts": [
+    {
+      "method": "POST",
+      "path": "/v1/personal/agent-runs/b9b4d3b3-22ec-4402-8bce-578ea5f59732/cancel",
+      "query": "",
+      "actual_status": 200,
+      "client_status": 200,
+      "duration_ms": 70.91
+    }
+  ],
+  "failed_then_retried_process_pages": [
+    {
+      "method": "GET",
+      "path": "/v1/categories/27567ef3-5027-48ea-91a2-87c5ae590f41/agent-runs/5f6b8fff-ece2-4897-a7b9-d22cd1077f39/process",
+      "query": "before=13",
+      "actual_status": 200,
+      "client_status": 503,
+      "duration_ms": 96.63
+    },
+    {
+      "method": "GET",
+      "path": "/v1/categories/27567ef3-5027-48ea-91a2-87c5ae590f41/agent-runs/5f6b8fff-ece2-4897-a7b9-d22cd1077f39/process",
+      "query": "before=13",
+      "actual_status": 200,
+      "client_status": 200,
+      "duration_ms": 98.75
+    }
+  ],
+  "synthetic_session_expired": true,
+  "synthetic_pilot_disabled": true,
+  "real_model_calls": 0,
+  "real_network_research": 0,
+  "process_events": "synthetic server history; actual domain Claim/Receipt and actual cancellation"
+}

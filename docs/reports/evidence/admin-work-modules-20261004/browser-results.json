@@ -1,0 +1,74 @@
+[
+  {
+    "check": "browser-member-final",
+    "synthetic": true,
+    "realBffAndDatabase": true,
+    "heading": "陈工的工程工作台",
+    "modules": [
+      "工程设计",
+      "产品工作",
+      "测试与品质",
+      "PIE 与制造导入",
+      "供应协作"
+    ],
+    "role": "engineer",
+    "configuredModules": [
+      "product",
+      "quality",
+      "introduction",
+      "supply"
+    ],
+    "ownTask": "确认壳体接口尺寸",
+    "viewport": 1440,
+    "document": 1440
+  },
+  {
+    "check": "browser-layouts",
+    "synthetic": true,
+    "realBffAndDatabase": true,
+    "desktop": 1440,
+    "mobile": 320,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "modules": [
+      "工程设计",
+      "产品工作",
+      "测试与品质",
+      "PIE 与制造导入",
+      "供应协作"
+    ],
+    "viewport": 320,
+    "document": 320
+  },
+  {
+    "check": "browser-module-project",
+    "synthetic": true,
+    "realBffAndDatabase": true,
+    "tab": "quality",
+    "projectId": "6033426a-099a-48e7-9f29-ffa89ac5139b"
+  },
+  {
+    "check": "browser-admin-mobile-final",
+    "synthetic": true,
+    "realBffAndDatabase": true,
+    "modulesRevoked": 4,
+    "primaryRole": "engineer",
+    "workModules": [],
+    "createFieldsDoNotOverlap": true,
+    "mobile": {
+      "viewport": 320,
+      "document": 320
+    }
+  },
+  {
+    "check": "browser-member-revoked",
+    "synthetic": true,
+    "realBffAndDatabase": true,
+    "modulesRemoved": true,
+    "primaryRole": "engineer",
+    "heading": "陈工的工程工作台",
+    "ownTaskPreserved": true
+  }
+]

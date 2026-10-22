@@ -1,0 +1,11 @@
+{
+  "target": {
+    "host": "127.0.0.1",
+    "port": 59366,
+    "database": "pdos_test"
+  },
+  "head": "0424_product_proposals",
+  "round_trip": "0424\u21920423\u21920424\u21920423\u21920424",
+  "prior_constraints_and_comments_restored": true,
+  "new_table_schema_differences": []
+}

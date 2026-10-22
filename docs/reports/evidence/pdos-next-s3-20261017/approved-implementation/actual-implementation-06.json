@@ -1,0 +1,7 @@
+{
+  "snapshot": "/private/tmp/pdos-s3-implementation-hcqamkzw",
+  "pytest_exit": 130,
+  "status": "interrupted",
+  "reason": "Diagnostic observer required code where the original guard had a default; stopped before relying on this run. Production guard unchanged.",
+  "counts_as_pass": false
+}

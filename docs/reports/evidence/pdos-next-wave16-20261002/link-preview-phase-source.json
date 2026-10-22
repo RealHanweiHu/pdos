@@ -1,0 +1,131 @@
+{
+  "status": "staged_only_frozen_pending_public_integration",
+  "observed_at": "2026-10-03T10:20:00.618920+00:00",
+  "scope": "3 new staging files; no existing server/web edit, DB, HTTP, migration or public build",
+  "sources": [
+    {
+      "path": "pdos-next/staging/wave16/link_preview_phase.py",
+      "sha256": "9177cef30ef7bac656bd9632d04e0711fc80016ffc93f8bc95e36d347c1bc1ca"
+    },
+    {
+      "path": "pdos-next/staging/wave16/test_link_preview_phase.py",
+      "sha256": "73a242e4f4e3b35518bf9a48158368df46770f22aeb58c3e2833ed97bea83405"
+    },
+    {
+      "path": "pdos-next/staging/wave16/link-preview-phase-contract.md",
+      "sha256": "fb98e5bc2c0cbb284d95fd6220ef67ee6e86210505f0e82a344adba45002895e"
+    }
+  ],
+  "checks": {
+    "pure": {
+      "count": 41,
+      "seconds": 0.9,
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave16-20261002/link-preview-phase-pure.log",
+      "sha256": "d8470b94f3f1fb9fd65c1d859dba9bd3baeb43340007dc0b807c9e92942cdf33",
+      "command": "cd pdos-next/server && .venv/bin/python -m pytest --noconftest ../staging/wave16/test_link_preview_phase.py -q"
+    },
+    "ruff_check": {
+      "exit_code": 0,
+      "scope": [
+        "pdos-next/staging/wave16/link_preview_phase.py",
+        "pdos-next/staging/wave16/test_link_preview_phase.py"
+      ]
+    },
+    "ruff_format_check": {
+      "exit_code": 0,
+      "files_formatted": 2
+    },
+    "ast": {
+      "passed": true,
+      "imports_or_execution": false
+    }
+  },
+  "history": [
+    {
+      "scope": "first owned-only pure run",
+      "passed": 32,
+      "failed": 1,
+      "failure": "new transaction after rollback: ORM attributes accessed before UOW mismatch rejection",
+      "raw_output": "preserved in conversation tool output; not an archived log file",
+      "repair": "early active main/nested transaction identity check before any bound/ORM material access"
+    },
+    {
+      "scope": "affected same file after correction",
+      "passed": 33,
+      "failed": 0,
+      "seconds": 0.94,
+      "superseded_by_final_41": true
+    }
+  ],
+  "read_observation_unchanged": [
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "sha256": "d4afc3197e77899c6211eba339fefe6ca9e317ee6b6d9ddec622128db4b7838a",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/command_handlers.py",
+      "sha256": "b669d0b9cf0a58a38892b5c385ba800a717899aaea1c0a76e000f442120b280c",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/quality_followup_api.py",
+      "sha256": "b4ddb2e0f576637206dc8864e93793387b1180dfa30d328c99cf36253cea4bc5",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/quality_followup_host.py",
+      "sha256": "9400df47e01a8c7b4e9dc7f65bd56279da167e4de1f772509c864d0d079a7cb2",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/commands.py",
+      "sha256": "05c8c74af37cd26edd73ed320311f20d86c9b6515ebc9bac2b9b37a6e28a150a",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_verification/service.py",
+      "sha256": "91c72ff1d49a794561af28c9a5dfcdef52d717588b46aa9390a00abd816798af",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/quality_followup/service.py",
+      "sha256": "4d04678c24d5670b2e6e46953661dd638b5518a3adf364b82cffe725bc28ac62",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/quality_result_bridge.py",
+      "sha256": "28eef312b51350f1085329c59a45d3dd28efafbda0b25a466dc0ce6c791d3077",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/quality_execution/evidence.py",
+      "sha256": "f9b128b0cff62607415d16824bd6a8c1a7e9b30c397b1252991f1ec76bd98903",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/quality_followup_integration.py",
+      "sha256": "2c722d0fa94e02fd5d0e1d7ebeec1e52a782015457cb58e4ed5efbf3fce32e5f",
+      "unchanged": true
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "sha256": "1c94099e657f564a2030dd8a9ec738f46f5daf6e49dc2fca93a1d55156461888",
+      "unchanged": true
+    }
+  ],
+  "read_observation_limit": "Only the listed 11 paths; not full 480 candidate or whole workspace",
+  "static_report": {
+    "path": "docs/reports/evidence/pdos-next-wave16-20261002/link-preview-static-review.md",
+    "sha256": "071b41bb3e4a291953550ba8b971b4b7f0519a29d7ce59c2b6d593195cff5476"
+  },
+  "limitations": [
+    "Pure synthetic loader/new-write stubs establish phase sequencing only; no live owner/bytes/qualification proof",
+    "No public preview/execute dispatch is modified",
+    "No confirmation, Receipt, Audit, Outbox, occupancy or consumption created",
+    "Does not claim performance improvement",
+    "Does not fix or explain root-reported pg-v3-08 actual consumed Product proof COMMIT rejection"
+  ],
+  "next_host_hook": "Common preview opt-in for exact Link operation after existing Product/current principal/SourceRead gates; invoke prepare_preview then preview_prepared in same caller stack/UOW"
+}

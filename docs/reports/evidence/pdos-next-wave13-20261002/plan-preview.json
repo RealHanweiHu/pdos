@@ -1,0 +1,2788 @@
+{
+  "command": {
+    "command_id": "d8c3c37e-520e-427b-80bf-25f2fffbdc11",
+    "idempotency_key": "fc3d2145-1cee-4d7d-ab77-92fea284b8d1",
+    "operation": "test.run.plan",
+    "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+    "expected_revision": 1,
+    "source_read_set": [
+      {
+        "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "9cebc9f0-03f4-4acf-8ca0-a6dda1facd07",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "c598c044-b427-4052-85fe-c29f18e0ed96",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "fa2ba9c7-63e5-40dd-b1d0-a84fd1e0d2c8",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "fd89cebd-1b9a-49db-8e50-14e6c7d85dc3",
+        "expected_revision": 1
+      }
+    ],
+    "payload": {
+      "request_id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+      "expected_request_revision": 5,
+      "sources": [
+        {
+          "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+          "expected_revision": 1,
+          "line": 2,
+          "quote": "Synthetic numeric limits 9.5 to 10.5; method not approved"
+        }
+      ],
+      "reason": "本地合成固定A范围开测，未接收B与缺项保持",
+      "run_id": "050b0f95-39b6-4c90-8131-04118dfa32e3",
+      "coverage": [
+        {
+          "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+          "item_id": "dimension"
+        }
+      ],
+      "execution_plan": {
+        "window": {
+          "start": "2026-10-03T01:35:40.375459Z",
+          "finish": "2026-10-03T03:25:40.375459Z",
+          "original_timezone": "UTC"
+        },
+        "executor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "equipment": {
+          "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+          "expected_revision": 1,
+          "line": 1,
+          "quote": "SYN-W13-EQUIPMENT:固定合成设备，本次完整窗口可用，未授真实资格。"
+        },
+        "calibration": {
+          "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+          "expected_revision": 1,
+          "line": 2,
+          "quote": "SYN-W13-CALIBRATION:合成具名校准依据，不代表生产校准。"
+        },
+        "environment": "本地合成测试室",
+        "conditions": "固定合成20°C，结果与处置尚未接入",
+        "resource_fact_id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+        "expected_resource_fact_revision": 1
+      }
+    }
+  },
+  "expires_at": "2026-10-03T01:41:26.286785+00:00",
+  "review": {
+    "operation": "test.run.plan",
+    "effect": "固定已接收范围与完整测试窗口；仅实际开测同事务占用资源/样件，不生成结果或专业处置。",
+    "before": {
+      "request": {
+        "id": "09959b27-d54a-405f-b2bb-309e366abb8d",
+        "request_id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+        "revision": 5,
+        "previous_request_id": "fa16cc3d-d50b-4cc9-9f29-2a5f68f94483",
+        "previous_revision": 4,
+        "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+        "build": {
+          "id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+          "revision": 1,
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+          "engineering_configuration": {
+            "id": "3693f534-e459-479f-95af-c24f62de0d1d",
+            "revision": 1
+          },
+          "manufacturing_configuration": {
+            "id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+            "revision": 1
+          }
+        },
+        "title": "第十三波 · 后续轮次交样与部分接收（合成）",
+        "purpose": "Verify preparation",
+        "status": "accepted",
+        "items": [
+          {
+            "id": "dimension",
+            "unit": "mm",
+            "method": {
+              "line": 2,
+              "quote": "Synthetic numeric limits 9.5 to 10.5; method not approved",
+              "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+              "expected_revision": 1
+            },
+            "drawing": {
+              "line": 1,
+              "quote": "Synthetic drawing for preparation only",
+              "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+              "expected_revision": 1
+            },
+            "feature": "Synthetic dimension",
+            "cavities": [
+              "A",
+              "B",
+              "C"
+            ],
+            "material": "Synthetic polymer",
+            "criterion": {
+              "lower": "9.5",
+              "upper": "10.5",
+              "source": {
+                "line": 2,
+                "quote": "Synthetic numeric limits 9.5 to 10.5; method not approved",
+                "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "expected_revision": 1
+              }
+            },
+            "conditions": "23 C, dry",
+            "destructive": false,
+            "sample_count": 3,
+            "criterion_text": null,
+            "criterion_source": null
+          }
+        ],
+        "documents": [
+          {
+            "id": "raw-report",
+            "title": "Raw report",
+            "source": {
+              "line": 3,
+              "quote": "Synthetic attachment for dimension; no professional approval",
+              "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+              "expected_revision": 1
+            },
+            "item_ids": [
+              "dimension"
+            ],
+            "required": true
+          }
+        ],
+        "request_snapshot": {
+          "id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+          "revision": 5,
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "build": {
+            "id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+            "revision": 1,
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+            "engineering_configuration": {
+              "id": "3693f534-e459-479f-95af-c24f62de0d1d",
+              "revision": 1
+            },
+            "manufacturing_configuration": {
+              "id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+              "revision": 1
+            }
+          },
+          "title": "第十三波 · 后续轮次交样与部分接收（合成）",
+          "purpose": "Verify preparation",
+          "items": [
+            {
+              "id": "dimension",
+              "feature": "Synthetic dimension",
+              "drawing": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:aef891e710caf19e7666ba28005a2bf2797ae05938f075bf8879e80d6f820e3e"
+              },
+              "method": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "criterion": {
+                "lower": "9.5",
+                "upper": "10.5",
+                "source": {
+                  "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                  "revision": 1,
+                  "kind": "artifact",
+                  "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+                }
+              },
+              "criterion_text": null,
+              "criterion_source": null,
+              "unit": "mm",
+              "conditions": "23 C, dry",
+              "material": "Synthetic polymer",
+              "sample_count": 3,
+              "cavities": [
+                "A",
+                "B",
+                "C"
+              ],
+              "destructive": false
+            }
+          ],
+          "documents": [
+            {
+              "id": "raw-report",
+              "title": "Raw report",
+              "item_ids": [
+                "dimension"
+              ],
+              "source": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:3;quote_sha256:7e337f503b8516f55f9efba81774c6a79b2654609ca132c3aacfd2f63f709592"
+              },
+              "required": true
+            },
+            {
+              "id": "professional-method:48eb632fe16ae19550afe9ef2508b9eae4ff5317f677e4f1470aa2d910ab227c",
+              "title": "专业方法适用核对：Synthetic dimension",
+              "item_ids": [
+                "dimension"
+              ],
+              "source": {
+                "id": "ed047633-8967-5c3a-8b3d-bbd9be8a178d",
+                "revision": 1,
+                "kind": "domain",
+                "position": "professional-method-applicability"
+              },
+              "required": true
+            }
+          ],
+          "expected_at": null,
+          "expected_timezone": null,
+          "return_form": "Raw readings and separately named professional conclusions",
+          "status": "accepted",
+          "samples": [
+            {
+              "id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+              "revision": 1,
+              "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+              "actual_configuration": {
+                "id": "d75bc010-242d-4d65-9b62-2730725b9345",
+                "revision": 1
+              },
+              "cavity": "A"
+            },
+            {
+              "id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+              "revision": 1,
+              "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+              "actual_configuration": {
+                "id": "d75bc010-242d-4d65-9b62-2730725b9345",
+                "revision": 1
+              },
+              "cavity": "B"
+            }
+          ],
+          "offered_coverage": [
+            {
+              "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+              "item_id": "dimension"
+            },
+            {
+              "sample_id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+              "item_id": "dimension"
+            }
+          ],
+          "acceptances": [
+            {
+              "coverage": [
+                {
+                  "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+                  "item_id": "dimension"
+                }
+              ],
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "at": {
+                "occurred_at": "2026-10-03T01:21:37.495872Z",
+                "original_timezone": "UTC",
+                "source": {
+                  "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                  "revision": 1,
+                  "kind": "artifact",
+                  "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+                },
+                "effective_at": null,
+                "received_at": "2026-10-03T01:22:04.606921Z",
+                "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+              },
+              "sample_ready": {
+                "occurred_at": "2026-10-03T01:20:07.698415Z",
+                "original_timezone": "UTC",
+                "source": {
+                  "id": "0019508d-16f7-5f3f-b7e0-a86a0192685a",
+                  "revision": 1,
+                  "kind": "domain",
+                  "position": "sample-readiness"
+                },
+                "effective_at": null,
+                "received_at": "2026-10-03T01:22:04.606921Z",
+                "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+              }
+            }
+          ],
+          "returns": [
+            {
+              "coverage": [
+                {
+                  "sample_id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+                  "item_id": "dimension"
+                }
+              ],
+              "gaps": [
+                {
+                  "code": "PARTIAL_SAMPLE_COUNT",
+                  "detail": "已覆盖 1/3 件",
+                  "item_id": "dimension",
+                  "sample_id": null
+                },
+                {
+                  "code": "UNCOVERED_CAVITY",
+                  "detail": "未覆盖模穴 B",
+                  "item_id": "dimension",
+                  "sample_id": null
+                },
+                {
+                  "code": "UNCOVERED_CAVITY",
+                  "detail": "未覆盖模穴 C",
+                  "item_id": "dimension",
+                  "sample_id": null
+                }
+              ],
+              "reason": "合成实物交接：只接收A，B继续暂缓并明确缺项责任",
+              "next_owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "at": {
+                "occurred_at": "2026-10-03T01:21:37.495872Z",
+                "original_timezone": "UTC",
+                "source": {
+                  "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                  "revision": 1,
+                  "kind": "artifact",
+                  "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+                },
+                "effective_at": null,
+                "received_at": "2026-10-03T01:22:04.606921Z",
+                "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+              }
+            },
+            {
+              "coverage": [
+                {
+                  "sample_id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+                  "item_id": "dimension"
+                }
+              ],
+              "gaps": [],
+              "reason": "合成实物交接：只接收A，B继续暂缓并明确缺项责任",
+              "next_owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "at": {
+                "occurred_at": "2026-10-03T01:22:18.324277Z",
+                "original_timezone": "UTC",
+                "source": {
+                  "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                  "revision": 1,
+                  "kind": "artifact",
+                  "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+                },
+                "effective_at": null,
+                "received_at": "2026-10-03T01:22:24.702901Z",
+                "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+              }
+            }
+          ],
+          "timeline": {
+            "request_created": {
+              "occurred_at": "2026-10-03T01:19:43.179710Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "0afbbe76-5a5a-4a4a-bb3c-aba95d350b91",
+                "revision": 1,
+                "kind": "command",
+                "position": "receipt"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:19:43.179710Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "sample_ready": null,
+            "documents_complete": {
+              "occurred_at": "2026-10-03T01:20:06.021513Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "9ec86535-4e22-4627-a8ee-52a2aed23eb1",
+                "revision": 1,
+                "kind": "command",
+                "position": "receipt"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:20:06.021513Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "offered": {
+              "occurred_at": "2026-10-03T01:21:03.154459Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:21:24.213982Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "accepted": {
+              "occurred_at": "2026-10-03T01:21:37.495872Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:22:04.606921Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "promised_start": null,
+            "actual_start": null,
+            "preliminary_result": null,
+            "final_result": null,
+            "disposed": null
+          },
+          "tentative_start": null
+        },
+        "preparation_id": "1eadd9f3-765a-446d-912f-cf262f5272bd",
+        "preparation_revision": 1,
+        "preparation_sha256": "42d0798401bbde34e529464910d689aa646e6044fb7b45834ff313209020e107",
+        "samples": [
+          {
+            "id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+            "revision": 1,
+            "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+            "actual_configuration": {
+              "id": "d75bc010-242d-4d65-9b62-2730725b9345",
+              "revision": 1
+            },
+            "cavity": "A"
+          },
+          {
+            "id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+            "revision": 1,
+            "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+            "actual_configuration": {
+              "id": "d75bc010-242d-4d65-9b62-2730725b9345",
+              "revision": 1
+            },
+            "cavity": "B"
+          }
+        ],
+        "offered_coverage": [
+          {
+            "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+            "item_id": "dimension"
+          },
+          {
+            "sample_id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+            "item_id": "dimension"
+          }
+        ],
+        "accepted_coverage": [
+          {
+            "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+            "item_id": "dimension"
+          }
+        ],
+        "acceptances": [
+          {
+            "coverage": [
+              {
+                "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+                "item_id": "dimension"
+              }
+            ],
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "at": {
+              "occurred_at": "2026-10-03T01:21:37.495872Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:22:04.606921Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "sample_ready": {
+              "occurred_at": "2026-10-03T01:20:07.698415Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "0019508d-16f7-5f3f-b7e0-a86a0192685a",
+                "revision": 1,
+                "kind": "domain",
+                "position": "sample-readiness"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:22:04.606921Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "coverage": [
+              {
+                "sample_id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+                "item_id": "dimension"
+              }
+            ],
+            "gaps": [
+              {
+                "code": "PARTIAL_SAMPLE_COUNT",
+                "detail": "已覆盖 1/3 件",
+                "item_id": "dimension",
+                "sample_id": null
+              },
+              {
+                "code": "UNCOVERED_CAVITY",
+                "detail": "未覆盖模穴 B",
+                "item_id": "dimension",
+                "sample_id": null
+              },
+              {
+                "code": "UNCOVERED_CAVITY",
+                "detail": "未覆盖模穴 C",
+                "item_id": "dimension",
+                "sample_id": null
+              }
+            ],
+            "reason": "合成实物交接：只接收A，B继续暂缓并明确缺项责任",
+            "next_owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "at": {
+              "occurred_at": "2026-10-03T01:21:37.495872Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:22:04.606921Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            }
+          },
+          {
+            "coverage": [
+              {
+                "sample_id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+                "item_id": "dimension"
+              }
+            ],
+            "gaps": [],
+            "reason": "合成实物交接：只接收A，B继续暂缓并明确缺项责任",
+            "next_owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "at": {
+              "occurred_at": "2026-10-03T01:22:18.324277Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:22:24.702901Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            }
+          }
+        ],
+        "timeline": {
+          "request_created": {
+            "occurred_at": "2026-10-03T01:19:43.179710Z",
+            "original_timezone": "UTC",
+            "source": {
+              "id": "0afbbe76-5a5a-4a4a-bb3c-aba95d350b91",
+              "revision": 1,
+              "kind": "command",
+              "position": "receipt"
+            },
+            "effective_at": null,
+            "received_at": "2026-10-03T01:19:43.179710Z",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+          },
+          "sample_ready": null,
+          "documents_complete": {
+            "occurred_at": "2026-10-03T01:20:06.021513Z",
+            "original_timezone": "UTC",
+            "source": {
+              "id": "9ec86535-4e22-4627-a8ee-52a2aed23eb1",
+              "revision": 1,
+              "kind": "command",
+              "position": "receipt"
+            },
+            "effective_at": null,
+            "received_at": "2026-10-03T01:20:06.021513Z",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+          },
+          "offered": {
+            "occurred_at": "2026-10-03T01:21:03.154459Z",
+            "original_timezone": "UTC",
+            "source": {
+              "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+            },
+            "effective_at": null,
+            "received_at": "2026-10-03T01:21:24.213982Z",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+          },
+          "accepted": {
+            "occurred_at": "2026-10-03T01:21:37.495872Z",
+            "original_timezone": "UTC",
+            "source": {
+              "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+            },
+            "effective_at": null,
+            "received_at": "2026-10-03T01:22:04.606921Z",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+          },
+          "promised_start": null,
+          "actual_start": null,
+          "preliminary_result": null,
+          "final_result": null,
+          "disposed": null
+        },
+        "document_gaps": [],
+        "coverage_gaps": [
+          {
+            "code": "PARTIAL_SAMPLE_COUNT",
+            "detail": "已覆盖 1/3 件",
+            "item_id": "dimension",
+            "sample_id": null
+          },
+          {
+            "code": "UNCOVERED_CAVITY",
+            "detail": "未覆盖模穴 B",
+            "item_id": "dimension",
+            "sample_id": null
+          },
+          {
+            "code": "UNCOVERED_CAVITY",
+            "detail": "未覆盖模穴 C",
+            "item_id": "dimension",
+            "sample_id": null
+          }
+        ],
+        "first_requested_at": "2026-10-03T01:19:43.179710+00:00",
+        "created_at": "2026-10-03T01:22:24.702901+00:00",
+        "sha256": "f3f55ad051711fe8d8b6592aada680ef373cffd89ad73f326e9045380e4e8e22",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "reason": "合成实物交接：只接收A，B继续暂缓并明确缺项责任",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "Synthetic drawing for preparation only",
+            "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "expected_revision": 1
+          },
+          {
+            "line": 2,
+            "quote": "Synthetic numeric limits 9.5 to 10.5; method not approved",
+            "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "expected_revision": 1
+          },
+          {
+            "line": 3,
+            "quote": "Synthetic attachment for dimension; no professional approval",
+            "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "expected_revision": 1
+          },
+          {
+            "line": 1,
+            "quote": "{\"actual_configuration_id\": \"d75bc010-242d-4d65-9b62-2730725b9345\", \"build_id\": \"c4bd36e6-b8e6-47cd-8497-2fd8d80aa577\", \"lot_id\": \"88a053e3-2d90-4f75-8af8-67d0199c6d69\", \"occurred_at\": \"2026-10-03T01:20:07.698415+00:00\", \"purpose\": \"Verify preparation\", \"sample_id\": \"7c16ba29-4598-4240-941c-40ddc6b8348a\", \"state\": \"ready\"}",
+            "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+            "expected_revision": 1
+          },
+          {
+            "line": 1,
+            "quote": "{\"actual_configuration_id\": \"d75bc010-242d-4d65-9b62-2730725b9345\", \"build_id\": \"c4bd36e6-b8e6-47cd-8497-2fd8d80aa577\", \"lot_id\": \"88a053e3-2d90-4f75-8af8-67d0199c6d69\", \"occurred_at\": \"2026-10-03T01:20:07.908819+00:00\", \"purpose\": \"Verify preparation\", \"sample_id\": \"407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8\", \"state\": \"hold\"}",
+            "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "9cebc9f0-03f4-4acf-8ca0-a6dda1facd07",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "c598c044-b427-4052-85fe-c29f18e0ed96",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "fa2ba9c7-63e5-40dd-b1d0-a84fd1e0d2c8",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "fd89cebd-1b9a-49db-8e50-14e6c7d85dc3",
+            "expected_revision": 1
+          }
+        ],
+        "is_current": true,
+        "zero_occupancy": true,
+        "physical_timeline_empty": false,
+        "capabilities": {
+          "actual_method_prepare": false,
+          "handoff_offer": false,
+          "handoff_accept": false,
+          "handoff_return": false
+        }
+      },
+      "run": null
+    },
+    "after": {
+      "request": {
+        "id": "09959b27-d54a-405f-b2bb-309e366abb8d",
+        "request_id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+        "revision": 5,
+        "previous_request_id": "fa16cc3d-d50b-4cc9-9f29-2a5f68f94483",
+        "previous_revision": 4,
+        "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+        "build": {
+          "id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+          "revision": 1,
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+          "engineering_configuration": {
+            "id": "3693f534-e459-479f-95af-c24f62de0d1d",
+            "revision": 1
+          },
+          "manufacturing_configuration": {
+            "id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+            "revision": 1
+          }
+        },
+        "title": "第十三波 · 后续轮次交样与部分接收（合成）",
+        "purpose": "Verify preparation",
+        "status": "accepted",
+        "items": [
+          {
+            "id": "dimension",
+            "unit": "mm",
+            "method": {
+              "line": 2,
+              "quote": "Synthetic numeric limits 9.5 to 10.5; method not approved",
+              "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+              "expected_revision": 1
+            },
+            "drawing": {
+              "line": 1,
+              "quote": "Synthetic drawing for preparation only",
+              "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+              "expected_revision": 1
+            },
+            "feature": "Synthetic dimension",
+            "cavities": [
+              "A",
+              "B",
+              "C"
+            ],
+            "material": "Synthetic polymer",
+            "criterion": {
+              "lower": "9.5",
+              "upper": "10.5",
+              "source": {
+                "line": 2,
+                "quote": "Synthetic numeric limits 9.5 to 10.5; method not approved",
+                "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "expected_revision": 1
+              }
+            },
+            "conditions": "23 C, dry",
+            "destructive": false,
+            "sample_count": 3,
+            "criterion_text": null,
+            "criterion_source": null
+          }
+        ],
+        "documents": [
+          {
+            "id": "raw-report",
+            "title": "Raw report",
+            "source": {
+              "line": 3,
+              "quote": "Synthetic attachment for dimension; no professional approval",
+              "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+              "expected_revision": 1
+            },
+            "item_ids": [
+              "dimension"
+            ],
+            "required": true
+          }
+        ],
+        "request_snapshot": {
+          "id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+          "revision": 5,
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "build": {
+            "id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+            "revision": 1,
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+            "engineering_configuration": {
+              "id": "3693f534-e459-479f-95af-c24f62de0d1d",
+              "revision": 1
+            },
+            "manufacturing_configuration": {
+              "id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+              "revision": 1
+            }
+          },
+          "title": "第十三波 · 后续轮次交样与部分接收（合成）",
+          "purpose": "Verify preparation",
+          "items": [
+            {
+              "id": "dimension",
+              "feature": "Synthetic dimension",
+              "drawing": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:aef891e710caf19e7666ba28005a2bf2797ae05938f075bf8879e80d6f820e3e"
+              },
+              "method": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "criterion": {
+                "lower": "9.5",
+                "upper": "10.5",
+                "source": {
+                  "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                  "revision": 1,
+                  "kind": "artifact",
+                  "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+                }
+              },
+              "criterion_text": null,
+              "criterion_source": null,
+              "unit": "mm",
+              "conditions": "23 C, dry",
+              "material": "Synthetic polymer",
+              "sample_count": 3,
+              "cavities": [
+                "A",
+                "B",
+                "C"
+              ],
+              "destructive": false
+            }
+          ],
+          "documents": [
+            {
+              "id": "raw-report",
+              "title": "Raw report",
+              "item_ids": [
+                "dimension"
+              ],
+              "source": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:3;quote_sha256:7e337f503b8516f55f9efba81774c6a79b2654609ca132c3aacfd2f63f709592"
+              },
+              "required": true
+            },
+            {
+              "id": "professional-method:48eb632fe16ae19550afe9ef2508b9eae4ff5317f677e4f1470aa2d910ab227c",
+              "title": "专业方法适用核对：Synthetic dimension",
+              "item_ids": [
+                "dimension"
+              ],
+              "source": {
+                "id": "ed047633-8967-5c3a-8b3d-bbd9be8a178d",
+                "revision": 1,
+                "kind": "domain",
+                "position": "professional-method-applicability"
+              },
+              "required": true
+            }
+          ],
+          "expected_at": null,
+          "expected_timezone": null,
+          "return_form": "Raw readings and separately named professional conclusions",
+          "status": "accepted",
+          "samples": [
+            {
+              "id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+              "revision": 1,
+              "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+              "actual_configuration": {
+                "id": "d75bc010-242d-4d65-9b62-2730725b9345",
+                "revision": 1
+              },
+              "cavity": "A"
+            },
+            {
+              "id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+              "revision": 1,
+              "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+              "actual_configuration": {
+                "id": "d75bc010-242d-4d65-9b62-2730725b9345",
+                "revision": 1
+              },
+              "cavity": "B"
+            }
+          ],
+          "offered_coverage": [
+            {
+              "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+              "item_id": "dimension"
+            },
+            {
+              "sample_id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+              "item_id": "dimension"
+            }
+          ],
+          "acceptances": [
+            {
+              "coverage": [
+                {
+                  "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+                  "item_id": "dimension"
+                }
+              ],
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "at": {
+                "occurred_at": "2026-10-03T01:21:37.495872Z",
+                "original_timezone": "UTC",
+                "source": {
+                  "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                  "revision": 1,
+                  "kind": "artifact",
+                  "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+                },
+                "effective_at": null,
+                "received_at": "2026-10-03T01:22:04.606921Z",
+                "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+              },
+              "sample_ready": {
+                "occurred_at": "2026-10-03T01:20:07.698415Z",
+                "original_timezone": "UTC",
+                "source": {
+                  "id": "0019508d-16f7-5f3f-b7e0-a86a0192685a",
+                  "revision": 1,
+                  "kind": "domain",
+                  "position": "sample-readiness"
+                },
+                "effective_at": null,
+                "received_at": "2026-10-03T01:22:04.606921Z",
+                "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+              }
+            }
+          ],
+          "returns": [
+            {
+              "coverage": [
+                {
+                  "sample_id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+                  "item_id": "dimension"
+                }
+              ],
+              "gaps": [
+                {
+                  "code": "PARTIAL_SAMPLE_COUNT",
+                  "detail": "已覆盖 1/3 件",
+                  "item_id": "dimension",
+                  "sample_id": null
+                },
+                {
+                  "code": "UNCOVERED_CAVITY",
+                  "detail": "未覆盖模穴 B",
+                  "item_id": "dimension",
+                  "sample_id": null
+                },
+                {
+                  "code": "UNCOVERED_CAVITY",
+                  "detail": "未覆盖模穴 C",
+                  "item_id": "dimension",
+                  "sample_id": null
+                }
+              ],
+              "reason": "合成实物交接：只接收A，B继续暂缓并明确缺项责任",
+              "next_owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "at": {
+                "occurred_at": "2026-10-03T01:21:37.495872Z",
+                "original_timezone": "UTC",
+                "source": {
+                  "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                  "revision": 1,
+                  "kind": "artifact",
+                  "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+                },
+                "effective_at": null,
+                "received_at": "2026-10-03T01:22:04.606921Z",
+                "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+              }
+            },
+            {
+              "coverage": [
+                {
+                  "sample_id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+                  "item_id": "dimension"
+                }
+              ],
+              "gaps": [],
+              "reason": "合成实物交接：只接收A，B继续暂缓并明确缺项责任",
+              "next_owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "at": {
+                "occurred_at": "2026-10-03T01:22:18.324277Z",
+                "original_timezone": "UTC",
+                "source": {
+                  "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                  "revision": 1,
+                  "kind": "artifact",
+                  "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+                },
+                "effective_at": null,
+                "received_at": "2026-10-03T01:22:24.702901Z",
+                "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+              }
+            }
+          ],
+          "timeline": {
+            "request_created": {
+              "occurred_at": "2026-10-03T01:19:43.179710Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "0afbbe76-5a5a-4a4a-bb3c-aba95d350b91",
+                "revision": 1,
+                "kind": "command",
+                "position": "receipt"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:19:43.179710Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "sample_ready": null,
+            "documents_complete": {
+              "occurred_at": "2026-10-03T01:20:06.021513Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "9ec86535-4e22-4627-a8ee-52a2aed23eb1",
+                "revision": 1,
+                "kind": "command",
+                "position": "receipt"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:20:06.021513Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "offered": {
+              "occurred_at": "2026-10-03T01:21:03.154459Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:21:24.213982Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "accepted": {
+              "occurred_at": "2026-10-03T01:21:37.495872Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:22:04.606921Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "promised_start": null,
+            "actual_start": null,
+            "preliminary_result": null,
+            "final_result": null,
+            "disposed": null
+          },
+          "tentative_start": null
+        },
+        "preparation_id": "1eadd9f3-765a-446d-912f-cf262f5272bd",
+        "preparation_revision": 1,
+        "preparation_sha256": "42d0798401bbde34e529464910d689aa646e6044fb7b45834ff313209020e107",
+        "samples": [
+          {
+            "id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+            "revision": 1,
+            "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+            "actual_configuration": {
+              "id": "d75bc010-242d-4d65-9b62-2730725b9345",
+              "revision": 1
+            },
+            "cavity": "A"
+          },
+          {
+            "id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+            "revision": 1,
+            "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+            "actual_configuration": {
+              "id": "d75bc010-242d-4d65-9b62-2730725b9345",
+              "revision": 1
+            },
+            "cavity": "B"
+          }
+        ],
+        "offered_coverage": [
+          {
+            "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+            "item_id": "dimension"
+          },
+          {
+            "sample_id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+            "item_id": "dimension"
+          }
+        ],
+        "accepted_coverage": [
+          {
+            "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+            "item_id": "dimension"
+          }
+        ],
+        "acceptances": [
+          {
+            "coverage": [
+              {
+                "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+                "item_id": "dimension"
+              }
+            ],
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "at": {
+              "occurred_at": "2026-10-03T01:21:37.495872Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:22:04.606921Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "sample_ready": {
+              "occurred_at": "2026-10-03T01:20:07.698415Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "0019508d-16f7-5f3f-b7e0-a86a0192685a",
+                "revision": 1,
+                "kind": "domain",
+                "position": "sample-readiness"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:22:04.606921Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            }
+          }
+        ],
+        "returns": [
+          {
+            "coverage": [
+              {
+                "sample_id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+                "item_id": "dimension"
+              }
+            ],
+            "gaps": [
+              {
+                "code": "PARTIAL_SAMPLE_COUNT",
+                "detail": "已覆盖 1/3 件",
+                "item_id": "dimension",
+                "sample_id": null
+              },
+              {
+                "code": "UNCOVERED_CAVITY",
+                "detail": "未覆盖模穴 B",
+                "item_id": "dimension",
+                "sample_id": null
+              },
+              {
+                "code": "UNCOVERED_CAVITY",
+                "detail": "未覆盖模穴 C",
+                "item_id": "dimension",
+                "sample_id": null
+              }
+            ],
+            "reason": "合成实物交接：只接收A，B继续暂缓并明确缺项责任",
+            "next_owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "at": {
+              "occurred_at": "2026-10-03T01:21:37.495872Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:22:04.606921Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            }
+          },
+          {
+            "coverage": [
+              {
+                "sample_id": "407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8",
+                "item_id": "dimension"
+              }
+            ],
+            "gaps": [],
+            "reason": "合成实物交接：只接收A，B继续暂缓并明确缺项责任",
+            "next_owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "at": {
+              "occurred_at": "2026-10-03T01:22:18.324277Z",
+              "original_timezone": "UTC",
+              "source": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "effective_at": null,
+              "received_at": "2026-10-03T01:22:24.702901Z",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            }
+          }
+        ],
+        "timeline": {
+          "request_created": {
+            "occurred_at": "2026-10-03T01:19:43.179710Z",
+            "original_timezone": "UTC",
+            "source": {
+              "id": "0afbbe76-5a5a-4a4a-bb3c-aba95d350b91",
+              "revision": 1,
+              "kind": "command",
+              "position": "receipt"
+            },
+            "effective_at": null,
+            "received_at": "2026-10-03T01:19:43.179710Z",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+          },
+          "sample_ready": null,
+          "documents_complete": {
+            "occurred_at": "2026-10-03T01:20:06.021513Z",
+            "original_timezone": "UTC",
+            "source": {
+              "id": "9ec86535-4e22-4627-a8ee-52a2aed23eb1",
+              "revision": 1,
+              "kind": "command",
+              "position": "receipt"
+            },
+            "effective_at": null,
+            "received_at": "2026-10-03T01:20:06.021513Z",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+          },
+          "offered": {
+            "occurred_at": "2026-10-03T01:21:03.154459Z",
+            "original_timezone": "UTC",
+            "source": {
+              "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+            },
+            "effective_at": null,
+            "received_at": "2026-10-03T01:21:24.213982Z",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+          },
+          "accepted": {
+            "occurred_at": "2026-10-03T01:21:37.495872Z",
+            "original_timezone": "UTC",
+            "source": {
+              "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+              "revision": 1,
+              "kind": "artifact",
+              "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+            },
+            "effective_at": null,
+            "received_at": "2026-10-03T01:22:04.606921Z",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+          },
+          "promised_start": null,
+          "actual_start": null,
+          "preliminary_result": null,
+          "final_result": null,
+          "disposed": null
+        },
+        "document_gaps": [],
+        "coverage_gaps": [
+          {
+            "code": "PARTIAL_SAMPLE_COUNT",
+            "detail": "已覆盖 1/3 件",
+            "item_id": "dimension",
+            "sample_id": null
+          },
+          {
+            "code": "UNCOVERED_CAVITY",
+            "detail": "未覆盖模穴 B",
+            "item_id": "dimension",
+            "sample_id": null
+          },
+          {
+            "code": "UNCOVERED_CAVITY",
+            "detail": "未覆盖模穴 C",
+            "item_id": "dimension",
+            "sample_id": null
+          }
+        ],
+        "first_requested_at": "2026-10-03T01:19:43.179710+00:00",
+        "created_at": "2026-10-03T01:22:24.702901+00:00",
+        "sha256": "f3f55ad051711fe8d8b6592aada680ef373cffd89ad73f326e9045380e4e8e22",
+        "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "visibility": "private",
+        "reason": "合成实物交接：只接收A，B继续暂缓并明确缺项责任",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "Synthetic drawing for preparation only",
+            "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "expected_revision": 1
+          },
+          {
+            "line": 2,
+            "quote": "Synthetic numeric limits 9.5 to 10.5; method not approved",
+            "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "expected_revision": 1
+          },
+          {
+            "line": 3,
+            "quote": "Synthetic attachment for dimension; no professional approval",
+            "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "expected_revision": 1
+          },
+          {
+            "line": 1,
+            "quote": "{\"actual_configuration_id\": \"d75bc010-242d-4d65-9b62-2730725b9345\", \"build_id\": \"c4bd36e6-b8e6-47cd-8497-2fd8d80aa577\", \"lot_id\": \"88a053e3-2d90-4f75-8af8-67d0199c6d69\", \"occurred_at\": \"2026-10-03T01:20:07.698415+00:00\", \"purpose\": \"Verify preparation\", \"sample_id\": \"7c16ba29-4598-4240-941c-40ddc6b8348a\", \"state\": \"ready\"}",
+            "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+            "expected_revision": 1
+          },
+          {
+            "line": 1,
+            "quote": "{\"actual_configuration_id\": \"d75bc010-242d-4d65-9b62-2730725b9345\", \"build_id\": \"c4bd36e6-b8e6-47cd-8497-2fd8d80aa577\", \"lot_id\": \"88a053e3-2d90-4f75-8af8-67d0199c6d69\", \"occurred_at\": \"2026-10-03T01:20:07.908819+00:00\", \"purpose\": \"Verify preparation\", \"sample_id\": \"407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8\", \"state\": \"hold\"}",
+            "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "9cebc9f0-03f4-4acf-8ca0-a6dda1facd07",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "c598c044-b427-4052-85fe-c29f18e0ed96",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "fa2ba9c7-63e5-40dd-b1d0-a84fd1e0d2c8",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "fd89cebd-1b9a-49db-8e50-14e6c7d85dc3",
+            "expected_revision": 1
+          }
+        ],
+        "is_current": true,
+        "zero_occupancy": true,
+        "physical_timeline_empty": false,
+        "capabilities": {
+          "actual_method_prepare": false,
+          "handoff_offer": false,
+          "handoff_accept": false,
+          "handoff_return": false
+        }
+      },
+      "run": {
+        "id": null,
+        "run_id": "050b0f95-39b6-4c90-8131-04118dfa32e3",
+        "revision": 1,
+        "request_id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+        "request_revision": 5,
+        "build": {
+          "id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+          "revision": 1,
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+          "engineering_configuration": {
+            "id": "3693f534-e459-479f-95af-c24f62de0d1d",
+            "revision": 1
+          },
+          "manufacturing_configuration": {
+            "id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+            "revision": 1
+          }
+        },
+        "status": "planned",
+        "result": "pending",
+        "run_snapshot": {
+          "id": "050b0f95-39b6-4c90-8131-04118dfa32e3",
+          "revision": 1,
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "request_id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+          "request_revision": 5,
+          "build": {
+            "id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+            "revision": 1,
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+            "engineering_configuration": {
+              "id": "3693f534-e459-479f-95af-c24f62de0d1d",
+              "revision": 1
+            },
+            "manufacturing_configuration": {
+              "id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+              "revision": 1
+            }
+          },
+          "items": [
+            {
+              "id": "dimension",
+              "feature": "Synthetic dimension",
+              "drawing": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:aef891e710caf19e7666ba28005a2bf2797ae05938f075bf8879e80d6f820e3e"
+              },
+              "method": {
+                "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                "revision": 1,
+                "kind": "artifact",
+                "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+              },
+              "criterion": {
+                "lower": "9.5",
+                "upper": "10.5",
+                "source": {
+                  "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+                  "revision": 1,
+                  "kind": "artifact",
+                  "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+                }
+              },
+              "criterion_text": null,
+              "criterion_source": null,
+              "unit": "mm",
+              "conditions": "23 C, dry",
+              "material": "Synthetic polymer",
+              "sample_count": 3,
+              "cavities": [
+                "A",
+                "B",
+                "C"
+              ],
+              "destructive": false
+            }
+          ],
+          "samples": [
+            {
+              "id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+              "revision": 1,
+              "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+              "actual_configuration": {
+                "id": "d75bc010-242d-4d65-9b62-2730725b9345",
+                "revision": 1
+              },
+              "cavity": "A"
+            }
+          ],
+          "coverage": [
+            {
+              "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+              "item_id": "dimension"
+            }
+          ],
+          "status": "planned",
+          "result": "pending",
+          "execution": null,
+          "actual_start": null,
+          "actual_end": null,
+          "preliminary_result": null,
+          "final_result": null,
+          "measurements": [],
+          "computed_results": [],
+          "partial_returns": [],
+          "professional_conclusion": null,
+          "disposition": null
+        },
+        "execution_plan": {
+          "window": {
+            "start": "2026-10-03T01:35:40.375459Z",
+            "finish": "2026-10-03T03:25:40.375459Z",
+            "original_timezone": "UTC"
+          },
+          "executor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+          "equipment": {
+            "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+            "expected_revision": 1,
+            "line": 1,
+            "quote": "SYN-W13-EQUIPMENT:固定合成设备，本次完整窗口可用，未授真实资格。"
+          },
+          "calibration": {
+            "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+            "expected_revision": 1,
+            "line": 2,
+            "quote": "SYN-W13-CALIBRATION:合成具名校准依据，不代表生产校准。"
+          },
+          "environment": "本地合成测试室",
+          "conditions": "固定合成20°C，结果与处置尚未接入",
+          "resource_fact_id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+          "expected_resource_fact_revision": 1
+        },
+        "plan_sha256": "8e40fb81d93685b851460b38c15638aa177c0ae1ed3b8d1b18b32a52e8422c4f",
+        "sources": [
+          {
+            "line": 1,
+            "quote": "Synthetic drawing for preparation only",
+            "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "expected_revision": 1
+          },
+          {
+            "line": 2,
+            "quote": "Synthetic numeric limits 9.5 to 10.5; method not approved",
+            "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "expected_revision": 1
+          },
+          {
+            "line": 3,
+            "quote": "Synthetic attachment for dimension; no professional approval",
+            "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "expected_revision": 1
+          },
+          {
+            "line": 1,
+            "quote": "SYN-W13-EQUIPMENT:固定合成设备，本次完整窗口可用，未授真实资格。",
+            "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+            "expected_revision": 1
+          },
+          {
+            "line": 2,
+            "quote": "SYN-W13-CALIBRATION:合成具名校准依据，不代表生产校准。",
+            "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+            "expected_revision": 1
+          },
+          {
+            "line": 1,
+            "quote": "{\"actual_configuration_id\": \"d75bc010-242d-4d65-9b62-2730725b9345\", \"build_id\": \"c4bd36e6-b8e6-47cd-8497-2fd8d80aa577\", \"lot_id\": \"88a053e3-2d90-4f75-8af8-67d0199c6d69\", \"occurred_at\": \"2026-10-03T01:20:07.698415+00:00\", \"purpose\": \"Verify preparation\", \"sample_id\": \"7c16ba29-4598-4240-941c-40ddc6b8348a\", \"state\": \"ready\"}",
+            "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+            "expected_revision": 1
+          },
+          {
+            "line": 1,
+            "quote": "{\"actual_configuration_id\": \"d75bc010-242d-4d65-9b62-2730725b9345\", \"build_id\": \"c4bd36e6-b8e6-47cd-8497-2fd8d80aa577\", \"lot_id\": \"88a053e3-2d90-4f75-8af8-67d0199c6d69\", \"occurred_at\": \"2026-10-03T01:20:07.908819+00:00\", \"purpose\": \"Verify preparation\", \"sample_id\": \"407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8\", \"state\": \"hold\"}",
+            "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+            "expected_revision": 1
+          }
+        ],
+        "required_source_read_set": [
+          {
+            "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "9cebc9f0-03f4-4acf-8ca0-a6dda1facd07",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "c598c044-b427-4052-85fe-c29f18e0ed96",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "fa2ba9c7-63e5-40dd-b1d0-a84fd1e0d2c8",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "fd89cebd-1b9a-49db-8e50-14e6c7d85dc3",
+            "expected_revision": 1
+          }
+        ],
+        "authority": {
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "subject_id": "0a41538d-e721-4783-866a-39c35d382eef",
+          "operation": "test.run.plan",
+          "purpose": "Verify preparation",
+          "authorized": true,
+          "roles": [
+            "quality"
+          ],
+          "qualified": true,
+          "reason_codes": [],
+          "fact_refs": [
+            {
+              "id": "d6c6f198-b775-45f3-98e7-7b436671e5aa",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "78a79948-d9ed-4e41-b042-0125d8279bf6",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "1bb03838-b1c4-4a16-a286-4a6408170eb4",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "176ff344-e6cc-421b-b865-8047c6272dec",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "64319b11-c088-447a-9982-9797805ab30f",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "0ab20aa2-3300-47b2-bff1-f74472561b0b",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "e6384e4f-34c5-4099-9cc3-a3e47b1a0156",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "97534059-131d-4937-8132-96e01c842fb6",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "quality",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "ae5af540-acf4-4e80-bf9a-e5fec750521c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "9e4cc0a9-492b-48b4-bee9-a80d3855f498",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            }
+          ],
+          "facts_revision": "d58f12a335868e6d19b1b9915ea2d5f7a748476d79d95d8ca669bdc83b01c712",
+          "valid_until": "2026-10-04T01:09:04.015463+00:00",
+          "synthetic": true,
+          "required_source_read_set": [
+            {
+              "artifact_id": "fa2ba9c7-63e5-40dd-b1d0-a84fd1e0d2c8",
+              "expected_revision": 1
+            },
+            {
+              "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+              "expected_revision": 1
+            },
+            {
+              "artifact_id": "fd89cebd-1b9a-49db-8e50-14e6c7d85dc3",
+              "expected_revision": 1
+            }
+          ]
+        },
+        "source_status": "current",
+        "is_current": false,
+        "current_evaluation": "not_evaluated_historical",
+        "resource_report": null,
+        "created_at": null,
+        "occupancy": [],
+        "sample_usage": [],
+        "zero_occupancy": true,
+        "capabilities": {
+          "schedule_promise": false,
+          "run_start": false
+        },
+        "blockers": []
+      },
+      "resource_report": {
+        "status": "READY",
+        "capacity_status": "checked",
+        "checks": [
+          {
+            "resource": {
+              "id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "revision": 1,
+              "kind": "person"
+            },
+            "code": "qualification_valid",
+            "status": "READY",
+            "detail": "Named fact covers full execution",
+            "source": {
+              "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+              "revision": 1,
+              "kind": "domain",
+              "position": "resource:0a41538d-e721-4783-866a-39c35d382eef:qualification"
+            }
+          },
+          {
+            "resource": {
+              "id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "revision": 1,
+              "kind": "person"
+            },
+            "code": "capacity_available",
+            "status": "READY",
+            "detail": "Capacity checked; this is not a reservation",
+            "source": null
+          },
+          {
+            "resource": {
+              "id": "5f307ced-791c-4640-9c2c-60ea0aec19f5",
+              "revision": 1,
+              "kind": "equipment"
+            },
+            "code": "acceptance_valid",
+            "status": "READY",
+            "detail": "Named fact covers full execution",
+            "source": {
+              "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+              "revision": 1,
+              "kind": "domain",
+              "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5:acceptance"
+            }
+          },
+          {
+            "resource": {
+              "id": "5f307ced-791c-4640-9c2c-60ea0aec19f5",
+              "revision": 1,
+              "kind": "equipment"
+            },
+            "code": "calibration_valid",
+            "status": "READY",
+            "detail": "Named fact covers full execution",
+            "source": {
+              "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+              "revision": 1,
+              "kind": "domain",
+              "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5:calibration"
+            }
+          },
+          {
+            "resource": {
+              "id": "5f307ced-791c-4640-9c2c-60ea0aec19f5",
+              "revision": 1,
+              "kind": "equipment"
+            },
+            "code": "capacity_available",
+            "status": "READY",
+            "detail": "Capacity checked; this is not a reservation",
+            "source": null
+          }
+        ],
+        "fixed_resources": [
+          {
+            "ref": {
+              "id": "0a41538d-e721-4783-866a-39c35d382eef",
+              "revision": 1,
+              "kind": "person"
+            },
+            "scope": {
+              "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+              "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+              "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+            },
+            "source": {
+              "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+              "revision": 1,
+              "kind": "domain",
+              "position": "resource:0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "purposes": [
+              "Verify preparation"
+            ],
+            "operation_ids": [
+              "test.run.start"
+            ],
+            "lifecycle": "active",
+            "required_facts": [],
+            "facts": [
+              {
+                "kind": "qualification",
+                "source": {
+                  "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+                  "revision": 1,
+                  "kind": "domain",
+                  "position": "resource:0a41538d-e721-4783-866a-39c35d382eef:qualification"
+                },
+                "purpose": "Verify preparation",
+                "operation_id": "test.run.start",
+                "status": "accepted",
+                "valid_from": "2026-10-02T01:25:40.375459Z",
+                "valid_until": "2026-10-04T01:25:40.375459Z",
+                "conditions": [],
+                "named_decision_id": "98151fb3-54b0-48c3-b6a7-6e6b61918079",
+                "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+              }
+            ],
+            "maintenance": [],
+            "calendar": {
+              "calendar_id": "SYN-W13-UTC",
+              "version": "1",
+              "timezone": "UTC",
+              "weekly": [
+                {
+                  "weekday": 0,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                },
+                {
+                  "weekday": 1,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                },
+                {
+                  "weekday": 2,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                },
+                {
+                  "weekday": 3,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                },
+                {
+                  "weekday": 4,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                },
+                {
+                  "weekday": 5,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                },
+                {
+                  "weekday": 6,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                }
+              ],
+              "exceptions": [],
+              "ambiguous_time": "reject",
+              "timezone_rules_sha256": "fddce1e648a1732ac29afd9a16151b2973cdf082e7ec0c690f7e42be6b598b93"
+            },
+            "calendar_source": {
+              "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+              "revision": 1,
+              "kind": "domain",
+              "position": "calendar:0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            "capacity": "1",
+            "occupancy_revision": 1
+          },
+          {
+            "ref": {
+              "id": "5f307ced-791c-4640-9c2c-60ea0aec19f5",
+              "revision": 1,
+              "kind": "equipment"
+            },
+            "scope": {
+              "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+              "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+              "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+            },
+            "source": {
+              "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+              "revision": 1,
+              "kind": "domain",
+              "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5"
+            },
+            "purposes": [
+              "Verify preparation"
+            ],
+            "operation_ids": [
+              "test.run.start"
+            ],
+            "lifecycle": "active",
+            "required_facts": [],
+            "facts": [
+              {
+                "kind": "acceptance",
+                "source": {
+                  "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+                  "revision": 1,
+                  "kind": "domain",
+                  "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5:acceptance"
+                },
+                "purpose": "Verify preparation",
+                "operation_id": "test.run.start",
+                "status": "accepted",
+                "valid_from": "2026-10-02T01:25:40.375459Z",
+                "valid_until": "2026-10-04T01:25:40.375459Z",
+                "conditions": [],
+                "named_decision_id": "19b8ae59-1e47-4734-b816-185e1c113bef",
+                "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+              },
+              {
+                "kind": "calibration",
+                "source": {
+                  "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+                  "revision": 1,
+                  "kind": "domain",
+                  "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5:calibration"
+                },
+                "purpose": "Verify preparation",
+                "operation_id": "test.run.start",
+                "status": "accepted",
+                "valid_from": "2026-10-02T01:25:40.375459Z",
+                "valid_until": "2026-10-04T01:25:40.375459Z",
+                "conditions": [],
+                "named_decision_id": "93d0fe1b-5d8d-4341-b754-037800219590",
+                "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+              }
+            ],
+            "maintenance": [],
+            "calendar": {
+              "calendar_id": "SYN-W13-UTC",
+              "version": "1",
+              "timezone": "UTC",
+              "weekly": [
+                {
+                  "weekday": 0,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                },
+                {
+                  "weekday": 1,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                },
+                {
+                  "weekday": 2,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                },
+                {
+                  "weekday": 3,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                },
+                {
+                  "weekday": 4,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                },
+                {
+                  "weekday": 5,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                },
+                {
+                  "weekday": 6,
+                  "intervals": [
+                    {
+                      "start_minute": 0,
+                      "end_minute": 1440
+                    }
+                  ]
+                }
+              ],
+              "exceptions": [],
+              "ambiguous_time": "reject",
+              "timezone_rules_sha256": "fddce1e648a1732ac29afd9a16151b2973cdf082e7ec0c690f7e42be6b598b93"
+            },
+            "calendar_source": {
+              "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+              "revision": 1,
+              "kind": "domain",
+              "position": "calendar:5f307ced-791c-4640-9c2c-60ea0aec19f5"
+            },
+            "capacity": "1",
+            "occupancy_revision": 1
+          }
+        ],
+        "input_digest": "1389a05cd83a7144bbb466f398e63f14cbab3ebd84eccc8dc42206d0078acc0a",
+        "checked_at": null,
+        "conditions": [],
+        "checked_at_basis": "server_revalidates_on_execute"
+      },
+      "sample_usage": [
+        {
+          "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+          "state": "available",
+          "owner_run_id": null,
+          "revision": null,
+          "reason": null
+        }
+      ],
+      "occupancy_effect": "none"
+    },
+    "authority": {
+      "scope": {
+        "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+        "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+        "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+      },
+      "subject_id": "0a41538d-e721-4783-866a-39c35d382eef",
+      "operation": "test.run.plan",
+      "purpose": "Verify preparation",
+      "authorized": true,
+      "roles": [
+        "quality"
+      ],
+      "qualified": true,
+      "reason_codes": [],
+      "fact_refs": [
+        {
+          "id": "d6c6f198-b775-45f3-98e7-7b436671e5aa",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "quality",
+          "nature": "synthetic",
+          "issuer_key": "local-synthetic-authority",
+          "issuer_version": "v1"
+        },
+        {
+          "id": "78a79948-d9ed-4e41-b042-0125d8279bf6",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "local-synthetic-authority",
+          "issuer_version": "v1"
+        },
+        {
+          "id": "1bb03838-b1c4-4a16-a286-4a6408170eb4",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "local-synthetic-authority",
+          "issuer_version": "v1"
+        },
+        {
+          "id": "176ff344-e6cc-421b-b865-8047c6272dec",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "quality",
+          "nature": "synthetic",
+          "issuer_key": "local-synthetic-authority",
+          "issuer_version": "v1"
+        },
+        {
+          "id": "64319b11-c088-447a-9982-9797805ab30f",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "local-synthetic-authority",
+          "issuer_version": "v1"
+        },
+        {
+          "id": "0ab20aa2-3300-47b2-bff1-f74472561b0b",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "local-synthetic-authority",
+          "issuer_version": "v1"
+        },
+        {
+          "id": "e6384e4f-34c5-4099-9cc3-a3e47b1a0156",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "quality",
+          "nature": "synthetic",
+          "issuer_key": "local-synthetic-authority",
+          "issuer_version": "v1"
+        },
+        {
+          "id": "97534059-131d-4937-8132-96e01c842fb6",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "quality",
+          "nature": "synthetic",
+          "issuer_key": "local-synthetic-authority",
+          "issuer_version": "v1"
+        },
+        {
+          "id": "ae5af540-acf4-4e80-bf9a-e5fec750521c",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "local-synthetic-authority",
+          "issuer_version": "v1"
+        },
+        {
+          "id": "9e4cc0a9-492b-48b4-bee9-a80d3855f498",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "local-synthetic-authority",
+          "issuer_version": "v1"
+        }
+      ],
+      "facts_revision": "d58f12a335868e6d19b1b9915ea2d5f7a748476d79d95d8ca669bdc83b01c712",
+      "valid_until": "2026-10-04T01:09:04.015463+00:00",
+      "synthetic": true,
+      "required_source_read_set": [
+        {
+          "artifact_id": "fa2ba9c7-63e5-40dd-b1d0-a84fd1e0d2c8",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "fd89cebd-1b9a-49db-8e50-14e6c7d85dc3",
+          "expected_revision": 1
+        }
+      ]
+    },
+    "required_source_read_set": [
+      {
+        "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "9cebc9f0-03f4-4acf-8ca0-a6dda1facd07",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "c598c044-b427-4052-85fe-c29f18e0ed96",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "fa2ba9c7-63e5-40dd-b1d0-a84fd1e0d2c8",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "fd89cebd-1b9a-49db-8e50-14e6c7d85dc3",
+        "expected_revision": 1
+      }
+    ],
+    "resource_report": {
+      "status": "READY",
+      "capacity_status": "checked",
+      "checks": [
+        {
+          "resource": {
+            "id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "revision": 1,
+            "kind": "person"
+          },
+          "code": "qualification_valid",
+          "status": "READY",
+          "detail": "Named fact covers full execution",
+          "source": {
+            "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+            "revision": 1,
+            "kind": "domain",
+            "position": "resource:0a41538d-e721-4783-866a-39c35d382eef:qualification"
+          }
+        },
+        {
+          "resource": {
+            "id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "revision": 1,
+            "kind": "person"
+          },
+          "code": "capacity_available",
+          "status": "READY",
+          "detail": "Capacity checked; this is not a reservation",
+          "source": null
+        },
+        {
+          "resource": {
+            "id": "5f307ced-791c-4640-9c2c-60ea0aec19f5",
+            "revision": 1,
+            "kind": "equipment"
+          },
+          "code": "acceptance_valid",
+          "status": "READY",
+          "detail": "Named fact covers full execution",
+          "source": {
+            "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+            "revision": 1,
+            "kind": "domain",
+            "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5:acceptance"
+          }
+        },
+        {
+          "resource": {
+            "id": "5f307ced-791c-4640-9c2c-60ea0aec19f5",
+            "revision": 1,
+            "kind": "equipment"
+          },
+          "code": "calibration_valid",
+          "status": "READY",
+          "detail": "Named fact covers full execution",
+          "source": {
+            "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+            "revision": 1,
+            "kind": "domain",
+            "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5:calibration"
+          }
+        },
+        {
+          "resource": {
+            "id": "5f307ced-791c-4640-9c2c-60ea0aec19f5",
+            "revision": 1,
+            "kind": "equipment"
+          },
+          "code": "capacity_available",
+          "status": "READY",
+          "detail": "Capacity checked; this is not a reservation",
+          "source": null
+        }
+      ],
+      "fixed_resources": [
+        {
+          "ref": {
+            "id": "0a41538d-e721-4783-866a-39c35d382eef",
+            "revision": 1,
+            "kind": "person"
+          },
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "source": {
+            "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+            "revision": 1,
+            "kind": "domain",
+            "position": "resource:0a41538d-e721-4783-866a-39c35d382eef"
+          },
+          "purposes": [
+            "Verify preparation"
+          ],
+          "operation_ids": [
+            "test.run.start"
+          ],
+          "lifecycle": "active",
+          "required_facts": [],
+          "facts": [
+            {
+              "kind": "qualification",
+              "source": {
+                "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+                "revision": 1,
+                "kind": "domain",
+                "position": "resource:0a41538d-e721-4783-866a-39c35d382eef:qualification"
+              },
+              "purpose": "Verify preparation",
+              "operation_id": "test.run.start",
+              "status": "accepted",
+              "valid_from": "2026-10-02T01:25:40.375459Z",
+              "valid_until": "2026-10-04T01:25:40.375459Z",
+              "conditions": [],
+              "named_decision_id": "98151fb3-54b0-48c3-b6a7-6e6b61918079",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            }
+          ],
+          "maintenance": [],
+          "calendar": {
+            "calendar_id": "SYN-W13-UTC",
+            "version": "1",
+            "timezone": "UTC",
+            "weekly": [
+              {
+                "weekday": 0,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              },
+              {
+                "weekday": 1,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              },
+              {
+                "weekday": 2,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              },
+              {
+                "weekday": 3,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              },
+              {
+                "weekday": 4,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              },
+              {
+                "weekday": 5,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              },
+              {
+                "weekday": 6,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              }
+            ],
+            "exceptions": [],
+            "ambiguous_time": "reject",
+            "timezone_rules_sha256": "fddce1e648a1732ac29afd9a16151b2973cdf082e7ec0c690f7e42be6b598b93"
+          },
+          "calendar_source": {
+            "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+            "revision": 1,
+            "kind": "domain",
+            "position": "calendar:0a41538d-e721-4783-866a-39c35d382eef"
+          },
+          "capacity": "1",
+          "occupancy_revision": 1
+        },
+        {
+          "ref": {
+            "id": "5f307ced-791c-4640-9c2c-60ea0aec19f5",
+            "revision": 1,
+            "kind": "equipment"
+          },
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "source": {
+            "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+            "revision": 1,
+            "kind": "domain",
+            "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5"
+          },
+          "purposes": [
+            "Verify preparation"
+          ],
+          "operation_ids": [
+            "test.run.start"
+          ],
+          "lifecycle": "active",
+          "required_facts": [],
+          "facts": [
+            {
+              "kind": "acceptance",
+              "source": {
+                "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+                "revision": 1,
+                "kind": "domain",
+                "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5:acceptance"
+              },
+              "purpose": "Verify preparation",
+              "operation_id": "test.run.start",
+              "status": "accepted",
+              "valid_from": "2026-10-02T01:25:40.375459Z",
+              "valid_until": "2026-10-04T01:25:40.375459Z",
+              "conditions": [],
+              "named_decision_id": "19b8ae59-1e47-4734-b816-185e1c113bef",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            },
+            {
+              "kind": "calibration",
+              "source": {
+                "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+                "revision": 1,
+                "kind": "domain",
+                "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5:calibration"
+              },
+              "purpose": "Verify preparation",
+              "operation_id": "test.run.start",
+              "status": "accepted",
+              "valid_from": "2026-10-02T01:25:40.375459Z",
+              "valid_until": "2026-10-04T01:25:40.375459Z",
+              "conditions": [],
+              "named_decision_id": "93d0fe1b-5d8d-4341-b754-037800219590",
+              "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+            }
+          ],
+          "maintenance": [],
+          "calendar": {
+            "calendar_id": "SYN-W13-UTC",
+            "version": "1",
+            "timezone": "UTC",
+            "weekly": [
+              {
+                "weekday": 0,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              },
+              {
+                "weekday": 1,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              },
+              {
+                "weekday": 2,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              },
+              {
+                "weekday": 3,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              },
+              {
+                "weekday": 4,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              },
+              {
+                "weekday": 5,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              },
+              {
+                "weekday": 6,
+                "intervals": [
+                  {
+                    "start_minute": 0,
+                    "end_minute": 1440
+                  }
+                ]
+              }
+            ],
+            "exceptions": [],
+            "ambiguous_time": "reject",
+            "timezone_rules_sha256": "fddce1e648a1732ac29afd9a16151b2973cdf082e7ec0c690f7e42be6b598b93"
+          },
+          "calendar_source": {
+            "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+            "revision": 1,
+            "kind": "domain",
+            "position": "calendar:5f307ced-791c-4640-9c2c-60ea0aec19f5"
+          },
+          "capacity": "1",
+          "occupancy_revision": 1
+        }
+      ],
+      "input_digest": "1389a05cd83a7144bbb466f398e63f14cbab3ebd84eccc8dc42206d0078acc0a",
+      "checked_at": null,
+      "conditions": [],
+      "checked_at_basis": "server_revalidates_on_execute"
+    },
+    "reason": "本地合成固定A范围开测，未接收B与缺项保持"
+  }
+}

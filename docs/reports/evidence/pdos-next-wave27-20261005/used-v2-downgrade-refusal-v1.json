@@ -1,0 +1,10 @@
+{
+  "status": "PASS_USED_V2_DESTRUCTIVE_DOWNGRADE_REFUSED_WITHOUT_CHANGES",
+  "target": "127.0.0.1:63866/pdos_test",
+  "marker": "20a17344-1e35-42e1-95ab-e100e56e9d88",
+  "final_head": "next_0029",
+  "actual_saved_v2_count": 3,
+  "all_122_complete_row_hashes_including_full_v2_proof_unchanged": true,
+  "all_catalog_constraints_triggers_policies_permissions_unchanged": true,
+  "repository_tests_on_retained_shared_target": false
+}

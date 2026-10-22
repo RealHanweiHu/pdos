@@ -1,0 +1,385 @@
+{
+  "version": "session-presentation-actual-dto-check/v1",
+  "result": "passed",
+  "source": {
+    "exported_dto_sha256": "a7d70e957b9d8585d85adcf39d66dec5af4ab0b7816cad1425355cfc8ba7104d",
+    "candidate_manifest_sha256": "107c4ece8b1d8f9a4746e6db75b3de8f7034dc54b7c81f8663d9b205cd544fe9",
+    "candidate": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/session-presentation-web-1792410193968572000",
+    "helper": "src/lib/pai-session-presentation.ts",
+    "helper_sha256": "b8ff894bc9f39fcec213348366c993c7d1e1623d677d9997a63e9cc7c0dc23f9"
+  },
+  "execution": {
+    "mode": "offline in-memory replay of previously exported actual DTOs",
+    "new_http_requests": 0,
+    "new_get_requests": 0,
+    "new_post_requests": 0,
+    "new_pg_sessions": 0,
+    "new_services": 0,
+    "browser_sessions": 0,
+    "in_memory_helper_calls": {
+      "lists": 13,
+      "writes": 9,
+      "recoveries": 1
+    }
+  },
+  "request_provenance": "Raw POST bytes and request bodies were not exported. Contract requests are deterministic projections of immutable actual receipts (expected_revision=response revision-1); repeated keys reuse the first original projected request. This checks the helper contract and preservation, not original HTTP request bytes.",
+  "list_checks": [
+    {
+      "phase": "default_personal",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "category_id": null,
+      "original_params": {},
+      "effective_query": {
+        "view": "active",
+        "page_size": "20"
+      },
+      "items": 2,
+      "body_sha256": "7abd1493af4b9c1604b99657e2c307780f4e2fdaa4400b5c0e6062cb3b1a40ca",
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "phase": "default_category",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+      "original_params": {},
+      "effective_query": {
+        "view": "active",
+        "page_size": "20"
+      },
+      "items": 1,
+      "body_sha256": "8df5a2103e5bbc85365740af85a20a008aa2fc8abe83e0f3289d1c9d79cfc1bb",
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "phase": "pinned_first_page",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "category_id": null,
+      "original_params": {
+        "page_size": 1
+      },
+      "effective_query": {
+        "view": "active",
+        "page_size": "1"
+      },
+      "items": 1,
+      "body_sha256": "c8f8f19300414737ccf6a75aebac7759e3c3d781a8c24f8a0bba2bd65c8716cf",
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "phase": "pinned_next_page",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "category_id": null,
+      "original_params": {
+        "page_size": 1,
+        "cursor": "6c806100-018c-4048-a8da-2dcaa2c48dee"
+      },
+      "effective_query": {
+        "view": "active",
+        "page_size": "1",
+        "cursor": "6c806100-018c-4048-a8da-2dcaa2c48dee"
+      },
+      "items": 1,
+      "body_sha256": "822354437d75bed0a9f0d777f265c96569d521f250d9f8ddae272c0ea8a3252f",
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "phase": "custom_title_search",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "category_id": null,
+      "original_params": {
+        "q": "%_\\"
+      },
+      "effective_query": {
+        "view": "active",
+        "page_size": "20",
+        "q": "%_\\"
+      },
+      "items": 1,
+      "body_sha256": "7e2b3426e73c7ecc539caab2a5e846ce57121a40874f5a044d76547746ec9d7b",
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "phase": "archived_active",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "category_id": null,
+      "original_params": {},
+      "effective_query": {
+        "view": "active",
+        "page_size": "20"
+      },
+      "items": 1,
+      "body_sha256": "84ba158fe82678e44b8b847a7181e52c440da7f1b72c423552db9c102621ca55",
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "phase": "archived_view",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "category_id": null,
+      "original_params": {
+        "view": "archived"
+      },
+      "effective_query": {
+        "view": "archived",
+        "page_size": "20"
+      },
+      "items": 1,
+      "body_sha256": "b1833306ec53ddbacedc979af54f18ac7af81793239849e26ac9708c5900547b",
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "phase": "restored_active",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "category_id": null,
+      "original_params": {},
+      "effective_query": {
+        "view": "active",
+        "page_size": "20"
+      },
+      "items": 2,
+      "body_sha256": "be7335d192a96694d2bc2a030a32b6bdd322e4bc38cea1a9691100894e2e5f66",
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "phase": "restored_default_title",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "category_id": null,
+      "original_params": {},
+      "effective_query": {
+        "view": "active",
+        "page_size": "20"
+      },
+      "items": 2,
+      "body_sha256": "3d8c0d20506620c72898d821d957169dd717d4c19923e0ae44a7d038b3de210f",
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "phase": "peer_own_category",
+      "principal_id": "f0a4034f-2313-4904-8077-e4a0d409d868",
+      "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+      "original_params": {},
+      "effective_query": {
+        "view": "active",
+        "page_size": "20"
+      },
+      "items": 1,
+      "body_sha256": "1a25a3a66b5e3afcdaa83da9703470832d87df30fc2aa6746ce0cde96ca6e56e",
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "phase": "foreign_personal",
+      "principal_id": "24528fe4-7852-4d88-8a9b-74354abb29d4",
+      "category_id": null,
+      "original_params": {},
+      "effective_query": {
+        "view": "active",
+        "page_size": "20"
+      },
+      "items": 0,
+      "body_sha256": "4a019a8695dd53d174b9bf0befd9ca7cd48a0c2b8f3d0b7d4a98906a793060b8",
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "phase": "peer_after_acl",
+      "principal_id": "f0a4034f-2313-4904-8077-e4a0d409d868",
+      "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+      "original_params": {},
+      "effective_query": {
+        "view": "active",
+        "page_size": "20"
+      },
+      "items": 0,
+      "body_sha256": "050710e606e7faa7ac9c7f391c25d8aa069454e11fb7ec9da87ff399d92c6e01",
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "phase": "owner_after_acl",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "category_id": "1e40702d-ab5a-482c-90be-83dc3c63e4d7",
+      "original_params": {},
+      "effective_query": {
+        "view": "active",
+        "page_size": "20"
+      },
+      "items": 1,
+      "body_sha256": "9f2d3c2d2db87464917abfaf4a5e3a15fd029785850af6bac34c3fac00121a9e",
+      "same_reference": true,
+      "body_unchanged": true
+    }
+  ],
+  "receipt_checks": [
+    {
+      "index": 0,
+      "helper": "writePresentation",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+      "action": "rename",
+      "expected_revision": 0,
+      "response_revision": 1,
+      "request_key": "5fefb4cc-9dc6-472c-8e34-0a98d6cbc426",
+      "request_projection_sha256": "ea736c4800fdeb6126048a2f96e551be913c40f7f75c9eeefad0bf3018d7148d",
+      "body_sha256": "cc925343d6a3bd50e05691f1c3ed893616e94aeef66a90cbf81df664de430638",
+      "repeated_original": false,
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "index": 1,
+      "helper": "writePresentation",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+      "action": "pin",
+      "expected_revision": 1,
+      "response_revision": 2,
+      "request_key": "e7e2afe5-0888-4fae-8783-06385c276be3",
+      "request_projection_sha256": "3ed3fdac33ad282ab7cd46508ee064cdc0cf437601798af55c53765a9143a038",
+      "body_sha256": "fc6c7eb6d0212e4117be021f7e695647f7e089d7cfb234462419784475b41a51",
+      "repeated_original": false,
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "index": 2,
+      "helper": "writePresentation",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+      "action": "rename",
+      "expected_revision": 0,
+      "response_revision": 1,
+      "request_key": "5fefb4cc-9dc6-472c-8e34-0a98d6cbc426",
+      "request_projection_sha256": "ea736c4800fdeb6126048a2f96e551be913c40f7f75c9eeefad0bf3018d7148d",
+      "body_sha256": "cc925343d6a3bd50e05691f1c3ed893616e94aeef66a90cbf81df664de430638",
+      "repeated_original": true,
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "index": 3,
+      "helper": "recoverPresentation",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+      "action": "rename",
+      "expected_revision": 0,
+      "response_revision": 1,
+      "request_key": "5fefb4cc-9dc6-472c-8e34-0a98d6cbc426",
+      "request_projection_sha256": "ea736c4800fdeb6126048a2f96e551be913c40f7f75c9eeefad0bf3018d7148d",
+      "body_sha256": "cc925343d6a3bd50e05691f1c3ed893616e94aeef66a90cbf81df664de430638",
+      "repeated_original": true,
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "index": 4,
+      "helper": "writePresentation",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+      "action": "archive",
+      "expected_revision": 2,
+      "response_revision": 3,
+      "request_key": "6a9710e0-5b9a-418f-abac-82f08b16d18f",
+      "request_projection_sha256": "d207baf2adaf12c5b713903080b0963c185df15e1023faed5714ae8595584e48",
+      "body_sha256": "52c591959588f39e2f8d47bb83ec29dec606ce2fc5aea101a74121aa0460558a",
+      "repeated_original": false,
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "index": 5,
+      "helper": "writePresentation",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+      "action": "restore",
+      "expected_revision": 3,
+      "response_revision": 4,
+      "request_key": "75a3e99b-239e-40bf-9997-eb46fda43357",
+      "request_projection_sha256": "8f1c0a8fc91a39d4d7c3e0ab725fb4314caeff5e5561ace254d481e167de204e",
+      "body_sha256": "1dbae69fa5e111b840e54155e2dc68d46a93aa94581358b47bf2fa1f70ca6da4",
+      "repeated_original": false,
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "index": 6,
+      "helper": "writePresentation",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+      "action": "unpin",
+      "expected_revision": 4,
+      "response_revision": 5,
+      "request_key": "ba6c0d07-3f67-4ead-b2c8-50a4464bc6d6",
+      "request_projection_sha256": "4fae2ac79ec20678caeaa51c1fad2ef20f087e7f0d8da36cf93b3410bc28563f",
+      "body_sha256": "0d828ad74b7909edfc070c1f7f534b505bbfbf98124e9d0b955ea17576f88dcb",
+      "repeated_original": false,
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "index": 7,
+      "helper": "writePresentation",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+      "action": "rename",
+      "expected_revision": 5,
+      "response_revision": 6,
+      "request_key": "b0537b92-cf4d-430b-9628-9f57621e1f5b",
+      "request_projection_sha256": "0291763abb73e79b34b662a42820d717364d6a615ec0f7f7309aa5be3f35ee2b",
+      "body_sha256": "622ecfd874de7bfea9a55743cc8fa5d5507256d1644152b0c58f4e311c6e2f2a",
+      "repeated_original": false,
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "index": 8,
+      "helper": "writePresentation",
+      "principal_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+      "session_id": "2f33c8b5-8363-4382-8fd4-ddbaa67f9459",
+      "action": "rename",
+      "expected_revision": 0,
+      "response_revision": 1,
+      "request_key": "6ee0d89e-5a39-4545-a981-5c8853bcdf7e",
+      "request_projection_sha256": "c48910328eaa312448b3b2b0ac9df0e99b6257054987bd509783309a35cc5543",
+      "body_sha256": "11cd3762505e0ac21a9479e5103e4bca8989c83cfedbda34c1d04338b2cc5945",
+      "repeated_original": false,
+      "same_reference": true,
+      "body_unchanged": true
+    },
+    {
+      "index": 9,
+      "helper": "writePresentation",
+      "principal_id": "f0a4034f-2313-4904-8077-e4a0d409d868",
+      "session_id": "cd7ad8a9-941f-4500-9ce2-7f80474716d4",
+      "action": "rename",
+      "expected_revision": 0,
+      "response_revision": 1,
+      "request_key": "b95300d6-28e4-43f9-9286-6223b8a87c56",
+      "request_projection_sha256": "f2abf7059105482b4c13ac9d5e65f8bc4c3a684b4a82e4528915d51a8c5ce38d",
+      "body_sha256": "fef0a7b6f6566943eb1d4773bc1c8c2c0b1a2682cb03e80fa4f79186de7c0dfb",
+      "repeated_original": false,
+      "same_reference": true,
+      "body_unchanged": true
+    }
+  ],
+  "immutable_replay": {
+    "original_response_revision": 1,
+    "observed_current_revision": 2,
+    "same_original_responses": 3,
+    "same_body_sha256": "cc925343d6a3bd50e05691f1c3ed893616e94aeef66a90cbf81df664de430638"
+  },
+  "limitations": [
+    "No new GET, POST, database, service, worker, model, browser or BFF invocation",
+    "No raw POST-byte verification; only uniquely projected contract inputs",
+    "Only the 13 actually exported successful conversation stages and 10 actual successful command receipts are checked",
+    "No formal phase, production, qualification or additional end-to-end acceptance"
+  ]
+}

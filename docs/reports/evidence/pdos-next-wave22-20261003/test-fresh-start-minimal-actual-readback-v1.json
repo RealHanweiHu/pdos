@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "checked_at": "2026-10-04T01:10:51.053415+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "generation": "37c270ad-521a-44ad-b186-3447a94906c1",
+  "run_id": "6af03fe7-7456-57bf-8486-3dc058d1ebce",
+  "current_run_version_id": "4b88a126-55b6-4121-832f-2c79089f5ab4",
+  "revision": 2,
+  "status_in_current": "running",
+  "actual_start": {
+    "source": {
+      "id": "14247464-c3fc-4dab-8904-ac413ab0b54c",
+      "kind": "artifact",
+      "position": "line:1;quote_sha256:f7f49b2fe75eb1d11d141b419b8aecfe1ebc0e851d31b39b4b063bab844010c6",
+      "revision": 1
+    },
+    "actor_id": "a8e4a921-15e6-4420-bc9e-51ed2242f2bf",
+    "occurred_at": "2026-10-04T01:07:56.021417Z",
+    "received_at": "2026-10-04T01:09:43.125719Z",
+    "effective_at": null,
+    "original_timezone": "UTC"
+  },
+  "resource_occupancy_count": 2,
+  "sample_usage_count": 1,
+  "receipt": {
+    "id": "acb851ff-4741-4022-9534-451634ba0f11",
+    "operation": "test.run.start",
+    "subject_type": "test_run",
+    "subject_id": "4b88a126-55b6-4121-832f-2c79089f5ab4",
+    "subject_revision": 2,
+    "writer_id": "a8e4a921-15e6-4420-bc9e-51ed2242f2bf",
+    "requester_id": "a8e4a921-15e6-4420-bc9e-51ed2242f2bf",
+    "created_at": "2026-10-04T01:10:01.628247+00:00",
+    "result": {
+      "id": "4b88a126-55b6-4121-832f-2c79089f5ab4",
+      "revision": 2,
+      "status": "running"
+    }
+  },
+  "read_only_rollback": true,
+  "real_qualification": false
+}

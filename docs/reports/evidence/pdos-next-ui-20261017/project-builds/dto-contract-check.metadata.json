@@ -1,0 +1,35 @@
+{
+  "version": "project-build-summary-dto-check/v1",
+  "status": "passed",
+  "provenance": "Captured output of the completed four-stage reader comparison; saved afterward without rerunning it.",
+  "database_operations": false,
+  "source_modified": false,
+  "working_directory": "pdos-next/web",
+  "recorded_command": "node --input-type=module (script supplied on stdin)",
+  "replay_command": "node --input-type=module < ../../docs/reports/evidence/pdos-next-ui-20261017/project-builds/dto-contract-check.mjs",
+  "input": {
+    "path": "docs/reports/evidence/pdos-next-ui-20261017/project-builds/pg-http-response.json",
+    "sha256": "add0f19f8186a839ad986cd8eca1acd11f7b0d27554fb3a64e04881d60f670cd"
+  },
+  "reader": {
+    "path": "pdos-next/web/src/lib/project-build-summary.ts",
+    "sha256": "f313ae12b425e269d4b326ab8897809a57a30f44c27ca7628ab92b2d035ec095"
+  },
+  "script": {
+    "path": "docs/reports/evidence/pdos-next-ui-20261017/project-builds/dto-contract-check.mjs",
+    "sha256": "c90a945705c9445486dca7f5d90c990a43200558092b4cd45f4bb51d2a3b74f0"
+  },
+  "captured_output": {
+    "path": "docs/reports/evidence/pdos-next-ui-20261017/project-builds/dto-contract-check.json",
+    "sha256": "6f20b77ec861abbd00fd1ba0084b0e886acc5ca4af8cb041c65e1f5a34c80b94"
+  },
+  "checks": [
+    "Four actual HTTP/PG response stages accepted by frozen readProjectBuilds/readBuildTestSummary.",
+    "Only project-filtered Build GET and explicitly selected Build results GET; no body or mutation.",
+    "Project, selected Build, current Run and fixed request binding verified.",
+    "Current request version remains separate from the Run fixed request version.",
+    "Current projection basis equals current Run basis; historical projection Run binding is permitted only when exact and readable.",
+    "Raw measurement value and observed_at strings equal the input DTO without rounding or normalization.",
+    "Current Run v5 retains projection bound to Run v4 in reviewed stage."
+  ]
+}

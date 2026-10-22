@@ -1,0 +1,67 @@
+{
+  "status": "owned native-source clarification and static PG tests frozen; public integration pending",
+  "recorded_at": "2026-10-03T04:57:10.930835+00:00",
+  "historical_freeze_preserved": "change-freeze.json",
+  "source_files": {
+    "pdos-next/server/pdos_next/domain/change_execution/__init__.py": "309159b43dd6eab34812aa4c2fe9f8e9dea30e335107c7b2393b9136bd3370cd",
+    "pdos-next/server/pdos_next/domain/change_execution/adapters.py": "875b2172d4876205a5b743ed5375fc54078e89668589cc6c80a3240bffeeca40",
+    "pdos-next/server/pdos_next/domain/change_execution/graph.py": "5e42fb2ba4a953901cd15d8ffa14d9bc7e44ad73979b1a0de85742471cbebe1f",
+    "pdos-next/server/pdos_next/domain/change_execution/models.py": "cf0961f9ac8160430b6075e3dfecbfa7bad1493486c052b81e93165218607679",
+    "pdos-next/server/pdos_next/domain/change_execution/schemas.py": "af449f47ff19887a7e9c6d02529960fbad4de1b69e98f370fcfdfc83edbb349e",
+    "pdos-next/server/pdos_next/domain/change_execution/service.py": "40448bde0b3cae0bb944e4e68ad41a4d5ec3047b137917794741c1bed04cc69f",
+    "pdos-next/server/tests/change_execution/__init__.py": "2da8ec8fef564aa4bce15deaa57da711311e2f82229158f440638c4d6bbc9261",
+    "pdos-next/server/tests/change_execution/test_evidence.py": "009e00ad5e6e1ce1ee5f3495cc93dde3f047a0f1b2aeca436444cb1585e8d278",
+    "pdos-next/server/tests/change_execution/test_native_evidence.py": "503c1936e74def22db1eb48a845fc70804da06c5a91de01d60acd308a90e8b87",
+    "pdos-next/server/tests/change_execution/test_pure.py": "e185ec9f2945de53202595814377d2196c5a6ad706798964d9e6e66afd88f400",
+    "pdos-next/server/tests/change_execution/test_transactions.py": "9726106e991f402ea6d695d0b55db42ecec1e8bfed40816d7791f422e981f317"
+  },
+  "old_scope_delta": {
+    "unchanged": [
+      "pdos-next/server/pdos_next/domain/change_execution/__init__.py",
+      "pdos-next/server/pdos_next/domain/change_execution/adapters.py",
+      "pdos-next/server/pdos_next/domain/change_execution/graph.py",
+      "pdos-next/server/pdos_next/domain/change_execution/models.py",
+      "pdos-next/server/pdos_next/domain/change_execution/schemas.py",
+      "pdos-next/server/tests/change_execution/__init__.py",
+      "pdos-next/server/tests/change_execution/test_pure.py"
+    ],
+    "changed": [
+      "pdos-next/server/pdos_next/domain/change_execution/service.py",
+      "pdos-next/server/tests/change_execution/test_evidence.py"
+    ],
+    "added": [
+      "pdos-next/server/tests/change_execution/test_native_evidence.py",
+      "pdos-next/server/tests/change_execution/test_transactions.py"
+    ]
+  },
+  "reason": "Root-authorized native immutable text registration receipt provenance; UploadedOriginal keeps original byte/security gates. Three new transaction closures reuse A quality fixtures.",
+  "checks": {
+    "pure": {
+      "selected_files": [
+        "tests/change_execution/test_pure.py",
+        "tests/change_execution/test_evidence.py",
+        "tests/change_execution/test_native_evidence.py"
+      ],
+      "result": "50 passed in 0.71s",
+      "noconftest": true,
+      "database": false,
+      "note": "Native test file subsequently formatter-only; final public candidate verification belongs to root."
+    },
+    "ruff_and_format": "passed for changed/new files",
+    "compile": "passed for changed/new files",
+    "pg_tests": {
+      "nodes": [
+        "test_current_issue_capa_create_cross_key_one_receipt_exact_sources_and_private_scope",
+        "test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualification_aba",
+        "test_impact_terminal_outbox_failure_rolls_back_version_pointer_receipt_but_keeps_capture"
+      ],
+      "count": 3,
+      "execution": "not run; not collected; root alone runs marked PostgreSQL/HTTP checks"
+    }
+  },
+  "integration_index": "change-integration-index.md",
+  "no_shared_source_db_http_browser_actions": true,
+  "shared_fixture_read_only_dependency": {
+    "pdos-next/server/tests/quality_execution/fixtures.py": "1738572bc97e692d5cf8235377a184d1221d970e99b5594bf683794f95336ec9"
+  }
+}

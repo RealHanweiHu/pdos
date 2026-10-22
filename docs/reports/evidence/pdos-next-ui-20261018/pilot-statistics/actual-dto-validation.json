@@ -1,0 +1,2062 @@
+{
+  "version": "project-pilots-actual-dto-validation/v1",
+  "input": "docs/reports/evidence/pdos-next-ui-20261018/pilot-statistics/pg-http-responses.json",
+  "validation": "Unmodified actual project Pilot GET bodies through frozen readProjectPilots and real nativeItem dependencies",
+  "network": false,
+  "database": false,
+  "browser": false,
+  "component_ssr": "not_run",
+  "input_sha256": "419abe2ee29c63fbde6a2152dd097e65e3b265c0100aa460e7ec4df15fa0d1a7",
+  "source_sha256": {
+    "pdos-next/web/src/lib/project-pilots.ts": "1107346d8500f933e9892c9be7299f75eb7742cd06a96989fffb99a2f341ddf5",
+    "pdos-next/web/src/components/manufacturing-preparation/manufacturing-preparation-contract.ts": "2fc6fa24f90012a1fabd14b88442ad95bb90fe0aa5f10ccc77eb4fa2fae370fc",
+    "pdos-next/web/src/lib/native-pilots.ts": "7f7199c0f39ef5e70b4a5cd83f375e381b3b8f09377164bc1befc6326af48160",
+    "pdos-next/web/src/lib/build-quality-loop-view.ts": "7cfc49a4ece48f8e072cffc0d1744825b7550dea0cc87b58ce93a1a0c0f266e0",
+    "pdos-next/web/src/lib/project-build-scope.ts": "9a800dc150bd35811e354c468f298d71d33abe31ad65a6f591034b1a22864f32",
+    "pdos-next/web/src/lib/product-view.ts": "ef9e4740e02f4ab9b11fb70c89097424dae09cb637ed719d8202627e7c15ec15",
+    "pdos-next/web/src/lib/spec-bound-values.ts": "b6c082364ffbc5c8ad0344603b951a1fc2bff59526b42b6b4fc77f3e59c37ea5"
+  },
+  "calls": [
+    {
+      "scenario": "pilot_created_without_observations/project_pilots",
+      "method": "GET",
+      "path": "v1/categories/c3641a5a-346f-44f1-aa63-f85bbc8dba88/products/af7f95e8-8c31-4974-b9a7-3a69a5fec8bb/pilots?project_id=67dc7cf4-9463-4b9c-99fb-5032d8e59f39",
+      "status": 200,
+      "original_body_sha256": "00337e0dc56683404bd83a436f9b9a1fa719f84ec11930af556bf02ef615f953"
+    },
+    {
+      "scenario": "partial_aggregate_observation/project_pilots",
+      "method": "GET",
+      "path": "v1/categories/c3641a5a-346f-44f1-aa63-f85bbc8dba88/products/af7f95e8-8c31-4974-b9a7-3a69a5fec8bb/pilots?project_id=67dc7cf4-9463-4b9c-99fb-5032d8e59f39",
+      "status": 200,
+      "original_body_sha256": "ad2dbd4b611b77b260f0f892be4198dba7d3bca13b332c8758dccf65eae00a08"
+    },
+    {
+      "scenario": "complete_correction_retains_partial_history/project_pilots",
+      "method": "GET",
+      "path": "v1/categories/c3641a5a-346f-44f1-aa63-f85bbc8dba88/products/af7f95e8-8c31-4974-b9a7-3a69a5fec8bb/pilots?project_id=67dc7cf4-9463-4b9c-99fb-5032d8e59f39",
+      "status": 200,
+      "original_body_sha256": "c3665532a8523e68e6c219021d981512be525558e2b7030f6762e3ea0d6761c5"
+    },
+    {
+      "scenario": "complete_correction_retains_partial_history/peer_project_pilots",
+      "method": "GET",
+      "path": "v1/categories/c3641a5a-346f-44f1-aa63-f85bbc8dba88/products/af7f95e8-8c31-4974-b9a7-3a69a5fec8bb/pilots?project_id=67dc7cf4-9463-4b9c-99fb-5032d8e59f39",
+      "status": 200,
+      "original_body_sha256": "c3665532a8523e68e6c219021d981512be525558e2b7030f6762e3ea0d6761c5"
+    },
+    {
+      "scenario": "complete_correction_retains_partial_history/other_model_project",
+      "method": "GET",
+      "path": "v1/categories/c3641a5a-346f-44f1-aa63-f85bbc8dba88/products/af7f95e8-8c31-4974-b9a7-3a69a5fec8bb/pilots?project_id=11d07080-f0f7-4513-b246-ba597d91ee7f",
+      "status": 403,
+      "original_body_sha256": "2537f1cfcaa9b52dbeaaa06d570c5b074ce2c2998a044e25d508a1c2a8ab370e"
+    },
+    {
+      "scenario": "complete_correction_retains_partial_history/foreign_tenant_project",
+      "method": "GET",
+      "path": "v1/categories/c3641a5a-346f-44f1-aa63-f85bbc8dba88/products/af7f95e8-8c31-4974-b9a7-3a69a5fec8bb/pilots?project_id=67dc7cf4-9463-4b9c-99fb-5032d8e59f39",
+      "status": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    },
+    {
+      "scenario": "statistics_source_withdrawn_saved_values_retained/project_pilots",
+      "method": "GET",
+      "path": "v1/categories/c3641a5a-346f-44f1-aa63-f85bbc8dba88/products/af7f95e8-8c31-4974-b9a7-3a69a5fec8bb/pilots?project_id=67dc7cf4-9463-4b9c-99fb-5032d8e59f39",
+      "status": 200,
+      "original_body_sha256": "6e56b6e51598f10acb7e1615feae15e2fa33cd6645ed8157596a899c5a829745"
+    }
+  ],
+  "checks": [
+    {
+      "check": "original_actual_four_phase_seven_get_export",
+      "passed": true
+    },
+    {
+      "check": "project_reader_and_real_native_item_dependency_are_frozen",
+      "passed": true
+    },
+    {
+      "check": "exact_original_project_list_route_pilot_created_without_observations/project_pilots",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_chain_and_statistical_values_preserved_pilot_created_without_observations/project_pilots",
+      "passed": true
+    },
+    {
+      "check": "thirty_seven_recorded_business_counts_unchanged_pilot_created_without_observations",
+      "passed": true
+    },
+    {
+      "check": "exact_original_project_list_route_partial_aggregate_observation/project_pilots",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_chain_and_statistical_values_preserved_partial_aggregate_observation/project_pilots",
+      "passed": true
+    },
+    {
+      "check": "thirty_seven_recorded_business_counts_unchanged_partial_aggregate_observation",
+      "passed": true
+    },
+    {
+      "check": "exact_original_project_list_route_complete_correction_retains_partial_history/project_pilots",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_chain_and_statistical_values_preserved_complete_correction_retains_partial_history/project_pilots",
+      "passed": true
+    },
+    {
+      "check": "exact_original_project_list_route_complete_correction_retains_partial_history/peer_project_pilots",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_chain_and_statistical_values_preserved_complete_correction_retains_partial_history/peer_project_pilots",
+      "passed": true
+    },
+    {
+      "check": "exact_original_project_list_route_complete_correction_retains_partial_history/other_model_project",
+      "passed": true
+    },
+    {
+      "check": "original_403_preserved_complete_correction_retains_partial_history/other_model_project",
+      "passed": true
+    },
+    {
+      "check": "exact_original_project_list_route_complete_correction_retains_partial_history/foreign_tenant_project",
+      "passed": true
+    },
+    {
+      "check": "original_403_preserved_complete_correction_retains_partial_history/foreign_tenant_project",
+      "passed": true
+    },
+    {
+      "check": "thirty_seven_recorded_business_counts_unchanged_complete_correction_retains_partial_history",
+      "passed": true
+    },
+    {
+      "check": "exact_original_project_list_route_statistics_source_withdrawn_saved_values_retained/project_pilots",
+      "passed": true
+    },
+    {
+      "check": "complete_original_body_chain_and_statistical_values_preserved_statistics_source_withdrawn_saved_values_retained/project_pilots",
+      "passed": true
+    },
+    {
+      "check": "thirty_seven_recorded_business_counts_unchanged_statistics_source_withdrawn_saved_values_retained",
+      "passed": true
+    },
+    {
+      "check": "root_v1_and_current_1_2_3_are_distinct_original_facts",
+      "passed": true
+    },
+    {
+      "check": "partial_recorded_fraction_is_not_promoted_into_final_rate",
+      "passed": true
+    },
+    {
+      "check": "correction_keeps_original_observation_and_fixed_cohort_without_summing_history",
+      "passed": true
+    },
+    {
+      "check": "statistics_source_withdrawal_retains_all_saved_values_sources_clocks_and_gaps",
+      "passed": true
+    },
+    {
+      "check": "legal_recorded_peer_read_matches_complete_original_scope",
+      "passed": true
+    },
+    {
+      "check": "actual_case_has_no_cursor_pagination",
+      "passed": true
+    },
+    {
+      "check": "raw_export_and_all_loaded_product_sources_unchanged",
+      "passed": true
+    }
+  ],
+  "results": [
+    {
+      "scenario": "pilot_created_without_observations/project_pilots",
+      "status": 200,
+      "next_cursor": null,
+      "items": [
+        {
+          "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+          "root_revision": 1,
+          "root_created_at": "2026-10-18T21:52:11.775074+00:00",
+          "root_receipt_id": "c9ffc4e1-79ee-4126-9f44-bacdf5c2a1a8",
+          "current": {
+            "revision": 1,
+            "epoch": 1,
+            "latest_observation_id": null
+          },
+          "root_source_status": "current",
+          "fixed_basis": {
+            "lot": {
+              "id": "d879df06-efe4-46a2-94d2-4c5453b3b907",
+              "kind": "build_lot",
+              "revision": 1
+            },
+            "unit": "ea",
+            "build": {
+              "id": "666105be-761f-40c7-8217-35a6fe8fbca4",
+              "kind": "build",
+              "revision": 1
+            },
+            "process_revision": {
+              "id": "ce64781c-e847-4dff-9bbe-b72c4fbf75ff",
+              "kind": "process_revision",
+              "revision": 1
+            },
+            "actual_configuration": {
+              "id": "dc2e30e3-7cf2-4cf2-a359-4394e66e596d",
+              "kind": "actual_configuration",
+              "revision": 1
+            },
+            "engineering_configuration": {
+              "id": "0b391b23-9c8f-4a17-b9a7-e11f81b76b69",
+              "kind": "engineering_configuration",
+              "revision": 1
+            }
+          },
+          "statistics_basis_sha256": "3e6f33cc0560500f2431901b5678b0510b9c722ddf1d6629452c7a4ef1e5b77a",
+          "root_sources_sha256": "44db414c663e47229c495dd8045b158d68934f18f4dff62ad6a72b083d5812f2",
+          "root_saved_gaps_sha256": "00d59e418888658ede073cfeef72c45389fe32958b7b1bb6b10203cc97467e0b",
+          "observations": []
+        }
+      ]
+    },
+    {
+      "scenario": "partial_aggregate_observation/project_pilots",
+      "status": 200,
+      "next_cursor": null,
+      "items": [
+        {
+          "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+          "root_revision": 1,
+          "root_created_at": "2026-10-18T21:52:11.775074+00:00",
+          "root_receipt_id": "c9ffc4e1-79ee-4126-9f44-bacdf5c2a1a8",
+          "current": {
+            "revision": 2,
+            "epoch": 2,
+            "latest_observation_id": "17089486-43f0-40c9-947f-b8ee8f8c0243"
+          },
+          "root_source_status": "current",
+          "fixed_basis": {
+            "lot": {
+              "id": "d879df06-efe4-46a2-94d2-4c5453b3b907",
+              "kind": "build_lot",
+              "revision": 1
+            },
+            "unit": "ea",
+            "build": {
+              "id": "666105be-761f-40c7-8217-35a6fe8fbca4",
+              "kind": "build",
+              "revision": 1
+            },
+            "process_revision": {
+              "id": "ce64781c-e847-4dff-9bbe-b72c4fbf75ff",
+              "kind": "process_revision",
+              "revision": 1
+            },
+            "actual_configuration": {
+              "id": "dc2e30e3-7cf2-4cf2-a359-4394e66e596d",
+              "kind": "actual_configuration",
+              "revision": 1
+            },
+            "engineering_configuration": {
+              "id": "0b391b23-9c8f-4a17-b9a7-e11f81b76b69",
+              "kind": "engineering_configuration",
+              "revision": 1
+            }
+          },
+          "statistics_basis_sha256": "3e6f33cc0560500f2431901b5678b0510b9c722ddf1d6629452c7a4ef1e5b77a",
+          "root_sources_sha256": "44db414c663e47229c495dd8045b158d68934f18f4dff62ad6a72b083d5812f2",
+          "root_saved_gaps_sha256": "00d59e418888658ede073cfeef72c45389fe32958b7b1bb6b10203cc97467e0b",
+          "observations": [
+            {
+              "id": "17089486-43f0-40c9-947f-b8ee8f8c0243",
+              "revision": 2,
+              "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+              "pilot_revision_before": 1,
+              "previous_observation_id": null,
+              "receipt_id": "a5a0394a-563b-46d0-802d-13b07faf8427",
+              "created_at": "2026-10-18T21:52:46.827813+00:00",
+              "source_status": "current",
+              "original_record_sha256": "451e22adf23b0b1cd1c9ef1c9cf80eed1c21de54475df5bc748d8e664c63f349",
+              "observed": {
+                "occurred_at": "2026-10-18T21:49:08.552376Z",
+                "original_timezone": "UTC",
+                "effective_at": null
+              },
+              "counts": {
+                "scrap": 0,
+                "undecided": 0,
+                "final_good": 1,
+                "first_pass": 1,
+                "input_count": 2,
+                "unprocessed": 0,
+                "first_failed": 1,
+                "output_count": 2,
+                "first_unknown": 0,
+                "rework_cycles": 0,
+                "reworked_good": 0,
+                "rework_pending": 1
+              },
+              "unit_record_count": 0,
+              "exception_count": 1,
+              "fixed_scope": {
+                "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+                "pilot_revision": 1,
+                "basis": {
+                  "lot": {
+                    "id": "d879df06-efe4-46a2-94d2-4c5453b3b907",
+                    "kind": "build_lot",
+                    "revision": 1
+                  },
+                  "unit": "ea",
+                  "build": {
+                    "id": "666105be-761f-40c7-8217-35a6fe8fbca4",
+                    "kind": "build",
+                    "revision": 1
+                  },
+                  "process_revision": {
+                    "id": "ce64781c-e847-4dff-9bbe-b72c4fbf75ff",
+                    "kind": "process_revision",
+                    "revision": 1
+                  },
+                  "actual_configuration": {
+                    "id": "dc2e30e3-7cf2-4cf2-a359-4394e66e596d",
+                    "kind": "actual_configuration",
+                    "revision": 1
+                  },
+                  "engineering_configuration": {
+                    "id": "0b391b23-9c8f-4a17-b9a7-e11f81b76b69",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  }
+                },
+                "cohort": {
+                  "mode": "entire_lot",
+                  "source": {
+                    "id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:a3ce9ba65c5446b57a30d0852fcd3ee5a59cc943c525d1a9568ff79d5400830d",
+                    "revision": 1
+                  },
+                  "unit_refs": [
+                    {
+                      "id": "d6bb1771-4390-4070-a977-66a0fdfa6c0d",
+                      "kind": "sample",
+                      "revision": 1
+                    },
+                    {
+                      "id": "2558c9b1-80d2-456d-8374-54e5f20b324b",
+                      "kind": "sample",
+                      "revision": 1
+                    }
+                  ],
+                  "population_count": 2,
+                  "fixed_input_count": 2,
+                  "denominator_policy": "all_fixed_input_units",
+                  "statistics_basis_key": "native-lot-d879df06-efe4-46a2-94d2-4c5453b3b907"
+                },
+                "original_timezone": "UTC",
+                "window_start": "2026-10-18T21:48:57.552376Z",
+                "window_end": "2026-10-18T21:51:41.833570Z"
+              },
+              "projection": {
+                "observation_id": "17089486-43f0-40c9-947f-b8ee8f8c0243",
+                "counts": {
+                  "scrap": 0,
+                  "undecided": 0,
+                  "final_good": 1,
+                  "first_pass": 1,
+                  "input_count": 2,
+                  "unprocessed": 0,
+                  "first_failed": 1,
+                  "output_count": 2,
+                  "first_unknown": 0,
+                  "rework_cycles": 0,
+                  "reworked_good": 0,
+                  "rework_pending": 1
+                },
+                "metrics": {
+                  "warnings": [
+                    "INCOMPLETE_FINAL_RESULTS",
+                    "FINAL_GOOD_PARTITION_NOT_FINAL"
+                  ],
+                  "final_good_yield": {
+                    "state": "partial",
+                    "value": null,
+                    "numerator": 1,
+                    "denominator": 2,
+                    "recorded_fraction": "0.5",
+                    "partition_complete": false
+                  },
+                  "first_pass_yield": {
+                    "state": "known",
+                    "value": "0.5",
+                    "numerator": 1,
+                    "denominator": 2,
+                    "recorded_fraction": "0.5",
+                    "partition_complete": true
+                  },
+                  "start_authorized": false,
+                  "process_capability": "NOT_ASSESSED",
+                  "factory_qualification": "NOT_ASSESSED",
+                  "manufacturing_release": null,
+                  "external_delivery_authorized": false
+                },
+                "received_at": null
+              },
+              "source_refs_sha256": "3f71f68b2000cb53af29b1c3215cb6011289311d1b3556657f28adf07dedb586",
+              "required_source_read_set": [
+                {
+                  "artifact_id": "31b19124-3d71-4f31-aab2-1b8e0187fb0c",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "3801ba90-d4ca-4448-ae5b-c99637dcbd41",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "3a2afbaf-d31b-4738-accd-bc0e0ba41f34",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6518ca4c-1dcf-4243-b897-301588a4ce78",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6bbe83b2-cb40-4563-ae7f-62f7d096471b",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7164fa35-696e-4743-853f-ea7a936581e4",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "91cbe1e4-2bde-43dd-8a99-1996d3a5715d",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "926aaf3f-9624-40aa-9c3a-b9a6daa052ed",
+                  "expected_revision": 1
+                }
+              ],
+              "saved_gap_count": 18,
+              "saved_gaps_sha256": "00d59e418888658ede073cfeef72c45389fe32958b7b1bb6b10203cc97467e0b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "complete_correction_retains_partial_history/project_pilots",
+      "status": 200,
+      "next_cursor": null,
+      "items": [
+        {
+          "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+          "root_revision": 1,
+          "root_created_at": "2026-10-18T21:52:11.775074+00:00",
+          "root_receipt_id": "c9ffc4e1-79ee-4126-9f44-bacdf5c2a1a8",
+          "current": {
+            "revision": 3,
+            "epoch": 3,
+            "latest_observation_id": "2faf898f-a63b-468e-936a-fdbdc02bf303"
+          },
+          "root_source_status": "current",
+          "fixed_basis": {
+            "lot": {
+              "id": "d879df06-efe4-46a2-94d2-4c5453b3b907",
+              "kind": "build_lot",
+              "revision": 1
+            },
+            "unit": "ea",
+            "build": {
+              "id": "666105be-761f-40c7-8217-35a6fe8fbca4",
+              "kind": "build",
+              "revision": 1
+            },
+            "process_revision": {
+              "id": "ce64781c-e847-4dff-9bbe-b72c4fbf75ff",
+              "kind": "process_revision",
+              "revision": 1
+            },
+            "actual_configuration": {
+              "id": "dc2e30e3-7cf2-4cf2-a359-4394e66e596d",
+              "kind": "actual_configuration",
+              "revision": 1
+            },
+            "engineering_configuration": {
+              "id": "0b391b23-9c8f-4a17-b9a7-e11f81b76b69",
+              "kind": "engineering_configuration",
+              "revision": 1
+            }
+          },
+          "statistics_basis_sha256": "3e6f33cc0560500f2431901b5678b0510b9c722ddf1d6629452c7a4ef1e5b77a",
+          "root_sources_sha256": "44db414c663e47229c495dd8045b158d68934f18f4dff62ad6a72b083d5812f2",
+          "root_saved_gaps_sha256": "00d59e418888658ede073cfeef72c45389fe32958b7b1bb6b10203cc97467e0b",
+          "observations": [
+            {
+              "id": "17089486-43f0-40c9-947f-b8ee8f8c0243",
+              "revision": 2,
+              "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+              "pilot_revision_before": 1,
+              "previous_observation_id": null,
+              "receipt_id": "a5a0394a-563b-46d0-802d-13b07faf8427",
+              "created_at": "2026-10-18T21:52:46.827813+00:00",
+              "source_status": "current",
+              "original_record_sha256": "451e22adf23b0b1cd1c9ef1c9cf80eed1c21de54475df5bc748d8e664c63f349",
+              "observed": {
+                "occurred_at": "2026-10-18T21:49:08.552376Z",
+                "original_timezone": "UTC",
+                "effective_at": null
+              },
+              "counts": {
+                "scrap": 0,
+                "undecided": 0,
+                "final_good": 1,
+                "first_pass": 1,
+                "input_count": 2,
+                "unprocessed": 0,
+                "first_failed": 1,
+                "output_count": 2,
+                "first_unknown": 0,
+                "rework_cycles": 0,
+                "reworked_good": 0,
+                "rework_pending": 1
+              },
+              "unit_record_count": 0,
+              "exception_count": 1,
+              "fixed_scope": {
+                "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+                "pilot_revision": 1,
+                "basis": {
+                  "lot": {
+                    "id": "d879df06-efe4-46a2-94d2-4c5453b3b907",
+                    "kind": "build_lot",
+                    "revision": 1
+                  },
+                  "unit": "ea",
+                  "build": {
+                    "id": "666105be-761f-40c7-8217-35a6fe8fbca4",
+                    "kind": "build",
+                    "revision": 1
+                  },
+                  "process_revision": {
+                    "id": "ce64781c-e847-4dff-9bbe-b72c4fbf75ff",
+                    "kind": "process_revision",
+                    "revision": 1
+                  },
+                  "actual_configuration": {
+                    "id": "dc2e30e3-7cf2-4cf2-a359-4394e66e596d",
+                    "kind": "actual_configuration",
+                    "revision": 1
+                  },
+                  "engineering_configuration": {
+                    "id": "0b391b23-9c8f-4a17-b9a7-e11f81b76b69",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  }
+                },
+                "cohort": {
+                  "mode": "entire_lot",
+                  "source": {
+                    "id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:a3ce9ba65c5446b57a30d0852fcd3ee5a59cc943c525d1a9568ff79d5400830d",
+                    "revision": 1
+                  },
+                  "unit_refs": [
+                    {
+                      "id": "d6bb1771-4390-4070-a977-66a0fdfa6c0d",
+                      "kind": "sample",
+                      "revision": 1
+                    },
+                    {
+                      "id": "2558c9b1-80d2-456d-8374-54e5f20b324b",
+                      "kind": "sample",
+                      "revision": 1
+                    }
+                  ],
+                  "population_count": 2,
+                  "fixed_input_count": 2,
+                  "denominator_policy": "all_fixed_input_units",
+                  "statistics_basis_key": "native-lot-d879df06-efe4-46a2-94d2-4c5453b3b907"
+                },
+                "original_timezone": "UTC",
+                "window_start": "2026-10-18T21:48:57.552376Z",
+                "window_end": "2026-10-18T21:51:41.833570Z"
+              },
+              "projection": {
+                "observation_id": "17089486-43f0-40c9-947f-b8ee8f8c0243",
+                "counts": {
+                  "scrap": 0,
+                  "undecided": 0,
+                  "final_good": 1,
+                  "first_pass": 1,
+                  "input_count": 2,
+                  "unprocessed": 0,
+                  "first_failed": 1,
+                  "output_count": 2,
+                  "first_unknown": 0,
+                  "rework_cycles": 0,
+                  "reworked_good": 0,
+                  "rework_pending": 1
+                },
+                "metrics": {
+                  "warnings": [
+                    "INCOMPLETE_FINAL_RESULTS",
+                    "FINAL_GOOD_PARTITION_NOT_FINAL"
+                  ],
+                  "final_good_yield": {
+                    "state": "partial",
+                    "value": null,
+                    "numerator": 1,
+                    "denominator": 2,
+                    "recorded_fraction": "0.5",
+                    "partition_complete": false
+                  },
+                  "first_pass_yield": {
+                    "state": "known",
+                    "value": "0.5",
+                    "numerator": 1,
+                    "denominator": 2,
+                    "recorded_fraction": "0.5",
+                    "partition_complete": true
+                  },
+                  "start_authorized": false,
+                  "process_capability": "NOT_ASSESSED",
+                  "factory_qualification": "NOT_ASSESSED",
+                  "manufacturing_release": null,
+                  "external_delivery_authorized": false
+                },
+                "received_at": null
+              },
+              "source_refs_sha256": "3f71f68b2000cb53af29b1c3215cb6011289311d1b3556657f28adf07dedb586",
+              "required_source_read_set": [
+                {
+                  "artifact_id": "31b19124-3d71-4f31-aab2-1b8e0187fb0c",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "3801ba90-d4ca-4448-ae5b-c99637dcbd41",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "3a2afbaf-d31b-4738-accd-bc0e0ba41f34",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6518ca4c-1dcf-4243-b897-301588a4ce78",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6bbe83b2-cb40-4563-ae7f-62f7d096471b",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7164fa35-696e-4743-853f-ea7a936581e4",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "91cbe1e4-2bde-43dd-8a99-1996d3a5715d",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "926aaf3f-9624-40aa-9c3a-b9a6daa052ed",
+                  "expected_revision": 1
+                }
+              ],
+              "saved_gap_count": 18,
+              "saved_gaps_sha256": "00d59e418888658ede073cfeef72c45389fe32958b7b1bb6b10203cc97467e0b"
+            },
+            {
+              "id": "2faf898f-a63b-468e-936a-fdbdc02bf303",
+              "revision": 3,
+              "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+              "pilot_revision_before": 2,
+              "previous_observation_id": "17089486-43f0-40c9-947f-b8ee8f8c0243",
+              "receipt_id": "fcf577f7-6506-4e97-a267-901d0317b58c",
+              "created_at": "2026-10-18T21:53:24.192026+00:00",
+              "source_status": "current",
+              "original_record_sha256": "3ca1f9920706753663d8a785249ecb08e3b1a21dd28ab8cd4127176c5dfc642e",
+              "observed": {
+                "occurred_at": "2026-10-18T21:49:18.552376Z",
+                "original_timezone": "UTC",
+                "effective_at": null
+              },
+              "counts": {
+                "scrap": 0,
+                "undecided": 0,
+                "final_good": 2,
+                "first_pass": 1,
+                "input_count": 2,
+                "unprocessed": 0,
+                "first_failed": 1,
+                "output_count": 2,
+                "first_unknown": 0,
+                "rework_cycles": 1,
+                "reworked_good": 1,
+                "rework_pending": 0
+              },
+              "unit_record_count": 0,
+              "exception_count": 1,
+              "fixed_scope": {
+                "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+                "pilot_revision": 2,
+                "basis": {
+                  "lot": {
+                    "id": "d879df06-efe4-46a2-94d2-4c5453b3b907",
+                    "kind": "build_lot",
+                    "revision": 1
+                  },
+                  "unit": "ea",
+                  "build": {
+                    "id": "666105be-761f-40c7-8217-35a6fe8fbca4",
+                    "kind": "build",
+                    "revision": 1
+                  },
+                  "process_revision": {
+                    "id": "ce64781c-e847-4dff-9bbe-b72c4fbf75ff",
+                    "kind": "process_revision",
+                    "revision": 1
+                  },
+                  "actual_configuration": {
+                    "id": "dc2e30e3-7cf2-4cf2-a359-4394e66e596d",
+                    "kind": "actual_configuration",
+                    "revision": 1
+                  },
+                  "engineering_configuration": {
+                    "id": "0b391b23-9c8f-4a17-b9a7-e11f81b76b69",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  }
+                },
+                "cohort": {
+                  "mode": "entire_lot",
+                  "source": {
+                    "id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:a3ce9ba65c5446b57a30d0852fcd3ee5a59cc943c525d1a9568ff79d5400830d",
+                    "revision": 1
+                  },
+                  "unit_refs": [
+                    {
+                      "id": "d6bb1771-4390-4070-a977-66a0fdfa6c0d",
+                      "kind": "sample",
+                      "revision": 1
+                    },
+                    {
+                      "id": "2558c9b1-80d2-456d-8374-54e5f20b324b",
+                      "kind": "sample",
+                      "revision": 1
+                    }
+                  ],
+                  "population_count": 2,
+                  "fixed_input_count": 2,
+                  "denominator_policy": "all_fixed_input_units",
+                  "statistics_basis_key": "native-lot-d879df06-efe4-46a2-94d2-4c5453b3b907"
+                },
+                "original_timezone": "UTC",
+                "window_start": "2026-10-18T21:48:57.552376Z",
+                "window_end": "2026-10-18T21:51:41.833570Z"
+              },
+              "projection": {
+                "observation_id": "2faf898f-a63b-468e-936a-fdbdc02bf303",
+                "counts": {
+                  "scrap": 0,
+                  "undecided": 0,
+                  "final_good": 2,
+                  "first_pass": 1,
+                  "input_count": 2,
+                  "unprocessed": 0,
+                  "first_failed": 1,
+                  "output_count": 2,
+                  "first_unknown": 0,
+                  "rework_cycles": 1,
+                  "reworked_good": 1,
+                  "rework_pending": 0
+                },
+                "metrics": {
+                  "warnings": [],
+                  "final_good_yield": {
+                    "state": "known",
+                    "value": "1",
+                    "numerator": 2,
+                    "denominator": 2,
+                    "recorded_fraction": "1",
+                    "partition_complete": true
+                  },
+                  "first_pass_yield": {
+                    "state": "known",
+                    "value": "0.5",
+                    "numerator": 1,
+                    "denominator": 2,
+                    "recorded_fraction": "0.5",
+                    "partition_complete": true
+                  },
+                  "start_authorized": false,
+                  "process_capability": "NOT_ASSESSED",
+                  "factory_qualification": "NOT_ASSESSED",
+                  "manufacturing_release": null,
+                  "external_delivery_authorized": false
+                },
+                "received_at": null
+              },
+              "source_refs_sha256": "e28f0a23168b766f2d7dd7875ec5cb9e65e2551ad4f39f717bcce43e02c65122",
+              "required_source_read_set": [
+                {
+                  "artifact_id": "2c18d45c-a71b-4dc9-98dd-d133bd9332d9",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "31b19124-3d71-4f31-aab2-1b8e0187fb0c",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "3801ba90-d4ca-4448-ae5b-c99637dcbd41",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6518ca4c-1dcf-4243-b897-301588a4ce78",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6bbe83b2-cb40-4563-ae7f-62f7d096471b",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7164fa35-696e-4743-853f-ea7a936581e4",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "91cbe1e4-2bde-43dd-8a99-1996d3a5715d",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "926aaf3f-9624-40aa-9c3a-b9a6daa052ed",
+                  "expected_revision": 1
+                }
+              ],
+              "saved_gap_count": 18,
+              "saved_gaps_sha256": "00d59e418888658ede073cfeef72c45389fe32958b7b1bb6b10203cc97467e0b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "complete_correction_retains_partial_history/peer_project_pilots",
+      "status": 200,
+      "next_cursor": null,
+      "items": [
+        {
+          "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+          "root_revision": 1,
+          "root_created_at": "2026-10-18T21:52:11.775074+00:00",
+          "root_receipt_id": "c9ffc4e1-79ee-4126-9f44-bacdf5c2a1a8",
+          "current": {
+            "revision": 3,
+            "epoch": 3,
+            "latest_observation_id": "2faf898f-a63b-468e-936a-fdbdc02bf303"
+          },
+          "root_source_status": "current",
+          "fixed_basis": {
+            "lot": {
+              "id": "d879df06-efe4-46a2-94d2-4c5453b3b907",
+              "kind": "build_lot",
+              "revision": 1
+            },
+            "unit": "ea",
+            "build": {
+              "id": "666105be-761f-40c7-8217-35a6fe8fbca4",
+              "kind": "build",
+              "revision": 1
+            },
+            "process_revision": {
+              "id": "ce64781c-e847-4dff-9bbe-b72c4fbf75ff",
+              "kind": "process_revision",
+              "revision": 1
+            },
+            "actual_configuration": {
+              "id": "dc2e30e3-7cf2-4cf2-a359-4394e66e596d",
+              "kind": "actual_configuration",
+              "revision": 1
+            },
+            "engineering_configuration": {
+              "id": "0b391b23-9c8f-4a17-b9a7-e11f81b76b69",
+              "kind": "engineering_configuration",
+              "revision": 1
+            }
+          },
+          "statistics_basis_sha256": "3e6f33cc0560500f2431901b5678b0510b9c722ddf1d6629452c7a4ef1e5b77a",
+          "root_sources_sha256": "44db414c663e47229c495dd8045b158d68934f18f4dff62ad6a72b083d5812f2",
+          "root_saved_gaps_sha256": "00d59e418888658ede073cfeef72c45389fe32958b7b1bb6b10203cc97467e0b",
+          "observations": [
+            {
+              "id": "17089486-43f0-40c9-947f-b8ee8f8c0243",
+              "revision": 2,
+              "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+              "pilot_revision_before": 1,
+              "previous_observation_id": null,
+              "receipt_id": "a5a0394a-563b-46d0-802d-13b07faf8427",
+              "created_at": "2026-10-18T21:52:46.827813+00:00",
+              "source_status": "current",
+              "original_record_sha256": "451e22adf23b0b1cd1c9ef1c9cf80eed1c21de54475df5bc748d8e664c63f349",
+              "observed": {
+                "occurred_at": "2026-10-18T21:49:08.552376Z",
+                "original_timezone": "UTC",
+                "effective_at": null
+              },
+              "counts": {
+                "scrap": 0,
+                "undecided": 0,
+                "final_good": 1,
+                "first_pass": 1,
+                "input_count": 2,
+                "unprocessed": 0,
+                "first_failed": 1,
+                "output_count": 2,
+                "first_unknown": 0,
+                "rework_cycles": 0,
+                "reworked_good": 0,
+                "rework_pending": 1
+              },
+              "unit_record_count": 0,
+              "exception_count": 1,
+              "fixed_scope": {
+                "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+                "pilot_revision": 1,
+                "basis": {
+                  "lot": {
+                    "id": "d879df06-efe4-46a2-94d2-4c5453b3b907",
+                    "kind": "build_lot",
+                    "revision": 1
+                  },
+                  "unit": "ea",
+                  "build": {
+                    "id": "666105be-761f-40c7-8217-35a6fe8fbca4",
+                    "kind": "build",
+                    "revision": 1
+                  },
+                  "process_revision": {
+                    "id": "ce64781c-e847-4dff-9bbe-b72c4fbf75ff",
+                    "kind": "process_revision",
+                    "revision": 1
+                  },
+                  "actual_configuration": {
+                    "id": "dc2e30e3-7cf2-4cf2-a359-4394e66e596d",
+                    "kind": "actual_configuration",
+                    "revision": 1
+                  },
+                  "engineering_configuration": {
+                    "id": "0b391b23-9c8f-4a17-b9a7-e11f81b76b69",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  }
+                },
+                "cohort": {
+                  "mode": "entire_lot",
+                  "source": {
+                    "id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:a3ce9ba65c5446b57a30d0852fcd3ee5a59cc943c525d1a9568ff79d5400830d",
+                    "revision": 1
+                  },
+                  "unit_refs": [
+                    {
+                      "id": "d6bb1771-4390-4070-a977-66a0fdfa6c0d",
+                      "kind": "sample",
+                      "revision": 1
+                    },
+                    {
+                      "id": "2558c9b1-80d2-456d-8374-54e5f20b324b",
+                      "kind": "sample",
+                      "revision": 1
+                    }
+                  ],
+                  "population_count": 2,
+                  "fixed_input_count": 2,
+                  "denominator_policy": "all_fixed_input_units",
+                  "statistics_basis_key": "native-lot-d879df06-efe4-46a2-94d2-4c5453b3b907"
+                },
+                "original_timezone": "UTC",
+                "window_start": "2026-10-18T21:48:57.552376Z",
+                "window_end": "2026-10-18T21:51:41.833570Z"
+              },
+              "projection": {
+                "observation_id": "17089486-43f0-40c9-947f-b8ee8f8c0243",
+                "counts": {
+                  "scrap": 0,
+                  "undecided": 0,
+                  "final_good": 1,
+                  "first_pass": 1,
+                  "input_count": 2,
+                  "unprocessed": 0,
+                  "first_failed": 1,
+                  "output_count": 2,
+                  "first_unknown": 0,
+                  "rework_cycles": 0,
+                  "reworked_good": 0,
+                  "rework_pending": 1
+                },
+                "metrics": {
+                  "warnings": [
+                    "INCOMPLETE_FINAL_RESULTS",
+                    "FINAL_GOOD_PARTITION_NOT_FINAL"
+                  ],
+                  "final_good_yield": {
+                    "state": "partial",
+                    "value": null,
+                    "numerator": 1,
+                    "denominator": 2,
+                    "recorded_fraction": "0.5",
+                    "partition_complete": false
+                  },
+                  "first_pass_yield": {
+                    "state": "known",
+                    "value": "0.5",
+                    "numerator": 1,
+                    "denominator": 2,
+                    "recorded_fraction": "0.5",
+                    "partition_complete": true
+                  },
+                  "start_authorized": false,
+                  "process_capability": "NOT_ASSESSED",
+                  "factory_qualification": "NOT_ASSESSED",
+                  "manufacturing_release": null,
+                  "external_delivery_authorized": false
+                },
+                "received_at": null
+              },
+              "source_refs_sha256": "3f71f68b2000cb53af29b1c3215cb6011289311d1b3556657f28adf07dedb586",
+              "required_source_read_set": [
+                {
+                  "artifact_id": "31b19124-3d71-4f31-aab2-1b8e0187fb0c",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "3801ba90-d4ca-4448-ae5b-c99637dcbd41",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "3a2afbaf-d31b-4738-accd-bc0e0ba41f34",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6518ca4c-1dcf-4243-b897-301588a4ce78",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6bbe83b2-cb40-4563-ae7f-62f7d096471b",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7164fa35-696e-4743-853f-ea7a936581e4",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "91cbe1e4-2bde-43dd-8a99-1996d3a5715d",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "926aaf3f-9624-40aa-9c3a-b9a6daa052ed",
+                  "expected_revision": 1
+                }
+              ],
+              "saved_gap_count": 18,
+              "saved_gaps_sha256": "00d59e418888658ede073cfeef72c45389fe32958b7b1bb6b10203cc97467e0b"
+            },
+            {
+              "id": "2faf898f-a63b-468e-936a-fdbdc02bf303",
+              "revision": 3,
+              "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+              "pilot_revision_before": 2,
+              "previous_observation_id": "17089486-43f0-40c9-947f-b8ee8f8c0243",
+              "receipt_id": "fcf577f7-6506-4e97-a267-901d0317b58c",
+              "created_at": "2026-10-18T21:53:24.192026+00:00",
+              "source_status": "current",
+              "original_record_sha256": "3ca1f9920706753663d8a785249ecb08e3b1a21dd28ab8cd4127176c5dfc642e",
+              "observed": {
+                "occurred_at": "2026-10-18T21:49:18.552376Z",
+                "original_timezone": "UTC",
+                "effective_at": null
+              },
+              "counts": {
+                "scrap": 0,
+                "undecided": 0,
+                "final_good": 2,
+                "first_pass": 1,
+                "input_count": 2,
+                "unprocessed": 0,
+                "first_failed": 1,
+                "output_count": 2,
+                "first_unknown": 0,
+                "rework_cycles": 1,
+                "reworked_good": 1,
+                "rework_pending": 0
+              },
+              "unit_record_count": 0,
+              "exception_count": 1,
+              "fixed_scope": {
+                "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+                "pilot_revision": 2,
+                "basis": {
+                  "lot": {
+                    "id": "d879df06-efe4-46a2-94d2-4c5453b3b907",
+                    "kind": "build_lot",
+                    "revision": 1
+                  },
+                  "unit": "ea",
+                  "build": {
+                    "id": "666105be-761f-40c7-8217-35a6fe8fbca4",
+                    "kind": "build",
+                    "revision": 1
+                  },
+                  "process_revision": {
+                    "id": "ce64781c-e847-4dff-9bbe-b72c4fbf75ff",
+                    "kind": "process_revision",
+                    "revision": 1
+                  },
+                  "actual_configuration": {
+                    "id": "dc2e30e3-7cf2-4cf2-a359-4394e66e596d",
+                    "kind": "actual_configuration",
+                    "revision": 1
+                  },
+                  "engineering_configuration": {
+                    "id": "0b391b23-9c8f-4a17-b9a7-e11f81b76b69",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  }
+                },
+                "cohort": {
+                  "mode": "entire_lot",
+                  "source": {
+                    "id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:a3ce9ba65c5446b57a30d0852fcd3ee5a59cc943c525d1a9568ff79d5400830d",
+                    "revision": 1
+                  },
+                  "unit_refs": [
+                    {
+                      "id": "d6bb1771-4390-4070-a977-66a0fdfa6c0d",
+                      "kind": "sample",
+                      "revision": 1
+                    },
+                    {
+                      "id": "2558c9b1-80d2-456d-8374-54e5f20b324b",
+                      "kind": "sample",
+                      "revision": 1
+                    }
+                  ],
+                  "population_count": 2,
+                  "fixed_input_count": 2,
+                  "denominator_policy": "all_fixed_input_units",
+                  "statistics_basis_key": "native-lot-d879df06-efe4-46a2-94d2-4c5453b3b907"
+                },
+                "original_timezone": "UTC",
+                "window_start": "2026-10-18T21:48:57.552376Z",
+                "window_end": "2026-10-18T21:51:41.833570Z"
+              },
+              "projection": {
+                "observation_id": "2faf898f-a63b-468e-936a-fdbdc02bf303",
+                "counts": {
+                  "scrap": 0,
+                  "undecided": 0,
+                  "final_good": 2,
+                  "first_pass": 1,
+                  "input_count": 2,
+                  "unprocessed": 0,
+                  "first_failed": 1,
+                  "output_count": 2,
+                  "first_unknown": 0,
+                  "rework_cycles": 1,
+                  "reworked_good": 1,
+                  "rework_pending": 0
+                },
+                "metrics": {
+                  "warnings": [],
+                  "final_good_yield": {
+                    "state": "known",
+                    "value": "1",
+                    "numerator": 2,
+                    "denominator": 2,
+                    "recorded_fraction": "1",
+                    "partition_complete": true
+                  },
+                  "first_pass_yield": {
+                    "state": "known",
+                    "value": "0.5",
+                    "numerator": 1,
+                    "denominator": 2,
+                    "recorded_fraction": "0.5",
+                    "partition_complete": true
+                  },
+                  "start_authorized": false,
+                  "process_capability": "NOT_ASSESSED",
+                  "factory_qualification": "NOT_ASSESSED",
+                  "manufacturing_release": null,
+                  "external_delivery_authorized": false
+                },
+                "received_at": null
+              },
+              "source_refs_sha256": "e28f0a23168b766f2d7dd7875ec5cb9e65e2551ad4f39f717bcce43e02c65122",
+              "required_source_read_set": [
+                {
+                  "artifact_id": "2c18d45c-a71b-4dc9-98dd-d133bd9332d9",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "31b19124-3d71-4f31-aab2-1b8e0187fb0c",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "3801ba90-d4ca-4448-ae5b-c99637dcbd41",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6518ca4c-1dcf-4243-b897-301588a4ce78",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6bbe83b2-cb40-4563-ae7f-62f7d096471b",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7164fa35-696e-4743-853f-ea7a936581e4",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "91cbe1e4-2bde-43dd-8a99-1996d3a5715d",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "926aaf3f-9624-40aa-9c3a-b9a6daa052ed",
+                  "expected_revision": 1
+                }
+              ],
+              "saved_gap_count": 18,
+              "saved_gaps_sha256": "00d59e418888658ede073cfeef72c45389fe32958b7b1bb6b10203cc97467e0b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "complete_correction_retains_partial_history/other_model_project",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "fallback": false
+    },
+    {
+      "scenario": "complete_correction_retains_partial_history/foreign_tenant_project",
+      "status": 403,
+      "code": "FORBIDDEN_SCOPE",
+      "fallback": false
+    },
+    {
+      "scenario": "statistics_source_withdrawn_saved_values_retained/project_pilots",
+      "status": 200,
+      "next_cursor": null,
+      "items": [
+        {
+          "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+          "root_revision": 1,
+          "root_created_at": "2026-10-18T21:52:11.775074+00:00",
+          "root_receipt_id": "c9ffc4e1-79ee-4126-9f44-bacdf5c2a1a8",
+          "current": {
+            "revision": 3,
+            "epoch": 3,
+            "latest_observation_id": "2faf898f-a63b-468e-936a-fdbdc02bf303"
+          },
+          "root_source_status": "needs_recheck",
+          "fixed_basis": {
+            "lot": {
+              "id": "d879df06-efe4-46a2-94d2-4c5453b3b907",
+              "kind": "build_lot",
+              "revision": 1
+            },
+            "unit": "ea",
+            "build": {
+              "id": "666105be-761f-40c7-8217-35a6fe8fbca4",
+              "kind": "build",
+              "revision": 1
+            },
+            "process_revision": {
+              "id": "ce64781c-e847-4dff-9bbe-b72c4fbf75ff",
+              "kind": "process_revision",
+              "revision": 1
+            },
+            "actual_configuration": {
+              "id": "dc2e30e3-7cf2-4cf2-a359-4394e66e596d",
+              "kind": "actual_configuration",
+              "revision": 1
+            },
+            "engineering_configuration": {
+              "id": "0b391b23-9c8f-4a17-b9a7-e11f81b76b69",
+              "kind": "engineering_configuration",
+              "revision": 1
+            }
+          },
+          "statistics_basis_sha256": "3e6f33cc0560500f2431901b5678b0510b9c722ddf1d6629452c7a4ef1e5b77a",
+          "root_sources_sha256": "44db414c663e47229c495dd8045b158d68934f18f4dff62ad6a72b083d5812f2",
+          "root_saved_gaps_sha256": "00d59e418888658ede073cfeef72c45389fe32958b7b1bb6b10203cc97467e0b",
+          "observations": [
+            {
+              "id": "17089486-43f0-40c9-947f-b8ee8f8c0243",
+              "revision": 2,
+              "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+              "pilot_revision_before": 1,
+              "previous_observation_id": null,
+              "receipt_id": "a5a0394a-563b-46d0-802d-13b07faf8427",
+              "created_at": "2026-10-18T21:52:46.827813+00:00",
+              "source_status": "needs_recheck",
+              "original_record_sha256": "451e22adf23b0b1cd1c9ef1c9cf80eed1c21de54475df5bc748d8e664c63f349",
+              "observed": {
+                "occurred_at": "2026-10-18T21:49:08.552376Z",
+                "original_timezone": "UTC",
+                "effective_at": null
+              },
+              "counts": {
+                "scrap": 0,
+                "undecided": 0,
+                "final_good": 1,
+                "first_pass": 1,
+                "input_count": 2,
+                "unprocessed": 0,
+                "first_failed": 1,
+                "output_count": 2,
+                "first_unknown": 0,
+                "rework_cycles": 0,
+                "reworked_good": 0,
+                "rework_pending": 1
+              },
+              "unit_record_count": 0,
+              "exception_count": 1,
+              "fixed_scope": {
+                "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+                "pilot_revision": 1,
+                "basis": {
+                  "lot": {
+                    "id": "d879df06-efe4-46a2-94d2-4c5453b3b907",
+                    "kind": "build_lot",
+                    "revision": 1
+                  },
+                  "unit": "ea",
+                  "build": {
+                    "id": "666105be-761f-40c7-8217-35a6fe8fbca4",
+                    "kind": "build",
+                    "revision": 1
+                  },
+                  "process_revision": {
+                    "id": "ce64781c-e847-4dff-9bbe-b72c4fbf75ff",
+                    "kind": "process_revision",
+                    "revision": 1
+                  },
+                  "actual_configuration": {
+                    "id": "dc2e30e3-7cf2-4cf2-a359-4394e66e596d",
+                    "kind": "actual_configuration",
+                    "revision": 1
+                  },
+                  "engineering_configuration": {
+                    "id": "0b391b23-9c8f-4a17-b9a7-e11f81b76b69",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  }
+                },
+                "cohort": {
+                  "mode": "entire_lot",
+                  "source": {
+                    "id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:a3ce9ba65c5446b57a30d0852fcd3ee5a59cc943c525d1a9568ff79d5400830d",
+                    "revision": 1
+                  },
+                  "unit_refs": [
+                    {
+                      "id": "d6bb1771-4390-4070-a977-66a0fdfa6c0d",
+                      "kind": "sample",
+                      "revision": 1
+                    },
+                    {
+                      "id": "2558c9b1-80d2-456d-8374-54e5f20b324b",
+                      "kind": "sample",
+                      "revision": 1
+                    }
+                  ],
+                  "population_count": 2,
+                  "fixed_input_count": 2,
+                  "denominator_policy": "all_fixed_input_units",
+                  "statistics_basis_key": "native-lot-d879df06-efe4-46a2-94d2-4c5453b3b907"
+                },
+                "original_timezone": "UTC",
+                "window_start": "2026-10-18T21:48:57.552376Z",
+                "window_end": "2026-10-18T21:51:41.833570Z"
+              },
+              "projection": {
+                "observation_id": "17089486-43f0-40c9-947f-b8ee8f8c0243",
+                "counts": {
+                  "scrap": 0,
+                  "undecided": 0,
+                  "final_good": 1,
+                  "first_pass": 1,
+                  "input_count": 2,
+                  "unprocessed": 0,
+                  "first_failed": 1,
+                  "output_count": 2,
+                  "first_unknown": 0,
+                  "rework_cycles": 0,
+                  "reworked_good": 0,
+                  "rework_pending": 1
+                },
+                "metrics": {
+                  "warnings": [
+                    "INCOMPLETE_FINAL_RESULTS",
+                    "FINAL_GOOD_PARTITION_NOT_FINAL"
+                  ],
+                  "final_good_yield": {
+                    "state": "partial",
+                    "value": null,
+                    "numerator": 1,
+                    "denominator": 2,
+                    "recorded_fraction": "0.5",
+                    "partition_complete": false
+                  },
+                  "first_pass_yield": {
+                    "state": "known",
+                    "value": "0.5",
+                    "numerator": 1,
+                    "denominator": 2,
+                    "recorded_fraction": "0.5",
+                    "partition_complete": true
+                  },
+                  "start_authorized": false,
+                  "process_capability": "NOT_ASSESSED",
+                  "factory_qualification": "NOT_ASSESSED",
+                  "manufacturing_release": null,
+                  "external_delivery_authorized": false
+                },
+                "received_at": null
+              },
+              "source_refs_sha256": "3f71f68b2000cb53af29b1c3215cb6011289311d1b3556657f28adf07dedb586",
+              "required_source_read_set": [
+                {
+                  "artifact_id": "31b19124-3d71-4f31-aab2-1b8e0187fb0c",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "3801ba90-d4ca-4448-ae5b-c99637dcbd41",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "3a2afbaf-d31b-4738-accd-bc0e0ba41f34",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6518ca4c-1dcf-4243-b897-301588a4ce78",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6bbe83b2-cb40-4563-ae7f-62f7d096471b",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7164fa35-696e-4743-853f-ea7a936581e4",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "91cbe1e4-2bde-43dd-8a99-1996d3a5715d",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "926aaf3f-9624-40aa-9c3a-b9a6daa052ed",
+                  "expected_revision": 1
+                }
+              ],
+              "saved_gap_count": 18,
+              "saved_gaps_sha256": "00d59e418888658ede073cfeef72c45389fe32958b7b1bb6b10203cc97467e0b"
+            },
+            {
+              "id": "2faf898f-a63b-468e-936a-fdbdc02bf303",
+              "revision": 3,
+              "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+              "pilot_revision_before": 2,
+              "previous_observation_id": "17089486-43f0-40c9-947f-b8ee8f8c0243",
+              "receipt_id": "fcf577f7-6506-4e97-a267-901d0317b58c",
+              "created_at": "2026-10-18T21:53:24.192026+00:00",
+              "source_status": "needs_recheck",
+              "original_record_sha256": "3ca1f9920706753663d8a785249ecb08e3b1a21dd28ab8cd4127176c5dfc642e",
+              "observed": {
+                "occurred_at": "2026-10-18T21:49:18.552376Z",
+                "original_timezone": "UTC",
+                "effective_at": null
+              },
+              "counts": {
+                "scrap": 0,
+                "undecided": 0,
+                "final_good": 2,
+                "first_pass": 1,
+                "input_count": 2,
+                "unprocessed": 0,
+                "first_failed": 1,
+                "output_count": 2,
+                "first_unknown": 0,
+                "rework_cycles": 1,
+                "reworked_good": 1,
+                "rework_pending": 0
+              },
+              "unit_record_count": 0,
+              "exception_count": 1,
+              "fixed_scope": {
+                "pilot_id": "f84c3ae3-e769-464b-afdf-f0929155c765",
+                "pilot_revision": 2,
+                "basis": {
+                  "lot": {
+                    "id": "d879df06-efe4-46a2-94d2-4c5453b3b907",
+                    "kind": "build_lot",
+                    "revision": 1
+                  },
+                  "unit": "ea",
+                  "build": {
+                    "id": "666105be-761f-40c7-8217-35a6fe8fbca4",
+                    "kind": "build",
+                    "revision": 1
+                  },
+                  "process_revision": {
+                    "id": "ce64781c-e847-4dff-9bbe-b72c4fbf75ff",
+                    "kind": "process_revision",
+                    "revision": 1
+                  },
+                  "actual_configuration": {
+                    "id": "dc2e30e3-7cf2-4cf2-a359-4394e66e596d",
+                    "kind": "actual_configuration",
+                    "revision": 1
+                  },
+                  "engineering_configuration": {
+                    "id": "0b391b23-9c8f-4a17-b9a7-e11f81b76b69",
+                    "kind": "engineering_configuration",
+                    "revision": 1
+                  }
+                },
+                "cohort": {
+                  "mode": "entire_lot",
+                  "source": {
+                    "id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                    "kind": "artifact",
+                    "position": "line:1;quote_sha256:a3ce9ba65c5446b57a30d0852fcd3ee5a59cc943c525d1a9568ff79d5400830d",
+                    "revision": 1
+                  },
+                  "unit_refs": [
+                    {
+                      "id": "d6bb1771-4390-4070-a977-66a0fdfa6c0d",
+                      "kind": "sample",
+                      "revision": 1
+                    },
+                    {
+                      "id": "2558c9b1-80d2-456d-8374-54e5f20b324b",
+                      "kind": "sample",
+                      "revision": 1
+                    }
+                  ],
+                  "population_count": 2,
+                  "fixed_input_count": 2,
+                  "denominator_policy": "all_fixed_input_units",
+                  "statistics_basis_key": "native-lot-d879df06-efe4-46a2-94d2-4c5453b3b907"
+                },
+                "original_timezone": "UTC",
+                "window_start": "2026-10-18T21:48:57.552376Z",
+                "window_end": "2026-10-18T21:51:41.833570Z"
+              },
+              "projection": {
+                "observation_id": "2faf898f-a63b-468e-936a-fdbdc02bf303",
+                "counts": {
+                  "scrap": 0,
+                  "undecided": 0,
+                  "final_good": 2,
+                  "first_pass": 1,
+                  "input_count": 2,
+                  "unprocessed": 0,
+                  "first_failed": 1,
+                  "output_count": 2,
+                  "first_unknown": 0,
+                  "rework_cycles": 1,
+                  "reworked_good": 1,
+                  "rework_pending": 0
+                },
+                "metrics": {
+                  "warnings": [],
+                  "final_good_yield": {
+                    "state": "known",
+                    "value": "1",
+                    "numerator": 2,
+                    "denominator": 2,
+                    "recorded_fraction": "1",
+                    "partition_complete": true
+                  },
+                  "first_pass_yield": {
+                    "state": "known",
+                    "value": "0.5",
+                    "numerator": 1,
+                    "denominator": 2,
+                    "recorded_fraction": "0.5",
+                    "partition_complete": true
+                  },
+                  "start_authorized": false,
+                  "process_capability": "NOT_ASSESSED",
+                  "factory_qualification": "NOT_ASSESSED",
+                  "manufacturing_release": null,
+                  "external_delivery_authorized": false
+                },
+                "received_at": null
+              },
+              "source_refs_sha256": "e28f0a23168b766f2d7dd7875ec5cb9e65e2551ad4f39f717bcce43e02c65122",
+              "required_source_read_set": [
+                {
+                  "artifact_id": "2c18d45c-a71b-4dc9-98dd-d133bd9332d9",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "31b19124-3d71-4f31-aab2-1b8e0187fb0c",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "3801ba90-d4ca-4448-ae5b-c99637dcbd41",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6518ca4c-1dcf-4243-b897-301588a4ce78",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "6bbe83b2-cb40-4563-ae7f-62f7d096471b",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7164fa35-696e-4743-853f-ea7a936581e4",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "7c2bfea5-5ab4-4d40-95d6-f2bb4d4f92f3",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "91cbe1e4-2bde-43dd-8a99-1996d3a5715d",
+                  "expected_revision": 1
+                },
+                {
+                  "artifact_id": "926aaf3f-9624-40aa-9c3a-b9a6daa052ed",
+                  "expected_revision": 1
+                }
+              ],
+              "saved_gap_count": 18,
+              "saved_gaps_sha256": "00d59e418888658ede073cfeef72c45389fe32958b7b1bb6b10203cc97467e0b"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "passed": true,
+  "boundaries": [
+    "Only exact recorded project-filtered list GETs are returned to the real reader; no detail, source, configuration or statistics GET is added",
+    "Every body is cloned without supplementing missing fields, default counts or caller identities",
+    "Original root v1, Current pointer and observation revisions remain distinct; correction history is not added into a new aggregate",
+    "Original numerator, denominator, recorded_fraction, value, partition flag and state are preserved, with no percentage derivation",
+    "partial recorded_fraction is not promoted into a final rate, and saved gaps do not establish current readiness",
+    "Original observation time, source timezone, saved-at clock and null pure-projection received_at remain distinct",
+    "Source withdrawal affects source_status without rewriting fixed scope, original values, sources, gaps or projections",
+    "qualification unknown, start_authorized false and manufacturing_release null are not inferred from reported good yield",
+    "Recorded peer and denied read labels describe the original server export; it has no peer principal-id envelope to independently attest in this reader",
+    "All actual next_cursor values are null; actual cursor pagination is not exercised",
+    "Per-unit and null-count modes are reported by observed coverage only, never claimed from an empty set",
+    "Recorded business counts are original PG evidence; this helper performs no database operation or UI validation"
+  ],
+  "fixture_version": "project-pilots-projection-qa/v1",
+  "helper_sha256": "9cb29acfd90319bd574f17416dd31cdce9e8e350c4f343859208e3b6a10bf767",
+  "read_only_counts": [
+    {
+      "phase": "pilot_created_without_observations",
+      "before": {
+        "native_pilot_runs": 1,
+        "native_pilot_currents": 1,
+        "native_pilot_observations": 0,
+        "action_receipts": 90,
+        "audit_entries": 90,
+        "outbox_events": 91,
+        "request_keys": 82,
+        "confirmations": 34,
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "builds": 2,
+        "actual_configurations": 2,
+        "build_lots": 2,
+        "sample_allocations": 2,
+        "sample_units": 4,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 18,
+        "build_operational_facts": 2,
+        "build_operational_current": 2,
+        "operational_asset_sentinels": 5,
+        "quality_issue_versions": 1,
+        "quality_current_issues": 1,
+        "artifact_versions": 18,
+        "uploaded_originals": 4,
+        "original_security": 4,
+        "claim_consumptions": 0,
+        "grants": 4,
+        "object_audiences": 6
+      },
+      "after": {
+        "native_pilot_runs": 1,
+        "native_pilot_currents": 1,
+        "native_pilot_observations": 0,
+        "action_receipts": 90,
+        "audit_entries": 90,
+        "outbox_events": 91,
+        "request_keys": 82,
+        "confirmations": 34,
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "builds": 2,
+        "actual_configurations": 2,
+        "build_lots": 2,
+        "sample_allocations": 2,
+        "sample_units": 4,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 18,
+        "build_operational_facts": 2,
+        "build_operational_current": 2,
+        "operational_asset_sentinels": 5,
+        "quality_issue_versions": 1,
+        "quality_current_issues": 1,
+        "artifact_versions": 18,
+        "uploaded_originals": 4,
+        "original_security": 4,
+        "claim_consumptions": 0,
+        "grants": 4,
+        "object_audiences": 6
+      },
+      "unchanged": true,
+      "origin": "Original actual PG export; no database connection in this helper"
+    },
+    {
+      "phase": "partial_aggregate_observation",
+      "before": {
+        "native_pilot_runs": 1,
+        "native_pilot_currents": 1,
+        "native_pilot_observations": 1,
+        "action_receipts": 95,
+        "audit_entries": 95,
+        "outbox_events": 96,
+        "request_keys": 85,
+        "confirmations": 35,
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "builds": 2,
+        "actual_configurations": 2,
+        "build_lots": 2,
+        "sample_allocations": 2,
+        "sample_units": 4,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 18,
+        "build_operational_facts": 2,
+        "build_operational_current": 2,
+        "operational_asset_sentinels": 5,
+        "quality_issue_versions": 1,
+        "quality_current_issues": 1,
+        "artifact_versions": 19,
+        "uploaded_originals": 5,
+        "original_security": 5,
+        "claim_consumptions": 0,
+        "grants": 4,
+        "object_audiences": 6
+      },
+      "after": {
+        "native_pilot_runs": 1,
+        "native_pilot_currents": 1,
+        "native_pilot_observations": 1,
+        "action_receipts": 95,
+        "audit_entries": 95,
+        "outbox_events": 96,
+        "request_keys": 85,
+        "confirmations": 35,
+        "products": 2,
+        "projects": 1,
+        "project_product_links": 1,
+        "definition_revisions": 1,
+        "builds": 2,
+        "actual_configurations": 2,
+        "build_lots": 2,
+        "sample_allocations": 2,
+        "sample_units": 4,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 18,
+        "build_operational_facts": 2,
+        "build_operational_current": 2,
+        "operational_asset_sentinels": 5,
+        "quality_issue_versions": 1,
+        "quality_current_issues": 1,
+        "artifact_versions": 19,
+        "uploaded_originals": 5,
+        "original_security": 5,
+        "claim_consumptions": 0,
+        "grants": 4,
+        "object_audiences": 6
+      },
+      "unchanged": true,
+      "origin": "Original actual PG export; no database connection in this helper"
+    },
+    {
+      "phase": "complete_correction_retains_partial_history",
+      "before": {
+        "native_pilot_runs": 1,
+        "native_pilot_currents": 1,
+        "native_pilot_observations": 2,
+        "action_receipts": 103,
+        "audit_entries": 103,
+        "outbox_events": 105,
+        "request_keys": 91,
+        "confirmations": 39,
+        "products": 3,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 2,
+        "builds": 2,
+        "actual_configurations": 2,
+        "build_lots": 2,
+        "sample_allocations": 2,
+        "sample_units": 4,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 18,
+        "build_operational_facts": 2,
+        "build_operational_current": 2,
+        "operational_asset_sentinels": 5,
+        "quality_issue_versions": 1,
+        "quality_current_issues": 1,
+        "artifact_versions": 20,
+        "uploaded_originals": 6,
+        "original_security": 6,
+        "claim_consumptions": 0,
+        "grants": 4,
+        "object_audiences": 12
+      },
+      "after": {
+        "native_pilot_runs": 1,
+        "native_pilot_currents": 1,
+        "native_pilot_observations": 2,
+        "action_receipts": 103,
+        "audit_entries": 103,
+        "outbox_events": 105,
+        "request_keys": 91,
+        "confirmations": 39,
+        "products": 3,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 2,
+        "builds": 2,
+        "actual_configurations": 2,
+        "build_lots": 2,
+        "sample_allocations": 2,
+        "sample_units": 4,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 18,
+        "build_operational_facts": 2,
+        "build_operational_current": 2,
+        "operational_asset_sentinels": 5,
+        "quality_issue_versions": 1,
+        "quality_current_issues": 1,
+        "artifact_versions": 20,
+        "uploaded_originals": 6,
+        "original_security": 6,
+        "claim_consumptions": 0,
+        "grants": 4,
+        "object_audiences": 12
+      },
+      "unchanged": true,
+      "origin": "Original actual PG export; no database connection in this helper"
+    },
+    {
+      "phase": "statistics_source_withdrawn_saved_values_retained",
+      "before": {
+        "native_pilot_runs": 1,
+        "native_pilot_currents": 1,
+        "native_pilot_observations": 2,
+        "action_receipts": 104,
+        "audit_entries": 104,
+        "outbox_events": 106,
+        "request_keys": 92,
+        "confirmations": 40,
+        "products": 3,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 2,
+        "builds": 2,
+        "actual_configurations": 2,
+        "build_lots": 2,
+        "sample_allocations": 2,
+        "sample_units": 4,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 18,
+        "build_operational_facts": 2,
+        "build_operational_current": 2,
+        "operational_asset_sentinels": 5,
+        "quality_issue_versions": 1,
+        "quality_current_issues": 1,
+        "artifact_versions": 20,
+        "uploaded_originals": 6,
+        "original_security": 6,
+        "claim_consumptions": 0,
+        "grants": 4,
+        "object_audiences": 12
+      },
+      "after": {
+        "native_pilot_runs": 1,
+        "native_pilot_currents": 1,
+        "native_pilot_observations": 2,
+        "action_receipts": 104,
+        "audit_entries": 104,
+        "outbox_events": 106,
+        "request_keys": 92,
+        "confirmations": 40,
+        "products": 3,
+        "projects": 2,
+        "project_product_links": 2,
+        "definition_revisions": 2,
+        "builds": 2,
+        "actual_configurations": 2,
+        "build_lots": 2,
+        "sample_allocations": 2,
+        "sample_units": 4,
+        "engineering_configurations": 1,
+        "process_revisions": 1,
+        "manufacturing_baseline_publications": 1,
+        "manufacturing_publication_currents": 1,
+        "manufacturing_publication_documents": 2,
+        "manufacturing_preparation_versions": 3,
+        "manufacturing_preparation_currents": 3,
+        "manufacturing_baseline_document_links": 2,
+        "professional_authority_facts": 18,
+        "build_operational_facts": 2,
+        "build_operational_current": 2,
+        "operational_asset_sentinels": 5,
+        "quality_issue_versions": 1,
+        "quality_current_issues": 1,
+        "artifact_versions": 20,
+        "uploaded_originals": 6,
+        "original_security": 6,
+        "claim_consumptions": 0,
+        "grants": 4,
+        "object_audiences": 12
+      },
+      "unchanged": true,
+      "origin": "Original actual PG export; no database connection in this helper"
+    }
+  ],
+  "summary": {
+    "phases": 4,
+    "original_get_responses": 7,
+    "offline_get_calls": 7,
+    "successful_original_lists": 5,
+    "original_403_responses": 2,
+    "unique_pilot_roots": 1,
+    "unique_saved_observations": 2,
+    "fixed_input_count": 2,
+    "actual_cursor_pages": 0,
+    "actual_per_unit_observation_instances": 0,
+    "actual_null_count_records": 0,
+    "actual_null_count_fields": 0,
+    "pagination": "not_exercised",
+    "per_unit_mode": "not_exercised",
+    "null_count_record_mode": "not_exercised",
+    "counts_caveat": "Mode instances repeat when the same saved observation is returned in later phases or the recorded peer response; they are not business totals",
+    "business_models_per_phase": 37,
+    "derived_percentages": false,
+    "added_detail_gets": 0
+  }
+}

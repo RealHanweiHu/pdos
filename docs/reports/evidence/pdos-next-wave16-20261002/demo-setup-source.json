@@ -1,0 +1,84 @@
+{
+  "status": "offline_implementation_frozen_not_executed",
+  "source_sha256": {
+    "pdos-next/tools/wave16_demo_setup.py": "c8300ba56b0463053962bf4a352a5846b910741e9b1ad59820d1fefe0fe038b8",
+    "docs/reports/evidence/pdos-next-wave16-20261002/demo-setup-contract.md": "fe2471f87af2cc08023e620f4b2cf5c69886dbab2d39e62adeb800d80590e5a8"
+  },
+  "interface_source_sha256": {
+    "pdos-next/tools/local_environment.py": "9a08a9a30e759d2132edc965268824894d63bf78c95c7d5ee0aedb369ac75a11",
+    "pdos-next/server/pdos_next/professional_import.py": "c0f4d026d593f6f13fed83df68895a35f8f222329b95af9f7e4ac927b14be778",
+    "pdos-next/server/pdos_next/quality_followup_bootstrap.py": "02cbc5c4f21000c597e3d4207f60744278ad2c0454d8e0148d5e6aee31ee403c",
+    "pdos-next/server/pdos_next/domain/quality_followup/schemas.py": "56e4c77f91ceead0eb377ba67eaa4789aa10b01416311166d49108728ef5e153",
+    "pdos-next/server/pdos_next/domain/quality_followup/evidence.py": "00f64e3cb8b9dba7d000f0993e733f16806d4e59a5676d18f082d210d9ce0ed5"
+  },
+  "runtime_invocation": {
+    "requires": [
+      "explicit_marker",
+      "explicit_phase",
+      "explicit_current_head",
+      "verified_local62513_pdos_test",
+      "existing600_wave15_seed",
+      "registered_three_operations_and_correct_tiers"
+    ],
+    "public_registry_observed_offline": {
+      "quality.issue.root_cause.decide": {
+        "payload_registered": false,
+        "tier": null,
+        "quality_role_configured": false
+      },
+      "quality.capa.actions.complete": {
+        "payload_registered": false,
+        "tier": null,
+        "quality_role_configured": false
+      },
+      "quality.capa.followup.link": {
+        "payload_registered": false,
+        "tier": null,
+        "quality_role_configured": false
+      }
+    },
+    "matrix_guard": "FOLLOWUP_PUBLIC_MATRIX_INTEGRATION_REQUIRED",
+    "profile_path": "pdos-next/.local/quality-followup-synthetic-profile.json",
+    "seed_path": "pdos-next/.local/wave16-seed.json",
+    "completion_occurred_at_generated_by_tool": false,
+    "root_cause_complete_link_executed": false,
+    "effectiveness": null,
+    "closure": null
+  },
+  "offline_checks": {
+    "ruff_check": "passed",
+    "ruff_format": "passed",
+    "ast_memory_compile": "passed",
+    "inert_module_import": "passed",
+    "aware_time_naive_rejection": "passed",
+    "exact_single_line_rejection": "passed",
+    "duplicate_and_nonfinite_private_json_rejection": "passed",
+    "CompletionFact_fields": 9,
+    "ClassificationFact_fields": 12,
+    "actual_interface_signatures": "matched"
+  },
+  "frozen_previous_candidate": {
+    "manifest": "docs/reports/evidence/pdos-next-wave15-20261002/backend-candidate-v4-source.json",
+    "manifest_sha256": "fb4829a123970927440e7770fa19accbc5a890da7069ad95541605c1e14ee902",
+    "explicit_files_checked": 303,
+    "changed_paths": [],
+    "scope": "only named Wave15 v4 set, not whole workspace"
+  },
+  "not_executed": [
+    "CLI main",
+    "Docker",
+    "DB",
+    "HTTP",
+    "pytest",
+    "public checks",
+    "actual registration/import/profile publication",
+    "UI root-cause/completion/link"
+  ],
+  "remaining": [
+    "Root shared operation/tier/professional matrix and actual migration integration",
+    "Root observed completion time/text",
+    "Root actual phase execution and recovering persisted commands",
+    "explicit API profile injection and actual source proof verification",
+    "owner runtime/failure bridge for optional owner-options"
+  ]
+}

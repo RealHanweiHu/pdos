@@ -1,0 +1,12 @@
+{
+  "head": "s0_0794",
+  "target": "127.0.0.1:64245/pdos_test",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "filename": "post-s5-project-scope-20261018-s0_0794.dump",
+  "size": 71675597,
+  "sha256": "13403b08f5dd1e4190e50edfa309d8e22a78332c64e143b72be987b027be0d22",
+  "short_synthetic_login_removed": 1,
+  "old_backups_overwritten": false,
+  "database_stopped": false,
+  "shared_temporal_stopped": false
+}

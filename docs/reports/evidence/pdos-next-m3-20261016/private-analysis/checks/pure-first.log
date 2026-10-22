@@ -1,0 +1,46 @@
+
+==================================== ERRORS ====================================
+________ ERROR collecting tests/agent_kernel/test_m3_definition_diff.py ________
+ImportError while importing test module '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/agent_kernel/test_m3_definition_diff.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_m3_definition_diff.py:10: in <module>
+    from pdos_next.agent_kernel import m3_definition_diff as module
+pdos_next/agent_kernel/m3_definition_diff.py:25: in <module>
+    from .m3_spec_compare import _head, _objects, _RunObjects, _unavailable
+pdos_next/agent_kernel/m3_spec_compare.py:15: in <module>
+    from pdos_next.domain.products.models import DefinitionRevision, Variant
+E   ImportError: cannot import name 'Variant' from 'pdos_next.domain.products.models' (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/models.py)
+_________ ERROR collecting tests/agent_kernel/test_m3_spec_compare.py __________
+ImportError while importing test module '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/agent_kernel/test_m3_spec_compare.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_m3_spec_compare.py:12: in <module>
+    from pdos_next.agent_kernel import m3_spec_compare as module
+pdos_next/agent_kernel/m3_spec_compare.py:15: in <module>
+    from pdos_next.domain.products.models import DefinitionRevision, Variant
+E   ImportError: cannot import name 'Variant' from 'pdos_next.domain.products.models' (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/models.py)
+_________ ERROR collecting tests/agent_kernel/test_extracted_match.py __________
+ImportError while importing test module '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/agent_kernel/test_extracted_match.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_extracted_match.py:9: in <module>
+    from pdos_next.agent_kernel.m3_spec_compare import AgentSpecCompareInput
+pdos_next/agent_kernel/m3_spec_compare.py:15: in <module>
+    from pdos_next.domain.products.models import DefinitionRevision, Variant
+E   ImportError: cannot import name 'Variant' from 'pdos_next.domain.products.models' (/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/models.py)
+=========================== short test summary info ============================
+ERROR tests/agent_kernel/test_m3_definition_diff.py
+ERROR tests/agent_kernel/test_m3_spec_compare.py
+ERROR tests/agent_kernel/test_extracted_match.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!
+3 errors in 0.64s

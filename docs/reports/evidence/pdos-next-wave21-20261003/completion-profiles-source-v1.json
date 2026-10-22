@@ -1,0 +1,29 @@
+{
+  "schema_version": "wave21-completion-profiles-staged-source-v1",
+  "baseline_source": {
+    "path": "pdos-next/server/pdos_next/quality_followup_integration.py",
+    "sha256": "3e645ba35aaed5504a3ee9f2e1f237d46e4dc87ac01f1044d2105b255038f850",
+    "current_sha256": "3e645ba35aaed5504a3ee9f2e1f237d46e4dc87ac01f1044d2105b255038f850",
+    "unchanged": true
+  },
+  "files": [
+    {
+      "staged_path": "pdos-next/.local/wave21-completion-staged/pdos_next/quality_followup_integration.py",
+      "intended_path": "pdos-next/server/pdos_next/quality_followup_integration.py",
+      "sha256": "641e4a5f734e4cb2a7052143e05b3d429995084c29fe11b8f634720b2c0945a6"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-completion-staged/tests/quality_followup_root/test_completion_profiles.py",
+      "intended_path": "pdos-next/server/tests/quality_followup_root/test_completion_profiles.py",
+      "sha256": "cafd1417cd1af39b050810de5f11d1a526a9f683ddc3d420ff6f15c2afa09fe6"
+    }
+  ],
+  "isolation": {
+    "copied_python_files": 310,
+    "other_staged_python_files_unchanged": 309,
+    "symlinks_used": false,
+    "real_source_modified": false,
+    "real_test_created": false
+  },
+  "api_hook": "Root may add synthetic_completion_profiles=None to create_app and pass it unchanged as configure_integration(...,synthetic_completion_profiles=...). Both single/plural non-None are rejected; no public route/payload field added."
+}

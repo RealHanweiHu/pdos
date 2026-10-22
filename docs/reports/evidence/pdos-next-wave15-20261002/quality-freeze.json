@@ -1,0 +1,191 @@
+{
+  "status": "owned_implementation_frozen_shared_integration_pending",
+  "recorded_at": "2026-10-03T04:59:45.519414+00:00",
+  "owner": "/root/reuse_foundation",
+  "scope": "Wave15 new quality_execution package and its own tests only; no frozen Wave14 production edits",
+  "source_files": {
+    "pdos-next/server/pdos_next/domain/quality_execution/__init__.py": "d05e6d09768049d09c5b6c39ee569a4ad0a9210ec884e9f996caea4ac78ee9d6",
+    "pdos-next/server/pdos_next/domain/quality_execution/adapters.py": "be882d414682eb82f695315374bbd880966b33ed72abcfa4a9ff44717fe9335d",
+    "pdos-next/server/pdos_next/domain/quality_execution/evidence.py": "f9b128b0cff62607415d16824bd6a8c1a7e9b30c397b1252991f1ec76bd98903",
+    "pdos-next/server/pdos_next/domain/quality_execution/models.py": "e421c569e89c746795d60d9acbbf87fce4324eef360c8c950713c2af64c3d517",
+    "pdos-next/server/pdos_next/domain/quality_execution/policy.py": "18987da3dcc09406abb09dabc5af99c1c21e627b857136b418a9fa490551755b",
+    "pdos-next/server/pdos_next/domain/quality_execution/ports.py": "3ecb83ea278cf36b15dc1c1103a499a5af94a103a6e506721c2f312c90fcc095",
+    "pdos-next/server/pdos_next/domain/quality_execution/schemas.py": "7c2106760407b5966e8f3220dd08ece22a12b1cede079cbaa073ac61b64db8a8",
+    "pdos-next/server/pdos_next/domain/quality_execution/service.py": "284f5749ca953ec24127b6595f263f0165faa5d1992095cb4b7639deff845427",
+    "pdos-next/server/tests/quality_execution/__init__.py": "3fe4d12aee029b67743d01326b7205b031b3f64bffde00ebab7622bdf823bf27",
+    "pdos-next/server/tests/quality_execution/fixtures.py": "1738572bc97e692d5cf8235377a184d1221d970e99b5594bf683794f95336ec9",
+    "pdos-next/server/tests/quality_execution/test_pure.py": "fcd7793c27c330ba15f370569f0789fbd9f2d470c54d65f11d3ceb38c8084ba0",
+    "pdos-next/server/tests/quality_execution/test_transactions.py": "39ab50d9c1554d53ce953dcf272475326d799030098f66f545fcecb5dc5ee082"
+  },
+  "validation": {
+    "pure": {
+      "command": ".venv/bin/python -m pytest tests/quality_execution/test_pure.py --confcutdir=tests/quality_execution -q",
+      "workdir": "pdos-next/server",
+      "passed": 31,
+      "elapsed_seconds": 0.82,
+      "evidence": "completed tool output, session 96694; not rerun at freeze"
+    },
+    "ruff": {
+      "command": "pdos-next/server/.venv/bin/ruff check pdos-next/server/pdos_next/domain/quality_execution pdos-next/server/tests/quality_execution",
+      "result": "passed before freeze; hashes unchanged"
+    },
+    "ast": {
+      "result": "12 owned Python files parse successfully"
+    },
+    "postgres_ddl_compile": {
+      "result": "six owned model CreateTable statements compiled with PostgreSQL dialect only; no connection"
+    },
+    "pg_transaction_tests": {
+      "functions": 10,
+      "parameterized_cases": 11,
+      "status": "written, not executed or collected by this agent"
+    },
+    "forbidden_actions_performed": []
+  },
+  "interfaces": {
+    "service_module": "pdos_next.domain.quality_execution.service",
+    "schemas_module": "pdos_next.domain.quality_execution.schemas",
+    "result_dto": "pdos_next.domain.quality_execution.ports.FixedQualityResult",
+    "configure_result_bridge": "configure_result_bridge(engine, bridge, *, refresh=None)",
+    "byte_bridge": "fixed_failure_result(s,ctx,pid,*,run_id,measurement_id,event_id=None,run_revision=None,write=False)->FixedQualityResult",
+    "final_refresh": "recheck_fixed_failure_result(s,ctx,pid,value,*,write=False)->FixedQualityResult",
+    "shared_hooks": [
+      "validate",
+      "semantic",
+      "preview_view",
+      "apply",
+      "replay_subject",
+      "replay_subject_type"
+    ],
+    "inputs": "inputs(s,ctx,pid,Command) -> {operation,allowed:true,required_source_read_set,authority,review}",
+    "list": "list_quality(s,ctx,pid,*,issue_id=None,run_id=None,build_id=None)->QualityReading JSON",
+    "fixed_issue": "get_issue(s,ctx,pid,issue_id,revision=None,*,write=False)->(QualityIssueVersion,IssueView)",
+    "host_policy_wrapper": "pdos_next.quality_policy_import.import_quality_policy_fact(s,ctx,issuer,payload,*,request_key,command_id)",
+    "receipt": {
+      "subject_type": "quality_issue",
+      "subject_id": "immutable QualityIssueVersion.id",
+      "subject_revision": "aggregate Issue revision",
+      "logical_id": "Receipt.result.issue_id; IssueView.issue_id; command IssueTarget.issue_id"
+    },
+    "review": "before/after are maps keyed by logical Issue UUID, not a single Issue; read_basis preserves scope/purpose/authority/policy/source_basis/read_set; event_effect and delivery_effect are explicit",
+    "read_model": "QualityReading{issues,current_by_issue,failures,policy,next_owners,capabilities,unavailable_count,has_more}; each IssueView and FailureReading has its own exact current capabilities/authority/read-set",
+    "source_reference": "SourceRef(kind=artifact,id,revision,position=line:N;quote_sha256:SHA256(full exact UTF8 line)); no trim or substring hash",
+    "missing_bridge_or_final_refresh": "INTEGRATION_REQUIRED 503; no mutation",
+    "historical_issue": "source_status=not_evaluated_historical; fixed history does not claim current requalification"
+  },
+  "operations": {
+    "quality.issue.create": {
+      "payload": "IssueCreatePayload",
+      "tier": "T0 human",
+      "event": "issue.created"
+    },
+    "quality.issue.merge": {
+      "payload": "IssueMergePayload",
+      "tier": "T1 common single confirmation",
+      "event": "issues.merged"
+    },
+    "quality.issue.triage": {
+      "payload": "IssueTriagePayload",
+      "tier": "T1 common single confirmation",
+      "event": "issue.triaged"
+    },
+    "quality.issue.containment.record": {
+      "payload": "ContainmentPayload",
+      "tier": "T1 common single confirmation",
+      "event": "issue.contained"
+    },
+    "quality.capa.draft": {
+      "payload": "CapaDraftPayload",
+      "tier": "T0 human",
+      "event": "capa.drafted"
+    },
+    "quality.policy.import": {
+      "payload": "PolicyInput",
+      "tier": "host opaque synthetic issuer only; not public PAYLOADS/API",
+      "event": "quality.policy_imported"
+    }
+  },
+  "model_tables": [
+    "quality_issue_versions",
+    "quality_current_issues",
+    "quality_failure_maps",
+    "quality_event_failure_links",
+    "quality_policy_facts",
+    "quality_current_policies"
+  ],
+  "migration_contract": {
+    "exact_parent_unique_required": "(tenant_id,product_id,project_id,request_id,run_id,id,revision) on verification_run_versions, test_measurements, test_result_projections; root agreed to public ORM/migration changes after Wave14",
+    "delivery_parent_fks": {
+      "verification_run_versions": [
+        "tenant_id",
+        "product_id",
+        "project_id",
+        "request_id",
+        "run_id",
+        "run_version_id",
+        "run_revision"
+      ],
+      "test_measurements": [
+        "tenant_id",
+        "product_id",
+        "project_id",
+        "request_id",
+        "run_id",
+        "measurement_id",
+        "measurement_revision"
+      ],
+      "test_result_projections": [
+        "tenant_id",
+        "product_id",
+        "project_id",
+        "request_id",
+        "run_id",
+        "projection_id",
+        "projection_revision"
+      ]
+    },
+    "run_identity_fk": "(tenant_id,product_id,project_id,build_id,run_id)->verification_run_identities(tenant_id,product_id,project_id,build_id,id)",
+    "issue_snapshot_checks": "exact tenant/product/project/logical issue/revision/status; only five implemented operations; complete readset length1..20",
+    "lifecycle_classification": "all six tables are product-scoped references; IssueVersion/PolicyFact/EventFailureLink immutable; Current scope/id/created_at immutable and revision/epoch monotonic; FailureMap may only canonical-merge rewire with epoch+1 and immutable failure identity",
+    "agent": "zero direct write permissions",
+    "merge_atomicity": "one kernel merge mutation stages target and each merged alias version under one common target Receipt; secondary child input_snapshot targets primary issue, so do not require an independent Receipt per child or child payload issue_id equality",
+    "same_failure_new_delivery": "EventFailureLink is staged, original creation IssueVersion returned; common exact subject Receipt alias dedup must occur after apply and must not publish another issue.created"
+  },
+  "security_and_atomicity": {
+    "definite_failure_only": "trusted archived exact Run/Measurement/Projection/Event; indeterminate rejected by kernel failure_ref; no latest substitution",
+    "native_origin": "current source_for ACL/hash/status plus actual evidence.artifact.register Receipt subject/id/revision/result/owner/visibility; optional original historical Run actor/requester provenance. Never substitutes for measurement instrument original",
+    "uploaded_origin": "current exact original ACL/security/epoch remains required; result bridge verifies actual report bytes, no Artifact.content substitution",
+    "phase_refresh": "each validate/preview/apply independently reads all bytes; then narrow refresh every fixed result, compare stable proof/runtime stamps, re-evaluate policy/source basis, final current professional authority+expiry; no cross-phase memo",
+    "confirmation_receipt_commit": "common owns confirmation consumption, Receipt/Audit/Outbox/RequestKey and transaction commit; adapter only asserts internally accepted_confirmation for three T1 operations",
+    "merge": "needs_recheck stays true; no recheck command; all subsequent professional decisions closed",
+    "policy": "only explicit exact-scope opaque host synthetic issuer with live version/epoch; complete current/future/withdrawn pointer/source proof; no client nature/approval grants"
+  },
+  "fixtures": {
+    "module": "tests/quality_execution/fixtures.py",
+    "exports": [
+      "quality_work",
+      "quality_capa_work",
+      "publish_policy",
+      "create_issue",
+      "draft_capa",
+      "command",
+      "listing",
+      "issue_current",
+      "counts",
+      "unconsumed",
+      "triage"
+    ],
+    "quality_work": "reuses real started results_work with two actual 11.0000 definite failures; independent results/quality credentials do not fabricate old Start; no DB access was performed while writing fixture",
+    "quality_capa_work": "current Issue rev4 after create/triage/containment/CAPA, with logical issue_id/capa_id/issue_view/readset/sources/policy and original result scope",
+    "minimal_root_nodes": [
+      "tests/quality_execution/test_transactions.py::test_definite_fail_create_triage_containment_capa_retains_test_and_unknown_conclusions",
+      "tests/quality_execution/test_transactions.py::test_outbox_failure_rolls_back_issue_version_pointer_and_common_confirmation"
+    ]
+  },
+  "remaining": [
+    "Root shared model registry, parent unique constraints, migration/RLS/lifecycle guards, professional operation map, command/API/BFF registrations, bridge/refresh configuration and host policy wrapper must be validated as one candidate",
+    "PG/HTTP/UI/common Receipt integration unvalidated by this agent; first complete closed loop has not been claimed",
+    "Real professional production qualifications/policy publisher not supplied; explicit synthetic proof does not authorize production",
+    "Root cause/action completion/effectiveness/close/merged-issue independent recheck remain blocked; CAPA follow-up outputs not generated"
+  ]
+}

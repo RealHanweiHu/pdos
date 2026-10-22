@@ -1,0 +1,25 @@
+{
+  "at": "2026-10-03T08:30:23.100339+00:00",
+  "changes": {
+    "pdos-next/server/pdos_next/quality_followup_integration.py": "2c722d0fa94e02fd5d0e1d7ebeec1e52a782015457cb58e4ed5efbf3fce32e5f",
+    "pdos-next/server/pdos_next/quality_followup_views.py": "2848c9cb6eed6824d973c7a99d62ee756b9c92b7cfb74ae4eb8f63fb147ab0a3"
+  },
+  "actual_read": "http-current-read-recovery1.json",
+  "current_issue_revision": 4,
+  "unsupported_paired_formal_versions": "explicit integration.missing; no fallback to earlier Current",
+  "direct_proof_filter": [
+    "tenant",
+    "product",
+    "subject_type",
+    "exact immutable row UUID",
+    "revision",
+    "row operation",
+    "canonical result id",
+    "JSON numeric revision"
+  ],
+  "independent_full_owner_recheck_preserved": true,
+  "ddl_required": false,
+  "backend_candidate": "backend-candidate-source-v2.json",
+  "frontend_candidate": "web-candidate-source-v2.json",
+  "previous_failure_retained": true
+}

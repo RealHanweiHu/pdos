@@ -1,0 +1,7 @@
+{
+  "phase": "before first migration subprocess",
+  "error": "venv has no alembic console script; use its Python module entry",
+  "migrations_executed": false,
+  "verified_head_before_failure": "s0_0810",
+  "database": "127.0.0.1:64245/pdos_test"
+}

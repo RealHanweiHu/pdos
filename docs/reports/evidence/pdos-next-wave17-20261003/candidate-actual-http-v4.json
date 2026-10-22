@@ -1,0 +1,76 @@
+{
+  "status": "FAIL",
+  "started_at": "2026-10-03T13:16:30.953649+00:00",
+  "steps": [
+    {
+      "step": "current-context",
+      "http_status": 200,
+      "duration_seconds": 103.239,
+      "response_sha256": "4bbd73824596e0f3d69a96d55378cc45508844b4c0a7493d07061edfe4271c94",
+      "error_code": null
+    }
+  ],
+  "source_manifest_sha256": "9160dc36990bbf7bd5e9912547697bb4b6cae695d315a85831a78602df20fdf0",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "model_calls": 0,
+  "host_gate": {
+    "allowed": true,
+    "authority": {
+      "authorized": true,
+      "qualified": true,
+      "synthetic": true
+    },
+    "missing": [
+      {
+        "dimension": "mapping",
+        "code": "FAILURE_NOT_MAPPED",
+        "detail": "\u539f\u5931\u8d25\u5c1a\u672a\u6620\u5c04\u5230\u65b0\u590d\u9a8cpair\u3002",
+        "output_ref": null,
+        "failure_id": "e218c8dc607a59699e0e024c43409bdbb238821bd9a2df45c48d1a8cb2757730"
+      },
+      {
+        "dimension": "applicability",
+        "code": "INTEGRATION_REQUIRED",
+        "detail": "\u5c1a\u7f3aCAPA\u8981\u6c42\u4e0e\u65b0\u65b9\u6cd5/\u5224\u636e/\u5b9e\u9645\u914d\u7f6e\u7684\u4e13\u4e1a\u9002\u7528\u6743\u5a01\u63a5\u53e3\u3002",
+        "output_ref": null,
+        "failure_id": null
+      },
+      {
+        "dimension": "independence",
+        "code": "INTEGRATION_REQUIRED",
+        "detail": "\u5c1a\u7f3a\u72ec\u7acb\u590d\u9a8c\u4eba\u4e13\u4e1a\u4f9d\u636e\u4e0e\u53c2\u4e0e\u8005\u6392\u9664\u7684\u6743\u5a01\u63a5\u53e3\u3002",
+        "output_ref": null,
+        "failure_id": null
+      },
+      {
+        "dimension": "observation",
+        "code": "INTEGRATION_REQUIRED",
+        "detail": "\u5c1a\u7f3a\u8986\u76d6\u771f\u5b9e\u89c2\u5bdf\u671f\u7684\u4e8b\u5b9eowner\uff0c\u8981\u6c42\u65e5\u671f\u4e0d\u80fd\u5f53\u5b9e\u9645\u5b8c\u6210\u3002",
+        "output_ref": null,
+        "failure_id": null
+      },
+      {
+        "dimension": "policy",
+        "code": "EFFECTIVENESS_NOT_ENABLED",
+        "detail": "\u672c\u6ce2\u4e0d\u5f00\u653eCAPA\u6709\u6548\u6027\u4e0eIssue\u5173\u95ed\u3002",
+        "output_ref": null,
+        "failure_id": null
+      },
+      {
+        "code": "RECHECK_REQUIRED",
+        "detail": "\u5df2\u4fdd\u5b58\u7684\u6574\u6539\u56de\u94fe\u9700\u8981\u91cd\u65b0\u6838\u5bf9\uff08RECHECK_REQUIRED\uff09\u3002"
+      }
+    ]
+  },
+  "exception_type": "AssertionError",
+  "diagnostic": "",
+  "frames": [
+    {
+      "file": "wave17_candidate_http.py",
+      "line": 134
+    }
+  ],
+  "finished_at": "2026-10-03T13:18:14.909936+00:00",
+  "source_stable": true
+}

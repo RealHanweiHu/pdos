@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "observed_at": "2026-10-03T11:57:46.467758+00:00",
+  "source_sha256": {
+    "candidate-form-contract.ts": "f17424c9edebfab91b385491e60dd00219c45c8c5e39e6bb98942b1b6ae817af",
+    "candidate-form.tsx": "e642bc01e749da135327cb64fad2314e01db1bb024d3ffbb72edb3a1d1fb25ee",
+    "candidate_commands.py": "1cb7b82f9a187d20ee44ba5193f8b3c327e12e54ae4bf02356b49e46960ce8ac"
+  },
+  "public_source_stable": true,
+  "staged_source_stable": true,
+  "node_exit_code": 0,
+  "checks": [
+    "Actual TS candidatePayload revalidates with actual Python canonical semantic",
+    "Current CAS9 remains distinct from origin6",
+    "Whole exact pair/nullable fields/source quote preserved",
+    "Empty candidate infers no mapping, observation or effective result",
+    "No token, anchor, inspection, approval or qualification fields produced"
+  ],
+  "raw_log_sha256": "b9d8a1bfd253a7f3e04053b039f5dfb9e7e4dcd22655133201173ea38844f0ca",
+  "fixture_only": true,
+  "database_connections": 0,
+  "public_operations": 0,
+  "not_pg_or_browser_acceptance": true
+}

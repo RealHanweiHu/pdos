@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "status": "owned_event_time_precision_delta_frozen",
+  "previous_freezes": [
+    "ui-component-check.json",
+    "ui-result-label-fix.json"
+  ],
+  "root_reported_value": "2026-10-03T06:25:03.160086+00:00",
+  "previous_ui_value": "2026-10-03T06:25:03.160Z",
+  "cause": "qualityEvent called qualityTime, which serialized through JavaScript Date milliseconds and lost the 086 microseconds before common preview.",
+  "change": "qualityTime validates aware/parseable text while returning the original ISO string. qualityEvent and CAPA observation clock retain original offset and complete fractional seconds. Only preview comparison resolves offsets using whole-second epoch plus exact normalized fractional digits; it rejects distinct instants within the same millisecond.",
+  "guards": "Existing aware/parseable checks, preliminary non-future check, IANA, source identity, full read-set, command/key, draft/replay recovery unchanged. Server Pydantic and exact current future/event guards remain authoritative.",
+  "helper_tests": {
+    "total": 37,
+    "pass": 37,
+    "fail": 0,
+    "old_tests": 35,
+    "new_tests": 2,
+    "old_updated": "Existing event test now asserts raw ISO offset preservation rather than UTC serialization; blank/future checks retained and naive/unparseable rejection checked.",
+    "new_coverage": [
+      "Reported 160086 microsecond ISO and -07:00 offset survive event and containment payload",
+      "Equivalent UTC/offset fractional instants pass T1; changed 160000/160087 within the same millisecond reject"
+    ]
+  },
+  "checks": [
+    {
+      "kind": "pure_helpers",
+      "command": "node <<'JS'\nconst fs=require('node:fs'),path=require('node:path'),ts=require('./node_modules/typescript'),cp=require('node:child_process');\nconst tmp=fs.mkdtempSync('/tmp/pdos-wave15-time-');\nfor(const file of ['product-view.ts','build-handoff-view.ts','build-results-view.ts','build-quality-loop-view.ts','build-quality-loop-view.test.ts']) fs.writeFileSync(path.join(tmp,file.replace(/\\.ts$/,'.js')),ts.transpileModule(fs.readFileSync(path.join('src/lib',file),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true},fileName:file}).outputText);\nconst r=cp.spawnSync(process.execPath,['--test',path.join(tmp,'build-quality-loop-view.test.js')],{encoding:'utf8'});fs.writeFileSync(path.join(tmp,'helper-tests.log'),r.stdout+r.stderr);process.stdout.write(JSON.stringify({tmp,exit_code:r.status,summary:r.stdout.trim().split('\\n').slice(-8)}));process.exitCode=r.status;\nJS",
+      "chunk_id": "f75b28",
+      "wall_time_seconds": 0.545341916,
+      "exit_code": 0,
+      "original_token_count": 50,
+      "output": "{\"tmp\":\"/tmp/pdos-wave15-time-qZFpNH\",\"exit_code\":0,\"summary\":[\"ℹ tests 37\",\"ℹ suites 0\",\"ℹ pass 37\",\"ℹ fail 0\",\"ℹ cancelled 0\",\"ℹ skipped 0\",\"ℹ todo 0\",\"ℹ duration_ms 170.024542\"]}",
+      "raw_output": "✔ missing capability and unknown availability cannot become a failure-create permission (1.125584ms)\n✔ fixed failure creation uses semantic Run ID and exact delivery event, no client risk or result (0.808667ms)\n✔ precise source hashes the complete original UTF-8 line including spaces (6.449333ms)\n✔ source read-set never silently truncates or combines revisions (0.357ms)\n✔ payload read-set includes nested actual evidence and hypotheses, not unrelated selected rows (0.228458ms)\n✔ actual containment clock preserves the original ISO offset and cannot be defaulted or future (43.243125ms)\n✔ actual containment retains reported microseconds and original UTC or regional offsets without rewriting (1.073375ms)\n✔ T1 prepared command binds original IDs, payload, read-set and issue revision (1.096333ms)\n✔ T1 rejects changed content and expired confirmation (0.125041ms)\n✔ T1 offset-to-UTC normalization accepts an identical event but not a new instant (0.393375ms)\n✔ T1 preserves microsecond identity across offsets and rejects a same-millisecond altered event (0.222625ms)\n✔ inputs must return the same operation and an explicit allowed boolean (0.089166ms)\n✔ common receipts use operation and immutable version family, including semantic replay of the old receipt (0.070708ms)\n✔ named triage does not expose a client risk or independence bypass (0.0615ms)\n✔ actual containment requires its event to be part of evidence and binds the current named executor (0.2475ms)\n✔ CAPA draft covers all failures, keeps completion null and validates selected responsible people (0.172ms)\n✔ CAPA cannot overwrite old drafts or build from an untriaged/historical Issue (0.08125ms)\n✔ merge keeps source logical identities and revisions and rejects CAPA-bearing origins (0.126125ms)\n✔ Issue/CAPA change references use the exact Issue aggregate and CAPA key (0.067458ms)\n✔ change creation only picks returned real references, never client change ID or graph completeness (0.190958ms)\n✔ graph capture is fixed to the current eligible change and keeps caller capture key (0.120333ms)\n✔ impact cannot refresh an expired graph or silently use another change version (0.1535ms)\n✔ legacy readonly CAPA refuses unknown risk/independence instead of coercing false (0.35075ms)\n✔ change readonly mapping keeps unknown facets and never creates an approved Order (0.486166ms)\n✔ local recovery is bound to exact actor/product and retains the complete prepared command (0.252792ms)\n✔ switching selected scope isolates CAPA IDs and preserves prior local drafts (0.080625ms)\n✔ object key order is immaterial while array order and content remain semantic (0.065417ms)\n✔ empty selection only loads readable Builds and workspace, not global history (0.2405ms)\n✔ read superseded cancellation is quiet, a simultaneous genuine failure remains visible (0.14225ms)\n✔ scope generation discards a late old read and private authorization failure is retained (0.11ms)\n✔ actual quality T1 before/after maps bind the target and preserve all merge origins (0.088708ms)\n✔ human impact hypotheses cannot be rendered as the legacy AI hypothesis category (0.071ms)\n✔ malformed local nested drafts cannot be restored as trusted form state (0.050417ms)\n✔ known server policy is shown as its exact risk and independence, without defaulting unknown (0.107792ms)\n✔ deep reads stay scoped to the explicit Build, logical Run and Issue, without global scans (0.331833ms)\n✔ a Build switch during the late scoped result read prevents any old quality or change request (0.089958ms)\n✔ capture response binds the exact change version and saved graph seed, never another candidate (0.115625ms)\nℹ tests 37\nℹ suites 0\nℹ pass 37\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 170.024542\n"
+    },
+    {
+      "kind": "owned_typecheck",
+      "command": "node_modules/.bin/tsc --project /tmp/pdos-wave15-ui.R1c5Ff/tsconfig.json",
+      "chunk_id": "08dbcb",
+      "wall_time_seconds": 2.174954917,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    {
+      "kind": "owned_eslint",
+      "command": "node_modules/.bin/eslint src/lib/build-quality-loop-view.ts src/lib/build-quality-loop-view.test.ts",
+      "chunk_id": "706dd7",
+      "wall_time_seconds": 1.892889833,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  ],
+  "public_validation": {
+    "build": "not_run_by_C; root integrates new UI candidate",
+    "browser": "not_run_by_C",
+    "database": "not_run_by_C"
+  },
+  "previous_hashes": {
+    "pdos-next/web/src/lib/build-quality-loop-view.ts": "ad819a023b0547f2eac578355b844da0ad94cb178382adc215e1c2a0b4e62f56",
+    "pdos-next/web/src/lib/build-quality-loop-view.test.ts": "8b46c23f24c117c59fd34b2caeb3bf9e7ec350b5a9184b11f1976c457270c142"
+  },
+  "unchanged_component": {
+    "path": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+    "expected_sha256": "0f62a4d0f3c7f792c5e02e7c1e9cfbf057f68e4fb8ebb55953b0e1d2fb174c46",
+    "actual_sha256": "0f62a4d0f3c7f792c5e02e7c1e9cfbf057f68e4fb8ebb55953b0e1d2fb174c46"
+  },
+  "old_evidence_preserved": true,
+  "recorded_at": "2026-10-03T06:38:52.783Z",
+  "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+  "files": [
+    {
+      "path": "pdos-next/web/src/lib/build-quality-loop-view.ts",
+      "sha256": "398c3f8e21603257a69ea8fbbdfe9645ec4b2f45e05f503d0ff9a2717fd3af9e"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-loop-view.test.ts",
+      "sha256": "b92e3faf3f48c4d9395ee83c26699c15b155bbe71e6fdeee13bbcd0ba7eaf1f2"
+    }
+  ]
+}

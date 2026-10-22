@@ -1,0 +1,7 @@
+{
+  "status": "APPLIED_ONLY_ISOLATED_CANDIDATE_V3",
+  "shared_head29_untouched": true,
+  "cause": "actual tenant-only shared asset has no product_id",
+  "correction": "tenant products clock; scoped triggers Product lock; App scoped SHARE function with no table DML",
+  "numbered_migration_roundtrip_required": true
+}

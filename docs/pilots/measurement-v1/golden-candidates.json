@@ -1,0 +1,311 @@
+{
+  "version": "1.0.0-draft.1",
+  "status": "candidate_index_not_trusted_suite",
+  "automatic_publication_allowed": false,
+  "trusted_root": "server/golden/",
+  "mandatory_categories": [
+    "normal",
+    "missing",
+    "conflict",
+    "stale",
+    "scope_denied",
+    "injection",
+    "tool_unavailable",
+    "timeout",
+    "cancel",
+    "compaction_resume",
+    "duplicate_apply"
+  ],
+  "candidates": [
+    {
+      "candidate_id": "GC-IMPORT-RAW",
+      "scenario": "原值保真/空白/0/单位/参考/日期缺失",
+      "semantic_topic": "test_report_import",
+      "registered_capability_key": null,
+      "available_evidence_ref": "docs/reports/evidence/2026-09-09-d14-02-import-draft.json",
+      "authorization_status": "已批准本地历史回放；去标识及模型出站尚待核对",
+      "work_items": [
+        "N4-01"
+      ],
+      "assertion_intent": "原值逐cell一致、缺失不猜、样机序号不充SN",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-IMPORT-IDEMPOTENT",
+      "scenario": "同内容复传/改名/失败恢复",
+      "semantic_topic": "test_report_import",
+      "registered_capability_key": null,
+      "available_evidence_ref": "docs/reports/2026-09-09-d14-02-import-deduplication-fix.md",
+      "authorization_status": "复用已有工程证据；不是模型资格",
+      "work_items": [
+        "N4-01"
+      ],
+      "assertion_intent": "同范围内容不重复建记录；不同scope不越界复用",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-PRODUCT-DIFFERENCE",
+      "scenario": "D14-04不带灯与D14-02带灯分流",
+      "semantic_topic": "test_plan_suggestion",
+      "registered_capability_key": null,
+      "available_evidence_ref": "docs/pilots/D14-04-test-plan-v1.md",
+      "authorization_status": "本地模板用例；真实客户材料待许可",
+      "work_items": [
+        "N0-05",
+        "N4-01"
+      ],
+      "assertion_intent": "不跨产品复制适用项/实绩；新功能缺条件保留未知",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-RESEARCH",
+      "scenario": "研究来源冲突/陈旧/注入",
+      "semantic_topic": "research_planning",
+      "registered_capability_key": null,
+      "available_evidence_ref": null,
+      "authorization_status": "待授权真实快照",
+      "work_items": [
+        "N1-02"
+      ],
+      "assertion_intent": "引用支持、时效/冲突可见、外部指令不改权限",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-DEFINITION",
+      "scenario": "竞品同工况/实验与定义",
+      "semantic_topic": "competitor_analysis",
+      "registered_capability_key": null,
+      "available_evidence_ref": null,
+      "authorization_status": "待授权真实产品材料",
+      "work_items": [
+        "N1-03",
+        "N1-04",
+        "N1-06"
+      ],
+      "assertion_intent": "不可比不排名，计划不算验证结果，发布需人审",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-PLAN",
+      "scenario": "ID/结构/硬件/FW依赖与早期专业约束",
+      "semantic_topic": "initial_project_plan",
+      "registered_capability_key": null,
+      "available_evidence_ref": null,
+      "authorization_status": "待领域真实资料和专业预期核对",
+      "work_items": [
+        "N2-01",
+        "N2-03"
+      ],
+      "assertion_intent": "约束保真，初始计划不冒充ID已冻结",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-DQE",
+      "scenario": "DQE概念约束与验证覆盖",
+      "semantic_topic": "test_plan_suggestion",
+      "registered_capability_key": null,
+      "available_evidence_ref": null,
+      "authorization_status": "待实际DQE参与和输入授权",
+      "work_items": [
+        "N2-03",
+        "N4-06"
+      ],
+      "assertion_intent": "补早期约束/缺证，不用后期质量样本替代",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-SQE",
+      "scenario": "SQE供方能力与供样约束",
+      "semantic_topic": "supplier_risk",
+      "registered_capability_key": null,
+      "available_evidence_ref": null,
+      "authorization_status": "待实际SQE/供方资料授权",
+      "work_items": [
+        "N2-03",
+        "N5-05"
+      ],
+      "assertion_intent": "证据缺项和来源明确，不自动批准供方",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-IE",
+      "scenario": "IE可制造可测/工装/交接",
+      "semantic_topic": "handoff_readiness",
+      "registered_capability_key": null,
+      "available_evidence_ref": null,
+      "authorization_status": "待实际IE/制造资料授权",
+      "work_items": [
+        "N2-03",
+        "N5-05"
+      ],
+      "assertion_intent": "不补造良率/工装状态，接收需实际证据",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-MEETING",
+      "scenario": "真实会议转写到行动/Decision",
+      "semantic_topic": "meeting_actions",
+      "registered_capability_key": null,
+      "available_evidence_ref": null,
+      "authorization_status": "待转写用途授权和去标识样本",
+      "work_items": [
+        "N3-06"
+      ],
+      "assertion_intent": "引用发言定位、责任待确认、不冒充实际执行",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-CAPA-CHANGE",
+      "scenario": "失败调查/CAPA/变更专业载荷",
+      "semantic_topic": "capa_suggestion",
+      "registered_capability_key": null,
+      "available_evidence_ref": null,
+      "authorization_status": "待真实专业材料与核对",
+      "work_items": [
+        "N4-04",
+        "N4-05"
+      ],
+      "assertion_intent": "不压成通用Risk、未知/过期拒绝、两动作与独立验证",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-SUPPLY-TIME",
+      "scenario": "齐套/Forecast/资源缺失与版本",
+      "semantic_topic": "schedule_scenario",
+      "registered_capability_key": null,
+      "available_evidence_ref": null,
+      "authorization_status": "待真实快照/时间序列授权",
+      "work_items": [
+        "N2-07",
+        "N5-02"
+      ],
+      "assertion_intent": "未知非0，计算可复算，不改正式承诺/库存",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-DEBATE",
+      "scenario": "多席位分歧与等预算消融",
+      "semantic_topic": "decision_brief",
+      "registered_capability_key": null,
+      "available_evidence_ref": null,
+      "authorization_status": "待适用真实席位与领域资料",
+      "work_items": [
+        "N3-07"
+      ],
+      "assertion_intent": "保留分歧代价/未决，相同预算比较，无自由业务写",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    },
+    {
+      "candidate_id": "GC-HARNESS",
+      "scenario": "权限/失能/取消/压缩/重复应用",
+      "semantic_topic": "cross_capability",
+      "registered_capability_key": null,
+      "available_evidence_ref": null,
+      "authorization_status": "领域资料各自授权，工程负例可先用合成",
+      "work_items": [
+        "N0-03",
+        "N7-02"
+      ],
+      "assertion_intent": "跨scope0穿透，错误路径0LLM，撤权后旧摘要不可披露",
+      "source_digest": null,
+      "anonymized_sample_ref": null,
+      "professional_reviewer_ref": null,
+      "expected_result_ref": null,
+      "qualified_model_ref": null,
+      "actual_seat_refs": [],
+      "publication_status": "not_submitted",
+      "published_suite_ref": null
+    }
+  ]
+}

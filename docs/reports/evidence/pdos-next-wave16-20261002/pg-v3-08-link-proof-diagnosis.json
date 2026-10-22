@@ -1,0 +1,20 @@
+{
+  "recorded_at": "2026-10-03T10:18:02.578697+00:00",
+  "candidate": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+  "source_stable": true,
+  "node": "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.capa.followup.link]",
+  "failed_during": "COMMIT deferred require_capa_link_atom \u2192 assert_quality_followup_proof line 17",
+  "diagnostic": "Followup requires a consumed current Product proof by the named human",
+  "log_sha256": "8d093ab1c0e401f708a56d3a2e265b5e19910645cfa36ddf39591f3c557d3b97",
+  "root_cause_proven": false,
+  "suspected_boundary": "proof callback precedes final owner refresh, then Link.created_at is assigned at actual flush; expiry after that callback is one possible guard condition",
+  "guard_conditions_to_distinguish": [
+    "proof exact scope/subject/actor/op/consumed",
+    "proof revision versus Product revision",
+    "created_at <= actual saved_at < expires_at",
+    "human principal active"
+  ],
+  "database_guard_weakened": false,
+  "actual_link_saved_claim": false,
+  "repair_executed": false
+}

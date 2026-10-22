@@ -1,0 +1,21 @@
+{
+  "database": "localhost:57432/pdos",
+  "head": "0428_preproject_dialogue",
+  "container": "457f627a661fb94ada7432d120f23320d023c7a20bb0b30eb327bb83a9ca7128",
+  "private_backup": "/Users/huhanwei/pdos-preview-backups/auto-research-enable-20261007-024108/pdos-before-0429.dump",
+  "backup_bytes": 4345687,
+  "sha256": "d55e4dc6d92ca2d4985774c833d8caddd3b6752837f92231da2a499588d5ed14",
+  "archive_list_verified": true,
+  "env_backup": "/Users/huhanwei/pdos-preview-backups/auto-research-enable-20261007-024108/env.before",
+  "counts_before": {
+    "cehub_core.tenants": 1,
+    "cehub_core.users": 6,
+    "cehub_project.projects": 1,
+    "cehub_ai.agent_runs": 18,
+    "cehub_ai.conversations": 10,
+    "cehub_product.market_spaces": 2,
+    "cehub_product.product_proposals": 1
+  },
+  "original_invocations_digest": "e4d7abf1452a4aaae82b6613c55d3a9c70db8ad25400efecf77351026361e42f",
+  "database_writes": 0
+}

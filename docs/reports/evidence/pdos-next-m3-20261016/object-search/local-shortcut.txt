@@ -1,0 +1,47 @@
+Browser tab: 5, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=products&view=overview&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3046/?area=category&category=f7ea946c-f579-476e-9cba-f0138957ea5a&bench=products&view=overview&product=7b52b863-ce80-4a31-80a0-b1a12ec8171a
+	2 container 快速查找入口或型号
+		3 container
+			4 text field (settable) 查找入口或型号
+			5 button 关闭快速查找
+				6 image
+		7 container
+			8 text 工作区入口
+			9 button 型号 / 总览
+			10 button 型号 / 研究
+			11 button 型号 / 研究 / 资料与事实
+			12 button 型号 / 研究 / 原件
+			13 button 型号 / 研究 / 竞品对比 尚未接入
+				14 text 型号 / 研究 / 竞品对比
+				15 text 尚未接入
+			16 button 型号 / 定义与规格
+			17 button 型号 / 派生与配置
+			18 button 型号 / 活动
+			19 button 项目 / 现在
+			20 button 项目 / 工作与计划
+			21 button 项目 / 试制
+			22 button 项目 / 试制 / 配置与准备
+			23 button 项目 / 试制 / 物料齐套
+			24 button 项目 / 试制 / 成本
+			25 button 项目 / 试制 / 开工条件
+			26 button 项目 / 试制 / 实际产出
+			27 button 项目 / 测试与交接
+			28 button 项目 / 测试与交接 / 验证准备
+			29 button 项目 / 测试与交接 / 请求与方法
+			30 button 项目 / 测试与交接 / 交样与接收
+			31 button 项目 / 测试与交接 / 承诺与开测
+			32 button 项目 / 测试与交接 / 结果与处置
+			33 button 项目 / 问题与变更
+			34 button 项目 / 评审与交付 尚未接入
+				35 text 项目 / 评审与交付
+				36 text 尚未接入
+			37 button 项目 / 资料
+			38 button 知识 / 来源与事实
+			39 button 知识 / 原件
+			40 button 设置 / 外观
+			41 button 设置 / AI 运行与费用
+			42 button 设置 / 原件保留与隔离
+		43 text 仅查找已授权的型号与工作区入口
+		44 text Esc 关闭
+
+The focused UI element is 4 text field (settable) 查找入口或型号

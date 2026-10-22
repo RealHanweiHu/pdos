@@ -1,0 +1,37 @@
+{
+  "browser_origin": "http://127.0.0.1:55210",
+  "actual_domain_api": true,
+  "mock_domain_responses": false,
+  "finite_post_response_fault": {
+    "operation": "original.upload",
+    "underlying_status": 200,
+    "delivered_status": 503
+  },
+  "observed": [
+    "original upload selected through native file chooser",
+    "expired login401 hides private metadata and preserves original request",
+    "GET not_observed does not claim failed upload",
+    "manual same-byte original request retry",
+    "committed GET displays original v1, no valid scan receipt and pending parse",
+    "page refresh and reopen reads same original without another POST"
+  ],
+  "screenshot": "output/playwright/pdos-pai-upload-20261017/upload-saved-awaiting-scan.png",
+  "screenshot_viewport": {
+    "width": 1280,
+    "height": 900,
+    "theme": "dark"
+  },
+  "not_observed_after_security_gate": [
+    "parsed result in browser",
+    "new Artifact manual selection from this upload",
+    "new Run using this file",
+    "320px/light/dark/full-identifiers"
+  ],
+  "gate": {
+    "denied": true,
+    "user_declined": true,
+    "operation": "click expand / read original result",
+    "same_origin_workarounds_attempted": false
+  },
+  "full_ui_check_passed": false
+}

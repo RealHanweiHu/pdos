@@ -1,0 +1,61 @@
+F..........................                                              [100%]
+=================================== FAILURES ===================================
+_ test_official_streamable_http_handshake_and_tool_call_have_no_server_instruction_authority _
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/agent_kernel/test_mcp_transport.py", line 51, in test_official_streamable_http_handshake_and_tool_call_have_no_server_instruction_authority
+  |     raw = asyncio.run(work())
+  |           ^^^^^^^^^^^^^^^^^^^
+  |   File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py", line 195, in run
+  |     return runner.run(main)
+  |            ^^^^^^^^^^^^^^^^
+  |   File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py", line 118, in run
+  |     return self._loop.run_until_complete(task)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+  |     return future.result()
+  |            ^^^^^^^^^^^^^^^
+  |   File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/agent_kernel/test_mcp_transport.py", line 43, in work
+  |     async with server.session_manager.run():
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py", line 231, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/mcp/server/streamable_http_manager.py", line 161, in run
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Exception Group Traceback (most recent call last):
+    |   File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/mcp/server/streamable_http_manager.py", line 166, in run
+    |     yield  # Let the application run
+    |     ^^^^^
+    |   File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/agent_kernel/test_mcp_transport.py", line 44, in work
+    |     return await transport.invoke(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/mcp_transport.py", line 31, in invoke
+    |     async with streamable_http_client(endpoint, http_client=client) as (read, write, _):
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py", line 231, in __aexit__
+    |     await self.gen.athrow(value)
+    |   File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/mcp/client/streamable_http.py", line 672, in streamable_http_client
+    |     async with anyio.create_task_group() as tg:
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+    | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+    +-+---------------- 1 ----------------
+      | Traceback (most recent call last):
+      |   File "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_core/_tasks.py", line 327, in _run_coro
+      |   File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/mcp/client/streamable_http.py", line 583, in handle_request_async
+      |     await self._handle_post_request(ctx)
+      |   File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/mcp/client/streamable_http.py", line 381, in _handle_post_request
+      |     response.raise_for_status()
+      |   File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx/_models.py", line 829, in raise_for_status
+      |     raise HTTPStatusError(message, request=request, response=self)
+      | httpx.HTTPStatusError: Client error '421 Misdirected Request' for url 'http://localhost/mcp'
+      | For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/421
+      +------------------------------------
+------------------------------ Captured log call -------------------------------
+WARNING  mcp.server.transport_security:transport_security.py:71 Invalid Host header: localhost
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_mcp_transport.py::test_official_streamable_http_handshake_and_tool_call_have_no_server_instruction_authority
+1 failed, 26 passed in 3.90s

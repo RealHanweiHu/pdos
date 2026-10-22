@@ -1,0 +1,25 @@
+{
+  "started_at": "2026-10-17T20:39:36.421310+00:00",
+  "finished_at": "2026-10-17T20:39:38.744569+00:00",
+  "snapshot": "/private/tmp/pdos-s4-native-pilot-u_u2_mfd",
+  "checks": [
+    {
+      "label": "eslint",
+      "exit": 0,
+      "command": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "src/components/manufacturing",
+        "src/lib/native-pilots.ts",
+        "src/lib/native-pilots.test.ts",
+        "src/app/api/native-pilot-route.test.mjs",
+        "src/app/api/[...path]/route.ts",
+        "src/components/workspace.tsx"
+      ]
+    }
+  ],
+  "source_changed": [],
+  "database_or_http": false,
+  "excluded_old_namespace_assertion": false,
+  "exclusion_reason": null
+}

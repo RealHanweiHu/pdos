@@ -1,0 +1,54 @@
+{
+  "backend_targeted": {
+    "passed": 100,
+    "log": "standard-match-20261015-final.log"
+  },
+  "pure_final": {
+    "passed": 19,
+    "overlap_with_backend_targeted": 18,
+    "additional_test": "old readable publication cannot replace an unavailable newer definition",
+    "observed_output": "19 passed in 0.06s"
+  },
+  "distinct_backend_tests": 101,
+  "bff_tests": {
+    "passed": 19,
+    "command": "node --test src/app/api/route-proposal-views.test.mjs"
+  },
+  "web_typecheck": true,
+  "web_lint": {
+    "errors": 0,
+    "existing_warnings": 2,
+    "file": "verification/contracts.js"
+  },
+  "web_production_build": true,
+  "browser": {
+    "actual_app_and_database": true,
+    "synthetic_publication_fixture": true,
+    "initial_satisfaction": true,
+    "input_change_removes_previous_result": true,
+    "unknown_customer_unit": true,
+    "failed_read_does_not_show_old_success": true,
+    "retry_recovery": true,
+    "source_action_opens_actual_product": true,
+    "desktop_light": true,
+    "mobile_dark_width": 320,
+    "horizontal_overflow": false
+  },
+  "real_model_calls": 0,
+  "formal_m3_or_s1_acceptance": false,
+  "local_integration": {
+    "merge_commit": "00f86e1",
+    "feature_commit": "5ba7e39",
+    "main_directory_updated": true,
+    "original_ui_preserved": true,
+    "read_compatibility_module_passed": 33,
+    "expanded_group": {
+      "passed_before_stop": 68,
+      "observed_failures": 0,
+      "complete": false,
+      "not_formal_m3_acceptance": true
+    },
+    "own_preview_services_stopped": true,
+    "existing_database_preserved": true
+  }
+}

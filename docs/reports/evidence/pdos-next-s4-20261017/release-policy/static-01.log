@@ -1,0 +1,670 @@
+E501 Line too long (119 > 100)
+ --> pdos-next/server/migrations/schema_s0_0781.py:3:101
+  |
+1 | """Frozen release policy DDL and exact actual 0780 lifecycle predecessor."""
+2 |
+3 | PREVIOUS_FUNCTIONS = {'m3_lifecycle_nodes(uuid,uuid,uuid[])': 'CREATE OR REPLACE FUNCTION public.m3_lifecycle_nodes(t '
+  |                                                                                                     ^^^^^^^^^^^^^^^^^^^
+4 |                                          'uuid, c uuid, identities uuid[] DEFAULT NULL::uuid[])\n'
+5 |                                          ' RETURNS TABLE(table_name text, node_id uuid, links '
+  |
+
+E501 Line too long (3451 > 100)
+  --> pdos-next/server/migrations/schema_s0_0781.py:20:101
+   |
+18 | …
+19 | …HEN '
+20 | …ations','artifact_versions','audit_entries','bom_l…ease_package_currents','release_decisions'] "
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+21 | …
+22 | …
+   |
+
+E501 Line too long (218 > 100)
+  --> pdos-next/server/migrations/schema_s0_0781.py:29:101
+   |
+27 | …rrent','parameter_versions','parameter_current',\n"
+28 | …
+29 | …uns','native_pilot_currents','native_pilot_observations','release_packages','release_package_currents','release_decisions'] "
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+30 | …
+31 | …
+   |
+
+E501 Line too long (101 > 100)
+  --> pdos-next/server/migrations/schema_s0_0781.py:57:101
+   |
+55 | …                     'links=public.m3_lifecycle_row_links(t,c,name,payload);\n'
+56 | …                     '   ELSE '
+57 | …                     'links=public.m3_lifecycle_source_links(t,c,name,payload); '
+   |                                                                                  ^
+58 | …                     'END IF;\n'
+59 | …                     "   -- Preserve predecessor's conservative legacy graph; "
+   |
+
+E501 Line too long (652 > 100)
+  --> pdos-next/server/migrations/schema_s0_0781.py:64:101
+   |
+62 | …
+63 | …
+64 | …rents','native_pilot_observations','release_packag…ofs','evidence_links','claim_withdrawals']) "
+   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+65 | …
+66 | …
+   |
+
+E501 Line too long (105 > 100)
+  --> pdos-next/server/migrations/schema_s0_0781.py:90:101
+   |
+88 | …                     'BEGIN\n'
+89 | …                     " IF table_name='agent_runs' THEN RETURN "
+90 | …                     'public.kernel_lifecycle_links(table_name,payload); '
+   |                                                                       ^^^^^
+91 | …                     'END IF;\n'
+92 | …                     ' -- Only actual top-level relation columns '
+   |
+
+E501 Line too long (103 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:155:101
+    |
+153 | …                     ' FOREACH key IN ARRAY keys LOOP\n'
+154 | …                     '  IF payload->>key IS NOT NULL THEN '
+155 | …                     'links=array_append(links,(payload->>key)::uuid); '
+    |                                                                       ^^^
+156 | …                     'END IF;\n'
+157 | …                     ' END LOOP;\n'
+    |
+
+E501 Line too long (181 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:163:101
+    |
+161 | … values.\n'
+162 | …
+163 | …ne_publications','native_pilot_runs','native_pilot_observations','release_packages','release_decisions') "
+    |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+164 | …
+165 | …alue FROM '
+    |
+
+E501 Line too long (127 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:166:101
+    |
+164 | …                     'THEN\n'
+165 | …                     '  FOR item IN SELECT value FROM '
+166 | …                     "jsonb_array_elements(coalesce(payload->'required_source_read_set','[]')) "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+167 | …                     'LOOP\n'
+168 | …                     "   IF item->>'artifact_id' IS NOT NULL THEN\n"
+    |
+
+E501 Line too long (104 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:175:101
+    |
+173 | …                     ' END IF;\n'
+174 | …                     ' IF table_name IN '
+175 | …                     "('native_pilot_runs','native_pilot_observations') "
+    |                                                                       ^^^^
+176 | …                     'THEN\n'
+177 | …                     '  FOR item IN SELECT value FROM '
+    |
+
+E501 Line too long (141 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:178:101
+    |
+176 | …                     'THEN\n'
+177 | …                     '  FOR item IN SELECT value FROM '
+178 | …                     "jsonb_array_elements(coalesce(payload#>'{material_snapshot,statistics,samples}','[]')) "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+179 | …                     'LOOP\n'
+180 | …                     "   IF item->>'id' IS NOT NULL THEN "
+    |
+
+E501 Line too long (101 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:181:101
+    |
+179 | …                     'LOOP\n'
+180 | …                     "   IF item->>'id' IS NOT NULL THEN "
+181 | …                     "links=array_append(links,(item->>'id')::uuid); "
+    |                                                                       ^
+182 | …                     'END IF;\n'
+183 | …                     '  END LOOP;\n'
+    |
+
+E501 Line too long (140 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:185:101
+    |
+183 | …                     '  END LOOP;\n'
+184 | …                     '  FOR item IN SELECT value FROM '
+185 | …                     "jsonb_array_elements(coalesce(payload#>'{material_snapshot,statistics,issues}','[]')) "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+186 | …                     'LOOP\n'
+187 | …                     "   IF item->>'id' IS NOT NULL THEN "
+    |
+
+E501 Line too long (101 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:188:101
+    |
+186 | …                     'LOOP\n'
+187 | …                     "   IF item->>'id' IS NOT NULL THEN "
+188 | …                     "links=array_append(links,(item->>'id')::uuid); "
+    |                                                                       ^
+189 | …                     'END IF;\n'
+190 | …                     '  END LOOP;\n'
+    |
+
+E501 Line too long (101 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:194:101
+    |
+192 | …                     "item=payload#>'{material_snapshot,statistics,resource,fact}';\n"
+193 | …                     "  IF item->>'id' IS NOT NULL THEN "
+194 | …                     "links=array_append(links,(item->>'id')::uuid); "
+    |                                                                       ^
+195 | …                     'END IF;\n'
+196 | …                     ' END IF;\n'
+    |
+
+E501 Line too long (117 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:202:101
+    |
+200 | …                     'arbitrary body UUID text.\n'
+201 | …                     '  FOR item IN SELECT value FROM '
+202 | …                     "jsonb_array_elements(coalesce(payload#>'{body,objects}','[]')) "
+    |                                                                       ^^^^^^^^^^^^^^^^^
+203 | …                     'LOOP\n'
+204 | …                     "   container=item->'ref';\n"
+    |
+
+E501 Line too long (106 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:208:101
+    |
+206 | …     "container->>'kind'=ANY(ARRAY['definition','engineering_configuration','process_revision','manufacturing_publication','test_run…
+207 | …     "    AND container->>'id' IS NOT NULL THEN "
+208 | …     "links=array_append(links,(container->>'id')::uuid); "
+    |                                                       ^^^^^^
+209 | …     'END IF;\n'
+210 | …     '  END LOOP;\n'
+    |
+
+E501 Line too long (104 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:219:101
+    |
+217 | …                     "table_name=ANY(ARRAY['proposals','proposal_item_versions','proposal_submissions',\n"
+218 | …                     '  '
+219 | …                     "'category_knowledge_entries','definition_specs']) "
+    |                                                                       ^^^^
+220 | …                     'THEN\n'
+221 | …                     '  FOREACH key IN ARRAY '
+    |
+
+E501 Line too long (133 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:222:101
+    |
+220 | …                     'THEN\n'
+221 | …                     '  FOREACH key IN ARRAY '
+222 | …                     "ARRAY['source_refs','direct_source_refs','context_refs','baseline_claim_refs'] "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+223 | …                     'LOOP\n'
+224 | …                     '   links=links || '
+    |
+
+E501 Line too long (115 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:250:101
+    |
+248 | …                     "ARRAY['metrics','features','prices'] LOOP\n"
+249 | …                     '   FOR item IN SELECT value FROM '
+250 | …                     "jsonb_array_elements(coalesce(payload->'content'->key,'[]')) "
+    |                                                                       ^^^^^^^^^^^^^^^
+251 | …                     'LOOP\n'
+252 | …                     '    links=links || '
+    |
+
+E501 Line too long (133 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:260:101
+    |
+258 | …                     "  container=payload->'frozen_document';\n"
+259 | …                     '  FOREACH key IN ARRAY '
+260 | …                     "ARRAY['source_refs','direct_source_refs','context_refs','baseline_claim_refs'] "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+261 | …                     'LOOP\n'
+262 | …                     '   links=links || '
+    |
+
+E501 Line too long (110 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:266:101
+    |
+264 | …                     '  END LOOP;\n'
+265 | …                     '  FOR item IN SELECT value FROM '
+266 | …                     "jsonb_array_elements(coalesce(container->'items','[]')) "
+    |                                                                       ^^^^^^^^^^
+267 | …                     'LOOP\n'
+268 | …                     '   links=links || '
+    |
+
+E501 Line too long (119 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:277:101
+    |
+275 | …                     " ELSIF table_name='promotion_proofs' THEN\n"
+276 | …                     '  FOR item IN SELECT value FROM '
+277 | …                     "jsonb_array_elements(coalesce(payload->'source_item_refs','[]')) "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^
+278 | …                     'LOOP\n'
+279 | …                     "   IF item->>'item_id' IS NOT NULL THEN "
+    |
+
+E501 Line too long (106 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:280:101
+    |
+278 | …                     'LOOP\n'
+279 | …                     "   IF item->>'item_id' IS NOT NULL THEN "
+280 | …                     "links=array_append(links,(item->>'item_id')::uuid); "
+    |                                                                       ^^^^^^
+281 | …                     'END IF;\n'
+282 | …                     '  END LOOP;\n'
+    |
+
+E501 Line too long (117 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:434:101
+    |
+432 |                                                  '$function$\n'}
+433 |
+434 | POLICY_FUNCTIONS = {'m3_lifecycle_nodes(uuid,uuid,uuid[])': 'CREATE OR REPLACE FUNCTION public.m3_lifecycle_nodes(t '
+    |                                                                                                     ^^^^^^^^^^^^^^^^^
+435 |                                          'uuid, c uuid, identities uuid[] DEFAULT NULL::uuid[])\n'
+436 |                                          ' RETURNS TABLE(table_name text, node_id uuid, links '
+    |
+
+E501 Line too long (3500 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:451:101
+    |
+449 | …
+450 | …HEN '
+451 | …ations','artifact_versions','audit_entries','bom_…e_policy_facts','release_policy_currents'] "
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+452 | …
+453 | …
+    |
+
+E501 Line too long (267 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:460:101
+    |
+458 | …ent','parameter_versions','parameter_current',\n"
+459 | …
+460 | …s','native_pilot_currents','native_pilot_observations','release_packages','release_package_currents','release_decisions','release_policy_facts','release_policy_currents'] "
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+461 | …
+462 | …
+    |
+
+E501 Line too long (101 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:488:101
+    |
+486 | …                     'links=public.m3_lifecycle_row_links(t,c,name,payload);\n'
+487 | …                     '   ELSE '
+488 | …                     'links=public.m3_lifecycle_source_links(t,c,name,payload); '
+    |                                                                                  ^
+489 | …                     'END IF;\n'
+490 | …                     "   -- Preserve predecessor's conservative legacy graph; "
+    |
+
+E501 Line too long (701 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:495:101
+    |
+493 | …
+494 | …
+495 | …rents','native_pilot_observations','release_packa…fs','evidence_links','claim_withdrawals']) "
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+496 | …
+497 | …
+    |
+
+E501 Line too long (105 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:521:101
+    |
+519 | …                     'BEGIN\n'
+520 | …                     " IF table_name='agent_runs' THEN RETURN "
+521 | …                     'public.kernel_lifecycle_links(table_name,payload); '
+    |                                                                       ^^^^^
+522 | …                     'END IF;\n'
+523 | …                     ' -- Only actual top-level relation columns '
+    |
+
+E501 Line too long (103 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:590:101
+    |
+588 | …                     ' FOREACH key IN ARRAY keys LOOP\n'
+589 | …                     '  IF payload->>key IS NOT NULL THEN '
+590 | …                     'links=array_append(links,(payload->>key)::uuid); '
+    |                                                                       ^^^
+591 | …                     'END IF;\n'
+592 | …                     ' END LOOP;\n'
+    |
+
+E501 Line too long (204 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:598:101
+    |
+596 | …
+597 | …
+598 | …ions','native_pilot_runs','native_pilot_observations','release_packages','release_decisions','release_policy_facts') "
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+599 | …
+600 | …
+    |
+
+E501 Line too long (127 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:601:101
+    |
+599 | …                     'THEN\n'
+600 | …                     '  FOR item IN SELECT value FROM '
+601 | …                     "jsonb_array_elements(coalesce(payload->'required_source_read_set','[]')) "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+602 | …                     'LOOP\n'
+603 | …                     "   IF item->>'artifact_id' IS NOT NULL THEN\n"
+    |
+
+E501 Line too long (104 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:610:101
+    |
+608 | …                     ' END IF;\n'
+609 | …                     ' IF table_name IN '
+610 | …                     "('native_pilot_runs','native_pilot_observations') "
+    |                                                                       ^^^^
+611 | …                     'THEN\n'
+612 | …                     '  FOR item IN SELECT value FROM '
+    |
+
+E501 Line too long (141 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:613:101
+    |
+611 | …                     'THEN\n'
+612 | …                     '  FOR item IN SELECT value FROM '
+613 | …                     "jsonb_array_elements(coalesce(payload#>'{material_snapshot,statistics,samples}','[]')) "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+614 | …                     'LOOP\n'
+615 | …                     "   IF item->>'id' IS NOT NULL THEN "
+    |
+
+E501 Line too long (101 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:616:101
+    |
+614 | …                     'LOOP\n'
+615 | …                     "   IF item->>'id' IS NOT NULL THEN "
+616 | …                     "links=array_append(links,(item->>'id')::uuid); "
+    |                                                                       ^
+617 | …                     'END IF;\n'
+618 | …                     '  END LOOP;\n'
+    |
+
+E501 Line too long (140 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:620:101
+    |
+618 | …                     '  END LOOP;\n'
+619 | …                     '  FOR item IN SELECT value FROM '
+620 | …                     "jsonb_array_elements(coalesce(payload#>'{material_snapshot,statistics,issues}','[]')) "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+621 | …                     'LOOP\n'
+622 | …                     "   IF item->>'id' IS NOT NULL THEN "
+    |
+
+E501 Line too long (101 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:623:101
+    |
+621 | …                     'LOOP\n'
+622 | …                     "   IF item->>'id' IS NOT NULL THEN "
+623 | …                     "links=array_append(links,(item->>'id')::uuid); "
+    |                                                                       ^
+624 | …                     'END IF;\n'
+625 | …                     '  END LOOP;\n'
+    |
+
+E501 Line too long (101 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:629:101
+    |
+627 | …                     "item=payload#>'{material_snapshot,statistics,resource,fact}';\n"
+628 | …                     "  IF item->>'id' IS NOT NULL THEN "
+629 | …                     "links=array_append(links,(item->>'id')::uuid); "
+    |                                                                       ^
+630 | …                     'END IF;\n'
+631 | …                     ' END IF;\n'
+    |
+
+E501 Line too long (117 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:637:101
+    |
+635 | …                     'arbitrary body UUID text.\n'
+636 | …                     '  FOR item IN SELECT value FROM '
+637 | …                     "jsonb_array_elements(coalesce(payload#>'{body,objects}','[]')) "
+    |                                                                       ^^^^^^^^^^^^^^^^^
+638 | …                     'LOOP\n'
+639 | …                     "   container=item->'ref';\n"
+    |
+
+E501 Line too long (106 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:643:101
+    |
+641 | …     "container->>'kind'=ANY(ARRAY['definition','engineering_configuration','process_revision','manufacturing_publication','test_run…
+642 | …     "    AND container->>'id' IS NOT NULL THEN "
+643 | …     "links=array_append(links,(container->>'id')::uuid); "
+    |                                                       ^^^^^^
+644 | …     'END IF;\n'
+645 | …     '  END LOOP;\n'
+    |
+
+E501 Line too long (132 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:651:101
+    |
+649 | …                     'references fixed by the policy owner.\n'
+650 | …                     '  FOREACH key IN ARRAY '
+651 | …                     "ARRAY['definition','engineering_configuration','manufacturing_configuration'] "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+652 | …                     'LOOP\n'
+653 | …                     '   '
+    |
+
+E501 Line too long (106 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:656:101
+    |
+654 | …                     "container=payload#>ARRAY['material','subject_config',key];\n"
+655 | …                     "   IF container->>'id' IS NOT NULL THEN "
+656 | …                     "links=array_append(links,(container->>'id')::uuid); "
+    |                                                                       ^^^^^^
+657 | …                     'END IF;\n'
+658 | …                     '  END LOOP;\n'
+    |
+
+E501 Line too long (104 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:667:101
+    |
+665 | …                     "table_name=ANY(ARRAY['proposals','proposal_item_versions','proposal_submissions',\n"
+666 | …                     '  '
+667 | …                     "'category_knowledge_entries','definition_specs']) "
+    |                                                                       ^^^^
+668 | …                     'THEN\n'
+669 | …                     '  FOREACH key IN ARRAY '
+    |
+
+E501 Line too long (133 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:670:101
+    |
+668 | …                     'THEN\n'
+669 | …                     '  FOREACH key IN ARRAY '
+670 | …                     "ARRAY['source_refs','direct_source_refs','context_refs','baseline_claim_refs'] "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+671 | …                     'LOOP\n'
+672 | …                     '   links=links || '
+    |
+
+E501 Line too long (115 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:698:101
+    |
+696 | …                     "ARRAY['metrics','features','prices'] LOOP\n"
+697 | …                     '   FOR item IN SELECT value FROM '
+698 | …                     "jsonb_array_elements(coalesce(payload->'content'->key,'[]')) "
+    |                                                                       ^^^^^^^^^^^^^^^
+699 | …                     'LOOP\n'
+700 | …                     '    links=links || '
+    |
+
+E501 Line too long (133 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:708:101
+    |
+706 | …                     "  container=payload->'frozen_document';\n"
+707 | …                     '  FOREACH key IN ARRAY '
+708 | …                     "ARRAY['source_refs','direct_source_refs','context_refs','baseline_claim_refs'] "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+709 | …                     'LOOP\n'
+710 | …                     '   links=links || '
+    |
+
+E501 Line too long (110 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:714:101
+    |
+712 | …                     '  END LOOP;\n'
+713 | …                     '  FOR item IN SELECT value FROM '
+714 | …                     "jsonb_array_elements(coalesce(container->'items','[]')) "
+    |                                                                       ^^^^^^^^^^
+715 | …                     'LOOP\n'
+716 | …                     '   links=links || '
+    |
+
+E501 Line too long (119 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:725:101
+    |
+723 | …                     " ELSIF table_name='promotion_proofs' THEN\n"
+724 | …                     '  FOR item IN SELECT value FROM '
+725 | …                     "jsonb_array_elements(coalesce(payload->'source_item_refs','[]')) "
+    |                                                                       ^^^^^^^^^^^^^^^^^^^
+726 | …                     'LOOP\n'
+727 | …                     "   IF item->>'item_id' IS NOT NULL THEN "
+    |
+
+E501 Line too long (106 > 100)
+   --> pdos-next/server/migrations/schema_s0_0781.py:728:101
+    |
+726 | …                     'LOOP\n'
+727 | …                     "   IF item->>'item_id' IS NOT NULL THEN "
+728 | …                     "links=array_append(links,(item->>'item_id')::uuid); "
+    |                                                                       ^^^^^^
+729 | …                     'END IF;\n'
+730 | …                     '  END LOOP;\n'
+    |
+
+E501 Line too long (3460 > 100)
+    --> pdos-next/server/migrations/schema_s0_0781.py:1515:101
+     |
+1513 | …
+1514 | …
+1515 | …es','bom_lines','bom_revisions','build_authorizat…e_policy_facts','release_policy_currents'] "
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1516 | …
+1517 | …,\n"
+     |
+
+E501 Line too long (227 > 100)
+    --> pdos-next/server/migrations/schema_s0_0781.py:1523:101
+     |
+1521 | …rent',\n"
+1522 | …
+1523 | …_observations','release_packages','release_package_currents','release_decisions','release_policy_facts','release_policy_currents'] "
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1524 | …
+1525 | …
+     |
+
+E501 Line too long (661 > 100)
+    --> pdos-next/server/migrations/schema_s0_0781.py:1546:101
+     |
+1544 | …
+1545 | …
+1546 | …ase_packages','release_package_currents','release…fs','evidence_links','claim_withdrawals']) "
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1547 | …
+1548 | …
+     |
+
+E501 Line too long (153 > 100)
+    --> pdos-next/server/migrations/schema_s0_0781.py:1610:101
+     |
+1608 | …JSON UUID values.\n'
+1609 | …
+1610 | …'native_pilot_observations','release_packages','release_decisions','release_policy_facts') "
+     |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1611 | …
+1612 | …
+     |
+
+E501 Line too long (115 > 100)
+    --> pdos-next/server/migrations/schema_s0_0781.py:1789:101
+     |
+1787 |  '$function$\n')
+1788 |
+1789 | DOWNGRADE_SQL = ('LOCK TABLE public.release_policy_facts,public.release_policy_currents,public.action_receipts IN '
+     |                                                                                                     ^^^^^^^^^^^^^^^
+1790 |  'ACCESS EXCLUSIVE MODE',
+1791 |  'DO $release_policy$ BEGIN\n'
+     |
+
+E501 Line too long (3411 > 100)
+    --> pdos-next/server/migrations/schema_s0_0781.py:1813:101
+     |
+1811 | …
+1812 | …
+1813 | …es','bom_lines','bom_revisions','build_authorizat…ase_package_currents','release_decisions'] "
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1814 | …
+1815 | …,\n"
+     |
+
+E501 Line too long (178 > 100)
+    --> pdos-next/server/migrations/schema_s0_0781.py:1821:101
+     |
+1819 | …sions','parameter_current',\n"
+1820 | …
+1821 | …rrents','native_pilot_observations','release_packages','release_package_currents','release_decisions'] "
+     |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1822 | …
+1823 | …
+     |
+
+E501 Line too long (612 > 100)
+    --> pdos-next/server/migrations/schema_s0_0781.py:1844:101
+     |
+1842 | …
+1843 | …
+1844 | …ase_packages','release_package_currents','release…fs','evidence_links','claim_withdrawals']) "
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1845 | …
+1846 | …
+     |
+
+E501 Line too long (130 > 100)
+    --> pdos-next/server/migrations/schema_s0_0781.py:1906:101
+     |
+1904 |  ' -- Do not scan its declaration, body, reason or arbitrary JSON UUID values.\n'
+1905 |  ' IF table_name IN '
+1906 |  "('manufacturing_baseline_publications','native_pilot_runs','native_pilot_observations','release_packages','release_decisions') "
+     |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1907 |  'THEN\n'
+1908 |  '  FOR item IN SELECT value FROM '
+     |
+
+Found 59 errors.
+unformatted: File would be reformatted
+    --> pdos-next/server/pdos_next/domain/professional_authority/service.py:551:8
+     |
+550  |         rows = list(s.execute(packed))
+     -     if (
+     -         _current_fact_writer_owner(s, ctx, product_id) != owner
+     -         or request_proof(s) is not proof
+     -     ):
+551  +     if _current_fact_writer_owner(s, ctx, product_id) != owner or request_proof(s) is not proof:
+552  |         raise DomainError("SOURCE_STALE", "专业原始行读取期间事务或范围已变化。")
+--------------------------------------------------------------------------------
+1365 |         if pointers is None:
+     -             pointers = _signature_currents(
+     -                 s, ctx, product_id, project_id, subject, write=write
+     -             )
+1366 +             pointers = _signature_currents(s, ctx, product_id, project_id, subject, write=write)
+1367 |         current = {
+     |
+
+1 file would be reformatted, 17 files already formatted

@@ -1,0 +1,3181 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="17" skipped="0" tests="72" time="38.333" timestamp="2026-10-10T21:48:19.516854-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_category_creation" name="test_unit_seed_preserves_uncertainty_and_independent_groups[auto-tire-inflator]" time="0.031" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_seed_preserves_uncertainty_and_independent_groups[bicycle-pump]" time="0.030" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_inputs_reject_origin_duplicate_keys_and_unpaired_candidate" time="0.000" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_sources_and_model_ports_fail_closed" time="0.000" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_actor_and_deidentification" time="0.001" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_preview_writes_only_proof_and_create_consumes_once" time="0.068" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_confirmation_binds_content_authority_and_deadline[payload]" time="0.001" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_confirmation_binds_content_authority_and_deadline[epoch]" time="0.001" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_confirmation_binds_content_authority_and_deadline[expiry]" time="0.001" /><testcase classname="tests.preproject.test_category_creation" name="test_database_seed_atomic_provenance_and_idempotency[auto-tire-inflator]" time="1.668" /><testcase classname="tests.preproject.test_category_creation" name="test_database_seed_atomic_provenance_and_idempotency[bicycle-pump]" time="1.295" /><testcase classname="tests.preproject.test_category_creation" name="test_database_rollback_restores_token_and_rows" time="0.313" /><testcase classname="tests.preproject.test_category_materials" name="test_no_caller_origin_and_content_shape" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_deidentification_blocks_names_files_urls_and_nested_backrefs" time="0.002" /><testcase classname="tests.preproject.test_category_materials" name="test_overlap_is_warning_not_identity_veto" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_actual_snapshot_status_and_exact_line[ok]" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_actual_snapshot_status_and_exact_line[partial]" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_private_snapshot_not_promoted_by_read_access" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_promotion_apply_refuses_identity_even_with_confirmation" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_knowledge_read_filters_are_scope_bound" time="0.001" /><testcase classname="tests.preproject.test_category_materials" name="test_competitor_promotion_has_valid_content_without_source_backlinks" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_competitor_filters_share_one_observation_and_precede_pagination" time="0.002" /><testcase classname="tests.preproject.test_category_materials" name="test_competitor_groups_keep_versions_units_and_conditions_separate" time="0.001" /><testcase classname="tests.preproject.test_parameters" name="test_unknown_dictionary_fields_remain_null" time="0.000" /><testcase classname="tests.preproject.test_parameters" name="test_enum_preserves_unknown_options_and_known_options_are_distinct" time="0.000" /><testcase classname="tests.preproject.test_parameters" name="test_money_uses_decimal_without_invented_tax_status" time="0.000" /><testcase classname="tests.preproject.test_parameters" name="test_exact_old_version_allowed_but_unit_mismatch_rejected" time="0.001" /><testcase classname="tests.preproject.test_seed_import" name="test_complete_seed_material_and_state_preserved" time="0.008" /><testcase classname="tests.preproject.test_seed_import" name="test_category_local_keys_and_pending_states" time="0.006" /><testcase classname="tests.preproject.test_seed_import" name="test_unknown_fields_stay_null_and_input_is_not_mutated" time="0.003" /><testcase classname="tests.preproject.test_seed_import" name="test_missing_source_catalogue_and_duplicate_keys_are_rejected" time="0.002" /><testcase classname="tests.preproject.test_material_commands_pg" name="test_parameter_versions_are_atomic_immutable_and_replayable" time="0.782" /><testcase classname="tests.preproject.test_material_commands_pg" name="test_old_parameter_reference_hints_draft_and_preserves_submitted_g0" time="1.485"><failure message="assert 2 == 1">work = &lt;isolated synthetic test scope&gt;
+
+    def test_old_parameter_reference_hints_draft_and_preserves_submitted_g0(work):
+        registered, _ = save(work, request(work, "category.parameter.publish", parameter()))
+        identity = registered["result"]["parameter_id"]
+        body = payload(work)
+        body["groups"]["items"][3]["content"].update(
+            parameter_id=identity, parameter_version=1, unit="dB"
+        )
+        draft_id, _ = create(work, deepcopy(body))
+        reviewing_id, _ = create(work, deepcopy(body))
+        submit(work, reviewing_id)
+        snapshot = read(work, reviewing_id, work.peer).json()["submission"]["frozen_document"]
+        save(
+            work,
+            request(
+                work,
+                "category.parameter.publish",
+                parameter(
+                    parameter_id=identity,
+                    expected_current_version=1,
+                    unit="dB(A)",
+                    change_note="新版量纲",
+                ),
+            ),
+        )
+        assert read(work, draft_id).json()["context_hint"] is True
+&gt;       assert read(work, draft_id).json()["revision"] == 1
+E       assert 2 == 1
+
+tests/preproject/test_material_commands_pg.py:126: AssertionError</failure></testcase><testcase classname="tests.preproject.test_material_commands_pg" name="test_parameter_type_and_unit_must_match_actual_dictionary" time="0.502" /><testcase classname="tests.preproject.test_material_commands_pg" name="test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0" time="2.210" /><testcase classname="tests.preproject.test_material_commands_pg" name="test_promotion_identity_preview_and_private_proof" time="1.079" /><testcase classname="tests.preproject.test_material_commands_pg" name="test_receipt_failure_rolls_back_version_and_current" time="0.342" /><testcase classname="tests.preproject.test_material_proofs_pg" name="test_material_actual_content_must_equal_its_ai_confirmation[category.knowledge.add]" time="0.731"><failure message="sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json&#10;LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...&#10;                                          ^&#10;DETAIL:  Token &quot;payload&quot; is invalid.&#10;QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id&#10;    OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id&#10;    OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation&#10;    OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])&#10;       IS DISTINCT FROM pc.payload&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest&#10;    OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch&#10;    OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id&#10;     AND p.id=NEW.confirmed_by AND p.kind='human')&#10;CONTEXT:  JSON data, line 1: payload&#10;PL/pgSQL function m3_material_atom() line 316 at IF&#10;(Background on this error at: https://sqlalche.me/e/21/9h9h)">self = &lt;sqlalchemy.engine.base.Connection object at 0x130d09a90&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InvalidTextRepresentation: invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InvalidTextRepresentation
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1317dc9b0&gt;
+operation = 'category.knowledge.add'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    def test_material_actual_content_must_equal_its_ai_confirmation(work, monkeypatch, operation):
+        command, proof_id = material_command(work, monkeypatch, operation)
+        model = KnowledgeEntry if operation == OPERATIONS[0] else ParameterVersion
+        touched = []
+    
+        def change_actual_content(_mapper, _connection, row):
+            touched.append(row.id)
+            if isinstance(row, KnowledgeEntry):
+                row.content = {"definition": "未经确认的不同实际内容"}
+            else:
+                row.unit = "Pa"
+    
+        reason = (
+            "knowledge content differs from confirmation"
+            if model is KnowledgeEntry
+            else "published parameter differs from confirmation"
+        )
+        with insert_hooks((model, change_actual_content)), pytest.raises(DBAPIError) as error:
+            commit_command(work, command)
+        assert touched
+        assert_check_violation(error, reason)
+&gt;       assert_retry_preserves_ai(work, command, proof_id)
+
+tests/preproject/test_material_proofs_pg.py:166: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:131: in assert_retry_preserves_ai
+    result = commit_command(work, command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_material_proofs_pg.py:100: in commit_command
+    with human_session(work) as session:
+         ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+E               (Background on this error at: https://sqlalche.me/e/21/9h9h)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: DataError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_material_actual_content_must_equal_its_ai_confirmation[category.parameter.publish]" time="0.721"><failure message="sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json&#10;LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...&#10;                                          ^&#10;DETAIL:  Token &quot;payload&quot; is invalid.&#10;QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id&#10;    OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id&#10;    OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation&#10;    OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])&#10;       IS DISTINCT FROM pc.payload&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest&#10;    OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch&#10;    OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id&#10;     AND p.id=NEW.confirmed_by AND p.kind='human')&#10;CONTEXT:  JSON data, line 1: payload&#10;PL/pgSQL function m3_material_atom() line 316 at IF&#10;(Background on this error at: https://sqlalche.me/e/21/9h9h)">self = &lt;sqlalchemy.engine.base.Connection object at 0x131471190&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InvalidTextRepresentation: invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InvalidTextRepresentation
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1310e5460&gt;
+operation = 'category.parameter.publish'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    def test_material_actual_content_must_equal_its_ai_confirmation(work, monkeypatch, operation):
+        command, proof_id = material_command(work, monkeypatch, operation)
+        model = KnowledgeEntry if operation == OPERATIONS[0] else ParameterVersion
+        touched = []
+    
+        def change_actual_content(_mapper, _connection, row):
+            touched.append(row.id)
+            if isinstance(row, KnowledgeEntry):
+                row.content = {"definition": "未经确认的不同实际内容"}
+            else:
+                row.unit = "Pa"
+    
+        reason = (
+            "knowledge content differs from confirmation"
+            if model is KnowledgeEntry
+            else "published parameter differs from confirmation"
+        )
+        with insert_hooks((model, change_actual_content)), pytest.raises(DBAPIError) as error:
+            commit_command(work, command)
+        assert touched
+        assert_check_violation(error, reason)
+&gt;       assert_retry_preserves_ai(work, command, proof_id)
+
+tests/preproject/test_material_proofs_pg.py:166: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:131: in assert_retry_preserves_ai
+    result = commit_command(work, command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_material_proofs_pg.py:100: in commit_command
+    with human_session(work) as session:
+         ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+E               (Background on this error at: https://sqlalche.me/e/21/9h9h)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: DataError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_same_content_confirmation_from_another_ai_run_cannot_supply_provenance[category.knowledge.add]" time="0.897"><failure message="AssertionError: assert '22P02' == '23514'&#10;  &#10;  - 23514&#10;  + 22P02">work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x134f74bf0&gt;
+operation = 'category.knowledge.add'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    def test_same_content_confirmation_from_another_ai_run_cannot_supply_provenance(
+        work, monkeypatch, operation
+    ):
+        command, proof_id = material_command(work, monkeypatch, operation)
+        other_command, other_proof_id = material_command(work, monkeypatch, operation)
+        assert (
+            command["payload"]["prepared_by_run_id"] != other_command["payload"]["prepared_by_run_id"]
+        )
+        assert command["payload"]["candidate_digest"] != other_command["payload"]["candidate_digest"]
+        excluded = {"prepared_by_run_id", "candidate_digest", "confirmation_token"}
+        assert {k: v for k, v in command["payload"].items() if k not in excluded} == {
+            k: v for k, v in other_command["payload"].items() if k not in excluded
+        }
+        touched = []
+    
+        def borrow_other_confirmation(_mapper, connection, receipt):
+            assert receipt.confirmation_id == proof_id
+            # A legitimate false-&gt;true consumption in the SAME transaction removes
+            # deadline, actor, operation, consumed and xmin mismatches as explanations.
+            assert (
+                connection.execute(
+                    text("UPDATE confirmations SET consumed=true WHERE id=:id AND NOT consumed"),
+                    {"id": other_proof_id},
+                ).rowcount
+                == 1
+            )
+            receipt.confirmation_id = other_proof_id
+            touched.append(receipt.id)
+    
+        with insert_hooks((Receipt, borrow_other_confirmation)), pytest.raises(DBAPIError) as error:
+            commit_command(work, command)
+        assert touched
+&gt;       assert_check_violation(error, "material candidate confirmation mismatch")
+
+tests/preproject/test_material_proofs_pg.py:202: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+error = &lt;ExceptionInfo DataError('(psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json\nLINE 4:     O....kind=\'human\')\nCONTEXT:  JSON data, line 1: payload\nPL/pgSQL function m3_material_atom() line 316 at IF') tblen=22&gt;
+message = 'material candidate confirmation mismatch'
+
+    def assert_check_violation(error, message):
+&gt;       assert error.value.orig.sqlstate == "23514"
+E       AssertionError: assert '22P02' == '23514'
+E         
+E         - 23514
+E         + 22P02
+
+tests/preproject/test_material_proofs_pg.py:122: AssertionError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_same_content_confirmation_from_another_ai_run_cannot_supply_provenance[category.parameter.publish]" time="0.768"><failure message="AssertionError: assert '22P02' == '23514'&#10;  &#10;  - 23514&#10;  + 22P02">work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1314d9220&gt;
+operation = 'category.parameter.publish'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    def test_same_content_confirmation_from_another_ai_run_cannot_supply_provenance(
+        work, monkeypatch, operation
+    ):
+        command, proof_id = material_command(work, monkeypatch, operation)
+        other_command, other_proof_id = material_command(work, monkeypatch, operation)
+        assert (
+            command["payload"]["prepared_by_run_id"] != other_command["payload"]["prepared_by_run_id"]
+        )
+        assert command["payload"]["candidate_digest"] != other_command["payload"]["candidate_digest"]
+        excluded = {"prepared_by_run_id", "candidate_digest", "confirmation_token"}
+        assert {k: v for k, v in command["payload"].items() if k not in excluded} == {
+            k: v for k, v in other_command["payload"].items() if k not in excluded
+        }
+        touched = []
+    
+        def borrow_other_confirmation(_mapper, connection, receipt):
+            assert receipt.confirmation_id == proof_id
+            # A legitimate false-&gt;true consumption in the SAME transaction removes
+            # deadline, actor, operation, consumed and xmin mismatches as explanations.
+            assert (
+                connection.execute(
+                    text("UPDATE confirmations SET consumed=true WHERE id=:id AND NOT consumed"),
+                    {"id": other_proof_id},
+                ).rowcount
+                == 1
+            )
+            receipt.confirmation_id = other_proof_id
+            touched.append(receipt.id)
+    
+        with insert_hooks((Receipt, borrow_other_confirmation)), pytest.raises(DBAPIError) as error:
+            commit_command(work, command)
+        assert touched
+&gt;       assert_check_violation(error, "material candidate confirmation mismatch")
+
+tests/preproject/test_material_proofs_pg.py:202: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+error = &lt;ExceptionInfo DataError('(psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json\nLINE 4:     O....kind=\'human\')\nCONTEXT:  JSON data, line 1: payload\nPL/pgSQL function m3_material_atom() line 316 at IF') tblen=22&gt;
+message = 'material candidate confirmation mismatch'
+
+    def assert_check_violation(error, message):
+&gt;       assert error.value.orig.sqlstate == "23514"
+E       AssertionError: assert '22P02' == '23514'
+E         
+E         - 23514
+E         + 22P02
+
+tests/preproject/test_material_proofs_pg.py:122: AssertionError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_same_content_ai_confirmation_cannot_be_laundered_as_human[category.knowledge.add]" time="1.032"><failure message="sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json&#10;LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...&#10;                                          ^&#10;DETAIL:  Token &quot;payload&quot; is invalid.&#10;QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id&#10;    OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id&#10;    OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation&#10;    OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])&#10;       IS DISTINCT FROM pc.payload&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest&#10;    OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch&#10;    OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id&#10;     AND p.id=NEW.confirmed_by AND p.kind='human')&#10;CONTEXT:  JSON data, line 1: payload&#10;PL/pgSQL function m3_material_atom() line 316 at IF&#10;(Background on this error at: https://sqlalche.me/e/21/9h9h)">self = &lt;sqlalchemy.engine.base.Connection object at 0x134aceb70&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InvalidTextRepresentation: invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InvalidTextRepresentation
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x133176cc0&gt;
+operation = 'category.knowledge.add'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    def test_same_content_ai_confirmation_cannot_be_laundered_as_human(work, monkeypatch, operation):
+        command, proof_id = material_command(work, monkeypatch, operation)
+        model = KnowledgeEntry if operation == OPERATIONS[0] else ParameterVersion
+        touched = []
+    
+        def launder_material(_mapper, _connection, row):
+            # Leave content, subject and all material/current relationships unchanged.
+            row.origin, row.writer_id = "human", work.human
+            row.run_id = row.confirmed_by = row.prepared_candidate_id = None
+            touched.append(row.id)
+    
+        def launder_receipt(_mapper, _connection, receipt):
+            receipt.agent_run_id = None
+    
+        def launder_current(_mapper, _connection, current):
+            current.origin = "human"
+    
+        reason = (
+            "unconfirmed material cannot borrow a confirmation"
+            if model is KnowledgeEntry
+            else "material human provenance mismatch"
+        )
+        hooks = [(model, launder_material), (Receipt, launder_receipt)]
+        if model is KnowledgeEntry:
+            hooks.append((KnowledgeCurrent, launder_current))
+        with insert_hooks(*hooks), pytest.raises(DBAPIError) as error:
+            commit_command(work, command)
+        assert touched
+        assert_check_violation(error, reason)
+&gt;       assert_retry_preserves_ai(work, command, proof_id)
+
+tests/preproject/test_material_proofs_pg.py:238: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:131: in assert_retry_preserves_ai
+    result = commit_command(work, command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_material_proofs_pg.py:100: in commit_command
+    with human_session(work) as session:
+         ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+E               (Background on this error at: https://sqlalche.me/e/21/9h9h)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: DataError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_same_content_ai_confirmation_cannot_be_laundered_as_human[category.parameter.publish]" time="0.677"><failure message="sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json&#10;LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...&#10;                                          ^&#10;DETAIL:  Token &quot;payload&quot; is invalid.&#10;QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id&#10;    OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id&#10;    OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation&#10;    OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])&#10;       IS DISTINCT FROM pc.payload&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest&#10;    OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch&#10;    OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id&#10;     AND p.id=NEW.confirmed_by AND p.kind='human')&#10;CONTEXT:  JSON data, line 1: payload&#10;PL/pgSQL function m3_material_atom() line 316 at IF&#10;(Background on this error at: https://sqlalche.me/e/21/9h9h)">self = &lt;sqlalchemy.engine.base.Connection object at 0x168b63860&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InvalidTextRepresentation: invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InvalidTextRepresentation
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x134bf8500&gt;
+operation = 'category.parameter.publish'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    def test_same_content_ai_confirmation_cannot_be_laundered_as_human(work, monkeypatch, operation):
+        command, proof_id = material_command(work, monkeypatch, operation)
+        model = KnowledgeEntry if operation == OPERATIONS[0] else ParameterVersion
+        touched = []
+    
+        def launder_material(_mapper, _connection, row):
+            # Leave content, subject and all material/current relationships unchanged.
+            row.origin, row.writer_id = "human", work.human
+            row.run_id = row.confirmed_by = row.prepared_candidate_id = None
+            touched.append(row.id)
+    
+        def launder_receipt(_mapper, _connection, receipt):
+            receipt.agent_run_id = None
+    
+        def launder_current(_mapper, _connection, current):
+            current.origin = "human"
+    
+        reason = (
+            "unconfirmed material cannot borrow a confirmation"
+            if model is KnowledgeEntry
+            else "material human provenance mismatch"
+        )
+        hooks = [(model, launder_material), (Receipt, launder_receipt)]
+        if model is KnowledgeEntry:
+            hooks.append((KnowledgeCurrent, launder_current))
+        with insert_hooks(*hooks), pytest.raises(DBAPIError) as error:
+            commit_command(work, command)
+        assert touched
+        assert_check_violation(error, reason)
+&gt;       assert_retry_preserves_ai(work, command, proof_id)
+
+tests/preproject/test_material_proofs_pg.py:238: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:131: in assert_retry_preserves_ai
+    result = commit_command(work, command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_material_proofs_pg.py:100: in commit_command
+    with human_session(work) as session:
+         ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+E               (Background on this error at: https://sqlalche.me/e/21/9h9h)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: DataError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_old_category_creation_receipt_cannot_append_unselected_material[knowledge]" time="0.265"><failure message="AssertionError: assert 'category initial material manifest is incomplete' in 'material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE'&#10; +  where 'material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE' = str(CheckViolation('material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE'))&#10; +    where CheckViolation('material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') = IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE').orig&#10; +      where IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') = &lt;ExceptionInfo IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') tblen=21&gt;.value">work = &lt;isolated synthetic test scope&gt;, kind = 'knowledge'
+
+    @pytest.mark.parametrize("kind", ["knowledge", "parameter"])
+    def test_old_category_creation_receipt_cannot_append_unselected_material(work, kind):
+        body = creation.CategoryCreate(
+            key=f"synthetic-proof-{uuid4().hex}",
+            name="合成空白品类",
+            purpose="检验未勾选资料不能借用建品类回执",
+            deidentified_confirmed=True,
+            idempotency_key=str(uuid4()),
+            groups={"knowledge": [], "parameters": []},
+        )
+        ctx = Context(work.tenant, work.human, work.human)
+        with tenant_session(work.engine, work.tenant, actor_id=work.human) as session:
+            view = creation.preview(session, ctx, body)
+        body.confirmation_token = view["confirmation_token"]
+        with tenant_session(work.engine, work.tenant, actor_id=work.human) as session:
+            receipt = creation.create(session, ctx, body)
+        category_id, receipt_id = UUID(receipt["category_id"]), UUID(receipt["id"])
+        row_id, identity = uuid4(), uuid4()
+        with pytest.raises(DBAPIError) as error, human_session(work, category_id) as session:
+            original = session.get(Receipt, receipt_id)
+            assert original.operation == "category.create"
+            assert original.result["knowledge"] == original.result["parameters"] == []
+            original_result = deepcopy(original.result)
+            provenance = dict(
+                id=row_id,
+                tenant_id=work.tenant,
+                category_id=category_id,
+                version=1,
+                origin="human",
+                writer_id=work.human,
+                receipt_id=receipt_id,
+                run_id=None,
+                confirmed_by=None,
+                prepared_candidate_id=None,
+            )
+            if kind == "knowledge":
+                row = KnowledgeEntry(
+                    **provenance,
+                    lineage_id=identity,
+                    action="add",
+                    **knowledge(),
+                    regions=[],
+                    source_refs=[],
+                    withdraw_reason=None,
+                )
+                current = KnowledgeCurrent(
+                    tenant_id=work.tenant,
+                    category_id=category_id,
+                    lineage_id=identity,
+                    kind=row.kind,
+                    current_entry_id=row_id,
+                    current_version=1,
+                    status="active",
+                    origin="human",
+                )
+            else:
+                fields = parameter()
+                fields.pop("parameter_id")
+                fields.pop("expected_current_version")
+                row = ParameterVersion(
+                    **provenance,
+                    parameter_id=identity,
+                    replaces_version=None,
+                    enum_values=None,
+                    **fields,
+                )
+                current = ParameterCurrent(
+                    tenant_id=work.tenant,
+                    category_id=category_id,
+                    parameter_id=identity,
+                    key=row.key,
+                    current_version=1,
+                )
+            session.add(row)
+            session.flush([row])
+            session.add(current)
+            session.flush()
+&gt;       assert_check_violation(error, "category initial material manifest is incomplete")
+
+tests/preproject/test_material_proofs_pg.py:318: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+error = &lt;ExceptionInfo IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') tblen=21&gt;
+message = 'category initial material manifest is incomplete'
+
+    def assert_check_violation(error, message):
+        assert error.value.orig.sqlstate == "23514"
+&gt;       assert message in str(error.value.orig)
+E       AssertionError: assert 'category initial material manifest is incomplete' in 'material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE'
+E        +  where 'material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE' = str(CheckViolation('material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE'))
+E        +    where CheckViolation('material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') = IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE').orig
+E        +      where IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') = &lt;ExceptionInfo IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') tblen=21&gt;.value
+
+tests/preproject/test_material_proofs_pg.py:123: AssertionError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_old_category_creation_receipt_cannot_append_unselected_material[parameter]" time="0.294"><failure message="AssertionError: assert 'category initial material manifest is incomplete' in 'material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE'&#10; +  where 'material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE' = str(CheckViolation('material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE'))&#10; +    where CheckViolation('material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') = IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE').orig&#10; +      where IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') = &lt;ExceptionInfo IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') tblen=21&gt;.value">work = &lt;isolated synthetic test scope&gt;, kind = 'parameter'
+
+    @pytest.mark.parametrize("kind", ["knowledge", "parameter"])
+    def test_old_category_creation_receipt_cannot_append_unselected_material(work, kind):
+        body = creation.CategoryCreate(
+            key=f"synthetic-proof-{uuid4().hex}",
+            name="合成空白品类",
+            purpose="检验未勾选资料不能借用建品类回执",
+            deidentified_confirmed=True,
+            idempotency_key=str(uuid4()),
+            groups={"knowledge": [], "parameters": []},
+        )
+        ctx = Context(work.tenant, work.human, work.human)
+        with tenant_session(work.engine, work.tenant, actor_id=work.human) as session:
+            view = creation.preview(session, ctx, body)
+        body.confirmation_token = view["confirmation_token"]
+        with tenant_session(work.engine, work.tenant, actor_id=work.human) as session:
+            receipt = creation.create(session, ctx, body)
+        category_id, receipt_id = UUID(receipt["category_id"]), UUID(receipt["id"])
+        row_id, identity = uuid4(), uuid4()
+        with pytest.raises(DBAPIError) as error, human_session(work, category_id) as session:
+            original = session.get(Receipt, receipt_id)
+            assert original.operation == "category.create"
+            assert original.result["knowledge"] == original.result["parameters"] == []
+            original_result = deepcopy(original.result)
+            provenance = dict(
+                id=row_id,
+                tenant_id=work.tenant,
+                category_id=category_id,
+                version=1,
+                origin="human",
+                writer_id=work.human,
+                receipt_id=receipt_id,
+                run_id=None,
+                confirmed_by=None,
+                prepared_candidate_id=None,
+            )
+            if kind == "knowledge":
+                row = KnowledgeEntry(
+                    **provenance,
+                    lineage_id=identity,
+                    action="add",
+                    **knowledge(),
+                    regions=[],
+                    source_refs=[],
+                    withdraw_reason=None,
+                )
+                current = KnowledgeCurrent(
+                    tenant_id=work.tenant,
+                    category_id=category_id,
+                    lineage_id=identity,
+                    kind=row.kind,
+                    current_entry_id=row_id,
+                    current_version=1,
+                    status="active",
+                    origin="human",
+                )
+            else:
+                fields = parameter()
+                fields.pop("parameter_id")
+                fields.pop("expected_current_version")
+                row = ParameterVersion(
+                    **provenance,
+                    parameter_id=identity,
+                    replaces_version=None,
+                    enum_values=None,
+                    **fields,
+                )
+                current = ParameterCurrent(
+                    tenant_id=work.tenant,
+                    category_id=category_id,
+                    parameter_id=identity,
+                    key=row.key,
+                    current_version=1,
+                )
+            session.add(row)
+            session.flush([row])
+            session.add(current)
+            session.flush()
+&gt;       assert_check_violation(error, "category initial material manifest is incomplete")
+
+tests/preproject/test_material_proofs_pg.py:318: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+error = &lt;ExceptionInfo IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') tblen=21&gt;
+message = 'category initial material manifest is incomplete'
+
+    def assert_check_violation(error, message):
+        assert error.value.orig.sqlstate == "23514"
+&gt;       assert message in str(error.value.orig)
+E       AssertionError: assert 'category initial material manifest is incomplete' in 'material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE'
+E        +  where 'material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE' = str(CheckViolation('material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE'))
+E        +    where CheckViolation('material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') = IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE').orig
+E        +      where IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') = &lt;ExceptionInfo IntegrityError('(psycopg.errors.CheckViolation) material and receipt must commit together\nCONTEXT:  PL/pgSQL function m3_material_atom() line 23 at RAISE') tblen=21&gt;.value
+
+tests/preproject/test_material_proofs_pg.py:123: AssertionError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_consumed_material_confirmation_cannot_be_touched_or_reopened[noop-category.knowledge.add]" time="0.522"><failure message="sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json&#10;LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...&#10;                                          ^&#10;DETAIL:  Token &quot;payload&quot; is invalid.&#10;QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id&#10;    OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id&#10;    OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation&#10;    OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])&#10;       IS DISTINCT FROM pc.payload&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest&#10;    OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch&#10;    OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id&#10;     AND p.id=NEW.confirmed_by AND p.kind='human')&#10;CONTEXT:  JSON data, line 1: payload&#10;PL/pgSQL function m3_material_atom() line 316 at IF&#10;(Background on this error at: https://sqlalche.me/e/21/9h9h)">self = &lt;sqlalchemy.engine.base.Connection object at 0x168faeab0&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InvalidTextRepresentation: invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InvalidTextRepresentation
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1315d8f50&gt;
+operation = 'category.knowledge.add', change = 'noop'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    @pytest.mark.parametrize("change", ["noop", "reopen", "snapshot"])
+    def test_consumed_material_confirmation_cannot_be_touched_or_reopened(
+        work, monkeypatch, operation, change
+    ):
+        command, proof_id = material_command(work, monkeypatch, operation)
+&gt;       assert_retry_preserves_ai(work, command, proof_id)
+
+tests/preproject/test_material_proofs_pg.py:330: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:131: in assert_retry_preserves_ai
+    result = commit_command(work, command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_material_proofs_pg.py:100: in commit_command
+    with human_session(work) as session:
+         ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+E               (Background on this error at: https://sqlalche.me/e/21/9h9h)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: DataError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_consumed_material_confirmation_cannot_be_touched_or_reopened[noop-category.parameter.publish]" time="0.621"><failure message="sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json&#10;LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...&#10;                                          ^&#10;DETAIL:  Token &quot;payload&quot; is invalid.&#10;QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id&#10;    OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id&#10;    OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation&#10;    OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])&#10;       IS DISTINCT FROM pc.payload&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest&#10;    OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch&#10;    OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id&#10;     AND p.id=NEW.confirmed_by AND p.kind='human')&#10;CONTEXT:  JSON data, line 1: payload&#10;PL/pgSQL function m3_material_atom() line 316 at IF&#10;(Background on this error at: https://sqlalche.me/e/21/9h9h)">self = &lt;sqlalchemy.engine.base.Connection object at 0x169424920&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InvalidTextRepresentation: invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InvalidTextRepresentation
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x168bb5cd0&gt;
+operation = 'category.parameter.publish', change = 'noop'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    @pytest.mark.parametrize("change", ["noop", "reopen", "snapshot"])
+    def test_consumed_material_confirmation_cannot_be_touched_or_reopened(
+        work, monkeypatch, operation, change
+    ):
+        command, proof_id = material_command(work, monkeypatch, operation)
+&gt;       assert_retry_preserves_ai(work, command, proof_id)
+
+tests/preproject/test_material_proofs_pg.py:330: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:131: in assert_retry_preserves_ai
+    result = commit_command(work, command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_material_proofs_pg.py:100: in commit_command
+    with human_session(work) as session:
+         ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+E               (Background on this error at: https://sqlalche.me/e/21/9h9h)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: DataError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_consumed_material_confirmation_cannot_be_touched_or_reopened[reopen-category.knowledge.add]" time="0.485"><failure message="sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json&#10;LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...&#10;                                          ^&#10;DETAIL:  Token &quot;payload&quot; is invalid.&#10;QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id&#10;    OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id&#10;    OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation&#10;    OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])&#10;       IS DISTINCT FROM pc.payload&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest&#10;    OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch&#10;    OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id&#10;     AND p.id=NEW.confirmed_by AND p.kind='human')&#10;CONTEXT:  JSON data, line 1: payload&#10;PL/pgSQL function m3_material_atom() line 316 at IF&#10;(Background on this error at: https://sqlalche.me/e/21/9h9h)">self = &lt;sqlalchemy.engine.base.Connection object at 0x1332a4e60&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InvalidTextRepresentation: invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InvalidTextRepresentation
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x13327a900&gt;
+operation = 'category.knowledge.add', change = 'reopen'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    @pytest.mark.parametrize("change", ["noop", "reopen", "snapshot"])
+    def test_consumed_material_confirmation_cannot_be_touched_or_reopened(
+        work, monkeypatch, operation, change
+    ):
+        command, proof_id = material_command(work, monkeypatch, operation)
+&gt;       assert_retry_preserves_ai(work, command, proof_id)
+
+tests/preproject/test_material_proofs_pg.py:330: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:131: in assert_retry_preserves_ai
+    result = commit_command(work, command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_material_proofs_pg.py:100: in commit_command
+    with human_session(work) as session:
+         ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+E               (Background on this error at: https://sqlalche.me/e/21/9h9h)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: DataError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_consumed_material_confirmation_cannot_be_touched_or_reopened[reopen-category.parameter.publish]" time="0.504"><failure message="sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json&#10;LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...&#10;                                          ^&#10;DETAIL:  Token &quot;payload&quot; is invalid.&#10;QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id&#10;    OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id&#10;    OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation&#10;    OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])&#10;       IS DISTINCT FROM pc.payload&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest&#10;    OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch&#10;    OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id&#10;     AND p.id=NEW.confirmed_by AND p.kind='human')&#10;CONTEXT:  JSON data, line 1: payload&#10;PL/pgSQL function m3_material_atom() line 316 at IF&#10;(Background on this error at: https://sqlalche.me/e/21/9h9h)">self = &lt;sqlalchemy.engine.base.Connection object at 0x134ba9c70&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InvalidTextRepresentation: invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InvalidTextRepresentation
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x134b1b4d0&gt;
+operation = 'category.parameter.publish', change = 'reopen'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    @pytest.mark.parametrize("change", ["noop", "reopen", "snapshot"])
+    def test_consumed_material_confirmation_cannot_be_touched_or_reopened(
+        work, monkeypatch, operation, change
+    ):
+        command, proof_id = material_command(work, monkeypatch, operation)
+&gt;       assert_retry_preserves_ai(work, command, proof_id)
+
+tests/preproject/test_material_proofs_pg.py:330: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:131: in assert_retry_preserves_ai
+    result = commit_command(work, command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_material_proofs_pg.py:100: in commit_command
+    with human_session(work) as session:
+         ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+E               (Background on this error at: https://sqlalche.me/e/21/9h9h)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: DataError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_consumed_material_confirmation_cannot_be_touched_or_reopened[snapshot-category.knowledge.add]" time="0.661"><failure message="sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json&#10;LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...&#10;                                          ^&#10;DETAIL:  Token &quot;payload&quot; is invalid.&#10;QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id&#10;    OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id&#10;    OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation&#10;    OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])&#10;       IS DISTINCT FROM pc.payload&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest&#10;    OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch&#10;    OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id&#10;     AND p.id=NEW.confirmed_by AND p.kind='human')&#10;CONTEXT:  JSON data, line 1: payload&#10;PL/pgSQL function m3_material_atom() line 316 at IF&#10;(Background on this error at: https://sqlalche.me/e/21/9h9h)">self = &lt;sqlalchemy.engine.base.Connection object at 0x132b19e50&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InvalidTextRepresentation: invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InvalidTextRepresentation
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1376c3740&gt;
+operation = 'category.knowledge.add', change = 'snapshot'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    @pytest.mark.parametrize("change", ["noop", "reopen", "snapshot"])
+    def test_consumed_material_confirmation_cannot_be_touched_or_reopened(
+        work, monkeypatch, operation, change
+    ):
+        command, proof_id = material_command(work, monkeypatch, operation)
+&gt;       assert_retry_preserves_ai(work, command, proof_id)
+
+tests/preproject/test_material_proofs_pg.py:330: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:131: in assert_retry_preserves_ai
+    result = commit_command(work, command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_material_proofs_pg.py:100: in commit_command
+    with human_session(work) as session:
+         ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+E               (Background on this error at: https://sqlalche.me/e/21/9h9h)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: DataError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_consumed_material_confirmation_cannot_be_touched_or_reopened[snapshot-category.parameter.publish]" time="0.536"><failure message="sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json&#10;LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...&#10;                                          ^&#10;DETAIL:  Token &quot;payload&quot; is invalid.&#10;QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id&#10;    OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id&#10;    OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation&#10;    OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])&#10;       IS DISTINCT FROM pc.payload&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest&#10;    OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch&#10;    OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id&#10;     AND p.id=NEW.confirmed_by AND p.kind='human')&#10;CONTEXT:  JSON data, line 1: payload&#10;PL/pgSQL function m3_material_atom() line 316 at IF&#10;(Background on this error at: https://sqlalche.me/e/21/9h9h)">self = &lt;sqlalchemy.engine.base.Connection object at 0x168c68950&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InvalidTextRepresentation: invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InvalidTextRepresentation
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1314daf90&gt;
+operation = 'category.parameter.publish', change = 'snapshot'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    @pytest.mark.parametrize("change", ["noop", "reopen", "snapshot"])
+    def test_consumed_material_confirmation_cannot_be_touched_or_reopened(
+        work, monkeypatch, operation, change
+    ):
+        command, proof_id = material_command(work, monkeypatch, operation)
+&gt;       assert_retry_preserves_ai(work, command, proof_id)
+
+tests/preproject/test_material_proofs_pg.py:330: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:131: in assert_retry_preserves_ai
+    result = commit_command(work, command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_material_proofs_pg.py:100: in commit_command
+    with human_session(work) as session:
+         ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+E               (Background on this error at: https://sqlalche.me/e/21/9h9h)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: DataError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_material_confirmation_cannot_be_inserted_already_consumed[category.knowledge.add]" time="0.704"><failure message="sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json&#10;LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...&#10;                                          ^&#10;DETAIL:  Token &quot;payload&quot; is invalid.&#10;QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id&#10;    OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id&#10;    OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation&#10;    OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])&#10;       IS DISTINCT FROM pc.payload&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest&#10;    OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch&#10;    OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id&#10;     AND p.id=NEW.confirmed_by AND p.kind='human')&#10;CONTEXT:  JSON data, line 1: payload&#10;PL/pgSQL function m3_material_atom() line 316 at IF&#10;(Background on this error at: https://sqlalche.me/e/21/9h9h)">self = &lt;sqlalchemy.engine.base.Connection object at 0x1310a3620&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InvalidTextRepresentation: invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InvalidTextRepresentation
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x16a0b9cd0&gt;
+operation = 'category.knowledge.add'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    def test_material_confirmation_cannot_be_inserted_already_consumed(work, monkeypatch, operation):
+        command, proof_id = material_command(work, monkeypatch, operation)
+        with human_session(work) as session:
+            proof = session.get(Confirmation, proof_id)
+            fields = {
+                column.name: deepcopy(getattr(proof, column.name))
+                for column in Confirmation.__table__.columns
+            }
+        fields.update(id=uuid4(), token_hash=digest(str(uuid4())), consumed=True)
+        with pytest.raises(DBAPIError) as error, human_session(work) as session:
+            session.add(Confirmation(**fields))
+            session.flush()
+        assert_check_violation(error, "material confirmation starts unconsumed")
+&gt;       assert_retry_preserves_ai(work, command, proof_id)
+
+tests/preproject/test_material_proofs_pg.py:363: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:131: in assert_retry_preserves_ai
+    result = commit_command(work, command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_material_proofs_pg.py:100: in commit_command
+    with human_session(work) as session:
+         ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+E               (Background on this error at: https://sqlalche.me/e/21/9h9h)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: DataError</failure></testcase><testcase classname="tests.preproject.test_material_proofs_pg" name="test_material_confirmation_cannot_be_inserted_already_consumed[category.parameter.publish]" time="0.595"><failure message="sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json&#10;LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...&#10;                                          ^&#10;DETAIL:  Token &quot;payload&quot; is invalid.&#10;QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id&#10;    OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id&#10;    OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation&#10;    OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])&#10;       IS DISTINCT FROM pc.payload&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text&#10;    OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest&#10;    OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch&#10;    OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id&#10;     AND p.id=NEW.confirmed_by AND p.kind='human')&#10;CONTEXT:  JSON data, line 1: payload&#10;PL/pgSQL function m3_material_atom() line 316 at IF&#10;(Background on this error at: https://sqlalche.me/e/21/9h9h)">self = &lt;sqlalchemy.engine.base.Connection object at 0x134bff2f0&gt;
+
+    def _commit_impl(self) -&gt; None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+&gt;           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InvalidTextRepresentation: invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InvalidTextRepresentation
+
+The above exception was the direct cause of the following exception:
+
+work = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x169212cf0&gt;
+operation = 'category.parameter.publish'
+
+    @pytest.mark.parametrize("operation", OPERATIONS)
+    def test_material_confirmation_cannot_be_inserted_already_consumed(work, monkeypatch, operation):
+        command, proof_id = material_command(work, monkeypatch, operation)
+        with human_session(work) as session:
+            proof = session.get(Confirmation, proof_id)
+            fields = {
+                column.name: deepcopy(getattr(proof, column.name))
+                for column in Confirmation.__table__.columns
+            }
+        fields.update(id=uuid4(), token_hash=digest(str(uuid4())), consumed=True)
+        with pytest.raises(DBAPIError) as error, human_session(work) as session:
+            session.add(Confirmation(**fields))
+            session.flush()
+        assert_check_violation(error, "material confirmation starts unconsumed")
+&gt;       assert_retry_preserves_ai(work, command, proof_id)
+
+tests/preproject/test_material_proofs_pg.py:363: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_material_proofs_pg.py:131: in assert_retry_preserves_ai
+    result = commit_command(work, command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/preproject/test_material_proofs_pg.py:100: in commit_command
+    with human_session(work) as session:
+         ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Connection [IDLE] (host=127.0.0.1 port=64245 user=pdos_next_app database=pdos_test) at 0x12706cc50&gt;
+command = b'COMMIT', result_format = &lt;Format.TEXT: 0&gt;
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -&gt; PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+&gt;               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.DataError: (psycopg.errors.InvalidTextRepresentation) invalid input syntax for type json
+E               LINE 4:     OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_...
+E                                                         ^
+E               DETAIL:  Token "payload" is invalid.
+E               QUERY:  NEW.confirmed_by&lt;&gt;r.actor_id OR r.actor_id&lt;&gt;r.requester_id
+E                   OR pc.category_id&lt;&gt;NEW.category_id OR pc.run_id&lt;&gt;ar.id OR pc.writer_id&lt;&gt;ar.writer_id
+E                   OR pc.requester_id&lt;&gt;r.requester_id OR pc.operation&lt;&gt;r.operation
+E                   OR (confirmed_proof.snapshot-&gt;'payload'-ARRAY['prepared_by_run_id','candidate_digest'])
+E                      IS DISTINCT FROM pc.payload
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'prepared_by_run_id' IS DISTINCT FROM ar.id::text
+E                   OR confirmed_proof.snapshot-&gt;'payload'-&gt;&gt;'candidate_digest' IS DISTINCT FROM pc.candidate_digest
+E                   OR (pc.execution_binding-&gt;'model'-&gt;&gt;'cancel_epoch')::integer IS DISTINCT FROM ar.cancel_epoch
+E                   OR NOT EXISTS(SELECT 1 FROM principals p WHERE p.tenant_id=NEW.tenant_id
+E                    AND p.id=NEW.confirmed_by AND p.kind='human')
+E               CONTEXT:  JSON data, line 1: payload
+E               PL/pgSQL function m3_material_atom() line 316 at IF
+E               (Background on this error at: https://sqlalche.me/e/21/9h9h)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: DataError</failure></testcase><testcase classname="tests.preproject.test_category_context_pg" name="test_other_members_private_draft_resolves_updates_and_manual_references_clear_hint" time="2.202" /><testcase classname="tests.preproject.test_category_context_pg" name="test_g0_freezes_all_background_and_item_references_before_material_updates" time="4.249" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_promotion_rejects_invalid_parameter_reference[metrics-other_category]" time="0.618" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_promotion_rejects_invalid_parameter_reference[metrics-missing_version]" time="0.785" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_promotion_rejects_invalid_parameter_reference[metrics-wrong_unit]" time="0.610" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_promotion_rejects_invalid_parameter_reference[features-other_category]" time="0.651" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_promotion_rejects_invalid_parameter_reference[features-missing_version]" time="0.593" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_promotion_rejects_invalid_parameter_reference[features-wrong_unit]" time="0.633" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_filters_apply_to_same_observation_before_pagination" time="2.030" /><testcase classname="tests.preproject.test_category_context_pg" name="test_competitor_prices_preserve_decimal_and_comparison_contexts" time="0.862" /><testcase classname="tests.test_category_scope" name="test_direct_sql_category_tenant_and_audience_filters" time="0.285" /><testcase classname="tests.test_category_scope" name="test_missing_actor_and_pool_scope_reset_deny_rows" time="0.213" /><testcase classname="tests.test_category_scope" name="test_forged_category_model_binding_rejected_by_database" time="0.350" /><testcase classname="tests.test_category_scope" name="test_membership_revocation_removes_owner_access" time="0.184" /><testcase classname="tests.test_category_scope" name="test_agent_database_role_has_no_business_dml" time="0.192" /><testcase classname="tests.test_category_scope" name="test_category_create_is_confirmed_atomic_and_replayable" time="0.417" /><testcase classname="tests.test_category_scope" name="test_category_path_body_and_product_must_agree" time="0.215" /><testcase classname="tests.test_category_scope" name="test_membership_requires_named_owner_and_records_t2_receipt" time="0.347" /><testcase classname="tests.test_category_scope" name="test_unbounded_member_and_product_manager_capability_are_explicit_t2" time="0.316" /></testsuite></testsuites>

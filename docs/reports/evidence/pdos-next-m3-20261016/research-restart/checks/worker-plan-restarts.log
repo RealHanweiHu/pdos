@@ -1,0 +1,9 @@
+{"mode": "main", "turn": 1}
+{"mode": "main", "turn": 2}
+{"mode": "research", "turn": 1}
+{"transport": "search"}
+{"mode": "research", "turn": 2}
+{"transport": "web"}
+{"mode": "research", "turn": 3}
+{"mode": "main", "turn": 3}
+{"mode": "main", "turn": 4}

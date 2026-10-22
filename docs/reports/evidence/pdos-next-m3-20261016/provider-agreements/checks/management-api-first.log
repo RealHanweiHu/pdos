@@ -1,0 +1,13 @@
+................                                                         [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_management_api.py::test_admin_registers_and_member_reads_current_head_and_receipt_atom
+tests/agent_kernel/test_management_api.py::test_admin_registers_and_member_reads_current_head_and_receipt_atom
+tests/agent_kernel/test_management_api.py::test_admin_registers_and_member_reads_current_head_and_receipt_atom
+tests/agent_kernel/test_management_api.py::test_latest_provider_paging_and_exact_filter
+tests/agent_kernel/test_management_api.py::test_latest_provider_paging_and_exact_filter
+tests/agent_kernel/test_management_api.py::test_latest_provider_paging_and_exact_filter
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/management_api.py:69: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(ProviderDataAgreement.provider)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+16 passed, 6 warnings in 9.44s

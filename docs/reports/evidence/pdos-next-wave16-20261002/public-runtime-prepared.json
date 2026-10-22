@@ -1,0 +1,15 @@
+{
+  "recorded_at": "2026-10-03T08:10:40.344800+00:00",
+  "head": "next_0024",
+  "backend_files": 477,
+  "backend_candidate_sha256": "8845f7b89bdfa2c122a426819689e4f3fbc34e86255d0499e47b66afd77b97c1",
+  "api_pid": 43981,
+  "api_port": 8898,
+  "optional_classification_profile_enabled": true,
+  "profile_sha256": "d0b3c682ce8c33237f631608a1ba6c11a60c521ee3475836721e7034ae434a9a",
+  "scope": "Verified synthetic only; no production/AI/T2 grant",
+  "preparation_only": true,
+  "effectiveness": null,
+  "closure": null,
+  "three_followup_business_commands_executed": 0
+}

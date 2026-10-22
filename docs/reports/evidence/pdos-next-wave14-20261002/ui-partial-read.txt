@@ -1,0 +1,496 @@
+  - heading "原报告、结果与专业处置" [level=2]:
+    - text: 原报告、结果与专业处置
+  - paragraph: 同一已开测运行：原值逐字保存，确定性判定、品质复核与具名处置各自留痕。报告返回不再预约资源或恢复已消费样件。
+  - button "刷新本轮事实":
+    - text: 刷新本轮事实
+  - paragraph: 本地合成演练：报告原值、结果和具名结论用于核对流程，不代表真实仪器资格、生产测试或正式放行。
+  - status: 原报告结果、独立返回时钟和运行版本已保存；未重新占用或恢复样件消费。
+  - alert: 当前运行、原报告、结果或专业事实读取失败，请刷新核对；本次读取没有发起提交。
+  - text: 明确选择试制轮次
+  - combobox "明确选择试制轮次":
+    - option "请选择本次查看的轮次，不默认选择"
+    - option "第十三波 · 实物交接后续第4轮（合成） · v1" [selected]
+    - option "第十二波 · 实物交接后续第3轮（合成） · v1"
+    - option "第十二波 · 实物交接后续轮次（合成） · v1"
+    - option "第十一波 · 内部试制开工演练（合成） · v1"
+    - option "合成原型试制 · 第1轮 · v1"
+  - text: 同一固定测试运行
+  - combobox "同一固定测试运行":
+    - option "明确选择已有运行"
+    - option "第十三波 · 后续轮次交样与部分接收（合成） · Run v3 · 已实际开测，等待结果完成" [selected]
+  - heading "正式请求当前范围 · 与本运行结果分开" [level=3]
+  - paragraph: 第十三波 · 后续轮次交样与部分接收（合成） · 请求 v8 · 请求已有实际测试执行事实
+  - paragraph: 以下是服务器返回的当前请求范围；即使选择历史 Run，也不把当前请求当作该历史版的快照。局部运行结果不补足请求数量、模穴、资料或专业资格。
+  - paragraph: 所选 Run v3 的固定已接收范围：1 对样件与测试项。
+  - article:
+    - heading "Synthetic dimension" [level=4]
+    - term: 本测试项请求数量
+    - definition:
+      - paragraph: "3"
+    - term: 本测试项要求模穴
+    - definition:
+      - paragraph: A
+      - paragraph: B
+      - paragraph: C
+    - term: 是否破坏性测试
+    - definition:
+      - paragraph: 否
+  - heading "请求已接收范围" [level=4]
+  - term: 实际样件
+  - definition:
+    - paragraph: SYN-W12-R4-A
+  - term: 固定测试项
+  - definition:
+    - paragraph: Synthetic dimension
+  - heading "服务器列出的请求范围缺项" [level=4]
+  - term: 核对标识
+  - definition:
+    - paragraph: PARTIAL_SAMPLE_COUNT
+  - term: 具体说明
+  - definition:
+    - paragraph: 已覆盖 1/3 件
+  - term: 固定测试项
+  - definition:
+    - paragraph: Synthetic dimension
+  - term: 实际样件
+  - definition:
+    - paragraph: 尚未记录或取得，不能补造
+  - term: 核对标识
+  - definition:
+    - paragraph: UNCOVERED_CAVITY
+  - term: 具体说明
+  - definition:
+    - paragraph: 未覆盖模穴 B
+  - term: 固定测试项
+  - definition:
+    - paragraph: Synthetic dimension
+  - term: 实际样件
+  - definition:
+    - paragraph: 尚未记录或取得，不能补造
+  - term: 核对标识
+  - definition:
+    - paragraph: UNCOVERED_CAVITY
+  - term: 具体说明
+  - definition:
+    - paragraph: 未覆盖模穴 C
+  - term: 固定测试项
+  - definition:
+    - paragraph: Synthetic dimension
+  - term: 实际样件
+  - definition:
+    - paragraph: 尚未记录或取得，不能补造
+  - heading "服务器列出的资料缺项" [level=4]
+  - paragraph: 服务器本次未列出本类缺项；不据此推断当前专业资格或整体放行。
+  - heading "同一 Run · 当前与历史" [level=3]
+  - text: 固定版本
+  - combobox "固定版本":
+    - option "v3 · 已实际开测，等待结果完成 · 当前版" [selected]
+    - option "v2 · 已实际开测，等待结果完成 · 历史只读"
+    - option "v1 · 已有固定计划，尚未开测 · 历史只读"
+  - paragraph: 已实际开测，等待结果完成 · 本运行当前版本 · 固定来源当前有效
+  - paragraph: 原值、元数据或判据缺项，不能确定。数值判定只描述此运行固定范围；请求未接收、缺数量和缺模穴继续单独保留。
+  - term: 固定逐件测试项范围
+  - definition:
+    - term: 实际样件
+    - definition:
+      - paragraph: SYN-W12-R4-A
+    - term: 固定测试项
+    - definition:
+      - paragraph: Synthetic dimension
+  - term: 原实际开测时钟
+  - definition:
+    - term: 事件发生时间
+    - definition:
+      - paragraph: 2026-10-03T01:36:12.160096Z
+    - term: 原 IANA 时区
+    - definition:
+      - paragraph: UTC
+    - term: 原报告出处
+    - definition:
+      - paragraph:
+        - text: 第十三波 · 合成实际开测事件原值 · v1
+        - text: 第 1 行，原文摘要已固定
+    - term: 独立生效时间
+    - definition:
+      - paragraph: 尚未记录或取得，不能补造
+    - term: 服务器接收时间
+    - definition:
+      - paragraph: 2026-10-03T01:44:16.538044Z
+    - term: 固定核对内容
+    - definition:
+      - paragraph: 当前具名办理人
+  - term: 实际结束时钟
+  - definition:
+    - paragraph: 尚未记录或取得，不能补造
+  - term: 部分结果返回时钟
+  - definition:
+    - term: 事件发生时间
+    - definition:
+      - paragraph: 2026-10-03T01:51:12.160096Z
+    - term: 原 IANA 时区
+    - definition:
+      - paragraph: UTC
+    - term: 原报告出处
+    - definition:
+      - paragraph:
+        - text: 第十四波 · 合成partial事实 · v1
+        - text: 第 1 行，原文摘要已固定
+    - term: 独立生效时间
+    - definition:
+      - paragraph: 尚未记录或取得，不能补造
+    - term: 服务器接收时间
+    - definition:
+      - paragraph: 2026-10-03T03:39:52.684651Z
+    - term: 固定核对内容
+    - definition:
+      - paragraph: 当前具名办理人
+  - term: 最终结果返回时钟
+  - definition:
+    - paragraph: 尚未记录或取得，不能补造
+  - term: 品质独立专业结论
+  - definition:
+    - paragraph: 尚未记录或取得，不能补造
+  - term: 独立具名处置
+  - definition:
+    - paragraph: 尚未记录或取得，不能补造
+  - generic "原固定计划、已保存占用与样件消费归属 · 只读"
+  - heading "固定原报告与逐行映射" [level=3]:
+    - text: 固定原报告与逐行映射
+  - term: 当前具名职责
+  - definition: 品质
+  - term: 本操作授权
+  - definition: 服务器已核对
+  - term: 本用途专业资格
+  - definition: 当前事实已核对
+  - term: 资格有效至
+  - definition: 2026/10/3 20:21:13
+  - paragraph: 本地合成演练：报告原值、结果和具名结论用于核对流程，不代表真实仪器资格、生产测试或正式放行。
+  - text: 固定原报告 Artifact 版本
+  - combobox "固定原报告 Artifact 版本":
+    - option "选择由原件派生、当前可读的结构化报告" [selected]
+    - option "第十四波 · 合成原生测量报告 · v1 · 原件当前可核对"
+  - paragraph: 首版支持有界 UTF-8 结构化逐行报告；服务器重新读取受保护原件，核对真实行号、原值和每字段位置。本页不输入读数、单位、设备资格或替换方法。
+  - button "添加原报告位置" [disabled]
+  - text: 本次原值核对原因
+  - textbox "本次原值核对原因"
+  - button "让服务器核对固定原件与原值候选" [disabled]
+  - heading "独立事件与具名结论采用的精确原文" [level=3]
+  - text: 当前可读资料
+  - combobox "当前可读资料":
+    - option "明确选择已保存原文" [selected]
+    - option "合成客户输入 · 练习资料 · v1"
+    - option "合成现场记录 · 浏览器登记 · v1"
+    - option "browser-synthetic.txt · v1"
+    - option "browser-synthetic.pdf · v1"
+    - option "browser-synthetic.xlsx · v1"
+    - option "合成试制资料 · 固定配置演练 · v1"
+    - option "合成产出记录 · 实物身份演练 · v1"
+    - option "合成供给记录 · 快照续版演练 · v1"
+    - option "合成成本记录 · 报价与汇率续版演练 · v1"
+    - option "合成验证准备 · 方法与资料续版演练 · v1"
+    - option "wave8-source.txt · v2"
+    - option "wave9-registered.txt · v1"
+    - option "第十波本地合成专业资格依据 · v1"
+    - option "Synthetic project input · v1"
+    - option "第十一波 · 内部试制合成输入 · v1"
+    - option "第十一波 · 合成专业依据 · v1"
+    - option "第十一波 · 合成实际开工事件 · v1"
+    - option "第十二波 · 实物与品质合成资料 · v1"
+    - option "第十二波 · 合成产出依据 · v1"
+    - option "第十二波 · 合成职责依据 · v1"
+    - option "第十二波 · SYN-W12-A 合成实物事件 · v1"
+    - option "第十二波 · SYN-W12-B 合成实物事件 · v1"
+    - option "Synthetic actual start event · v1"
+    - option "第十二波 · SYN-W12-R2-A 合成实物事件 · v1"
+    - option "第十二波 · SYN-W12-R2-B 合成实物事件 · v1"
+    - option "Synthetic actual start event · v1"
+    - option "第十二波 · SYN-W12-R3-A 合成实物事件 · v1"
+    - option "第十二波 · SYN-W12-R3-B 合成实物事件 · v1"
+    - option "第十三波 · 合成开测职责依据 · v1"
+    - option "第十三波 · 合成产出依据 · v1"
+    - option "Synthetic actual start event · v1"
+    - option "Synthetic actual start event · v1"
+    - option "第十三波 · SYN-W12-R4-A 合成实物事件 · v1"
+    - option "第十三波 · SYN-W12-R4-B 合成实物事件 · v1"
+    - option "第十三波 · 固定合成设备与校准原件 · v1"
+    - option "第十三波 · 合成具名承诺事件原值 · v1"
+    - option "第十三波 · 合成实际开测事件原值 · v1"
+    - option "第十四波 · 合成结果办理依据 · v1"
+    - option "第十四波 · 合成partial事实 · v1"
+    - option "第十四波 · 合成end事实 · v1"
+    - option "第十四波 · 合成final事实 · v1"
+    - option "第十四波 · 合成原生测量报告 · v1"
+  - text: 第 1 行精确摘录
+  - textbox "第 1 行精确摘录"
+  - button "保留待选精确出处" [disabled]
+  - blockquote:
+    - paragraph: 第十四波 · 合成partial事实 · v1 · 第 1 行
+    - paragraph: "{\"request_id\":\"8ab2f1ad-716d-404b-8a69-013c2a2015d7\",\"run_id\":\"050b0f95-39b6-4c90-8131-04118dfa32e3\",\"purpose\":\"Verify preparation\",\"operation\":\"test.results.import\",\"occurred_at\":\"2026-10-03T01:51:12.160096+00:00\",\"actor_id\":\"0a41538d-e721-4783-866a-39c35d382eef\"}"
+  - button "移除此待选出处"
+  - paragraph: 原报告观测时钟不在此处补填。返回、结束、专业复核与处置事件采用各自真实出处，服务器逐操作核对。
+  - heading "服务器原值候选 · 未经导入仍是草稿" [level=3]
+  - text: 选择固定候选
+  - combobox "选择固定候选":
+    - option "不选择候选（仅已齐范围的最终结束可用）"
+    - option "候选 v1 · 来源当前有效" [selected]
+  - paragraph: 候选有效至 2026/10/2 21:02:44。以下原值与元数据均由服务器从固定原件核对；没有提供的内容保持未知。
+  - article:
+    - heading "SYN-W12-R4-A · Synthetic dimension · 第 1 行" [level=4]
+    - paragraph: 报告原值： 10.0
+    - term: 原单位
+    - definition:
+      - paragraph: mm
+    - term: 原工况
+    - definition:
+      - paragraph: 固定合成20°C，结果与处置尚未接入
+    - term: 原报告设备标签
+    - definition:
+      - paragraph: 本地合成固定设备
+    - term: 原环境
+    - definition:
+      - paragraph: 本地合成测试室
+    - term: 原方法依据
+    - definition:
+      - paragraph:
+        - text: 第十二波 · 实物与品质合成资料 · v1
+        - text: 第 2 行，原文摘要已固定
+    - term: 原观测时间
+    - definition:
+      - paragraph: 2026-10-03T01:46:12.160096Z
+    - term: 原观测时区
+    - definition:
+      - paragraph: UTC
+    - term: 原报告缺项
+    - definition
+    - term: 元数据与固定执行依据不符
+    - definition
+    - term: 原值状态
+    - definition:
+      - paragraph: 原报告已提供
+    - generic "每字段原位置及原 JSON 字面值"
+  - paragraph: 尚未记录或取得，不能补造
+  - heading "部分或最终结果返回 · 一次确认" [level=3]:
+    - text: 部分或最终结果返回 · 一次确认
+  - checkbox "本次确认最终返回（固定运行全部范围需已有记录，并有独立实际结束）"
+  - text: 本次确认最终返回（固定运行全部范围需已有记录，并有独立实际结束）
+  - group "本次结果返回 · 独立真实发生事实":
+    - generic: 本次结果返回 · 独立真实发生事实
+    - text: 发生时间（含 UTC 或时区偏移）
+    - textbox "发生时间（含 UTC 或时区偏移）":
+      - /placeholder: 例如 2026-10-03T10:30:00-07:00
+      - text: 2026-10-03T01:51:12.160096+00:00
+    - text: 原 IANA 时区
+    - textbox "原 IANA 时区":
+      - /placeholder: 例如 America/Los_Angeles
+      - text: UTC
+    - text: 精确事件出处
+    - combobox "精确事件出处":
+      - option "明确选择发生事件的原文，不默认当前时间"
+      - option "第十四波 · 合成partial事实 · v1 · 第 1 行" [selected]
+    - blockquote:
+      - paragraph: 第十四波 · 合成partial事实 · v1 · 第 1 行
+      - paragraph: "{\"request_id\":\"8ab2f1ad-716d-404b-8a69-013c2a2015d7\",\"run_id\":\"050b0f95-39b6-4c90-8131-04118dfa32e3\",\"purpose\":\"Verify preparation\",\"operation\":\"test.results.import\",\"occurred_at\":\"2026-10-03T01:51:12.160096+00:00\",\"actor_id\":\"0a41538d-e721-4783-866a-39c35d382eef\"}"
+    - paragraph: 服务器保存接收时间。发生时间取本人核对的事件原文；上传时间、计划窗口和现在都不能代替。
+  - text: 尚未完成的范围与原因
+  - textbox "尚未完成的范围与原因": 合成原值先返回，实际结束与最终返回仍须独立事实确认；请求B/C和数量缺项保持。
+  - text: 明确下一责任人
+  - combobox "明确下一责任人":
+    - option "选择服务器当前范围内可负责人员"
+    - option "合成产品经理" [selected]
+  - paragraph: 责任提名不授专业职责或资格；部分返回保留仍待完成范围和缺项。
+  - text: 本次返回原因
+  - textbox "本次返回原因": 本地合成原件逐字返回，核对原值和保留开测效果。
+  - button "读取完整原值、范围和返回影响的一次确认"
+  - heading "固定规则数值判定 · 与专业判断分开" [level=3]
+  - term: 当前具名职责
+  - definition: 品质
+  - term: 本操作授权
+  - definition: 服务器已核对
+  - term: 本用途专业资格
+  - definition: 当前事实已核对
+  - term: 资格有效至
+  - definition: 2026/10/3 20:21:13
+  - paragraph: 本地合成演练：报告原值、结果和具名结论用于核对流程，不代表真实仪器资格、生产测试或正式放行。
+  - text: 本次固定判定原因
+  - textbox "本次固定判定原因"
+  - paragraph: 采用同一运行的原值、固定方法与判据，缺项保持不能确定；相同固定输入读取原结果，不另造时点、专业结论或资源占用。
+  - button "核对并计算固定结果"
+  - term: 版本
+  - definition:
+    - paragraph: "1"
+  - term: 数值判定
+  - definition:
+    - paragraph: 缺项，不能确定
+  - heading "品质独立专业复核 · T2 具名批准" [level=3]:
+    - text: 品质独立专业复核 · T2 具名批准
+  - term: 当前具名职责
+  - definition: 品质
+  - term: 本操作授权
+  - definition: 服务器已核对
+  - term: 本用途专业资格
+  - definition: 当前事实已核对
+  - term: 资格有效至
+  - definition: 2026/10/3 20:21:13
+  - paragraph: 本地合成演练：报告原值、结果和具名结论用于核对流程，不代表真实仪器资格、生产测试或正式放行。
+  - text: 专业复核结论
+  - textbox "专业复核结论" [disabled]
+  - group "专业复核发生 · 独立真实发生事实":
+    - generic: 专业复核发生 · 独立真实发生事实
+    - text: 发生时间（含 UTC 或时区偏移）
+    - textbox "发生时间（含 UTC 或时区偏移）" [disabled]:
+      - /placeholder: 例如 2026-10-03T10:30:00-07:00
+    - text: 原 IANA 时区
+    - textbox "原 IANA 时区" [disabled]:
+      - /placeholder: 例如 America/Los_Angeles
+    - text: 精确事件出处
+    - combobox "精确事件出处" [disabled]:
+      - option "明确选择发生事件的原文，不默认当前时间" [disabled] [selected]
+      - option "第十四波 · 合成partial事实 · v1 · 第 1 行" [disabled]
+    - paragraph: 服务器保存接收时间。发生时间取本人核对的事件原文；上传时间、计划窗口和现在都不能代替。
+  - text: 本次具名批准原因
+  - textbox "本次具名批准原因" [disabled]
+  - paragraph: 专业意见独立保存，不改写报告原值或把未知数值判定变为通过。
+  - button "读取完整依据与具名批准内容" [disabled]
+  - heading "此运行独立具名处置 · T2 具名批准" [level=3]:
+    - text: 此运行独立具名处置 · T2 具名批准
+  - term: 当前具名职责
+  - definition: 品质
+  - term: 本操作授权
+  - definition: 服务器已核对
+  - term: 本用途专业资格
+  - definition: 当前事实已核对
+  - term: 资格有效至
+  - definition: 2026/10/3 20:21:13
+  - paragraph: 本地合成演练：报告原值、结果和具名结论用于核对流程，不代表真实仪器资格、生产测试或正式放行。
+  - text: 明确处置意见
+  - textbox "明确处置意见" [disabled]
+  - group "具名处置发生 · 独立真实发生事实":
+    - generic: 具名处置发生 · 独立真实发生事实
+    - text: 发生时间（含 UTC 或时区偏移）
+    - textbox "发生时间（含 UTC 或时区偏移）" [disabled]:
+      - /placeholder: 例如 2026-10-03T10:30:00-07:00
+    - text: 原 IANA 时区
+    - textbox "原 IANA 时区" [disabled]:
+      - /placeholder: 例如 America/Los_Angeles
+    - text: 精确事件出处
+    - combobox "精确事件出处" [disabled]:
+      - option "明确选择发生事件的原文，不默认当前时间" [disabled] [selected]
+      - option "第十四波 · 合成partial事实 · v1 · 第 1 行" [disabled]
+    - paragraph: 服务器保存接收时间。发生时间取本人核对的事件原文；上传时间、计划窗口和现在都不能代替。
+  - text: 本次具名批准原因
+  - textbox "本次具名批准原因" [disabled]
+  - paragraph: 仅处置此运行，不释放资源、不恢复样件消费，不授工程、制造或外部交付许可。
+  - button "读取完整依据与具名批准内容" [disabled]
+  - heading "此运行原值、判定和具名历史" [level=3]
+  - generic "已保存原值与逐项判定"
+  - term: 已保存原值
+  - definition:
+    - term: 固定逐件测试项范围
+    - definition:
+      - term: 实际样件
+      - definition:
+        - paragraph: SYN-W12-R4-A
+      - term: 固定测试项
+      - definition:
+        - paragraph: Synthetic dimension
+    - term: 报告原值（逐字保留）
+    - definition:
+      - paragraph: "10.0"
+    - term: 原单位
+    - definition:
+      - paragraph: mm
+    - term: 原工况
+    - definition:
+      - paragraph: 固定合成20°C，结果与处置尚未接入
+    - term: 原设备依据
+    - definition:
+      - paragraph:
+        - text: 第十三波 · 固定合成设备与校准原件 · v1
+        - text: 第 1 行，原文摘要已固定
+    - term: 原报告设备标签
+    - definition:
+      - paragraph: 本地合成固定设备
+    - term: 原环境
+    - definition:
+      - paragraph: 本地合成测试室
+    - term: 原方法依据
+    - definition:
+      - paragraph:
+        - text: 第十二波 · 实物与品质合成资料 · v1
+        - text: 第 2 行，原文摘要已固定
+    - term: 原报告出处
+    - definition:
+      - paragraph:
+        - text: 第十四波 · 合成原生测量报告 · v1
+        - text: 第 1 行，原文摘要已固定
+    - term: 原报告缺项
+    - definition
+    - term: 原报告备注
+    - definition:
+      - paragraph: Synthetic native report; no instrument data
+    - term: 原观测时间
+    - definition:
+      - paragraph: 2026-10-03T01:46:12.160096Z
+    - term: 原观测时区
+    - definition:
+      - paragraph: UTC
+  - term: 逐样件/测试项数值判定
+  - definition:
+    - term: 固定逐件测试项范围
+    - definition:
+      - term: 实际样件
+      - definition:
+        - paragraph: SYN-W12-R4-A
+      - term: 固定测试项
+      - definition:
+        - paragraph: Synthetic dimension
+    - term: 数值判定
+    - definition:
+      - paragraph: 缺项，不能确定
+    - term: 固定核对内容
+    - definition:
+      - paragraph: 固定身份，名称当前待核对
+    - term: 判定与缺项原因
+    - definition:
+      - paragraph: 工况与要求不一致，需专业适用性判断
+  - term: 历次部分返回
+  - definition:
+    - term: 本次已经返回范围
+    - definition:
+      - term: 实际样件
+      - definition:
+        - paragraph: SYN-W12-R4-A
+      - term: 固定测试项
+      - definition:
+        - paragraph: Synthetic dimension
+    - term: 仍待返回范围
+    - definition
+    - term: 具名原因
+    - definition:
+      - paragraph: 合成原值先返回，实际结束与最终返回仍须独立事实确认；请求B/C和数量缺项保持。
+    - term: 下一责任人
+    - definition:
+      - paragraph: 当前具名办理人
+    - term: 独立事件时间
+    - definition:
+      - term: 事件发生时间
+      - definition:
+        - paragraph: 2026-10-03T01:51:12.160096Z
+      - term: 原 IANA 时区
+      - definition:
+        - paragraph: UTC
+      - term: 原报告出处
+      - definition:
+        - paragraph:
+          - text: 第十四波 · 合成partial事实 · v1
+          - text: 第 1 行，原文摘要已固定
+      - term: 独立生效时间
+      - definition:
+        - paragraph: 尚未记录或取得，不能补造
+      - term: 服务器接收时间
+      - definition:
+        - paragraph: 2026-10-03T03:39:52.684651Z
+      - term: 固定核对内容
+      - definition:
+        - paragraph: 当前具名办理人
+  - generic "原报告记录、固定投影与独立办理事实"

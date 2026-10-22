@@ -1,0 +1,33 @@
+{
+  "scope": "XiaoPai server/web conversation feature; concurrent and pdos-next changes excluded",
+  "source_sha256": {
+    "server/app/ai/conversation_reply.py": "cff45b9b993d24386677b463a9e759973b313398b9c5949d7d0f333a5c5d9373",
+    "server/app/ai/provider_streaming.py": "1e9ceeb7efada35e41f0f4ed809e4614d8eb83f65f7651424a048f02bf258196",
+    "server/app/ai/prompts/xiaopai_reply_v1.json": "3340ecd1a0f087f27f44a02d20790dd2a3c461c96198d97f3f9993100e7365a9",
+    "server/app/ai/provider_adapters.py": "e036d5691629c42673b307ae1f6191a43bbfee2ef4e251338d098a23e8137499",
+    "server/app/ai/application_authorization.py": "d6e40480b6ed559984ceee448bd00c448201f894e75682c95eec568b722d9077",
+    "server/app/ai/application_domain_context.py": "893d2100f5612fa777e5913dd8586a60aa5862e9719513ccf264a4e359a42993",
+    "server/app/ai/context_projection.py": "b33b4cfe8523360c3b27627051a73c8e7fd12a956cad348c64df61c68d973a7d",
+    "server/app/api/conversations.py": "1a12c2a75e158da5edc13a968e947aa64f1171a0801e90e13c77ebf7f5c0c69d",
+    "server/app/domain/conversations.py": "76ba7e9bf99028d9992b5e58fc18d22a344244f8589c5b9fd38947490e0a96ed",
+    "server/app/domain/conversation_product_work.py": "9d78735a2ce33a4fff8851fe52382d00243b8fba23a1e2876f0d578f81e8e8af",
+    "server/migrations/versions/0418_xiaopai_conversation_replies.py": "9751ba1ae3fbf091716da8e4aee4cc20462ea2dd408e0a6055c270cadcfb7222",
+    "server/tests/test_xiaopai_reply_streaming.py": "ee6212fbf5fd596cf03df0939b1df01ca4b5e30b3c40aa6794e832d5be455cb5",
+    "server/tests/test_xiaopai_conversation_reply_api.py": "3265ddbda3ec4821b10d06497d63e2a64f660fccd6a6a4aa2be8f54f2748b6ea",
+    "web/src/components/ai/xiaopai-session.tsx": "fdb464ae1d919186b2dbcff27558992e181041dd105bb6083fcbd29d5f36831f",
+    "web/src/components/ai/xiaopai-session.test.tsx": "c7ef24977d43ab41be3372a345ab82120cd65f34dc937166ae03356566b2c42e",
+    "web/src/components/ai/xiaopai-provider.tsx": "a114af2ece4d2f8e4cb72ca53b28f96dfed28130cd2f220946d2500b5976b19c",
+    "web/src/components/ai/xiaopai-provider.test.tsx": "926d0bb2d5a6f0deaf509b828b7bc8230ca38b2465281c865958fb6146f33772",
+    "web/src/components/ai/xiaopai-product-scope.test.tsx": "111ae6b531625b5773f5aa7f6016744a0cbc68a43a75fbada6412f263f41d99a",
+    "web/src/app/api/conversations/[[...conversationPath]]/route.ts": "3cbb624822c257e892327d6fd3a837343aba54f0c588433ebdc13aa2676adb47",
+    "web/src/app/api/conversations/[[...conversationPath]]/route.test.ts": "0a7ea0b1c2809d99382a515365b855856a0a8165856fba5033d2b01d9a58dc4e"
+  },
+  "frozen_web_matches": {
+    "src/components/ai/xiaopai-session.tsx": true,
+    "src/components/ai/xiaopai-provider.tsx": true,
+    "src/app/api/conversations/[[...conversationPath]]/route.ts": true
+  },
+  "build_id": "wKX8l8bQp0QDERFIp47Zn",
+  "test_database": "127.0.0.1:64185/pdos_test",
+  "synthetic_preview": "http://127.0.0.1:3035/ask"
+}

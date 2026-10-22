@@ -1,0 +1,19 @@
+✔ retire preview project.create only, preserving every plan draft field (1.894375ms)
+✔ retire execute project.create only, preserving every plan draft field (0.115667ms)
+✔ malformed retired command cannot discard a valid plan draft (0.0955ms)
+✔ retain exact work.plan.propose execute retry and source set (0.092334ms)
+✔ retain exact work.plan.apply preview retry and source set (0.067417ms)
+✔ retain exact work.plan.apply execute retry and source set (0.066542ms)
+✔ retired cache hydration persists request removal, renders G0 guidance and performs read-only project refresh (6.452625ms)
+✔ retained first-plan request retries unchanged without rebuilding or replacing its draft (3.462167ms)
+✔ existing G0 project can still save a first-plan proposal using pinned source reads (18.333041ms)
+✔ first-plan apply still previews then executes the exact confirmed request (3.03925ms)
+✔ initial rendering exposes G0 route guidance without a project creation control or network write (10.652167ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 561.841167

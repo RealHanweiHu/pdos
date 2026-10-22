@@ -1,0 +1,329 @@
+{
+  "session": {
+    "name": "Synthetic owner",
+    "principal_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+    "model_available": false
+  },
+  "categories": [
+    {
+      "id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+      "key": "category-54e671b5ae6e47e8a2b0268afa675874",
+      "name": "汽车充气泵",
+      "purpose": "隔离合成品类",
+      "revision": 1,
+      "status": "active",
+      "capabilities": {
+        "product_management": false
+      }
+    }
+  ],
+  "target": {
+    "version": "agent-upload-target/v1",
+    "principal_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+    "scope": {
+      "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+      "product_id": null,
+      "proposal_id": null
+    },
+    "as_of": "2026-10-17T21:53:02.757596+00:00",
+    "target": {
+      "kind": "category",
+      "id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+      "revision": 1
+    },
+    "authorization": {
+      "can_write": true,
+      "code": null
+    },
+    "constraints": {
+      "max_bytes": 8388608,
+      "extensions": [
+        ".txt",
+        ".md",
+        ".pdf",
+        ".xlsx"
+      ],
+      "default_visibility": "private"
+    }
+  },
+  "product_target": {
+    "version": "agent-upload-target/v1",
+    "principal_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+    "scope": {
+      "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+      "product_id": "7bb8459a-5e67-4f4d-bf4e-d44cd2248e5e",
+      "proposal_id": null
+    },
+    "as_of": "2026-10-17T21:53:02.794003+00:00",
+    "target": {
+      "kind": "product",
+      "id": "7bb8459a-5e67-4f4d-bf4e-d44cd2248e5e",
+      "revision": 1
+    },
+    "authorization": {
+      "can_write": true,
+      "code": null
+    },
+    "constraints": {
+      "max_bytes": 8388608,
+      "extensions": [
+        ".txt",
+        ".md",
+        ".pdf",
+        ".xlsx"
+      ],
+      "default_visibility": "private"
+    }
+  },
+  "stages": {
+    "uploaded": {
+      "version": "agent-upload-receipt/v1",
+      "principal_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+      "scope": {
+        "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "as_of": "2026-10-17T21:52:59.882669+00:00",
+      "request_key": "dc2d61e2-b0c0-41a9-b864-95e4108062a7",
+      "request_digest": "fa97affbd037a47bf3b66b40746dc576883f2d873295581e7c010d9dbc21c40c",
+      "state": "committed",
+      "receipt": {
+        "id": "d3a93d65-5d15-4de6-921c-6853d369e99d",
+        "operation": "evidence.original.upload",
+        "subject_type": "uploaded_original",
+        "subject_id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+        "subject_revision": 1,
+        "writer_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+        "requester_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+        "created_at": "2026-10-17T21:52:58.881219+00:00"
+      },
+      "attempt": {
+        "id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+        "revision": 2,
+        "status": "committed"
+      },
+      "original": {
+        "id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+        "revision": 1,
+        "title": "合成上传资料",
+        "filename": "synthetic.txt",
+        "parse_status": "uploaded",
+        "parse_code": null,
+        "scan_status": "not_scanned",
+        "security": {
+          "state": "not_scanned",
+          "reasons": [
+            "SCAN_REQUIRED"
+          ],
+          "epoch": 1,
+          "source_state": "active"
+        }
+      },
+      "source": null
+    },
+    "scanning": {
+      "version": "agent-upload-receipt/v1",
+      "principal_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+      "scope": {
+        "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "as_of": "2026-10-17T21:53:00.832632+00:00",
+      "request_key": "dc2d61e2-b0c0-41a9-b864-95e4108062a7",
+      "request_digest": "fa97affbd037a47bf3b66b40746dc576883f2d873295581e7c010d9dbc21c40c",
+      "state": "committed",
+      "receipt": {
+        "id": "d3a93d65-5d15-4de6-921c-6853d369e99d",
+        "operation": "evidence.original.upload",
+        "subject_type": "uploaded_original",
+        "subject_id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+        "subject_revision": 1,
+        "writer_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+        "requester_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+        "created_at": "2026-10-17T21:52:58.881219+00:00"
+      },
+      "attempt": {
+        "id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+        "revision": 2,
+        "status": "committed"
+      },
+      "original": {
+        "id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+        "revision": 1,
+        "title": "合成上传资料",
+        "filename": "synthetic.txt",
+        "parse_status": "uploaded",
+        "parse_code": null,
+        "scan_status": "not_scanned",
+        "security": {
+          "state": "scanning",
+          "reasons": [
+            "SCAN_REQUIRED"
+          ],
+          "epoch": 2,
+          "source_state": "active"
+        }
+      },
+      "source": null
+    },
+    "parsed": {
+      "version": "agent-upload-receipt/v1",
+      "principal_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+      "scope": {
+        "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+        "product_id": null,
+        "proposal_id": null
+      },
+      "as_of": "2026-10-17T21:53:02.357616+00:00",
+      "request_key": "dc2d61e2-b0c0-41a9-b864-95e4108062a7",
+      "request_digest": "fa97affbd037a47bf3b66b40746dc576883f2d873295581e7c010d9dbc21c40c",
+      "state": "committed",
+      "receipt": {
+        "id": "d3a93d65-5d15-4de6-921c-6853d369e99d",
+        "operation": "evidence.original.upload",
+        "subject_type": "uploaded_original",
+        "subject_id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+        "subject_revision": 1,
+        "writer_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+        "requester_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+        "created_at": "2026-10-17T21:52:58.881219+00:00"
+      },
+      "attempt": {
+        "id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+        "revision": 2,
+        "status": "committed"
+      },
+      "original": {
+        "id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+        "revision": 2,
+        "title": "合成上传资料",
+        "filename": "synthetic.txt",
+        "parse_status": "parsed",
+        "parse_code": null,
+        "scan_status": "clean",
+        "security": {
+          "state": "clean",
+          "reasons": [],
+          "epoch": 2,
+          "source_state": "active"
+        }
+      },
+      "source": {
+        "artifact_id": "1b4cf8cf-a4a1-4eeb-afc6-6198d18f21b2",
+        "artifact_revision": 1,
+        "title": "合成上传资料",
+        "product_id": null,
+        "status": "active",
+        "original": {
+          "id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+          "revision": 2,
+          "filename": "synthetic.txt",
+          "parse_status": "parsed",
+          "parse_code": null,
+          "scan_status": "clean"
+        },
+        "availability": {
+          "available": true,
+          "code": null
+        }
+      }
+    }
+  },
+  "recovered": {
+    "version": "agent-upload-receipt/v1",
+    "principal_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+    "scope": {
+      "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+      "product_id": null,
+      "proposal_id": null
+    },
+    "as_of": "2026-10-17T21:53:02.826765+00:00",
+    "request_key": "dc2d61e2-b0c0-41a9-b864-95e4108062a7",
+    "request_digest": "fa97affbd037a47bf3b66b40746dc576883f2d873295581e7c010d9dbc21c40c",
+    "state": "committed",
+    "receipt": {
+      "id": "d3a93d65-5d15-4de6-921c-6853d369e99d",
+      "operation": "evidence.original.upload",
+      "subject_type": "uploaded_original",
+      "subject_id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+      "subject_revision": 1,
+      "writer_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+      "requester_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+      "created_at": "2026-10-17T21:52:58.881219+00:00"
+    },
+    "attempt": {
+      "id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+      "revision": 2,
+      "status": "committed"
+    },
+    "original": {
+      "id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+      "revision": 2,
+      "title": "合成上传资料",
+      "filename": "synthetic.txt",
+      "parse_status": "parsed",
+      "parse_code": null,
+      "scan_status": "clean",
+      "security": {
+        "state": "clean",
+        "reasons": [],
+        "epoch": 2,
+        "source_state": "active"
+      }
+    },
+    "source": {
+      "artifact_id": "1b4cf8cf-a4a1-4eeb-afc6-6198d18f21b2",
+      "artifact_revision": 1,
+      "title": "合成上传资料",
+      "product_id": null,
+      "status": "active",
+      "original": {
+        "id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+        "revision": 2,
+        "filename": "synthetic.txt",
+        "parse_status": "parsed",
+        "parse_code": null,
+        "scan_status": "clean"
+      },
+      "availability": {
+        "available": true,
+        "code": null
+      }
+    }
+  },
+  "sources": {
+    "version": "agent-input-sources/v1",
+    "principal_id": "07949dc6-b628-4b0f-8b7d-742f9cebaded",
+    "scope": {
+      "category_id": "eb278e6c-3ed0-4cc6-a614-a1ff14e3c5bc",
+      "product_id": null,
+      "proposal_id": null
+    },
+    "as_of": "2026-10-17T21:53:02.998808+00:00",
+    "items": [
+      {
+        "artifact_id": "1b4cf8cf-a4a1-4eeb-afc6-6198d18f21b2",
+        "artifact_revision": 1,
+        "title": "合成上传资料",
+        "product_id": null,
+        "status": "active",
+        "original": {
+          "id": "df5782d1-0563-4dc2-8f59-2064ef4dd229",
+          "revision": 2,
+          "filename": "synthetic.txt",
+          "parse_status": "parsed",
+          "parse_code": null,
+          "scan_status": "clean"
+        },
+        "availability": {
+          "available": true,
+          "code": null
+        }
+      }
+    ],
+    "next_cursor": null
+  },
+  "scanner": "explicit synthetic fixture port; no production qualification"
+}

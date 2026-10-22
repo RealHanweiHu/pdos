@@ -1,0 +1,53 @@
+{
+  "schema_version": "public-candidate-ui-source.v1",
+  "scope": "8 owned frontend files; no staged/public parent/backend modification",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-form-contract.ts",
+      "sha256": "f17424c9edebfab91b385491e60dd00219c45c8c5e39e6bb98942b1b6ae817af",
+      "migrated_from": "pdos-next/staging/wave17/candidate-form-contract.ts",
+      "staged_sha256": "f17424c9edebfab91b385491e60dd00219c45c8c5e39e6bb98942b1b6ae817af",
+      "byte_identical": true
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-form.tsx",
+      "sha256": "e642bc01e749da135327cb64fad2314e01db1bb024d3ffbb72edb3a1d1fb25ee",
+      "migrated_from": "pdos-next/staging/wave17/candidate-form.tsx",
+      "staged_sha256": "e642bc01e749da135327cb64fad2314e01db1bb024d3ffbb72edb3a1d1fb25ee",
+      "byte_identical": true
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-workflow-state.test.ts",
+      "sha256": "03e50fe43b8cfb688733820495dc932f2ea2dae04bb9666e15e41900dcf670e5"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-workflow-state.ts",
+      "sha256": "ec557e29115ade7523737a3b9d066efde5922ae3105e6870a97dc299351e9197"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-workflow.tsx",
+      "sha256": "658f4202e6242d618b3e41a723a5fc41af1a33d72c51c488ae0c0ad25c377a1b"
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/ui-contract.ts",
+      "sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b",
+      "migrated_from": "pdos-next/staging/wave17/ui-contract.ts",
+      "staged_sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b",
+      "byte_identical": true
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/ui-state.ts",
+      "sha256": "a7983c72185edc561d6c563b9b971dbed4aa11b7013b217d32b085ec17db941e",
+      "migrated_from": "pdos-next/staging/wave17/ui-state.ts",
+      "staged_sha256": "a7983c72185edc561d6c563b9b971dbed4aa11b7013b217d32b085ec17db941e",
+      "byte_identical": true
+    },
+    {
+      "path": "pdos-next/web/src/components/capa-effectiveness/ui-view.tsx",
+      "sha256": "701ecc42b6d01cdefca73598b2c220b864358c3f6bad36559e70ac7fd929a609",
+      "migrated_from": "pdos-next/staging/wave17/ui-view.tsx",
+      "staged_sha256": "701ecc42b6d01cdefca73598b2c220b864358c3f6bad36559e70ac7fd929a609",
+      "byte_identical": true
+    }
+  ]
+}

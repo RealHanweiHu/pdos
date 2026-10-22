@@ -1,0 +1,94 @@
+Browser tab: 5, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3046/?area=cockpit&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&project=1cccb082-0e44-4c16-acac-e601819de857".
+0 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3046/?area=cockpit&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&project=1cccb082-0e44-4c16-acac-e601819de857
+	1 container
+		2 link Description: 跳到工作内容, Value: 127.0.0.1:3046/?area=cockpit&category=41232990-a38c-4cd2-b354-09d1a5bfc33b&project=1cccb082-0e44-4c16-acac-e601819de857#workspace-content
+		3 text PDOS
+		4 button 收起侧栏
+			5 image
+		6 container 工作区导航
+			7 link Description: 我的工作, Value: 127.0.0.1:3046/?area=work&category=41232990-a38c-4cd2-b354-09d1a5bfc33b
+			8 link Description: 项目驾驶舱, Value: 127.0.0.1:3046/?area=cockpit&category=41232990-a38c-4cd2-b354-09d1a5bfc33b
+			9 link Description: 项目列表, Value: 127.0.0.1:3046/?area=projects&category=41232990-a38c-4cd2-b354-09d1a5bfc33b
+			10 link Description: 项目集, Value: 127.0.0.1:3046/?area=programs&category=41232990-a38c-4cd2-b354-09d1a5bfc33b
+			11 link Description: 产品品类工作区, Value: 127.0.0.1:3046/?area=category&category=41232990-a38c-4cd2-b354-09d1a5bfc33b
+			12 link Description: 知识, Value: 127.0.0.1:3046/?area=knowledge&category=41232990-a38c-4cd2-b354-09d1a5bfc33b
+			13 text 当前品类
+			14 text 汽车充气泵
+			15 text 项目与专业工作按品类范围授权
+		16 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: 127.0.0.1:3046/plan
+		17 checkbox Description: 小Pai 工作栏, Value: 0
+		18 link Description: 设置, Value: 127.0.0.1:3046/?area=settings&category=41232990-a38c-4cd2-b354-09d1a5bfc33b
+		19 text Synthetic owner
+		20 text 本地合成环境
+		21 text PDOS 项目驾驶舱
+		22 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			23 image
+			24 text 搜索
+		25 checkbox Description: 小Pai 工作栏, Value: 0
+			26 image
+		27 button 切换明暗主题
+			28 image
+		29 container workspace-content
+			30 button 刷新
+				31 image
+				32 text 刷新
+			33 container
+				34 text 项目资料读取于  10/16/2026, 12:47:56 PM
+			35 heading 便携充气泵研发, Value: 1
+				36 text 便携充气泵研发
+			37 container
+				38 text 汽车充气泵  ·  便携充气泵研发  · 项目驾驶舱
+			39 button 经营总览
+				40 image
+				41 text 经营总览
+			42 button 进入项目工作台
+				43 text 进入项目工作台
+				44 image
+			45 container 项目基础信息
+				46 heading 基础信息, Value: 2
+					47 text 基础信息
+				48 definition list
+					49 container 用途
+						50 text 用途
+					51 text Build and verify a synthetic design
+					52 container 工作范围
+						53 text 工作范围
+					54 text Build and verify a synthetic design
+					55 container 可见性
+						56 text 可见性
+					57 text 私有
+					58 container 负责人
+						59 text 负责人
+					60 text Synthetic owner（本人）
+					61 container 建立时间
+						62 text 建立时间
+					63 text 10/16/2026, 12:45:42 PM
+					64 container 立项定义
+						65 text 立项定义
+					66 container
+						67 text 便携充气泵研发  · 固定 v 1
+			68 container 未决事项
+				69 heading 未决事项, Value: 2
+					70 text 未决事项
+				71 text 0  项
+				72 text 没有未决任务或风险。
+			73 container 计划与时间线
+				74 heading 计划与时间线, Value: 2
+					75 text 计划与时间线
+				76 text 尚无已应用计划。首版计划在工作与计划区起草并经一次确认应用。
+				77 text 批准基线、个人承诺与实绩时间线尚未记录；此处不填零，取得后分列显示。
+			78 container 工作包与任务
+				79 heading 工作包与任务, Value: 2
+					80 text 工作包与任务
+				81 definition list
+					82 container 工作包
+						83 text 工作包
+					84 text 尚无
+					85 container 排期任务
+						86 text 排期任务
+					87 text 尚无可读计划
+				88 button 在工作台办理计划与执行
+					89 text 在工作台办理计划与执行
+					90 image
+
+The focused UI element is 29 container workspace-content

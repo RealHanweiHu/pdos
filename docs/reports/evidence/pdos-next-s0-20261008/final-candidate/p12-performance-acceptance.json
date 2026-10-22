@@ -1,0 +1,452 @@
+{
+  "decision": "确认稿 P12，用户 2026-10-10",
+  "policy_acceptance": true,
+  "accepted_passed_count": 19,
+  "accepted_results": {
+    "draft_save": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.041413792001549155,
+        "p95_seconds": 0.2639401250053197,
+        "sql_range": [
+          10,
+          10
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "draft_create": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.07350587499968242,
+        "p95_seconds": 0.5132999579946045,
+        "sql_range": [
+          19,
+          19
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "t1_preview": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.046416500001214445,
+        "p95_seconds": 0.07633399999758694,
+        "sql_range": [
+          15,
+          15
+        ],
+        "limit_seconds": 2,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "t1_confirmation": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.09119520799140446,
+        "p95_seconds": 0.12811612499353942,
+        "sql_range": [
+          24,
+          24
+        ],
+        "limit_seconds": 2,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "same_key_replay": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.02437716598797124,
+        "p95_seconds": 0.061853292005253024,
+        "sql_range": [
+          8,
+          8
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "workspace_read": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.12427616599597968,
+        "p95_seconds": 0.2002018329949351,
+        "sql_range": [
+          12,
+          12
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "readiness_read": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.0376461670093704,
+        "p95_seconds": 0.077401833012118,
+        "sql_range": [
+          12,
+          12
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "configuration_read_21_sources": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.13776116700319108,
+        "p95_seconds": 0.16978116599784698,
+        "sql_range": [
+          25,
+          25
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "quality_read": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.6622436659963569,
+        "p95_seconds": 0.8786949170025764,
+        "sql_range": [
+          51,
+          51
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "quality_containment_inputs": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.23615704198891763,
+        "p95_seconds": 0.3926456670014886,
+        "sql_range": [
+          31,
+          31
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "quality_containment_preview": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.2736345839948626,
+        "p95_seconds": 0.32297475000086706,
+        "sql_range": [
+          33,
+          33
+        ],
+        "limit_seconds": 2,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "quality_containment_confirmation": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.3913005840004189,
+        "p95_seconds": 0.5525910830037901,
+        "sql_range": [
+          46,
+          46
+        ],
+        "limit_seconds": 2,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "capa_candidate_read": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.8279899159970228,
+        "p95_seconds": 0.9427418330014916,
+        "sql_range": [
+          72,
+          72
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "capa_candidate_inputs": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.7733965000079479,
+        "p95_seconds": 0.9688604589900933,
+        "sql_range": [
+          69,
+          69
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "manufacturing_resource_read": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.25805308399139903,
+        "p95_seconds": 0.3377157500071917,
+        "sql_range": [
+          59,
+          59
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "change_capture": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 31,
+        "eligible_samples_observed": 31,
+        "excluded_samples": 0,
+        "unused_valid_samples": 1,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 1.3578070829971693,
+        "p95_seconds": 1.5373574160039425,
+        "sql_range": [
+          178,
+          178
+        ],
+        "limit_seconds": 3,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "change_impact": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 31,
+        "eligible_samples_observed": 31,
+        "excluded_samples": 0,
+        "unused_valid_samples": 1,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 2.1455995830037864,
+        "p95_seconds": 2.433283083009883,
+        "sql_range": [
+          214,
+          214
+        ],
+        "limit_seconds": 3,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "change_impact_replay": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 31,
+        "eligible_samples_observed": 31,
+        "excluded_samples": 0,
+        "unused_valid_samples": 1,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.03484791700611822,
+        "p95_seconds": 0.09953691600821912,
+        "sql_range": [
+          8,
+          8
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "performance-final-capa-rr-2/pipeline-status.json"
+    },
+    "change_impact_inputs": {
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 0.3803152080072323,
+        "p95_seconds": 0.5974165000079665,
+        "sql_range": [
+          82,
+          82
+        ],
+        "limit_seconds": 1,
+        "passed": true
+      },
+      "evidence": "capa-rr-performance-heavy-1/pipeline-status.json"
+    }
+  },
+  "known_performance_exception_count": 1,
+  "known_performance_exceptions": [
+    {
+      "path": "coverage_publication",
+      "result": {
+        "samples": 30,
+        "observed_samples": 30,
+        "eligible_samples_observed": 30,
+        "excluded_samples": 0,
+        "unused_valid_samples": 0,
+        "legacy_scope": false,
+        "load_validated": true,
+        "failures": 0,
+        "p50_seconds": 3.756646624999121,
+        "p95_seconds": 4.089773415995296,
+        "sql_range": [
+          242,
+          242
+        ],
+        "limit_seconds": 3,
+        "passed": false
+      },
+      "evidence": "capa-rr-performance-heavy-1/pipeline-status.json",
+      "destination": "M6",
+      "required_change": "P3 同步受理 + 后台工作 ID；§08.11 收窄读集",
+      "remeasure_also": [
+        "capa_candidate_inputs/read",
+        "quality_read"
+      ],
+      "remeasure_load": "低于 CPU 核数"
+    }
+  ],
+  "source_scope": "User explicitly accepts completed existing results across their own frozen source scopes; no fresh current-candidate all-path performance pass claimed",
+  "historical_evidence_sha256": {
+    "performance-final-capa-rr-2/pipeline-status.json": "db5063558052ec4cdc84f37b14c4bcb5d373ea5f8a0c593e5957d60ced57b737",
+    "capa-rr-performance-heavy-1/pipeline-status.json": "c6adf44525adcf2c0541b59c17294449fce4946a26081eb6213e500de990fc40"
+  },
+  "stopped_current_iteration": {
+    "path": "capa-rr-performance-publication-2/pipeline-status.json",
+    "actual_child_exit_code": 2,
+    "child_reaped": true,
+    "full_30_claimed": false
+  },
+  "full_32x30_rerun": false,
+  "all_thresholds_passed": false,
+  "s0_complete": false
+}

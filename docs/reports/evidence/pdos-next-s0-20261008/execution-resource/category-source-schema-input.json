@@ -1,0 +1,566 @@
+{
+  "policies": [
+    [
+      "artifact_versions",
+      "category_scope",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = artifact_versions.tenant_id) AND (a.category_id = artifact_versions.category_id) AND ((a.object_type)::text = 'artifact_versions'::text) AND (a.subject_id = artifact_versions.id) AND (a.owner_id = artifact_versions.owner_id) AND (a.principal_id = scope_requester()))))))",
+      "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = artifact_versions.tenant_id) AND (a.category_id = artifact_versions.category_id) AND ((a.object_type)::text = 'artifact_versions'::text) AND (a.subject_id = artifact_versions.id) AND (a.owner_id = artifact_versions.owner_id) AND (a.principal_id = scope_requester()))))))"
+    ],
+    [
+      "artifact_versions",
+      "model_audience",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = artifact_versions.tenant_id) AND (p.category_id = artifact_versions.category_id) AND (p.id = artifact_versions.product_id)))))",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = artifact_versions.tenant_id) AND (p.category_id = artifact_versions.category_id) AND (p.id = artifact_versions.product_id)))))"
+    ],
+    [
+      "artifact_versions",
+      "upstream_audience",
+      "SELECT",
+      "((original_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'uploaded_originals'::text, original_id))",
+      null
+    ],
+    [
+      "lifecycle_candidates",
+      "category_scope",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_candidates.tenant_id) AND (p.category_id = lifecycle_candidates.category_id) AND (p.id = lifecycle_candidates.product_id)))))",
+      "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_candidates.tenant_id) AND (p.category_id = lifecycle_candidates.category_id) AND (p.id = lifecycle_candidates.product_id)))))"
+    ],
+    [
+      "lifecycle_candidates",
+      "model_audience",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_candidates.tenant_id) AND (p.category_id = lifecycle_candidates.category_id) AND (p.id = lifecycle_candidates.product_id)))))",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_candidates.tenant_id) AND (p.category_id = lifecycle_candidates.category_id) AND (p.id = lifecycle_candidates.product_id)))))"
+    ],
+    [
+      "lifecycle_intents",
+      "category_scope",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_intents.tenant_id) AND (p.category_id = lifecycle_intents.category_id) AND (p.id = lifecycle_intents.product_id)))))",
+      "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_intents.tenant_id) AND (p.category_id = lifecycle_intents.category_id) AND (p.id = lifecycle_intents.product_id)))))"
+    ],
+    [
+      "lifecycle_intents",
+      "model_audience",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_intents.tenant_id) AND (p.category_id = lifecycle_intents.category_id) AND (p.id = lifecycle_intents.product_id)))))",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_intents.tenant_id) AND (p.category_id = lifecycle_intents.category_id) AND (p.id = lifecycle_intents.product_id)))))"
+    ],
+    [
+      "lifecycle_objects",
+      "category_scope",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_objects.tenant_id) AND (p.id = lifecycle_objects.product_id)))) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_objects.tenant_id) AND (p.category_id = lifecycle_objects.category_id) AND (p.id = lifecycle_objects.product_id)))))",
+      "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_objects.tenant_id) AND (p.id = lifecycle_objects.product_id)))) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_objects.tenant_id) AND (p.category_id = lifecycle_objects.category_id) AND (p.id = lifecycle_objects.product_id)))))"
+    ],
+    [
+      "lifecycle_objects",
+      "model_audience",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_objects.tenant_id) AND (p.category_id = lifecycle_objects.category_id) AND (p.id = lifecycle_objects.product_id)))))",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_objects.tenant_id) AND (p.category_id = lifecycle_objects.category_id) AND (p.id = lifecycle_objects.product_id)))))"
+    ],
+    [
+      "lifecycle_requests",
+      "category_scope",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_requests.tenant_id) AND (p.category_id = lifecycle_requests.category_id) AND (p.id = lifecycle_requests.product_id)))))",
+      "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_requests.tenant_id) AND (p.category_id = lifecycle_requests.category_id) AND (p.id = lifecycle_requests.product_id)))))"
+    ],
+    [
+      "lifecycle_requests",
+      "model_audience",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_requests.tenant_id) AND (p.category_id = lifecycle_requests.category_id) AND (p.id = lifecycle_requests.product_id)))))",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = lifecycle_requests.tenant_id) AND (p.category_id = lifecycle_requests.category_id) AND (p.id = lifecycle_requests.product_id)))))"
+    ],
+    [
+      "original_scan_requests",
+      "category_scope",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = original_scan_requests.tenant_id) AND (p.category_id = original_scan_requests.category_id) AND (p.id = original_scan_requests.product_id)))) AND (EXISTS ( SELECT 1\n   FROM uploaded_originals p\n  WHERE ((p.tenant_id = original_scan_requests.tenant_id) AND (p.product_id = original_scan_requests.product_id) AND (p.id = original_scan_requests.original_id)))))",
+      "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = original_scan_requests.tenant_id) AND (p.category_id = original_scan_requests.category_id) AND (p.id = original_scan_requests.product_id)))) AND (EXISTS ( SELECT 1\n   FROM uploaded_originals p\n  WHERE ((p.tenant_id = original_scan_requests.tenant_id) AND (p.product_id = original_scan_requests.product_id) AND (p.id = original_scan_requests.original_id)))))"
+    ],
+    [
+      "original_scan_requests",
+      "model_audience",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = original_scan_requests.tenant_id) AND (p.category_id = original_scan_requests.category_id) AND (p.id = original_scan_requests.product_id)))))",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = original_scan_requests.tenant_id) AND (p.category_id = original_scan_requests.category_id) AND (p.id = original_scan_requests.product_id)))))"
+    ],
+    [
+      "original_scan_results",
+      "category_scope",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = original_scan_results.tenant_id) AND (p.category_id = original_scan_results.category_id) AND (p.id = original_scan_results.product_id)))))",
+      "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = original_scan_results.tenant_id) AND (p.category_id = original_scan_results.category_id) AND (p.id = original_scan_results.product_id)))))"
+    ],
+    [
+      "original_scan_results",
+      "model_audience",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = original_scan_results.tenant_id) AND (p.category_id = original_scan_results.category_id) AND (p.id = original_scan_results.product_id)))))",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = original_scan_results.tenant_id) AND (p.category_id = original_scan_results.category_id) AND (p.id = original_scan_results.product_id)))))"
+    ],
+    [
+      "original_security",
+      "category_scope",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = original_security.tenant_id) AND (p.category_id = original_security.category_id) AND (p.id = original_security.product_id)))) AND (EXISTS ( SELECT 1\n   FROM uploaded_originals p\n  WHERE ((p.tenant_id = original_security.tenant_id) AND (p.product_id = original_security.product_id) AND (p.id = original_security.original_id)))))",
+      "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = original_security.tenant_id) AND (p.category_id = original_security.category_id) AND (p.id = original_security.product_id)))) AND (EXISTS ( SELECT 1\n   FROM uploaded_originals p\n  WHERE ((p.tenant_id = original_security.tenant_id) AND (p.product_id = original_security.product_id) AND (p.id = original_security.original_id)))))"
+    ],
+    [
+      "original_security",
+      "model_audience",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = original_security.tenant_id) AND (p.category_id = original_security.category_id) AND (p.id = original_security.product_id)))))",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = original_security.tenant_id) AND (p.category_id = original_security.category_id) AND (p.id = original_security.product_id)))))"
+    ],
+    [
+      "upload_attempts",
+      "category_scope",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = upload_attempts.tenant_id) AND (p.id = upload_attempts.product_id)))) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = upload_attempts.tenant_id) AND (p.category_id = upload_attempts.category_id) AND (p.id = upload_attempts.product_id)))))",
+      "(category_access(tenant_id, category_id, true) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = upload_attempts.tenant_id) AND (p.id = upload_attempts.product_id)))) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = upload_attempts.tenant_id) AND (p.category_id = upload_attempts.category_id) AND (p.id = upload_attempts.product_id)))))"
+    ],
+    [
+      "upload_attempts",
+      "model_audience",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = upload_attempts.tenant_id) AND (p.category_id = upload_attempts.category_id) AND (p.id = upload_attempts.product_id)))))",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = upload_attempts.tenant_id) AND (p.category_id = upload_attempts.category_id) AND (p.id = upload_attempts.product_id)))))"
+    ],
+    [
+      "uploaded_originals",
+      "category_scope",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = uploaded_originals.tenant_id) AND (a.category_id = uploaded_originals.category_id) AND ((a.object_type)::text = 'uploaded_originals'::text) AND (a.subject_id = uploaded_originals.id) AND (a.owner_id = uploaded_originals.owner_id) AND (a.principal_id = scope_requester()))))))",
+      "(category_access(tenant_id, category_id, true) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = uploaded_originals.tenant_id) AND (a.category_id = uploaded_originals.category_id) AND ((a.object_type)::text = 'uploaded_originals'::text) AND (a.subject_id = uploaded_originals.id) AND (a.owner_id = uploaded_originals.owner_id) AND (a.principal_id = scope_requester()))))))"
+    ],
+    [
+      "uploaded_originals",
+      "model_audience",
+      "ALL",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = uploaded_originals.tenant_id) AND (p.category_id = uploaded_originals.category_id) AND (p.id = uploaded_originals.product_id)))))",
+      "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = uploaded_originals.tenant_id) AND (p.category_id = uploaded_originals.category_id) AND (p.id = uploaded_originals.product_id)))))"
+    ]
+  ],
+  "functions": [
+    [
+      "business_upstream_visible",
+      "CREATE OR REPLACE FUNCTION public.business_upstream_visible(t uuid, c uuid, p uuid, typ text, sid uuid)\n RETURNS boolean\n LANGUAGE plpgsql\n STABLE\n SET search_path TO 'public', 'pg_temp'\nAS $function$\nDECLARE visible boolean;\nBEGIN\n IF NOT typ=ANY(ARRAY['actual_configurations','build_authorization_decisions','build_execution_assessments','build_lots','builds','engineering_configurations','measurement_import_captures','process_revisions','professional_authority_facts','projects','sample_allocations','sample_units','test_resource_facts','test_result_projections','verification_actual_method_batches','verification_formal_requests','verification_preparations','verification_run_identities','verification_run_versions']) THEN RETURN false; END IF;\n EXECUTE format('SELECT EXISTS(SELECT 1 FROM public.%I\n  WHERE tenant_id=$1 AND category_id=$2 AND product_id=$3 AND id=$4)',typ)\n INTO visible USING t,c,p,sid;\n RETURN visible;\nEND $function$\n"
+    ],
+    [
+      "definition_sources_visible",
+      "CREATE OR REPLACE FUNCTION public.definition_sources_visible(t uuid, c uuid, p uuid, d uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO 'public', 'pg_temp'\nAS $function$\n SELECT direct_source_set_visible(t,c,p,COALESCE(\n   (SELECT jsonb_agg(jsonb_build_object('artifact_id',artifact_id))\n    FROM definition_sources WHERE tenant_id=t AND category_id=c AND product_id=p\n      AND definition_id=d), '[]'::jsonb))\n$function$\n"
+    ],
+    [
+      "direct_source_set_visible",
+      "CREATE OR REPLACE FUNCTION public.direct_source_set_visible(t uuid, c uuid, p uuid, refs jsonb)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO 'public', 'pg_temp'\nAS $function$\n SELECT category_access(t,c,false) AND jsonb_typeof(refs)='array' AND NOT EXISTS (\n   SELECT 1 FROM jsonb_array_elements(refs) r\n   LEFT JOIN artifact_versions a ON a.id=(r->>'artifact_id')::uuid\n     AND a.tenant_id=t AND a.category_id=c AND a.product_id=p\n   LEFT JOIN products m ON m.id=a.product_id AND m.tenant_id=t AND m.category_id=c\n   LEFT JOIN uploaded_originals o ON o.id=a.original_id AND o.tenant_id=t AND o.category_id=c\n   WHERE a.id IS NULL OR m.id IS NULL\n     OR NOT source_object_audience(t,c,'products',m.id,m.owner_id,m.visibility)\n     OR NOT source_object_audience(t,c,'artifact_versions',a.id,a.owner_id,a.visibility)\n     OR (a.original_id IS NOT NULL AND (o.id IS NULL\n       OR NOT source_object_audience(t,c,'uploaded_originals',o.id,o.owner_id,o.visibility)))\n )\n$function$\n"
+    ],
+    [
+      "upstream_row_visible",
+      "CREATE OR REPLACE FUNCTION public.upstream_row_visible(t uuid, c uuid, p uuid, typ text, sid uuid)\n RETURNS boolean\n LANGUAGE plpgsql\n STABLE\n SET search_path TO 'public', 'pg_temp'\nAS $function$\nDECLARE visible boolean;\nBEGIN\n IF NOT typ=ANY(ARRAY['uploaded_originals','artifact_versions','definition_revisions',\n  'product_variants','projects','plan_proposals','bom_revisions','engineering_configurations'])\n THEN RETURN false; END IF;\n EXECUTE format('SELECT EXISTS(SELECT 1 FROM public.%I\n  WHERE tenant_id=$1 AND category_id=$2 AND product_id=$3 AND id=$4)',typ)\n INTO visible USING t,c,p,sid;\n RETURN visible;\nEND $function$\n"
+    ]
+  ],
+  "constraints": [
+    [
+      "artifact_versions",
+      "artifact_versions_pkey",
+      "PRIMARY KEY (id)"
+    ],
+    [
+      "artifact_versions",
+      "artifact_versions_status_check",
+      "CHECK (((status)::text = ANY ((ARRAY['active'::character varying, 'withdrawn'::character varying])::text[])))"
+    ],
+    [
+      "artifact_versions",
+      "artifact_versions_tenant_id_original_id_key",
+      "UNIQUE (tenant_id, original_id)"
+    ],
+    [
+      "artifact_versions",
+      "artifact_versions_tenant_id_product_id_id_key",
+      "UNIQUE (tenant_id, product_id, id)"
+    ],
+    [
+      "artifact_versions",
+      "artifact_versions_visibility_check",
+      "CHECK (((visibility)::text = ANY ((ARRAY['private'::character varying, 'category'::character varying, 'audience'::character varying])::text[])))"
+    ],
+    [
+      "artifact_versions",
+      "fk_artifact_versions_29ab421e",
+      "FOREIGN KEY (tenant_id, owner_id) REFERENCES principals(tenant_id, id)"
+    ],
+    [
+      "artifact_versions",
+      "fk_artifact_versions_4291ddf5",
+      "FOREIGN KEY (tenant_id, product_id, original_id) REFERENCES uploaded_originals(tenant_id, product_id, id)"
+    ],
+    [
+      "artifact_versions",
+      "fk_artifact_versions_77e4e82c",
+      "FOREIGN KEY (tenant_id, product_id) REFERENCES products(tenant_id, id)"
+    ],
+    [
+      "artifact_versions",
+      "fk_artifact_versions_category",
+      "FOREIGN KEY (tenant_id, category_id) REFERENCES categories(tenant_id, id)"
+    ],
+    [
+      "artifact_versions",
+      "fk_artifact_versions_category_product",
+      "FOREIGN KEY (tenant_id, category_id, product_id) REFERENCES products(tenant_id, category_id, id)"
+    ],
+    [
+      "lifecycle_candidates",
+      "fk_lifecycle_candidates_654879e0",
+      "FOREIGN KEY (tenant_id, actor_id) REFERENCES principals(tenant_id, id)"
+    ],
+    [
+      "lifecycle_candidates",
+      "fk_lifecycle_candidates_a6ba14ed",
+      "FOREIGN KEY (tenant_id, product_id, object_id) REFERENCES lifecycle_objects(tenant_id, product_id, id)"
+    ],
+    [
+      "lifecycle_candidates",
+      "fk_lifecycle_candidates_category",
+      "FOREIGN KEY (tenant_id, category_id) REFERENCES categories(tenant_id, id)"
+    ],
+    [
+      "lifecycle_candidates",
+      "fk_lifecycle_candidates_category_product",
+      "FOREIGN KEY (tenant_id, category_id, product_id) REFERENCES products(tenant_id, category_id, id)"
+    ],
+    [
+      "lifecycle_candidates",
+      "lifecycle_candidates_pkey",
+      "PRIMARY KEY (id)"
+    ],
+    [
+      "lifecycle_candidates",
+      "lifecycle_candidates_tenant_id_product_id_id_key",
+      "UNIQUE (tenant_id, product_id, id)"
+    ],
+    [
+      "lifecycle_intents",
+      "fk_lifecycle_intents_654879e0",
+      "FOREIGN KEY (tenant_id, actor_id) REFERENCES principals(tenant_id, id)"
+    ],
+    [
+      "lifecycle_intents",
+      "fk_lifecycle_intents_a6ba14ed",
+      "FOREIGN KEY (tenant_id, product_id, object_id) REFERENCES lifecycle_objects(tenant_id, product_id, id)"
+    ],
+    [
+      "lifecycle_intents",
+      "fk_lifecycle_intents_category",
+      "FOREIGN KEY (tenant_id, category_id) REFERENCES categories(tenant_id, id)"
+    ],
+    [
+      "lifecycle_intents",
+      "fk_lifecycle_intents_category_product",
+      "FOREIGN KEY (tenant_id, category_id, product_id) REFERENCES products(tenant_id, category_id, id)"
+    ],
+    [
+      "lifecycle_intents",
+      "lifecycle_intents_pkey",
+      "PRIMARY KEY (id)"
+    ],
+    [
+      "lifecycle_intents",
+      "lifecycle_intents_revision_check",
+      "CHECK ((revision > 0))"
+    ],
+    [
+      "lifecycle_intents",
+      "lifecycle_intents_tenant_id_product_id_id_key",
+      "UNIQUE (tenant_id, product_id, id)"
+    ],
+    [
+      "lifecycle_intents",
+      "uq_lifecycle_intents_scope_intent",
+      "UNIQUE (tenant_id, category_id, object_id, intent_digest)"
+    ],
+    [
+      "lifecycle_objects",
+      "fk_lifecycle_objects_29ab421e",
+      "FOREIGN KEY (tenant_id, owner_id) REFERENCES principals(tenant_id, id)"
+    ],
+    [
+      "lifecycle_objects",
+      "fk_lifecycle_objects_77e4e82c",
+      "FOREIGN KEY (tenant_id, product_id) REFERENCES products(tenant_id, id)"
+    ],
+    [
+      "lifecycle_objects",
+      "fk_lifecycle_objects_category",
+      "FOREIGN KEY (tenant_id, category_id) REFERENCES categories(tenant_id, id)"
+    ],
+    [
+      "lifecycle_objects",
+      "fk_lifecycle_objects_category_product",
+      "FOREIGN KEY (tenant_id, category_id, product_id) REFERENCES products(tenant_id, category_id, id)"
+    ],
+    [
+      "lifecycle_objects",
+      "lifecycle_objects_check",
+      "CHECK (((revision > 0) AND (protection_revision > 0)))"
+    ],
+    [
+      "lifecycle_objects",
+      "lifecycle_objects_pkey",
+      "PRIMARY KEY (id)"
+    ],
+    [
+      "lifecycle_objects",
+      "lifecycle_objects_tenant_id_product_id_id_key",
+      "UNIQUE (tenant_id, product_id, id)"
+    ],
+    [
+      "lifecycle_requests",
+      "fk_lifecycle_requests_1ba8cb0a",
+      "FOREIGN KEY (tenant_id, product_id, intent_id) REFERENCES lifecycle_intents(tenant_id, product_id, id)"
+    ],
+    [
+      "lifecycle_requests",
+      "fk_lifecycle_requests_654879e0",
+      "FOREIGN KEY (tenant_id, actor_id) REFERENCES principals(tenant_id, id)"
+    ],
+    [
+      "lifecycle_requests",
+      "fk_lifecycle_requests_a6ba14ed",
+      "FOREIGN KEY (tenant_id, product_id, object_id) REFERENCES lifecycle_objects(tenant_id, product_id, id)"
+    ],
+    [
+      "lifecycle_requests",
+      "fk_lifecycle_requests_category",
+      "FOREIGN KEY (tenant_id, category_id) REFERENCES categories(tenant_id, id)"
+    ],
+    [
+      "lifecycle_requests",
+      "fk_lifecycle_requests_category_product",
+      "FOREIGN KEY (tenant_id, category_id, product_id) REFERENCES products(tenant_id, category_id, id)"
+    ],
+    [
+      "lifecycle_requests",
+      "lifecycle_requests_pkey",
+      "PRIMARY KEY (id)"
+    ],
+    [
+      "lifecycle_requests",
+      "lifecycle_requests_tenant_id_actor_id_key_key",
+      "UNIQUE (tenant_id, actor_id, key)"
+    ],
+    [
+      "original_scan_requests",
+      "fk_original_scan_requests_4291ddf5",
+      "FOREIGN KEY (tenant_id, product_id, original_id) REFERENCES uploaded_originals(tenant_id, product_id, id)"
+    ],
+    [
+      "original_scan_requests",
+      "fk_original_scan_requests_a763a7fd",
+      "FOREIGN KEY (tenant_id, requester_id) REFERENCES principals(tenant_id, id)"
+    ],
+    [
+      "original_scan_requests",
+      "fk_original_scan_requests_category",
+      "FOREIGN KEY (tenant_id, category_id) REFERENCES categories(tenant_id, id)"
+    ],
+    [
+      "original_scan_requests",
+      "fk_original_scan_requests_category_product",
+      "FOREIGN KEY (tenant_id, category_id, product_id) REFERENCES products(tenant_id, category_id, id)"
+    ],
+    [
+      "original_scan_requests",
+      "original_scan_requests_check",
+      "CHECK (((revision > 0) AND ((status)::text = 'requested'::text)))"
+    ],
+    [
+      "original_scan_requests",
+      "original_scan_requests_pkey",
+      "PRIMARY KEY (id)"
+    ],
+    [
+      "original_scan_requests",
+      "original_scan_requests_tenant_id_product_id_original_id_id_key",
+      "UNIQUE (tenant_id, product_id, original_id, id)"
+    ],
+    [
+      "original_scan_requests",
+      "original_scan_requests_tenant_id_product_id_original_id_rev_key",
+      "UNIQUE (tenant_id, product_id, original_id, revision)"
+    ],
+    [
+      "original_scan_results",
+      "fk_original_scan_results_c0edf441",
+      "FOREIGN KEY (tenant_id, product_id, original_id, request_id) REFERENCES original_scan_requests(tenant_id, product_id, original_id, id)"
+    ],
+    [
+      "original_scan_results",
+      "fk_original_scan_results_category",
+      "FOREIGN KEY (tenant_id, category_id) REFERENCES categories(tenant_id, id)"
+    ],
+    [
+      "original_scan_results",
+      "fk_original_scan_results_category_product",
+      "FOREIGN KEY (tenant_id, category_id, product_id) REFERENCES products(tenant_id, category_id, id)"
+    ],
+    [
+      "original_scan_results",
+      "original_scan_results_check",
+      "CHECK (((revision > 0) AND ((status)::text = ANY ((ARRAY['clean'::character varying, 'infected'::character varying, 'unknown'::character varying, 'unavailable'::character varying, 'timeout'::character varying, 'rejected'::character varying])::text[]))))"
+    ],
+    [
+      "original_scan_results",
+      "original_scan_results_pkey",
+      "PRIMARY KEY (id)"
+    ],
+    [
+      "original_scan_results",
+      "original_scan_results_tenant_id_request_id_key",
+      "UNIQUE (tenant_id, request_id)"
+    ],
+    [
+      "original_security",
+      "fk_original_security_4291ddf5",
+      "FOREIGN KEY (tenant_id, product_id, original_id) REFERENCES uploaded_originals(tenant_id, product_id, id)"
+    ],
+    [
+      "original_security",
+      "fk_original_security_7d70dbcd",
+      "FOREIGN KEY (tenant_id, product_id, original_id, current_request_id) REFERENCES original_scan_requests(tenant_id, product_id, original_id, id)"
+    ],
+    [
+      "original_security",
+      "fk_original_security_category",
+      "FOREIGN KEY (tenant_id, category_id) REFERENCES categories(tenant_id, id)"
+    ],
+    [
+      "original_security",
+      "fk_original_security_category_product",
+      "FOREIGN KEY (tenant_id, category_id, product_id) REFERENCES products(tenant_id, category_id, id)"
+    ],
+    [
+      "original_security",
+      "original_security_check",
+      "CHECK (((epoch > 0) AND ((source_state)::text = ANY ((ARRAY['active'::character varying, 'withdrawn'::character varying])::text[]))))"
+    ],
+    [
+      "original_security",
+      "original_security_disposition_check",
+      "CHECK (((disposition)::text = ANY ((ARRAY['active'::character varying, 'quarantined'::character varying, 'unknown'::character varying])::text[])))"
+    ],
+    [
+      "original_security",
+      "original_security_pkey",
+      "PRIMARY KEY (id)"
+    ],
+    [
+      "original_security",
+      "original_security_tenant_id_original_id_key",
+      "UNIQUE (tenant_id, original_id)"
+    ],
+    [
+      "upload_attempts",
+      "fk_upload_attempts_29ab421e",
+      "FOREIGN KEY (tenant_id, owner_id) REFERENCES principals(tenant_id, id)"
+    ],
+    [
+      "upload_attempts",
+      "fk_upload_attempts_77e4e82c",
+      "FOREIGN KEY (tenant_id, product_id) REFERENCES products(tenant_id, id)"
+    ],
+    [
+      "upload_attempts",
+      "fk_upload_attempts_category",
+      "FOREIGN KEY (tenant_id, category_id) REFERENCES categories(tenant_id, id)"
+    ],
+    [
+      "upload_attempts",
+      "fk_upload_attempts_category_product",
+      "FOREIGN KEY (tenant_id, category_id, product_id) REFERENCES products(tenant_id, category_id, id)"
+    ],
+    [
+      "upload_attempts",
+      "upload_attempts_check",
+      "CHECK (((revision > 0) AND ((status)::text = ANY ((ARRAY['reserved'::character varying, 'committed'::character varying, 'abandoned'::character varying])::text[]))))"
+    ],
+    [
+      "upload_attempts",
+      "upload_attempts_check1",
+      "CHECK (((((status)::text = 'reserved'::text) AND (terminal_at IS NULL)) OR (((status)::text <> 'reserved'::text) AND (terminal_at IS NOT NULL))))"
+    ],
+    [
+      "upload_attempts",
+      "upload_attempts_pkey",
+      "PRIMARY KEY (id)"
+    ],
+    [
+      "upload_attempts",
+      "upload_attempts_tenant_id_owner_id_request_key_key",
+      "UNIQUE (tenant_id, owner_id, request_key)"
+    ],
+    [
+      "upload_attempts",
+      "upload_attempts_tenant_id_product_id_id_key",
+      "UNIQUE (tenant_id, product_id, id)"
+    ],
+    [
+      "uploaded_originals",
+      "fk_uploaded_originals_29ab421e",
+      "FOREIGN KEY (tenant_id, owner_id) REFERENCES principals(tenant_id, id)"
+    ],
+    [
+      "uploaded_originals",
+      "fk_uploaded_originals_77e4e82c",
+      "FOREIGN KEY (tenant_id, product_id) REFERENCES products(tenant_id, id)"
+    ],
+    [
+      "uploaded_originals",
+      "fk_uploaded_originals_category",
+      "FOREIGN KEY (tenant_id, category_id) REFERENCES categories(tenant_id, id)"
+    ],
+    [
+      "uploaded_originals",
+      "fk_uploaded_originals_category_product",
+      "FOREIGN KEY (tenant_id, category_id, product_id) REFERENCES products(tenant_id, category_id, id)"
+    ],
+    [
+      "uploaded_originals",
+      "uploaded_originals_byte_count_check",
+      "CHECK (((byte_count > 0) AND (byte_count <= 8388608)))"
+    ],
+    [
+      "uploaded_originals",
+      "uploaded_originals_pkey",
+      "PRIMARY KEY (id)"
+    ],
+    [
+      "uploaded_originals",
+      "uploaded_originals_status_check",
+      "CHECK (((status)::text = ANY ((ARRAY['uploaded'::character varying, 'parsed'::character varying, 'needs_ocr'::character varying, 'failed'::character varying])::text[])))"
+    ],
+    [
+      "uploaded_originals",
+      "uploaded_originals_storage_key_key",
+      "UNIQUE (storage_key)"
+    ],
+    [
+      "uploaded_originals",
+      "uploaded_originals_tenant_id_product_id_id_key",
+      "UNIQUE (tenant_id, product_id, id)"
+    ],
+    [
+      "uploaded_originals",
+      "uploaded_originals_visibility_check",
+      "CHECK (((visibility)::text = ANY ((ARRAY['private'::character varying, 'category'::character varying, 'audience'::character varying])::text[])))"
+    ]
+  ]
+}

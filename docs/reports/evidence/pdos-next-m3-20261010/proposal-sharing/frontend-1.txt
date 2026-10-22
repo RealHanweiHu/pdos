@@ -1,0 +1,33 @@
+✔ initial reads do not choose scope, consent, share, withdraw or invoke an agent (13.760875ms)
+✔ preview uses current command revision and preserves server checks and exact watermark before explicit confirmation (14.773583ms)
+✔ private identity hits block share and changing to withdrawal discards the shared preview (8.459333ms)
+✔ preview transport failure retries the exact request and synchronous double submit sends once (3.668916ms)
+✔ unknown apply outcome locks edits and retry reuses sealed token and idempotency key (5.459083ms)
+✔ proven confirmation rejection rereads and previews the same operation with the same key before a new human confirmation (7.462959ms)
+✔ withdrawal receipt invalidates previews before reread and notification failure cannot undo success (9.10175ms)
+✔ successful withdrawal followed by denied reread hides old material but keeps actual receipt (6.313791ms)
+✔ signed consumption denial shows actual failure, never alters content or fabricates withdrawal (6.524792ms)
+✔ scope and principal changes abort requests and reject late old-scope previews (4.833167ms)
+✔ unexpected prepared payload is rejected instead of applying a different audience (3.238625ms)
+✔ paginated candidates stay in the proposal and product-bound candidates are not given invented revisions (3.790125ms)
+✔ semantic payload key order does not invalidate an unchanged server preview (2.855083ms)
+✔ authoritative access denial hides prior private preview while retaining the original retry request (4.715875ms)
+✔ late applied receipt from a prior scope never refreshes the new proposal or calls its parent (4.597333ms)
+✔ apply is durably journaled before sending and remount only offers exact-request recovery (5.837166ms)
+✔ withdrawal journal survives unknown outcome without persisting fetched claim content (7.355333ms)
+✔ matching receipt notifies parent immediately while local document GET is still pending (5.367625ms)
+✔ claim pagination 403 erases private list and proposal context (3.281333ms)
+✔ claim detail 401 erases the retained private list and preview hit text (2.96875ms)
+✔ session journal is isolated by actor, category and proposal and never overwritten by another scope (5.343792ms)
+✔ storage write failure prevents the apply network request (4.1575ms)
+✔ mismatched receipt and network/5xx errors retain original journal without offering new preview (5.691916ms)
+✔ proved confirmation rejection survives remount and requires explicit reread, not automatic apply (5.470916ms)
+✔ corrupt or body-bearing journal is preserved and blocks new requests (4.945166ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 503.403584

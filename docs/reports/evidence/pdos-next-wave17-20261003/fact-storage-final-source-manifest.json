@@ -1,0 +1,55 @@
+{
+  "recorded_at": "2026-10-03T11:03:42.601617+00:00",
+  "scope": "Four new staged fact storage files only; unregistered/unmounted",
+  "files": {
+    "pdos-next/staging/wave17/fact_storage_models.py": "c5e19ebd676ebca70421897a2ada1e3214d6fd1d6e7905bdb9a57d7be39f9a56",
+    "pdos-next/staging/wave17/fact_storage_codec.py": "962a7ad94babe6a5a4552d85dffa993cf0d8271e9ae49d4338f6ebf05fa835cf",
+    "pdos-next/staging/wave17/test_fact_storage_codec.py": "6b7e124d5b01d06896fabc129b51160da96d96261779975a5cf9027e478d0726",
+    "pdos-next/staging/wave17/fact-storage-contract.md": "eb020013ea6f10c7ca8ee6959bc361ef878679317fe1ea485d9a5a6c6e9f9f85"
+  },
+  "frozen_staged_dependencies_unchanged": {
+    "pdos-next/staging/wave17/anchor.py": {
+      "sha256": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+      "matches_prior": true
+    },
+    "pdos-next/staging/wave17/lineage.py": {
+      "sha256": "252a11c5a48f9d6db8a270e07f979ae1437de4156bd1b16d6fe4bd7dcea6dcce",
+      "matches_prior": true
+    },
+    "pdos-next/staging/wave17/test_anchor_lineage.py": {
+      "sha256": "c8150cbcf326dc9b441d21bec56c5cca095d8ff889210499c17498ef8d6a8e68",
+      "matches_prior": true
+    },
+    "pdos-next/staging/wave17/anchor-contract.md": {
+      "sha256": "97072e8fa394a290587b3c41ba928c6038aa69788cddb0220b73ee062decf54a",
+      "matches_prior": true
+    },
+    "pdos-next/staging/wave17/paired.py": {
+      "sha256": "3cff4b1534533b2797f201faceede7e2a9514d84240ca06c6953b1de20dce750",
+      "matches_prior": true
+    },
+    "pdos-next/staging/wave17/test_paired.py": {
+      "sha256": "8da00ea85c90fb6694a911351623821ab69c6289f4e5868b71bc3486e8a60987",
+      "matches_prior": true
+    },
+    "pdos-next/staging/wave17/paired-contract.md": {
+      "sha256": "3a597197ae30ebdfc94515c25d5c12f201770a0b2073e086e0e3b5265f5900f1",
+      "matches_prior": true
+    },
+    "pdos-next/staging/wave17/facts.py": {
+      "sha256": "a9c06b974300729fe8953f1c7b85ec5a5c3ceb57416bc4d81c0c79f708083f50",
+      "matches_prior": true
+    },
+    "pdos-next/staging/wave17/test_facts.py": {
+      "sha256": "0e7351bf6edc93c23005e9b352545b32eb1679c6f6e297e33b216618b251f94f",
+      "matches_prior": true
+    },
+    "pdos-next/staging/wave17/facts-contract.md": {
+      "sha256": "1e0e393fcc86466737b0f20bd4352bc77106943b0dff03d7756b5e893c6dcb0f",
+      "matches_prior": true
+    }
+  },
+  "public_candidate": "Not rechecked here; no public source edits or validations",
+  "public_registration": false,
+  "db_or_http": false
+}

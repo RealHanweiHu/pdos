@@ -1,0 +1,15 @@
+{
+  "files": [
+    {
+      "staged_path": "pdos-next/.local/wave21-case-staged/wave21_shared_case.py",
+      "target_path": "pdos-next/tools/wave21_shared_case.py",
+      "sha256": "72124fd73785621445ac2068c4da3faf1b19174ee21d0aa1f7f64089a6f5be3d"
+    },
+    {
+      "staged_path": "pdos-next/.local/wave21-case-staged/test_wave21_shared_case.py",
+      "target_path": "pdos-next/tools/tests/test_wave21_shared_case.py",
+      "sha256": "0aeaa5201652cd935276479f058aec74753ecf0afb8fdabf7a457923107f79bc"
+    }
+  ],
+  "server_and_web_changed": false
+}

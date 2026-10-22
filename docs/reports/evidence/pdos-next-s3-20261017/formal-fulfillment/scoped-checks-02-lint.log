@@ -1,0 +1,186 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/change_execution/formal_fulfillment_chain_helpers.py:8:1
+   |
+ 6 |   """
+ 7 |
+ 8 | / from datetime import timedelta
+ 9 | | from types import SimpleNamespace
+10 | | from uuid import UUID
+11 | |
+12 | | from build_start.test_transactions import import_authority
+13 | | from quality_followup_transactions import fixtures as followup
+14 | | from sqlalchemy import func, select
+15 | | from test_project_first_plan import accepted, cmd
+16 | |
+17 | | from pdos_next.capa_applicability_owner import (
+18 | |     ActualActionFulfillmentOwner,
+19 | |     ActualApplicabilityOwner,
+20 | | )
+21 | | from pdos_next.capa_fact_owner import ActualFactOwner
+22 | | from pdos_next.capa_rule_import import publish_rule
+23 | | from pdos_next.capa_rule_publisher import configure_local_profile
+24 | | from pdos_next.change_action_fulfillment_owner import ApprovedChangeActionFulfillmentOwner
+25 | | from pdos_next.change_implementation_owner import digest as implementation_digest
+26 | | from pdos_next.contracts import Command
+27 | | from pdos_next.domain.capa_effectiveness import (
+28 | |     anchor_owner,
+29 | |     candidate_commands,
+30 | |     candidate_storage,
+31 | |     fact_commands,
+32 | |     fact_service,
+33 | | )
+34 | | from pdos_next.domain.capa_effectiveness import service as candidates
+35 | | from pdos_next.domain.capa_effectiveness.fact_atom_storage import read_fact_atom
+36 | | from pdos_next.domain.capa_effectiveness.fact_storage_codec import assemble_fact
+37 | | from pdos_next.domain.capa_effectiveness.fact_storage_models import (
+38 | |     NamedReviewRecord,
+39 | |     ObservationFact,
+40 | |     RuleFact,
+41 | | )
+42 | | from pdos_next.domain.capa_effectiveness.fact_write import prepare_fact
+43 | | from pdos_next.domain.capa_effectiveness.named_review_owner import ActualNamedReviewOwner
+44 | | from pdos_next.domain.capa_verification.models import CapaVerificationEvidence
+45 | | from pdos_next.domain.quality_execution import policy
+46 | | from pdos_next.domain.quality_execution.evidence import union_sources
+47 | | from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
+48 | | from pdos_next.models import Audit, Confirmation, Outbox, Receipt, now
+49 | | from pdos_next.schemas.quality_issues.contracts import Issue
+50 | |
+51 | | from . import approved_configuration_continuation_helpers as continuation
+52 | | from . import approved_configuration_helpers as approved
+   | |________________________________________________________^
+help: Organize imports
+   |
+12 | from build_start.test_transactions import import_authority
+   - from quality_followup_transactions import fixtures as followup
+   - from sqlalchemy import func, select
+   - from test_project_first_plan import accepted, cmd
+   -
+13 | from pdos_next.capa_applicability_owner import (
+--------------------------------------------------------------------------------
+45 | from pdos_next.schemas.quality_issues.contracts import Issue
+46 + from quality_followup_transactions import fixtures as followup
+47 + from sqlalchemy import func, select
+48 + from test_project_first_plan import accepted, cmd
+49 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/change_execution/test_action_fulfillment_owner.py:4:1
+   |
+ 3 |   # ruff: noqa: F811 - imported fixtures register the no-connect source/UOW environment
+ 4 | / from copy import deepcopy
+ 5 | | from dataclasses import replace
+ 6 | | from datetime import UTC, datetime, timedelta
+ 7 | | from types import SimpleNamespace
+ 8 | | from uuid import uuid4
+ 9 | |
+10 | | import pytest
+11 | | from capa_effectiveness.test_actual_applicability_owner import action_work, work  # noqa: F401
+12 | | from sqlalchemy.engine import Engine
+13 | |
+14 | | from pdos_next import change_action_fulfillment_owner as owner
+15 | | from pdos_next.change_controlled_owner import ActionIntentRead
+16 | | from pdos_next.change_implementation_owner import Occurrence
+17 | | from pdos_next.domain.capa_effectiveness.fact_commands import ActionReviewInput
+18 | | from pdos_next.domain.change_control.rules import digest
+19 | | from pdos_next.domain.change_execution.models import ChangeCurrent, ChangeRequestVersion
+20 | | from pdos_next.errors import DomainError
+21 | | from pdos_next.schemas.change_control.contracts import ImplementationFact, Ref
+22 | |
+23 | | from . import kernel_helpers as helper
+   | |______________________________________^
+24 |
+25 |   CURRENT_ITEMS = owner._current_action_items
+   |
+help: Organize imports
+   |
+11 | from capa_effectiveness.test_actual_applicability_owner import action_work, work  # noqa: F401
+   - from sqlalchemy.engine import Engine
+   -
+12 | from pdos_next import change_action_fulfillment_owner as owner
+--------------------------------------------------------------------------------
+19 | from pdos_next.schemas.change_control.contracts import ImplementationFact, Ref
+20 + from sqlalchemy.engine import Engine
+21 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/change_execution/test_default_action_fulfillment_wiring.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / import httpx
+ 8 | | import psycopg
+ 9 | | import pytest
+10 | | from fastapi import FastAPI
+11 | | from sqlalchemy import create_engine
+12 | | from sqlalchemy.engine import Engine
+13 | | from sqlalchemy.orm import Session
+14 | | from temporalio.client import Client
+15 | |
+16 | | from pdos_next.api import create_app
+17 | | from pdos_next.capa_applicability_owner import (
+18 | |     ActualActionFulfillmentOwner,
+19 | |     ActualApplicabilityOwner,
+20 | | )
+21 | | from pdos_next.capa_fact_owner import ActualFactOwner
+22 | | from pdos_next.change_action_fulfillment_owner import ApprovedChangeActionFulfillmentOwner
+23 | | from pdos_next.change_controlled_owner import ApprovedActionIntentOwner
+24 | | from pdos_next.change_implementation_owner import ApprovedImplementationOwner
+25 | | from pdos_next.domain.capa_effectiveness import fact_service
+26 | | from pdos_next.domain.capa_effectiveness.candidate_commands import semantic_owner
+27 | | from pdos_next.domain.capa_effectiveness.named_review_owner import ActualNamedReviewOwner
+28 | | from pdos_next.paired_output_bridge import LivePairedOwner
+   | |__________________________________________________________^
+help: Organize imports
+   |
+10 | from fastapi import FastAPI
+   - from sqlalchemy import create_engine
+   - from sqlalchemy.engine import Engine
+   - from sqlalchemy.orm import Session
+   - from temporalio.client import Client
+   -
+11 | from pdos_next.api import create_app
+--------------------------------------------------------------------------------
+23 | from pdos_next.paired_output_bridge import LivePairedOwner
+24 + from sqlalchemy import create_engine
+25 + from sqlalchemy.engine import Engine
+26 + from sqlalchemy.orm import Session
+27 + from temporalio.client import Client
+28 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/change_execution/test_formal_action_fulfillment_composition.py:10:1
+   |
+ 9 |   # ruff: noqa: F811 - imported fixtures register the no-connect source/UOW environment
+10 | / from dataclasses import replace
+11 | | from types import SimpleNamespace
+12 | | from uuid import uuid4
+13 | |
+14 | | import pytest
+15 | |
+16 | | from pdos_next import capa_applicability_owner as owner
+17 | | from pdos_next.domain.quality_followup.schemas import CompletionAssessment, OwnerImplementationProof
+18 | | from pdos_next.errors import DomainError
+19 | |
+20 | | from .test_action_fulfillment_owner import (  # noqa: F401 - explicit shared fixture registration
+21 | |     action_work,
+22 | |     actual,
+23 | |     no_connection,
+24 | |     work,
+25 | | )
+   | |_^
+26 |
+27 |   MISSING_CLASSIFICATION = "CURRENT_ACTION_CLASSIFICATION_OWNER_REQUIRED"
+   |
+help: Organize imports
+   |
+14 | import pytest
+   -
+15 | from pdos_next import capa_applicability_owner as owner
+   |
+
+Found 4 errors.
+[*] 4 fixable with the `--fix` option.

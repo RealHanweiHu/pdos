@@ -1,0 +1,83 @@
+.........F.......................                                        [100%]
+=================================== FAILURES ===================================
+_ test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result _
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...870>, parser=<function parse_original at 0x115e447c0>), client=<starlette.testclient.TestClient object at 0x12aec9a60>)
+
+    def test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result(
+        work, security_work
+    ):
+        owner, scope = start(work, security_work, "customer_request")
+        agree(work, scope, scope.data_categories)
+        # The intentionally unmetered transport reserves bytes, rather than real model tokens.
+        with Session(work.admin) as session, session.begin():
+            session.get(AgentRun, scope.run_id).token_limit = 1_000_000
+        seen = []
+
+        def response(kwargs):
+            context = json.loads(kwargs["messages"][0]["content"])["context"]
+            assert context["proposal"]["id"] == str(scope.proposal_id)
+            assert QUOTE in kwargs["messages"][0]["content"]
+            seen.append(kwargs["messages"])
+            if len(seen) == 1:
+                return ModelTurn(
+                    calls=(
+                        ToolCall(
+                            id="synthetic-private-read",
+                            name="proposal.items.read",
+                            arguments={"proposal_id": str(scope.proposal_id)},
+                        ),
+                    ),
+                    usage=ProviderUsage(2, 1),
+                )
+            assert any(message.get("role") == "tool" for message in kwargs["messages"])
+            return ModelTurn(
+                structured={
+                    "status": "completed",
+                    "summary": "Synthetic private gap check",
+                    "result": {},
+                    "questions": [],
+                    "unfinished": [],
+                },
+                usage=ProviderUsage(2, 1),
+            )
+
+        client = Client(response)
+        adapters = replace(
+            owner.adapters(),
+            route_for=lambda _: configured_route(),
+            provider_for=lambda *_: "synthetic-provider",
+            provider_client=client,
+            cost_required=False,
+        )
+        result = AgentKernel(BoundHost(owner.store, adapters), owner.registry).execute(
+            scope, goal="Synthetic private proposal gap check"
+        )
+        assert result["output"]["status"] == "completed" and client.calls == 2, result["output"]
+        with owner.store.transaction(scope) as (session, run):
+            call = session.scalar(
+                select(AgentToolCall).where(
+                    AgentToolCall.run_id == run.id, AgentToolCall.tool == "proposal.items.read"
+                )
+            )
+            assert call.state == "completed" and call.result["proposal_id"] == str(scope.proposal_id)
+>           assert call.execution_binding["tool_version"] == "2"
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'tool_version'
+
+tests/agent_kernel/test_proposal_context_pg.py:265: KeyError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_context_pg.py: 13 warnings
+tests/agent_kernel/test_m3_original_binding_pg.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_pg.py: 86 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_proposal_context_pg.py::test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result
+1 failed, 32 passed, 103 warnings in 67.46s (0:01:07)

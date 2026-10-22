@@ -1,0 +1,39 @@
+{
+  "target": "127.0.0.1:64245/pdos_test",
+  "head": "s0_0807",
+  "selection_feedback_version_links": 2,
+  "occurrence_feedback_and_selection_links": 2,
+  "agent_direct_dml": {
+    "controlled_change_selection_facts": {
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false,
+      "TRUNCATE": false
+    },
+    "controlled_change_selection_currents": {
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false,
+      "TRUNCATE": false
+    },
+    "change_implementation_captures": {
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false,
+      "TRUNCATE": false
+    }
+  },
+  "function_owners": {
+    "assert_controlled_change_atom(text,uuid,uuid)": "pdos_next_owner",
+    "m3_lifecycle_source_links(uuid,uuid,text,jsonb)": "pdos_next_owner",
+    "coverage_ref_identity(jsonb)": "pdos_next_owner",
+    "protect_change_implementation_capture()": "pdos_next_owner"
+  },
+  "scope": {
+    "tenant_id": "76b323f7-604e-4031-bf60-b2bb471cac86",
+    "category_id": "a1d7c641-1e14-4f41-bd4e-fbb8f63af810",
+    "product_id": "e21ea1be-6f22-40f4-a624-b075939b4d9c",
+    "project_id": "7ab8ed32-8926-4fab-972f-916a900657b5",
+    "change_id": "52e1fd53-0315-5f86-b19b-b3ced55f78a7"
+  }
+}

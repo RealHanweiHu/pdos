@@ -1,0 +1,37 @@
+▲ Next.js 16.3.3 (webpack)
+✓ Running next.config.ts took 20ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 15.8s
+  Running TypeScript ...
+  Finished TypeScript in 11.4s ...
+  Collecting page data using 9 workers ...
+  Generating static pages using 9 workers (0/7) ...
+  Generating static pages using 9 workers (1/7) 
+  Generating static pages using 9 workers (3/7) 
+  Generating static pages using 9 workers (5/7) 
+✓ Generating static pages using 9 workers (7/7) in 574ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/[...path]
+├ ƒ /api/local-session
+├ ƒ /api/v1/categories/[categoryId]/agent-sessions
+├ ƒ /api/v1/categories/[categoryId]/agent-sessions/[sessionId]/runs
+├ ƒ /api/v1/categories/[categoryId]/category-matrix
+├ ƒ /api/v1/categories/[categoryId]/competitors/[entryId]/segment-assignment
+├ ƒ /api/v1/categories/[categoryId]/proposals/[proposalId]/voices
+├ ƒ /api/v1/personal/agent-sessions
+├ ƒ /api/v1/personal/agent-sessions/[sessionId]/runs
+├ ƒ /api/v1/personal/g0-reviews
+├ ƒ /api/v1/personal/test-start-promises
+├ ƒ /categories/[categoryId]/proposals/[proposalId]
+└ ƒ /plan
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

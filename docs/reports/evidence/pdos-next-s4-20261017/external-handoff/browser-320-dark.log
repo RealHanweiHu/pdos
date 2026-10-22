@@ -1,0 +1,7 @@
+### Result
+{"width":{"client":252,"scroll":252},"viewport":{"width":320,"height":900},"theme":"dark"}
+### Ran Playwright code
+```js
+await (async page => { await page.setViewportSize({width:320,height:900}); await page.getByRole("button",{name:"切换明暗主题",exact:true}).click(); const region=page.getByRole("region", {name:"已保存外部移交",exact:true}); await region.screenshot({path:"/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s4-20261017/external-handoff/browser-320-dark.png"}); return {width:await region.evaluate(el=>({client:el.clientWidth,scroll:el.scrollWidth})),viewport:page.viewportSize(),theme:await page.locator("html").getAttribute("class")}; })(page);
+```
+

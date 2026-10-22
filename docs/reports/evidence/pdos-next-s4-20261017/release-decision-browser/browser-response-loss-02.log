@@ -1,0 +1,30 @@
+### Result
+{"actual_success_response_lost":true,"events":[{"operation":"release.engineering.approve","status":200}],"explicit_replay_visible":true}
+### Ran Playwright code
+```js
+await (async page => {
+  const target = "http://127.0.0.1:58703/api/v1/categories/c636c6c8-6207-4702-814a-384341ebac8e/commands", events = []; let lost = false, finish;
+  const completed = new Promise((resolve,reject) => { const timer=setTimeout(() => reject(new Error("Actual response event timed out")),60000); finish=() => { clearTimeout(timer); resolve(); }; });
+  await page.route(target, async route => {
+    const data = route.request().postDataJSON();
+    if (data?.operation !== "release.engineering.approve" || lost) { await route.continue(); return; }
+    const response = await route.fetch(); const status = response.status();
+    events.push({operation:data.operation,status});
+    if (status !== 200) { await route.fulfill({response}); finish(); return; }
+    lost = true; await route.abort("failed"); finish();
+  });
+  await page.getByRole("dialog").getByRole("button", {name:"本人具名确认决定",exact:true}).click();
+  await completed;
+  const replay = page.getByRole("region",{name:"固定发布包与分别决定",exact:true}).getByRole("button",{name:"重放并核对同一原提交",exact:true});
+  await replay.waitFor({state:"visible"});
+  if (!lost || events.length !== 1 || events[0].status !== 200) throw new Error("Actual successful response loss did not trigger");
+  await page.unroute(target);
+  return {actual_success_response_lost:lost,events,explicit_replay_visible:await replay.isVisible()};
+})(page);
+```
+### Page
+- Page URL: http://127.0.0.1:58703/?area=category&category=c636c6c8-6207-4702-814a-384341ebac8e&bench=projects&view=builds&task=prepare&product=09863b6e-91f1-49a3-be75-4e4211c2d8f3&project=0939bf78-f0f0-454d-a13b-9ba7b95096e9
+- Page Title: PDOS · 研发工作区
+- Console: 2 errors, 0 warnings
+### Events
+- New console entries: .playwright-cli/console-2026-10-17T23-01-35-340Z.log#L2

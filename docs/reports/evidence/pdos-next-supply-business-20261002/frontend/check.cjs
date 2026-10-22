@@ -1,0 +1,75 @@
+/* Synthetic port fixtures live only in this evidence check, never in the business UI. */
+(async () => {
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const Module = require("node:module");
+const crypto = require("node:crypto");
+const evidenceDir = __dirname;
+const root = path.resolve(evidenceDir, "../../../../..");
+const web = path.join(root, "pdos-next/web");
+const ts = require(path.join(web, "node_modules/typescript"));
+const React = require(path.join(web, "node_modules/react"));
+const { renderToStaticMarkup } = require(path.join(web, "node_modules/react-dom/server"));
+const originalResolve = Module._resolveFilename;
+const originalLoad = Module._load;
+// Node 25 interprets the package's index.cjs.js as ESM; load its actual ESM export.
+const icons = await import(require("node:url").pathToFileURL(path.join(web, "node_modules/@phosphor-icons/react/dist/index.es.js")).href);
+Module._load = function(request, ...rest) { return request === "@phosphor-icons/react" ? icons : originalLoad.call(this, request, ...rest); };
+const originalTs = require.extensions[".ts"];
+const originalTsx = require.extensions[".tsx"];
+Module._resolveFilename = function(request, parent, ...rest) {
+  if (request.startsWith("@/")) request = path.join(web, "src", request.slice(2));
+  return originalResolve.call(this, request, parent, ...rest);
+};
+const loadTs = (module, file) => {
+  const compiled = ts.transpileModule(fs.readFileSync(file, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } });
+  module._compile(compiled.outputText, file);
+};
+require.extensions[".ts"] = loadTs;
+require.extensions[".tsx"] = loadTs;
+const folder = path.join(web, "src/components/supply_cost");
+const ui = require(path.join(folder, "index.ts"));
+const helper = require(path.join(folder, "presentation.ts"));
+const summary = [];
+function check(name, fn) { fn(); summary.push({ name, passed: true }); }
+const hash = "a".repeat(64);
+const source = { source_id: "authorized-synthetic-source", version: "1", sha256: hash, captured_at: "2026-10-02T00:00:00Z", state: "current", valid_until: null };
+const basis = { build: { build_id: "synthetic-build", ref: source, quantity: "10", product_unit: "ea" }, bom: { ref: source, engineering_configuration: source } };
+const binding = { basis_sha256: hash, demand_sha256: "b".repeat(64), basis, manufacturing_configuration: source };
+const draft = { record_kind: "receipt", record_id: "partially-received", material_id: "synthetic-material", quantity: "4", unit: "ea", source_id: source.source_id, source_revision: source.version, quality: "unknown", availability: "unknown", note: "Synthetic only" };
+const now = Date.parse("2026-10-02T01:00:00Z");
+const preview = { review_id: "synthetic-review", confirmation_token: "synthetic-test-only-token", binding_sha256: hash, expires_at: "2026-10-02T02:00:00Z", allowed_to_confirm: true, basis_binding: binding, source, record: draft, changes: [{ field: "quantity", label: "部分到货数量", before: null, after: "4 ea" }], warnings: ["Quality remains unknown"] };
+check("valid fixed preview and confirmation contains only bound review fields", () => { helper.checkPreview(preview, draft, binding, now); assert.deepEqual(helper.confirmationFor(preview, now), { review_id: preview.review_id, confirmation_token: preview.confirmation_token, binding_sha256: hash }); });
+check("no locally fabricated or empty material preview", () => { assert.throws(() => helper.checkPreview({ ...preview, changes: [] }, draft, binding, now), /实质字段/); assert.throws(() => helper.checkPreview({ ...preview, confirmation_token: "" }, draft, binding, now), /凭据不完整/); });
+check("source drift rejects preview", () => { assert.throws(() => helper.checkPreview({ ...preview, source: { ...source, version: "2" } }, draft, binding, now), /来源版本/); assert.throws(() => helper.checkPreview({ ...preview, source: { ...source, state: "withdrawn" } }, draft, binding, now), /来源版本/); });
+check("Build and demand drift reject preview", () => { assert.throws(() => helper.checkPreview(preview, draft, { ...binding, basis_sha256: "c".repeat(64) }, now), /Build/); assert.throws(() => helper.checkPreview(preview, draft, { ...binding, demand_sha256: "c".repeat(64) }, now), /需求版本/); });
+check("manufacturing source drift and source expiration block confirmation preview", () => { assert.throws(() => helper.checkPreview(preview, draft, { ...binding, manufacturing_configuration: { ...source, sha256: "c".repeat(64) } }, now), /固定配置/); assert.throws(() => helper.checkPreview({ ...preview, source: { ...source, valid_until: "2026-10-02T01:00:00Z" } }, draft, binding, now), /来源已经过期/); });
+check("shared pool choices deduplicate fixed identities and reject cross-system id ambiguity", () => { const one = { key: { source_system: "a", pool_id: "shared", material_id: "m" }, title: "A" }; const two = { ...one, key: { ...one.key, source_system: "b" }, title: "B" }; assert.equal(helper.selectablePools([one, one], "m").length, 1); assert.equal(helper.selectablePools([one, two], "m").filter(item => item.ambiguous).length, 2); assert.equal(helper.selectablePools([one], "other").length, 0); });
+check("exclusive expiration and named decision block confirmation", () => { assert.throws(() => helper.confirmationFor(preview, Date.parse(preview.expires_at)), /过期/); assert.throws(() => helper.confirmationFor({ ...preview, allowed_to_confirm: false }, now), /具名办理/); });
+check("receipt must be durable and match review", () => { const receipt = { receipt_id: "r", review_id: preview.review_id, status: "persisted", snapshot_id: "s", snapshot_revision: "1" }; helper.checkReceipt(receipt, preview); assert.throws(() => helper.checkReceipt({ ...receipt, review_id: "other" }, preview), /尚未确认/); assert.throws(() => helper.checkReceipt({ ...receipt, snapshot_id: "" }, preview), /尚未确认/); });
+check("unknown remains unknown; zero and precise decimals are retained", () => { assert.equal(helper.quantity(null, "ea"), "未知"); assert.equal(helper.quantity("0", "ea"), "0 ea"); assert.equal(helper.quantity("1234567890123456.12345678", "CNY"), "1234567890123456.12345678 CNY"); assert.equal(helper.readiness(null, "ok"), "未确定"); });
+const render = (component, props) => renderToStaticMarkup(React.createElement(component, props));
+check("all viewers show unconnected, loading, empty and error states", () => { for (const [component, collection] of [[ui.SupplySnapshotHistory, "snapshots"], [ui.CoverageShortages, "projections"], [ui.CostBreakdown, "projections"]]) { assert.match(render(component, { [collection]: [], status: "unconnected" }), /主线接口待接入/); assert.match(render(component, { [collection]: [], status: "loading" }), /正在读取/); assert.match(render(component, { [collection]: [] }), /尚无/); assert.match(render(component, { [collection]: [], error: "Synthetic read refused" }), /Synthetic read refused/); } });
+check("supply entry unconnected cannot submit and uses no invented source", () => { const html = render(ui.SupplyEntry, { binding: null, sources: [], materials: [], pools: [] }); assert.match(html, /权威需求接口待接入/); assert.match(html, /fieldset disabled/); assert.doesNotMatch(html, /已保存供给快照/); });
+const coverage = { schema_version: "supply-coverage-result.v1", algorithm: "fixed-bom-shared-pool.v1", input_sha256: hash, input_snapshot: { basis, as_of: source.captured_at, supply_snapshot: source, supply_scope_complete: false }, secured_ready: null, potential_ready: true, critical_secured_ready: null, potential_is_feasibility_proof: false, lines: [{ demand: { item_id: "i", material_id: "m", unit: "ea", critical: true, required_quantity: "10", issues: [] }, known_secured_quantity: "0", known_potential_quantity: "10", secured_gap: null, potential_gap: "0", secured_ready: null, potential_ready: true, uses: [], issues: [{ code: "unknown_quality", path: "pool", message: "Synthetic quality is unknown", kind: "restriction" }] }], pools: [], issues: [] };
+const projection = result => ({ id: "projection", revision: "1", created_at: source.captured_at, freshness: "requires_recalculation", freshness_reasons: ["Source revision changed"], result });
+check("coverage preserves secured unknown vs potential, no readiness promotion", () => { const html = render(ui.CoverageShortages, { projections: [projection(coverage)] }); assert.match(html, /已占用实物/); assert.match(html, /未确定/); assert.match(html, /此候选满足/); assert.match(html, /缺口 未知/); assert.match(html, /只描述当时固定输入/); assert.match(html, /不批准 Build 开始/); });
+const cost = { schema_version: "cost-estimate-result.v1", algorithm: "fixed-bom-process-decimal.v1", input_sha256: hash, input_snapshot: { basis, as_of: source.captured_at, scope: { currency: "CNY", tax_basis: "exclusive", freight_basis: "excluded", coverage: "materials_only", rate_purpose: "budget", max_rate_age_days: 2, nre_policy: "excluded", nre_volume: null, assumptions: ["Synthetic materials scope only"] }, prices: [], process: null, rates: [] }, complete_in_selected_scope: false, currency: "CNY", known_build_subtotal: "4.25000001", known_nre_subtotal: "0", per_product_candidate: null, build_candidate: null, nre_candidate: null, including_amortized_nre: null, lines: [], issues: [{ code: "missing_quote", path: "m", message: "Synthetic missing quote", kind: "missing" }], sensitive_items: [] };
+check("cost retains decimal known subtotal and unknown total within selected scope", () => { const html = render(ui.CostBreakdown, { projections: [projection(cost)] }); assert.match(html, /4\.25000001 CNY/); assert.match(html, /仅物料/); assert.match(html, /所选费用范围有缺项/); assert.match(html, /不能据此认定成本为零/); assert.match(html, /实际降本或财务批准/); });
+const snapshot = { id: "s2", revision: "2", sha256: hash, captured_at: source.captured_at, freshness: "current", freshness_reasons: [], binding, source_refs: [source], scope_complete: false, records: [{ ...draft, source, recorded_at: source.captured_at }, { ...draft, record_kind: "commitment", quantity: "10", record_id: "promise", source, recorded_at: source.captured_at }], pools: [{ key: { source_system: "synthetic", pool_id: "pool", material_id: "m" }, ref: source, stage: "received", quantity: "4", unit: "ea", availability: "unknown", quality: "frozen", expected_at: null }], reservations: [{ reservation_id: "other-reservation", ref: source, pool: { source_system: "synthetic", pool_id: "pool", material_id: "m" }, build_id: "other-build", bom_item_id: null, quantity: "2", unit: "ea" }], reconciliation: { id: "reconcile", before_snapshot_id: "s1", before_revision: "1", before_sha256: "b".repeat(64), after_snapshot_id: "s2", after_revision: "2", after_sha256: hash, deltas: [{ record_key: "receipt", field: "quantity", before: "0", after: "4", difference: "4", unit: "ea" }], reasons: ["Synthetic partial receipt"] } };
+check("snapshot keeps partial receipt, commitment, quality limits and other Build reservations separate", () => { const html = render(ui.SupplySnapshotHistory, { snapshots: [snapshot] }); assert.match(html, /实际到货 · 1/); assert.match(html, /供方承诺 · 1/); assert.match(html, /冻结\/待检/); assert.match(html, /other-build/); assert.match(html, /前版：0/); assert.match(html, /本版：4/); assert.match(html, /供给或占用范围待补齐/); });
+check("snapshot distinguishes supplier promise date from actual partial receipt time", () => { const timeline = { ...snapshot, records: snapshot.records.map(row => row.record_kind === "commitment" ? { ...row, supplier_id: "synthetic-supplier", expected_at: "2026-10-05T12:00:00Z" } : { ...row, recorded_at: "2026-10-02T10:30:00Z", commitment_id: "promise" }) }; const html = render(ui.SupplySnapshotHistory, { snapshots: [timeline] }); assert.match(html, /供方：synthetic-supplier/); assert.match(html, /承诺到达：<time dateTime="2026-10-05T12:00:00Z">2026-10-05T12:00:00Z<\/time>/); assert.match(html, /实际到达：<time dateTime="2026-10-02T10:30:00Z">2026-10-02T10:30:00Z<\/time>/); assert.match(html, /承诺关联：promise/); assert.match(render(ui.SupplySnapshotHistory, { snapshots: [snapshot] }), /承诺到达：未知/); });
+Module._resolveFilename = originalResolve;
+Module._load = originalLoad;
+if (originalTs) require.extensions[".ts"] = originalTs; else delete require.extensions[".ts"];
+if (originalTsx) require.extensions[".tsx"] = originalTsx; else delete require.extensions[".tsx"];
+const fileNames = fs.readdirSync(folder).filter(name => /\.tsx?$/.test(name)).sort();
+const files = fileNames.map(name => ({ path: path.relative(root, path.join(folder, name)), sha256: crypto.createHash("sha256").update(fs.readFileSync(path.join(folder, name))).digest("hex") }));
+const candidate = crypto.createHash("sha256").update(JSON.stringify(files)).digest("hex");
+fs.writeFileSync(path.join(evidenceDir, "checks.json"), JSON.stringify({ synthetic_only: true, count: summary.length, checks: summary, candidate_sha256: candidate }, null, 2) + "\n");
+fs.writeFileSync(path.join(evidenceDir, "candidate.json"), JSON.stringify({ candidate_sha256: candidate, files }, null, 2) + "\n");
+const consumedPaths = ["pdos-next/web/src/components/ui/button.tsx", "pdos-next/web/src/lib/utils.ts", "pdos-next/web/src/app/globals.css", "pdos-next/web/package.json", "pdos-next/server/pdos_next/engines/supply_cost/dto.py", "pdos-next/server/pdos_next/engines/supply_cost/common.py", "pdos-next/server/pdos_next/domain/supply_cost/read_models.py", "pdos-next/server/pdos_next/schemas/supply_cost/dto.py"];
+fs.writeFileSync(path.join(evidenceDir, "consumed.json"), JSON.stringify({ files: consumedPaths.map(file => ({ path: file, sha256: crypto.createHash("sha256").update(fs.readFileSync(path.join(root, file))).digest("hex") })) }, null, 2) + "\n");
+console.log(`${summary.length} component / port / presentation checks passed; candidate ${candidate}`);
+})().catch(failure => { console.error(failure.stack); process.exitCode = 1; });

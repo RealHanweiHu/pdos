@@ -1,0 +1,36 @@
+{
+  "status": "APPLIED_TO_ACTUAL_EXISTING_MANUFACTURING_TRIALS_KERNEL",
+  "manifest_sha256": "ac4cbdfef05dc5377d880889ea81e043cb002e6b94695ccc4db385ee55631eae",
+  "files": [
+    {
+      "source": ".local/wave26-pilot-readiness-staged/pilot_result_schemas.py",
+      "source_sha256": "eb1d3bcdf33cdf2449f3b7e998f39794bb57175d7e22563b95fcd26cba8d88a7",
+      "target": "server/pdos_next/schemas/manufacturing_trials/pilot_results.py",
+      "actual_sha256": "eb1d3bcdf33cdf2449f3b7e998f39794bb57175d7e22563b95fcd26cba8d88a7",
+      "change": "only imports use real package paths"
+    },
+    {
+      "source": ".local/wave26-pilot-readiness-staged/pilot_result_rules.py",
+      "source_sha256": "87abda7452ef1cacbfe90e9423c0f82b33fad98c11fb68c3c9752547e43c534f",
+      "target": "server/pdos_next/domain/manufacturing_trials/pilot_result_rules.py",
+      "actual_sha256": "a714f68fe1d45cc72ccda3bc1647c2a5ecc8b1433052b4fd0ede015ce662b3d7",
+      "change": "only imports use real package paths"
+    },
+    {
+      "source": ".local/wave26-pilot-readiness-staged/pilot_result_ports.py",
+      "source_sha256": "8c0c77ac8640e90dad602a67848a0c6f2f5ac1775e21f7f6a93d127b357e95cd",
+      "target": "server/pdos_next/domain/manufacturing_trials/pilot_result_ports.py",
+      "actual_sha256": "12dad0ba663f17c2b0d6b81bb625a7d2d86f35a80bd1045874c5c8a83bf9ed47",
+      "change": "only imports use real package paths"
+    },
+    {
+      "source": ".local/wave26-pilot-readiness-staged/test_pilot_results.py",
+      "source_sha256": "e0b34d63110e43868494bd98d93788888c656ca39c7af4e50a001d83f3bc5ade",
+      "target": "server/tests/manufacturing_trials/test_pilot_results.py",
+      "actual_sha256": "e87253c4db285f6feceea65b480c434260f758a235e8de04f2db211652221033",
+      "change": "only imports use real package paths"
+    }
+  ],
+  "public_command_or_persistence_enabled": false,
+  "real_qualification_attested": false
+}

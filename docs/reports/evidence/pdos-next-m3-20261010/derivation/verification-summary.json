@@ -1,0 +1,16 @@
+{
+  "head": "s0_0742",
+  "source_digest": "a4edf7eda3a508fbfb257236c6f99480ac225e3cbfe37b4d8673cf1a770420f6",
+  "source_count": 1425,
+  "unique_passed_cases": 505,
+  "unresolved_selected_failures": [],
+  "evidence_files": [
+    "pure-final-2.xml",
+    "transactions-5.xml",
+    "atomic-response-2.xml",
+    "regression-1.xml",
+    "bom-and-legacy-1.xml"
+  ],
+  "real_llm_calls": 0,
+  "formal_m3_s1_complete": false
+}

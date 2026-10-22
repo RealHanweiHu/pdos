@@ -1,0 +1,3 @@
+[
+  "tests/quality_execution_transactions/test_request_prepare.py::test_direct_preparation_rejects_late_source_io_issuer_or_context_changes[grant_expiry]"
+]

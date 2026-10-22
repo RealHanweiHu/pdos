@@ -1,0 +1,8 @@
+{
+  "target": "verified independent 64245/pdos_test",
+  "head": "s0_0770",
+  "roundtrip": true,
+  "original_connector_and_grant_facts_preserved": true,
+  "legacy_unbound_grants_do_not_inherit_admission": true,
+  "orm_differences": []
+}

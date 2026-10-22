@@ -1,0 +1,7 @@
+### Result
+{"historyEntries":6}
+### Ran Playwright code
+```js
+await (async page => { await page.getByRole("region",{name:"实际生效阶段",exact:true}).screenshot({path:"/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s4-20261017/external-handoff/browser-effective-320-dark.png"}); return {historyEntries:await page.getByRole("region",{name:"不可变原回执历史",exact:true}).getByRole("article").count()}; })(page);
+```
+

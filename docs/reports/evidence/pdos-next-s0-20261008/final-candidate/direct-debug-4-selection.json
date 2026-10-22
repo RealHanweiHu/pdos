@@ -1,0 +1,3 @@
+[
+  "tests/quality_execution_transactions/test_minimal_current.py::test_direct_read_inputs_preview_confirmation_and_replay_do_not_reinspect_upstream"
+]

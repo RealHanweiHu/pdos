@@ -1,0 +1,15 @@
+{
+  "container": "d1d1f17f275a6414a847533e067263347e6006958b8c81c7918ac7ee653f6bba",
+  "target": {
+    "host": "127.0.0.1",
+    "port": 55211,
+    "database": "pdos_test"
+  },
+  "head": "0425_category_foundation",
+  "path": "/Users/huhanwei/pdos-preview-backups/20261006-category-qa-074152/pdos_test-0425.dump",
+  "sha256": "61d9785ca95bec5af597d669b84fb983b02cb4a8acef09c04c0464f7e4566ad0",
+  "bytes": 4281700,
+  "archive_list_verified": true,
+  "restored": false,
+  "scope": "owned synthetic browser QA only"
+}

@@ -1,0 +1,40 @@
+F...                                                                     [100%]
+=================================== FAILURES ===================================
+_______ test_t1_preview_no_business_write_atomic_create_and_exact_replay _______
+
+setup = <isolated synthetic test scope>
+
+    def test_t1_preview_no_business_write_atomic_create_and_exact_replay(setup):
+        cmd = request(setup)
+        before = counts(setup)
+        denied = post(setup, cmd)
+>       assert denied.status_code == 409 and denied.json()["code"] == "NAMED_DECISION_REQUIRED"
+E       AssertionError: assert (409 == 409 and 'CONFIRMATION_REQUIRED' == 'NAMED_DECISION_REQUIRED'
+E        +  where 409 = <Response [409 Conflict]>.status_code
+E         
+E         - NAMED_DECISION_REQUIRED
+E         + CONFIRMATION_REQUIRED)
+
+tests/products/test_platform_links_pg.py:60: AssertionError
+=============================== warnings summary ===============================
+tests/products/test_platform_links_pg.py::test_append_detach_reattach_stale_versions_and_baseline
+tests/products/test_platform_links_pg.py::test_permission_tenant_duplicate_code_and_preview_drift
+tests/products/test_platform_links_pg.py::test_failure_after_new_platform_rolls_back_every_business_member
+tests/products/test_platform_links_pg.py::test_failure_after_new_platform_rolls_back_every_business_member
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:175: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/products/test_platform_links_pg.py::test_append_detach_reattach_stale_versions_and_baseline
+tests/products/test_platform_links_pg.py::test_append_detach_reattach_stale_versions_and_baseline
+tests/products/test_platform_links_pg.py::test_append_detach_reattach_stale_versions_and_baseline
+tests/products/test_platform_links_pg.py::test_append_detach_reattach_stale_versions_and_baseline
+tests/products/test_platform_links_pg.py::test_permission_tenant_duplicate_code_and_preview_drift
+tests/products/test_platform_links_pg.py::test_failure_after_new_platform_rolls_back_every_business_member
+tests/products/test_platform_links_pg.py::test_failure_after_new_platform_rolls_back_every_business_member
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:192: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/products/test_platform_links_pg.py::test_t1_preview_no_business_write_atomic_create_and_exact_replay
+1 failed, 3 passed, 11 warnings in 4.80s

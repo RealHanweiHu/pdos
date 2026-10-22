@@ -1,0 +1,46 @@
+.......                                                                  [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_context_pg.py::test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result
+tests/agent_kernel/test_extract_dispatch_pg.py::test_extract_dispatch_full_chain_and_exact_replay
+tests/agent_kernel/test_extract_dispatch_pg.py::test_extract_fans_out_over_all_mounted_originals
+tests/agent_kernel/test_extract_dispatch_pg.py::test_extract_requires_declared_loaded_skill_and_bound_sources
+tests/agent_kernel/test_extract_dispatch_pg.py::test_extract_rows_require_actual_reads
+tests/agent_kernel/test_extract_dispatch_pg.py::test_extract_replay_refused_after_run_cancellation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_pg.py::test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result
+tests/agent_kernel/test_proposal_context_pg.py::test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result
+tests/agent_kernel/test_proposal_context_pg.py::test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result
+tests/agent_kernel/test_proposal_context_pg.py::test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result
+tests/agent_kernel/test_proposal_context_pg.py::test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result
+tests/agent_kernel/test_proposal_context_pg.py::test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_category_adoption_transactions.py::test_category_wait_survives_postgres_checkpoint_and_new_host
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:515: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([category])
+
+tests/agent_kernel/test_category_adoption_transactions.py::test_category_wait_survives_postgres_checkpoint_and_new_host
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:524: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([grant])
+
+tests/agent_kernel/test_category_adoption_transactions.py::test_category_wait_survives_postgres_checkpoint_and_new_host
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:552: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([snapshot])
+
+tests/agent_kernel/test_category_adoption_transactions.py::test_category_wait_survives_postgres_checkpoint_and_new_host
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:575: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_adoption_transactions.py::test_category_wait_survives_postgres_checkpoint_and_new_host
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:602: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_adoption_transactions.py::test_category_wait_survives_postgres_checkpoint_and_new_host
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:661: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([receipt])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+7 passed, 18 warnings in 47.53s

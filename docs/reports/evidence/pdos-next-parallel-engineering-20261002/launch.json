@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-02 13:24:43 UTC",
+  "authorization": "用户：继续执行其他并行任务",
+  "projectId": "441a6448-7480-4a29-ba78-b09d15c975c8",
+  "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+  "environment": "local shared checkout; explicit exclusive directories",
+  "sidebar": {
+    "name": "PDOS · 当前工作",
+    "id": "f89b34cc-ffbc-48f6-b255-0ad406a95a21"
+  },
+  "mainline": {
+    "id": "01a0fbeb-3050-7662-912f-7a380996ed6a",
+    "title": "按新设计完成并执行方案",
+    "status": "active",
+    "turnStatus": "inProgress",
+    "work": "成本第六波收尾；公共模型/注册/迁移/API/父页面/环境及共同验证归主线"
+  },
+  "threads": [
+    {
+      "id": "01a0fcc9-7352-7013-b3db-98631d6d3240",
+      "title": "PDOS Next：资源资格与预约",
+      "hostId": "local",
+      "status": "active",
+      "turnStatus": "inProgress",
+      "error": null,
+      "firstCompletedTools": [
+        {
+          "id": "exec-a4cb438c-4c59-4c83-869f-172f96e327cf",
+          "type": "commandExecution",
+          "command": "/bin/zsh -lc \"pwd && rg --files -g AGENTS.md -g '*resource*' -g '*planning*' pdos-next docs/design docs/reports/evidence | head -80\""
+        },
+        {
+          "id": "exec-3975ed43-296c-4b6f-b4cd-ef5069e746f1",
+          "type": "commandExecution",
+          "command": "/bin/zsh -lc \"cat AGENTS.md; rg -n 'current-queue|当前队列' tasks/ai-native-integrated-todo.md; rg -n '资源|resource|AT-11|AT-17|AT-26|AT-27|04|准备度|四时间' docs/design/2026-10-02-pdos-next-execution-plan.md docs/design/2026-10-02-pdos-complete-target-architecture-v1.md\""
+        }
+      ],
+      "directories": [
+        "pdos-next/server/pdos_next/domain/resource_readiness/",
+        "pdos-next/server/pdos_next/schemas/resource_readiness/",
+        "pdos-next/server/tests/resource_readiness/",
+        "pdos-next/web/src/components/resource_readiness/",
+        "docs/reports/evidence/pdos-next-resource-readiness-20261002/"
+      ],
+      "prompt": "用户已明确授权继续启动PDOS Next独立并行任务。请直接实现本包并完成适当验证，不要只交方案或空stub。主线「按新设计完成并执行方案」正在收尾成本第六波，随后统一品质/文件安全及公共接线。本任务与其他两个独立包并行，严格按下述独占目录工作。\n先读仓库AGENTS.md、tasks/ai-native-integrated-todo.md当前队列、docs/design/2026-10-02-pdos-next-execution-plan.md相关切片，再定向读取docs/design/2026-10-02-pdos-complete-target-architecture-v1.md。只建设pdos-next，不导入旧app或继承旧数据/批准。读取复用接口时记录摘要，交付前复核消费接口漂移。\n你只能写本任务五个独占目录；不得改公共父__init__.py。公共models.py/contracts.py/service.py/command_handlers.py/api.py/runtime.py/originals.py、所有迁移/注册/RLS/API/BFF/父页面/workspace/global CSS/配置/依赖锁，以及既有products/projects/configurations/builds/build_execution/supply_execution/cost_execution、verification/supply_cost/model_configuration/discovery/quality_issues/evidence_security/original_lifecycle/engines均只读，归主线或既有包。唯一清单由协调会话维护。不得为解决本包类型错误修改他包；所需注册/迁移/适配写入integration.md。持久适配仅可在自己目录实现调用者Session端口，不自行提交事务。\n交付可调用领域规则/handler、封闭DTO、服务端事实ports、必要读模型和typed props/callback独立组件，复用既有Button/UI基线和共同T1预览/一次确认/回执。不要建立第二套确认、命令或业务权威。租户/项目/权限/现行资格/资源当前性从服务器port绑定，模型字段不作政策事实。缺真实条件明确UNKNOWN/待接入；不得把合成fixture接业务页面。固定输入、幂等、过期/撤回、并发冲突和同一事务失败回滚都要有合同。canonical动作沿既定分级，未注册动作列明待接线，不自行开放T0或给AI T2；具名决定保留。\n只运行独占合成纯测试（PYTEST_DISABLE_PLUGIN_AUTOLOAD=1、PYTHONDONTWRITEBYTECODE=1、--confcutdir=tests/本包、-p no:cacheprovider）、Ruff --no-cache、局部非incremental/noEmit TypeScript、ESLint --no-cache及必要组件检查。禁止连接任何数据库/共享服务、读取.env/.local/真实密钥、启停服务、写共享.next、装依赖/完整构建、真实模型调用/材料出站、云/生产、原件操作、git commit/push。公共验证由主线统一。\n在独占证据目录保存result.md、integration.md、原始检查输出、包内固定候选hash和消费接口摘要，明确已实现、未接线、事务/失败恢复和主线具体接线项。模块合成检查不能冒充DB/HTTP/浏览器或G/N/P/Q验收。可按明确文件归属委派独立子任务，不并发公共验证。完成后在本会话报告，不主动向其他会话发消息。\n\n独占目录：pdos-next/server/pdos_next/domain/resource_readiness/；pdos-next/server/pdos_next/schemas/resource_readiness/；pdos-next/server/tests/resource_readiness/；pdos-next/web/src/components/resource_readiness/；docs/reports/evidence/pdos-next-resource-readiness-20261002/。\n\n本包补品质开测/试产所需的资源资格与预约能力。定向阅读完整设计04§5/8、03准备度与四时间、AT-11/17/26/27；只读domain/verification/ports.py（特别是SampleAvailabilityPort.reserve）、schemas/verification/contracts.py、engines/planning日历/ResourceSnapshot及其integration文档。\n实现设备/治具固定身份版本、验收/校准/维护事实、人员资格的用途和有效期、当前日历/容量/正式预约记录及服务端检查端口。区分缺证据UNKNOWN、明确失效BLOCKED、有限条件与READY；校准/资格覆盖完整执行区间，授权撤销/维护/资源版本变化在执行前重核。资源时间使用半开区间和确定性锁序/CAS；重复请求幂等，不同请求超额冲突，释放/取消保留历史。日历计算capacity_status=checked不是资格或预约。\n你拥有资源侧的资格与预约；不要创建第二套SampleUnit可用/库存/破坏性消费。verification既有reserve约定资源检查与样件预约/消费同事务原子办理：本包提供可在调用者UOW内检查/暂存资源预约的port，由主线同一事务锁定资源和样件、一起提交/回滚，不独立commit、不把检查成功当正式占用。暂定时段、正式预约、实物接收和Actual开测分别记录，不自动把预计时间写Actual。\n独立组件显示资源范围/资格到期/冲突/不明条件及办理候选。具名治具验收沿canonical npi.fixture.accept T2；人员资格签发/校准接受/预约等未注册动作仅列政策接入需求。不要实施真实资格授予。制造试模包将只读消费本包固定资源引用/ports；无需等待其实现，不改变公共接口。交付可被主线verification.reserve接入的资源子协议及跨资源+样件同事务反例。",
+      "sidebar": {
+        "hostId": "local",
+        "sectionId": "f89b34cc-ffbc-48f6-b255-0ad406a95a21",
+        "threadId": "01a0fcc9-7352-7013-b3db-98631d6d3240"
+      },
+      "titleReceipt": {
+        "threadId": "01a0fcc9-7352-7013-b3db-98631d6d3240",
+        "title": "PDOS Next：资源资格与预约"
+      }
+    },
+    {
+      "id": "01a0fcc9-931c-77c1-9b2b-7e340b220f94",
+      "title": "PDOS Next：双线变更与生效追踪",
+      "hostId": "local",
+      "status": "active",
+      "turnStatus": "inProgress",
+      "error": null,
+      "firstCompletedTools": [
+        {
+          "id": "exec-8e794988-e1d2-4745-bd57-4cbe240b991b",
+          "type": "commandExecution",
+          "command": "/bin/zsh -lc \"pwd && rg --files -g AGENTS.md -g '*pdos-next*' docs/design tasks | head -40\""
+        },
+        {
+          "id": "exec-2d97bb21-10ed-4220-a733-f315d4ae3947",
+          "type": "commandExecution",
+          "command": "/bin/zsh -lc 'cat AGENTS.md'"
+        }
+      ],
+      "directories": [
+        "pdos-next/server/pdos_next/domain/change_control/",
+        "pdos-next/server/pdos_next/schemas/change_control/",
+        "pdos-next/server/tests/change_control/",
+        "pdos-next/web/src/components/change_control/",
+        "docs/reports/evidence/pdos-next-change-control-20261002/"
+      ],
+      "prompt": "用户已明确授权继续启动PDOS Next独立并行任务。请直接实现本包并完成适当验证，不要只交方案或空stub。主线「按新设计完成并执行方案」正在收尾成本第六波，随后统一品质/文件安全及公共接线。本任务与其他两个独立包并行，严格按下述独占目录工作。\n先读仓库AGENTS.md、tasks/ai-native-integrated-todo.md当前队列、docs/design/2026-10-02-pdos-next-execution-plan.md相关切片，再定向读取docs/design/2026-10-02-pdos-complete-target-architecture-v1.md。只建设pdos-next，不导入旧app或继承旧数据/批准。读取复用接口时记录摘要，交付前复核消费接口漂移。\n你只能写本任务五个独占目录；不得改公共父__init__.py。公共models.py/contracts.py/service.py/command_handlers.py/api.py/runtime.py/originals.py、所有迁移/注册/RLS/API/BFF/父页面/workspace/global CSS/配置/依赖锁，以及既有products/projects/configurations/builds/build_execution/supply_execution/cost_execution、verification/supply_cost/model_configuration/discovery/quality_issues/evidence_security/original_lifecycle/engines均只读，归主线或既有包。唯一清单由协调会话维护。不得为解决本包类型错误修改他包；所需注册/迁移/适配写入integration.md。持久适配仅可在自己目录实现调用者Session端口，不自行提交事务。\n交付可调用领域规则/handler、封闭DTO、服务端事实ports、必要读模型和typed props/callback独立组件，复用既有Button/UI基线和共同T1预览/一次确认/回执。不要建立第二套确认、命令或业务权威。租户/项目/权限/现行资格/资源当前性从服务器port绑定，模型字段不作政策事实。缺真实条件明确UNKNOWN/待接入；不得把合成fixture接业务页面。固定输入、幂等、过期/撤回、并发冲突和同一事务失败回滚都要有合同。canonical动作沿既定分级，未注册动作列明待接线，不自行开放T0或给AI T2；具名决定保留。\n只运行独占合成纯测试（PYTEST_DISABLE_PLUGIN_AUTOLOAD=1、PYTHONDONTWRITEBYTECODE=1、--confcutdir=tests/本包、-p no:cacheprovider）、Ruff --no-cache、局部非incremental/noEmit TypeScript、ESLint --no-cache及必要组件检查。禁止连接任何数据库/共享服务、读取.env/.local/真实密钥、启停服务、写共享.next、装依赖/完整构建、真实模型调用/材料出站、云/生产、原件操作、git commit/push。公共验证由主线统一。\n在独占证据目录保存result.md、integration.md、原始检查输出、包内固定候选hash和消费接口摘要，明确已实现、未接线、事务/失败恢复和主线具体接线项。模块合成检查不能冒充DB/HTTP/浏览器或G/N/P/Q验收。可按明确文件归属委派独立子任务，不并发公共验证。完成后在本会话报告，不主动向其他会话发消息。\n\n独占目录：pdos-next/server/pdos_next/domain/change_control/；pdos-next/server/pdos_next/schemas/change_control/；pdos-next/server/tests/change_control/；pdos-next/web/src/components/change_control/；docs/reports/evidence/pdos-next-change-control-20261002/。\n\n本包实现G3工程/制造双线变更闭环的独立领域首版。定向阅读完整设计03对象状态、04§13/14、08共同事务，附录change.request.create/change.impact.compute/change.order.approve/change.implementation.record及AT-24/25/26/27；只读quality_issues/contracts与integration、configurations/build_execution/supply_cost接口。\n实现ChangeRequest、固定输入的ImpactAssessment、ChangeOrder和EffectivityPlan/实施记录/实际生效证据/独立复核读模型及办理组件。请求可消费精确Issue/CAPA/TestRun等引用，但不新建/修改Issue/CAPA。双路径至少覆盖Spec→Part/BOM→EngineeringConfiguration→Build/Sample/Test，以及Part/Interface→Operation→Tooling/Fixture→SOP/ControlPlan→PilotRun/制造放行；只沿显式有出处边计算已知影响，AI猜测另列，不把缺边当无影响。来源覆盖/受众/版本不完整时保留UNKNOWN。\n影响固定版本与来源范围，包括在制Build/客户样件、证据适用性、供应库存/WIP切换与培训要求。ChangeRequest/Order按draft→analysis→review→approved→implementing→verifying→closed表达适当状态；审批、实施、实际生效、独立验证与关闭分别记录，审批不自动完成其余。T2批准须具名，人类实施记录T1走共同预览，AI只准备T2候选。跨租户/无权对象拒绝，来源/配置变化和过期使旧决定待重核，不回写冻结配置或原测量。\n本包只产生新配置/新Build/新Run/ERP-MES外部生效的受控意图和固定引用，真实创建/外发/配置修订由现有所有者接线，不凭空声称外部生效。Effectivity按对象/范围/批次或序号/条件明确界定，未知实际回执保持未生效；不靠日期到期自动批准。重点验证影响缺边、配置漂移、部分生效、重复回执、实施失败、独立复核不足、AI/自批拒绝。",
+      "sidebar": {
+        "hostId": "local",
+        "sectionId": "f89b34cc-ffbc-48f6-b255-0ad406a95a21",
+        "threadId": "01a0fcc9-931c-77c1-9b2b-7e340b220f94"
+      },
+      "titleReceipt": {
+        "threadId": "01a0fcc9-931c-77c1-9b2b-7e340b220f94",
+        "title": "PDOS Next：双线变更与生效追踪"
+      }
+    },
+    {
+      "id": "01a0fcc9-97ef-7b23-a0d6-6f1bd3e1c263",
+      "title": "PDOS Next：试模试产与良率口径",
+      "hostId": "local",
+      "status": "active",
+      "turnStatus": "inProgress",
+      "error": null,
+      "firstCompletedTools": [
+        {
+          "id": "exec-2236d262-ed16-41d9-8b2c-2a5c0a1eb281",
+          "type": "commandExecution",
+          "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g '*pdos-next*' -g '*complete-target*' -g '*integrated-todo*' | head -40\""
+        },
+        {
+          "id": "exec-7858a389-259d-4afd-9398-0fb772e30d1c",
+          "type": "commandExecution",
+          "command": "/bin/zsh -lc \"cat AGENTS.md; rg -n 'current-queue|manufacturing_trials|resource_readiness|G4|试模|试产' tasks/ai-native-integrated-todo.md docs/design/2026-10-02-pdos-next-execution-plan.md docs/design/2026-10-02-pdos-complete-target-architecture-v1.md\""
+        }
+      ],
+      "directories": [
+        "pdos-next/server/pdos_next/domain/manufacturing_trials/",
+        "pdos-next/server/pdos_next/schemas/manufacturing_trials/",
+        "pdos-next/server/tests/manufacturing_trials/",
+        "pdos-next/web/src/components/manufacturing_trials/",
+        "docs/reports/evidence/pdos-next-manufacturing-trials-20261002/"
+      ],
+      "prompt": "用户已明确授权继续启动PDOS Next独立并行任务。请直接实现本包并完成适当验证，不要只交方案或空stub。主线「按新设计完成并执行方案」正在收尾成本第六波，随后统一品质/文件安全及公共接线。本任务与其他两个独立包并行，严格按下述独占目录工作。\n先读仓库AGENTS.md、tasks/ai-native-integrated-todo.md当前队列、docs/design/2026-10-02-pdos-next-execution-plan.md相关切片，再定向读取docs/design/2026-10-02-pdos-complete-target-architecture-v1.md。只建设pdos-next，不导入旧app或继承旧数据/批准。读取复用接口时记录摘要，交付前复核消费接口漂移。\n你只能写本任务五个独占目录；不得改公共父__init__.py。公共models.py/contracts.py/service.py/command_handlers.py/api.py/runtime.py/originals.py、所有迁移/注册/RLS/API/BFF/父页面/workspace/global CSS/配置/依赖锁，以及既有products/projects/configurations/builds/build_execution/supply_execution/cost_execution、verification/supply_cost/model_configuration/discovery/quality_issues/evidence_security/original_lifecycle/engines均只读，归主线或既有包。唯一清单由协调会话维护。不得为解决本包类型错误修改他包；所需注册/迁移/适配写入integration.md。持久适配仅可在自己目录实现调用者Session端口，不自行提交事务。\n交付可调用领域规则/handler、封闭DTO、服务端事实ports、必要读模型和typed props/callback独立组件，复用既有Button/UI基线和共同T1预览/一次确认/回执。不要建立第二套确认、命令或业务权威。租户/项目/权限/现行资格/资源当前性从服务器port绑定，模型字段不作政策事实。缺真实条件明确UNKNOWN/待接入；不得把合成fixture接业务页面。固定输入、幂等、过期/撤回、并发冲突和同一事务失败回滚都要有合同。canonical动作沿既定分级，未注册动作列明待接线，不自行开放T0或给AI T2；具名决定保留。\n只运行独占合成纯测试（PYTEST_DISABLE_PLUGIN_AUTOLOAD=1、PYTHONDONTWRITEBYTECODE=1、--confcutdir=tests/本包、-p no:cacheprovider）、Ruff --no-cache、局部非incremental/noEmit TypeScript、ESLint --no-cache及必要组件检查。禁止连接任何数据库/共享服务、读取.env/.local/真实密钥、启停服务、写共享.next、装依赖/完整构建、真实模型调用/材料出站、云/生产、原件操作、git commit/push。公共验证由主线统一。\n在独占证据目录保存result.md、integration.md、原始检查输出、包内固定候选hash和消费接口摘要，明确已实现、未接线、事务/失败恢复和主线具体接线项。模块合成检查不能冒充DB/HTTP/浏览器或G/N/P/Q验收。可按明确文件归属委派独立子任务，不并发公共验证。完成后在本会话报告，不主动向其他会话发消息。\n\n独占目录：pdos-next/server/pdos_next/domain/manufacturing_trials/；pdos-next/server/pdos_next/schemas/manufacturing_trials/；pdos-next/server/tests/manufacturing_trials/；pdos-next/web/src/components/manufacturing_trials/；docs/reports/evidence/pdos-next-manufacturing-trials-20261002/。\n\n本包实现G4的ToolTrial/PilotRun独立首版与可靠良率口径。定向阅读完整设计04§3/4/5/6/7/9、02§6/7/8、03准备度、AT-07/08/12/16/17和附录npi.tooltrial.create/npi.pilot.create/npi.pilot.result.record；只读configurations ProcessRevision、build_execution BuildLot/ActualConfiguration/Sample、verification及supply_cost接口。\nToolTrial保留固定Tooling引用、trial_round（与AI write_tier明确区分）、参数/腔号、原始问题/整改/具名验收引用、品质提前请求意图与资料/样件/方法/资源缺项。PilotRun是既有Build的制造扩展，固定实际BuildLot、实际产品配置、真实制造基线/ProcessRevision、线体/人员/物料批次/治具/工艺参数/首件确认来源。不要重建产出或样件账，不重复声明BuildLot数量为新增库存。已有ProcessRevision可能仅draft，不能冒充ManufacturingBaseline；缺正式基线仍可准备候选/记录明确观察，但不得标正式可开工/已批准试产。\n实现投入产出、返工/报废/未判定/异常与处置的不可变观察/修正续版，服务端核对批次/配置/单位/来源，发生/接收时间与合成/现实分列；第一遍通过与最终合格分开，逐件或严谨批次互斥终态不重复统计，不把每次返工次数算额外投入。固定分母/范围/统计窗口/判据，不相容批次拒绝混算；相容汇总先加计数再计算，不平均百分比。零/未知分母、缺结果、数量矛盾和样本不足明示，不能宣称过程能力/工厂资格。\n资源资格/设备/治具预约由并行resource_readiness包拥有，本包消费typed固定引用和port，不自建资格或资源预约账；品质请求/TestRun/Measurement由verification唯一拥有，输出共同事务意图，不直接创建另一结果账。制造基线、工装身份、SOP/control/risk权威对象未齐时用服务端port固定引用，不能以字符串或AI事实绕过。\n交付领域handler/DTO/ports、计数与良率纯核、typed独立试模/试产办理与结果组件；常规T1创建/结果沿canonical共同预览/一次确认，工装验收/正式制造放行仍为具名T2所有者。测试多轮返工、重复回执/续版、批次不一致、局部未知/单位不符、资格撤回、缺基线和准备不足，不操作真实样件/设备。",
+      "sidebar": {
+        "hostId": "local",
+        "sectionId": "f89b34cc-ffbc-48f6-b255-0ad406a95a21",
+        "threadId": "01a0fcc9-97ef-7b23-a0d6-6f1bd3e1c263"
+      },
+      "titleReceipt": {
+        "threadId": "01a0fcc9-97ef-7b23-a0d6-6f1bd3e1c263",
+        "title": "PDOS Next：试模试产与良率口径"
+      }
+    }
+  ],
+  "independenceReview": {
+    "agent": "parallel_dependency_check",
+    "decision": "三包可按独占目录并行",
+    "boundaries": [
+      "change_control只引用Issue/CAPA，不修改冻结配置；批准、实施、生效、验证分离",
+      "manufacturing_trials复用BuildLot/ActualConfiguration；ProcessRevision草稿不当正式制造基线，不另造产出/样件账",
+      "resource_readiness只拥有资源资格/预约；样件消费归现有所有者，同一调用者事务统一锁定和提交/回滚"
+    ],
+    "allDirectoriesPreviouslyUnoccupied": true
+  },
+  "scope": "本记录只证明真实会话启动与首轮工具执行，不表示模块完成或主线联合验收通过"
+}

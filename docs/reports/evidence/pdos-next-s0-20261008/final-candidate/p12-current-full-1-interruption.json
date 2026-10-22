@@ -1,0 +1,10 @@
+{
+  "reason": "Missing explicit checkpoint fixture environment; stopped once diagnosis confirmed",
+  "actual_child_exit": 2,
+  "child_reaped": true,
+  "partial_full_run": true,
+  "passed": 154,
+  "failed": 4,
+  "full_regression_pass": false,
+  "first_process_state_flag": "First wrapper did not initialize STATE checksum map; its state_files_unchanged flag is not relied upon; second wrapper now asserts all four byte hashes"
+}

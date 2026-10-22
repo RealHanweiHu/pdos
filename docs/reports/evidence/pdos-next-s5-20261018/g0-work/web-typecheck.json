@@ -1,0 +1,17 @@
+{
+  "args": [
+    "node",
+    "node_modules/next/dist/bin/next",
+    "typegen"
+  ],
+  "exit": 0,
+  "output": "Generating route types...\n✓ Types generated successfully\n",
+  "snapshot": "/private/tmp/pdos-g0-work-final-veophgq1",
+  "web_manifest": {
+    "pdos-next/web/src/lib/project-work.ts": "ec0e4989fdfd8dc8aae6613b39601b17df5665d4fe3fb2534f50a382f8a42012",
+    "pdos-next/web/src/lib/project-work.test.ts": "b30df5eec1f1d2268038a09afaa2773df7113cb20ad604cf6c2e2e82b315644f",
+    "pdos-next/web/src/components/projects/project-work.tsx": "5be0d387a77c3737832ca2110d356b2ba88210ca30b972939c3d52ec159ad250",
+    "pdos-next/web/src/components/projects/project-work.module.css": "c7d7cea91cf7bafc348aa9fe4df956a5f999671476da4a73b94755fbda6b0d66",
+    "pdos-next/web/src/components/projects/project-work.test.mjs": "21e6e4ad0ee1572c0cbf5744ccb8ca3dc847706dfcaeded613e58352bbb5540e"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "entries": [
+    {
+      "id": "6f285882-2c50-4dc2-9439-c3f1691c3a80",
+      "version": 1,
+      "origin": "human",
+      "content_sha256": "071eefd381448c6b444f68ed5ed4d60f7df474f0782f421a0daf9ba115baeb30",
+      "source_sha256": "2b7da6cf8b564a8a8559ded213e57dc7c64df159517f9081c536d978c2de33c2",
+      "segment_refs": []
+    },
+    {
+      "id": "82cb09fd-b1e8-4277-ad78-2500c3d904af",
+      "version": 2,
+      "origin": "human",
+      "content_sha256": "d9dd96825e490e960a0e6408a9b6afb5cdbbaa2f48c8b72e2e9de9a0f7ebf360",
+      "source_sha256": "2b7da6cf8b564a8a8559ded213e57dc7c64df159517f9081c536d978c2de33c2",
+      "segment_refs": [
+        {
+          "version": 1,
+          "entry_id": "b57d341b-787b-469c-8b9c-667e146bb6cc"
+        }
+      ]
+    }
+  ],
+  "receipts": [
+    {
+      "id": "978f7ce4-0967-4be1-bee1-954d41ff9973",
+      "command_id": "a7864ffb-c3a1-48e3-8f99-eff0b2d90568",
+      "revision": 1
+    },
+    {
+      "id": "f636af07-b7a5-450c-9fd3-cd1db777efbd",
+      "command_id": "cd970794-1269-4014-adad-055ca0801bb1",
+      "revision": 2
+    }
+  ],
+  "request_key_count": 2,
+  "current": {
+    "id": "82cb09fd-b1e8-4277-ad78-2500c3d904af",
+    "version": 2
+  },
+  "same_original_request_replayed": true
+}

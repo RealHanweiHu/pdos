@@ -1,0 +1,7 @@
+{
+  "exit_code": 0,
+  "scope": "26 public view + 7 exact direct request option checks; no DB fixtures",
+  "backend_candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+  "source_stable": true,
+  "log_sha256": "7a04ed3e874550c22731380bbc0dec794cba33f45cff2ba506ccda5f21bee748"
+}

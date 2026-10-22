@@ -1,0 +1,916 @@
+### Browser `pdos-s5-knowledge-20261018` opened with pid 40933.
+### Ran Playwright code
+```js
+await page.goto('about:blank');
+```
+### Page
+- Page URL: about:blank
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T21-55-32-995Z.yml)
+
+### Result
+{"syntheticLoginSet":true}
+### Ran Playwright code
+```js
+await (async page => { await page.context().addCookies([{"name": "pdos-next-session", "value": "[SYNTHETIC_LOGIN_REDACTED]", "domain": "127.0.0.1", "path": "/", "httpOnly": true, "sameSite": "Lax"}]); return { syntheticLoginSet: true }; })(page);
+```
+
+### Ran Playwright code
+```js
+await page.goto('http://127.0.0.1:53054/?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&bench=projects&view=sources&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8&project=351adac4-7029-4db0-9bf3-ccc529e1d190');
+```
+### Page
+- Page URL: http://127.0.0.1:53054/?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&bench=projects&view=sources&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8&project=351adac4-7029-4db0-9bf3-ccc529e1d190
+- Page Title: PDOS · 研发工作区
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T21-55-34-243Z.yml)
+
+### Error
+TimeoutError: locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('region', { name: '经验候选与配置规则', exact: true }).getByRole('heading', { name: '经验沉淀', exact: true }) to be visible[22m
+
+
+### Page
+- Page URL: http://127.0.0.1:53054/?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&bench=projects&view=overview&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8&project=351adac4-7029-4db0-9bf3-ccc529e1d190
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e4]
+  - generic [ref=e5]:
+    - link "跳到工作内容" [ref=e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e11]: PDOS
+        - button "收起侧栏" [ref=e12]
+      - navigation "工作区导航" [ref=e13]:
+        - link "我的工作" [ref=e14] [cursor=pointer]:
+          - /url: "?area=work&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - link "项目驾驶舱" [ref=e18] [cursor=pointer]:
+          - /url: "?area=cockpit&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - link "项目列表" [ref=e22] [cursor=pointer]:
+          - /url: "?area=projects&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - link "项目集" [ref=e26] [cursor=pointer]:
+          - /url: "?area=programs&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+          - generic [ref=e30]: 尚未接入
+        - link "产品品类工作区" [ref=e31] [cursor=pointer]:
+          - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&bench=projects&view=overview&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+        - link "知识" [ref=e35] [cursor=pointer]:
+          - /url: "?area=knowledge&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - generic [ref=e39]:
+          - paragraph [ref=e40]: 当前品类
+          - paragraph [ref=e41]: 汽车充气泵
+          - paragraph [ref=e42]: 项目与专业工作按品类范围授权
+      - generic [ref=e43]:
+        - link "计划执行进度" [ref=e44] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=e47]: 计划进度
+        - button "小Pai 工作栏" [ref=e48]:
+          - generic [ref=e51]: 小Pai
+        - link "设置" [ref=e52] [cursor=pointer]:
+          - /url: "?area=settings&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - generic [ref=e56]:
+          - generic [aria-hidden] [ref=e57]: S
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Synthetic owner
+            - paragraph [ref=e60]: 本地合成环境
+    - generic [ref=e61]:
+      - banner [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]: PDOS
+          - generic [ref=e67]: 产品品类工作区
+          - generic [ref=e70]: 汽车充气泵
+        - generic [ref=e71]:
+          - button "搜索对象" [ref=e72]:
+            - generic [ref=e73]: 搜索
+          - button "小Pai 工作栏" [ref=e74]
+          - button "切换明暗主题" [ref=e75]
+      - main [ref=e76]:
+        - navigation "品类工作台区" [ref=e77]:
+          - link "型号" [ref=e78] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=products&view=overview&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "项目" [ref=e82] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=projects&view=overview&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "知识" [ref=e86] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=knowledge&view=sources&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "设置" [ref=e90] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=settings&view=preferences&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - button "快速查找入口或型号" [ref=e94] [cursor=pointer]
+          - combobox "当前型号" [ref=e97]:
+            - option "Synthetic product"
+            - option "Synthetic development" [selected]
+        - navigation "项目视图" [ref=e98]:
+          - link "现在" [ref=e99] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=projects&view=overview&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "工作与计划" [ref=e103] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=projects&view=plan&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "试制" [ref=e107] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=projects&view=builds&task=prepare&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "测试与交接" [ref=e111] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=projects&view=verification&task=prepare&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "问题与变更" [ref=e115] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=projects&view=issues&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "评审与交付 尚未接入" [ref=e119] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=projects&view=reviews&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+            - generic [ref=e122]: 评审与交付
+            - generic "尚未接入" [ref=e123]
+          - link "资料" [ref=e124] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=projects&view=files&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+        - generic [ref=e128]:
+          - generic [ref=e130]:
+            - heading "现在" [level=1] [ref=e131]
+            - paragraph [ref=e132]: 当前范围：Synthetic development
+          - generic [ref=e133]:
+            - generic [ref=e134]:
+              - generic [ref=e135]:
+                - term [ref=e136]: 定义版本
+                - definition [ref=e139]:
+                  - button "查看定义版本" [ref=e140] [cursor=pointer]:
+                    - generic [ref=e141]: "1"
+              - generic [ref=e144]:
+                - term [ref=e145]: 研发项目
+                - definition [ref=e148]:
+                  - button "查看研发项目" [ref=e149] [cursor=pointer]:
+                    - generic [ref=e150]: "1"
+              - generic [ref=e153]:
+                - term [ref=e154]: 试制
+                - definition [ref=e157]:
+                  - button "查看试制" [ref=e158] [cursor=pointer]:
+                    - generic [ref=e159]: "1"
+            - generic [ref=e162]:
+              - generic [ref=e163]:
+                - generic [ref=e164]:
+                  - heading "接下来" [level=2] [ref=e165]
+                  - generic [ref=e166]: 按当前事实接续
+                - generic [ref=e167]:
+                  - button "工作与首版计划 1 个可见项目 · 0 个已保存计划" [ref=e168] [cursor=pointer]:
+                    - generic [ref=e172]:
+                      - generic [ref=e173]: 工作与首版计划
+                      - generic [ref=e174]: 1 个可见项目 · 0 个已保存计划
+                  - button "试制与实际产出 1 轮可见试制，配置、准备与实际分别保存" [ref=e177] [cursor=pointer]:
+                    - generic [ref=e181]:
+                      - generic [ref=e182]: 试制与实际产出
+                      - generic [ref=e183]: 1 轮可见试制，配置、准备与实际分别保存
+                  - button "测试与样件交接 从实际样件接收进入方法核对、开测与结果处置" [ref=e186] [cursor=pointer]:
+                    - generic [ref=e190]:
+                      - generic [ref=e191]: 测试与样件交接
+                      - generic [ref=e192]: 从实际样件接收进入方法核对、开测与结果处置
+              - generic [ref=e195]:
+                - generic [ref=e196]:
+                  - heading "证据状态" [level=2] [ref=e197]
+                  - button "查看资料" [ref=e198] [cursor=pointer]
+                - generic [ref=e201]:
+                  - generic [ref=e202]:
+                    - term [ref=e203]: 有效来源
+                    - definition [ref=e206]: 2份
+                  - generic [ref=e207]:
+                    - term [ref=e208]: 有据事实
+                    - definition [ref=e211]: 0条
+                  - generic [ref=e212]:
+                    - term [ref=e213]: 未知或冲突
+                    - definition [ref=e216]: 0条
+                  - generic [ref=e217]:
+                    - term [ref=e218]: 来源待重核
+                    - definition [ref=e221]: 0条
+                - paragraph [ref=e222]: 计数仅来自当前授权范围，不表示专业结论或正式批准。
+            - generic [ref=e223]:
+              - generic [ref=e224]:
+                - heading "已关联项目" [level=2] [ref=e225]
+                - button "进入工作区" [ref=e226] [cursor=pointer]
+              - generic [ref=e229]:
+                - generic [ref=e232]:
+                  - paragraph [ref=e233]: Synthetic development
+                  - paragraph [ref=e234]: Synthetic development · 固定 v1
+                - generic [ref=e235]: 待建计划
+                - generic [ref=e236]: v1
+            - generic [ref=e237]:
+              - generic [ref=e238]:
+                - heading "试制记录" [level=2] [ref=e239]
+                - button "进入试制" [ref=e240] [cursor=pointer]
+              - generic [ref=e243]:
+                - generic [ref=e246]:
+                  - paragraph [ref=e247]: Synthetic first prototype
+                  - paragraph [ref=e248]: Synthetic development · 计划 10.00000000 ea
+                - generic [ref=e249]: 已计划
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T21-55-34-085Z.log#L1
+
+### Result
+{"actualKnowledgeEntryVisible":true}
+### Ran Playwright code
+```js
+await (async page => { await page.getByRole('navigation', {name:'品类工作台区',exact:true}).getByRole('link',{name:'知识',exact:true}).click(); await page.getByRole('heading',{name:'经验沉淀',exact:true}).waitFor(); return {actualKnowledgeEntryVisible:true}; })(page);
+```
+### Page
+- Page URL: http://127.0.0.1:53054/?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&bench=knowledge&view=sources&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8&project=351adac4-7029-4db0-9bf3-ccc529e1d190
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+
+### Error
+TimeoutError: locator.selectOption: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('region', { name: '本次经验表单', exact: true }).getByLabel('实际目标配置', { exact: true })[22m
+
+
+### Page
+- Page URL: http://127.0.0.1:53054/?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&bench=knowledge&view=sources&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8&project=351adac4-7029-4db0-9bf3-ccc529e1d190
+- Page Title: PDOS · 研发工作区
+### Snapshot
+```yaml
+- generic [ref=f1e1]:
+  - alert [ref=f1e2]
+  - generic [ref=f1e3]:
+    - link "跳到工作内容" [ref=f1e4] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f1e5]:
+      - generic [ref=f1e6]:
+        - generic [ref=f1e9]: PDOS
+        - button "收起侧栏" [ref=f1e10]
+      - navigation "工作区导航" [ref=f1e11]:
+        - link "我的工作" [ref=f1e12] [cursor=pointer]:
+          - /url: "?area=work&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - link "项目驾驶舱" [ref=f1e16] [cursor=pointer]:
+          - /url: "?area=cockpit&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - link "项目列表" [ref=f1e20] [cursor=pointer]:
+          - /url: "?area=projects&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - link "项目集" [ref=f1e24] [cursor=pointer]:
+          - /url: "?area=programs&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+          - generic [ref=f1e28]: 尚未接入
+        - link "产品品类工作区" [ref=f1e29] [cursor=pointer]:
+          - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&bench=knowledge&view=sources&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+        - link "知识" [ref=f1e33] [cursor=pointer]:
+          - /url: "?area=knowledge&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - generic [ref=f1e37]:
+          - paragraph [ref=f1e38]: 当前品类
+          - paragraph [ref=f1e39]: 汽车充气泵
+          - paragraph [ref=f1e40]: 项目与专业工作按品类范围授权
+      - generic [ref=f1e41]:
+        - link "计划执行进度" [ref=f1e42] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=f1e45]: 计划进度
+        - button "小Pai 工作栏" [ref=f1e46]:
+          - generic [ref=f1e49]: 小Pai
+        - link "设置" [ref=f1e50] [cursor=pointer]:
+          - /url: "?area=settings&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - generic [ref=f1e54]:
+          - generic [aria-hidden] [ref=f1e55]: S
+          - generic [ref=f1e56]:
+            - paragraph [ref=f1e57]: Synthetic owner
+            - paragraph [ref=f1e58]: 本地合成环境
+    - generic [ref=f1e59]:
+      - banner [ref=f1e60]:
+        - generic [ref=f1e61]:
+          - generic [ref=f1e62]: PDOS
+          - generic [ref=f1e65]: 产品品类工作区
+          - generic [ref=f1e68]: 汽车充气泵
+        - generic [ref=f1e69]:
+          - button "搜索对象" [ref=f1e70]:
+            - generic [ref=f1e71]: 搜索
+          - button "小Pai 工作栏" [ref=f1e72]
+          - button "切换明暗主题" [ref=f1e73]
+      - main [ref=f1e74]:
+        - navigation "品类工作台区" [ref=f1e75]:
+          - link "型号" [ref=f1e76] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=products&view=overview&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "项目" [ref=f1e80] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=projects&view=overview&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "知识" [ref=f1e84] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=knowledge&view=sources&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "设置" [ref=f1e88] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=settings&view=preferences&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - button "快速查找入口或型号" [ref=f1e92] [cursor=pointer]
+          - combobox "当前型号" [ref=f1e95]:
+            - option "Synthetic product"
+            - option "Synthetic development" [selected]
+        - navigation "知识视图" [ref=f1e96]:
+          - link "来源与事实" [ref=f1e97] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=knowledge&view=sources&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "原件" [ref=f1e101] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=knowledge&view=files&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+        - generic [ref=f1e105]:
+          - generic [ref=f1e107]:
+            - heading "来源与事实" [level=1] [ref=f1e108]
+            - paragraph [ref=f1e109]: 当前范围：Synthetic development
+          - paragraph [ref=f1e110]: 当前显示此型号中已授权的来源与原件。跨型号知识检索尚未接入。
+          - generic [ref=f1e113]:
+            - region "经验候选与配置规则" [ref=f1e114]:
+              - generic [ref=f1e115]:
+                - generic [ref=f1e116]:
+                  - paragraph [ref=f1e117]: 证据与结果 → 经验候选 → 特定配置的经验规则
+                  - heading "经验沉淀" [level=2] [ref=f1e118]
+                - generic [ref=f1e119]:
+                  - button "刷新经验记录" [ref=f1e120]
+                  - button "记录经验候选" [ref=f1e121]
+              - paragraph [ref=f1e122]: 候选保存经验、证据和适用性假设；候选不是正式标准。规则只适用于载明的配置、用途、条件和有效期，不会成为企业全平台默认标准。正式发布资格由服务器核对。
+              - paragraph [ref=f1e123]: 读取于 2026-10-18T21:57:55.184666+00:00 · Synthetic development
+              - region "经验候选列表" [ref=f1e124]:
+                - heading "经验候选" [level=3] [ref=f1e125]
+                - article [ref=f1e127]:
+                  - generic [ref=f1e128]:
+                    - heading "Synthetic lesson from an actual planned Build · 合成页面续版" [level=4] [ref=f1e129]
+                    - generic [ref=f1e130]: 候选 · v2
+                  - paragraph [ref=f1e131]: 合成页面续版：按原件核对本轮经验，候选仍保留适用性待评估范围。
+                  - generic [ref=f1e132]:
+                    - term [ref=f1e133]: 证据与结果摘要
+                    - definition [ref=f1e134]: 本次仅依据已登记合成原件与保留的实际结果回执补充经验摘要。
+                    - term [ref=f1e135]: 适用性假设
+                    - definition [ref=f1e136]: 适用范围仍以具体配置、用途及后续具名评估为准；候选续版不会替换已发布规则采用的旧候选。
+                    - term [ref=f1e137]: 范围与受众
+                    - definition [ref=f1e138]: Synthetic development · 私人
+                    - term [ref=f1e139]: 实际署名
+                    - definition [ref=f1e140]: 人员 · 1cb24e7f-17b4-4001-8318-69b369730dc9
+                    - term [ref=f1e141]: 固定候选
+                    - definition [ref=f1e142]: 2d7a93f0-4940-55fe-9790-2b766244df9f · 实际版本 fe17f07f-c466-5841-bb08-04c0d02eb7cc · 2026-10-18T21:57:51.025147+00:00
+                  - group [ref=f1e143]:
+                    - generic "实际来源 · 1 条" [ref=f1e144] [cursor=pointer]
+                  - group [ref=f1e145]:
+                    - generic "实际结果回执 · 1 条" [ref=f1e146] [cursor=pointer]
+                  - group [ref=f1e147]:
+                    - generic "候选版本历史 · 2 条" [ref=f1e148] [cursor=pointer]
+                  - generic [ref=f1e149]:
+                    - button "续版此候选" [ref=f1e150]
+                    - button "拟定配置经验规则" [ref=f1e151]
+              - region "配置经验规则列表" [ref=f1e152]:
+                - heading "配置经验规则" [level=3] [ref=f1e153]
+                - article [ref=f1e155]:
+                  - generic [ref=f1e156]:
+                    - heading "Synthetic configuration-bound reuse rule" [level=4] [ref=f1e157]
+                    - generic [ref=f1e158]: 当前有效 · v1
+                  - paragraph [ref=f1e159]: For this configured purpose, establish configuration identity before reuse.
+                  - generic [ref=f1e160]:
+                    - term [ref=f1e161]: 实际项目
+                    - definition [ref=f1e162]: Synthetic development
+                    - term [ref=f1e163]: 目标配置
+                    - definition [ref=f1e164]: 工程配置 · Synthetic engineering configuration · v1
+                    - term [ref=f1e165]: 具体用途
+                    - definition [ref=f1e166]: Apply one synthetic field lesson to this fixed engineering configuration
+                    - term [ref=f1e167]: 采用规则
+                    - definition [ref=f1e168]: Explicit named evidence review
+                    - term [ref=f1e169]: 差异
+                    - definition [ref=f1e170]: 评估未列差异
+                    - term [ref=f1e171]: 适用条件
+                    - definition [ref=f1e172]: Only the selected configuration and stated internal purpose
+                    - term [ref=f1e173]: 适用性与依据
+                    - definition [ref=f1e174]: 适用 · The actual planned Build and exact configuration were reviewed for this internal preparation rule; it establishes no experimental result.
+                    - term [ref=f1e175]: 有效区间
+                    - definition [ref=f1e176]: 2026-10-18T21:52:58.633183Z → 未设结束时间
+                    - term [ref=f1e177]: 具名评估人
+                    - definition [ref=f1e178]: 1cb24e7f-17b4-4001-8318-69b369730dc9
+                    - term [ref=f1e179]: 发布署名与性质
+                    - definition [ref=f1e180]: 1cb24e7f-17b4-4001-8318-69b369730dc9 · 合成环境规则
+                    - term [ref=f1e181]: 固定候选版本
+                    - definition [ref=f1e182]: 2d7a93f0-4940-55fe-9790-2b766244df9f v1 · 实际版本 2d7a93f0-4940-55fe-9790-2b766244df9f
+                    - term [ref=f1e183]: 规则版本
+                    - definition [ref=f1e184]: 228b6680-da4b-5006-8cbb-68900bb0ffab · 实际版本 228b6680-da4b-5006-8cbb-68900bb0ffab
+                  - group [ref=f1e185]:
+                    - generic "实际来源 · 1 条" [ref=f1e186] [cursor=pointer]
+                  - group [ref=f1e187]:
+                    - generic "正式发布历史 · 1 条" [ref=f1e188] [cursor=pointer]
+                  - button "续版此配置规则" [ref=f1e189]
+              - region "本次经验表单" [ref=f1e190]:
+                - heading "续版配置经验规则" [level=3] [ref=f1e191]
+                - group [ref=f1e192]:
+                  - generic [ref=f1e193]:
+                    - text: 实际项目
+                    - combobox "实际项目" [disabled] [ref=f1e194]:
+                      - option "请选择实际项目"
+                      - option "Synthetic development · v1" [selected]
+                  - generic [ref=f1e195]:
+                    - text: 标题
+                    - textbox "标题" [ref=f1e196]: Synthetic configuration-bound reuse rule · 具名页面续版
+                  - paragraph [ref=f1e197]: 固定候选 2d7a93f0-4940-55fe-9790-2b766244df9f · v2 · 原规则 228b6680-da4b-5006-8cbb-68900bb0ffab v1。正式发布须核对具体用途与适用边界；项目负责人身份不会代授发布资格。
+                  - generic [ref=f1e198]:
+                    - text: 规则内容
+                    - textbox "规则内容" [active] [ref=f1e199]: 合成页面具名续版：仅对当前固定配置、原实际用途与载明条件采用本次经验规则。
+                  - generic [ref=f1e200]:
+                    - text: 实际目标配置
+                    - combobox "实际目标配置" [ref=f1e201]:
+                      - option "请选择实际配置及固定版本"
+                      - option "工程配置 · Synthetic engineering configuration · v1" [selected]
+                      - option "制造配置 · Synthetic manufacturing configuration · v1"
+                  - generic [ref=f1e202]:
+                    - text: 具体用途
+                    - textbox "具体用途" [ref=f1e203]: Apply one synthetic field lesson to this fixed engineering configuration
+                  - generic [ref=f1e204]:
+                    - text: 相对候选的差异（每行一项）
+                    - textbox "相对候选的差异（每行一项）" [ref=f1e205]
+                  - generic [ref=f1e206]:
+                    - text: 本配置采用的规则
+                    - textbox "本配置采用的规则" [ref=f1e207]: Explicit named evidence review
+                  - generic [ref=f1e208]:
+                    - text: 适用条件（每行一项）
+                    - textbox "适用条件（每行一项）" [ref=f1e209]: Only the selected configuration and stated internal purpose
+                  - generic [ref=f1e210]:
+                    - text: 适用性判断
+                    - combobox "适用性判断" [ref=f1e211]:
+                      - option "未知 / 尚待核实"
+                      - option "存在冲突"
+                      - option "不适用"
+                      - option "适用于本配置及用途" [selected]
+                  - generic [ref=f1e212]:
+                    - text: 适用性判断依据
+                    - textbox "适用性判断依据" [ref=f1e213]: The actual planned Build and exact configuration were reviewed for this internal preparation rule; it establishes no experimental result.
+                  - generic [ref=f1e214]:
+                    - text: 生效时间（须带时区）
+                    - textbox "生效时间（须带时区）" [ref=f1e215]:
+                      - /placeholder: 2026-10-18T09:00:00+08:00
+                      - text: 2026-10-18T21:52:58.633183Z
+                  - generic [ref=f1e216]:
+                    - text: 失效时间（可空，填写须带时区）
+                    - textbox "失效时间（可空，填写须带时区）" [ref=f1e217]
+                  - generic [ref=f1e218]:
+                    - text: 办理理由
+                    - textbox "办理理由" [ref=f1e219]
+                  - group [ref=f1e220]:
+                    - generic "高级：实际原件来源 JSON" [ref=f1e221] [cursor=pointer]
+                  - button "核对此次正式发布材料" [ref=f1e222]
+            - generic [ref=f1e223]:
+              - generic [ref=f1e225]:
+                - generic [ref=f1e226]:
+                  - heading "原始资料" [level=2] [ref=f1e229]
+                  - generic [ref=f1e230]: 2 份
+                - generic [ref=f1e231]:
+                  - text: 查看资料
+                  - combobox "查看资料" [ref=f1e232]:
+                    - option "Synthetic project input" [selected]
+                    - option "Synthetic explicit publication authority"
+                - generic [ref=f1e233]:
+                  - paragraph [ref=f1e234]: Synthetic fixture · 私人来源 · 有效
+                  - paragraph [ref=f1e235]: 选择一行作为事实依据
+                  - button "1 Synthetic requirement is unverified" [ref=f1e237]:
+                    - generic [ref=f1e238]: "1"
+                    - generic [ref=f1e239]: Synthetic requirement is unverified
+                - group [ref=f1e240]:
+                  - generic "登记另一份资料" [ref=f1e241] [cursor=pointer]
+                  - option "仅我可见" [selected]
+                  - option "品类授权成员"
+              - generic [ref=f1e243]:
+                - heading "登记来源事实" [level=2] [ref=f1e244]
+                - generic [ref=f1e245]:
+                  - generic [ref=f1e246]:
+                    - text: 原文引用 · 第 1 行
+                    - textbox "原文引用 · 第 1 行" [ref=f1e247]:
+                      - /placeholder: 先选择一行原文
+                  - generic [ref=f1e248]:
+                    - text: 要保留的事实
+                    - textbox "要保留的事实" [ref=f1e249]
+                  - generic [ref=f1e250]:
+                    - generic [ref=f1e251]:
+                      - text: 信息状态
+                      - combobox "信息状态" [ref=f1e252]:
+                        - option "已知信息" [selected]
+                        - option "未知 / 待确认"
+                        - option "存在冲突"
+                    - generic [ref=f1e253]:
+                      - text: 结果受众
+                      - combobox "结果受众" [ref=f1e254]:
+                        - option "仅我可见" [selected]
+                        - option "品类授权成员" [disabled]
+                  - button "登记事实" [disabled]
+                - paragraph [ref=f1e256]: 尚无事实记录。每条记录都需要准确原文定位。
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T21-55-34-085Z.log#L2
+
+### Page
+- Page URL: http://127.0.0.1:53054/?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&bench=knowledge&view=sources&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8&project=351adac4-7029-4db0-9bf3-ccc529e1d190
+- Page Title: PDOS · 研发工作区
+### Snapshot
+```yaml
+- generic [active] [ref=f2e1]:
+  - alert [ref=f2e2]
+  - generic [ref=f2e3]:
+    - link "跳到工作内容" [ref=f2e4] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f2e5]:
+      - generic [ref=f2e6]:
+        - generic [ref=f2e9]: PDOS
+        - button "收起侧栏" [ref=f2e10]
+      - navigation "工作区导航" [ref=f2e11]:
+        - link "我的工作" [ref=f2e12] [cursor=pointer]:
+          - /url: "?area=work&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - link "项目驾驶舱" [ref=f2e16] [cursor=pointer]:
+          - /url: "?area=cockpit&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - link "项目列表" [ref=f2e20] [cursor=pointer]:
+          - /url: "?area=projects&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - link "项目集" [ref=f2e24] [cursor=pointer]:
+          - /url: "?area=programs&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+          - generic [ref=f2e28]: 尚未接入
+        - link "产品品类工作区" [ref=f2e29] [cursor=pointer]:
+          - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&bench=knowledge&view=sources&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+        - link "知识" [ref=f2e33] [cursor=pointer]:
+          - /url: "?area=knowledge&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - generic [ref=f2e37]:
+          - paragraph [ref=f2e38]: 当前品类
+          - paragraph [ref=f2e39]: 汽车充气泵
+          - paragraph [ref=f2e40]: 项目与专业工作按品类范围授权
+      - generic [ref=f2e41]:
+        - link "计划执行进度" [ref=f2e42] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=f2e45]: 计划进度
+        - button "小Pai 工作栏" [ref=f2e46]:
+          - generic [ref=f2e49]: 小Pai
+        - link "设置" [ref=f2e50] [cursor=pointer]:
+          - /url: "?area=settings&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9"
+        - generic [ref=f2e54]:
+          - generic [aria-hidden] [ref=f2e55]: S
+          - generic [ref=f2e56]:
+            - paragraph [ref=f2e57]: Synthetic owner
+            - paragraph [ref=f2e58]: 本地合成环境
+    - generic [ref=f2e59]:
+      - banner [ref=f2e60]:
+        - generic [ref=f2e61]:
+          - generic [ref=f2e62]: PDOS
+          - generic [ref=f2e65]: 产品品类工作区
+          - generic [ref=f2e68]: 汽车充气泵
+        - generic [ref=f2e69]:
+          - button "搜索对象" [ref=f2e70]:
+            - generic [ref=f2e71]: 搜索
+          - button "小Pai 工作栏" [ref=f2e72]
+          - button "切换明暗主题" [ref=f2e73]
+      - main [ref=f2e74]:
+        - navigation "品类工作台区" [ref=f2e75]:
+          - link "型号" [ref=f2e76] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=products&view=overview&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "项目" [ref=f2e80] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=projects&view=overview&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "知识" [ref=f2e84] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=knowledge&view=sources&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "设置" [ref=f2e88] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=settings&view=preferences&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - button "快速查找入口或型号" [ref=f2e92] [cursor=pointer]
+          - combobox "当前型号" [ref=f2e95]:
+            - option "Synthetic product"
+            - option "Synthetic development" [selected]
+        - navigation "知识视图" [ref=f2e96]:
+          - link "来源与事实" [ref=f2e97] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=knowledge&view=sources&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+          - link "原件" [ref=f2e101] [cursor=pointer]:
+            - /url: "?area=category&category=dfb42ff0-d3fa-47e8-a09a-5a572949fed9&project=351adac4-7029-4db0-9bf3-ccc529e1d190&bench=knowledge&view=files&product=87932ff5-4c6b-48a8-b39e-f80c72d68fd8"
+        - generic [ref=f2e105]:
+          - generic [ref=f2e107]:
+            - heading "来源与事实" [level=1] [ref=f2e108]
+            - paragraph [ref=f2e109]: 当前范围：Synthetic development
+          - paragraph [ref=f2e110]: 当前显示此型号中已授权的来源与原件。跨型号知识检索尚未接入。
+          - generic [ref=f2e113]:
+            - region "经验候选与配置规则" [ref=f2e114]:
+              - generic [ref=f2e115]:
+                - generic [ref=f2e116]:
+                  - paragraph [ref=f2e117]: 证据与结果 → 经验候选 → 特定配置的经验规则
+                  - heading "经验沉淀" [level=2] [ref=f2e118]
+                - generic [ref=f2e119]:
+                  - button "刷新经验记录" [ref=f2e120]
+                  - button "记录经验候选" [disabled]
+              - paragraph [ref=f2e121]: 候选保存经验、证据和适用性假设；候选不是正式标准。规则只适用于载明的配置、用途、条件和有效期，不会成为企业全平台默认标准。正式发布资格由服务器核对。
+              - status [ref=f2e122]: 本次办理未完成，原请求已保留供核对；服务器判定实际资格与材料。
+              - alert [ref=f2e123]: 尚未取得固定候选、规则、配置及用途一致的正式发布确认。
+              - paragraph [ref=f2e124]: 读取于 2026-10-18T21:59:38.241736+00:00 · Synthetic development
+              - region "经验候选列表" [ref=f2e125]:
+                - heading "经验候选" [level=3] [ref=f2e126]
+                - article [ref=f2e128]:
+                  - generic [ref=f2e129]:
+                    - heading "Synthetic lesson from an actual planned Build · 合成页面续版 · 合成页面续版" [level=4] [ref=f2e130]
+                    - generic [ref=f2e131]: 候选 · v3
+                  - paragraph [ref=f2e132]: 合成页面续版：按原件核对本轮经验，候选仍保留适用性待评估范围。
+                  - generic [ref=f2e133]:
+                    - term [ref=f2e134]: 证据与结果摘要
+                    - definition [ref=f2e135]: 本次仅依据已登记合成原件与保留的实际结果回执补充经验摘要。
+                    - term [ref=f2e136]: 适用性假设
+                    - definition [ref=f2e137]: 适用范围仍以具体配置、用途及后续具名评估为准；候选续版不会替换已发布规则采用的旧候选。
+                    - term [ref=f2e138]: 范围与受众
+                    - definition [ref=f2e139]: Synthetic development · 私人
+                    - term [ref=f2e140]: 实际署名
+                    - definition [ref=f2e141]: 人员 · 1cb24e7f-17b4-4001-8318-69b369730dc9
+                    - term [ref=f2e142]: 固定候选
+                    - definition [ref=f2e143]: 2d7a93f0-4940-55fe-9790-2b766244df9f · 实际版本 0cf2941f-2ef5-51e5-a683-56d5c4824156 · 2026-10-18T21:59:34.201407+00:00
+                  - group [ref=f2e144]:
+                    - generic "实际来源 · 1 条" [ref=f2e145] [cursor=pointer]
+                  - group [ref=f2e146]:
+                    - generic "实际结果回执 · 1 条" [ref=f2e147] [cursor=pointer]
+                  - group [ref=f2e148]:
+                    - generic "候选版本历史 · 3 条" [ref=f2e149] [cursor=pointer]
+                  - generic [ref=f2e150]:
+                    - button "续版此候选" [disabled]
+                    - button "拟定配置经验规则" [disabled]
+              - region "配置经验规则列表" [ref=f2e151]:
+                - heading "配置经验规则" [level=3] [ref=f2e152]
+                - article [ref=f2e154]:
+                  - generic [ref=f2e155]:
+                    - heading "Synthetic configuration-bound reuse rule" [level=4] [ref=f2e156]
+                    - generic [ref=f2e157]: 当前有效 · v1
+                  - paragraph [ref=f2e158]: For this configured purpose, establish configuration identity before reuse.
+                  - generic [ref=f2e159]:
+                    - term [ref=f2e160]: 实际项目
+                    - definition [ref=f2e161]: Synthetic development
+                    - term [ref=f2e162]: 目标配置
+                    - definition [ref=f2e163]: 工程配置 · Synthetic engineering configuration · v1
+                    - term [ref=f2e164]: 具体用途
+                    - definition [ref=f2e165]: Apply one synthetic field lesson to this fixed engineering configuration
+                    - term [ref=f2e166]: 采用规则
+                    - definition [ref=f2e167]: Explicit named evidence review
+                    - term [ref=f2e168]: 差异
+                    - definition [ref=f2e169]: 评估未列差异
+                    - term [ref=f2e170]: 适用条件
+                    - definition [ref=f2e171]: Only the selected configuration and stated internal purpose
+                    - term [ref=f2e172]: 适用性与依据
+                    - definition [ref=f2e173]: 适用 · The actual planned Build and exact configuration were reviewed for this internal preparation rule; it establishes no experimental result.
+                    - term [ref=f2e174]: 有效区间
+                    - definition [ref=f2e175]: 2026-10-18T21:52:58.633183Z → 未设结束时间
+                    - term [ref=f2e176]: 具名评估人
+                    - definition [ref=f2e177]: 1cb24e7f-17b4-4001-8318-69b369730dc9
+                    - term [ref=f2e178]: 发布署名与性质
+                    - definition [ref=f2e179]: 1cb24e7f-17b4-4001-8318-69b369730dc9 · 合成环境规则
+                    - term [ref=f2e180]: 固定候选版本
+                    - definition [ref=f2e181]: 2d7a93f0-4940-55fe-9790-2b766244df9f v1 · 实际版本 2d7a93f0-4940-55fe-9790-2b766244df9f
+                    - term [ref=f2e182]: 规则版本
+                    - definition [ref=f2e183]: 228b6680-da4b-5006-8cbb-68900bb0ffab · 实际版本 228b6680-da4b-5006-8cbb-68900bb0ffab
+                  - group [ref=f2e184]:
+                    - generic "实际来源 · 1 条" [ref=f2e185] [cursor=pointer]
+                  - group [ref=f2e186]:
+                    - generic "正式发布历史 · 1 条" [ref=f2e187] [cursor=pointer]
+                  - button "续版此配置规则" [disabled]
+              - region "本次经验表单" [ref=f2e188]:
+                - heading "续版配置经验规则" [level=3] [ref=f2e189]
+                - group [ref=f2e190]:
+                  - generic [ref=f2e191]:
+                    - text: 实际项目
+                    - combobox "实际项目" [disabled] [ref=f2e192]:
+                      - option "请选择实际项目" [disabled]
+                      - option "Synthetic development · v1" [disabled] [selected]
+                  - generic [ref=f2e193]:
+                    - text: 标题
+                    - textbox "标题" [disabled] [ref=f2e194]: Synthetic configuration-bound reuse rule · 具名页面续版
+                  - paragraph [ref=f2e195]: 固定候选 2d7a93f0-4940-55fe-9790-2b766244df9f · v3 · 原规则 228b6680-da4b-5006-8cbb-68900bb0ffab v1。正式发布须核对具体用途与适用边界；项目负责人身份不会代授发布资格。
+                  - generic [ref=f2e196]:
+                    - text: 规则内容
+                    - textbox "规则内容" [disabled] [ref=f2e197]: 合成页面具名续版：仅对当前固定配置、原实际用途与载明条件采用本次经验规则。
+                  - generic [ref=f2e198]:
+                    - text: 实际目标配置
+                    - combobox "实际目标配置" [disabled] [ref=f2e199]:
+                      - option "请选择实际配置及固定版本" [disabled]
+                      - option "工程配置 · Synthetic engineering configuration · v1" [disabled] [selected]
+                      - option "制造配置 · Synthetic manufacturing configuration · v1" [disabled]
+                  - generic [ref=f2e200]:
+                    - text: 具体用途
+                    - textbox "具体用途" [disabled] [ref=f2e201]: Apply one synthetic field lesson to this fixed engineering configuration
+                  - generic [ref=f2e202]:
+                    - text: 相对候选的差异（每行一项）
+                    - textbox "相对候选的差异（每行一项）" [disabled] [ref=f2e203]: 本次采用最新候选版本；目标配置与既有发布保持同一明确版本。
+                  - generic [ref=f2e204]:
+                    - text: 本配置采用的规则
+                    - textbox "本配置采用的规则" [disabled] [ref=f2e205]: 采用本次具名核对后的配置经验规则，适用范围限定为原实际用途。
+                  - generic [ref=f2e206]:
+                    - text: 适用条件（每行一项）
+                    - textbox "适用条件（每行一项）" [disabled] [ref=f2e207]: 仅限载明的合成项目、固定配置和原实际用途；前提变化时重新评估。
+                  - generic [ref=f2e208]:
+                    - text: 适用性判断
+                    - combobox "适用性判断" [disabled] [ref=f2e209]:
+                      - option "未知 / 尚待核实" [disabled]
+                      - option "存在冲突" [disabled]
+                      - option "不适用" [disabled]
+                      - option "适用于本配置及用途" [disabled] [selected]
+                  - generic [ref=f2e210]:
+                    - text: 适用性判断依据
+                    - textbox "适用性判断依据" [disabled] [ref=f2e211]: 本人核对最新候选、实际原件、固定配置及用途，形成此次明确适用性判断。
+                  - generic [ref=f2e212]:
+                    - text: 生效时间（须带时区）
+                    - textbox "生效时间（须带时区）" [disabled] [ref=f2e213]:
+                      - /placeholder: 2026-10-18T09:00:00+08:00
+                      - text: 2026-10-18T21:52:58.633183Z
+                  - generic [ref=f2e214]:
+                    - text: 失效时间（可空，填写须带时区）
+                    - textbox "失效时间（可空，填写须带时区）" [disabled] [ref=f2e215]
+                  - generic [ref=f2e216]:
+                    - text: 办理理由
+                    - textbox "办理理由" [disabled] [ref=f2e217]: 具名发布规则续版，明确采用最新候选；不把候选续版作为自动规则发布。
+                  - group [ref=f2e218]:
+                    - generic "高级：实际原件来源 JSON" [ref=f2e219] [cursor=pointer]
+                    - generic [ref=f2e220]:
+                      - text: 经验依据来源 JSON
+                      - textbox "经验依据来源 JSON" [disabled] [ref=f2e221]: "[{\"id\":\"afc6faf4-5a26-4beb-ba40-3f1c639c4c4b\",\"kind\":\"artifact\",\"position\":\"line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449\",\"revision\":1}]"
+                    - paragraph [ref=f2e222]: 引用至少一条已登记 artifact 的准确版本与原文位置。
+                  - button "核对此次正式发布材料" [disabled]
+              - region "经验原请求" [ref=f2e223]:
+                - heading "本次经验材料尚待核对" [level=3] [ref=f2e224]
+                - paragraph [ref=f2e225]: 已保留同一内容、版本、请求编号与办理范围。重新打开页面不会自动提交。
+                - button "重新核对原经验请求" [ref=f2e226]
+                - button "返回经验编辑" [ref=f2e227]
+            - generic [ref=f2e228]:
+              - generic [ref=f2e230]:
+                - generic [ref=f2e231]:
+                  - heading "原始资料" [level=2] [ref=f2e234]
+                  - generic [ref=f2e235]: 2 份
+                - generic [ref=f2e236]:
+                  - text: 查看资料
+                  - combobox "查看资料" [ref=f2e237]:
+                    - option "Synthetic project input" [selected]
+                    - option "Synthetic explicit publication authority"
+                - generic [ref=f2e238]:
+                  - paragraph [ref=f2e239]: Synthetic fixture · 私人来源 · 有效
+                  - paragraph [ref=f2e240]: 选择一行作为事实依据
+                  - button "1 Synthetic requirement is unverified" [ref=f2e242]:
+                    - generic [ref=f2e243]: "1"
+                    - generic [ref=f2e244]: Synthetic requirement is unverified
+                - group [ref=f2e245]:
+                  - generic "登记另一份资料" [ref=f2e246] [cursor=pointer]
+                  - option "仅我可见" [selected]
+                  - option "品类授权成员"
+              - generic [ref=f2e248]:
+                - heading "登记来源事实" [level=2] [ref=f2e249]
+                - generic [ref=f2e250]:
+                  - generic [ref=f2e251]:
+                    - text: 原文引用 · 第 1 行
+                    - textbox "原文引用 · 第 1 行" [ref=f2e252]:
+                      - /placeholder: 先选择一行原文
+                  - generic [ref=f2e253]:
+                    - text: 要保留的事实
+                    - textbox "要保留的事实" [ref=f2e254]
+                  - generic [ref=f2e255]:
+                    - generic [ref=f2e256]:
+                      - text: 信息状态
+                      - combobox "信息状态" [ref=f2e257]:
+                        - option "已知信息" [selected]
+                        - option "未知 / 待确认"
+                        - option "存在冲突"
+                    - generic [ref=f2e258]:
+                      - text: 结果受众
+                      - combobox "结果受众" [ref=f2e259]:
+                        - option "仅我可见" [selected]
+                        - option "品类授权成员" [disabled]
+                  - button "登记事实" [disabled]
+                - paragraph [ref=f2e261]: 尚无事实记录。每条记录都需要准确原文定位。
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T21-55-34-085Z.log#L3
+
+### Error
+TimeoutError: locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('dialog', { name: '具名确认正式经验规则发布', exact: true }).getByRole('button', { name: '本人确认正式发布经验规则', exact: true }) to be visible[22m
+
+
+### Result
+{"alerts":["尚未取得固定候选、规则、配置及用途一致的正式发布确认。",""],"statuses":["本次办理未完成，原请求已保留供核对；服务器判定实际资格与材料。"]}
+### Ran Playwright code
+```js
+await (async page => ({ alerts: await page.getByRole('alert').allTextContents(), statuses: await page.getByRole('status').allTextContents() }))(page);
+```
+
+### Result
+{"fixedT2ClientLoaded":true,"oldUnexecutedPreviewReturnedToEditing":true,"automaticPOSTs":false}
+### Ran Playwright code
+```js
+await (async page => { await page.reload({waitUntil:'domcontentloaded'}); const section=page.getByRole('region',{name:'经验候选与配置规则',exact:true}); await section.getByRole('heading',{name:'经验沉淀',exact:true}).waitFor(); const pending=page.getByRole('region',{name:'经验原请求',exact:true}); await pending.getByRole('button',{name:'返回经验编辑',exact:true}).click(); return {fixedT2ClientLoaded:true,oldUnexecutedPreviewReturnedToEditing:true,automaticPOSTs:false}; })(page);
+```
+
+### Result
+{"actual_candidate_id":"2d7a93f0-4940-55fe-9790-2b766244df9f","actual_rule_id":"228b6680-da4b-5006-8cbb-68900bb0ffab","candidate_revision":{"before":3,"after":4},"rule_revision":{"before":1,"after":2},"actual_receipts":{"candidate":"ba2fc189-5b97-4a76-afa2-293020da60f4","rule":"f6407b55-c23d-4fa8-a6f8-ce09534108fb","assessment":"2702f5e6-d7ca-593a-8a62-4e1d33e6dfd5"},"actual_commands":{"candidate":"1029d083-3a5e-4173-bc20-6a4b4d571f60","rule":"c1be48d4-39c9-469c-be16-1209fbea8b02"},"candidate_actual_success_response_replaced_with_503":true,"injection_fulfilled_before_reload":true,"reload_auto_POSTs":0,"candidate_explicit_replay_exact_command_and_key":true,"candidate_replay_same_receipt":true,"old_published_rule_candidate_binding_unchanged_until_explicit_publication":true,"rule_T2_actual_preview_then_one_named_confirmation":true,"rule_execution_exact_actual_preview_command":true,"latest_candidate_explicitly_adopted":true,"read_refresh_POSTs":0,"frames":[{"width":1440,"dark":false,"overflow":false,"viewport_screenshot":true,"card_box":{"x":256,"y":280.078125,"width":1152,"height":535.6875}},{"width":320,"dark":true,"overflow":false,"viewport_screenshot":true,"card_box":{"x":16,"y":279.515625,"width":288,"height":1195.609375}}]}
+### Ran Playwright code
+```js
+await (async page => {
+  const config = {"category_id": "dfb42ff0-d3fa-47e8-a09a-5a572949fed9", "product_id": "87932ff5-4c6b-48a8-b39e-f80c72d68fd8", "project_id": "351adac4-7029-4db0-9bf3-ccc529e1d190", "principal_id": "1cb24e7f-17b4-4001-8318-69b369730dc9", "candidate_id": "2d7a93f0-4940-55fe-9790-2b766244df9f", "rule_id": "228b6680-da4b-5006-8cbb-68900bb0ffab", "sources": [{"id": "afc6faf4-5a26-4beb-ba40-3f1c639c4c4b", "kind": "artifact", "position": "line:1;quote_sha256:ecd0ee2835dcc63263ee6f9e1b64bc1fa70bf966909b83c7704b7961eb56a449", "revision": 1}], "configuration": {"id": "72d392c4-9523-43de-889e-790cdd5baa5b", "kind": "engineering_configuration", "revision": 1}, "purpose": "Apply one synthetic field lesson to this fixed engineering configuration", "light": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-s5-knowledge-20261018/light-1440.png", "dark": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-s5-knowledge-20261018/dark-320.png"};
+  const candidateOp = 'knowledge.candidate.create', ruleOp = 'knowledge.rule.publish';
+  const base = '/api/v1/categories/' + config.category_id + '/products/' + config.product_id + '/experience';
+  const section = () => page.getByRole('region', { name: '经验候选与配置规则', exact: true });
+  const candidateCard = () => section().getByRole('region', { name: '经验候选列表', exact: true }).locator('article').filter({ hasText: config.candidate_id });
+  const ruleCard = () => section().getByRole('region', { name: '配置经验规则列表', exact: true }).locator('article').filter({ hasText: config.rule_id });
+  const form = () => page.getByRole('region', { name: '本次经验表单', exact: true });
+  const dialog = () => page.getByRole('dialog', { name: '具名确认正式经验规则发布', exact: true });
+  const same = (a, b) => { const stable = value => Array.isArray(value) ? value.map(stable) : value && typeof value === 'object' ? Object.fromEntries(Object.keys(value).sort().map(key => [key, stable(value[key])])) : value; return JSON.stringify(stable(a)) === JSON.stringify(stable(b)); };
+  const read = async () => {
+    const response = await page.request.get(new URL(base + '?project_id=' + config.project_id, page.url()).href);
+    if (response.status() !== 200) throw new Error('Actual experience read failed ' + response.status() + ' ' + await response.text());
+    const data = await response.json(), candidates = data.candidates.filter(value => value.id === config.candidate_id), rules = data.rules.filter(value => value.id === config.rule_id);
+    if (candidates.length !== 1 || rules.length !== 1) throw new Error('Actual candidate or rule is missing or duplicated');
+    return { data, candidate: candidates[0], rule: rules[0] };
+  };
+  const initial = await read();
+  if (!initial.candidate.can_revise || !initial.rule.can_revise || initial.rule.revision !== 1 || initial.rule.candidate.id !== config.candidate_id || initial.candidate.project_id !== config.project_id || initial.rule.project_id !== config.project_id) throw new Error('Expected the real named candidate and published rule revision 1 in the actual project');
+  if (!same(initial.rule.applicability.target, config.configuration) || initial.rule.applicability.purpose !== config.purpose) throw new Error('Configured target or purpose differs from the actual published rule');
+  const fixedOldRule = { version_id: initial.rule.version_id, revision: initial.rule.revision, candidate: initial.rule.candidate, candidate_version_id: initial.rule.candidate_version_id, assessment_id: initial.rule.assessment_id, applicability: initial.rule.applicability, history: initial.rule.history };
+  const ruleBefore = value => ({ version_id: value.version_id, revision: value.revision, candidate: value.candidate, candidate_version_id: value.candidate_version_id, assessment_id: value.assessment_id, applicability: value.applicability, history: value.history });
+  await section().getByRole('heading', { name: '经验沉淀', exact: true }).waitFor({ timeout: 60000 });
+  if (await candidateCard().count() !== 1 || await ruleCard().count() !== 1) throw new Error('Actual candidate or rule card is ambiguous');
+  const writes = [];
+  const listener = request => { if (request.url().includes('/api/') && request.method() === 'POST') { let body = null; try { body = request.postDataJSON(); } catch {} writes.push({ path: new URL(request.url()).pathname, body }); } };
+  const posts = (operation, suffix) => writes.filter(value => value.path.endsWith(suffix) && value.body?.operation === operation);
+  let injected = false, original = null, savedCandidate = null, doneResolve, doneReject, timer;
+  const done = new Promise((resolve, reject) => { doneResolve = resolve; doneReject = reject; });
+  const routePattern = /\/api\/v1\/categories\/[^/]+\/commands$/;
+  const handler = async route => {
+    const request = route.request(), body = request.method() === 'POST' ? request.postDataJSON() : null;
+    if (body?.operation !== candidateOp || body.payload?.candidate?.id !== config.candidate_id || injected) return route.continue();
+    injected = true;
+    try {
+      original = body;
+      const response = await route.fetch({ timeout: 60000 });
+      if (response.status() !== 200) throw new Error('Actual candidate revision failed ' + response.status() + ' ' + await response.text());
+      savedCandidate = await response.json();
+      if (savedCandidate.subject_type !== 'knowledge_candidate' || savedCandidate.result.candidate_id !== config.candidate_id || savedCandidate.result.status !== 'draft' || savedCandidate.subject_revision !== initial.candidate.revision + 1) throw new Error('Actual candidate receipt differs from the fixed revision');
+      await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ code: 'SOURCE_UNAVAILABLE', message: '合成已保存响应丢失' }) });
+      doneResolve();
+    } catch (error) { doneReject(error); throw error; }
+  };
+  page.on('request', listener);
+  try {
+    await candidateCard().getByRole('button', { name: '续版此候选', exact: true }).click();
+    await form().getByRole('textbox', { name: '标题', exact: true }).fill((initial.candidate.title + ' · 合成页面续版').slice(0, 200));
+    await form().getByRole('textbox', { name: '经验与教训', exact: true }).fill('合成页面续版：按原件核对本轮经验，候选仍保留适用性待评估范围。');
+    await form().getByRole('textbox', { name: '证据与实际结果摘要', exact: true }).fill('本次仅依据已登记合成原件与保留的实际结果回执补充经验摘要。');
+    await form().getByRole('textbox', { name: '适用性假设与未知范围', exact: true }).fill('适用范围仍以具体配置、用途及后续具名评估为准；候选续版不会替换已发布规则采用的旧候选。');
+    await form().getByRole('textbox', { name: '办理理由', exact: true }).fill('具名核对候选续版与原请求恢复，保留原范围和受众。');
+    if (!(await form().getByRole('textbox', { name: '经验依据来源 JSON', exact: true }).isVisible())) await form().getByText('高级：实际原件来源 JSON', { exact: true }).click();
+    await form().getByRole('textbox', { name: '经验依据来源 JSON', exact: true }).fill(JSON.stringify(config.sources));
+    await page.route(routePattern, handler);
+    await form().getByRole('button', { name: '保存经验候选', exact: true }).click();
+    try { await Promise.race([done, new Promise((_, reject) => { timer = setTimeout(() => reject(new Error('No fulfilled candidate response-loss injection within 60 seconds')), 60000); })]); } finally { clearTimeout(timer); }
+    await section().getByText('保存结果尚待核实。请保留原请求并明确核对，勿新建重复版本。', { exact: true }).waitFor({ timeout: 60000 });
+    await page.unroute(routePattern, handler);
+    if (posts(candidateOp, '/experience/inputs').length !== 1 || posts(candidateOp, '/commands').length !== 1 || posts(candidateOp, '/commands/preview').length !== 0) throw new Error('Candidate T0 used an extra confirmation or write');
+    const committed = await read();
+    if (committed.candidate.version_id !== savedCandidate.subject_id || committed.candidate.revision !== initial.candidate.revision + 1 || committed.candidate.history.length !== initial.candidate.history.length + 1 || committed.candidate.history.filter(value => value.receipt_id === savedCandidate.id).length !== 1 || !same(ruleBefore(committed.rule), fixedOldRule)) throw new Error('Candidate save duplicated a version or silently changed the published rule');
+    const beforeReload = writes.length;
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    const pending = page.getByRole('region', { name: '经验原请求', exact: true });
+    await pending.getByRole('button', { name: '按原请求核对经验保存结果', exact: true }).waitFor({ timeout: 60000 });
+    await candidateCard().getByRole('heading', { name: committed.candidate.title, exact: true }).waitFor({ timeout: 60000 });
+    if (writes.length !== beforeReload) throw new Error('Reload automatically sent a POST');
+    const replayResponse = page.waitForResponse(response => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/commands') && response.request().postDataJSON()?.operation === candidateOp, { timeout: 60000 });
+    await pending.getByRole('button', { name: '按原请求核对经验保存结果', exact: true }).click();
+    const replay = await replayResponse;
+    if (replay.status() !== 200 || (await replay.json()).id !== savedCandidate.id) throw new Error('Candidate replay did not return the same actual receipt');
+    await section().getByText('已保存：经验候选 · 回执 ' + savedCandidate.id + '。刷新只读回记录。', { exact: true }).waitFor({ timeout: 60000 });
+    const candidateCommands = posts(candidateOp, '/commands');
+    if (candidateCommands.length !== 2 || !same(candidateCommands[0].body, original) || !same(candidateCommands[1].body, original)) throw new Error('Candidate replay changed the exact original command or request key');
+    const afterReplay = await read();
+    if (afterReplay.candidate.revision !== committed.candidate.revision || afterReplay.candidate.history.length !== committed.candidate.history.length || !same(ruleBefore(afterReplay.rule), fixedOldRule)) throw new Error('Replay changed the candidate chain or old rule candidate binding');
+
+    await ruleCard().getByRole('button', { name: '续版此配置规则', exact: true }).click();
+    await form().getByRole('textbox', { name: '标题', exact: true }).fill((initial.rule.title + ' · 具名页面续版').slice(0, 200));
+    await form().getByRole('textbox', { name: '规则内容', exact: true }).fill('合成页面具名续版：仅对当前固定配置、原实际用途与载明条件采用本次经验规则。');
+    await form().getByRole('combobox', { name: '实际目标配置', exact: true }).selectOption(config.configuration.kind + ':' + config.configuration.id + ':' + config.configuration.revision);
+    await form().getByRole('textbox', { name: '具体用途', exact: true }).fill(config.purpose);
+    await form().getByRole('textbox', { name: '相对候选的差异（每行一项）', exact: true }).fill('本次采用最新候选版本；目标配置与既有发布保持同一明确版本。');
+    await form().getByRole('textbox', { name: '本配置采用的规则', exact: true }).fill('采用本次具名核对后的配置经验规则，适用范围限定为原实际用途。');
+    await form().getByRole('textbox', { name: '适用条件（每行一项）', exact: true }).fill('仅限载明的合成项目、固定配置和原实际用途；前提变化时重新评估。');
+    await form().getByRole('combobox', { name: '适用性判断', exact: true }).selectOption('applicable');
+    await form().getByRole('textbox', { name: '适用性判断依据', exact: true }).fill('本人核对最新候选、实际原件、固定配置及用途，形成此次明确适用性判断。');
+    await form().getByRole('textbox', { name: '生效时间（须带时区）', exact: true }).fill(initial.rule.applicability.valid_from);
+    await form().getByRole('textbox', { name: '失效时间（可空，填写须带时区）', exact: true }).fill(initial.rule.applicability.valid_until || '');
+    await form().getByRole('textbox', { name: '办理理由', exact: true }).fill('具名发布规则续版，明确采用最新候选；不把候选续版作为自动规则发布。');
+    if (!(await form().getByRole('textbox', { name: '经验依据来源 JSON', exact: true }).isVisible())) await form().getByText('高级：实际原件来源 JSON', { exact: true }).click();
+    await form().getByRole('textbox', { name: '经验依据来源 JSON', exact: true }).fill(JSON.stringify(config.sources));
+    const previewResponse = page.waitForResponse(response => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/commands/preview') && response.request().postDataJSON()?.operation === ruleOp, { timeout: 180000 });
+    await form().getByRole('button', { name: '核对此次正式发布材料', exact: true }).click();
+    const previewHttp = await previewResponse;
+    if (previewHttp.status() !== 200) throw new Error('Actual T2 preview failed ' + previewHttp.status() + ' ' + await previewHttp.text());
+    const actualPreview = await previewHttp.json();
+    await dialog().getByRole('button', { name: '本人确认正式发布经验规则', exact: true }).waitFor({ timeout: 60000 });
+    if (posts(ruleOp, '/experience/inputs').length !== 1 || posts(ruleOp, '/commands/preview').length !== 1 || posts(ruleOp, '/commands').length !== 0) throw new Error('Rule input/preview bypassed explicit T2 confirmation');
+    if (actualPreview.command?.payload?.candidate?.id !== config.candidate_id || actualPreview.command.payload.candidate.revision !== committed.candidate.revision || actualPreview.command.payload.rule.id !== config.rule_id || actualPreview.command.payload.rule.revision !== 1 || !same(actualPreview.command.payload.applicability.target, config.configuration) || actualPreview.command.payload.applicability.purpose !== config.purpose || typeof actualPreview.command.payload.approval_token !== 'string') throw new Error('Actual T2 preview has the wrong fixed candidate, rule, target, purpose or approval');
+    if (!(await dialog().getByText('发布人：本人 ' + config.principal_id + ' · 实际项目 ' + initial.data.projects.find(value => value.id === config.project_id).name, { exact: true }).count())) throw new Error('Named actual publication identity is missing from the preview');
+    const publicationResponse = page.waitForResponse(response => response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith('/commands') && response.request().postDataJSON()?.operation === ruleOp, { timeout: 180000 });
+    await dialog().getByRole('button', { name: '本人确认正式发布经验规则', exact: true }).click();
+    const publicationHttp = await publicationResponse;
+    if (publicationHttp.status() !== 200) throw new Error('Actual T2 publication failed ' + publicationHttp.status() + ' ' + await publicationHttp.text());
+    const published = await publicationHttp.json();
+    await section().getByText('已保存：正式配置经验规则 · 回执 ' + published.id + '。刷新只读回记录。', { exact: true }).waitFor({ timeout: 60000 });
+    await ruleCard().getByRole('button', { name: '续版此配置规则', exact: true }).waitFor({ timeout: 60000 });
+    const actualRuleCommands = posts(ruleOp, '/commands');
+    if (actualRuleCommands.length !== 1 || !same(actualRuleCommands[0].body, actualPreview.command)) throw new Error('T2 execution reconstructed or changed the actual approved command');
+    const final = await read(), oldRuleHistory = initial.rule.history.map(value => value.id), oldCandidateHistory = initial.candidate.history.map(value => value.id);
+    if (final.candidate.id !== config.candidate_id || final.candidate.version_id !== savedCandidate.subject_id || final.candidate.revision !== committed.candidate.revision || final.candidate.history.length !== initial.candidate.history.length + 1 || final.candidate.author_id !== config.principal_id || final.candidate.origin !== 'human' || final.candidate.project_id !== initial.candidate.project_id || final.candidate.visibility !== initial.candidate.visibility || !oldCandidateHistory.every(id => final.candidate.history.some(value => value.id === id))) throw new Error('Final candidate history differs from the single T0 revision');
+    if (published.subject_type !== 'design_rule' || published.subject_revision !== 2 || published.result.status !== 'published' || published.result.rule_id !== config.rule_id || final.rule.id !== config.rule_id || final.rule.revision !== 2 || final.rule.version_id !== published.subject_id || final.rule.assessment_id !== published.result.assessment_id || final.rule.history.length !== initial.rule.history.length + 1 || final.rule.history.filter(value => value.receipt_id === published.id).length !== 1 || !oldRuleHistory.every(id => final.rule.history.some(value => value.id === id))) throw new Error('Actual rule v2 receipt and publication history do not match');
+    if (final.rule.candidate.id !== config.candidate_id || final.rule.candidate.revision !== final.candidate.revision || final.rule.candidate_version_id !== final.candidate.version_id || final.rule.applicability.candidate_version.id !== final.candidate.version_id || final.rule.applicability.candidate_version.revision !== final.candidate.revision || final.rule.applicability.assessor_id !== config.principal_id || final.rule.author_id !== config.principal_id || !same(final.rule.applicability.target, config.configuration) || final.rule.applicability.purpose !== config.purpose) throw new Error('Final rule did not explicitly adopt the latest actual candidate and named fixed applicability');
+    const beforeRefresh = writes.length;
+    await section().getByRole('button', { name: '刷新经验记录', exact: true }).click();
+    await ruleCard().getByRole('heading', { name: final.rule.title, exact: true }).waitFor({ timeout: 60000 });
+    if (writes.length !== beforeRefresh) throw new Error('Read-only experience refresh sent a POST');
+    const frames = [];
+    for (const [width, dark, path] of [[1440, false, config.light], [320, true, config.dark]]) {
+      await page.setViewportSize({ width, height: 1000 });
+      if (await page.locator('html').evaluate(element => element.classList.contains('dark')) !== dark) await page.getByRole('button', { name: '切换明暗主题', exact: true }).click();
+      await page.waitForFunction(expected => document.documentElement.classList.contains('dark') === expected, dark);
+      await ruleCard().evaluate(element => element.scrollIntoView({ block: 'start' }));
+      await page.evaluate(() => window.scrollBy(0, -280));
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+      if (overflow) throw new Error('Horizontal overflow at width ' + width);
+      await page.screenshot({ path });
+      frames.push({ width, dark, overflow, viewport_screenshot: true, card_box: await ruleCard().boundingBox() });
+    }
+    if (writes.length !== 6 || posts(candidateOp, '/experience/inputs').length !== 1 || posts(candidateOp, '/commands').length !== 2 || posts(candidateOp, '/commands/preview').length !== 0 || posts(ruleOp, '/experience/inputs').length !== 1 || posts(ruleOp, '/commands/preview').length !== 1 || posts(ruleOp, '/commands').length !== 1) throw new Error('Unexpected candidate or publication write count');
+    return { actual_candidate_id: final.candidate.id, actual_rule_id: final.rule.id, candidate_revision: { before: initial.candidate.revision, after: final.candidate.revision }, rule_revision: { before: initial.rule.revision, after: final.rule.revision }, actual_receipts: { candidate: savedCandidate.id, rule: published.id, assessment: published.result.assessment_id }, actual_commands: { candidate: original.command_id, rule: actualPreview.command.command_id }, candidate_actual_success_response_replaced_with_503: true, injection_fulfilled_before_reload: true, reload_auto_POSTs: 0, candidate_explicit_replay_exact_command_and_key: true, candidate_replay_same_receipt: true, old_published_rule_candidate_binding_unchanged_until_explicit_publication: true, rule_T2_actual_preview_then_one_named_confirmation: true, rule_execution_exact_actual_preview_command: true, latest_candidate_explicitly_adopted: true, read_refresh_POSTs: 0, frames };
+  } finally { clearTimeout(timer); await page.unroute(routePattern, handler); page.off('request', listener); }
+}
+)(page);
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T21-55-34-085Z.log#L4
+
+Browser 'pdos-s5-knowledge-20261018' closed
+
+

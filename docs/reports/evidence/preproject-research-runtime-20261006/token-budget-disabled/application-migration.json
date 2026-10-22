@@ -1,0 +1,11 @@
+{
+  "human_request": "取消token预算限制",
+  "scope": "local application tenant",
+  "started_at": "2026-10-07T05:43:57.790890+00:00",
+  "unknown_journal_digest_before": "f47638a90957ddc0b856935a707ac8ae7038062e4ffaa1065589bae09bf737ba",
+  "setting_before": null,
+  "drain_recovery": "verified preview descendants stopped after initial graceful drain failed; no migration was applied in that attempt",
+  "head_after": "0430_application_token_budget",
+  "unknown_journal_digest_after": "f47638a90957ddc0b856935a707ac8ae7038062e4ffaa1065589bae09bf737ba",
+  "migrated_at": "2026-10-07T05:43:58.446775+00:00"
+}

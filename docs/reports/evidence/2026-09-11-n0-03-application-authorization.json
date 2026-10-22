@@ -1,0 +1,118 @@
+{
+  "date": "2026-09-11",
+  "scope": "creation-time user AuthorizationEnvelope for four budgeted application entries and current grants before metering, dispatch and output",
+  "tests": {
+    "distinct_passed": 184,
+    "new_cases": 23,
+    "regression_cases": 161,
+    "initial_application_budget_passed": 17,
+    "first_new_cases": {
+      "passed": 12,
+      "failed": 2
+    },
+    "shared_application_batch": {
+      "passed": 77,
+      "failed_configuration_path": 1
+    },
+    "chat_migration_retest_passed": 1,
+    "independent_role_batch_passed": 57,
+    "gateway_regression_passed": 45,
+    "final_api_retest_passed": 10,
+    "new_cases_in_final_api_retest": 4,
+    "formula": "77 + 1 + 57 + 45 + 4 = 184; repeats not counted"
+  },
+  "checks": {
+    "mypy_files": 12,
+    "ruff_files": 19,
+    "common_contract_artifacts": 4,
+    "runtime_contract_artifacts": 5,
+    "approved_manifests_unchanged": {
+      "docs/contracts/pdos-v1/approved-draft.3/manifest.json": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "docs/contracts/pdos-runtime-v1/approved-draft.3/runtime-policy-manifest.json": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "source_sha256": {
+    "server/app/ai/application_authorization.py": "1c5babb1649bda17a1fe3657d0a7bf6f809117709a4f23ff506557bc98637971",
+    "server/app/ai/run_budget_creation.py": "7d15b0031def0766534a2328182446311caa1f0b2b016ada023c1573dfcb30ca",
+    "server/app/ai/gateway.py": "1735905d00ec032866e6ec08f088a93757abc86b6b23ac62e84934a91e58a065",
+    "server/app/ai/chat_runs.py": "bbaecd8dc9b87f00fc038338933e28ddf7f10bb5d43f879649ee150f3276f439",
+    "server/app/ai/import_mapping_runs.py": "e078cd01694d6f2ceae80d4c4fe28b67d94f4a8082ba4143eaf49199afec728f",
+    "server/app/ai/risk_suggestions.py": "c84a095c4664d76ac00f240b069c873f17582f085cd416c3e35fbf4ff8005982",
+    "server/app/ai/test_plan_suggestions.py": "895535fc1adaf11e9b2937b87f1ad0f981abfc73fe118455c0d4dddddc6492e3",
+    "server/app/ai/chat.py": "9b3edcc2021d455d66f746c5842f59c96b9a95733ea1c5e7e5a7f59e0b866eb0",
+    "server/app/api/ai.py": "6c71b79c72e1e06cef767596fcacf91d3f6de2678c2e0ab4f58d694a44c162bd",
+    "server/app/api/npi_execution.py": "d3d42e2b4364910e9caee2cd7afd25d4bf515f2ffe7016edd9000123b6978897",
+    "server/app/domain/test_report_import.py": "9213c6629059fd6d24323ae44d0a652a703920526bb4efeb7feff8ae088b326d",
+    "server/app/db/schema.py": "cffed015ddea6e5386d8cccda8f51ceeeb7f52510130c9b6e6b6a759b50101a8",
+    "server/migrations/versions/0081_application_authorization.py": "63b2cfe6ed5f9cc5e2d97d7a7cfa99e4e1198b093d1d836486a7ccccd8db1225",
+    "server/tests/test_application_authorization.py": "0fba526e3426e96ede9aa28cde7466e4c3576f5ecbeb15f4ec34fd496d24805a",
+    "server/tests/test_application_authorization_security.py": "a4271e07e671b1cc9e097f17e6173820bad0d060673da8da03e28f505d758fb5",
+    "server/tests/test_application_run_budget_api.py": "8f2d0c55fd43b097c3c8716052403e31f0e772e9f00d0a215d5685fb2d9051b4",
+    "server/tests/test_chat_requests.py": "c5dd8c785eb7618a3550beb4d5129a694f893a9dc172622b903c72a4f4d52f33",
+    "server/tests/test_test_report_import_api.py": "36eb80b30286fea19af62f06b035650f227399cf45badadecc70a499abf4afb1",
+    "server/tests/test_agent_runtime_schema.py": "55913e42af565c6541485abe2a4343eeb3099af9996206f154168d2c590e7065"
+  },
+  "log_sha256": {
+    "pdos-appauth-initial.log": "37101b227bd273bd4896302aa0eb0e821d4a746f2c89ad9aa556d517fd066de2",
+    "pdos-appauth-new.log": "08d33dcc7c1da30a8283d3b5d6261b26d083c057d4b5f4fa57d4a50b6209ca2f",
+    "pdos-appauth-final.log": "b0a407a6c66e07500c624581c68e5e0934a57c4c58c9bfa412ee7d416cde67a0",
+    "pdos-appauth-roles.log": "5a3e152581cc53d8a19bb15d030b6151191438125b30191aa8d9c9cee10bb57c",
+    "pdos-appauth-chat-migration.log": "ec802e98f6a46258c49d637674d83485d704cce083f8bb29f89fca8e294e4ce5",
+    "pdos-appauth-gateway.log": "e6fba406dbd45267c26cdbe5c24d910f52a6cb0c0b2a9fd0b45857d739994615",
+    "pdos-appauth-api-final.log": "e83e2a553572bd4f8aaa8c347c8d08c53764072895c180132c61f00220dc183d"
+  },
+  "database_verification": {
+    "57432": {
+      "database": "pdos_test",
+      "head": "0081_application_authorization",
+      "scoped_foreign_keys": 4,
+      "function_sha256": {
+        "application_authorization_is_current": "67cb7201cb1b66e98cb971436e1dbeb5db506f03b25fc15ca28e37dcef22b307",
+        "require_application_authorization": "23c9796449b1a797f95519cd6fb8906bb735fc38ff0b7b6b2f62bd8b631682b6"
+      },
+      "restricted_grants": {
+        "pdos_agent": {
+          "table_access": false,
+          "private_function_execute": false
+        },
+        "pdos_worker": {
+          "table_access": false,
+          "private_function_execute": false
+        }
+      }
+    },
+    "57433": {
+      "database": "pdos_test",
+      "head": "0081_application_authorization",
+      "scoped_foreign_keys": 4,
+      "function_sha256": {
+        "application_authorization_is_current": "67cb7201cb1b66e98cb971436e1dbeb5db506f03b25fc15ca28e37dcef22b307",
+        "require_application_authorization": "23c9796449b1a797f95519cd6fb8906bb735fc38ff0b7b6b2f62bd8b631682b6"
+      },
+      "restricted_grants": {
+        "pdos_agent": {
+          "table_access": false,
+          "private_function_execute": false
+        },
+        "pdos_worker": {
+          "table_access": false,
+          "private_function_execute": false
+        }
+      }
+    }
+  },
+  "dedicated_test_container": "pdos-appauth-test",
+  "dedicated_test_container_removed": true,
+  "no_external_model_or_embedding_calls": true,
+  "no_golden_writes": true,
+  "no_push_or_production_actions": true,
+  "n0_03_complete": false,
+  "limits": [
+    "application Observation and ContextManifest unfinished",
+    "capability and toolset policy families are not full runtime content bundle",
+    "Owner lease, multi-project anchors and derived source ACL unfinished",
+    "persistent waiting and intermediate recovery unfinished",
+    "paid tool and embedding fees unfinished",
+    "real purpose qualification and production adoption pending"
+  ]
+}

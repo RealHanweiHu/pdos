@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "read_only_business_facts": true,
+  "selected_issue_id": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+  "port": 62513,
+  "revision": 4,
+  "source_status": "needs_recheck",
+  "seconds": 0.272
+}

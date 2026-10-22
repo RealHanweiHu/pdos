@@ -1,0 +1,10 @@
+{
+  "stopped_exact_api_pid": 34911,
+  "command": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python -m uvicorn pdos_next.asgi:app --host 127.0.0.1 --port 8898",
+  "cwd_verified": true,
+  "at": "2026-10-04T01:27:39.892982+00:00",
+  "reason": "197 affected pure checks and current six-file static passed; load only 3 runtime changes",
+  "worker_and_web_stopped": false,
+  "database_write": 0,
+  "profiles_reused": true
+}

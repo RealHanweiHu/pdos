@@ -1,0 +1,17 @@
+[
+  "tests/verification_launch/test_read_projection_reuse.py",
+  "tests/quality_execution/test_pure.py",
+  "tests/professional_authority/test_assessment.py",
+  "tests/professional_authority_batch/test_batch.py",
+  "tests/professional_authority_batch/test_evidence.py",
+  "tests/test_resources/test_rules.py",
+  "tests/category_root/test_business_audience_batch.py",
+  "tests/test_business_audience_summary.py",
+  "tests/quality_execution_transactions/test_request_prepare.py",
+  "tests/quality_execution/test_transactions.py::test_original_bytes_read_runtime_revocation_is_atomic",
+  "tests/quality_execution/test_transactions.py::test_outbox_failure_rolls_back_issue_version_pointer_and_common_confirmation",
+  "tests/test_retained_execution.py::test_retained_rr_evidence_does_not_survive_source_withdrawal_between_requests",
+  "tests/verification_launch/test_transactions.py::test_inputs_are_readonly_even_when_sentinels_do_not_exist",
+  "tests/sample_handoff/test_transactions.py::test_new_observation_source_withdrawal_blocks_current_ready_and_new_ready_write",
+  "tests/sample_handoff/test_transactions.py::test_signer_qualification_revoke_restore_epoch_does_not_revive_readiness"
+]

@@ -1,0 +1,33 @@
+{
+  "source_head": "s0_0772",
+  "target_head": "s0_0773",
+  "retained_target": {
+    "port": 64245,
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d"
+  },
+  "clone_target": {
+    "port": 65296,
+    "marker": "13fef232-13f8-42a5-a7da-54d05e34c708"
+  },
+  "clone_catalog_downgrade_exact": false,
+  "downgrade_deparse_equivalence": [
+    {
+      "table": "verification_formal_requests",
+      "constraint": "verification_formal_requests_check13",
+      "checks": 77,
+      "all_equivalent": true
+    },
+    {
+      "table": "verification_handoff_facts",
+      "constraint": "verification_handoff_facts_status_check",
+      "checks": 77,
+      "all_equivalent": true
+    }
+  ],
+  "clone_catalog_reupgrade_exact": true,
+  "clone_orm_differences": [],
+  "backup_bytes": 43347580,
+  "backup_sha256": "f00fef37f6c00628bad21d4dcf8d8b074943207533fb71ccbe4726477161eb33",
+  "real_model_calls": 0,
+  "note": "Initial clone roundtrip stopped at catalog hash difference; original retained target was unchanged. pg_dump restored CHECK casts deparse differently; each affected finite state/operation combination evaluated before comparing other catalog sections."
+}

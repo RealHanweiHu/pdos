@@ -1,0 +1,71 @@
+Browser tab: 9, Title: "产品管理工作台 · PDOS", URL: "http://localhost:3047/product-work".
+1 AXWebArea 产品管理工作台 · PDOS, URL: localhost:3047/product-work
+	2 container
+		3 link Description: 跳到主要内容, Value: localhost:3047/product-work#main-content
+		4 link Description: PDOS 工作区, Value: localhost:3047/
+		5 container 主导航
+			6 link Description: 工作首页, Value: localhost:3047/
+			7 text 常用工作
+			8 content list
+				9 link Description: 组合与阻塞, Value: localhost:3047/portfolio
+				10 link Description: 项目快照, Value: localhost:3047/dashboard
+				11 link Description: 开发案例, Value: localhost:3047/cases
+				12 link Description: 产品管理工作台, Value: localhost:3047/product-work
+				13 link Description: 项目工作区, Value: localhost:3047/projects
+			14 button (collapsed) 其他工作入口, Secondary Actions: Expand
+				15 text 其他工作入口
+		16 link Description: 设置, Value: localhost:3047/settings/security
+		17 link Description: Initial Owner · 账户安全, Help: Initial Owner · Beehive Technology, Value: localhost:3047/settings/security
+		18 button (expanded) Description: 收起侧栏, Secondary Actions: Collapse
+		19 container 当前位置
+			20 text Beehive Technology
+			21 text 产品
+			22 text 产品管理工作台
+		23 link Description: 搜索, Value: localhost:3047/search
+		24 link Description: 现场采集, Value: localhost:3047/capture
+		25 button 切换为深色主题
+		26 button 退出登录
+		27 container main-content
+			28 container
+				29 heading 品类, Value: 1
+					30 text 品类
+				31 text 从客户需求、新品想法或产品迭代开始一份提案。
+				32 container 切换视图
+					33 checkbox Description: 列表视图, Value: 1
+					34 checkbox Description: 卡片视图, Value: 0
+				35 button 新建品类
+				36 button 刷新
+			37 content list
+				38 link Description: b7cffce7-8cbe-4ca9-bfa8-6857c12c36fe 合成充气设备研究 1 个用户群 · 1 个地域 · 1 个场景 · 1 个研究问题 草稿, Value: localhost:3047/product-work?category=153e0747-78f0-4885-8b93-e450e210a811
+		39 button (expanded) Description: 打开小Pai, Help: 小Pai · 你的个人 Agent, Secondary Actions: Collapse
+		40 container Description: 小Pai对话, ID: xiaopai-panel
+			41 container
+				42 heading 小Pai, Value: 1
+					43 text 小Pai
+				44 text 你的个人 Agent
+				45 button 展开小Pai完整页面
+				46 button 收起小Pai
+			47 container
+				48 text 已自动带入 产品工作
+			49 container 小Pai会话
+				50 text 私人会话 · 仅你可见
+				51 pop up button (collapsed, settable) Description: 历史会话, Value: 个人工作会话 · 10/6 18:17:41, Secondary Actions: Expand
+					52 menu
+						53 (disabled) 历史会话
+						54 (selected) 个人工作会话 · 10/6 18:17:41
+						55 个人工作会话 · 10/6 18:07:16
+				56 button 新建小Pai会话
+				57 container 会话消息
+					58 container 你的消息
+						59 text 研究欧美桨板充气泵（合成验证）
+					60 container 小Pai回复
+						61 text 自动研究尚未启用：本地运行计量与预算配置未完成。消息已保存，可以继续讨论需求。
+				62 container
+					63 text entry area (settable) 给小Pai的消息
+					64 button 资料与办理
+					65 button (disabled) 发送给小Pai
+					66 text Enter 发送 · Shift + Enter 换行
+			67 button (collapsed) 查看页面上下文, Secondary Actions: Expand
+				68 text 查看页面上下文
+
+The focused UI element is 40 container Description: 小Pai对话, ID: xiaopai-panel

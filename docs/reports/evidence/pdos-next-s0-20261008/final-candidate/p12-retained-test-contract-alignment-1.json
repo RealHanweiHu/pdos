@@ -1,0 +1,72 @@
+{
+  "scope": "Align nine functions (ten actual parameterized cases) to v1.1 03.12/08.11 direct retained execution contract; source withdrawal, intent, owned effects, scope and typed saved proof guards retained",
+  "changes": [
+    {
+      "path": "pdos-next/server/tests/test_resources/test_transactions.py",
+      "private_baseline": "pdos-next/.local/p12-resource-test-before.py",
+      "before": "6ee03af6035739e8dfe2f2da9ae4cd729e6488699be092a2cd6eeb513e124e5d",
+      "after": "e6c6aa8922553737d0a2b2973532eff3a60855e27d71f5974f3c29390d805431",
+      "changed_test_functions": {
+        "test_own_run_proof_rechecked_without_new_effects": "test_own_run_proof_rechecked_without_new_effects",
+        "test_rr_canonical_owned_sets_share_rows_and_reject_wrong_saved_scope_without_effects": "test_rr_canonical_owned_sets_share_rows_and_reject_wrong_saved_scope_without_effects"
+      }
+    },
+    {
+      "path": "pdos-next/server/tests/test_retained_execution.py",
+      "private_baseline": "pdos-next/.local/p12-retained-test-before.py",
+      "before": "a186247be19985e972ddef0d6d633bb65107d9bfcd5838894aa8b95871db9a18",
+      "after": "40cf6e4f79c792fc47fbc44648aa63826d0a058a17a7eab3e231c357682fa894",
+      "changed_test_functions": {
+        "test_retained_proof_rechecks_source_terminal_withdrawal_and_resource_sample_epochs": "test_retained_proof_rechecks_source_withdrawal_without_reinterpreting_asset_sample_epochs",
+        "test_retained_proof_rejects_issuer_disable_restore_aba_without_new_effects": "test_retained_proof_preserves_fixed_issuer_evidence_after_registry_aba",
+        "test_retained_proof_rejects_new_real_observation_of_configuration_deviation": "test_retained_proof_preserves_fixed_start_after_new_configuration_observation",
+        "test_retained_held_writer_read_permission_rechecks_untracked_current_after_source_io": "test_retained_held_writer_keeps_fixed_fact_after_late_current_successor"
+      }
+    },
+    {
+      "path": "pdos-next/server/tests/test_retained_registry_compatibility.py",
+      "private_baseline": "pdos-next/.local/p12-retained-registry-test-before.py",
+      "before": "d8eb5e43baadd5f0d7788042cc58b1f9eca8cb50be481290265a0206172d252b",
+      "after": "f5f7b40569d67091faecc201ff277e1a29fadb07ca22b474bb903b3650180b7c",
+      "changed_test_functions": {
+        "test_boolean_epoch_does_not_reproduce_real_original_dependency": "test_registry_boolean_epoch_cannot_reinterpret_fixed_proof_or_supply_a_valid_saved_epoch"
+      }
+    },
+    {
+      "path": "pdos-next/server/tests/verification_results/test_guards.py",
+      "private_baseline": "pdos-next/.local/p12-result-guards-test-before.py",
+      "before": "641bd3f7d4bdcb64e66eed1036fcddfb017587762d4bb8994c14d059009041ec",
+      "after": "80e004e1f4acf1f1719d29857d791034ac38e622c9417125adff7904870bbf7a",
+      "changed_test_functions": {
+        "test_concurrent_imports_same_run_cas_commit_exactly_one_atomic_group": "test_concurrent_imports_same_run_cas_commit_exactly_one_atomic_group"
+      }
+    },
+    {
+      "path": "pdos-next/server/tests/verification_results/test_runtime_guards.py",
+      "private_baseline": "pdos-next/.local/p12-result-runtime-test-before.py",
+      "before": "768008800386e9c0865763ef1f8150933e90b656b4a4e322246e9491fe984769",
+      "after": "b3336d2e587c72951f83a9fccc153f1929697d9f8f8da66177cf68b0d5b988b0",
+      "changed_test_functions": {
+        "test_store_read_runtime_revocation_blocks_import_and_rolls_back_confirmation": "test_store_io_rechecks_import_issuer_and_preserves_fixed_start_issuer"
+      }
+    }
+  ],
+  "runtime_schema_migrations_unchanged": true,
+  "fixtures_imports_all_other_tests_unchanged": true,
+  "signatures_and_decorators_unchanged": true,
+  "failed_actual_full_candidate": "p12-current-full-5.json",
+  "failed_evidence_sha256": "dc3c65202beb4493e5055ff8fa1d27819c21b9012e9f7ba304618365ebd2198b",
+  "expected_current_passed_nodes": [
+    "tests/test_resources/test_transactions.py::test_own_run_proof_rechecked_without_new_effects",
+    "tests/test_resources/test_transactions.py::test_rr_canonical_owned_sets_share_rows_and_reject_wrong_saved_scope_without_effects",
+    "tests/test_retained_execution.py::test_retained_proof_rechecks_source_withdrawal_without_reinterpreting_asset_sample_epochs",
+    "tests/test_retained_execution.py::test_retained_proof_preserves_fixed_issuer_evidence_after_registry_aba",
+    "tests/test_retained_execution.py::test_retained_proof_preserves_fixed_start_after_new_configuration_observation",
+    "tests/test_retained_execution.py::test_retained_held_writer_keeps_fixed_fact_after_late_current_successor",
+    "tests/test_retained_registry_compatibility.py::test_registry_boolean_epoch_cannot_reinterpret_fixed_proof_or_supply_a_valid_saved_epoch",
+    "tests/verification_results/test_guards.py::test_concurrent_imports_same_run_cas_commit_exactly_one_atomic_group",
+    "tests/verification_results/test_runtime_guards.py::test_store_io_rechecks_import_issuer_and_preserves_fixed_start_issuer[professional]",
+    "tests/verification_results/test_runtime_guards.py::test_store_io_rechecks_import_issuer_and_preserves_fixed_start_issuer[resources]"
+  ],
+  "complete_current_regression_pending": true
+}

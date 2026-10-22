@@ -1,0 +1,187 @@
+{
+  "schema_version": "pdos-wave18-actual-fact-ui-check-v1",
+  "status": "PASS_RECORDED_PREVIEW_DISPLAY_ONLY",
+  "scope": "Offline actual JSON consumed by frozen frontend helpers; no HTTP/DB/browser or actual authority attestation",
+  "checks": [
+    {
+      "name": "frozen_fact-workflow-contract",
+      "passed": true
+    },
+    {
+      "name": "transpile_fact-workflow-contract",
+      "passed": true
+    },
+    {
+      "name": "frozen_ui-contract",
+      "passed": true
+    },
+    {
+      "name": "transpile_ui-contract",
+      "passed": true
+    },
+    {
+      "name": "frozen_fact-workflow-state",
+      "passed": true
+    },
+    {
+      "name": "transpile_fact-workflow-state",
+      "passed": true
+    },
+    {
+      "name": "actual_host_shape",
+      "passed": true
+    },
+    {
+      "name": "actual_original_command_shape",
+      "passed": true
+    },
+    {
+      "name": "actual_scope_and_current",
+      "passed": true
+    },
+    {
+      "name": "actual_observation_capability",
+      "passed": true
+    },
+    {
+      "name": "actual_inputs",
+      "passed": true
+    },
+    {
+      "name": "actual_inputs_thirteen_keys",
+      "passed": true
+    },
+    {
+      "name": "preview_evaluation_clock",
+      "passed": true
+    },
+    {
+      "name": "actual_preview",
+      "passed": true
+    },
+    {
+      "name": "actual_preview_thirteen_keys",
+      "passed": true
+    },
+    {
+      "name": "actual_business_material",
+      "passed": true
+    },
+    {
+      "name": "saved_effect_boundaries",
+      "passed": true
+    },
+    {
+      "name": "whole_original_record_options",
+      "passed": true
+    },
+    {
+      "name": "verified_record_clock_defaults",
+      "passed": true
+    },
+    {
+      "name": "original_completions_available",
+      "passed": true
+    },
+    {
+      "name": "actual_clock_values_preserved",
+      "passed": true
+    }
+  ],
+  "failure_codes": [],
+  "sources": {
+    "tool": {
+      "sha256": "b10c382741e89a75e15e573806752887796d24b6f2cfc5d807b84597d1fde373"
+    },
+    "fact-workflow-contract": {
+      "sha256": "06a42c79bae5a85e4f0dcfbfd55f472c823b0894615c85c7a08953156a229b73"
+    },
+    "ui-contract": {
+      "sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b"
+    },
+    "fact-workflow-state": {
+      "sha256": "748754be30a1fc7047877f1441ac7b60b6ed4849940e1bd0b8c81f25d75c9959"
+    }
+  },
+  "responses": {
+    "manifest": {
+      "sha256": "1d4b08b9344db9eb2e68f70808c4bcca6890f416c52b74816f51b3d38cea24a7",
+      "bytes": 4346
+    },
+    "host": {
+      "sha256": "1a76c6c72fdcfc63d774aaf6430e10358724c3dca2bfa68e63d64b012f59c27b",
+      "bytes": 65227
+    },
+    "inputs": {
+      "sha256": "bde2c9791e9769830d15616fcf0be7ea6aa4fdbe850b9d49099d4eaa5b5caa0a",
+      "bytes": 181282
+    },
+    "preview": {
+      "sha256": "7bae9754a8442a729067e39897183fc8001ef51330995f88e903ef4c37fc3651",
+      "bytes": 181480
+    },
+    "demo": {
+      "sha256": "9f1795ec722d731e7cd00f3a31a6d90d381abf3721f3de3c5894604ac065a368",
+      "bytes": 234176
+    }
+  },
+  "counts": {
+    "host_rules": 1,
+    "host_history": 1,
+    "host_record_options": 1,
+    "full_source_reads": 19,
+    "selected_records": 1,
+    "rendered_sections": 10,
+    "rendered_rows": 43,
+    "rendered_sources": 1,
+    "fixed_failures": 1,
+    "actual_completed_actions": 1
+  },
+  "timing": {
+    "record_clock_defaults": 1,
+    "original_event_clock_rendered_verbatim": true,
+    "original_timezone_rendered_verbatim": true,
+    "selected_clock_microseconds_parseable": true,
+    "first_default_event_same_microsecond_instant": true,
+    "original_record_occurrence_preserved": true,
+    "completion_clock_count": 1,
+    "completion_clocks_rendered_verbatim": true
+  },
+  "typescript_version": "5.9.3",
+  "preview_clock_basis": "explicit_historical_offline_display_only",
+  "sections": [
+    {
+      "rows": 4
+    },
+    {
+      "rows": 4
+    },
+    {
+      "rows": 2
+    },
+    {
+      "rows": 7
+    },
+    {
+      "rows": 4
+    },
+    {
+      "rows": 7
+    },
+    {
+      "rows": 4
+    },
+    {
+      "rows": 3
+    },
+    {
+      "rows": 4
+    },
+    {
+      "rows": 4
+    }
+  ],
+  "business_complete": true,
+  "effect_nonempty": true,
+  "synthetic": true
+}

@@ -1,0 +1,26 @@
+{
+  "controlled_files": 1110,
+  "candidate": "v3 visibility/live-dialog navigation fix",
+  "application_sources_match_except_low_impact_delta": true,
+  "low_impact_delta": {
+    "src/components/product-work/product-proposals.tsx": {
+      "built": "fc9ed38c463f4db71c815995dea95677f6694ecbac80e404b6e3f15487f32c35",
+      "current": "a1bd1f1fc8f8d131c411234f3d09432b871e48536f2135521ca57b4676e9abbe",
+      "kind": "copy"
+    },
+    "src/components/product-work/product-workspace.tsx": {
+      "built": "db24bd2f5092e5b9ed188e179b3bb728aeb97fcb26c48b99d1acc1b6d4a552c9",
+      "current": "929286b5a1d1543bef3662dd5b75ad6162174abbdf3f41dfd026d96817629374",
+      "kind": "whitespace"
+    }
+  },
+  "verification": [
+    "final-copy-regression.log: 5 passed",
+    "final-copy-lint.log: exit 0",
+    "git diff --check after whitespace repair"
+  ],
+  "full_build_repeated_after_low_impact_delta": false,
+  "generated_exception": {
+    "next-env.d.ts": "Next production .next/types vs local .next/dev/types; excluded from application hash comparison"
+  }
+}

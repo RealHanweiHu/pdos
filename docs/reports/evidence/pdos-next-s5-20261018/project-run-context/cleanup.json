@@ -1,0 +1,24 @@
+{
+  "own_preview_ports": [
+    {
+      "port": 63582,
+      "closed": true
+    },
+    {
+      "port": 63583,
+      "closed": true
+    }
+  ],
+  "own_browser_closed": true,
+  "short_synthetic_login_removed": 1,
+  "private_browser_token_file_removed": true,
+  "shared_database_retained": true,
+  "shared_temporal_retained": true,
+  "old_backups_retained": true,
+  "browser_created_runs_cancelled": 2,
+  "synthetic_pg_fixture_history_retained": true,
+  "push": false,
+  "production": false,
+  "real_model_calls": 0,
+  "cleanup_first_attempt": "UndefinedColumn RETURNING id rolled back before mutation; corrected RETURNING 1 then completed"
+}

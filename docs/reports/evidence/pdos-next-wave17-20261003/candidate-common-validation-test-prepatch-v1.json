@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "status": "static-ready; owned pure not executed pending Root common-source patch",
+  "test": {
+    "path": "pdos-next/server/tests/capa_effectiveness/test_common_execute_validation.py",
+    "sha256": "96867def3f281a0bf613996f0752e76113f7e8a37a051891a8304636bdbb516c"
+  },
+  "current_common_source_sha256": "8eb1c988ccc01095db0dbb4c084fae555540035894d81a4fd47627fd8ba18602",
+  "owned_cases_expected_from_parameter_products": 29,
+  "actual_functions": [
+    "pdos_next.service.execute",
+    "consume_material_confirmation",
+    "append_receipt",
+    "ConsumptionHost.bind_before_transition",
+    "capture_after_transition",
+    "require_live"
+  ],
+  "substitutes": [
+    "Explicit owner callbacks/outcomes",
+    "SQL Session.scalar/get reads",
+    "Session.flush",
+    "require_access/source_for",
+    "legacy marker callback/receipt response serialization"
+  ],
+  "real_in_memory_boundaries": [
+    "SQLAlchemy Session and active transaction",
+    "Persistent detached Confirmation identity/history",
+    "Actual common False-to-True consumption and ConsumptionHost marker"
+  ],
+  "checks": {
+    "ruff_format_exit_code": 0,
+    "ruff_check_exit_code": 0,
+    "ast_compile_exit_code": 0,
+    "pytest": "not run"
+  },
+  "not_attested": [
+    "Actual original bytes or professional qualification",
+    "PostgreSQL/deferred atom",
+    "Actual runtime performance",
+    "Any public HTTP or business write"
+  ],
+  "run_after_root_patch": ".venv/bin/python -m pytest --noconftest tests/capa_effectiveness/test_common_execute_validation.py -q"
+}

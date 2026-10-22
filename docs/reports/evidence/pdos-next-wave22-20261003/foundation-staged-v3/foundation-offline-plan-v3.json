@@ -1,0 +1,325 @@
+{
+  "mode": "offline_scaffold_not_executed",
+  "runtime_host": "INTEGRATION_REQUIRED",
+  "steps": [
+    {
+      "name": "scope",
+      "actor": null,
+      "operations": [],
+      "prerequisites": [],
+      "gate": "verified(read_state) exact62513+marker; new Product/Project, actual 3 Principals/Grants",
+      "mode": "host"
+    },
+    {
+      "name": "source_and_configuration",
+      "actor": "maker",
+      "operations": [
+        "evidence.artifact.register",
+        "product.definition.draft",
+        "project.create",
+        "engineering.bom.revise",
+        "engineering.configuration.create",
+        "npi.process.revise",
+        "build.create"
+      ],
+      "prerequisites": [
+        "scope"
+      ],
+      "gate": "product visibility from first registration; exact source/config versions; quantity2 ea",
+      "mode": "common"
+    },
+    {
+      "name": "authority_and_profiles",
+      "actor": null,
+      "operations": [],
+      "prerequisites": [
+        "source_and_configuration"
+      ],
+      "gate": "actual server issuer/import Receipts for every required op before Start; no public self-grant",
+      "mode": "host"
+    },
+    {
+      "name": "build_prepare",
+      "actor": "maker",
+      "operations": [
+        "build.readiness.compute"
+      ],
+      "prerequisites": [
+        "authority_and_profiles"
+      ],
+      "gate": "known BOM demand2, new stock pool/equipment, exact scope/resource facts; no generic waiver",
+      "mode": "common"
+    },
+    {
+      "name": "build_authorize",
+      "actor": "maker",
+      "operations": [
+        "build.engineering.authorize",
+        "build.manufacturing.authorize"
+      ],
+      "prerequisites": [
+        "build_prepare"
+      ],
+      "gate": "two separate current engineering/manufacturing T2 approvals and four controls",
+      "mode": "human_ui"
+    },
+    {
+      "name": "build_and_samples",
+      "actor": "maker",
+      "operations": [
+        "build.start",
+        "build.configuration.actual.record",
+        "build.output.record",
+        "build.sample.allocate",
+        "build.sample.readiness.record"
+      ],
+      "prerequisites": [
+        "build_authorize"
+      ],
+      "gate": "actual sourced Start/Actual/Lot clocks; two real A sample identities; deviation blocks",
+      "mode": "actual_event"
+    },
+    {
+      "name": "original_request",
+      "actor": "observer",
+      "operations": [
+        "verification.preparation.record",
+        "verification.request.create",
+        "verification.method.prepare"
+      ],
+      "prerequisites": [
+        "build_and_samples"
+      ],
+      "gate": "new Request; fixed actual first Sample; full accepted sample/item range,23C dry criterion",
+      "mode": "common"
+    },
+    {
+      "name": "original_offer",
+      "actor": "maker",
+      "operations": [
+        "verification.handoff.offer"
+      ],
+      "prerequisites": [
+        "original_request"
+      ],
+      "gate": "current limited Build and purpose-bound SampleReady; no old availability shortcut",
+      "mode": "common"
+    },
+    {
+      "name": "original_accept_and_method",
+      "actor": "observer",
+      "operations": [
+        "verification.actual_method.prepare",
+        "verification.handoff.accept"
+      ],
+      "prerequisites": [
+        "original_offer"
+      ],
+      "gate": "actual perSample/item applicability+batch; quality current authority; original source ACL",
+      "mode": "common"
+    },
+    {
+      "name": "original_plan_and_promise",
+      "actor": "observer",
+      "operations": [
+        "test.run.plan",
+        "verification.schedule.promise"
+      ],
+      "prerequisites": [
+        "original_accept_and_method"
+      ],
+      "gate": "trusted TestResourceFact, equipment+Observer person; exact future window/full accepted range",
+      "mode": "common"
+    },
+    {
+      "name": "original_start_and_result",
+      "actor": "observer",
+      "operations": [
+        "test.run.start",
+        "evidence.original.upload",
+        "test.results.import",
+        "test.result.compute"
+      ],
+      "prerequisites": [
+        "original_plan_and_promise"
+      ],
+      "gate": "actual window Start, real scan/parse and exact original JSONL,11.0000 synthetic failure",
+      "mode": "actual_event"
+    },
+    {
+      "name": "original_run_review_and_disposition",
+      "actor": "observer",
+      "operations": [
+        "test.run.review",
+        "test.disposition.decide"
+      ],
+      "prerequisites": [
+        "original_start_and_result"
+      ],
+      "gate": "distinct human T2 decisions; actual paired Current/LaunchFact/ResultAction/Run Receipt",
+      "mode": "human_ui"
+    },
+    {
+      "name": "issue_and_capa",
+      "actor": "maker",
+      "operations": [
+        "quality.issue.create",
+        "quality.issue.triage",
+        "quality.issue.containment.record",
+        "quality.capa.draft"
+      ],
+      "prerequisites": [
+        "original_run_review_and_disposition"
+      ],
+      "gate": "new real Failure/Event link; product-shared Issue; action executorMaker, independent requirement",
+      "mode": "common"
+    },
+    {
+      "name": "root_cause",
+      "actor": "maker",
+      "operations": [
+        "quality.issue.root_cause.decide"
+      ],
+      "prerequisites": [
+        "issue_and_capa"
+      ],
+      "gate": "real sourced investigation conclusion, current quality duty+qualification, named T2 UUID",
+      "mode": "human_ui"
+    },
+    {
+      "name": "actual_completion",
+      "actor": "maker",
+      "operations": [
+        "quality.capa.actions.complete"
+      ],
+      "prerequisites": [
+        "root_cause"
+      ],
+      "gate": "exact9field actualCompletion+12field nativeClassification, full actionSHA, T1; not physical fix",
+      "mode": "actual_event"
+    },
+    {
+      "name": "followup_request",
+      "actor": "observer",
+      "operations": [
+        "verification.preparation.record",
+        "verification.request.create",
+        "verification.method.prepare"
+      ],
+      "prerequisites": [
+        "actual_completion"
+      ],
+      "gate": "second new Request/logicalRun, actual second Sample; same fixed config only if current safe",
+      "mode": "common"
+    },
+    {
+      "name": "followup_offer",
+      "actor": "maker",
+      "operations": [
+        "verification.handoff.offer"
+      ],
+      "prerequisites": [
+        "followup_request"
+      ],
+      "gate": "real secondSample current ready for precise purpose, actual Build qualification",
+      "mode": "common"
+    },
+    {
+      "name": "followup_accept_and_plan",
+      "actor": "observer",
+      "operations": [
+        "verification.actual_method.prepare",
+        "verification.handoff.accept",
+        "test.run.plan",
+        "verification.schedule.promise"
+      ],
+      "prerequisites": [
+        "followup_offer"
+      ],
+      "gate": "fresh exact resource fact; disjoint actual reservation window; own second Sample usage",
+      "mode": "common"
+    },
+    {
+      "name": "followup_start_and_result",
+      "actor": "observer",
+      "operations": [
+        "test.run.start",
+        "evidence.original.upload",
+        "test.results.import",
+        "test.result.compute"
+      ],
+      "prerequisites": [
+        "followup_accept_and_plan"
+      ],
+      "gate": "separate actual Start/report bytes/partial-final clocks; no anticipated pass or old Run reuse",
+      "mode": "actual_event"
+    },
+    {
+      "name": "followup_run_review_and_disposition",
+      "actor": "observer",
+      "operations": [
+        "test.run.review",
+        "test.disposition.decide"
+      ],
+      "prerequisites": [
+        "followup_start_and_result"
+      ],
+      "gate": "two separate T2 decisions; exact Current successor evidence, no direct Formal Receipt fiction",
+      "mode": "human_ui"
+    },
+    {
+      "name": "link_and_candidate",
+      "actor": "maker",
+      "operations": [
+        "quality.capa.followup.link",
+        "quality.capa.verification.candidate.record"
+      ],
+      "prerequisites": [
+        "followup_run_review_and_disposition"
+      ],
+      "gate": "completed Issue origin6; actual current paired outputs, complete failure/sample/item mappings",
+      "mode": "common"
+    },
+    {
+      "name": "rule",
+      "actor": "maker",
+      "operations": [
+        "quality.capa.verification.rule.import"
+      ],
+      "prerequisites": [
+        "actual_completion"
+      ],
+      "gate": "host-only actual RulePublisher, exact anchor/method/criterion/sampling/source/issuer profile",
+      "mode": "host"
+    },
+    {
+      "name": "observation",
+      "actor": "observer",
+      "operations": [
+        "quality.capa.observation.record"
+      ],
+      "prerequisites": [
+        "rule",
+        "link_and_candidate"
+      ],
+      "gate": "actual selected target records/raw_material and elapsed interval; system record!=physical coverage",
+      "mode": "actual_event"
+    },
+    {
+      "name": "independent_review_handoff",
+      "actor": "independent_reviewer",
+      "operations": [
+        "quality.capa.verification.review"
+      ],
+      "prerequisites": [
+        "observation"
+      ],
+      "gate": "read-only readiness for complete Pair/Rule/Observation/participants; no automated T2 Review or Close",
+      "mode": "human_ui"
+    }
+  ],
+  "automatic_review": false,
+  "effectiveness": null,
+  "close": false,
+  "checkpoint_written": false
+}

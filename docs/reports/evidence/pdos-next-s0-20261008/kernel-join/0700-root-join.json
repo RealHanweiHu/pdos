@@ -1,0 +1,9 @@
+{
+  "parent": "s0_0424",
+  "revision": "s0_0700",
+  "old_source_sha256": "e1fec28bd543ddb17861d79d5b05d20125359b9d95b4f2f8cf08960447063901",
+  "new_source_sha256": "3d1567050519b529bff7f5d09bc469c26d7dc84ea9bc3c6422d6b6c791589d87",
+  "status": "actual_root_upgraded_through_s0_0717",
+  "actual_head": "s0_0717",
+  "schema_evidence": "0717-actual-schema.json"
+}

@@ -1,0 +1,88 @@
+{
+  "database_head": "s0_0762",
+  "business_counts": {
+    "categories": 2,
+    "products": 3,
+    "projects": 2,
+    "proposals": 2,
+    "action_receipts": 6,
+    "agent_runs": 0,
+    "agent_tool_calls": 0
+  },
+  "current_results": {
+    "query": "充气",
+    "kind": "all",
+    "items": [
+      {
+        "kind": "project",
+        "id": "7c9ff068-e129-42b4-81a0-bdbe798cedf3",
+        "title": "自行车充气泵开发",
+        "category_id": "f7ea946c-f579-476e-9cba-f0138957ea5a",
+        "category_name": "自行车充气泵",
+        "product_id": "7b52b863-ce80-4a31-80a0-b1a12ec8171a"
+      },
+      {
+        "kind": "product",
+        "id": "7b52b863-ce80-4a31-80a0-b1a12ec8171a",
+        "title": "自行车充气泵开发",
+        "category_id": "f7ea946c-f579-476e-9cba-f0138957ea5a",
+        "category_name": "自行车充气泵",
+        "product_id": "7b52b863-ce80-4a31-80a0-b1a12ec8171a"
+      },
+      {
+        "kind": "proposal",
+        "id": "03ca13d4-a017-4806-bd15-c23ae32caf5b",
+        "title": "自行车充气泵开发",
+        "category_id": "f7ea946c-f579-476e-9cba-f0138957ea5a",
+        "category_name": "自行车充气泵",
+        "product_id": null
+      },
+      {
+        "kind": "category",
+        "id": "f7ea946c-f579-476e-9cba-f0138957ea5a",
+        "title": "自行车充气泵",
+        "category_id": "f7ea946c-f579-476e-9cba-f0138957ea5a",
+        "category_name": "自行车充气泵",
+        "product_id": null
+      },
+      {
+        "kind": "project",
+        "id": "1cccb082-0e44-4c16-acac-e601819de857",
+        "title": "便携充气泵研发",
+        "category_id": "41232990-a38c-4cd2-b354-09d1a5bfc33b",
+        "category_name": "汽车充气泵",
+        "product_id": "5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f"
+      },
+      {
+        "kind": "product",
+        "id": "5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f",
+        "title": "便携充气泵研发",
+        "category_id": "41232990-a38c-4cd2-b354-09d1a5bfc33b",
+        "category_name": "汽车充气泵",
+        "product_id": "5ded7f3a-6c62-486d-8bc9-b5faeb19ef3f"
+      },
+      {
+        "kind": "proposal",
+        "id": "de42754d-a6b2-4758-bb39-2fe3500468aa",
+        "title": "便携充气泵研发",
+        "category_id": "41232990-a38c-4cd2-b354-09d1a5bfc33b",
+        "category_name": "汽车充气泵",
+        "product_id": null
+      },
+      {
+        "kind": "category",
+        "id": "41232990-a38c-4cd2-b354-09d1a5bfc33b",
+        "title": "汽车充气泵",
+        "category_id": "41232990-a38c-4cd2-b354-09d1a5bfc33b",
+        "category_name": "汽车充气泵",
+        "product_id": null
+      }
+    ],
+    "next_cursor": null,
+    "as_of": "2026-10-16T19:54:06.703769+00:00"
+  },
+  "api_business_posts": 0,
+  "temporary_login_expired": true,
+  "model_calls": 0,
+  "external_calls": 0
+}

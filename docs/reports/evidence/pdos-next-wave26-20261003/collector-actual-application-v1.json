@@ -1,0 +1,14 @@
+{
+  "status": "APPLIED_PRIVATE_COLLECTOR_PENDING_ACTUAL_DIAGNOSIS",
+  "mapping": {
+    "candidate": "pdos-next/.local/wave26-resource-material-staged/service.py",
+    "target": "pdos-next/server/pdos_next/domain/test_resources/service.py",
+    "before_sha256": "d40119ba12f5504ffe9f2259e4bf9504ad2060829112cfbfecdd6b08a7a608c1",
+    "after_sha256": "e23dd54c312db0c051f3ca6ea4b95190949c509696c8be5c267d67425d975c5b"
+  },
+  "manifest_sha256": "ce58891033af1b6be27c431adc6d8008c734fdea4ab0086a710f631fec129bae",
+  "runtime_default_fingerprint_or_public_surface_changed": false,
+  "compatibility_enabled": false,
+  "qualification_imports": 0,
+  "schema_or_DB_mutated": false
+}

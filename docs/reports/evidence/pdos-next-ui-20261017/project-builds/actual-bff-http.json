@@ -1,0 +1,70 @@
+{
+  "checks": [
+    {
+      "label": "exact project-scoped real Build list",
+      "method": "GET",
+      "path": "/api/v1/categories/1840eff2-d4de-4085-b52e-682112757d75/products/888b76dd-d4e1-475d-b5b5-fae9a637f9f2/builds?project_id=98801941-67b8-4da4-9bab-fdd8170d6de4",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "current reviewed Run with retained historical projection",
+      "method": "GET",
+      "path": "/api/v1/categories/1840eff2-d4de-4085-b52e-682112757d75/products/888b76dd-d4e1-475d-b5b5-fae9a637f9f2/verification-results?build_id=18fb2317-b390-4d29-9eac-a7de6a32f4cf",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "missing session rejected",
+      "method": "GET",
+      "path": "/api/v1/categories/1840eff2-d4de-4085-b52e-682112757d75/products/888b76dd-d4e1-475d-b5b5-fae9a637f9f2/builds?project_id=98801941-67b8-4da4-9bab-fdd8170d6de4",
+      "status": 401,
+      "cache_control": ""
+    },
+    {
+      "label": "repeated project rejected",
+      "method": "GET",
+      "path": "/api/v1/categories/1840eff2-d4de-4085-b52e-682112757d75/products/888b76dd-d4e1-475d-b5b5-fae9a637f9f2/builds?project_id=98801941-67b8-4da4-9bab-fdd8170d6de4&project_id=98801941-67b8-4da4-9bab-fdd8170d6de4",
+      "status": 422,
+      "cache_control": ""
+    },
+    {
+      "label": "unknown project rejected by actual domain",
+      "method": "GET",
+      "path": "/api/v1/categories/1840eff2-d4de-4085-b52e-682112757d75/products/888b76dd-d4e1-475d-b5b5-fae9a637f9f2/builds?project_id=56d51731-4157-4b06-94ce-ac3b6bcf1fdd",
+      "status": 403,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "malformed project rejected",
+      "method": "GET",
+      "path": "/api/v1/categories/1840eff2-d4de-4085-b52e-682112757d75/products/888b76dd-d4e1-475d-b5b5-fae9a637f9f2/builds?project_id=bad",
+      "status": 422,
+      "cache_control": ""
+    },
+    {
+      "label": "unknown Build rejected by actual domain",
+      "method": "GET",
+      "path": "/api/v1/categories/1840eff2-d4de-4085-b52e-682112757d75/products/888b76dd-d4e1-475d-b5b5-fae9a637f9f2/verification-results?build_id=9761141d-9704-4ca7-b3dd-f4be48dd809c",
+      "status": 403,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "extraneous project query ignored; explicit Build scope retained",
+      "method": "GET",
+      "path": "/api/v1/categories/1840eff2-d4de-4085-b52e-682112757d75/products/888b76dd-d4e1-475d-b5b5-fae9a637f9f2/verification-results?build_id=18fb2317-b390-4d29-9eac-a7de6a32f4cf&project_id=6057a95e-79ff-4397-999a-ed12ef2c2189",
+      "status": 200,
+      "cache_control": "no-store"
+    },
+    {
+      "label": "malformed run rejected",
+      "method": "GET",
+      "path": "/api/v1/categories/1840eff2-d4de-4085-b52e-682112757d75/products/888b76dd-d4e1-475d-b5b5-fae9a637f9f2/verification-results?build_id=18fb2317-b390-4d29-9eac-a7de6a32f4cf&run_id=bad",
+      "status": 422,
+      "cache_control": ""
+    }
+  ],
+  "passed": 9,
+  "uses_actual_domain_api": true,
+  "uses_response_proxy": false
+}

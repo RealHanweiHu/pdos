@@ -1,0 +1,12 @@
+{
+  "status": "INSTALLED_RESTART_REQUIRED",
+  "recorded_at": "2026-10-03T18:40:03.330585+00:00",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "configured_scopes": 2,
+  "old_scope_preserved": true,
+  "old_sha256": "7312cd90c53605e89b2336499b1128ec80f8f7bb7e3d8c01d7878561719849d9",
+  "new_sha256": "b1065833d77b26f013da9d47eee60b2a4d704f5fd118e8b2fc894d46b934be68",
+  "stopped_verified_api_pid": 18475,
+  "operational_receipt_id": "f8ead897-6b53-4180-b469-a72efabbefd0",
+  "production_qualification": false
+}

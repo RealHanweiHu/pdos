@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "scope": "Internal fixed-output read mode; not a runtime performance or PG qualification result",
+  "old_source_sha256": "ad7390463fc84cff5b767f3046044a2817edf12e2e4601dfda9eb59c7f6b8996",
+  "source": {
+    "path": "pdos-next/server/pdos_next/domain/verification_front/service.py",
+    "sha256": "dcb1196a83cd28fbb3a41e53322c75a2ee9ecb83520ebbf6b5472d0dd491293c"
+  },
+  "test": {
+    "path": "pdos-next/server/tests/verification_front/test_fixed_output_view.py",
+    "sha256": "bd68c2c74c6f48d4b08bc6b024c180b8308b3ad19d3ea74f57702297f07fef49"
+  },
+  "approved_delta_exact_reversal": true,
+  "checks": {
+    "owned_pure": {
+      "passed": 14,
+      "seconds": 0.95,
+      "exit_code": 0,
+      "conftest": false
+    },
+    "ruff_check": 0,
+    "ruff_format": 0,
+    "ast_compile": 0
+  },
+  "raw_log": "docs/reports/evidence/pdos-next-wave17-20261003/front-fixed-output-check-v1.log",
+  "log_kind": "Faithful captured tool stdout with command labels; initial pytest yielded through PTY session 47017 and final completion was exit 0",
+  "guard_evidence": [
+    "Default three future caller assessments; fixed zero",
+    "Same actual get_request/_view parent and child guard calls",
+    "Same fixed business fields excluding three intentionally UI-only top-level fields",
+    "Original Method/Window authority and child source reads preserved",
+    "Parent private ACL/snapshot/source failures and missing child behavior preserved"
+  ],
+  "not_run": [
+    "Database",
+    "HTTP",
+    "public pytest",
+    "public build",
+    "performance measurement"
+  ],
+  "remaining": "Root centralized actual HTTP/PG checks; no BFF timing claim"
+}

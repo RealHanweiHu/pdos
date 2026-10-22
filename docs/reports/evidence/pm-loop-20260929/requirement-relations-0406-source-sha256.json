@@ -1,0 +1,8 @@
+{
+  "server/app/domain/definition_intake.py": "7ad6bd1ba07e41d0e3ee3d2604a3eb7fe6539e5f9cf0f4271645715befc948b9",
+  "server/app/domain/competitors.py": "5eefa0e9758d83ffda527dd82c4dfbf8cb8f4eb802f00bcd55af2bfded5bf84e",
+  "server/app/domain/market_analysis.py": "33b7f1eee2e96a710f8d00a2a6c59e26498a51de9ca3559141b8c29c07176969",
+  "server/app/domain/product_matrix_coverage.py": "2e08e1c6773e90977d3f34668606a489603935e851a8914d6bcb271d2a667320",
+  "server/tests/test_definition_requirement_sources_api.py": "0d7b3d929cc564558b11936ab1040084548073bf8efeee30948f2afef1408541",
+  "server/tests/test_opportunity_requirement_relations_api.py": "333f728fe3449c63b4b2085023047565f174f1bc87d49a2f45670a006d5d3ef7"
+}

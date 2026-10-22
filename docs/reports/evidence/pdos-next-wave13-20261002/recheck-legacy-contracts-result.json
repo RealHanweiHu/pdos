@@ -1,0 +1,15 @@
+{
+  "selections": [
+    "tests/test_build_execution.py::test_unknown_preparation_does_not_enable_start_or_quality_execution[test.run.start]",
+    "tests/test_verification_execution.py::test_preparation_does_not_grant_professional_or_physical_authority"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 25.49,
+  "port": 62513,
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "source": {
+    "pdos-next/server/tests/test_build_execution.py": "b162c98aca3b70b895907b55618fe9405757e94f2acb238734f88d003a7c3852",
+    "pdos-next/server/tests/test_verification_execution.py": "4412a86010b33279b6c1be2bb7bf2b1e30d61418c86829816b2426c58aa8eff3"
+  },
+  "production_unchanged": true
+}

@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-10-16T22:21:48.202833+00:00",
+  "test_database": "verified independent 64245/pdos_test",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "schema_head": "s0_0770",
+  "new_databases": 0,
+  "new_migrations": 0,
+  "new_listening_services": 0,
+  "owned_test_processes_exited": true,
+  "in_process_protocol_servers_closed": true,
+  "main_test_database_retained": true,
+  "shared_temporal_and_runtime_not_stopped": true,
+  "real_external_mcp_calls": 0,
+  "real_model_calls": 0,
+  "real_kms_calls": 0,
+  "production": false,
+  "push": false
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="8.650" timestamp="2026-10-11T06:01:45.301434-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.products.test_definition_parent_lineage_pg" name="test_native_derivation_uses_latest_parent_in_its_actual_variant_lineage" time="8.278"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;
+
+    def test_native_derivation_uses_latest_parent_in_its_actual_variant_lineage(work):
+        artifact_id = source(work)
+        historical = synthetic_parent(work, spec_values=[])
+        response = work.client.get(
+            f"/v1/categories/{work.category}/products/{work.product}/definitions",
+            headers=work.headers,
+        )
+        assert response.status_code == 200, response.text
+        parent = next(row for row in response.json()["items"] if row["id"] == str(historical.id))
+        native, _, _ = derive(work, parent, artifact_id)
+        proposal_id, _ = create(work, derivative_payload(work, historical, "new_variant"))
+        submit(work, proposal_id)
+        decision, _ = save(work, decide_request(work, proposal_id), actor=work.peer)
+        fixed_id = UUID(decision["result"]["definition_id"])
+        continued = post(work, inherit(work, fixed_id))
+&gt;       assert continued.status_code == 200, continued.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/products/test_definition_parent_lineage_pg.py:37: AssertionError</failure></testcase></testsuite></testsuites>

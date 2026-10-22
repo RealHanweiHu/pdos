@@ -1,0 +1,105 @@
+{
+  "synthetic_tool_checks_only": true,
+  "actual_performance_run": false,
+  "checks": [
+    {
+      "case": "all_32_groups_complete",
+      "passed": true,
+      "result": 0
+    },
+    {
+      "case": "publication_29_samples",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "quality_failed_sample",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "quality_pytest_failed",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "heavy_pytest_failed",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "source_changed",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "source_drift",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "nan_timing",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "negative_timing",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "negative_app_sql",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "boolean_sql",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "b4_failed_http",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "missing_quality_inputs",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "empty_sample_group",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "threshold_exceeded",
+      "passed": true,
+      "result": 1
+    },
+    {
+      "case": "skill_and_parser_runtime_configuration_frozen",
+      "passed": true
+    },
+    {
+      "case": "missing_junit_cases",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "failed_junit_case",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "skipped_junit_case",
+      "passed": true,
+      "result": "rejected"
+    },
+    {
+      "case": "incomplete_b4_junit",
+      "passed": true,
+      "result": "rejected"
+    }
+  ]
+}

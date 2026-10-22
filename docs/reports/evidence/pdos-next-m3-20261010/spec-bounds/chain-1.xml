@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="5" time="7.475" timestamp="2026-10-11T07:15:51.375960-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_spec_bound_transactions_pg" name="test_actual_noise_seed_claim_g0_inherit_and_variant_keep_single_upper" time="1.852"><failure message="KeyError: 'lower'">work = &lt;isolated synthetic test scope&gt;
+
+    def test_actual_noise_seed_claim_g0_inherit_and_variant_keep_single_upper(work):
+        seed = next(
+            row for row in preview("bicycle-pump").categories[0].parameters if row.key == "noise_level"
+        )
+        assert seed.value_type == "number" and seed.unit == "dB(A)"
+        published, _ = save(
+            work,
+            request(
+                work,
+                "category.parameter.publish",
+                parameter(
+                    key=seed.key,
+                    name=seed.name,
+                    value_type=seed.value_type,
+                    unit=seed.unit,
+                    direction=seed.direction,
+                    standard_condition=seed.standard_condition,
+                    method=seed.method,
+                    acceptance_criterion=seed.acceptance_criterion,
+                ),
+            ),
+        )
+        identity = UUID(published["result"]["parameter_id"])
+        source = artifact(work, body=QUOTE)
+        claim_input = claim_body(source, quote=QUOTE)
+        claim_input["content"] = {
+            "parameter_id": str(identity),
+            "parameter_version": 1,
+            "upper": "75",
+            "unit": seed.unit,
+            "modality": "must",
+            "exceptions": [EXCEPTION],
+            "text": QUOTE,
+        }
+        claim_response = post(work, evidence_request(work, "evidence.claim.record", claim_input))
+        assert claim_response.status_code == 200, claim_response.text
+        claim_id = UUID(claim_response.json()["subject_id"])
+        with Session(work.admin) as session:
+            saved_claim = session.get(Claim, claim_id)
+&gt;           assert saved_claim.content["upper"] == "75" and saved_claim.content["lower"] is None
+                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'lower'
+
+tests/preproject/test_spec_bound_transactions_pg.py:114: KeyError</failure></testcase><testcase classname="tests.preproject.test_spec_bound_transactions_pg" name="test_removed_single_bound_history_still_blocks_destructive_downgrade" time="2.626" /><testcase classname="tests.preproject.test_spec_bound_transactions_pg" name="test_app_cannot_insert_empty_or_mixed_numeric_shape[shape0]" time="0.769" /><testcase classname="tests.preproject.test_spec_bound_transactions_pg" name="test_app_cannot_insert_empty_or_mixed_numeric_shape[shape1]" time="0.903" /><testcase classname="tests.preproject.test_spec_bound_transactions_pg" name="test_app_cannot_insert_empty_or_mixed_numeric_shape[shape2]" time="0.884" /></testsuite></testsuites>

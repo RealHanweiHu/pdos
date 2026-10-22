@@ -1,0 +1,42 @@
+✔ authorization reads actual inputs and one common preview without execute (5.02525ms)
+✔ unknown authorization remains review and never creates an external action (0.667333ms)
+✔ missing named authority cannot reach common authorization preview (0.509125ms)
+✔ a verified unknown-outcome receipt stops for explicit registration without T1 or T2 preview (0.42075ms)
+✔ missing trusted issuer stays unknown and no payload can self-register an issuer (0.555292ms)
+✔ T2 preview permits null expiry and rejects a changed fixed manifest digest (0.688583ms)
+✔ T2 preview rejects another signer and expired original proof (0.532583ms)
+✔ explicit UNKNOWN replay retains identical command, key, payload and approval token (0.769875ms)
+✔ recording sends only the same source selection after explicit caller action (0.229ms)
+✔ restored pending submission stays scoped to its original package and both decisions (0.744833ms)
+✔ scope disposal after inputs cannot open preview or dispatch (0.221583ms)
+✔ actual detail and receipt page must share the selected handoff, intent and read watermark (0.519209ms)
+✔ manual assembly reads actual UNKNOWN candidate then stops before any save (1.054792ms)
+✔ assembly sends the same T0 command only after the caller's explicit save (0.160959ms)
+✔ ready discipline goes through actual common preview without execute (0.885208ms)
+✔ unknown policy cannot advance an approval to common preview or execute (0.308375ms)
+✔ an unqualified named actor keeps actual diagnostics and never advances to preview (0.27275ms)
+✔ typed defaults compare canonically but actual source and scope changes remain different (0.324583ms)
+✔ T2 preview rejects actual signer mismatch (0.242542ms)
+✔ T2 preview rejects actual project mismatch (0.207791ms)
+✔ T2 preview rejects actual source mismatch (0.210375ms)
+✔ T2 preview rejects actual policy mismatch (0.194834ms)
+✔ T2 preview rejects actual unknown mismatch (0.293459ms)
+✔ T2 preview rejects actual scope mismatch (0.282375ms)
+✔ T2 preview rejects actual token mismatch (0.20125ms)
+✔ T2 preview rejects actual expired mismatch (0.215458ms)
+✔ UNKNOWN keeps the exact original command, key and token across explicit replay (0.322875ms)
+✔ local recovery requires exact principal/project/package and matching draft (0.506416ms)
+✔ scope disposal after inputs never opens a preview or dispatches a write (0.126208ms)
+✔ list accepts a header and detail requires the actual fixed scope (0.419375ms)
+✔ actual mapped assessments and an unchecked header retain unknown without a full read (0.501042ms)
+✔ selected scope can be ready while the whole package remains unknown (0.892708ms)
+✔ server retains actual package and exception limits in addition to this declaration (0.499875ms)
+✔ explicit expiry preserves sub-millisecond precision and exact original declaration (1.0375ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 60.000875

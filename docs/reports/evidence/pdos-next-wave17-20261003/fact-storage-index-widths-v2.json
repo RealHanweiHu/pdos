@@ -1,0 +1,384 @@
+{
+  "page_bytes": 8192,
+  "maxalign_bytes": 8,
+  "utf8_bytes_per_character": 4,
+  "btree_v4_limit_bytes": 2704,
+  "no_compression_or_dedup_credit": true,
+  "tables": [
+    {
+      "table": "capa_verification_rule_facts",
+      "largest_upper_bound_bytes": 2476,
+      "indexes": [
+        {
+          "kind": "index",
+          "columns": [
+            "tenant_id"
+          ],
+          "upper_bound_bytes": 36
+        },
+        {
+          "kind": "primary",
+          "columns": [
+            "id"
+          ],
+          "upper_bound_bytes": 36
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "id"
+          ],
+          "upper_bound_bytes": 68
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "issue_id",
+            "capa_id",
+            "id",
+            "revision"
+          ],
+          "upper_bound_bytes": 124
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "issue_id",
+            "capa_id",
+            "origin_issue_version_id",
+            "origin_issue_revision",
+            "owner_id",
+            "visibility",
+            "nature",
+            "anchor_sha256",
+            "requirement_sha256",
+            "series_id",
+            "id",
+            "revision"
+          ],
+          "upper_bound_bytes": 852
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "issue_id",
+            "capa_id",
+            "origin_issue_version_id",
+            "origin_issue_revision",
+            "owner_id",
+            "visibility",
+            "nature",
+            "anchor_sha256",
+            "requirement_sha256",
+            "series_id",
+            "issuer_key",
+            "issuer_version",
+            "external_id",
+            "id",
+            "revision"
+          ],
+          "upper_bound_bytes": 2476
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "issue_id",
+            "capa_id",
+            "series_id",
+            "revision"
+          ],
+          "upper_bound_bytes": 124
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "writer_id",
+            "intent_digest"
+          ],
+          "upper_bound_bytes": 332
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "shared_proof_id"
+          ],
+          "upper_bound_bytes": 52
+        }
+      ]
+    },
+    {
+      "table": "capa_current_verification_rules",
+      "largest_upper_bound_bytes": 1580,
+      "indexes": [
+        {
+          "kind": "index",
+          "columns": [
+            "tenant_id"
+          ],
+          "upper_bound_bytes": 36
+        },
+        {
+          "kind": "primary",
+          "columns": [
+            "id"
+          ],
+          "upper_bound_bytes": 36
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "issue_id",
+            "capa_id",
+            "anchor_sha256",
+            "issuer_key",
+            "external_id"
+          ],
+          "upper_bound_bytes": 1580
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "issue_id",
+            "capa_id",
+            "series_id"
+          ],
+          "upper_bound_bytes": 116
+        }
+      ]
+    },
+    {
+      "table": "capa_observation_facts",
+      "largest_upper_bound_bytes": 1156,
+      "indexes": [
+        {
+          "kind": "index",
+          "columns": [
+            "tenant_id"
+          ],
+          "upper_bound_bytes": 36
+        },
+        {
+          "kind": "primary",
+          "columns": [
+            "id"
+          ],
+          "upper_bound_bytes": 36
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "id"
+          ],
+          "upper_bound_bytes": 68
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "issue_id",
+            "capa_id",
+            "id",
+            "revision"
+          ],
+          "upper_bound_bytes": 124
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "issue_id",
+            "capa_id",
+            "origin_issue_version_id",
+            "origin_issue_revision",
+            "owner_id",
+            "visibility",
+            "nature",
+            "anchor_sha256",
+            "requirement_sha256",
+            "series_id",
+            "id",
+            "revision"
+          ],
+          "upper_bound_bytes": 852
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "issue_id",
+            "capa_id",
+            "origin_issue_version_id",
+            "origin_issue_revision",
+            "owner_id",
+            "visibility",
+            "nature",
+            "anchor_sha256",
+            "requirement_sha256",
+            "series_id",
+            "rule_fact_id",
+            "rule_revision",
+            "rule_sha256",
+            "executor_id",
+            "id",
+            "revision"
+          ],
+          "upper_bound_bytes": 1156
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "issue_id",
+            "capa_id",
+            "series_id",
+            "revision"
+          ],
+          "upper_bound_bytes": 124
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "writer_id",
+            "intent_digest"
+          ],
+          "upper_bound_bytes": 332
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "shared_proof_id"
+          ],
+          "upper_bound_bytes": 52
+        }
+      ]
+    },
+    {
+      "table": "capa_current_observations",
+      "largest_upper_bound_bytes": 116,
+      "indexes": [
+        {
+          "kind": "index",
+          "columns": [
+            "tenant_id"
+          ],
+          "upper_bound_bytes": 36
+        },
+        {
+          "kind": "primary",
+          "columns": [
+            "id"
+          ],
+          "upper_bound_bytes": 36
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "issue_id",
+            "capa_id",
+            "series_id"
+          ],
+          "upper_bound_bytes": 116
+        }
+      ]
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "largest_upper_bound_bytes": 332,
+      "indexes": [
+        {
+          "kind": "index",
+          "columns": [
+            "tenant_id"
+          ],
+          "upper_bound_bytes": 36
+        },
+        {
+          "kind": "primary",
+          "columns": [
+            "id"
+          ],
+          "upper_bound_bytes": 36
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "id"
+          ],
+          "upper_bound_bytes": 68
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "project_id",
+            "issue_id",
+            "capa_id",
+            "id",
+            "revision"
+          ],
+          "upper_bound_bytes": 124
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "product_id",
+            "writer_id",
+            "intent_digest"
+          ],
+          "upper_bound_bytes": 332
+        },
+        {
+          "kind": "unique",
+          "columns": [
+            "tenant_id",
+            "shared_proof_id"
+          ],
+          "upper_bound_bytes": 52
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/pai/run-candidates.test.mjs
+  13:1  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/rules-of-hooks')
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/lib/domain-candidate.test.mjs
+  8:1  error  Do not assign to the variable `module`. See: https://nextjs.org/docs/messages/no-assign-module-variable  @next/next/no-assign-module-variable
+
+✖ 2 problems (1 error, 1 warning)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="30" time="489.463" timestamp="2026-10-09T07:48:46.226752-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.test_retained_execution" name="test_retained_proof_rejects_issuer_disable_restore_aba_without_new_effects" time="48.465" /><testcase classname="tests.test_retained_execution" name="test_retained_proof_rejects_new_real_observation_of_configuration_deviation" time="43.692"><failure message="AssertionError: assert ['RESOURCE_FACTS_CHANGED'] in (['SOURCE_STALE'], ['RETAINED_EXECUTION_CHANGED'])">tests/test_retained_execution.py:546: in test_retained_proof_rejects_new_real_observation_of_configuration_deviation
+    assert proof["reason_codes"] in (["SOURCE_STALE"], ["RETAINED_EXECUTION_CHANGED"])
+E   AssertionError: assert ['RESOURCE_FACTS_CHANGED'] in (['SOURCE_STALE'], ['RETAINED_EXECUTION_CHANGED'])</failure></testcase><testcase classname="tests.test_retained_execution" name="test_retained_proof_rejects_original_professional_qualification_revoke_restore_aba" time="46.138"><failure message="assert True is False">tests/test_retained_execution.py:442: in test_retained_proof_rejects_original_professional_qualification_revoke_restore_aba
+    assert _proof(session, work)["current"] is False
+E   assert True is False</failure></testcase><testcase classname="tests.test_retained_execution" name="test_retained_saved_start_with_simulated_late_read_clock_and_no_new_permission" time="48.675" /><testcase classname="tests.test_retained_registry_compatibility" name="test_boolean_epoch_does_not_reproduce_real_original_dependency" time="43.596" /><testcase classname="tests.test_retained_registry_compatibility" name="test_exact_single_dependency_survives_unrelated_scope_addition" time="45.707" /><testcase classname="tests.test_retained_registry_compatibility" name="test_new_v2_start_preserves_its_exact_dependency_with_multiple_registered_keys" time="45.700" /><testcase classname="tests.test_verification_execution" name="test_final_receipt_failure_rolls_back_version_pointer_confirmation_and_outbox" time="4.702" /><testcase classname="tests.test_verification_execution" name="test_pointer_first_insert_cannot_skip_a_real_persisted_first_version" time="4.598"><failure message="AttributeError: 'VerificationPreparation' object has no attribute 'audience_dependencies'">tests/test_verification_execution.py:722: in test_pointer_first_insert_cannot_skip_a_real_persisted_first_version
+    column.name: deepcopy(getattr(original, column.name))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'VerificationPreparation' object has no attribute 'audience_dependencies'</failure></testcase><testcase classname="tests.test_verification_execution" name="test_preparation_does_not_grant_professional_or_physical_authority" time="3.637"><failure message="AssertionError: assert not {'test.disposition.decide', 'test.results.import', 'test.run.review'}&#10; +  where {'test.disposition.decide', 'test.results.import', 'test.run.review'} = &lt;built-in method intersection of set object at 0x121b818c0&gt;({'evidence.lifecycle.upload.abandon': &lt;class 'pdos_next.contracts.UploadAbandonPayload'&gt;, 'evidence.original.withdraw'...class 'pdos_next.contracts.ArtifactPayload'&gt;, 'evidence.claim.record': &lt;class 'pdos_next.contracts.ClaimPayload'&gt;, ...})&#10; +    where &lt;built-in method intersection of set object at 0x121b818c0&gt; = ({'test.disposition.decide', 'test.results.import', 'test.run.plan', 'test.run.review', 'test.run.start', 'verification.handoff.accept', ...} - {'test.run.plan', 'test.run.start', 'verification.handoff.accept', 'verification.handoff.offer', 'verification.handoff.return', 'verification.method.prepare', ...}).intersection">tests/test_verification_execution.py:638: in test_preparation_does_not_grant_professional_or_physical_authority
+    assert not (FORMAL_OPERATIONS - front).intersection(PAYLOADS)
+E   AssertionError: assert not {'test.disposition.decide', 'test.results.import', 'test.run.review'}
+E    +  where {'test.disposition.decide', 'test.results.import', 'test.run.review'} = &lt;built-in method intersection of set object at 0x121b818c0&gt;({'evidence.lifecycle.upload.abandon': &lt;class 'pdos_next.contracts.UploadAbandonPayload'&gt;, 'evidence.original.withdraw'...class 'pdos_next.contracts.ArtifactPayload'&gt;, 'evidence.claim.record': &lt;class 'pdos_next.contracts.ClaimPayload'&gt;, ...})
+E    +    where &lt;built-in method intersection of set object at 0x121b818c0&gt; = ({'test.disposition.decide', 'test.results.import', 'test.run.plan', 'test.run.review', 'test.run.start', 'verification.handoff.accept', ...} - {'test.run.plan', 'test.run.start', 'verification.handoff.accept', 'verification.handoff.offer', 'verification.handoff.return', 'verification.method.prepare', ...}).intersection</failure></testcase><testcase classname="tests.test_verification_execution" name="test_private_preparation_and_sources_are_hidden_from_peer_and_other_tenant" time="4.533" /><testcase classname="tests.test_verification_execution" name="test_read_permission_keeps_saved_replay_and_does_not_allow_new_preparation" time="4.723" /><testcase classname="tests.test_verification_execution" name="test_request_series_cannot_switch_build_or_use_another_product" time="5.248"><failure message="sqlalchemy.exc.IntegrityError: (psycopg.errors.NotNullViolation) null value in column &quot;category_id&quot; of relation &quot;products&quot; violates not-null constraint&#10;DETAIL:  Failing row contains (Other product, Synthetic scope, 1, 1, draft, b92a50ac-2b87-4a28-b105-d447b9e85ef4, null, category, fc4e4d1c-b5e2-4966-bf93-3708ae0fe20a, 6254271f-6960-4cd7-9a01-d2d24d2484a7, 2026-10-09 14:54:35.936953+00).&#10;[SQL: INSERT INTO products (name, purpose, revision, lifecycle_epoch, status, owner_id, category_id, visibility, id, tenant_id, created_at) VALUES (%(name)s::VARCHAR, %(purpose)s::VARCHAR, %(revision)s::INTEGER, %(lifecycle_epoch)s::INTEGER, %(status)s::VARCHAR, %(owner_id)s::UUID, %(category_id)s::UUID, %(visibility)s::VARCHAR, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/gkpj)">.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: in execute
+    raise ex.with_traceback(None)
+E   psycopg.errors.NotNullViolation: null value in column "category_id" of relation "products" violates not-null constraint
+E   DETAIL:  Failing row contains (Other product, Synthetic scope, 1, 1, draft, b92a50ac-2b87-4a28-b105-d447b9e85ef4, null, category, fc4e4d1c-b5e2-4966-bf93-3708ae0fe20a, 6254271f-6960-4cd7-9a01-d2d24d2484a7, 2026-10-09 14:54:35.936953+00).
+
+The above exception was the direct cause of the following exception:
+tests/test_verification_execution.py:606: in test_request_series_cannot_switch_build_or_use_another_product
+    session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+&lt;sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush&gt;:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:92: in _save_obj
+    _emit_insert_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:1052: in _emit_insert_statements
+    result = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: in execute
+    raise ex.with_traceback(None)
+E   sqlalchemy.exc.IntegrityError: (psycopg.errors.NotNullViolation) null value in column "category_id" of relation "products" violates not-null constraint
+E   DETAIL:  Failing row contains (Other product, Synthetic scope, 1, 1, draft, b92a50ac-2b87-4a28-b105-d447b9e85ef4, null, category, fc4e4d1c-b5e2-4966-bf93-3708ae0fe20a, 6254271f-6960-4cd7-9a01-d2d24d2484a7, 2026-10-09 14:54:35.936953+00).
+E   [SQL: INSERT INTO products (name, purpose, revision, lifecycle_epoch, status, owner_id, category_id, visibility, id, tenant_id, created_at) VALUES (%(name)s::VARCHAR, %(purpose)s::VARCHAR, %(revision)s::INTEGER, %(lifecycle_epoch)s::INTEGER, %(status)s::VARCHAR, %(owner_id)s::UUID, %(category_id)s::UUID, %(visibility)s::VARCHAR, %(id)s::UUID, %(tenant_id)s::UUID, %(created_at)s::TIMESTAMP WITH TIME ZONE)]
+E   [SQL parameters hidden due to hide_parameters=True]
+E   (Background on this error at: https://sqlalche.me/e/21/gkpj)</failure></testcase><testcase classname="tests.test_verification_execution" name="test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access[source]" time="4.765" /><testcase classname="tests.test_verification_execution" name="test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access[inherited_source]" time="4.185" /><testcase classname="tests.test_verification_execution" name="test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access[revision]" time="4.490" /><testcase classname="tests.test_verification_execution" name="test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access[grant]" time="4.186" /><testcase classname="tests.verification_front.test_transactions" name="test_current_issuer_configuration_and_not_product_grant_controls_formal_action" time="5.587" /><testcase classname="tests.verification_front.test_transactions" name="test_final_outbox_failure_rolls_back_method_fact_request_pointer_and_confirmation" time="7.839" /><testcase classname="tests.verification_front.test_transactions" name="test_fixed_preparation_and_new_server_clock_never_inherit_document_completion" time="5.833" /><testcase classname="tests.verification_front.test_transactions" name="test_positive_method_once_common_receipt_old_intent_replay_and_immutable_history" time="7.435" /><testcase classname="tests.verification_front.test_transactions" name="test_private_scope_rls_immutability_and_agent_zero_direct_write" time="6.831" /><testcase classname="tests.verification_front.test_transactions" name="test_revoked_original_reviewer_qualification_invalidates_current_milestone_not_history" time="7.443" /><testcase classname="tests.verification_front.test_transactions" name="test_schedule_is_t0_unknown_interval_and_never_resource_occupancy_or_actual" time="6.186" /><testcase classname="tests.verification_front.test_transactions" name="test_t1_preview_binds_professional_epoch_and_saved_replay_requires_only_read_access" time="7.599" /><testcase classname="tests.verification_front.test_transactions" name="test_two_competing_method_successors_cannot_overwrite_current" time="7.352" /><testcase classname="tests.verification_front.test_transactions" name="test_unknown_and_rejected_method_facts_are_saved_and_never_complete_documents[unknown]" time="6.775" /><testcase classname="tests.verification_front.test_transactions" name="test_unknown_and_rejected_method_facts_are_saved_and_never_complete_documents[not_applicable]" time="5.995" /><testcase classname="tests.verification_handoff.test_transactions" name="test_source_withdrawal_keeps_saved_receipt_replay_and_blocks_new_material" time="19.797"><failure message="KeyError: '4a1ef3e3-11e9-4fa2-8a29-4243b5779b82'">tests/verification_handoff/test_transactions.py:315: in test_source_withdrawal_keeps_saved_receipt_replay_and_blocks_new_material
+    fresh = post(work.quality, actual_method(work), True)
+                               ^^^^^^^^^^^^^^^^^^^
+tests/verification_handoff/fixtures.py:400: in actual_method
+    return command(
+tests/verification_handoff/fixtures.py:358: in command
+    fixed = view["current_by_request"][work.request_id]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: '4a1ef3e3-11e9-4fa2-8a29-4243b5779b82'</failure></testcase><testcase classname="tests.verification_handoff.test_transactions" name="test_stale_actual_qualification_keeps_real_pair_pointer_and_can_be_renewed" time="27.198" /></testsuite></testsuites>

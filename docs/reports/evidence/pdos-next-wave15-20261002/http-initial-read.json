@@ -1,0 +1,42 @@
+{
+  "synthetic_only": true,
+  "old_indeterminate_did_not_create_issue": true,
+  "checks": [
+    {
+      "endpoint": "quality-execution",
+      "status": 200,
+      "keys": [
+        "issues",
+        "current_by_issue",
+        "failures",
+        "policy",
+        "next_owners",
+        "capabilities",
+        "unavailable_count",
+        "has_more"
+      ],
+      "issue_count": 0,
+      "change_count": 0
+    },
+    {
+      "endpoint": "change-execution",
+      "status": 200,
+      "keys": [
+        "changes",
+        "captures",
+        "current_by_change",
+        "reference_options",
+        "source_options",
+        "capabilities",
+        "authority",
+        "unavailable_count",
+        "has_more"
+      ],
+      "issue_count": 0,
+      "change_count": 0
+    },
+    {
+      "invalid_uuid": 422
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "initial_log": "migration-0.log",
+  "initial_log_sha256": "efd732c98640029cb554d298434dd1b18d39bd898002ccde55ac334450b86e3f",
+  "sqlstate": "42601",
+  "function": "require_quality_followup_atom",
+  "fix": "Parenthesize CASE expression inside PLpgSQL IF",
+  "verified_after_failure": {
+    "head": "next_0023",
+    "new_tables_absent": true
+  },
+  "original_backup_retained": true,
+  "retained_baseline_reused": true,
+  "business_writes_before_recovery": 0,
+  "actual_migration_sha256": "a957c6dbc22647f2f5dbb39fc014bb4b7ef269b014d9497642110cc4664df252"
+}

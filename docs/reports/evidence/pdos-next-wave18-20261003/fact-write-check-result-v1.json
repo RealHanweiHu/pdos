@@ -1,0 +1,87 @@
+{
+  "schema_version": "wave18-fact-write-check-v1",
+  "recorded_at": "2026-10-03T15:34:18.984748+00:00",
+  "source_manifest": {
+    "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-source-manifest-v1.json",
+    "sha256": "618a034d3f884c65f05a7bfe1bd8f4dd2d1dd07baea92815b6a3bcc79bc5b733",
+    "bytes": 1396
+  },
+  "checks": [
+    {
+      "kind": "owned-pure",
+      "exit_code": 0,
+      "passed": 59,
+      "log": {
+        "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-pure-final-v2.log",
+        "sha256": "0b2bd6b22ea50e90d0b61ce9c682bc88cfc286b0dad5f7ae9797db798dffa68d",
+        "bytes": 99
+      },
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=pdos-next/server:pdos-next/server/tests:pdos-next/server/tests/capa_effectiveness pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/server/tests/capa_effectiveness/test_fact_commands.py pdos-next/server/tests/capa_effectiveness/test_fact_write.py -q",
+      "limits": "Real ORM Session/UOW/Confirmation transition; all SQL/source/professional owners are explicit offline substitutes; connection attempt fails"
+    },
+    {
+      "kind": "ruff-check-four-owned",
+      "exit_code": 0,
+      "log": {
+        "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-ruff-v1.log",
+        "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+        "bytes": 19
+      }
+    },
+    {
+      "kind": "ruff-format-check-four-owned",
+      "exit_code": 0,
+      "log": {
+        "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-format-v1.log",
+        "sha256": "177f260a5645724013185e4b140c7045cc39e56c0c97b120f5cb23599f85f0de",
+        "bytes": 26
+      }
+    },
+    {
+      "kind": "owned-AST-inmemory-compile-and-cold-import",
+      "exit_code": 0,
+      "log": {
+        "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-static-import-v1.log",
+        "sha256": "f9a562e0fc6f22620562a2d284e9f189e2f26dc0b2f6ffef33167f6b8a4c76df",
+        "bytes": 176
+      }
+    }
+  ],
+  "historical_logs_preserved": [
+    {
+      "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-pure-initial.log",
+      "sha256": "2b11029e9a303fe41d0447d2efde5031f498acfbe487e8f610d218bc8635e216",
+      "bytes": 2419
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-pure-recheck-v1.log",
+      "sha256": "b5b3b7dc816d0635be11e58e09b781d631fe7360b436156c6e098cee6133a6a6",
+      "bytes": 11907
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-pure-recheck-v2.log",
+      "sha256": "7f090b91ecaf7bbf15dd7335bccf975af36ad044019e25575d2a811a6a52fd73",
+      "bytes": 99
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-pure-recheck-v3.log",
+      "sha256": "beea0bd387422c0a6b4a1c45012d447e53ce9a5f9ddb00f67691f3c1e9203c6c",
+      "bytes": 1777
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave18-20261003/fact-write-pure-final-v1.log",
+      "sha256": "10b824ee5e3108450727d9dc6cf2f4b4eb32655e70b77d12e1af3b36098c58a2",
+      "bytes": 99
+    }
+  ],
+  "not_run": [
+    "PostgreSQL/FK/RLS/transaction commit",
+    "HTTP/API/public module checks",
+    "frontend/browser/build"
+  ],
+  "not_claimed": [
+    "current real qualification",
+    "live seven owners",
+    "public end-to-end business completion"
+  ]
+}

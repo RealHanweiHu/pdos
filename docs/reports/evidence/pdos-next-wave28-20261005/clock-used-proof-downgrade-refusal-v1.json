@@ -1,0 +1,15 @@
+{
+  "status": "PASS_ACTUAL_USED_PROOF_DOWNGRADE_REFUSAL",
+  "schema_head": "next_0030",
+  "all_123_complete_row_hashes_unchanged": true,
+  "complete_catalog_unchanged": true,
+  "saved_dependency_closure_count": 3,
+  "backup": {
+    "bytes": 1687573,
+    "sha256": "4762b8c09528abd06777ea9fbccee1f1aa63912e2c56af17bc4055df5e306ceb",
+    "mode": "0600"
+  },
+  "shared_62513_used": false,
+  "environment_port": 62158,
+  "downgrade_exit_code": 1
+}

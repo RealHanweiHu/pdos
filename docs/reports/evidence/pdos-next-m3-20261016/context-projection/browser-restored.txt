@@ -1,0 +1,17 @@
+Browser tab: 15, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3052/?category=87f89177-a936-40d3-bc70-e9f613b3c216&area=category".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 79-80, 98
++					101 container
++						102 button (expanded) 查看步骤、依据与提交记录, Secondary Actions: Collapse
++							103 text 查看步骤、依据与提交记录
++						104 text 以下为实际行动记录；步骤返回不等于业务批准。绑定依据  0  份，人员等待计入总历时。
++						105 content list
++							106 container
++								107 text 加载公开研究 · 0.2.2-draft 10/16/2026, 5:39:16 PM
++							108 container
++								109 text 已按当前方法核对资料范围 · 省略 1 个字段 品类资料：当前方法未声明使用这一字段，未提供给模型 10/16/2026, 5:39:16 PM
++							110 container
++								111 text 已形成部分结果，仍有待完成事项 10/16/2026, 5:39:16 PM
++						112 text 运行中按实际记录更新；关闭或刷新页面不启动新的模型调用。
++					113 text 当前没有领域候选。
+The focused UI element is 102 button (expanded) 查看步骤、依据与提交记录, Secondary Actions: Collapse

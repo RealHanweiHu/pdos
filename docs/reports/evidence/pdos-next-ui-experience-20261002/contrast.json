@@ -1,0 +1,30 @@
+[
+  {
+    "theme": "light",
+    "fg": "#686870",
+    "bg": "#fafafa",
+    "contrast": 5.29,
+    "AA": true
+  },
+  {
+    "theme": "light",
+    "fg": "#686870",
+    "bg": "#ffffff",
+    "contrast": 5.52,
+    "AA": true
+  },
+  {
+    "theme": "dark",
+    "fg": "#a0a2ac",
+    "bg": "#0f1113",
+    "contrast": 7.44,
+    "AA": true
+  },
+  {
+    "theme": "dark",
+    "fg": "#a0a2ac",
+    "bg": "#16181d",
+    "contrast": 6.98,
+    "AA": true
+  }
+]

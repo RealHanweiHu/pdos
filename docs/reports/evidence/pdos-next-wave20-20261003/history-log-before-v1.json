@@ -1,0 +1,11 @@
+{
+  "total_lines": 23,
+  "parent_get_completed": {
+    "builds": 2,
+    "workspace": 4,
+    "verification-results": 2,
+    "quality-execution": 4,
+    "change-execution": 1
+  },
+  "log_sha256": "9e89649b2367f2dc9d78bd8f85bf3104feeeeac0f864bfb2081884596908b563"
+}

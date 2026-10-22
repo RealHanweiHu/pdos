@@ -1,0 +1,2216 @@
+{
+  "verification.request.create": {
+    "tier": "T0",
+    "roles": [
+      "engineering",
+      "quality"
+    ],
+    "named_human": false,
+    "schema": {
+      "$defs": {
+        "DocumentRequirement": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Id",
+              "type": "string"
+            },
+            "title": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Title",
+              "type": "string"
+            },
+            "item_ids": {
+              "items": {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "title": "Item Ids",
+              "type": "array"
+            },
+            "source": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "required": {
+              "default": true,
+              "title": "Required",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "item_ids"
+          ],
+          "title": "DocumentRequirement",
+          "type": "object"
+        },
+        "NumericCriterion": {
+          "additionalProperties": false,
+          "properties": {
+            "lower": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lower"
+            },
+            "upper": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Upper"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            }
+          },
+          "required": [
+            "source"
+          ],
+          "title": "NumericCriterion",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        },
+        "TestItem": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Id",
+              "type": "string"
+            },
+            "feature": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Feature",
+              "type": "string"
+            },
+            "drawing": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "method": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "criterion": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/NumericCriterion"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "criterion_text": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Criterion Text"
+            },
+            "criterion_source": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "conditions": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Conditions"
+            },
+            "material": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Material"
+            },
+            "sample_count": {
+              "maximum": 10000,
+              "minimum": 1,
+              "title": "Sample Count",
+              "type": "integer"
+            },
+            "cavities": {
+              "default": [],
+              "items": {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              "title": "Cavities",
+              "type": "array"
+            },
+            "destructive": {
+              "default": false,
+              "title": "Destructive",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "feature",
+            "sample_count"
+          ],
+          "title": "TestItem",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "request_id": {
+          "format": "uuid",
+          "title": "Request Id",
+          "type": "string"
+        },
+        "build_id": {
+          "format": "uuid",
+          "title": "Build Id",
+          "type": "string"
+        },
+        "expected_build_revision": {
+          "minimum": 1,
+          "title": "Expected Build Revision",
+          "type": "integer"
+        },
+        "title": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "purpose": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/TestItem"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Items",
+          "type": "array"
+        },
+        "documents": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DocumentRequirement"
+          },
+          "title": "Documents",
+          "type": "array"
+        },
+        "expected_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected At"
+        },
+        "expected_timezone": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Timezone"
+        },
+        "return_form": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Return Form",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "build_id",
+        "expected_build_revision",
+        "title",
+        "purpose",
+        "items",
+        "return_form"
+      ],
+      "title": "RequestCreate",
+      "type": "object"
+    }
+  },
+  "verification.method.prepare": {
+    "tier": "T1",
+    "roles": [
+      "quality"
+    ],
+    "named_human": true,
+    "schema": {
+      "$defs": {
+        "DocumentRequirement": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Id",
+              "type": "string"
+            },
+            "title": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Title",
+              "type": "string"
+            },
+            "item_ids": {
+              "items": {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "title": "Item Ids",
+              "type": "array"
+            },
+            "source": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "required": {
+              "default": true,
+              "title": "Required",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "title",
+            "item_ids"
+          ],
+          "title": "DocumentRequirement",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "NumericCriterion": {
+          "additionalProperties": false,
+          "properties": {
+            "lower": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Lower"
+            },
+            "upper": {
+              "anyOf": [
+                {
+                  "type": "number"
+                },
+                {
+                  "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Upper"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            }
+          },
+          "required": [
+            "source"
+          ],
+          "title": "NumericCriterion",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        },
+        "TestItem": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Id",
+              "type": "string"
+            },
+            "feature": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Feature",
+              "type": "string"
+            },
+            "drawing": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "method": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "criterion": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/NumericCriterion"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "criterion_text": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Criterion Text"
+            },
+            "criterion_source": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "conditions": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Conditions"
+            },
+            "material": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Material"
+            },
+            "sample_count": {
+              "maximum": 10000,
+              "minimum": 1,
+              "title": "Sample Count",
+              "type": "integer"
+            },
+            "cavities": {
+              "default": [],
+              "items": {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              "title": "Cavities",
+              "type": "array"
+            },
+            "destructive": {
+              "default": false,
+              "title": "Destructive",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "feature",
+            "sample_count"
+          ],
+          "title": "TestItem",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/$defs/TestItem"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Items",
+          "type": "array"
+        },
+        "documents": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DocumentRequirement"
+          },
+          "title": "Documents",
+          "type": "array"
+        },
+        "tentative_start": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventTime"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "title": "MethodPrepare",
+      "type": "object"
+    }
+  },
+  "verification.handoff.offer": {
+    "tier": "T1",
+    "roles": [
+      "engineering",
+      "production"
+    ],
+    "named_human": false,
+    "schema": {
+      "$defs": {
+        "ConfigurationRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "ConfigurationRef",
+          "type": "object"
+        },
+        "Coverage": {
+          "additionalProperties": false,
+          "properties": {
+            "sample_id": {
+              "format": "uuid",
+              "title": "Sample Id",
+              "type": "string"
+            },
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "sample_id",
+            "item_id"
+          ],
+          "title": "Coverage",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SampleRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "build_id": {
+              "format": "uuid",
+              "title": "Build Id",
+              "type": "string"
+            },
+            "actual_configuration": {
+              "$ref": "#/$defs/ConfigurationRef"
+            },
+            "cavity": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Cavity"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "build_id",
+            "actual_configuration"
+          ],
+          "title": "SampleRef",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "samples": {
+          "items": {
+            "$ref": "#/$defs/SampleRef"
+          },
+          "maxItems": 1000,
+          "minItems": 1,
+          "title": "Samples",
+          "type": "array"
+        },
+        "coverage": {
+          "items": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "maxItems": 10000,
+          "minItems": 1,
+          "title": "Coverage",
+          "type": "array"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        }
+      },
+      "required": [
+        "samples",
+        "coverage",
+        "at"
+      ],
+      "title": "HandoffOffer",
+      "type": "object"
+    }
+  },
+  "verification.handoff.accept": {
+    "tier": "T1",
+    "roles": [
+      "quality"
+    ],
+    "named_human": true,
+    "schema": {
+      "$defs": {
+        "Coverage": {
+          "additionalProperties": false,
+          "properties": {
+            "sample_id": {
+              "format": "uuid",
+              "title": "Sample Id",
+              "type": "string"
+            },
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "sample_id",
+            "item_id"
+          ],
+          "title": "Coverage",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "coverage": {
+          "items": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "maxItems": 10000,
+          "minItems": 1,
+          "title": "Coverage",
+          "type": "array"
+        },
+        "returned_coverage": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "title": "Returned Coverage",
+          "type": "array"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "next_owner_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Owner Id"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        }
+      },
+      "required": [
+        "coverage",
+        "at"
+      ],
+      "title": "HandoffAccept",
+      "type": "object"
+    }
+  },
+  "verification.handoff.return": {
+    "tier": "T1",
+    "roles": [
+      "quality"
+    ],
+    "named_human": true,
+    "schema": {
+      "$defs": {
+        "Coverage": {
+          "additionalProperties": false,
+          "properties": {
+            "sample_id": {
+              "format": "uuid",
+              "title": "Sample Id",
+              "type": "string"
+            },
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "sample_id",
+            "item_id"
+          ],
+          "title": "Coverage",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "coverage": {
+          "items": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "minItems": 1,
+          "title": "Coverage",
+          "type": "array"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "next_owner_id": {
+          "format": "uuid",
+          "title": "Next Owner Id",
+          "type": "string"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        }
+      },
+      "required": [
+        "coverage",
+        "reason",
+        "next_owner_id",
+        "at"
+      ],
+      "title": "HandoffReturn",
+      "type": "object"
+    }
+  },
+  "verification.schedule.propose": {
+    "tier": "T0",
+    "roles": [
+      "quality"
+    ],
+    "named_human": false,
+    "schema": {
+      "$defs": {
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        }
+      },
+      "required": [
+        "at"
+      ],
+      "title": "ScheduleProposal",
+      "type": "object"
+    }
+  },
+  "verification.schedule.promise": {
+    "tier": "T1",
+    "roles": [
+      "quality"
+    ],
+    "named_human": true,
+    "schema": {
+      "$defs": {
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        }
+      },
+      "required": [
+        "at"
+      ],
+      "title": "SchedulePromise",
+      "type": "object"
+    }
+  },
+  "test.run.plan": {
+    "tier": "T1",
+    "roles": [
+      "quality"
+    ],
+    "named_human": true,
+    "schema": {
+      "$defs": {
+        "Coverage": {
+          "additionalProperties": false,
+          "properties": {
+            "sample_id": {
+              "format": "uuid",
+              "title": "Sample Id",
+              "type": "string"
+            },
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "sample_id",
+            "item_id"
+          ],
+          "title": "Coverage",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "coverage": {
+          "items": {
+            "$ref": "#/$defs/Coverage"
+          },
+          "minItems": 1,
+          "title": "Coverage",
+          "type": "array"
+        }
+      },
+      "required": [
+        "run_id",
+        "coverage"
+      ],
+      "title": "RunPlan",
+      "type": "object"
+    }
+  },
+  "test.run.start": {
+    "tier": "T1",
+    "roles": [
+      "quality",
+      "test"
+    ],
+    "named_human": true,
+    "schema": {
+      "$defs": {
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "ExecutionConditions": {
+          "additionalProperties": false,
+          "properties": {
+            "equipment": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "calibration": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "environment": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Environment",
+              "type": "string"
+            },
+            "conditions": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Conditions",
+              "type": "string"
+            },
+            "executor_id": {
+              "format": "uuid",
+              "title": "Executor Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "equipment",
+            "calibration",
+            "environment",
+            "conditions",
+            "executor_id"
+          ],
+          "title": "ExecutionConditions",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        },
+        "execution": {
+          "$ref": "#/$defs/ExecutionConditions"
+        }
+      },
+      "required": [
+        "at",
+        "execution"
+      ],
+      "title": "RunStart",
+      "type": "object"
+    }
+  },
+  "test.results.import": {
+    "tier": "T1",
+    "roles": [
+      "quality",
+      "test"
+    ],
+    "named_human": false,
+    "schema": {
+      "$defs": {
+        "Coverage": {
+          "additionalProperties": false,
+          "properties": {
+            "sample_id": {
+              "format": "uuid",
+              "title": "Sample Id",
+              "type": "string"
+            },
+            "item_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "sample_id",
+            "item_id"
+          ],
+          "title": "Coverage",
+          "type": "object"
+        },
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "Measurement": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "coverage": {
+              "$ref": "#/$defs/Coverage"
+            },
+            "raw_value": {
+              "anyOf": [
+                {
+                  "maxLength": 4000,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Raw Value"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "conditions": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Conditions"
+            },
+            "equipment": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "equipment_label": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Equipment Label"
+            },
+            "environment": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Environment"
+            },
+            "method": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "source": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/SourceRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "missing": {
+              "default": [],
+              "items": {
+                "maxLength": 2000,
+                "minLength": 1,
+                "type": "string"
+              },
+              "title": "Missing",
+              "type": "array"
+            },
+            "note": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Note"
+            },
+            "observed_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Observed At"
+            },
+            "observed_timezone": {
+              "anyOf": [
+                {
+                  "maxLength": 120,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Observed Timezone"
+            }
+          },
+          "required": [
+            "id",
+            "coverage"
+          ],
+          "title": "Measurement",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "measurements": {
+          "items": {
+            "$ref": "#/$defs/Measurement"
+          },
+          "maxItems": 10000,
+          "title": "Measurements",
+          "type": "array"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        },
+        "final": {
+          "default": false,
+          "title": "Final",
+          "type": "boolean"
+        },
+        "actual_end": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EventTime"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "incomplete_reason": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Incomplete Reason"
+        },
+        "next_owner_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Owner Id"
+        }
+      },
+      "required": [
+        "measurements",
+        "at"
+      ],
+      "title": "ResultsSubmit",
+      "type": "object"
+    }
+  },
+  "test.run.review": {
+    "tier": "T2",
+    "roles": [
+      "quality"
+    ],
+    "named_human": true,
+    "schema": {
+      "$defs": {
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        }
+      },
+      "required": [
+        "text",
+        "at"
+      ],
+      "title": "RunReview",
+      "type": "object"
+    }
+  },
+  "test.disposition.decide": {
+    "tier": "T2",
+    "roles": [
+      "quality"
+    ],
+    "named_human": true,
+    "schema": {
+      "$defs": {
+        "EventTime": {
+          "additionalProperties": false,
+          "properties": {
+            "occurred_at": {
+              "format": "date-time",
+              "title": "Occurred At",
+              "type": "string"
+            },
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "source": {
+              "$ref": "#/$defs/SourceRef"
+            },
+            "effective_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Effective At"
+            }
+          },
+          "required": [
+            "occurred_at",
+            "original_timezone",
+            "source"
+          ],
+          "title": "EventTime",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "at": {
+          "$ref": "#/$defs/EventTime"
+        }
+      },
+      "required": [
+        "text",
+        "at"
+      ],
+      "title": "RunDisposition",
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "candidate": "Wave16 owned UI read recovery v7; Root public web v5 candidate increment",
+  "recorded_at": "2026-10-03T09:48:06.692567+00:00",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/workspace.tsx",
+      "sha256": "c003462188e93c29bb9b426748143af868b654912306daca6ce73142eefa088c"
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+      "sha256": "20a1a0e685e4a060e490fbe76e28f92ea8d47a4ddd723147abe04fe83fdebe56"
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "c459e5bc07b5e66f84acd17081c572aab9fce8fe543839dc44dcec7989bb4a40"
+    }
+  ],
+  "baseline": [
+    {
+      "path": "pdos-next/web/src/components/workspace.tsx",
+      "sha256": "b152e0a9ae7e96942513f7a1df711abc3c74c5dac80919c87a653dbe174a07b7",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-before-read-recovery-v7-source/workspace.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+      "sha256": "0f62a4d0f3c7f792c5e02e7c1e9cfbf057f68e4fb8ebb55953b0e1d2fb174c46",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-before-read-recovery-v7-source/build-quality-loop.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "aad32a09053227f1ac7007a3a8430f2a04cb2bbb8d20ef76469509a75b320922",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-before-read-recovery-v7-source/build-quality-followup.tsx"
+    }
+  ],
+  "delta_file": "ui-read-recovery-v7.diff",
+  "only_3_authorized_sources_changed": true,
+  "changes": [
+    "Current-data missing/mismatched plus actual error exposes an explicit read-only retry button; during retry the same panel remains visible with reading status.",
+    "The button calls the existing scoped refresh GET, with immediate ref lock and existing busy disabled gate, clears only displayed error, and finally ends its read/busy state for every settled success/error/cancellation.",
+    "It does not load/login/change session or grant, create new operation identifiers, write any business object, clear drafts or pending originals, or automatically retry.",
+    "QualityLoop and QualityFollowup perform invalidate their old read sequence then end that superseded loading state. readFailed, capabilities, original command/key and privacy/reconfirmation paths remain unchanged.",
+    "The old response still requires its read sequence to remain current before changing loading/data. No stale response is allowed to clear a later read loading."
+  ],
+  "static_checks": {
+    "typecheck": {
+      "command": "node_modules/.bin/tsc --project /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-read-recovery-v7-aokh64ok/tsconfig.json",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+      "exit_code": 0,
+      "raw_output": "ui-read-recovery-v7-type-check.log",
+      "configuration": "ui-read-recovery-v7-type-config.json"
+    },
+    "lint": {
+      "command": "node_modules/.bin/eslint src/components/workspace.tsx src/components/builds/build-quality-loop.tsx src/components/builds/build-quality-followup.tsx --format json --output-file /Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave16-20261002/ui-read-recovery-v7-lint-result.json",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 0,
+      "raw_output": "ui-read-recovery-v7-lint-result.json"
+    }
+  },
+  "existing_async_consumer_checks": {
+    "tests": 12,
+    "passed": 12,
+    "failed": 0,
+    "exit_code": 0,
+    "prepare_command": "node /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-read-recovery-v7-aokh64ok/prepare-tests.cjs",
+    "command": "node --test /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-read-recovery-v7-aokh64ok/workspace-api.test.js",
+    "runner_source": "ui-read-recovery-v7-test-runner.cjs",
+    "raw_output": "ui-read-recovery-v7-helper-checks.log",
+    "consumed_sources": [
+      {
+        "path": "pdos-next/web/src/lib/workspace-api.ts",
+        "sha256": "f9f082dcfe3416fab36c01d0fc553ba113ab87205e8c7909b809b08cdf89d329",
+        "modified": false
+      },
+      {
+        "path": "pdos-next/web/src/lib/workspace-api.test.ts",
+        "sha256": "12c10ffd4b5b4cbdcb7f0e4a66d8799740043c9acbefca2208a631e79a92af73",
+        "modified": false
+      }
+    ],
+    "scope": "Existing real page-owned API coordinator behavior: inflight sharing, explicit failed-read retry, old epoch rejection, scope disposal/reactivation and POST independence. These checks do not exercise React component setters, render, or an actual browser.",
+    "no_src_javascript_generated": true
+  },
+  "boundaries": {
+    "db_http_browser_public_build_run": false,
+    "server_api_bff_timeout_or_shared_helper_modified": false,
+    "actual_ui_success_claimed": false,
+    "three_component_browser_validation": "pending Root public web v5 build and actual page checks"
+  },
+  "preserved_evidence": [
+    "ui-component-check-v5.json",
+    "ui-professional-component-check-v6.json",
+    "ui-before-read-recovery-v7-source-manifest.json",
+    "ui-before-read-recovery-v7-source/*"
+  ]
+}

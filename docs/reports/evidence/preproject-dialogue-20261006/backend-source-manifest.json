@@ -1,0 +1,17 @@
+{
+  "server/app/ai/conversation_reply.py": "229ec73bd0f05e40edc3306d2bec6a02d3d51d9c492794c8b8910748c356fe81",
+  "server/app/ai/conversation_research.py": "0ad41c8a7f3e88d992647e617ae6401b251c8be2a1c39aad703c815a791de2ff",
+  "server/app/ai/application_context.py": "d2cf7a8a2e4ea0ead9a61698d7ad0f9ec9efdd2bdeee7951d262e17c15895a46",
+  "server/app/ai/application_domain_context.py": "b0ed67eb7364f0453d43105a8545d575536a6afdd46125c261e2a45540e26a6a",
+  "server/app/contracts/preproject_dialogue.py": "cbfd04771f70c828c973f4cc16a63089411eb957b4b8445434d6a6eeb79355e4",
+  "server/app/db/preproject_dialogue_schema.py": "c63f49ec9e5ea8cc92ef62be41de4a1063d21ad042b08bb263aee3198b4c1147",
+  "server/app/db/schema.py": "b7bb89f61e5d37243d7728d97c0d9f41d5a46f5a5670c8cd590d0878990f5058",
+  "server/app/domain/preproject_dialogue.py": "5066029da99b3054099ac9a6b002d345035fabf44acbf890bde686690f8364a2",
+  "server/app/domain/product_categories.py": "212a5c2a54285ddb116f733bc864fa442307b9130049268815b5939cf97925e2",
+  "server/app/domain/product_proposals.py": "2319513492f51a07099116ff6ce6ac06f8c2f2b629738a9f2d428d8ba36041b0",
+  "server/app/domain/conversations.py": "5edfb03453903e4ced55052dcb89871ab51ca0c817240bac7f3f38e368971220",
+  "server/app/domain/conversation_product_work.py": "f2123c18028c15be9cedeb4bc0ec441853464dc6602c1f45f009f738f1f1dfd0",
+  "server/app/api/conversations.py": "aa47e60622806c388128809cbbe152cce1c000704dac0902a4fe4c05d7eb20d2",
+  "server/app/ai/prompts/preproject_dialogue_v1.json": "4a7ad6f44ff06c5d789a0f8ddcb33828e2543ba7487a7cee68478106715fce46",
+  "server/migrations/versions/0428_preproject_dialogue.py": "a054d9f28eaa5fdd2a16cb06620767296f2ed698f66faf120adb85791c1afda2"
+}

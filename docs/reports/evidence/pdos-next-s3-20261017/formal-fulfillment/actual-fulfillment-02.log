@@ -1,0 +1,140 @@
+F
+=================================== FAILURES ===================================
+_ test_current_default_owner_reads_completed_approved_formal_actions[launch_work0] _
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': 'd34c006a-a7b3-43c1-b59e-25fc10c3b997', 'project': ...01-bac8-89233d341e5f', 'expected_issue_revision': 4, 'approval_token': '[TOKEN_REDACTED]'}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1194fef60>
+
+    @pytest.mark.parametrize("launch_work", [{"window_minutes": 45, "fact_minutes": 60}], indirect=True)
+    def test_current_default_owner_reads_completed_approved_formal_actions(quality_work, monkeypatch):
+        work = quality_work
+        continuation_people(work)
+        with ExitStack() as cleanup:
+            fact = fulfillment.prepare_reviewer_and_rule_publisher(work, cleanup)
+    
+            def read_after_continuation(fixed, basis, implementations, engineering, manufacturing):
+                continued = continuation.continue_after_implementations(
+                    fixed,
+                    basis,
+                    implementations,
+                    engineering,
+                    manufacturing,
+                    monkeypatch,
+                    cleanup=cleanup,
+                    executor=fixed.setup,
+                    test_executor=fixed.retest_executor,
+                    test_person_resource=fixed.retest_person_resource,
+                    independent_reviewer=fixed.independent_reviewer,
+                    raw_value="10.0000",
+                )
+                assert fixed.setup.engine._pdos_capa_fact_runtime.host.owner is fact
+                candidate = fulfillment.record_current_candidate(fixed, continued)
+                rule = fulfillment.publish_current_rule(fixed, continued)
+                # Still inside upstream's coverage issuer and this live original/
+                # resource ExitStack: no teardown proof is used as current evidence.
+                return fulfillment.read_completed_fulfillment(fixed, continued, candidate, rule)
+    
+>           values = upstream.run_approved_configuration_implementations(
+                work, after_issue=named_root_cause, continuation=read_after_continuation
+            )
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/change_execution/test_approved_configuration_implementation_chain.py:627: in run_approved_configuration_implementations
+    return continuation(
+tests/change_execution/test_completed_formal_fulfillment_chain.py:50: in read_after_continuation
+    candidate = fulfillment.record_current_candidate(fixed, continued)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/change_execution/formal_fulfillment_chain_helpers.py:131: in record_current_candidate
+    inputs = candidates.inputs(
+pdos_next/domain/capa_effectiveness/service.py:375: in inputs
+    result = review(s, ctx, product_id, checked)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/capa_effectiveness/service.py:185: in review
+    prepared = candidate_prepare.prepare_candidate(
+pdos_next/domain/capa_effectiveness/candidate_prepare.py:613: in prepare_candidate
+    phase = _read(s, ctx, product_id, payload, origin_ref)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/capa_effectiveness/candidate_prepare.py:395: in _read
+    actual = anchor_owner.read_anchor_from_actual_owner(
+pdos_next/domain/capa_effectiveness/anchor_owner.py:157: in read_anchor_from_actual_owner
+    descriptor = storage.read_origin_descriptor(s, ctx, product_id, issue_id, origin_ref)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/capa_effectiveness/anchor_storage.py:612: in read_origin_descriptor
+    group = _group(s, ctx, product_id, row, issue, before, previous, payload)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/capa_effectiveness/anchor_storage.py:439: in _group
+    _require(bool(key), "ORIGIN_REQUEST_KEY_MISSING", "原共同摘要缺真实原RequestKey关联。", 503)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = False, code = 'ORIGIN_REQUEST_KEY_MISSING'
+detail = '原共同摘要缺真实原RequestKey关联。', status = 503
+
+    def _require(value, code, detail, status=409):
+        if not value:
+>           raise DomainError(code, detail, status)
+E           pdos_next.errors.DomainError: 原共同摘要缺真实原RequestKey关联。
+
+pdos_next/domain/capa_effectiveness/anchor_storage.py:87: DomainError
+=============================== warnings summary ===============================
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-zad8bjwl/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-zad8bjwl/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-zad8bjwl/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-zad8bjwl/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-zad8bjwl/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-zad8bjwl/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-zad8bjwl/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-zad8bjwl/pdos-next/server/pdos_next/change_controlled_owner.py:770: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # BEFORE Current target guard, never a commit/second Receipt.
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-zad8bjwl/pdos-next/server/pdos_next/domain/change_coverage_owner/importer.py:368: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([fact])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-zad8bjwl/pdos-next/server/pdos_next/service.py:1164: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-zad8bjwl/pdos-next/server/pdos_next/change_order_service.py:1012: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Actual candidate trigger validates parent before pointer flush.
+
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+  /private/tmp/pdos-s3-fulfillment-zad8bjwl/pdos-next/server/pdos_next/change_implementation_owner.py:616: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([result])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_completed_formal_fulfillment_chain.py::test_current_default_owner_reads_completed_approved_formal_actions[launch_work0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 20 warnings in 1079.24s (0:17:59)

@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+    "check",
+    "--fix",
+    "--config",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/pdos_next/operational_bootstrap.py",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/pdos_next/test_resource_bootstrap.py",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/pdos_next/quality_bootstrap.py",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/tests/test_operational_bootstrap_profiles.py",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/tests/test_test_resource_bootstrap_profiles.py",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged/tests/test_quality_bootstrap_profiles.py"
+  ],
+  "exit_code": 0,
+  "scope": "6 isolated staged files; import sorting only"
+}

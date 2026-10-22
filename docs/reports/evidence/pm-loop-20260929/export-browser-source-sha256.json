@@ -1,0 +1,9 @@
+{
+  "server/app/exports/definition_documents.py": "4fffa8eb060fac7c2454db2d865bf64994efd954f110e4a6bbce6535d8b96c04",
+  "web/src/components/product-work/definition-exports.tsx": "33071f1f036ff903e765c3e65c0f7dbed0edaba577ea39e2a102429c60e947b6",
+  "web/src/components/product-work/definition-exports.test.tsx": "458a804b34af263a36e6dd2bbe6d940d11f4e68487bfefe0f8fc1891f20100bb",
+  "web/src/app/api/product-work/[[...workPath]]/route.ts": "a4c1872b7e3ac32275e5bb1be5e46e4884e1d8a69ab6881f27aaf8e1a5f3372a",
+  "web/src/app/api/product-work/[[...workPath]]/route.test.ts": "1e91028c1defe3b4b0057750434d86aafcf47e6918771bc0fe2f039705a09ee7",
+  "server/tests/test_definition_exports_api.py": "7f9da16c4f0310fbffbf4eb2fa18658c40390b28a4355ee871b158899b6835c8",
+  "server/tests/test_report_export_formats.py": "df9a913f44e8af381e37bd51780dca17fc826d323a24316f62c7f6a479a6c785"
+}

@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-30",
+  "url": "http://localhost:3000/product-work",
+  "source_ui": "d3d8087",
+  "checks": [
+    "real existing market-space directory",
+    "list/card switch",
+    "deep-link into preserved product workspace",
+    "single settings entry and classified subnav",
+    "mobile navigation",
+    "light/dark theme",
+    "390x844 directory and settings without horizontal overflow",
+    "1280x800 desktop card view"
+  ],
+  "business_writes": false,
+  "models_called": false,
+  "db_tests_or_migrations": false,
+  "preferences_restored": true,
+  "viewport_override_reset": true,
+  "concurrent_non_ui_changes": [
+    "src/components/projects/resource-reallocations.tsx",
+    "src/components/projects/supplier-engineering.tsx",
+    "src/components/projects/build-material-coverage.tsx"
+  ],
+  "existing_business_warnings": [
+    "product analysis unavailable message",
+    "duplicate market React key"
+  ],
+  "screenshots": [
+    "directory-light.png",
+    "cards-dark.png",
+    "cards-mobile-dark.png",
+    "settings-mobile.png"
+  ]
+}

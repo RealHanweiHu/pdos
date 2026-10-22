@@ -1,0 +1,72 @@
+{
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "head": "s0_0760",
+  "counts": {
+    "platforms": 1,
+    "platform_product_links": 1,
+    "platform_link_current": 1,
+    "proposals": 1,
+    "proposal_item_versions": 6,
+    "proposal_revisions": 1,
+    "action_receipts": 2,
+    "audit_entries": 2,
+    "outbox_events": 2,
+    "agent_tool_calls": 2,
+    "agent_run_events": 4,
+    "proposal_prepared_candidates": 2
+  },
+  "receipts": [
+    {
+      "id": "2111729a-d28f-4ff8-a7ba-8151c552a204",
+      "operation": "platform.link.create",
+      "agent_run_id": "b1f01c32-cad5-4553-8105-e86e8177e8ef",
+      "confirmation_id": "17f894ec-c4ba-4921-b5aa-1177a527f416",
+      "subject_id": "0b3f6399-ec83-4139-a3d6-91e54bad0c78"
+    },
+    {
+      "id": "ae469a0b-7129-46b6-990d-194f096b1a90",
+      "operation": "proposal.create",
+      "agent_run_id": "606d55ad-a8f4-46ba-84c9-e7b1415daecf",
+      "confirmation_id": "c7428c18-3e0e-42bf-a852-e88dbb8a34b1",
+      "subject_id": "c5ca98f7-9378-482c-9807-0d85ae68600f"
+    }
+  ],
+  "versions": [
+    {
+      "origin": "ai_draft",
+      "writer_id": "62b4fe31-5e31-4f52-bdee-965ff088174f",
+      "run_id": "606d55ad-a8f4-46ba-84c9-e7b1415daecf",
+      "confirmed_by": "bda64547-fcc0-481f-bcd7-2a58323ce8a3"
+    },
+    {
+      "origin": "ai_draft",
+      "writer_id": "62b4fe31-5e31-4f52-bdee-965ff088174f",
+      "run_id": "606d55ad-a8f4-46ba-84c9-e7b1415daecf",
+      "confirmed_by": "bda64547-fcc0-481f-bcd7-2a58323ce8a3"
+    },
+    {
+      "origin": "ai_draft",
+      "writer_id": "62b4fe31-5e31-4f52-bdee-965ff088174f",
+      "run_id": "606d55ad-a8f4-46ba-84c9-e7b1415daecf",
+      "confirmed_by": "bda64547-fcc0-481f-bcd7-2a58323ce8a3"
+    },
+    {
+      "origin": "ai_draft",
+      "writer_id": "62b4fe31-5e31-4f52-bdee-965ff088174f",
+      "run_id": "606d55ad-a8f4-46ba-84c9-e7b1415daecf",
+      "confirmed_by": "bda64547-fcc0-481f-bcd7-2a58323ce8a3"
+    },
+    {
+      "origin": "ai_draft",
+      "writer_id": "62b4fe31-5e31-4f52-bdee-965ff088174f",
+      "run_id": "606d55ad-a8f4-46ba-84c9-e7b1415daecf",
+      "confirmed_by": "bda64547-fcc0-481f-bcd7-2a58323ce8a3"
+    },
+    {
+      "origin": "ai_draft",
+      "writer_id": "62b4fe31-5e31-4f52-bdee-965ff088174f",
+      "run_id": "606d55ad-a8f4-46ba-84c9-e7b1415daecf",
+      "confirmed_by": "bda64547-fcc0-481f-bcd7-2a58323ce8a3"
+    }
+  ]
+}

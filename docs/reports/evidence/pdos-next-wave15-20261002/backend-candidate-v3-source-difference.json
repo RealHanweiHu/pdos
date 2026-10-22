@@ -1,0 +1,24 @@
+{
+  "previous_manifest": "backend-candidate-v2-source.json",
+  "current_manifest": "backend-candidate-v3-source.json",
+  "changes": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/change_execution/graph.py",
+      "before_sha256": "5e42fb2ba4a953901cd15d8ffa14d9bc7e44ad73979b1a0de85742471cbebe1f",
+      "after_sha256": "3fe9b7988ee504f4310858754082baf565914457e1ca7518a5ccc00c7eb0b6bb",
+      "reason": "Exact Current graph neighbors and stable retained proof basis"
+    },
+    {
+      "path": "pdos-next/server/tests/change_execution/test_pure.py",
+      "before_sha256": "e185ec9f2945de53202595814377d2196c5a6ad706798964d9e6e66afd88f400",
+      "after_sha256": "daa6705911eb68bbbff6981305dfd4220df389a7b6ce1a7dbb50c60504c52422",
+      "reason": "Exact Current graph neighbors and stable retained proof basis"
+    },
+    {
+      "path": "pdos-next/server/tests/change_execution/test_transactions.py",
+      "before_sha256": "9726106e991f402ea6d695d0b55db42ecec1e8bfed40816d7791f422e981f317",
+      "after_sha256": "1f5e8aa3d7c102f5a76a407015a292498d9bfdf6389000258af2f802f5e624f5",
+      "reason": "Exact Current graph neighbors and stable retained proof basis"
+    }
+  ]
+}

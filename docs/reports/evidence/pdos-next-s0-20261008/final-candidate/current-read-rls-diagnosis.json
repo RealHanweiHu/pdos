@@ -1,0 +1,135 @@
+{
+  "database": "pdos_test",
+  "port": 62303,
+  "marker": "6712d849-f2c1-4b32-ae79-d50d9a31639d",
+  "policies": [
+    {
+      "tablename": "artifact_versions",
+      "policyname": "category_scope",
+      "roles": "{public}",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = artifact_versions.tenant_id) AND (a.category_id = artifact_versions.category_id) AND ((a.object_type)::text = 'artifact_versions'::text) AND (a.subject_id = artifact_versions.id) AND (a.owner_id = artifact_versions.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "artifact_versions",
+      "policyname": "model_audience",
+      "roles": "{pdos_agent,pdos_next_app,pdos_next_auth,pdos_next_dispatch}",
+      "qual": "(category_access(tenant_id, category_id) AND ((product_id IS NULL) OR (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = artifact_versions.tenant_id) AND (p.category_id = artifact_versions.category_id) AND (p.id = artifact_versions.product_id))))))"
+    },
+    {
+      "tablename": "artifact_versions",
+      "policyname": "owner_internal",
+      "roles": "{pdos_next_owner}",
+      "qual": "true"
+    },
+    {
+      "tablename": "artifact_versions",
+      "policyname": "upstream_audience",
+      "roles": "{pdos_next_app}",
+      "qual": "((original_id IS NULL) OR upstream_row_visible(tenant_id, category_id, product_id, 'uploaded_originals'::text, original_id))"
+    },
+    {
+      "tablename": "build_starts",
+      "policyname": "category_scope",
+      "roles": "{public}",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = build_starts.tenant_id) AND (a.category_id = build_starts.category_id) AND ((a.object_type)::text = 'build_starts'::text) AND (a.subject_id = build_starts.id) AND (a.owner_id = build_starts.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "build_starts",
+      "policyname": "direct_source_audience",
+      "roles": "{pdos_next_app}",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "build_starts",
+      "policyname": "model_audience",
+      "roles": "{pdos_agent,pdos_next_app,pdos_next_auth,pdos_next_dispatch}",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = build_starts.tenant_id) AND (p.category_id = build_starts.category_id) AND (p.id = build_starts.product_id)))))"
+    },
+    {
+      "tablename": "build_starts",
+      "policyname": "owner_internal",
+      "roles": "{pdos_next_owner}",
+      "qual": "true"
+    },
+    {
+      "tablename": "build_starts",
+      "policyname": "upstream_audience",
+      "roles": "{pdos_next_app}",
+      "qual": "business_audience_summary_visible(tenant_id, category_id, product_id, audience_dependencies)"
+    },
+    {
+      "tablename": "professional_authority_current",
+      "policyname": "category_scope",
+      "roles": "{public}",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM professional_authority_facts p\n  WHERE ((p.tenant_id = professional_authority_current.tenant_id) AND (p.product_id = professional_authority_current.product_id) AND (p.project_id = professional_authority_current.project_id) AND (p.subject_id = professional_authority_current.subject_id) AND ((p.kind)::text = (professional_authority_current.kind)::text) AND (p.series_id = professional_authority_current.series_id) AND (p.id = professional_authority_current.fact_id) AND (p.revision = professional_authority_current.fact_revision)))) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = professional_authority_current.tenant_id) AND (p.category_id = professional_authority_current.category_id) AND (p.id = professional_authority_current.product_id)))))"
+    },
+    {
+      "tablename": "professional_authority_current",
+      "policyname": "model_audience",
+      "roles": "{pdos_agent,pdos_next_app,pdos_next_auth,pdos_next_dispatch}",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = professional_authority_current.tenant_id) AND (p.category_id = professional_authority_current.category_id) AND (p.id = professional_authority_current.product_id)))))"
+    },
+    {
+      "tablename": "professional_authority_current",
+      "policyname": "owner_internal",
+      "roles": "{pdos_next_owner}",
+      "qual": "true"
+    },
+    {
+      "tablename": "professional_authority_current",
+      "policyname": "professional_summary_audience",
+      "roles": "{pdos_next_app}",
+      "qual": "professional_summary_visible(tenant_id, category_id, product_id, summary)"
+    },
+    {
+      "tablename": "professional_authority_current",
+      "policyname": "upstream_audience",
+      "roles": "{pdos_next_app}",
+      "qual": "business_upstream_visible(tenant_id, category_id, product_id, 'professional_authority_facts'::text, fact_id)"
+    },
+    {
+      "tablename": "quality_issue_versions",
+      "policyname": "category_scope",
+      "roles": "{public}",
+      "qual": "(category_access(tenant_id, category_id) AND (((visibility)::text = 'category'::text) OR (owner_id = scope_requester()) OR (EXISTS ( SELECT 1\n   FROM object_audiences a\n  WHERE ((a.tenant_id = quality_issue_versions.tenant_id) AND (a.category_id = quality_issue_versions.category_id) AND ((a.object_type)::text = 'quality_issue_versions'::text) AND (a.subject_id = quality_issue_versions.id) AND (a.owner_id = quality_issue_versions.owner_id) AND (a.principal_id = scope_requester()))))))"
+    },
+    {
+      "tablename": "quality_issue_versions",
+      "policyname": "model_audience",
+      "roles": "{pdos_agent,pdos_next_app,pdos_next_auth,pdos_next_dispatch}",
+      "qual": "(category_access(tenant_id, category_id) AND (EXISTS ( SELECT 1\n   FROM products p\n  WHERE ((p.tenant_id = quality_issue_versions.tenant_id) AND (p.category_id = quality_issue_versions.category_id) AND (p.id = quality_issue_versions.product_id)))))"
+    },
+    {
+      "tablename": "quality_issue_versions",
+      "policyname": "owner_internal",
+      "roles": "{pdos_next_owner}",
+      "qual": "true"
+    },
+    {
+      "tablename": "quality_issue_versions",
+      "policyname": "source_audience",
+      "roles": "{pdos_next_app}",
+      "qual": "direct_source_set_visible(tenant_id, category_id, product_id, required_source_read_set)"
+    },
+    {
+      "tablename": "quality_issue_versions",
+      "policyname": "upstream_audience",
+      "roles": "{pdos_next_app}",
+      "qual": "business_audience_summary_visible(tenant_id, category_id, product_id, audience_dependencies)"
+    }
+  ],
+  "functions": [
+    {
+      "proname": "business_upstream_visible",
+      "definition": "CREATE OR REPLACE FUNCTION public.business_upstream_visible(t uuid, c uuid, p uuid, typ text, sid uuid)\n RETURNS boolean\n LANGUAGE plpgsql\n STABLE\n SET search_path TO 'public', 'pg_temp'\nAS $function$\nDECLARE visible boolean;\nBEGIN\n IF NOT typ=ANY(ARRAY['actual_configurations','build_authorization_decisions','build_execution_assessments','build_lots','builds','engineering_configurations','measurement_import_captures','process_revisions','professional_authority_facts','projects','sample_allocations','sample_units','test_resource_facts','test_result_projections','verification_actual_method_batches','verification_formal_requests','verification_preparations','verification_run_identities','verification_run_versions']) THEN RETURN false; END IF;\n EXECUTE format('SELECT EXISTS(SELECT 1 FROM public.%I\n  WHERE tenant_id=$1 AND category_id=$2 AND product_id=$3 AND id=$4)',typ)\n INTO visible USING t,c,p,sid;\n RETURN visible;\nEND $function$\n"
+    },
+    {
+      "proname": "direct_source_set_visible",
+      "definition": "CREATE OR REPLACE FUNCTION public.direct_source_set_visible(t uuid, c uuid, p uuid, refs jsonb)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO 'pg_catalog', 'public', 'pg_temp'\nAS $function$\n SELECT category_access(t,c,false) AND jsonb_typeof(refs)='array' AND NOT EXISTS (\n   SELECT 1 FROM jsonb_array_elements(refs) r\n   LEFT JOIN artifact_versions a ON a.id=(r->>'artifact_id')::uuid\n     AND a.tenant_id=t AND a.category_id=c AND a.product_id IS NOT DISTINCT FROM p\n   LEFT JOIN products m ON m.id=a.product_id AND m.tenant_id=t AND m.category_id=c\n   LEFT JOIN uploaded_originals o ON o.id=a.original_id AND o.tenant_id=t AND o.category_id=c AND o.product_id IS NOT DISTINCT FROM a.product_id\n   WHERE a.id IS NULL OR (a.product_id IS NOT NULL AND (m.id IS NULL\n     OR NOT source_object_audience(t,c,'products',m.id,m.owner_id,m.visibility)))\n     OR NOT source_object_audience(t,c,'artifact_versions',a.id,a.owner_id,a.visibility)\n     OR (a.original_id IS NOT NULL AND (o.id IS NULL\n       OR NOT source_object_audience(t,c,'uploaded_originals',o.id,o.owner_id,o.visibility)))\n )\n$function$\n"
+    },
+    {
+      "proname": "source_object_audience",
+      "definition": "CREATE OR REPLACE FUNCTION public.source_object_audience(t uuid, c uuid, typ text, sid uuid, own uuid, vis text)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO 'pg_catalog', 'public', 'pg_temp'\nAS $function$\n SELECT category_access(t,c,false) AND (\n   vis='category' OR own=scope_requester() OR EXISTS (\n     SELECT 1 FROM object_audiences a\n     WHERE a.tenant_id=t AND a.category_id=c AND a.object_type=typ\n       AND a.subject_id=sid AND a.owner_id=own AND a.principal_id=scope_requester()\n   )\n )\n$function$\n"
+    }
+  ]
+}

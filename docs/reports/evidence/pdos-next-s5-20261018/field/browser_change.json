@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "feedback_id": "47e04c3f-65d0-5999-b1a4-bbaf2dc4dc41",
+  "change_id": "ab8c8dc4-8fe5-5e4a-b60a-6d6aa729d8de",
+  "create_receipt": "6dc72c44-c716-4c8d-a77a-251a7cffc9af",
+  "graph_id": "608fae27-5bba-4efe-bad2-c6d1e0fb4607",
+  "impact_receipt": "b8b4096d-1267-42c9-bf80-95e6a6a79059",
+  "change_revision": 2,
+  "actual_field_root": true,
+  "formal_selection_still_unavailable": true,
+  "model_calls": 0
+}

@@ -1,0 +1,92 @@
+{
+  "schema_version": "wave20-shared-owner-check-result-v1",
+  "recorded_at": "2026-10-03T17:23:14.159191+00:00",
+  "source_manifest": "docs/reports/evidence/pdos-next-wave20-20261003/shared-source-v1.json",
+  "checks": [
+    {
+      "name": "pure",
+      "command": [
+        "server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "server/tests/capa_effectiveness/test_shared_link_authority.py",
+        "server/tests/capa_effectiveness/test_paired_followup_dispatch.py",
+        "-q",
+        "--tb=short"
+      ],
+      "working_directory": "pdos-next",
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave20-20261003/shared-pure-final-v1.log",
+      "log_sha256": "8c7fdd915cd0ef00b99b4d8cd45cbcf786cdeb14746d8ef2dd7898d7eb766c3a"
+    },
+    {
+      "name": "static",
+      "command": [
+        "server/.venv/bin/ruff",
+        "check",
+        "server/pdos_next/domain/capa_verification/service.py",
+        "server/tests/capa_effectiveness/test_shared_link_authority.py",
+        "server/tests/capa_effectiveness/test_paired_followup_dispatch.py"
+      ],
+      "working_directory": "pdos-next",
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave20-20261003/shared-static-final-v1.log",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "name": "format",
+      "command": [
+        "server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "server/pdos_next/domain/capa_verification/service.py",
+        "server/tests/capa_effectiveness/test_shared_link_authority.py",
+        "server/tests/capa_effectiveness/test_paired_followup_dispatch.py"
+      ],
+      "working_directory": "pdos-next",
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave20-20261003/shared-format-final-v1.log",
+      "log_sha256": "eee76f865de5a9f2456950f710ae5d5f9b5bd0ea02aa54f614c5eed6642a0bfd"
+    },
+    {
+      "name": "ast",
+      "command": [
+        "server/.venv/bin/python",
+        "-c",
+        "import ast,pathlib; paths=['server/pdos_next/domain/capa_verification/service.py', 'server/tests/capa_effectiveness/test_shared_link_authority.py', 'server/tests/capa_effectiveness/test_paired_followup_dispatch.py']; [ast.parse(pathlib.Path(p).read_text(), filename=p) for p in paths]; print(\"3 owned files AST parsed\")"
+      ],
+      "working_directory": "pdos-next",
+      "exit_code": 0,
+      "log": "docs/reports/evidence/pdos-next-wave20-20261003/shared-ast-final-v1.log",
+      "log_sha256": "27f61275e9cc49797964853065fdf37785465230e2e4959cf0372c7cc85b621f"
+    }
+  ],
+  "passed_cases": 52,
+  "earlier_attempts": [
+    {
+      "kind": "pure stdout only",
+      "cases": 29,
+      "exit_code": 0,
+      "note": "Initial signer-only file; not additive to final combined 52."
+    },
+    {
+      "kind": "pure stdout only",
+      "cases": 50,
+      "exit_code": 0,
+      "note": "Two files before two additional late ACL clock negatives; superseded."
+    },
+    {
+      "kind": "static stdout only",
+      "exit_code": 1,
+      "note": "Imported pytest fixtures F401/F811 and long registry variable name E501; annotations/line wrapping fixed. No production or DB failure."
+    }
+  ],
+  "limitations": [
+    "No DB, HTTP, UI, build or shared tests run.",
+    "Session/UOW are actual SQLAlchemy objects; target connections raise, saved rows/owner ports are explicit substitutes.",
+    "Actual paired bytes/professional gates and opaque handles belong to the separately owned live adapter, not these dispatch tests.",
+    "PG atomic constraints and real cross-human professional/private access require Root unified checks.",
+    "Existing shared fixed-reader tests with obsolete signer-less snapshots need a separate Root fixture update; not silently weakened here."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "temporal_port": 61596,
+  "profile": "local-development, existing SQLite Temporal history retained",
+  "business_database": "verified independent 64245/pdos_test",
+  "checkpoint_database": "same marked container/pdos_checkpoints",
+  "own_namespace_states": {
+    "pdos-next-m3-worker-20261016": {
+      "COMPLETED": 1
+    },
+    "pdos-next-m3-worker-20261016-final": {
+      "CANCELED": 1,
+      "COMPLETED": 1
+    },
+    "pdos-next-m3-worker-20261016-checkpoint": {
+      "COMPLETED": 1
+    }
+  },
+  "active_own_executions": 0,
+  "shared_temporal_retained_running": true,
+  "real_model_calls": 0
+}

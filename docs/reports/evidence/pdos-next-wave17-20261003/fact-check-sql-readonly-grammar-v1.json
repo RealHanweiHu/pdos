@@ -1,0 +1,288 @@
+{
+  "observed_at": "2026-10-03T11:05:10.712517+00:00",
+  "marked_port": 62513,
+  "head": "next_0025",
+  "read_only": true,
+  "ddl_applied": false,
+  "rows_or_proofs_written": false,
+  "source_sha256": "c5e19ebd676ebca70421897a2ada1e3214d6fd1d6e7905bdb9a57d7be39f9a56",
+  "checks": [
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "f4dcba77e4376d7740a1c36eaeb2482989c0e56c99cd73c38170419636d26935",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "9d2f5081abe7b5adc4b0225a18f35138d6438f5e6f83cff902d559180e3f54b4",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "41b82e3276c8e7cc12b7382ebaf82adfe1121f72c1e574e0e0bbf8cc82b875df",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "096ef0b114be712281199818c037d3d6f3290cbeaafdf0a3c3b8ecd8936c99bf",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "11b8f3cf13656f601e10f1d08ceb9dba1b27c011a31e7d17210d16dcd58fe735",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "fd842bbd92ed5ea974f2e03281819f8b2a44bd60ea0f3265f1758b302991aab1",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "84c445be4679f14e2c136a6f075ede5c41bf30ff6585885ce1745a890adbed77",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "71f9dc73e0569d1c011b65294900b5e730db49a6367b0a0f4158f24b84cde322",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "73e5baa134cb3e252a56d1d88f0a4b4b22324dceebf8095f31a634a1ffaa9c1c",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "a4f408372fd5cab3d3014edb8d5960b7400e44eb3c4cd8d9cd353d6f8012d22e",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "23591d2d1cbda7e58e8b96e34fa1031eb00dea6ba458e0145d1d67c1146f34ea",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "1dbc3c2ba802eaf0c8d4bb2411a6632ab19a5278889f2f42dda9a943009ee29c",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "constraint_sha256": "7e18fe89046cc0140b8d882553e567df32cd2795bb03ba06cb3e3ac207dc1ca2",
+      "null_probe_value": true,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_current_verification_rules",
+      "constraint_sha256": "096ef0b114be712281199818c037d3d6f3290cbeaafdf0a3c3b8ecd8936c99bf",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_current_verification_rules",
+      "constraint_sha256": "71f9dc73e0569d1c011b65294900b5e730db49a6367b0a0f4158f24b84cde322",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_current_verification_rules",
+      "constraint_sha256": "4a093869102fd1c87f4563ac2eece8870554f002c4e23a41620e3348d8cb24b8",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_current_verification_rules",
+      "constraint_sha256": "1b93af6d61c0257c3e1fbe0ba0ff49b2d992956515537d31f2f6df21dd6c1921",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_current_verification_rules",
+      "constraint_sha256": "a4f408372fd5cab3d3014edb8d5960b7400e44eb3c4cd8d9cd353d6f8012d22e",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "f4dcba77e4376d7740a1c36eaeb2482989c0e56c99cd73c38170419636d26935",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "e1af8538b71bc88df2da8e332148cdec67cc88d425c147280fd07586aa30b5d1",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "41b82e3276c8e7cc12b7382ebaf82adfe1121f72c1e574e0e0bbf8cc82b875df",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "096ef0b114be712281199818c037d3d6f3290cbeaafdf0a3c3b8ecd8936c99bf",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "d6ed2ad3bad87d4d6136a5c9850d5f74e9ed7242aab557b0ce8cc3961a08d39a",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "fd842bbd92ed5ea974f2e03281819f8b2a44bd60ea0f3265f1758b302991aab1",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "84c445be4679f14e2c136a6f075ede5c41bf30ff6585885ce1745a890adbed77",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "71f9dc73e0569d1c011b65294900b5e730db49a6367b0a0f4158f24b84cde322",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "a4f408372fd5cab3d3014edb8d5960b7400e44eb3c4cd8d9cd353d6f8012d22e",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "23591d2d1cbda7e58e8b96e34fa1031eb00dea6ba458e0145d1d67c1146f34ea",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "a003cd45a45801581a2f46bdd93599bdffa234316601f1e5deeccae9065cce7c",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "778d9363902a71e36725225ab90c60004363ffba807a6f29f201c8b5784c1e25",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_observation_facts",
+      "constraint_sha256": "ee55a3f81f0fadbf135c8224bc6f7ccd68d22207f733d2d5df19c1e33adf64e6",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_current_observations",
+      "constraint_sha256": "096ef0b114be712281199818c037d3d6f3290cbeaafdf0a3c3b8ecd8936c99bf",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_current_observations",
+      "constraint_sha256": "71f9dc73e0569d1c011b65294900b5e730db49a6367b0a0f4158f24b84cde322",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_current_observations",
+      "constraint_sha256": "4a093869102fd1c87f4563ac2eece8870554f002c4e23a41620e3348d8cb24b8",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_current_observations",
+      "constraint_sha256": "a4f408372fd5cab3d3014edb8d5960b7400e44eb3c4cd8d9cd353d6f8012d22e",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "constraint_sha256": "3eb6c254a6f0bf2197dfd689bc39a4de9bed534e729a6eb2f67c1045f6b2eac6",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "constraint_sha256": "096ef0b114be712281199818c037d3d6f3290cbeaafdf0a3c3b8ecd8936c99bf",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "constraint_sha256": "3547c60a6f48fc27941ac4c94e82ea48387ed5c3d51cb98503fc124556278043",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "constraint_sha256": "fd842bbd92ed5ea974f2e03281819f8b2a44bd60ea0f3265f1758b302991aab1",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "constraint_sha256": "84c445be4679f14e2c136a6f075ede5c41bf30ff6585885ce1745a890adbed77",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "constraint_sha256": "71f9dc73e0569d1c011b65294900b5e730db49a6367b0a0f4158f24b84cde322",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "constraint_sha256": "a4f408372fd5cab3d3014edb8d5960b7400e44eb3c4cd8d9cd353d6f8012d22e",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "constraint_sha256": "23591d2d1cbda7e58e8b96e34fa1031eb00dea6ba458e0145d1d67c1146f34ea",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "constraint_sha256": "d6a003dd6e480c8e5be31ae2b8ab0c83cc8be3e37b43844aaf1ee2ddd7785730",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "constraint_sha256": "fffd3a121b4c819ce89d493dd1aa0d6fffd48ac0237259a75e1afc054ca6fab2",
+      "null_probe_value": null,
+      "parsed_and_evaluated": true
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "constraint_sha256": "ee55a3f81f0fadbf135c8224bc6f7ccd68d22207f733d2d5df19c1e33adf64e6",
+      "null_probe_value": false,
+      "parsed_and_evaluated": true
+    }
+  ],
+  "limits": "Actual PG JSONB/operator/type grammar only, using typed NULL columns. Does not prove positive payloads, NOT NULL/FKs/uniques/RLS/immutability/CAS/consumption or installed schema."
+}

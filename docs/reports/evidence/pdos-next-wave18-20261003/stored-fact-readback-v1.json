@@ -1,0 +1,13 @@
+{
+  "status": "FAIL",
+  "target": "127.0.0.1:62513/pdos_test",
+  "business_writes": 0,
+  "model_calls": 0,
+  "stored_groups": [],
+  "live_evidence_authorized": false,
+  "started_at": "2026-10-03T16:01:31.198702+00:00",
+  "error_type": "AssertionError",
+  "error_code": null,
+  "diagnostic": "Private diagnostic withheld",
+  "finished_at": "2026-10-03T16:01:32.065122+00:00"
+}

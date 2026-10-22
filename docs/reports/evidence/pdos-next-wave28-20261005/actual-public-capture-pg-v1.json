@@ -1,0 +1,27 @@
+{
+  "status": "FAIL_ACTUAL_MINIMAL_PUBLIC_COVERAGE_CAPTURE_IMPACT",
+  "synthetic_only": true,
+  "phase": "actual-impact-inputs",
+  "phase_elapsed_seconds": {
+    "candidate-preflight": 0.00471745798131451,
+    "create-and-initial-unknown-capture": 149.3078041250119,
+    "native-original-and-one-trusted-publication": 88.24665858299704,
+    "new-key-public-complete-capture": 264.15837058401667,
+    "actual-impact-inputs": 197.79276666598162
+  },
+  "remaining_window_seconds_by_phase": {
+    "native-original-and-one-trusted-publication": 534.290247,
+    "new-key-public-complete-capture": 446.043585,
+    "actual-impact-inputs": 181.88522
+  },
+  "real_qualification_or_release_claimed": false,
+  "standalone_deep_successor_proof_not_tested": true,
+  "actual_nodes": 12,
+  "coverage_entries": 96,
+  "original_captured_at": "2026-10-06T00:17:29.606995+00:00",
+  "original_valid_until": "2026-10-06T00:27:29.606995+00:00",
+  "remaining_window_seconds": 181.88522,
+  "failure_type": "AssertionError",
+  "body_elapsed_seconds": 699.5103174159885,
+  "remaining_window_seconds_at_exit": -15.907562
+}

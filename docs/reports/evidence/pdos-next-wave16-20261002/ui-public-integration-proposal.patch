@@ -1,0 +1,89 @@
+diff --git a/pdos-next/web/src/app/api/[...path]/route.ts b/pdos-next/web/src/app/api/[...path]/route.ts
+--- a/pdos-next/web/src/app/api/[...path]/route.ts
++++ b/pdos-next/web/src/app/api/[...path]/route.ts
+@@ -5,7 +5,22 @@
+ const paths = /^(?:v1\/(?:session|products|commands(?:\/preview)?)|v1\/products\/[a-f0-9-]+\/(?:workspace|definitions|projects|configurations|builds|supply|supply-captures|costs|cost-captures|verification|verification-professional|verification-handoff|verification-launch(?:\/inputs)?|verification-results(?:\/(?:inputs|captures))?|sample-handoff|build-start(?:\/assessment-inputs)?|build-execution(?:\/compare)?|model-calls|variants(?:\/[a-f0-9-]+\/compare)?|original-lifecycle(?:\/[a-f0-9-]+\/candidate|\/intents\/[a-f0-9-]+\/reconcile)?|originals(?:\/[a-f0-9-]+\/(?:download|scan))?|receipts\/[a-f0-9-]+\/revert-preview|works\/[a-f0-9-]+\/cancel-preview)|v1\/work-requests\/[a-f0-9-]+\/resume)$/;
+ const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
+ const qualityChangePaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/(?:quality-execution(?:\/inputs)?|change-execution(?:\/(?:inputs|captures))?)$/;
++const qualityFollowupPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/quality-followup(?:\/inputs)?$/;
++const qualityFollowupCommands = new Set(["quality.issue.root_cause.decide", "quality.capa.actions.complete", "quality.capa.followup.link"]);
++const isRecord = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
++const positiveRevision = (value: unknown): value is number => typeof value === "number" && Number.isSafeInteger(value) && value > 0;
++function validFollowupCommand(value: unknown, productId: string): boolean {
++  if (!isRecord(value) || Object.keys(value).some(key => !["command_id", "idempotency_key", "operation", "product_id", "expected_revision", "payload", "source_read_set"].includes(key)) || typeof value.command_id !== "string" || !uuid.test(value.command_id) || typeof value.idempotency_key !== "string" || value.idempotency_key.length < 8 || value.idempotency_key.length > 160 || typeof value.operation !== "string" || !qualityFollowupCommands.has(value.operation) || typeof value.product_id !== "string" || !uuid.test(value.product_id) || value.product_id.toLowerCase() !== productId.toLowerCase() || !positiveRevision(value.expected_revision) || !isRecord(value.payload) || typeof value.payload.issue_id !== "string" || !uuid.test(value.payload.issue_id) || !positiveRevision(value.payload.expected_issue_revision) || !Array.isArray(value.source_read_set) || value.source_read_set.length < 1 || value.source_read_set.length > 20) return false;
++  const seen = new Set<string>();
++  for (const read of value.source_read_set) {
++    if (!isRecord(read) || Object.keys(read).some(key => !["artifact_id", "expected_revision"].includes(key)) || typeof read.artifact_id !== "string" || !uuid.test(read.artifact_id) || !positiveRevision(read.expected_revision) || seen.has(read.artifact_id.toLowerCase())) return false;
++    seen.add(read.artifact_id.toLowerCase());
++  }
++  // The host derives and checks completeness/ACL/currentness; never reconstruct this read set.
++  return true;
++}
+ const longCommands = new Set([
++  ...qualityFollowupCommands,
+   "test.results.import", "test.result.compute", "test.run.review", "test.disposition.decide",
+   "quality.issue.create", "quality.issue.merge", "quality.issue.triage",
+   "quality.issue.containment.record", "quality.capa.draft", "change.request.create", "change.impact.compute",
+@@ -15,9 +30,19 @@
+   const { path } = await context.params;
+   const pathname = path.join("/");
+   const qualityChange = qualityChangePaths.test(pathname);
+-  if (!paths.test(pathname) && !qualityChange) return Response.json({ message: "此入口不可用。" }, { status: 404 });
++  const qualityFollowup = qualityFollowupPaths.test(pathname);
++  if (!paths.test(pathname) && !qualityChange && !qualityFollowup) return Response.json({ message: "此入口不可用。" }, { status: 404 });
+   const query = new URLSearchParams();
+-  if (qualityChange) {
++  if (qualityFollowup) {
++    const method = pathname.endsWith("/inputs") ? "POST" : "GET";
++    if (request.method !== method) return Response.json({ message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: method } });
++    for (const [key, value] of request.nextUrl.searchParams) {
++      const valid = method === "GET" && (key === "issue_id" ? uuid.test(value) : key === "revision" && /^[1-9]\d*$/.test(value) && Number.isSafeInteger(Number(value)));
++      if (!valid || query.has(key)) return Response.json({ message: "请指定一个真实问题与可选正整数版本。" }, { status: 422 });
++      query.set(key, value);
++    }
++    if (method === "GET" && !query.has("issue_id")) return Response.json({ message: "请明确选择一个问题。" }, { status: 422 });
++  } else if (qualityChange) {
+     const method = /\/(?:inputs|captures)$/.test(pathname) ? "POST" : "GET";
+     if (request.method !== method) return Response.json({ message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: method } });
+     const allowed = method === "POST" ? [] : pathname.endsWith("/quality-execution") ? ["build_id", "run_id", "issue_id"] : ["issue_id", "change_id"];
+@@ -63,6 +88,11 @@
+   if (!base) return Response.json({ message: "服务尚未配置。" }, { status: 503 });
+   try {
+     const body = request.method === "GET" ? undefined : await request.text();
++    if (qualityFollowup && request.method === "POST") {
++      let value: unknown;
++      try { value = JSON.parse(body ?? ""); } catch { return Response.json({ message: "请提交完整原请求与固定来源读集。" }, { status: 422 }); }
++      if (!validFollowupCommand(value, path[2])) return Response.json({ message: "本入口仅核对根因、本人完成或固定回链的完整原请求。" }, { status: 422 });
++    }
+     let longCommand = false;
+     if (body && (pathname === "v1/commands" || pathname === "v1/commands/preview")) {
+       try {
+@@ -71,7 +101,7 @@
+       } catch { /* The domain API validates the unchanged body. */ }
+     }
+     // Original-byte and retained-execution checks remain mandatory on receipt recovery.
+-    const timeout = longCommand || qualityChange || /\/verification-results(?:\/|$)/.test(pathname) ? 180000 : 60000;
++    const timeout = longCommand || qualityChange || qualityFollowup || /\/verification-results(?:\/|$)/.test(pathname) ? 180000 : 60000;
+     const response = await fetch(`${base}/${pathname}${query.size ? `?${query}` : ""}`, {
+       method: request.method, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+       body, cache: "no-store",
+diff --git a/pdos-next/web/src/components/workspace.tsx b/pdos-next/web/src/components/workspace.tsx
+--- a/pdos-next/web/src/components/workspace.tsx
++++ b/pdos-next/web/src/components/workspace.tsx
+@@ -16,6 +16,7 @@
+ import { BuildLaunch } from "@/components/builds/build-launch";
+ import { BuildResults } from "@/components/builds/build-results";
+ import { BuildQualityLoop } from "@/components/builds/build-quality-loop";
++import { BuildQualityFollowup } from "@/components/builds/build-quality-followup";
+ import { BuildStart } from "@/components/builds/build-start";
+ import { BuildSupply } from "@/components/builds/build-supply";
+ import { BuildCost } from "@/components/builds/build-cost";
+@@ -198,7 +199,7 @@
+           <WorkspacePanel key={`handoff:${session?.principal_id}:${productId}`} name="handoff">{session && <BuildHandoff key={`handoff:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>
+           <WorkspacePanel key={`launch:${session?.principal_id}:${productId}`} name="launch">{session && <BuildLaunch key={`launch:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>
+           <WorkspacePanel key={`results:${session?.principal_id}:${productId}`} name="results">{session && <BuildResults key={`results:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>
+-          <WorkspacePanel key={`quality:${session?.principal_id}:${productId}`} name="quality">{session && <BuildQualityLoop key={`quality:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>
++          <WorkspacePanel key={`quality:${session?.principal_id}:${productId}`} name="quality">{session && <div className="space-y-6"><BuildQualityLoop key={`quality:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} /><BuildQualityFollowup key={`quality-followup:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} /></div>}</WorkspacePanel>
+           <WorkspacePanel key={`accounting:${session?.principal_id}:${productId}`} name="accounting">{session && <ModelAccounting key={`accounting:${session.principal_id}:${productId}`} product={data.product} principalId={session.principal_id} api={api} onSaved={refresh} />}</WorkspacePanel>
+           <WorkspacePanel key={`originals:${session?.principal_id}:${productId}`} name="originals"><OriginalFiles key={productId} product={data.product} originals={data.originals} api={api} onSaved={refresh} /></WorkspacePanel>
+           <WorkspacePanel key={`lifecycle:${session?.principal_id}:${productId}`} name="lifecycle">{session && <OriginalLifecycle key={`lifecycle:${session.principal_id}:${productId}`} productId={productId} productRevision={data.product.revision} onCommitted={refresh} />}</WorkspacePanel>

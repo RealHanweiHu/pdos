@@ -1,0 +1,350 @@
+{
+  "date": "2026-10-02",
+  "scope": "read-only source and prior candidate comparison BEFORE this turn execution-plan amendment; no runtime, database, provider or old test execution",
+  "source_files": [
+    {
+      "path": "assets/cehub/deliverable-guide-manifest.json",
+      "sha256": "1c98e124e24121736fe5f5afca847221c2ee4474140500b6db605805c44dec27"
+    },
+    {
+      "path": "certs/ApsaraDB-CA-Chain.pem",
+      "sha256": "cd9337e1dfd610888f265096990d76edf1606753b6c551f803e0465dc6cee22c"
+    },
+    {
+      "path": "web/src/components/ui/button.tsx",
+      "sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24"
+    },
+    {
+      "path": "web/src/lib/utils.ts",
+      "sha256": "7c8c3dfc0cdd370d44932828eb067ef771c8fe7996693221d5d4b90af6d54f2d"
+    },
+    {
+      "path": "web/src/lib/decimal.ts",
+      "sha256": "1c9384a3bb753fef840b56c336eabc1fda4c540c1b6a2a16f6a5c5a1d344fc0b"
+    },
+    {
+      "path": "web/src/components/product-work/product-reading-ui.tsx",
+      "sha256": "8e546ecaae0ca908b9c5aab46e4b4106659b85dfd7631693f3e38bbacbc27eb1"
+    },
+    {
+      "path": "web/src/components/projects/project-task-workspace.tsx",
+      "sha256": "0d9965ac6520dc4269189b9f9c7a6d31b57243946335c5e53ae3f93dd04b66c5"
+    },
+    {
+      "path": "web/src/components/workspace-experience.ts",
+      "sha256": "b2eea0958a6901efd54efcc3e703c2a9285891f70152089733bf6446c25e938f"
+    },
+    {
+      "path": "web/src/components/my-work/my-work-scenario.ts",
+      "sha256": "1775b6409991df4d2f8af7df0e830a58019e4b1ef1308f879e5fe7aa58e553e8"
+    },
+    {
+      "path": "server/app/auth/passwords.py",
+      "sha256": "281c8cd89de32404435b41353be723828fdf8b59868341f4e6d195c56fd4fc02"
+    },
+    {
+      "path": "server/app/ai/provider_adapters.py",
+      "sha256": "68299f0dd50621cec7aeb9885c96cba90f6b6a4cba039f0548d7dc134e6cdc88"
+    },
+    {
+      "path": "server/app/ai/egress.py",
+      "sha256": "0fce9cc42426d73f023500eb862d4ba6cb8773aa77d1a84c3e6969199df4fdd8"
+    },
+    {
+      "path": "server/app/ai/model_budget.py",
+      "sha256": "08f8875936ec451ba405c95f2a8c5fa2ac82df032a59ad7edbd5983fa36ff1e9"
+    },
+    {
+      "path": "server/app/ai/model_call_fence.py",
+      "sha256": "a385cb182f57de664db9415becb5e638116baa0785202c41601b4ef3adf5199f"
+    },
+    {
+      "path": "server/app/ai/budget_ledger.py",
+      "sha256": "f12ebb27c65e0e80f167fd9dd4c542a0eac56ab7ae263550cda46424137655ed"
+    },
+    {
+      "path": "server/app/ai/application_checkpoints.py",
+      "sha256": "c59ada31f25afc0d87d5f0f6daf521bb8dd3d759e5a47d359dfcfaedc348c36a"
+    },
+    {
+      "path": "server/app/ai/checkpoints.py",
+      "sha256": "981704f5e05fb76a37392f0405dab864ad1d13518c6ec0d744086acbf056d612"
+    },
+    {
+      "path": "server/app/ai/golden_suite.py",
+      "sha256": "16e2f1ef6faded937d5e98bf1377477f162f453f1520bd97c077182e7d920f82"
+    },
+    {
+      "path": "server/app/ai/qualifications.py",
+      "sha256": "381a59b8d92519fb2958d3f73b21f5defce6e3902252fdbe5a31f6d333fd9bcd"
+    },
+    {
+      "path": "server/app/events/writer.py",
+      "sha256": "d37ff343bf69dac21730c2dddff15b729646d8d0a6c6dbf51fc891cfd20aa42c"
+    },
+    {
+      "path": "server/app/storage/documents.py",
+      "sha256": "a664d647fde0ed10d4e2b2d3e519822a954e9e80883652a3cae4b3866d6f55b4"
+    },
+    {
+      "path": "server/app/domain/documents.py",
+      "sha256": "93d4f3bae636d3682fb78fe32290d39190b1607500d74ce0b6f5d7078837aecf"
+    },
+    {
+      "path": "server/app/domain/email_documents.py",
+      "sha256": "b715db921fe90c5bc3b5f9ee23e5351fcbfa5a5195bb888e3653e5ca68d43fd0"
+    },
+    {
+      "path": "server/app/integrations/dingtalk_outbox.py",
+      "sha256": "146075106f2231437e22d7ca37c69004ad257ea24b6c88e9a8f8084bc950dcb7"
+    },
+    {
+      "path": "server/app/db/test_safety.py",
+      "sha256": "deb75d386d4d3f9c068e237e945bfb3c49fd89aa3cf1b1fdcf77a6cde116a754"
+    },
+    {
+      "path": "server/app/domain/product_evidence_items.py",
+      "sha256": "c053f63977ddc1e19d3c0abaf228f1d0389f625c36f5243ddf8660643630c2a0"
+    },
+    {
+      "path": "server/app/domain/product_definitions.py",
+      "sha256": "91726768a18f4e61a771f36a14e841ac7775a92e7191fe49c7f1da8a3144bd8b"
+    },
+    {
+      "path": "server/app/domain/definition_inheritance.py",
+      "sha256": "bd4ab5e8e7ae55357fe25b9a6618055b33cc2bbf481986003a7284c54229cb7c"
+    },
+    {
+      "path": "server/app/domain/market_analysis.py",
+      "sha256": "33b7f1eee2e96a710f8d00a2a6c59e26498a51de9ca3559141b8c29c07176969"
+    },
+    {
+      "path": "server/app/domain/working_time.py",
+      "sha256": "2503b572f4fea610ddb691072c9e0e00d079d64ccd1ad9c82a1d13ec54254a4c"
+    },
+    {
+      "path": "server/app/domain/work_calendars.py",
+      "sha256": "b7e76a9c24e9d4fbc9458c457580cc162d6a7022a8d3fb16802790eaf0e866b9"
+    },
+    {
+      "path": "server/app/domain/plan_scheduling.py",
+      "sha256": "3647d9a3aead6bd478edcfb97da160a35cadd0980487a83b29fe26b6bcfea185"
+    },
+    {
+      "path": "server/app/domain/schedule_forecast_engine.py",
+      "sha256": "c5ec20463073de7776d6a4eba669e389d1394028b37c7cff87ad9b239b1c18fa"
+    },
+    {
+      "path": "server/app/exports/definition_documents.py",
+      "sha256": "ff31b80f957b1885549b480c36715dc1dd4ba0f6f01a0c4ec603d3e468099f5d"
+    },
+    {
+      "path": "server/app/domain/sample_configuration_revisions.py",
+      "sha256": "4ba0e6724b7865d2ab410d9b817ebebf215f5d163cf2420b6a367fdbea7a87cc"
+    },
+    {
+      "path": "server/app/domain/sample_configuration_comparison.py",
+      "sha256": "a8bca35e62b6766eb3bf319980b261746f8afb5bd524633b6aef3b9a98bdadcf"
+    },
+    {
+      "path": "server/app/domain/test_report_workbook.py",
+      "sha256": "9c82ef91aca2e45930f08751a7d1a5856199d3f9f992ce666f117860ebd37a67"
+    },
+    {
+      "path": "server/app/domain/test_import_preview.py",
+      "sha256": "2bdf8bc205733b67872caa955ec74d86a7ad1b028c3141fe89d9a7648806f71b"
+    },
+    {
+      "path": "server/app/domain/test_runs.py",
+      "sha256": "86e1516332a3de2479a4b4c2c37b0b947460e451be5df4d4a20e7259452340ae"
+    },
+    {
+      "path": "server/app/domain/tooling_rounds.py",
+      "sha256": "00cc4d6cd2eff169c4bd70df582b159c1ab079b61f10226309a18eb38a42b940"
+    },
+    {
+      "path": "server/app/domain/project_completion.py",
+      "sha256": "c81b64544ae6f9b47370945f29a0ab0858c3db77d066c27199ac2c971a080a4b"
+    },
+    {
+      "path": "server/app/domain/project_handoff_sources.py",
+      "sha256": "c6426c5f694f4065f8a2fef44e4a73aa006f7495a7386af6db03becbb6a3355f"
+    },
+    {
+      "path": "server/app/domain/quality_issue_links.py",
+      "sha256": "d10c563e86c0f0fb9d7fc5be31324caa4563910cd69576e4196a4a1e1890286e"
+    },
+    {
+      "path": "server/app/domain/capa_actions.py",
+      "sha256": "e972141b7f0ebdb602b3ee50bd193b61f7897d66508bd5fca9c2579bfae84536"
+    },
+    {
+      "path": "server/app/domain/change_impact_graph.py",
+      "sha256": "ed9a3c056ae41405961ca20ef003eebfa833eb4eba3dcb8bf11d833776dc578f"
+    },
+    {
+      "path": "server/app/domain/change_execution_results.py",
+      "sha256": "9c70b5e8190d9e1d471d99dc882e736934dfe88741e89c99080cfa2e308c481a"
+    },
+    {
+      "path": "server/app/domain/change_execution_evidence.py",
+      "sha256": "6ce6d397c71dd8fdb2a7555e4a938391eff275e7290e1cbd261adc8979017584"
+    },
+    {
+      "path": "server/app/domain/build_materials.py",
+      "sha256": "234444bf2ff3ff0f0bf720aa3691cc9b76a340ca4a45a78898346af6b8b84a37"
+    },
+    {
+      "path": "server/app/domain/material_coverage.py",
+      "sha256": "c264df235feaf3e461dbe60bf65e74a9dfc2b2f2d1108ee695fc795188ed5dcf"
+    },
+    {
+      "path": "server/app/domain/material_supply_pools.py",
+      "sha256": "af8b1fa5b3f02d6af4cc3b0779435fbdeb116648579d71bec2cb690c40f1ca93"
+    },
+    {
+      "path": "server/app/domain/material_allocations.py",
+      "sha256": "38e13159966889a90d1ab4810f7c236d7b98dc37ac1d159ced5da9bdc859aa66"
+    },
+    {
+      "path": "server/app/domain/cost_rollups.py",
+      "sha256": "cbcbf5193cdacb8bc1bd4b9ed3adbb19a42f62254b68537f095cfc6389d95059"
+    },
+    {
+      "path": "server/app/domain/cost_inputs.py",
+      "sha256": "ae3b6ed8682475bcbd369b2cc5fb06fb18c2b658c13994cbdbcb1eb604102013"
+    },
+    {
+      "path": "server/app/domain/cost_freezes.py",
+      "sha256": "2f623c30395a2ee89141e938ef3e7f6e9ea41cb34d9fff05f60f2cf807dbee71"
+    },
+    {
+      "path": "server/app/domain/resource_schedule_solver.py",
+      "sha256": "ae247477a4167a263aa3faa1b64091fd1a078c9363a0eecb6154c67f2828238d"
+    },
+    {
+      "path": "server/app/domain/portfolio_scoring.py",
+      "sha256": "705804cf7c937d856e3669510f964ea16e6ba18b4dc6150e0427c27168ab6628"
+    },
+    {
+      "path": "server/app/domain/fmea_design_rules.py",
+      "sha256": "222a067fdba70d879fad3453d58724e81e2fd0abe52fda0a905bec598b8d1a9d"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "sha256": "6a0a5534d774dfe73e1b22dd64a2a88c60c60d98be5c43284c1f698cc5379027"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/runtime.py",
+      "sha256": "a7cde38f638c3d7175d34e374d4d805295278531052e3135e45b44fe310253fd"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/safety.py",
+      "sha256": "f51ba8cca61f3e20bb4b089f07cf272650aa5f0adf7d02bd6206c889ef38a8d2"
+    },
+    {
+      "path": "pdos-next/tools/local_environment.py",
+      "sha256": "eeee45068ca0a67d7c4cf6c41f071ff7fe817ce4a3bde2d14bab28466f71a91d"
+    }
+  ],
+  "candidate_comparisons": [
+    {
+      "name": "new_g0",
+      "manifest": "docs/reports/evidence/pdos-next-g0-20261002/manifest.json",
+      "matched": 51,
+      "total": 51,
+      "differences": []
+    },
+    {
+      "name": "product_reference",
+      "manifest": "docs/reports/evidence/product-space-reference-implementation-20261001/source-manifest.json",
+      "matched": 31,
+      "total": 31,
+      "differences": []
+    },
+    {
+      "name": "role_ui",
+      "manifest": "docs/reports/evidence/role-scenario-ui-20261001/build-candidate.json",
+      "matched": 1084,
+      "total": 1095,
+      "differences": [
+        {
+          "path": "web/src/components/product-work/competitors.tsx",
+          "matches": false,
+          "expected_sha256": "b21a0c9a18cc56ac06cb248e44fdf4de838cc761bcd2910f830c60538a7d523f",
+          "actual_sha256": "1a38fbeb6fb23d410b2e8046a68d06613db262f281aee2817c649f478ae545f5"
+        },
+        {
+          "path": "web/src/components/product-work/opportunities.tsx",
+          "matches": false,
+          "expected_sha256": "623cf8cb294dc183357a355b54af32787c4aa9262ba475fd930e73fcf571e891",
+          "actual_sha256": "2afcdb0e731fc503e2564fa23959aa9b8284d5db2d0383b8811f1dd93e1de43b"
+        },
+        {
+          "path": "web/src/components/product-work/product-candidate-card.test.tsx",
+          "matches": false,
+          "expected_sha256": "e7dbc79548abcb995d0ee0625281a167116ff60e4aa08442acc765539e049116",
+          "actual_sha256": "9ee5501373b9beb9d5a7640174253a422d4cd39a81bf6a7e1e3fffdc0136cb35"
+        },
+        {
+          "path": "web/src/components/product-work/product-candidate-card.tsx",
+          "matches": false,
+          "expected_sha256": "20c98da44d119cb21535936c39e62287a4ddcceb34061f3295a47b27569373f7",
+          "actual_sha256": "581433e8748d09dc3f7288aaf1eaff8f46ccadffbe36f9f4413d67f35ad3d10a"
+        },
+        {
+          "path": "web/src/components/product-work/product-reading-charts.tsx",
+          "matches": false,
+          "expected_sha256": "b590fb94295e5c77a4c8ee6b5cf000eb9a3754bc1a61851e5c561199c461d99f",
+          "actual_sha256": "dd93f2af96f7c68af2a0ce8b4479b169205e3a353c6ab888dae285876977c220"
+        },
+        {
+          "path": "web/src/components/product-work/product-research-entries.tsx",
+          "matches": false,
+          "expected_sha256": "9f26d67e305fe9f8491d13f30e7c9ef42c26c56e7c20f33625a651116c212b87",
+          "actual_sha256": "937e7588d86326aa87ad71e6f50bc36ce23e52aa312d9a2aba77cc485fa91f3c"
+        },
+        {
+          "path": "web/src/components/product-work/product-space-overview.tsx",
+          "matches": false,
+          "expected_sha256": "980bba7d49ccb4862d49134b90354a18e0b95b9b9f4fde9e20edf7840e2b9371",
+          "actual_sha256": "0d151cc704bc23234439d30e7762b750b27918554773593775a4ed3208b351b8"
+        },
+        {
+          "path": "web/src/components/product-work/product-workspace.tsx",
+          "matches": false,
+          "expected_sha256": "6c67761d578f9b02581393e95bf4a849d090085432e6034d2ede43ec7c452c62",
+          "actual_sha256": "947c316f1ebe99160a02e897e86124f6f8d48d87fe673f7961f2bf48791b424e"
+        },
+        {
+          "path": "web/src/components/projects/change-execution-overview.tsx",
+          "matches": false,
+          "expected_sha256": "e093f3d3bee4ba0620b8be6d64c6a09bef0637b57b21742c4cd6810dab116c45",
+          "actual_sha256": "d278e66e19a3b583b48c359b53a772d516f79ab313b6cde4d7bdc1cff9e50002"
+        },
+        {
+          "path": "web/src/components/projects/cost-alternatives.tsx",
+          "matches": false,
+          "expected_sha256": "ef2017f0692098163d2517f355d250c5f1823629a7a7158e52aee9917a980581",
+          "actual_sha256": "6f37d35bb3b53c75221b77182e242ca994ca4bca01bfac31179877468b1f35c8"
+        },
+        {
+          "path": "web/src/components/projects/professional-change-route.tsx",
+          "matches": false,
+          "expected_sha256": "7880bd7591770700586e866844c80906e94ec1c172838ab8b92e0ce0f10676a7",
+          "actual_sha256": "1f0c397f4bebeab9aea01380e48bcd28122719d22f4cf5df123c15a3410cd4f1"
+        }
+      ]
+    }
+  ],
+  "assets": {
+    "deliverables": 325,
+    "check_items": 687,
+    "copied_button_bytes_match": true
+  },
+  "limitations": [
+    "Existing tests were not rerun. Hash equality does not grant new-system acceptance.",
+    "The G0 historical manifest includes the execution plan, which is amended in this turn; runtime sources remain untouched.",
+    "Files not included here have no candidate-equivalence claim."
+  ]
+}

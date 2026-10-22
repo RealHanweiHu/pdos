@@ -1,0 +1,5 @@
+### Result
+Total messages: 2 (Errors: 2, Warnings: 0)
+
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/agent-sessions?page_size=20:0
+[ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:63559/api/v1/categories/30f1ff30-2617-4edd-ae9c-710c8fc840e8/agent-sessions?page_size=20:0

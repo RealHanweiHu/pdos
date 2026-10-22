@@ -1,0 +1,24 @@
+✔ positioning forwards the exact scoped GET and every parameter occurrence (29.215625ms)
+✔ spec-benchmark forwards the exact scoped GET and every parameter occurrence (1.982708ms)
+✔ feature-config forwards the exact scoped GET and every parameter occurrence (1.327667ms)
+✔ definition-maturity forwards the exact scoped GET and every parameter occurrence (1.276958ms)
+✔ parameter filters are optional but a single valid proposal id is mandatory for every view (3.278584ms)
+✔ each repeated parameter is validated and extra scope or query keys are rejected (1.776084ms)
+✔ only the four exact scoped paths are opened (1.407417ms)
+✔ views reject writes and other methods without forwarding (1.87775ms)
+✔ existing proposal collection, document, items and participants reads preserve their URLs (1.803ms)
+✔ session and configuration requirements still guard the new reads (2.508584ms)
+✔ backend denial and read transport failure never become a successful view (2.2175ms)
+✔ existing command body and same-origin write protection remain unchanged (1.20575ms)
+✔ proposal claims collection and fixed detail preserve the authenticated category scope (1.212708ms)
+✔ claim reads reject ambiguous filters, unbound collections and extra scopes before forwarding (1.7145ms)
+✔ only exact claim GET routes are opened and writes remain domain commands (2.598708ms)
+✔ claim reads propagate privacy denial and missing sessions without rewriting results (4.040292ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 344.300208

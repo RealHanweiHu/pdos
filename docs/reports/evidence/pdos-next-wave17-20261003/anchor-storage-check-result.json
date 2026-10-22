@@ -1,0 +1,59 @@
+{
+  "scope": "new unmounted staged anchor storage only; actual SQL ports with synthetic SELECT returns; no database or public validation",
+  "source_files": {
+    "pdos-next/staging/wave17/anchor_storage.py": "b3d71c70e076d1f77ee9a9b95fe0300b54ace14ba48fe0ca59334b832c9b325c",
+    "pdos-next/staging/wave17/test_anchor_storage.py": "63dcb791de8f71f5bfb44b8479f435177d097d7401a49023736b9638e613b5bb",
+    "pdos-next/staging/wave17/anchor-storage-contract.md": "a4dd15cf21eb150601361c3866229c7f9d834e92048ddff89c92e02545bc7cbc"
+  },
+  "dependencies_observed_sha256": {
+    "pdos-next/staging/wave17/anchor.py": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+    "pdos-next/staging/wave17/fact_atom_storage.py": "b3794750da19f6394dc12cce062489e1aad7022619f4aac7dccb7e7246b9e604",
+    "pdos-next/staging/wave17/fact_storage_models.py": "c5e19ebd676ebca70421897a2ada1e3214d6fd1d6e7905bdb9a57d7be39f9a56",
+    "pdos-next/staging/wave17/fact_storage_codec.py": "962a7ad94babe6a5a4552d85dffa993cf0d8271e9ae49d4338f6ebf05fa835cf"
+  },
+  "frozen_paired_storage_files_unchanged": {
+    "pdos-next/staging/wave17/paired_storage.py": "a8333eb092a35da0f6cc61802dcc71b365e4fd945e3f643fa0e4d7ff21bede8e",
+    "pdos-next/staging/wave17/test_paired_storage.py": "627e780f1dd240f8b3d597df83983a870e735611f9320479f566dd1c103f8e7e",
+    "pdos-next/staging/wave17/paired-storage-contract.md": "893f5d3555acac4637f95ae91a8e47d8165b83f0466fc9ff36203ecdd8b5e115"
+  },
+  "checks": {
+    "owned_pure": {
+      "exit_code": 0,
+      "passed": 53,
+      "seconds": 1.51,
+      "command": "PYTHONPATH=pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/staging/wave17/test_anchor_storage.py -q"
+    },
+    "ruff": {
+      "exit_code": 0
+    },
+    "format_check": {
+      "exit_code": 0
+    },
+    "ast_in_memory_compile": {
+      "exit_code": 0,
+      "files": 2
+    }
+  },
+  "raw_logs": {
+    "anchor-storage-pure-v5-final.log": "13c69997148abdba5989f08b93ebaabff5a9e4f81157a52fa93ec1f9b3dfeb94",
+    "anchor-storage-ruff-v5-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "anchor-storage-format-v5-final.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "anchor-storage-ast-v5-final.log": "5e241e63d5645311cdf4baac93dd61157a99f970b299620020b762ff543db0ab"
+  },
+  "retained_prior_records": {
+    "anchor-storage-pure-v1.log": "46 fixture setup errors: wrong wrapper Completion input and nonexistent payload text; corrected fixture plus new reader operation-fallback note contract",
+    "anchor-storage-pure-v2.log": "46 passed before pointer identity/nested additions",
+    "anchor-storage-pure-final.log": "48 passed before separately requested Project ACL guard",
+    "anchor-storage-pure-v4-final.log": "53 passed after Project ACL guard before import-order-only fix",
+    "anchor-storage-ruff-v4-final.log": "One I001 import order failure; fixed imports only before final exact source checks"
+  },
+  "project_guard": "actual exact tenant/product/project bounded SELECT/private actual-owner, final full scope/owner/visibility reread and actual postIO clock",
+  "limits": [
+    "No StableCapaAnchor construction or default assembly/HostGate",
+    "Original SourceSafety entries are persisted declarations, never actual current bytes/security grants",
+    "All current evidence/source bytes/original failures/sameUOW consumed attest flags remain false",
+    "Later Current never replaces original history; finite lineage owner remains missing",
+    "Existing proof has no new consumed_at; no historical consumption time invented",
+    "No shared public/server/web/DDL/DB/HTTP/whole repository checks"
+  ]
+}

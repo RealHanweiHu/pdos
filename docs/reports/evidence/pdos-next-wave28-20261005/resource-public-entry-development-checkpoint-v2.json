@@ -1,0 +1,105 @@
+{
+  "status": "PUBLIC_RESOURCE_READ_ENTRY_DEVELOPMENT_CHECKPOINT",
+  "head": "next_0032",
+  "tables": 125,
+  "actual_files_sha256": {
+    "server/pdos_next/domain/manufacturing_resource_owner/__init__.py": "f90d61a7f4e14d1db51ec87c6a394e6efb1f668a722516e6232707da4db6b6f4",
+    "server/pdos_next/domain/manufacturing_resource_owner/api.py": "04d5b13e35404f7cb695837d57be6dcfa1bad78368c8167565c400bdf82c8596",
+    "server/pdos_next/domain/manufacturing_resource_owner/api_schemas.py": "4ab4aac507e19c87b5bae1f4765fec8398a965c5c9c3596ef97c7d474b48bcac",
+    "server/pdos_next/domain/manufacturing_resource_owner/owner.py": "dc15b39b5b2d0cb1da430dca3577630f709001490a55acfc56a133210fab073f",
+    "server/pdos_next/domain/manufacturing_resource_owner/relations.py": "2bbd56239d7344c768487f999c43d869bfbb4763c5ec08fa8b91d4627662b524",
+    "server/pdos_next/domain/manufacturing_resource_owner/schemas.py": "50dfc4ce69be05feba80cd6cb3e27e0099de7d0867f066922f833845369df0c6",
+    "server/pdos_next/api.py": "3b7dcd5bb11aec8d52eb3f3db3f22f622f4fc3aa06d7b1e9b16c2a036ec54860",
+    "web/src/lib/build-resource-reading.ts": "daaad3322a03890b224c3669eef62063c1bedc10951fc69f4f8a24c47820b73e",
+    "web/src/lib/build-resource-reading.test.ts": "e6cef654b672acd841bbcc97a9588e47c5a05e53d033624a0554520e108cb1fe",
+    "web/src/components/builds/build-resource-reading.tsx": "66e7230adce105ee8fef0386fd39720a98ab9259e32f966cf3d7abd5798b0af2",
+    "web/src/components/builds/build-start.tsx": "f6ea9e0b882319ecdf3824e71c13aac6b42c9a17a3d8cb18c8ad1f668841a393",
+    "web/src/app/api/[...path]/route.ts": "cf0882a5d4422390202b4cd3ef5fddf56ae525d016554ce7059f0890986b15c8",
+    "web/src/app/api/[...path]/route.test.ts": "9055afe6208f79f3c315e0ac7dd5649777b526f63b25b3c3ca2cf34c26323410",
+    "server/tests/manufacturing_resource_api/conftest.py": "e682ee9bdb94c5dc3d2e1f78f0c3e2ca6561cf5b40155d7ae0ff1560bff5166d",
+    "server/tests/manufacturing_resource_api/test_routes.py": "aa4b8c64c1c3152335ed8571e4e19ff50e756c71a6338f6ab8c3ce5c1fb2afe2",
+    "server/tests/professional_authority_batch/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "server/tests/professional_authority_batch/conftest.py": "33903e044e9f7aecb721fd22b80167b71ba8d9e4666da76fd9d0914a204f0e71",
+    "server/tests/professional_authority_batch/professional_batch_harness.py": "b12d570bd90a21a078a6834ec454699b8f9ae356e9e150391067ec85b38ee66d",
+    "server/tests/professional_authority_batch/test_batch.py": "65ee05acef6aedc44728eac5d8374208830acea0e88d9eefd66b0481ad7ba6ff",
+    "server/tests/professional_authority_batch/test_evidence.py": "1631036fed5448a73b301d9fc1d4291410468c41a5c922aa252fde58cd43593e",
+    "server/tests/professional_authority_batch/unsafe_artifact_metadata_history.py": "11490613cdfbaaf66d57f38311597d7fe933643914927a7e60087e128e338b67",
+    "server/tests/professional_authority_batch_transactions/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "server/tests/professional_authority_batch_transactions/conftest.py": "7c10de971922c118e5127549defd1df8b151be940080bc535a2c8094d3922680",
+    "server/tests/professional_authority_batch_transactions/test_current_fact_batch.py": "a8673d40eeee65a41d71caa95484ef62bf8b26a857d821d41ea6ae7dae141c9b",
+    "server/tests/manufacturing_resource_native_transactions/__init__.py": "3bd37e3e60c7d50d0fe9041db656d31fc403ae716172dbcbd7fe5adebdd984ce",
+    "server/tests/manufacturing_resource_native_transactions/conftest.py": "069830f5e49e28669939bbfa5307c43e4994d009ffda53fe22c66aa7ee4c5d94",
+    "server/tests/manufacturing_resource_native_transactions/fixtures.py": "b098c0af809930eae337b7abf91a747789e12cf8316dfc17deaaa03b2014ddd7",
+    "server/tests/manufacturing_resource_native_transactions/test_native_read.py": "04d092e9f707f87227e898cd3f58bbf9a2a03eb9c1600125e285be24f0147ed9",
+    "server/pdos_next/domain/professional_authority/service.py": "6605d180d6cfba69ec23c58b200b6c4ecd353eef620ff4a10eebfa2fc9460e99"
+  },
+  "actual_backend_affected_pure": {
+    "passed": 748,
+    "seconds": 15.99,
+    "log": "actual-resource-and-professional-affected-pure-v1.log"
+  },
+  "direct_actual_new_professional_pure": {
+    "passed": 43,
+    "log": "actual-professional-fact-batch-pure-v1.log"
+  },
+  "resource_route_pure": {
+    "passed": 32,
+    "seconds": 0.23,
+    "log": "actual-resource-api-pure-v1.log",
+    "sql_owner_auth_replaced": true
+  },
+  "resource_frontend_pure": {
+    "passed": 7,
+    "log": "actual-resource-reading-pure-v1.log"
+  },
+  "actual_bff_regression": {
+    "passed": 67,
+    "milliseconds": 571.5165,
+    "log": "actual-resource-reading-bff-pure-v2.log",
+    "host_io_replaced": true
+  },
+  "web_production_build": {
+    "exit_code": 0,
+    "actual_source_unchanged": true,
+    "frozen_web_files": 178,
+    "offline_real_cached_geist_fonts": true,
+    "shared_preview_replaced": false,
+    "browser_verified": false
+  },
+  "web_source_manifest": "resource-web-candidate-v3.json",
+  "old_build_v1_did_not_cover_bff": "actual-resource-reading-build-v1.json",
+  "source_or_qualification_or_execution_rights_added": false,
+  "native_t2_statuses": "unknown",
+  "registered_graph_owner": false,
+  "real_pg": {
+    "native_resource_and_registered_http": {
+      "passed": 1,
+      "seconds": 5.49,
+      "log": "actual-resource-and-professional-native-pg-v2.log",
+      "frozen_source": "resource-and-professional-native-actual-source-v2.json",
+      "source_unchanged": true,
+      "coverage": "actual NativeText registration, trusted synthetic OperationalFact/Current, genuine same-UOW owner inspect/refresh, actual authenticated registered HTTP, 21-table read-only effects, issuer unchanged"
+    },
+    "professional_fact_batch_and_existing_guards": {
+      "passed": 4,
+      "log": "actual-resource-and-professional-native-pg-v1.log",
+      "frozen_source": "resource-and-professional-native-actual-source-v1.json",
+      "overall_run_v1": "1 failed / 4 passed; resource test auth snapshot used wrong role, corrected in v2; production unchanged",
+      "coverage": "full Fact bulk SQL once per assessment, fresh second same-session assessment, pending qualification mutation preserves guard; existing authority issuer ABA, Source withdrawal, RLS and Agent zero DML"
+    },
+    "resource_lock_fences": {
+      "passed": 4,
+      "log": "actual-manufacturing-resource-locks-pg-v2.log"
+    }
+  },
+  "browser": "Mac locked; not verified",
+  "business_performance": "new actual public capture/impact v2 running; no speed conclusion",
+  "final_web_type_lint": "actual-resource-reading-final-type-lint-v3.log",
+  "historical_failures_preserved": [
+    "actual-resource-and-professional-native-pg-v1.log",
+    "actual-manufacturing-resource-locks-pg-v1.log",
+    "actual-public-capture-pg-v1.log"
+  ],
+  "native_fixture_acceptance": "not yet implemented; private R1 candidates started",
+  "qualification_or_execution_rights_added": false
+}

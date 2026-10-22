@@ -1,0 +1,33 @@
+{
+  "status": "static_only_not_registered_not_http_tested",
+  "file": "pdos-next/server/pdos_next/domain/change_execution/api.py",
+  "sha256": "fcd8d37a402a95dd40bee65c92cab56d97d753ed4b8fb7834f9be67b9f1325af",
+  "routes": {
+    "/v1/products/{product_id}/change-execution": "get",
+    "/v1/products/{product_id}/change-execution/inputs": "post",
+    "/v1/products/{product_id}/change-execution/captures": "post"
+  },
+  "checks": {
+    "ast_compile": "passed_final_formatted_source",
+    "three_host_authenticated_routes": "passed",
+    "inputs_path_product_match_before_domain_uow": "passed",
+    "one_tenant_uow_per_route": "passed",
+    "capture_commits_via_tenant_session_separately_from_impact": "structure_checked_not_database_executed",
+    "no_explicit_commit_no_new_receipt_no_new_authentication": "structure_checked",
+    "ruff_check": "passed",
+    "ruff_format_check": "passed_after_formatting_new_file"
+  },
+  "frozen_business_files_unchanged": {
+    "service.py": "40448bde0b3cae0bb944e4e68ad41a4d5ec3047b137917794741c1bed04cc69f",
+    "models.py": "cf0961f9ac8160430b6075e3dfecbfa7bad1493486c052b81e93165218607679",
+    "schemas.py": "af449f47ff19887a7e9c6d02529960fbad4de1b69e98f370fcfdfc83edbb349e"
+  },
+  "not_run": [
+    "database",
+    "pytest",
+    "test_collection",
+    "HTTP",
+    "shared_app_registration"
+  ],
+  "initial_format_check": "formatting_needed_and_applied_only_to_new_api_file"
+}

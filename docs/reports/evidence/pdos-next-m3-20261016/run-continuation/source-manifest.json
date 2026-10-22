@@ -1,0 +1,35 @@
+{
+  "base_commit": "c5a946a4825e0311345d00ad086d8e5137ed3874",
+  "source_sha256": {
+    "pdos-next/server/migrations/versions/s0_0772_run_continuation.py": "7a70613fa2401b91e58fdf8c3a1b761ba98fb496cf35a752e1a2de27da086b46",
+    "pdos-next/server/pdos_next/agent_kernel/api.py": "1221618caf6bb772c91e3814708b16506342d506c23cf6faf536d47e57f14aa8",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "d2ed2d2f104d5ce7a4c1246ec835628d959321c9a693f3fde1d407a5860b9849",
+    "pdos-next/server/pdos_next/agent_kernel/conversation.py": "5e995ea489097c8930abc2cc198ef51f6b015061516620de403f27feea8a21d0",
+    "pdos-next/server/pdos_next/agent_kernel/gateway.py": "3e199bd7eaa050fd80528aada60be42b4a2afb21f6427cd4590d711a597c2f7f",
+    "pdos-next/server/pdos_next/agent_kernel/host.py": "280dc9ca2e2f016c10e8f5a10bf653785829479a03c4faf3c7b398c3e067f1f3",
+    "pdos-next/server/pdos_next/agent_kernel/models.py": "596143ae72641e7c18c6517338afe4f70011c25b5e54f33022d91e1d602fe528",
+    "pdos-next/server/pdos_next/agent_kernel/persistence.py": "9fed35d3e4479ef66acefc56dac9fb663a58a518674ed8a474bf8ec0e228fb5d",
+    "pdos-next/server/pdos_next/agent_kernel/research_adapter.py": "788469d5cad8ff8e70488267c2180814b0fb6112d8031f9bd27893f66ed12c46",
+    "pdos-next/server/pdos_next/agent_kernel/tools.py": "48afc90dcfd5b3c5e5389b09b624619e2725cb106cefca7ce40c4fc8cbebe847",
+    "pdos-next/server/tests/agent_kernel/test_api.py": "a71eee3e7d690566af01f3c27488e656795a4fe382cb2795c7f579030803a019",
+    "pdos-next/server/tests/agent_kernel/test_research_adapter_restore.py": "773d22efdd79bdaa2d28bc2c7acd8939b91c99a45d9fdd3274bac2e1b6a0ba1f",
+    "pdos-next/server/tests/agent_kernel/test_run_continuation.py": "0cc8c16a0b3bb09b6cfe414e58a89c6b7cb94946510f7dbd701251c3a82a3099",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "419abfd659c50070fc4b08788432ac8a4cf29524b5798ee330d331157aa025b8",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "86ceb26cb6920cf402169028edbc17c6a05aeaee299bdcb1e733a6d3a06eb002",
+    "pdos-next/web/src/components/xiaopai.tsx": "5801dc180b48c97d614a656303ccd84b758d18e2b5ed9e9e59f118af3745a832",
+    "pdos-next/web/src/components/category-create/personal-xiaopai.tsx": "c8dfbc2f11e99698a6310324e6ee95f6dc9f94e09c7fa47f24735cfa2fef4330",
+    "pdos-next/web/src/components/pai/run-continuation.tsx": "dbf3dc7b550e71d3103dbdc12ee302065e9b764ebad5597432786b90ebee1efd",
+    "pdos-next/web/src/components/pai/run-continuation.test.mjs": "a4a7fb22d00d977c2cdf26b06a227727ed30ea1ee4f4adb813b644b62c702c94",
+    "pdos-next/web/src/lib/run-continuation.ts": "9915e4c73bb05849f868985a3bf7f9b8597420ed4deb7bb8faaa5bc534595ba9",
+    "pdos-next/web/src/lib/run-continuation.test.ts": "33958aa09824c0ba5d08317ac63764083cad72384ee2591cdcd36cc329200a93",
+    "docs/runbooks/xiaopai-run-continuation.md": "0ecd7c67b2589ffa82c41ec053915f37ceb70eb67fa64a5afc8c38cf4651caf2"
+  },
+  "isolated_final_web_build": {
+    "source_files_verified": 264,
+    "source_tree_sha256": "64e42b4a66b19d8fd89ee93e051dc2835be5655694f5d149d9c55213ed5903ae",
+    "excludes": "generated .next, tsbuildinfo, next-env and dependencies; no env files copied",
+    "final_build": "build-final.log",
+    "types": "types-final.log",
+    "source_matches_worktree": true
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "date": "2026-09-10",
+  "scope": "N0-03 shared bound-model budget transitions and lease-scoped Agent port",
+  "tests": {
+    "database_and_security_passed": 158,
+    "row_lock_deadline_regression_passed": 1,
+    "contracts_calendar_planning_passed": 160,
+    "distinct_total": 319,
+    "new_tests": 31
+  },
+  "checks": {
+    "ruff_files": 12,
+    "format_files": 12,
+    "mypy_files": 2,
+    "exports": "both passed"
+  },
+  "test_database": {
+    "host": "127.0.0.1",
+    "port": 57433,
+    "database": "pdos_test",
+    "postgres": "16.15",
+    "migration": "0066_bound_budget_transition",
+    "container": "pdos-budget-transition-test",
+    "isolation": "ephemeral dedicated cluster; no shared runtime role changes",
+    "remaining_test_tenants": 0,
+    "cleanup": "stopped and auto-removed"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "019e2b2af0b1a0fbbb6874cb75218ed5771e2e9df60c7416e649fcc26ae20294",
+      "sources_verified": 180,
+      "artifacts_verified": 3,
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "approved_artifacts_unchanged": true
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "35e7c2521ad54cd12bf3c26fcf4273857ddd301a342a12d7e5be6ca0f7800fd9",
+      "sources_verified": 54,
+      "artifacts_verified": 4,
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d",
+      "approved_artifacts_unchanged": true
+    }
+  },
+  "sources": {
+    "server/app/ai/agent_budget.py": "cbac29b824df1556f111719c3a5376560b914166be294a6c25c1cde83cd7fa4c",
+    "server/app/ai/budget_ledger.py": "90993c5f727d863107eb02b7b307bf375fb995a79ac7471ba86ed067555a8a54",
+    "server/migrations/versions/0066_bound_budget_transition.py": "6e7eb8d89ee5f34fff09b35556c75e2da255416f3ef570bb8e433c34ceefa673",
+    "server/tests/test_agent_budget_transitions.py": "671a6cb5f80fe817bcb129627751d29ed4ec78c1b8c9b6a5e8c685217e9ff09d",
+    "server/tests/test_bound_budget_dispatch.py": "b5f5fa4d0fd403457206186ff0e09faaa05fbd99bbc37bfd6689f8b60c7606bd",
+    "server/tests/test_migrations.py": "3b8089bccb30e8e65b16bbc1e0644ef3ea423e08140bfe03eaa09118ac7b560e",
+    "server/tests/test_budget_ledger.py": "4fec4c0f8e8ba22b54fb1460c9552e8cd64698a4b83c6f4eb018660c2d843384",
+    "server/tests/test_budget_accounting.py": "2ec925ab9ec4a223f0ca499641eaa211a71f6023d23f177e48b0b7822d7131bc",
+    "server/tests/test_model_budget_controller.py": "849ce41f328c03d4ba370a2801a69ce2fe8b20c5f2e879e71b5d6199916d8bda",
+    "server/tests/test_model_call_fence.py": "5bccd9f380989b39930cfdf509541ba7fb968af85688df0bedee05c4da428187",
+    "server/tests/test_mixed_call_admission.py": "bed628d9984c6506534824029749d33078a3e0dcd9569882df582a1683884dcd",
+    "server/tests/test_model_gateway_schema.py": "8ade3563805989389753a7cc5e532951659241a8def610880b97d50cafe1cbd8",
+    "infra/postgres/security/agent-runtime.sql": "debbc7bbe917722a1ec81d0b3d3e00ec974bc09de88d87ddd89135844f344d93",
+    "infra/postgres/security/agent-runtime-revert.sql": "fdd30662fddbc78e36d25c4ba11f6ba27c95dde604f4500c1842eae649952447",
+    "docs/runbooks/agent-budget-transitions.md": "d9b961bf7069d9d1ba74fccf375d1ce9e5c63e1363d3d448352a3f8831b95f1e",
+    "docs/reports/2026-09-10-n0-03-agent-budget-transitions-validation.md": "67f46d963dad9066eb0482ecfea361c8119a81029c7dc1a65d8528f86bb9e811"
+  },
+  "real_model_calls": 0,
+  "default_agent_budget_adopted": false,
+  "remaining": [
+    "trusted restricted reservation and meter qualification selection",
+    "stable business run/call identity",
+    "restricted budget-mode call registration and default factory adoption",
+    "real provider metering qualification pending explicit external-call authorization",
+    "deployment coverage and old process drain",
+    "active-time leases, crash reconciliation and checkpoint/resume",
+    "tool loops and persistent ACL/rollout"
+  ]
+}

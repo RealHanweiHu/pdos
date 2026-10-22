@@ -1,0 +1,28 @@
+{
+  "backend_snapshot": "/private/tmp/pdos-s4-publication-594m5l8p",
+  "web_snapshot": "/private/tmp/pdos-s4-publication-zjbe059o",
+  "same_origin_upgrade": "127.0.0.1:63559",
+  "before_and_after_reload": {
+    "stage": "inputs",
+    "command_sha256": "7e85013ec71ff2ab77fdee2c2c3a29420da2c1cff37b2cddebe73602e66f47ac",
+    "private_request_key_sha256": "af47726ca7c884883b57fe31ee51782042ed6c5332fcb62cce3aeadace03d174",
+    "identical": true
+  },
+  "original_request_resumed_to_named_T2_preview": true,
+  "execute_posts_before_named_confirmation": 0,
+  "narrow_dark": {
+    "viewport_width": 390,
+    "document_scroll_width": 390,
+    "dialog_width": 358,
+    "dialog_client_width": 356,
+    "dialog_scroll_width": 356,
+    "vertical_scroll": true,
+    "decision_buttons_enabled": true
+  },
+  "actual_screenshots": [
+    "preview-desktop-light.png",
+    "preview-narrow-dark.png"
+  ],
+  "qualification": "unknown",
+  "manufacturing_release": null
+}

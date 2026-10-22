@@ -1,0 +1,54 @@
+{
+  "status": "PASS",
+  "candidate": "candidate-source-v3.json",
+  "source_sha256": "c5ba37d6ef2175839a04efddad6222c3e8be770040124fb5ede7808b69011fed",
+  "business_commands": 0,
+  "model_calls": 0,
+  "history_selection": {
+    "issue": [
+      "v4",
+      "v5 historical readonly",
+      "v6 current awaiting_verification"
+    ],
+    "change_version": [
+      "v2",
+      "v1 historical readonly",
+      "v2"
+    ],
+    "change_id": [
+      "saved proposal",
+      "empty",
+      "same saved proposal"
+    ],
+    "failure": [
+      "fixed failure",
+      "empty",
+      "same fixed failure"
+    ]
+  },
+  "parent_get_before": {
+    "builds": 2,
+    "workspace": 4,
+    "verification-results": 2,
+    "quality-execution": 4,
+    "change-execution": 1
+  },
+  "parent_get_after": {
+    "builds": 2,
+    "workspace": 4,
+    "verification-results": 2,
+    "quality-execution": 4,
+    "change-execution": 1
+  },
+  "parent_counts_unchanged": true,
+  "log_lines_before": 23,
+  "log_lines_after": 23,
+  "log_sha256": "9e89649b2367f2dc9d78bd8f85bf3104feeeeac0f864bfb2081884596908b563",
+  "actual_output_visible": [
+    "Formal Draft v1",
+    "paired advanced Formal v7",
+    "Run v3"
+  ],
+  "screenshot": "actual-history-selection-v5.jpg",
+  "scope": "Actual visible DOM selections, parent completed GET log counts over selected actions, unchanged backend source. No elapsed-time benchmark, mobile/theme/full design certification."
+}

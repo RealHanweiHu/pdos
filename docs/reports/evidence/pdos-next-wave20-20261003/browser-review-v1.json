@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "candidate": "candidate-source-v3.json",
+  "business_commands": 0,
+  "model_calls": 0,
+  "visible_history": [
+    "Rule v1",
+    "Observation v1"
+  ],
+  "selection": "no candidate selected",
+  "operation": "NamedReview",
+  "preview_enabled": false,
+  "visible_reason": [
+    "当前专业资格尚不能核对，暂不能办理。",
+    "本操作当前具名职责或资格尚需核对。",
+    "请明确选择一份固定候选，再核对实际复验与本人独立资格。"
+  ],
+  "screenshot": "actual-review-blocked-v2.jpg"
+}

@@ -1,0 +1,48 @@
+{
+  "files": [
+    {
+      "family": "professional",
+      "path": "pdos-next/.local/professional-synthetic-profiles.json",
+      "sha256": "6c5db0e49a17ab32b2b3efdeea9e777af62d4ddb21dbe97ecff9629d73ae71b5",
+      "scopes": 1,
+      "scope": "Exact retained legacy scope; explicit plural file only"
+    },
+    {
+      "family": "operational",
+      "path": "pdos-next/.local/operational-synthetic-profiles.json",
+      "sha256": "7312cd90c53605e89b2336499b1128ec80f8f7bb7e3d8c01d7878561719849d9",
+      "scopes": 1,
+      "scope": "Exact retained legacy scope; explicit plural file only"
+    },
+    {
+      "family": "test-resource",
+      "path": "pdos-next/.local/test-resource-synthetic-profiles.json",
+      "sha256": "6ad4e6eb2744f668348d9cf44826512e3145cb4e6499a1f0b9358d97f6babcb4",
+      "scopes": 1,
+      "scope": "Exact retained legacy scope; explicit plural file only"
+    },
+    {
+      "family": "quality",
+      "path": "pdos-next/.local/quality-synthetic-profiles.json",
+      "sha256": "f817272c4ed51918b98ab83e661b6629c91788548392c7d39466da89d56c5932",
+      "scopes": 1,
+      "scope": "Exact retained legacy scope; explicit plural file only"
+    },
+    {
+      "family": "quality-followup",
+      "path": "pdos-next/.local/quality-followup-synthetic-profiles.json",
+      "sha256": "859c30a892ee39f3a9ec0d541cefcfaa7560d7058466fa80fc191ce64052fbe4",
+      "scopes": 1,
+      "scope": "Exact retained legacy scope; explicit plural file only"
+    },
+    {
+      "family": "capa-facts",
+      "path": "pdos-next/.local/capa-facts-synthetic-profiles.json",
+      "sha256": "29ac3e48167fce0241d325e8d7948bd273006f62a31c661b6a4d87c3fddc61b6",
+      "scopes": 1,
+      "scope": "Exact retained legacy scope; explicit plural file only"
+    }
+  ],
+  "legacy_single_files_untouched": true,
+  "new_scope_not_yet_published": true
+}

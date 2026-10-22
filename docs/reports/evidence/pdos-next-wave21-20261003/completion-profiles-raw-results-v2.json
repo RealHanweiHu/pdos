@@ -1,0 +1,67 @@
+[
+  {
+    "name": "pure",
+    "command": [
+      "server/.venv/bin/python",
+      "-m",
+      "pytest",
+      "--noconftest",
+      ".local/wave21-completion-staged/tests/quality_followup_root/test_completion_profiles.py",
+      "-q",
+      "--tb=short",
+      "-o",
+      "cache_dir=.local/wave21-completion-staged/.pytest_cache"
+    ],
+    "exit_code": 0,
+    "seconds": 1.919,
+    "log": "docs/reports/evidence/pdos-next-wave21-20261003/completion-profiles-pure-final-v2.log"
+  },
+  {
+    "name": "static",
+    "command": [
+      "server/.venv/bin/ruff",
+      "check",
+      "--no-cache",
+      ".local/wave21-completion-staged/pdos_next/quality_followup_integration.py",
+      ".local/wave21-completion-staged/tests/quality_followup_root/test_completion_profiles.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.02,
+    "log": "docs/reports/evidence/pdos-next-wave21-20261003/completion-profiles-static-final-v2.log"
+  },
+  {
+    "name": "format",
+    "command": [
+      "server/.venv/bin/ruff",
+      "format",
+      "--check",
+      ".local/wave21-completion-staged/pdos_next/quality_followup_integration.py",
+      ".local/wave21-completion-staged/tests/quality_followup_root/test_completion_profiles.py"
+    ],
+    "exit_code": 0,
+    "seconds": 0.013,
+    "log": "docs/reports/evidence/pdos-next-wave21-20261003/completion-profiles-format-final-v2.log"
+  },
+  {
+    "name": "ast",
+    "command": [
+      "server/.venv/bin/python",
+      "-c",
+      "import ast,pathlib; paths=['.local/wave21-completion-staged/pdos_next/quality_followup_integration.py', '.local/wave21-completion-staged/tests/quality_followup_root/test_completion_profiles.py']; [ast.parse(pathlib.Path(p).read_text(),filename=p) for p in paths]; print(\"2 owned staged files AST parsed\")"
+    ],
+    "exit_code": 0,
+    "seconds": 0.032,
+    "log": "docs/reports/evidence/pdos-next-wave21-20261003/completion-profiles-ast-final-v2.log"
+  },
+  {
+    "name": "import",
+    "command": [
+      "server/.venv/bin/python",
+      "-c",
+      "from pathlib import Path; from pdos_next import quality_followup_integration as m, quality_followup_bootstrap as b; expected=Path(\".local/wave21-completion-staged/pdos_next\").resolve(); assert Path(m.__file__).resolve().parent==Path(b.__file__).resolve().parent==expected; import inspect; print(inspect.signature(m.configure_integration)); print(\"imports bound to isolated staged package\")"
+    ],
+    "exit_code": 0,
+    "seconds": 0.977,
+    "log": "docs/reports/evidence/pdos-next-wave21-20261003/completion-profiles-import-final-v2.log"
+  }
+]

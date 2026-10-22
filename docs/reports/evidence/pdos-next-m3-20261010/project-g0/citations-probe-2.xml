@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="6.663" timestamp="2026-10-11T03:05:01.399335-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_m3_link_citations" name="test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[category]" time="4.046"><failure message="AssertionError: assert {'type': 'artifact', 'id': 'b0e57929-f693-4ff0-b010-5133b14d060c', 'version': 1, 'line': 2, ...} in [{'id': '1259d252-db82-483f-83f1-390ac418f994', 'line': None, 'type': 'human', 'quote': None, ...}, {'id': 'b0e57929-f693-4ff0-b010-5133b14d060c', 'line': 2, 'type': 'artifact', 'quote': 'Synthetic linked specification', ...}]">work = &lt;isolated synthetic test scope&gt;, source_scope = 'category'
+
+    @pytest.mark.parametrize("source_scope", ["category", "product"])
+    def test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable(
+        work, source_scope,
+    ):
+        from pdos_next.domain.preproject.baseline import validate_sources
+        from pdos_next.domain.products.definitions import definition_view
+        from pdos_next.domain.products.models import DefinitionRevision
+    
+        body = "Header\nSynthetic linked specification"
+        source_product = work.product if source_scope == "product" else None
+        if source_product is None:
+            source = artifact(work, body=body)
+        else:
+            # The existing fixture Product is actually shared and the reviewer has
+            # its ordinary category read grant. No new audience or write right is added.
+            with human_session(work) as session:
+                assert session.get(Product, source_product).visibility == "category"
+            registered = post(work, command(work, "evidence.artifact.register", {
+                "title": "Actual Product citation source",
+                "source_label": "Synthetic human fixture", "content": body, "visibility": "category",
+            }, []))
+            assert registered.status_code == 200, registered.text
+            source = UUID(registered.json()["subject_id"])
+        proposal_id, _ = create(work)
+        item = next(row for row in read(work, proposal_id).json()["items"] if (
+            row["kind"] == "spec" and row["content"]["key"] == "display"
+        ))
+        direct = deepcopy(item["source_refs"])
+        linked = post(work, evidence_request(work, "evidence.link.create", {
+            "evidence": {"type": "artifact", "id": str(source), "version": 1, "locator": "line:2"},
+            "target": {"type": "proposal_item", "id": item["item_id"], "version": item["version"]},
+            "relation": "supports",
+        }))
+        assert linked.status_code == 200, linked.text
+        expected = {
+            "type": "artifact", "id": str(source), "version": 1,
+            "line": 2, "quote": "Synthetic linked specification",
+        }
+        submit(work, proposal_id)
+        frozen = read(work, proposal_id, work.peer).json()["submission"]["frozen_document"]
+        fixed = next(row for row in frozen["items"] if row["item_id"] == item["item_id"])
+        assert fixed["source_refs"] == [*direct, expected]
+        assert fixed["direct_source_refs"] == direct
+        assert "quote" not in str(fixed["evidence_links"])
+        assert fixed["evidence_links"][0]["id"] == linked.json()["result"]["link_id"]
+        decision = decide_request(work, proposal_id)
+        decision["payload"]["project"]["owner_id"] = str(work.human)
+        approved, _ = save(work, decision, actor=work.peer)
+        with human_session(work) as session:
+            definition = session.get(DefinitionRevision, UUID(approved["result"]["definition_id"]))
+            actual_source = session.get(Artifact, source)
+            assert actual_source.product_id == source_product
+            assert actual_source.visibility == "category"
+            assert definition.product_id != source_product
+            sources = session.scalars(select(DefinitionSource).where(
+                DefinitionSource.definition_id == definition.id,
+            )).all()
+            assert len(sources) == 1
+            fixed_source = sources[0]
+            assert fixed_source.tenant_id == work.tenant
+            assert fixed_source.category_id == work.category
+            assert fixed_source.product_id == definition.product_id
+            assert {
+                "type": "artifact", "id": str(fixed_source.artifact_id),
+                "version": fixed_source.source_revision, "line": fixed_source.line,
+                "quote": fixed_source.quote,
+            } == expected
+&gt;           assert expected in frozen["source_refs"]
+E           AssertionError: assert {'type': 'artifact', 'id': 'b0e57929-f693-4ff0-b010-5133b14d060c', 'version': 1, 'line': 2, ...} in [{'id': '1259d252-db82-483f-83f1-390ac418f994', 'line': None, 'type': 'human', 'quote': None, ...}, {'id': 'b0e57929-f693-4ff0-b010-5133b14d060c', 'line': 2, 'type': 'artifact', 'quote': 'Synthetic linked specification', ...}]
+
+tests/preproject/test_m3_link_citations.py:278: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_link_citations" name="test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable[product]" time="2.186"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">work = &lt;isolated synthetic test scope&gt;, source_scope = 'product'
+
+    @pytest.mark.parametrize("source_scope", ["category", "product"])
+    def test_pg_actual_artifact_link_freezes_citation_and_g0_definition_remains_consumable(
+        work, source_scope,
+    ):
+        from pdos_next.domain.preproject.baseline import validate_sources
+        from pdos_next.domain.products.definitions import definition_view
+        from pdos_next.domain.products.models import DefinitionRevision
+    
+        body = "Header\nSynthetic linked specification"
+        source_product = work.product if source_scope == "product" else None
+        if source_product is None:
+            source = artifact(work, body=body)
+        else:
+            # The existing fixture Product is actually shared and the reviewer has
+            # its ordinary category read grant. No new audience or write right is added.
+            with human_session(work) as session:
+                assert session.get(Product, source_product).visibility == "category"
+            registered = post(work, command(work, "evidence.artifact.register", {
+                "title": "Actual Product citation source",
+                "source_label": "Synthetic human fixture", "content": body, "visibility": "category",
+            }, []))
+            assert registered.status_code == 200, registered.text
+            source = UUID(registered.json()["subject_id"])
+        proposal_id, _ = create(work)
+        item = next(row for row in read(work, proposal_id).json()["items"] if (
+            row["kind"] == "spec" and row["content"]["key"] == "display"
+        ))
+        direct = deepcopy(item["source_refs"])
+        linked = post(work, evidence_request(work, "evidence.link.create", {
+            "evidence": {"type": "artifact", "id": str(source), "version": 1, "locator": "line:2"},
+            "target": {"type": "proposal_item", "id": item["item_id"], "version": item["version"]},
+            "relation": "supports",
+        }))
+        assert linked.status_code == 200, linked.text
+        expected = {
+            "type": "artifact", "id": str(source), "version": 1,
+            "line": 2, "quote": "Synthetic linked specification",
+        }
+        submit(work, proposal_id)
+        frozen = read(work, proposal_id, work.peer).json()["submission"]["frozen_document"]
+        fixed = next(row for row in frozen["items"] if row["item_id"] == item["item_id"])
+        assert fixed["source_refs"] == [*direct, expected]
+        assert fixed["direct_source_refs"] == direct
+        assert "quote" not in str(fixed["evidence_links"])
+        assert fixed["evidence_links"][0]["id"] == linked.json()["result"]["link_id"]
+        decision = decide_request(work, proposal_id)
+        decision["payload"]["project"]["owner_id"] = str(work.human)
+&gt;       approved, _ = save(work, decision, actor=work.peer)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_m3_link_citations.py:258: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;
+req = {'command_id': '14ac7b17-1997-459e-9b01-8113362d80ab', 'idempotency_key': '87a49fe6-6950-4594-bf21-0066f425711a', 'category_id': '57c788d5-2d85-4229-998e-1f7e5490a16a', 'product_id': None, ...}
+actor = UUID('01100689-49f1-4580-bf64-e96883e58c62')
+
+    def save(work, req, *, actor=None):
+        checked = post(work, req, actor=actor, preview=True)
+        assert checked.status_code == 200, checked.text
+        response = post(work, checked.json()["command"], actor=actor)
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/preproject/test_g0.py:95: AssertionError</failure></testcase></testsuite></testsuites>

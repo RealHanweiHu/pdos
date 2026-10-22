@@ -1,0 +1,57 @@
+{
+  "schema_version": "pdos-wave18-actual-fact-ui-check-v1",
+  "status": "FAIL",
+  "scope": "Offline actual JSON consumed by frozen frontend helpers; no HTTP/DB/browser or actual authority attestation",
+  "checks": [
+    {
+      "name": "frozen_fact-workflow-contract",
+      "passed": true
+    },
+    {
+      "name": "transpile_fact-workflow-contract",
+      "passed": true
+    },
+    {
+      "name": "frozen_ui-contract",
+      "passed": true
+    },
+    {
+      "name": "transpile_ui-contract",
+      "passed": true
+    },
+    {
+      "name": "frozen_fact-workflow-state",
+      "passed": true
+    },
+    {
+      "name": "transpile_fact-workflow-state",
+      "passed": true
+    }
+  ],
+  "failure_codes": [
+    "OFFLINE_INPUT_OR_RUNTIME_FAILURE"
+  ],
+  "sources": {
+    "tool": {
+      "sha256": "9673335985b5b9db50993d22ff811cbdad800602bbf9fe05896ababc93f7f3f0"
+    },
+    "fact-workflow-contract": {
+      "sha256": "6afd9c9bf2d488486f7d67ee735cc56d523654d97dbd1321c858db9f9f5eda04"
+    },
+    "ui-contract": {
+      "sha256": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b"
+    },
+    "fact-workflow-state": {
+      "sha256": "748754be30a1fc7047877f1441ac7b60b6ed4849940e1bd0b8c81f25d75c9959"
+    }
+  },
+  "responses": {
+    "host": {
+      "sha256": "1a76c6c72fdcfc63d774aaf6430e10358724c3dca2bfa68e63d64b012f59c27b",
+      "bytes": 65227
+    }
+  },
+  "counts": {},
+  "timing": {},
+  "typescript_version": "5.9.3"
+}

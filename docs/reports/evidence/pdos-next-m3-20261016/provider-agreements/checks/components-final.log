@@ -1,0 +1,35 @@
+✔ missing command port disables settings and does not fabricate saved configuration (10.258292ms)
+✔ non administrators cannot edit even when callbacks are supplied (1.080917ms)
+✔ masked configured state and authorizer readiness do not claim active model calls (1.157541ms)
+✔ pending parent command locks edits and keeps only one preview entry (1.030833ms)
+✔ unknown or mismatched readiness stays unavailable and cannot echo secret errors (0.141292ms)
+✔ invalid numeric input is rejected before requesting a preview (0.135125ms)
+✔ input labels have unique accessible ids with both explicit protocol choices (1.117291ms)
+✔ source details retain exact identity, version, locator and unavailable status (5.477167ms)
+✔ source addresses and markup remain inert text and missing content is not invented (0.669417ms)
+✔ empty references remain explicitly unavailable (0.144875ms)
+✔ comparison preserves server groups, precision, reasons and sample counts (2.848792ms)
+✔ feature booleans retain false and enum text; unmapped names are kept separate (2.776375ms)
+✔ positioning plots known coordinates only and distinguishes evidence styles (4.21575ms)
+✔ separate server price facets remain separate even with identical parameter ids (5.66025ms)
+✔ nonfinite numeric coordinates never generate invalid SVG or invented values (1.049417ms)
+✔ every document identity dimension rejects an old result (0.7575ms)
+✔ loading, failed reads, wrong view and incomplete payload hide old successful content (0.516875ms)
+✔ maturity renders only server counts, question assignments and exact blocker reasons (1.488459ms)
+✔ rendering never issues requests or starts an agent (5.360291ms)
+✔ nonmeasurement evidence uses a separate marker and retains the original nature (3.793958ms)
+✔ free-text feature sections remain separate and never become mapped feature values (0.894709ms)
+✔ nullable unavailable feature text retains its source identity without displaying hidden content (1.181ms)
+✔ unknown positioning records drill into the returned redacted references (0.696166ms)
+✔ unrepresentable decimal coordinates retain exact text and explain why they are not plotted (3.322916ms)
+✔ finite extreme endpoints do not overflow the SVG scale (1.072292ms)
+✔ true zero and equivalent decimal spellings remain plotable (3.906833ms)
+✔ single numeric source bounds remain explicit constraints in the actual comparison view (1.502833ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 515.794375

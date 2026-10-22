@@ -1,0 +1,281 @@
+{
+  "version": "project-build-output-actual-dto-validation/v1",
+  "validation": "offline actual readers over original public HTTP JSON; no field supplementation",
+  "network": false,
+  "database": false,
+  "browser": false,
+  "component_ssr": "not_run",
+  "input": "docs/reports/evidence/pdos-next-ui-20261018/build-output/pg-http-responses.json",
+  "source_sha256": {
+    "output": "2cc8529cde25ace2952b753c57c964586e7b4e3c0389bcb33d38de5fcacb9d5d",
+    "builds": "f313ae12b425e269d4b326ab8897809a57a30f44c27ca7628ab92b2d035ec095"
+  },
+  "input_sha256": "a9580b9536c30ea1e62083fbc24fb0e47cd52a4d3f61f61cf1b85b14fda6cee6",
+  "checks": [
+    {
+      "check": "fixture_is_original_actual_http_export",
+      "passed": true
+    },
+    {
+      "check": "frozen_output_reader_matches",
+      "passed": true
+    },
+    {
+      "check": "selected_build_is_actual_project_result",
+      "passed": true
+    },
+    {
+      "check": "actual_main_and_other_project_cardinality",
+      "passed": true
+    },
+    {
+      "check": "actual_build_original_quantity_and_dates_preserved",
+      "passed": true
+    },
+    {
+      "check": "all_actual_configuration_headers_and_instants_preserved",
+      "passed": true
+    },
+    {
+      "check": "all_lot_registration_counts_strings_and_original_instants_preserved",
+      "passed": true
+    },
+    {
+      "check": "all_allocation_identity_references_and_counts_preserved",
+      "passed": true
+    },
+    {
+      "check": "all_sample_registration_strings_nulls_and_hold_unknown_preserved",
+      "passed": true
+    },
+    {
+      "check": "other_project_chain_is_readable_and_not_mixed_in_either_direction",
+      "passed": true
+    },
+    {
+      "check": "peer_actual_project_build_list_is_empty",
+      "passed": true
+    },
+    {
+      "check": "peer_old_owner_selection_rejected_without_output_fallback",
+      "passed": true
+    },
+    {
+      "check": "peer_actual_execution_arrays_are_empty",
+      "passed": true
+    },
+    {
+      "check": "foreign_tenant_actual_build_reader_preserves_403",
+      "passed": true
+    },
+    {
+      "check": "foreign_tenant_output_reader_preserves_403_no_empty_fallback",
+      "passed": true
+    },
+    {
+      "check": "foreign_tenant_original_execution_response_is_403",
+      "passed": true
+    },
+    {
+      "check": "missing_project_actual_build_reader_preserves_403",
+      "passed": true
+    },
+    {
+      "check": "twenty_one_recorded_business_counts_unchanged",
+      "passed": true
+    },
+    {
+      "check": "raw_fixture_and_real_reader_sources_unchanged",
+      "passed": true
+    }
+  ],
+  "calls": [
+    {
+      "scenario": "owner_selected_build",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds?project_id=19bce1e2-344a-452c-a7eb-81ddf551a728",
+      "recorded_read": "project_builds",
+      "status": 200,
+      "original_body_sha256": "ff9ea6e8d3bfc3c43de5990ffa7226969c8f92319211fce8a6b96b379dfbaa6b"
+    },
+    {
+      "scenario": "owner_selected_build",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds?project_id=19bce1e2-344a-452c-a7eb-81ddf551a728",
+      "recorded_read": "project_builds",
+      "status": 200,
+      "original_body_sha256": "ff9ea6e8d3bfc3c43de5990ffa7226969c8f92319211fce8a6b96b379dfbaa6b"
+    },
+    {
+      "scenario": "owner_selected_build",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/build-execution",
+      "recorded_read": "build_execution",
+      "status": 200,
+      "original_body_sha256": "33cbf9c55ccaf9c5babb93bcc9fee6eada965f022ce5f3680f1e4aca5d7ee14d"
+    },
+    {
+      "scenario": "other_project_exact_chain",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds?project_id=ff0ceba7-3583-4d72-8e11-317984adea00",
+      "recorded_read": "other_project_builds",
+      "status": 200,
+      "original_body_sha256": "f33c445248bda9da80449a74995fbabaf579baa45d0ddc7d97b6a78cbd66e8a1"
+    },
+    {
+      "scenario": "other_project_exact_chain",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds?project_id=ff0ceba7-3583-4d72-8e11-317984adea00",
+      "recorded_read": "other_project_builds",
+      "status": 200,
+      "original_body_sha256": "f33c445248bda9da80449a74995fbabaf579baa45d0ddc7d97b6a78cbd66e8a1"
+    },
+    {
+      "scenario": "other_project_exact_chain",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/build-execution",
+      "recorded_read": "build_execution",
+      "status": 200,
+      "original_body_sha256": "33cbf9c55ccaf9c5babb93bcc9fee6eada965f022ce5f3680f1e4aca5d7ee14d"
+    },
+    {
+      "scenario": "peer_actual_empty_reads",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds?project_id=19bce1e2-344a-452c-a7eb-81ddf551a728",
+      "recorded_read": "peer_project_builds",
+      "status": 200,
+      "original_body_sha256": "3bd94d4d0ed0c52a0ec41445cb2a9494ea96c02273645d61698a55996d79ce52"
+    },
+    {
+      "scenario": "peer_actual_empty_reads",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds?project_id=19bce1e2-344a-452c-a7eb-81ddf551a728",
+      "recorded_read": "peer_project_builds",
+      "status": 200,
+      "original_body_sha256": "3bd94d4d0ed0c52a0ec41445cb2a9494ea96c02273645d61698a55996d79ce52"
+    },
+    {
+      "scenario": "peer_actual_empty_reads",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/build-execution",
+      "recorded_read": "peer_build_execution",
+      "status": 200,
+      "original_body_sha256": "6cbbf4274c003d6b4507a90c93a1695690ee48761fd0d4621dea13e84964d0ef"
+    },
+    {
+      "scenario": "foreign_tenant_original_403",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds?project_id=19bce1e2-344a-452c-a7eb-81ddf551a728",
+      "recorded_read": "foreign_tenant_builds",
+      "status": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    },
+    {
+      "scenario": "foreign_tenant_original_403",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds?project_id=19bce1e2-344a-452c-a7eb-81ddf551a728",
+      "recorded_read": "foreign_tenant_builds",
+      "status": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    },
+    {
+      "scenario": "foreign_tenant_original_403",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/build-execution",
+      "recorded_read": "foreign_tenant_execution",
+      "status": 403,
+      "original_body_sha256": "32f31d9d9b7ebc3790399b13c2232f6c6eede6e00091f6c1ec91bba3d35f2420"
+    },
+    {
+      "scenario": "missing_project_original_403",
+      "method": "GET",
+      "path": "v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds?project_id=cc177e7b-9ec9-4f19-93fe-5bb57584703d",
+      "recorded_read": "missing_project",
+      "status": 403,
+      "original_body_sha256": "b7735634d9bcb44081cc516d3d7c6a644244a02b692ac1c6a223176bff0764ff"
+    }
+  ],
+  "passed": true,
+  "fixture_version": "project-build-output-projection-qa/v1",
+  "helper_sha256": "3ec8c39dce729645b2a328ae089fcb76aed725061522685261b2862771f7625b",
+  "read_only_counts": {
+    "model_count": 21,
+    "before": {
+      "products": 2,
+      "projects": 2,
+      "project_product_links": 2,
+      "definition_revisions": 3,
+      "bom_revisions": 1,
+      "engineering_configurations": 2,
+      "process_revisions": 2,
+      "builds": 2,
+      "build_readiness": 0,
+      "actual_configurations": 2,
+      "build_lots": 3,
+      "sample_allocations": 3,
+      "sample_units": 3,
+      "artifact_versions": 1,
+      "grants": 3,
+      "object_audiences": 16,
+      "confirmations": 21,
+      "request_keys": 22,
+      "action_receipts": 23,
+      "audit_entries": 22,
+      "outbox_events": 24
+    },
+    "after": {
+      "products": 2,
+      "projects": 2,
+      "project_product_links": 2,
+      "definition_revisions": 3,
+      "bom_revisions": 1,
+      "engineering_configurations": 2,
+      "process_revisions": 2,
+      "builds": 2,
+      "build_readiness": 0,
+      "actual_configurations": 2,
+      "build_lots": 3,
+      "sample_allocations": 3,
+      "sample_units": 3,
+      "artifact_versions": 1,
+      "grants": 3,
+      "object_audiences": 16,
+      "confirmations": 21,
+      "request_keys": 22,
+      "action_receipts": 23,
+      "audit_entries": 22,
+      "outbox_events": 24
+    },
+    "unchanged": true,
+    "origin": "Actual PG export; no database connection made by this script"
+  },
+  "summary": {
+    "primary": {
+      "build_id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+      "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728",
+      "build_revision": 1,
+      "actual_configurations": 1,
+      "lots": 2,
+      "allocations": 2,
+      "samples": 2,
+      "product_unavailable_count": 0,
+      "product_has_more": false
+    },
+    "other_project": {
+      "build_id": "db94591a-1376-4de7-a944-6502389ca84a",
+      "project_id": "ff0ceba7-3583-4d72-8e11-317984adea00",
+      "separate_chain": true
+    },
+    "peer": {
+      "actual_builds": 0,
+      "actual_execution_arrays": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "old_selection_rejected": true
+    },
+    "failed_scope_status": 403
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-03T03:52:03.735473+00:00",
+  "reason": "Known owned result fixture DetachedInstanceError after session exit; original setup errors preserved. Independent retained/launch checks continue.",
+  "children": [
+    {
+      "pid": 8846,
+      "selection": "tests/verification_results/test_guards.py::test_quality_current_role_and_exact_scope_cannot_be_supplied_by_client_or_agent",
+      "signal": "SIGINT"
+    },
+    {
+      "pid": 8854,
+      "selection": "tests/verification_results/test_guards.py::test_result_tables_are_immutable_and_rls_agent_zero_write",
+      "signal": "SIGINT"
+    },
+    {
+      "pid": 8856,
+      "selection": "tests/verification_results/test_runtime_guards.py::test_store_read_runtime_revocation_blocks_import_and_rolls_back_confirmation",
+      "signal": "SIGINT"
+    },
+    {
+      "pid": 8862,
+      "selection": "tests/verification_results/test_runtime_guards.py::test_compute_semantic_replay_also_rechecks_runtime_after_old_measurement_io",
+      "signal": "SIGINT"
+    }
+  ]
+}

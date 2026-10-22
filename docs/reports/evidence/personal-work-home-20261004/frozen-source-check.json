@@ -1,0 +1,11 @@
+{
+  "frozen_source_files": 1065,
+  "current_source_files": 1065,
+  "current_unowned_drift": [
+    "src/app/api/conversations/[[...conversationPath]]/route.ts"
+  ],
+  "extra_files": [],
+  "changed_scope_drift": [],
+  "temporary_preview_stopped": true,
+  "dedicated_browser_closed": true
+}

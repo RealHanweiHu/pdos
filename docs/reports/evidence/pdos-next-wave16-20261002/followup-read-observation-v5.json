@@ -1,0 +1,22 @@
+{
+  "status": 200,
+  "seconds": 71.783,
+  "error_code": null,
+  "error_message": null,
+  "top_keys": [
+    "actions",
+    "basis",
+    "candidates",
+    "current",
+    "integration",
+    "issue",
+    "links",
+    "operations",
+    "output_options",
+    "required_source_read_set",
+    "source_options"
+  ],
+  "output_options": 1,
+  "private_body_saved_600": true,
+  "no_write": true
+}

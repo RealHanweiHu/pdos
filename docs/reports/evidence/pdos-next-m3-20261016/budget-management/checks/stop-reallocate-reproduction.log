@@ -1,0 +1,20 @@
+F.                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_allocate_same_limits_after_full_stop_creates_fresh_budget_not_old_receipt _
+
+setup = <isolated synthetic test scope>
+
+    def test_allocate_same_limits_after_full_stop_creates_fresh_budget_not_old_receipt(setup):
+        promote(setup)
+        _, first = allocate(setup)
+        stopped = preview(setup, command(setup, "stop"))
+        assert post(setup, stopped).status_code == 200
+        assert reading(setup)["selected_budget_id"] is None
+        _, second = allocate(setup)
+>       assert second["id"] != first["id"]
+E       AssertionError: assert '786a0c89-0bd0-4f68-8883-c40d8d72c267' != '786a0c89-0bd0-4f68-8883-c40d8d72c267'
+
+tests/agent_kernel/test_budget_management.py:195: AssertionError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_budget_management.py::test_allocate_same_limits_after_full_stop_creates_fresh_budget_not_old_receipt
+1 failed, 1 passed in 3.54s

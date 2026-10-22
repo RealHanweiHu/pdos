@@ -1,0 +1,13 @@
+{
+  "selection": "tests/test_resources/test_transactions.py::test_destructive_actual_start_consumes_once_and_new_use_remains_blocked",
+  "exit_code": 0,
+  "passed": 1,
+  "pytest_elapsed_seconds": 654.6,
+  "test_source_sha256": "e1ed6f45b7624600fbad72141f5d1baae26dd8add0dc286139d63b86545f4275",
+  "test_source_mtime_utc": "2026-10-03T02:18:50.541108+00:00",
+  "fixture_default_behavior_preserved": true,
+  "final_fixture_default_branch_extra_check": "recheck-default-fixture-final-result.json",
+  "port": 62513,
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "log_created_utc": "2026-10-03T02:21:38.943772+00:00"
+}

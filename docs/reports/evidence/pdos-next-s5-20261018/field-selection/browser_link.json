@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "feedback_id": "9bfb5ddc-c3a0-55a8-8b8f-f9cc28291091",
+  "receipt_id": "a79e48d3-7b21-495c-a705-2e2ddabb95eb",
+  "fixed_native_result_receipts": [
+    "0a429d0c-15a3-4398-911d-444494833791",
+    "a50418ea-a89d-4ad6-bd9b-ce347398a2cd",
+    "670a8552-0903-4cb6-95ac-111fa85e598b"
+  ],
+  "parent_revision": 2,
+  "responses": 1,
+  "parent_unchanged": true,
+  "model_calls": 0
+}

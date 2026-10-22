@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "health": 200,
+  "api_pid": 46151,
+  "recorded_at": "2026-10-04T01:58:00.971566+00:00",
+  "prior_health_probe": "default httpx environment proxy timed out before reaching local API; corrected local direct transport",
+  "business_body_changed": false
+}

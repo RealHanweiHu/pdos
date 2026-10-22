@@ -1,0 +1,8 @@
+{
+  "head": "s0_0719",
+  "database": "pdos_test",
+  "port": 53502,
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/s0-b8-backups/0719-before-owner-20261009T092603Z.dump",
+  "bytes": 39241506
+}

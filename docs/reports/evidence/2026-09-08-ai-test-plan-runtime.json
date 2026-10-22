@@ -1,0 +1,497 @@
+{
+  "recorded_at": "2026-09-08 19:26:38.268968+00:00",
+  "environment": "isolated pdos_test; synthetic ATC-DEMO only",
+  "operator": "Codex operated test-owner UI; not user business sign-off",
+  "input_scope": "Synthetic one-item template and synthetic user text. No D14-04 report contents sent.",
+  "checks": {
+    "accepted_before_apply_child_count": 0,
+    "new_revision": 2,
+    "old_case_count": 1,
+    "new_case_count": 2,
+    "new_run_count": 0,
+    "new_report_count": 0,
+    "independent_review_apply_actions": true,
+    "human_edit_preserved": true,
+    "source_quotes_bound_by_server_outer_whitespace_trimmed": true
+  },
+  "model_invocations": [
+    {
+      "id": "9498f4bc-1716-4da8-b7fc-e42caf15bccb",
+      "run_id": "67dd6c3c-5ebd-498b-bcda-4e47a542cef2",
+      "provider": "minimax",
+      "model": "MiniMax-M3",
+      "prompt_version": "test-plan-change-v1",
+      "status": "succeeded",
+      "input_tokens": 1327,
+      "output_tokens": 4175,
+      "total_tokens": 5502,
+      "latency_ms": 15728,
+      "structured_attempts": 1,
+      "error_code": null,
+      "created_at": "2026-09-08 19:11:41.859415+00:00"
+    },
+    {
+      "id": "e4abc7a1-c8b4-4bd2-8db6-f9bbd94ba696",
+      "run_id": "818df9b1-e1c0-4731-9b5e-2920549ffc9a",
+      "provider": "minimax",
+      "model": "MiniMax-M3",
+      "prompt_version": "test-plan-change-v2",
+      "status": "succeeded",
+      "input_tokens": 2340,
+      "output_tokens": 2245,
+      "total_tokens": 4585,
+      "latency_ms": 20122,
+      "structured_attempts": 1,
+      "error_code": null,
+      "created_at": "2026-09-08 19:14:48.481530+00:00"
+    },
+    {
+      "id": "2cc10d38-53d4-4b98-bac4-e4f2f37c52f6",
+      "run_id": "0e7db803-41d6-4bce-81de-7af82b43bd39",
+      "provider": "minimax",
+      "model": "MiniMax-M3",
+      "prompt_version": "test-plan-change-v3",
+      "status": "succeeded",
+      "input_tokens": 2309,
+      "output_tokens": 597,
+      "total_tokens": 2906,
+      "latency_ms": 11051,
+      "structured_attempts": 1,
+      "error_code": null,
+      "created_at": "2026-09-08 19:18:05.776884+00:00"
+    }
+  ],
+  "agent_runs": [
+    {
+      "id": "818df9b1-e1c0-4731-9b5e-2920549ffc9a",
+      "status": "degraded",
+      "error_code": "TEST_PLAN_PREFLIGHT_FAILED",
+      "run_context": {
+        "result": {
+          "status": "unavailable",
+          "error_code": "TEST_PLAN_PREFLIGHT_FAILED",
+          "finding_id": null
+        },
+        "messages": [
+          "这是隔离的软件流程验证，所有参数均为虚构。本项目增加一个模拟指示功能，客户希望增加验证项，目前尚未给出触发输入和预期输出。请保留原有基础指示测试，只新增一项候选，缺少判据时先追问，不自行填数值。",
+          "补充这项虚构测试：沿用整机类别；仅适用于当前合成项目。方法是在测试夹具输入 A 后读取显示，合格判据为显示 A，保存显示照片作为证据。仅增加这一项，原有输入 B 的基础测试不变；不需要其他未给出的时间、数量或参数。"
+        ],
+        "base_digest": "d62b9277127e8eedda52f8cf295fb5d7f91f78b2f420aba3bb108ee45a41c222",
+        "test_plan_request": {
+          "message": "补充这项虚构测试：沿用整机类别；仅适用于当前合成项目。方法是在测试夹具输入 A 后读取显示，合格判据为显示 A，保存显示照片作为证据。仅增加这一项，原有输入 B 的基础测试不变；不需要其他未给出的时间、数量或参数。",
+          "plan_id": "87caac5c-c04d-4d4b-9dd4-c358041bc38c",
+          "request_id": "49dc5583-9eae-422c-8a63-dba954c8d908",
+          "actor_user_id": "5c16aaa2-dafb-4cb9-80da-faf66883b4b8",
+          "previous_finding_id": "5cb56785-2719-4d53-97b9-69ce75b65dd9"
+        }
+      },
+      "created_at": "2026-09-08 19:14:28.157803+00:00"
+    },
+    {
+      "id": "0e7db803-41d6-4bce-81de-7af82b43bd39",
+      "status": "succeeded",
+      "error_code": null,
+      "run_context": {
+        "result": {
+          "status": "created",
+          "error_code": null,
+          "finding_id": "d86165fc-bf7b-45ea-863f-8c88c8dcb8b0"
+        },
+        "messages": [
+          "这是隔离的软件流程验证，所有参数均为虚构。本项目增加一个模拟指示功能，客户希望增加验证项，目前尚未给出触发输入和预期输出。请保留原有基础指示测试，只新增一项候选，缺少判据时先追问，不自行填数值。",
+          "补充这项虚构测试：沿用整机类别；仅适用于当前合成项目。方法是在测试夹具输入 A 后读取显示，合格判据为显示 A，保存显示照片作为证据。仅增加这一项，原有输入 B 的基础测试不变；不需要其他未给出的时间、数量或参数。以上就是全部验收条件。"
+        ],
+        "base_digest": "d62b9277127e8eedda52f8cf295fb5d7f91f78b2f420aba3bb108ee45a41c222",
+        "test_plan_request": {
+          "message": "补充这项虚构测试：沿用整机类别；仅适用于当前合成项目。方法是在测试夹具输入 A 后读取显示，合格判据为显示 A，保存显示照片作为证据。仅增加这一项，原有输入 B 的基础测试不变；不需要其他未给出的时间、数量或参数。以上就是全部验收条件。",
+          "plan_id": "87caac5c-c04d-4d4b-9dd4-c358041bc38c",
+          "request_id": "297da01a-4e7a-410e-8e9a-7328d0e1e1b7",
+          "actor_user_id": "5c16aaa2-dafb-4cb9-80da-faf66883b4b8",
+          "previous_finding_id": "5cb56785-2719-4d53-97b9-69ce75b65dd9"
+        }
+      },
+      "created_at": "2026-09-08 19:17:54.699970+00:00"
+    },
+    {
+      "id": "67dd6c3c-5ebd-498b-bcda-4e47a542cef2",
+      "status": "succeeded",
+      "error_code": null,
+      "run_context": {
+        "result": {
+          "status": "created",
+          "error_code": null,
+          "finding_id": "5cb56785-2719-4d53-97b9-69ce75b65dd9"
+        },
+        "messages": [
+          "这是隔离的软件流程验证，所有参数均为虚构。本项目增加一个模拟指示功能，客户希望增加验证项，目前尚未给出触发输入和预期输出。请保留原有基础指示测试，只新增一项候选，缺少判据时先追问，不自行填数值。"
+        ],
+        "base_digest": "d62b9277127e8eedda52f8cf295fb5d7f91f78b2f420aba3bb108ee45a41c222",
+        "superseded_by": "d86165fc-bf7b-45ea-863f-8c88c8dcb8b0",
+        "test_plan_request": {
+          "message": "这是隔离的软件流程验证，所有参数均为虚构。本项目增加一个模拟指示功能，客户希望增加验证项，目前尚未给出触发输入和预期输出。请保留原有基础指示测试，只新增一项候选，缺少判据时先追问，不自行填数值。",
+          "plan_id": "87caac5c-c04d-4d4b-9dd4-c358041bc38c",
+          "request_id": "c59b7e70-2032-4a77-97b8-90cb79312760",
+          "actor_user_id": "5c16aaa2-dafb-4cb9-80da-faf66883b4b8",
+          "previous_finding_id": null
+        }
+      },
+      "created_at": "2026-09-08 19:11:26.101405+00:00"
+    }
+  ],
+  "findings": [
+    {
+      "id": "5cb56785-2719-4d53-97b9-69ce75b65dd9",
+      "status": "pending_review",
+      "run_id": "67dd6c3c-5ebd-498b-bcda-4e47a542cef2",
+      "proposed_payload": {
+        "changes": [
+          {
+            "after": {
+              "title": "模拟指示（待补判据）",
+              "method": "",
+              "category": "whole_unit",
+              "required": true,
+              "applicability": "",
+              "acceptance_criteria": "",
+              "evidence_requirements": ""
+            },
+            "reason": "客户在 message:1 中明确表示'本项目增加一个模拟指示功能，客户希望增加验证项，目前尚未给出触发输入和预期输出'，并指示'请保留原有基础指示测试，只新增一项候选，缺少判据时先追问，不自行填数值'。因此新增一项候选验证条目，与既有 item:fixture-01 的基础指示（合成）并存而非替换；触发输入与预期输出尚未给出，按策略不在 method/acceptance_criteria 中自行填数值，全部留空待客户回复后再补全。category 暂沿用与 item:fixture-01 一致的 whole_unit，仅作占位，待客户确认。",
+            "operation": "add",
+            "references": [
+              {
+                "quote": "本项目增加一个模拟指示功能，客户希望增加验证项，目前尚未给出触发输入和预期输出。请保留原有基础指示测试，只新增一项候选，缺少判据时先追问，不自行填数值。",
+                "reference_id": "message:1"
+              },
+              {
+                "quote": "基础指示（合成）\n在测试夹具上输入 B，观察指示内容。\n输入 B 时显示 B。",
+                "reference_id": "item:fixture-01"
+              }
+            ],
+            "target_key": null,
+            "unresolved": [
+              "触发输入条件尚未提供，无法填写 method",
+              "预期输出尚未提供，无法填写 acceptance_criteria",
+              "applicability 与 evidence_requirements 待客户确认",
+              "category 是否沿用 whole_unit 待客户确认（当前仅作占位，未引用外部标准）"
+            ]
+          }
+        ],
+        "summary": "本轮按 message:1 的要求保留原有基础指示测试 fixture-01 不变，并针对客户提出的'新增模拟指示功能验证项'新增一项候选条目（add）。由于客户尚未给出触发输入与预期输出，按策略不自行填值，新项的 method 与 acceptance_criteria 留空；适用条件与证据要求也尚未明确，一并在 questions 中向客户追问。",
+        "messages": [
+          "这是隔离的软件流程验证，所有参数均为虚构。本项目增加一个模拟指示功能，客户希望增加验证项，目前尚未给出触发输入和预期输出。请保留原有基础指示测试，只新增一项候选，缺少判据时先追问，不自行填数值。"
+        ],
+        "questions": [
+          "请提供模拟指示功能验证项的触发输入条件（可类比 item:fixture-01 中'在测试夹具上输入 B'的形式），以便填写 method。",
+          "请提供触发后应展示的预期输出（可类比 item:fixture-01 中'输入 B 时显示 B'的形式），以便填写 acceptance_criteria。",
+          "请确认该新增候选的适用条件（applicability，例如适用机型/固件版本）与证据要求（evidence_requirements，例如截图/日志/录像）。",
+          "请确认 category 是否可暂沿用 item:fixture-01 的 whole_unit 占位，或指定其他分类。"
+        ],
+        "base_items": [
+          {
+            "key": "fixture-01",
+            "title": "基础指示（合成）",
+            "method": "在测试夹具上输入 B，观察指示内容。",
+            "category": "whole_unit",
+            "required": true,
+            "applicable": true,
+            "applicability": null,
+            "exclusion_reason": null,
+            "acceptance_criteria": "输入 B 时显示 B。",
+            "evidence_requirements": null
+          }
+        ],
+        "base_digest": "d62b9277127e8eedda52f8cf295fb5d7f91f78b2f420aba3bb108ee45a41c222",
+        "base_plan_id": "87caac5c-c04d-4d4b-9dd4-c358041bc38c"
+      },
+      "accepted_payload": null,
+      "applied_entity_type": null,
+      "applied_entity_id": null
+    },
+    {
+      "id": "d86165fc-bf7b-45ea-863f-8c88c8dcb8b0",
+      "status": "applied",
+      "run_id": "0e7db803-41d6-4bce-81de-7af82b43bd39",
+      "proposed_payload": {
+        "changes": [
+          {
+            "after": {
+              "title": "模拟指示（合成）",
+              "method": "在测试夹具输入 A 后读取显示。",
+              "category": "whole_unit",
+              "required": true,
+              "applicability": "仅适用于当前合成项目中的模拟指示功能。",
+              "acceptance_criteria": "显示 A。",
+              "evidence_requirements": "保存显示照片作为证据。"
+            },
+            "reason": "目的是验证模拟指示功能。方法、合格判据、适用条件及照片证据要求已由当前消息明确，可形成完整的新增测试，且不改变输入 B 的基础测试。",
+            "operation": "add",
+            "references": [
+              {
+                "quote": "补充这项虚构测试：沿用整机类别；仅适用于当前合成项目。方法是在测试夹具输入 A 后读取显示，合格判据为显示 A，保存显示照片作为证据。仅增加这一项，原有输入 B 的基础测试不变；不需要其他未给出的时间、数量或参数。以上就是全部验收条件。",
+                "reference_id": "message:2"
+              },
+              {
+                "quote": "基础指示（合成）\n在测试夹具上输入 B，观察指示内容。\n输入 B 时显示 B。",
+                "reference_id": "item:fixture-01"
+              }
+            ],
+            "target_key": null,
+            "unresolved": []
+          }
+        ],
+        "summary": "保留输入 B 的基础测试不变，新增一项模拟指示功能整机测试。测试使用输入 A，预期显示 A，并保存显示照片作为证据。",
+        "messages": [
+          "这是隔离的软件流程验证，所有参数均为虚构。本项目增加一个模拟指示功能，客户希望增加验证项，目前尚未给出触发输入和预期输出。请保留原有基础指示测试，只新增一项候选，缺少判据时先追问，不自行填数值。",
+          "补充这项虚构测试：沿用整机类别；仅适用于当前合成项目。方法是在测试夹具输入 A 后读取显示，合格判据为显示 A，保存显示照片作为证据。仅增加这一项，原有输入 B 的基础测试不变；不需要其他未给出的时间、数量或参数。以上就是全部验收条件。"
+        ],
+        "questions": [],
+        "base_items": [
+          {
+            "key": "fixture-01",
+            "title": "基础指示（合成）",
+            "method": "在测试夹具上输入 B，观察指示内容。",
+            "category": "whole_unit",
+            "required": true,
+            "applicable": true,
+            "applicability": null,
+            "exclusion_reason": null,
+            "acceptance_criteria": "输入 B 时显示 B。",
+            "evidence_requirements": null
+          }
+        ],
+        "base_digest": "d62b9277127e8eedda52f8cf295fb5d7f91f78b2f420aba3bb108ee45a41c222",
+        "base_plan_id": "87caac5c-c04d-4d4b-9dd4-c358041bc38c"
+      },
+      "accepted_payload": {
+        "changes": [
+          {
+            "after": {
+              "title": "模拟指示（人工核对）",
+              "method": "在测试夹具输入 A 后读取显示。",
+              "category": "whole_unit",
+              "required": true,
+              "applicability": "仅适用于当前合成项目中的模拟指示功能。",
+              "acceptance_criteria": "显示 A。",
+              "evidence_requirements": "保存显示照片作为证据。"
+            },
+            "reason": "目的是验证模拟指示功能。方法、合格判据、适用条件及照片证据要求已由当前消息明确，可形成完整的新增测试，且不改变输入 B 的基础测试。",
+            "operation": "add",
+            "references": [
+              {
+                "quote": "补充这项虚构测试：沿用整机类别；仅适用于当前合成项目。方法是在测试夹具输入 A 后读取显示，合格判据为显示 A，保存显示照片作为证据。仅增加这一项，原有输入 B 的基础测试不变；不需要其他未给出的时间、数量或参数。以上就是全部验收条件。",
+                "reference_id": "message:2"
+              },
+              {
+                "quote": "基础指示（合成）\n在测试夹具上输入 B，观察指示内容。\n输入 B 时显示 B。",
+                "reference_id": "item:fixture-01"
+              }
+            ],
+            "target_key": null,
+            "unresolved": []
+          }
+        ],
+        "summary": "保留输入 B 的基础测试不变，新增一项模拟指示功能整机测试。测试使用输入 A，预期显示 A，并保存显示照片作为证据。",
+        "messages": [
+          "这是隔离的软件流程验证，所有参数均为虚构。本项目增加一个模拟指示功能，客户希望增加验证项，目前尚未给出触发输入和预期输出。请保留原有基础指示测试，只新增一项候选，缺少判据时先追问，不自行填数值。",
+          "补充这项虚构测试：沿用整机类别；仅适用于当前合成项目。方法是在测试夹具输入 A 后读取显示，合格判据为显示 A，保存显示照片作为证据。仅增加这一项，原有输入 B 的基础测试不变；不需要其他未给出的时间、数量或参数。以上就是全部验收条件。"
+        ],
+        "questions": [],
+        "base_items": [
+          {
+            "key": "fixture-01",
+            "title": "基础指示（合成）",
+            "method": "在测试夹具上输入 B，观察指示内容。",
+            "category": "whole_unit",
+            "required": true,
+            "applicable": true,
+            "applicability": null,
+            "exclusion_reason": null,
+            "acceptance_criteria": "输入 B 时显示 B。",
+            "evidence_requirements": null
+          }
+        ],
+        "base_digest": "d62b9277127e8eedda52f8cf295fb5d7f91f78b2f420aba3bb108ee45a41c222",
+        "base_plan_id": "87caac5c-c04d-4d4b-9dd4-c358041bc38c"
+      },
+      "applied_entity_type": "test_plan",
+      "applied_entity_id": "563f152e-4268-4373-9ba3-1ef32ed164f2"
+    }
+  ],
+  "actions": [
+    {
+      "finding_id": "5cb56785-2719-4d53-97b9-69ce75b65dd9",
+      "action": "created",
+      "actor_user_id": null,
+      "from_status": null,
+      "to_status": "pending_review",
+      "created_at": "2026-09-08 19:11:41.873851+00:00"
+    },
+    {
+      "finding_id": "d86165fc-bf7b-45ea-863f-8c88c8dcb8b0",
+      "action": "created",
+      "actor_user_id": null,
+      "from_status": null,
+      "to_status": "pending_review",
+      "created_at": "2026-09-08 19:18:05.784662+00:00"
+    },
+    {
+      "finding_id": "d86165fc-bf7b-45ea-863f-8c88c8dcb8b0",
+      "action": "accepted",
+      "actor_user_id": "5c16aaa2-dafb-4cb9-80da-faf66883b4b8",
+      "from_status": "pending_review",
+      "to_status": "accepted",
+      "created_at": "2026-09-08 19:19:20.951360+00:00"
+    },
+    {
+      "finding_id": "d86165fc-bf7b-45ea-863f-8c88c8dcb8b0",
+      "action": "applied",
+      "actor_user_id": "5c16aaa2-dafb-4cb9-80da-faf66883b4b8",
+      "from_status": "accepted",
+      "to_status": "applied",
+      "created_at": "2026-09-08 19:23:46.648305+00:00"
+    }
+  ],
+  "plans": [
+    {
+      "id": "ce10a8fa-e1a1-405b-a34a-cbd0547148a3",
+      "title": "EVT plan",
+      "status": "active",
+      "parent_plan_id": null,
+      "source_finding_id": null,
+      "template_snapshot": null
+    },
+    {
+      "id": "87caac5c-c04d-4d4b-9dd4-c358041bc38c",
+      "title": "对话修订验证计划（合成）",
+      "status": "draft",
+      "parent_plan_id": null,
+      "source_finding_id": null,
+      "template_snapshot": {
+        "id": "atc-fixture",
+        "name": "流程验证模板（合成）",
+        "items": [
+          {
+            "key": "fixture-01",
+            "title": "基础指示（合成）",
+            "method": "在测试夹具上输入 B，观察指示内容。",
+            "category": "whole_unit",
+            "required": true,
+            "applicable": true,
+            "exclusion_reason": null,
+            "acceptance_criteria": "输入 B 时显示 B。"
+          }
+        ],
+        "digest": "4c416b57d9380565037a90c72f4ec977d942df9a929c00ffd29585698958284d",
+        "sources": [],
+        "version": 1,
+        "confirmed_at": "2026-09-08T19:09:46.483191+00:00",
+        "product_type": "虚构指示设备",
+        "confirmed_by_user_id": "5c16aaa2-dafb-4cb9-80da-faf66883b4b8"
+      }
+    },
+    {
+      "id": "563f152e-4268-4373-9ba3-1ef32ed164f2",
+      "title": "对话修订验证计划（合成）",
+      "status": "draft",
+      "parent_plan_id": "87caac5c-c04d-4d4b-9dd4-c358041bc38c",
+      "source_finding_id": "d86165fc-bf7b-45ea-863f-8c88c8dcb8b0",
+      "template_snapshot": {
+        "id": "atc-fixture",
+        "name": "流程验证模板（合成）",
+        "items": [
+          {
+            "key": "fixture-01",
+            "title": "基础指示（合成）",
+            "method": "在测试夹具上输入 B，观察指示内容。",
+            "category": "whole_unit",
+            "required": true,
+            "applicable": true,
+            "exclusion_reason": null,
+            "acceptance_criteria": "输入 B 时显示 B。"
+          },
+          {
+            "key": "project-fe52a1ec-d04c-4a36-897e-650a91885bcf",
+            "title": "模拟指示（人工核对）",
+            "method": "在测试夹具输入 A 后读取显示。",
+            "category": "whole_unit",
+            "required": true,
+            "applicable": true,
+            "applicability": "仅适用于当前合成项目中的模拟指示功能。",
+            "project_change": {
+              "after": {
+                "title": "模拟指示（人工核对）",
+                "method": "在测试夹具输入 A 后读取显示。",
+                "category": "whole_unit",
+                "required": true,
+                "applicability": "仅适用于当前合成项目中的模拟指示功能。",
+                "acceptance_criteria": "显示 A。",
+                "evidence_requirements": "保存显示照片作为证据。"
+              },
+              "reason": "目的是验证模拟指示功能。方法、合格判据、适用条件及照片证据要求已由当前消息明确，可形成完整的新增测试，且不改变输入 B 的基础测试。",
+              "operation": "add",
+              "references": [
+                {
+                  "quote": "补充这项虚构测试：沿用整机类别；仅适用于当前合成项目。方法是在测试夹具输入 A 后读取显示，合格判据为显示 A，保存显示照片作为证据。仅增加这一项，原有输入 B 的基础测试不变；不需要其他未给出的时间、数量或参数。以上就是全部验收条件。",
+                  "reference_id": "message:2"
+                },
+                {
+                  "quote": "基础指示（合成）\n在测试夹具上输入 B，观察指示内容。\n输入 B 时显示 B。",
+                  "reference_id": "item:fixture-01"
+                }
+              ],
+              "target_key": null,
+              "unresolved": []
+            },
+            "exclusion_reason": null,
+            "source_finding_id": "d86165fc-bf7b-45ea-863f-8c88c8dcb8b0",
+            "acceptance_criteria": "显示 A。",
+            "evidence_requirements": "保存显示照片作为证据。"
+          }
+        ],
+        "digest": "4c416b57d9380565037a90c72f4ec977d942df9a929c00ffd29585698958284d",
+        "sources": [],
+        "version": 1,
+        "reviewed_at": "2026-09-08T19:19:20.951360+00:00",
+        "confirmed_at": "2026-09-08T19:23:46.648305+00:00",
+        "product_type": "虚构指示设备",
+        "plan_revision": 2,
+        "parent_plan_id": "87caac5c-c04d-4d4b-9dd4-c358041bc38c",
+        "source_finding_id": "d86165fc-bf7b-45ea-863f-8c88c8dcb8b0",
+        "reviewed_by_user_id": "5c16aaa2-dafb-4cb9-80da-faf66883b4b8",
+        "confirmed_by_user_id": "5c16aaa2-dafb-4cb9-80da-faf66883b4b8"
+      }
+    }
+  ],
+  "cases": [
+    {
+      "id": "57f52f53-e80d-4d58-a335-57580ed76abf",
+      "plan_id": "ce10a8fa-e1a1-405b-a34a-cbd0547148a3",
+      "title": "Endurance 500h",
+      "status": "planned"
+    },
+    {
+      "id": "5d703548-6411-453e-955f-e1db090eedd6",
+      "plan_id": "ce10a8fa-e1a1-405b-a34a-cbd0547148a3",
+      "title": "Leak test",
+      "status": "planned"
+    },
+    {
+      "id": "6fcdf3f0-f4aa-4ccd-a841-3fb42db760b2",
+      "plan_id": "87caac5c-c04d-4d4b-9dd4-c358041bc38c",
+      "title": "基础指示（合成）",
+      "status": "planned"
+    },
+    {
+      "id": "6b100472-d5ae-4809-a3e9-ea7582c30738",
+      "plan_id": "563f152e-4268-4373-9ba3-1ef32ed164f2",
+      "title": "基础指示（合成）",
+      "status": "planned"
+    },
+    {
+      "id": "79f25c3d-2138-4105-8b9b-4d3dd14922f0",
+      "plan_id": "563f152e-4268-4373-9ba3-1ef32ed164f2",
+      "title": "模拟指示（人工核对）",
+      "status": "planned"
+    }
+  ]
+}

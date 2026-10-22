@@ -1,0 +1,18 @@
+E501 Line too long (102 > 100)
+   --> tests/test_project_first_plan.py:483:101
+    |
+483 | def test_direct_project_plan_reads_actual_g0_candidate_and_applied_result(setup, definition, project):
+    |                                                                                                     ^^
+484 |     path = f"/v1/categories/{setup.category}/products/{setup.product}/projects/{project}"
+485 |     first = setup.client.get(path, headers=setup.headers)
+    |
+
+E501 Line too long (102 > 100)
+   --> tests/test_project_first_plan.py:538:101
+    |
+536 |     assert revoked.status_code == 403, revoked.text
+537 |     with Session(setup.admin) as session:
+538 |         assert [session.scalar(select(func.count()).select_from(model)) for model in models] == before
+    |                                                                                                     ^^
+
+Found 2 errors.

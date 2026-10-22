@@ -1,0 +1,66 @@
+{
+  "date": "2026-09-10",
+  "scope": "database Agent lease expiry, actual restricted heartbeat and late response fencing",
+  "tests": {
+    "initial_isolated": {
+      "passed": 54,
+      "failed": 2,
+      "total": 56
+    },
+    "corrected_fence_file_passed": 8,
+    "expiry_and_new_late_response_passed": 9,
+    "shared_passed": 33,
+    "pure_and_factory_passed": 6,
+    "distinct_passed": 96,
+    "new_cases": 13,
+    "regression_cases": 83
+  },
+  "checks": {
+    "ruff_files": 9,
+    "format_files": 9,
+    "mypy_files": 3,
+    "exports": "common 4 and runtime 5 passed"
+  },
+  "databases": [
+    "127.0.0.1:57432/pdos_test",
+    "127.0.0.1:57433/pdos_test"
+  ],
+  "migration_head": "0071_agent_lease_expiry",
+  "isolated_container": "pdos-agent-lease-test",
+  "isolated_container_removed": true,
+  "shared_role_password_changes": false,
+  "real_model_calls": 0,
+  "default_budget_mode": "legacy",
+  "sources": {
+    "server/app/ai/lease_heartbeat.py": "1155237ee96e8ee0658f87b4bbbae1405a0ce5ad24454e75e8cf0c4acaeff4e1",
+    "server/app/ai/run_store.py": "f91a2a7656763480bcb81ec263eb7263d48d9c72a64796b700b8bd4ac65ed19f",
+    "server/app/ai/executor.py": "39697278db735333e6b60a29fbbfcc1359bddca2fc4f6770dea5a87703611e10",
+    "server/migrations/versions/0071_agent_lease_expiry.py": "18f2fac7ddcfa67f7d450450910e649c88a7821d04fcdfed332881eb1223b11c",
+    "infra/postgres/security/agent-runtime.sql": "062fffd0a43a297c0f0ebd715ba7b70162f6aa0028abfd555b04d05d2729a844",
+    "infra/postgres/security/agent-runtime-revert.sql": "ed69148013abbbff56eb013625f6e6988fcd86bd3dca593fbbd12919a54f61bb",
+    "server/tests/test_agent_lease_expiry.py": "4e75a3c47a62609dc5664f0034690099aadb6336cbfb45bde2efeb5dc27e1b14",
+    "server/tests/test_lease_heartbeat.py": "a151962f53fb42ecbc49c895536dde044467a7687067c01171c0e1633a4c6a21",
+    "server/tests/test_chat_requests.py": "fa72fdcdde76be9817ba6d93a788bd40f7b6163e2a6b318bdb9f3ae75b7d24ab",
+    "server/tests/test_event_budget_adoption.py": "e11553b3db81346042122e5e6ac44b9748264234420928a0f93272e57e49f488",
+    "server/tests/test_model_call_fence_security.py": "fd50f3e2e96715faccd361b5dd41b3a9b783749c5c37bb151755e1509e8599fb",
+    "docs/runbooks/agent-lease-expiry.md": "969fbdd8519a0cc227a32a2687f3b6ac1cd493e3c49ba6167cd1365f5dbdbae5",
+    "docs/reports/2026-09-10-n0-03-agent-lease-expiry-validation.md": "38ee83e89ac5d01866cc1fa0fd88a195284b977b8e9b4b007e99eb583397663e"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "10027a7ef58a440eff66c4c5ecc3eed3552f401eb5804f1b2d8cf7f211e91620",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "e762d4da15d23c98bad20e9ecccf31d610db581d2483e4d983111f6e10d7fe68",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "remaining": [
+    "active_seconds accumulation and Owner request leases",
+    "trusted checkpoint recovery and expired run reclamation",
+    "unknown receipt reconciliation; no automatic replay",
+    "model-tool loop and embeddings coverage",
+    "real meter qualification and approved production adoption"
+  ]
+}

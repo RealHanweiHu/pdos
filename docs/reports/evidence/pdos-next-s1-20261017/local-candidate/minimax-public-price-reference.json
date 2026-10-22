@@ -1,0 +1,45 @@
+{
+  "checked_on": "2026-10-17",
+  "model": "MiniMax-M3",
+  "currency": "CNY",
+  "unit": "per million tokens",
+  "sources": {
+    "pricing": "https://platform.minimax.cn/docs/pricing/overview",
+    "passive_cache": "https://platform.minimax.cn/docs/api-reference/text-prompt-caching",
+    "default_service_tier": "https://platform.minimax.cn/docs/api-reference/text-openai-api"
+  },
+  "bands_vendor_wording": [
+    {
+      "service_tier": "standard",
+      "input_tokens": "<=512k",
+      "input": "2.10",
+      "output": "8.40",
+      "cache_read": "0.42"
+    },
+    {
+      "service_tier": "standard",
+      "input_tokens": ">512k",
+      "input": "4.20",
+      "output": "16.80",
+      "cache_read": "0.84"
+    },
+    {
+      "service_tier": "priority",
+      "input_tokens": "<=512k",
+      "input": "3.15",
+      "output": "12.60",
+      "cache_read": "0.63"
+    },
+    {
+      "service_tier": "priority",
+      "input_tokens": ">512k",
+      "input": "6.30",
+      "output": "25.20",
+      "cache_read": "1.26"
+    }
+  ],
+  "account_price_verified": false,
+  "exchange_rate_verified": false,
+  "runtime_activated": false,
+  "note": "Public reference only. Preserve blocked draft; account billing, conversion and outbound authorization remain required."
+}

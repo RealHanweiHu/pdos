@@ -1,0 +1,14 @@
+{
+  "scope": "owned staged codec tests only; --noconftest; no database or HTTP",
+  "command": "PYTHONPATH=pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/staging/wave17/test_fact_storage_codec.py -q",
+  "console_result": {"passed": 35, "failed": 3, "seconds": 2.33, "exit_code": 1},
+  "raw_log": null,
+  "limitations": "Initial console output was not redirected; this is an explicit summary, not a raw log.",
+  "findings": [
+    "Synthetic test seal hashed an offset timestamp before the real EventTime UTC normalization; fix normalizes the actual DTO before synthetic hashing and preserves microseconds/IANA.",
+    "Frozen source_closure correctly raised DomainError(RECHECK_REQUIRED); test expected ValueError instead.",
+    "FactReadOutcome exposes structure, not material; test field was wrong."
+  ],
+  "production_change": false,
+  "public_tests": false
+}

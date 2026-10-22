@@ -1,0 +1,66 @@
+F.F                                                                      [100%]
+=================================== FAILURES ===================================
+_ test_private_extracted_rows_match_actual_published_model_and_replay_without_writes _
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...950>, parser=<function parse_original at 0x117544680>), client=<starlette.testclient.TestClient object at 0x125c95820>)
+
+    def test_private_extracted_rows_match_actual_published_model_and_replay_without_writes(
+        work,
+        security_work,
+    ):
+        f = prepare(work, security_work)
+        before = counts(work)
+        result = read(f)
+        assert result["mode"] == "extracted_standard_match"
+>       assert result["products"][0]["status"] == "selected_specs_meet"
+E       AssertionError: assert 'needs_review' == 'selected_specs_meet'
+E         
+E         - selected_specs_meet
+E         + needs_review
+
+tests/agent_kernel/test_extracted_match_pg.py:150: AssertionError
+_ test_non_spec_rows_and_changed_original_never_become_all_requirements_satisfied _
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...610>, parser=<function parse_original at 0x117544680>), client=<starlette.testclient.TestClient object at 0x15afb4710>)
+
+    def test_non_spec_rows_and_changed_original_never_become_all_requirements_satisfied(
+        work,
+        security_work,
+    ):
+        f = prepare(work, security_work, kind="compliance")
+        result = read(f)
+        assert result["requirements"] == result["products"] == []
+        assert "non_spec_requirements_require_review" in result["limitations"]
+        row = result["rows"][0]
+        artifact_id = UUID(row["citation"]["artifact_id"])
+        with f[0].store.transaction(f[1]) as (session, _):
+            root = session.get(Artifact, artifact_id).original_id
+        scan = security_work.client.post(
+            f"/v1/categories/{work.category}/originals/{root}/scan", headers=work.headers
+        )
+>       assert scan.status_code == 200, scan.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"内容不符合此操作的专用格式。","detail":{"reason":"INVALID_PAYLOAD"}}
+E       assert 422 == 200
+E        +  where 422 = <Response [422 Unprocessable Content]>.status_code
+
+tests/agent_kernel/test_extracted_match_pg.py:213: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_extracted_match_pg.py::test_private_extracted_rows_match_actual_published_model_and_replay_without_writes
+tests/agent_kernel/test_extracted_match_pg.py::test_extraction_omissions_remain_unknown_even_when_dictionary_has_defaults
+tests/agent_kernel/test_extracted_match_pg.py::test_non_spec_rows_and_changed_original_never_become_all_requirements_satisfied
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:512: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_extracted_match_pg.py::test_private_extracted_rows_match_actual_published_model_and_replay_without_writes
+tests/agent_kernel/test_extracted_match_pg.py::test_extraction_omissions_remain_unknown_even_when_dictionary_has_defaults
+tests/agent_kernel/test_extracted_match_pg.py::test_non_spec_rows_and_changed_original_never_become_all_requirements_satisfied
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:689: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_extracted_match_pg.py::test_private_extracted_rows_match_actual_published_model_and_replay_without_writes
+FAILED tests/agent_kernel/test_extracted_match_pg.py::test_non_spec_rows_and_changed_original_never_become_all_requirements_satisfied
+2 failed, 1 passed, 6 warnings in 16.52s

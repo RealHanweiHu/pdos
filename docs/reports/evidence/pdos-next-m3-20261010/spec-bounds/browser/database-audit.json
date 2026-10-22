@@ -1,0 +1,18 @@
+{
+  "environment": "verified 127.0.0.1:64245/pdos_test; synthetic tenant only",
+  "schema_head": "s0_0757",
+  "model_calls": 0,
+  "definition_count": 2,
+  "receipt_count": 4,
+  "history_rows": 8,
+  "complete_typed_copy": true,
+  "parent_value_and_false_preserved": true,
+  "single_upper_bound_without_scalar_or_lower": true,
+  "exact_recovery_command_committed_once": true,
+  "receipt_ids": [
+    "096256f8-2a94-42f6-8a6e-ce23aa403584",
+    "21b45bc4-9056-47ed-bc0f-e746968b1ad4",
+    "db80553e-82df-4577-aef3-39d2c4c59cd0",
+    "15015b32-8ff6-41d3-8445-55fdafae5e22"
+  ]
+}

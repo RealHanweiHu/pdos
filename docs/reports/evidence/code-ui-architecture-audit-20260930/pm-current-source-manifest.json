@@ -1,0 +1,104 @@
+{
+  "recorded_at": "2026-10-01T00:08:38.945399+00:00",
+  "initial_review_sources_changed": [
+    "web/src/components/ai/xiaopai-provider.tsx",
+    "web/src/components/ai/xiaopai-page-context.ts",
+    "web/src/components/product-work/product-workspace.tsx",
+    "web/src/components/product-work/product-ai-preparation.tsx",
+    "web/src/components/product-work/product-ai-runs.tsx",
+    "server/app/domain/product_workspace.py",
+    "server/app/ai/product_work_runs.py",
+    "server/app/api/product_research.py",
+    "server/app/db/schema.py"
+  ],
+  "coverage": {
+    "current_component_tests": "20 passed; two files; mocked requests",
+    "dispatch_probe": "five pure-function cases extracted from current source",
+    "authenticated_browser_current_candidate": false,
+    "database": false,
+    "real_search_or_model": false,
+    "business_write": false
+  },
+  "files": {
+    "web/src/components/ai/xiaopai-provider.tsx": {
+      "sha256": "25b77cdc5d99ccd9761fb237ec451b08eae9a5f1b5a953f8faf7caf6093c74e2",
+      "lines": 169
+    },
+    "web/src/components/ai/xiaopai-page-context.ts": {
+      "sha256": "41df3aa5185dc4030acc2f30c3b1c89d270f01e65bc7533cc034cc98ff54431b",
+      "lines": 55
+    },
+    "web/src/components/ai/product-conversation.tsx": {
+      "sha256": "c11cf4fc0b2d94fe33882db9e3752d596c8becc839159bfe96be800263501dc3",
+      "lines": 177
+    },
+    "web/src/components/ai/product-conversation.test.tsx": {
+      "sha256": "594e10b7917d4100abddb01452ad7fdf373a86e9a2b75202c84722114957654d",
+      "lines": 55
+    },
+    "web/src/components/ai/xiaopai-provider.test.tsx": {
+      "sha256": "9fc21f17ce4e1f225c113bbf37e094b4f7709fccf8fa0eff95c29a8a61e6aa8e",
+      "lines": 73
+    },
+    "web/src/components/product-work/product-workspace.tsx": {
+      "sha256": "44169ce4262b85601e8e943d66f926b40abd2a5af504474ac8ad33f01c9bb625",
+      "lines": 426
+    },
+    "web/src/components/product-work/product-ai-preparation.tsx": {
+      "sha256": "a33b4bfcabeee945624f8a371d93ecc242251f0f180342586b55bed999178dac",
+      "lines": 122
+    },
+    "web/src/components/product-work/definitions.tsx": {
+      "sha256": "82be2f74730a0816fb029be46f40654fc6a06928d976587e200022a6172fcdc6",
+      "lines": 168
+    },
+    "web/src/components/product-work/definition-result-feedback.tsx": {
+      "sha256": "e5270ec0bc1ec58080b5d5af4ba5f2bac3d3f83f87fb1947e1901cbff511e523",
+      "lines": 83
+    },
+    "web/src/components/product-work/product-result-followups.tsx": {
+      "sha256": "f2e9bd32e7e5b6b9606e785eb67dde3441e1fb9628288350efae9199a6ec52d6",
+      "lines": 83
+    },
+    "server/app/domain/conversation_product_work.py": {
+      "sha256": "369cb9c67e1409b13513b628791b55c81385dfae75ae5c578d035a2d833a55bf",
+      "lines": 472
+    },
+    "server/app/domain/opportunities.py": {
+      "sha256": "2585d20292cd604e78384a45a3cc10dd9ccd161a0fd670572e012b77bfb3a9b3",
+      "lines": 437
+    },
+    "server/app/domain/experiments.py": {
+      "sha256": "f0f4f76624b74736c1562017b9f6db30a9461648856229e1ea41ef9851d43258",
+      "lines": 568
+    },
+    "server/app/domain/product_strategies.py": {
+      "sha256": "73e39d554d66c513d23f886000581f129091c13bbd3006da0c7e7372e61ee60d",
+      "lines": 706
+    },
+    "server/app/domain/product_definitions.py": {
+      "sha256": "91726768a18f4e61a771f36a14e841ac7775a92e7191fe49c7f1da8a3144bd8b",
+      "lines": 863
+    },
+    "server/app/domain/definition_intake.py": {
+      "sha256": "7ad6bd1ba07e41d0e3ee3d2604a3eb7fe6539e5f9cf0f4271645715befc948b9",
+      "lines": 756
+    },
+    "server/app/domain/product_result_feedback.py": {
+      "sha256": "e9dff4b9dd3b739b3ec20cd528ae0c1d8067b480ad94f56b6ab32bc50fc437a2",
+      "lines": 532
+    },
+    "server/app/domain/product_result_followups.py": {
+      "sha256": "90ae64d80021c6fde777b2dac23418ecbd2773d6b5df9997dfc460d79e0b0e29",
+      "lines": 441
+    },
+    "server/app/domain/product_roadmap.py": {
+      "sha256": "a7d0d2aa0a8e9eb27a60139eafe6a518e1108f69d9c03f0cd33139eb6c2e4ac1",
+      "lines": 331
+    },
+    "tasks/ai-native-integrated-todo.md": {
+      "sha256": "1c81ef175d1bda58ac2163d4e975bc31304adc554144c3c7ba5f54f1d88b4db6",
+      "lines": 1303
+    }
+  }
+}

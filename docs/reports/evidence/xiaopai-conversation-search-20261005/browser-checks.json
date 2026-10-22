@@ -1,0 +1,14 @@
+{
+  "synthetic_model_and_public_data": true,
+  "ordinary_question_search_and_reply": true,
+  "saved_request_continued_after_fixture_error": true,
+  "citation_href": "https://example.com/spec",
+  "refresh_restores_answer_and_citation": true,
+  "stop_observed": true,
+  "desktop_themes": ["dark", "light"],
+  "desktop_viewport": [1440, 960],
+  "mobile_viewport": [320, 800],
+  "mobile_document_scroll_width": 320,
+  "success_receipts": {"model_invocation_rows": 2, "tool_intents": 2, "dispatches": 2, "tool_observations": 2, "citations": 1},
+  "stopped_reply": {"status": "degraded", "error_code": "REPLY_CANCELLED", "tool_dispatches": 0, "in_flight_model_budget_result": "unknown, conserved"}
+}

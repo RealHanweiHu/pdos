@@ -1,0 +1,41 @@
+{
+  "all_function_class_statement_AST_unchanged": true,
+  "actual_pure_passed": 91,
+  "files": [
+    {
+      "file": "pdos-next/server/tests/test_resource_dependency/conftest.py",
+      "stage_sha256": "5340b1056544038bc7142275bafa10968b60cbe82406800a4b1def6229dc557f",
+      "actual_sha256": "5340b1056544038bc7142275bafa10968b60cbe82406800a4b1def6229dc557f"
+    },
+    {
+      "file": "pdos-next/server/tests/test_resource_dependency/test_recheck_v2.py",
+      "stage_sha256": "589cd74f3692bffda5f60835daf57d21199e844f90f280af954b25536f987eed",
+      "actual_sha256": "589cd74f3692bffda5f60835daf57d21199e844f90f280af954b25536f987eed"
+    },
+    {
+      "file": "pdos-next/server/tests/test_resource_dependency/harness.py",
+      "stage_sha256": "7ffeea122182f67a7b2e87b74dad729e39360f0f9d8ff45c8e3c1be2d240de99",
+      "actual_sha256": "5691c67e8b028b1444316edeac75bb70ed6c3984ff82cc9b3c53690fde81e5ba"
+    },
+    {
+      "file": "pdos-next/server/tests/test_resource_dependency/test_stage_v2.py",
+      "stage_sha256": "06cd4c2f6bbefce886b1d979297000c2c8ea2dd4bee1f2b4b9ec7516422aab4b",
+      "actual_sha256": "c404e89116479bca593adc782ff93991b1a67f2608b7a4e6246a0c157453ba14"
+    },
+    {
+      "file": "pdos-next/server/tests/test_resource_dependency/test_saved_owner_v2.py",
+      "stage_sha256": "49a1e7aaf3d21c7376bc331396683c1ece822bcc46e56d18db1f0d994a7d4b21",
+      "actual_sha256": "14075c3c22551ca785a3de3decd2e462b270a309a7ee0f63d86083489890d836"
+    },
+    {
+      "file": "pdos-next/server/tests/test_resource_dependency/__init__.py",
+      "stage_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "actual_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "file": "pdos-next/server/tests/test_resource_dependency/test_complete_material.py",
+      "stage_sha256": "f4869e7fbf57c6f4a49e3abdbdbec7609d4115e7cc90ce531f388a535f5df459",
+      "actual_sha256": "7abd8dbbb036b19f8478ae768085daae860293ffde3720df93de58bc7eae4a2e"
+    }
+  ]
+}

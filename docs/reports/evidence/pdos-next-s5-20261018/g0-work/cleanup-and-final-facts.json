@@ -1,0 +1,44 @@
+{
+  "actual_browser_task_one_create_version": true,
+  "actual_common_group": {
+    "audit_entries": 1,
+    "outbox_events": 1,
+    "request_keys": 1
+  },
+  "native_sources_and_version_counts": [
+    [
+      "risk",
+      "open",
+      1,
+      6,
+      6
+    ],
+    [
+      "task",
+      "assigned",
+      1,
+      1,
+      1
+    ]
+  ],
+  "same_task_original_command_id": "433f6839-8783-4911-bd77-0279c89f2fff",
+  "browser_receipt_id": "1906853b-0018-4bd2-848a-3e6bcc00dcdd",
+  "own_short_logins_deleted": 1,
+  "legacy_short_login_deleted_in_finally": true,
+  "own_preview_ports_closed": [
+    58571,
+    58572
+  ],
+  "own_browser_closed": true,
+  "shared_database_and_temporal_retained": true,
+  "backup": {
+    "path": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/post-s5-g0-work-20261018-s0_0795.dump",
+    "size": 72009195,
+    "sha256": "bf0f8e33d6a94c6cbc0bc5a715ee6ab3212efa061d8193820d6d0cf54cb36cbe",
+    "head": "s0_0795",
+    "database": "pdos_test",
+    "port": 64245
+  },
+  "real_model_calls": 0,
+  "business_egress": 0
+}

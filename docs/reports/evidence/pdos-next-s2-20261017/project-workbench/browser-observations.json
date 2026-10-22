@@ -1,0 +1,28 @@
+{
+  "kind": "manual-browser-observation-through-cua",
+  "synthetic": true,
+  "category_id": "86ec852a-b179-478a-a23f-ca2470e72434",
+  "product_id": "c5edb17d-1351-43d0-991c-629720319df9",
+  "observed_steps": [
+    "A lists only A prototype; select A and enter S2-A-draft",
+    "B lists only B prototype with empty initial selection; select B and enter S2-B-draft",
+    "Return A restores original A selection and S2-A-draft",
+    "Owned API stopped: explicit refresh reports read failure, offers no other Build, retains local input",
+    "Owned API restarted: explicit refresh restores A selection and S2-A-draft and clears the error"
+  ],
+  "final": {
+    "batch": "S2-A-draft",
+    "build": {
+      "options": [
+        "选择已保存的轮次计划",
+        "Synthetic project A prototype · 原型验证"
+      ],
+      "value": "c73bd114-24a6-4c69-8336-b73de3cb8d48"
+    },
+    "alerts": [
+      ""
+    ]
+  },
+  "business_submission_buttons_clicked": 0,
+  "scope": "Execution page project selection and local draft only; not S2 physical/professional acceptance"
+}

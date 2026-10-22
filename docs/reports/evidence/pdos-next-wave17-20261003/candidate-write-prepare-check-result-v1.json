@@ -1,0 +1,78 @@
+{
+  "schema_version": "pdos-candidate-write-prepare-check-result-v1",
+  "manifest": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-source-manifest-v1.json",
+  "manifest_sha256": "124fbe3abac83ae21529f68a473e29973328e4714c88821c9f3884f4eeac2af7",
+  "owned_pure": {
+    "command": "PYTHONPATH=pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/server/tests/capa_effectiveness/test_candidate_write_prepare.py -q",
+    "exit_code": 0,
+    "passed": 17,
+    "failed": 0,
+    "duration_seconds": 1.84,
+    "raw_output": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-pure-final.log",
+    "raw_output_sha256": "f525d39ed2c486806c7c6d4a663f9a300596593a384d5171e20346ea2e64038a",
+    "no_stage_model_imports": true,
+    "scope": "unbound actual SQLAlchemy persistent ORM/UOW and actual ConsumptionHost; explicit current owner/SQL/source/authority substitutes"
+  },
+  "static": [
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/capa_effectiveness/test_candidate_write_prepare.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/tests/capa_effectiveness/test_candidate_write_prepare.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": "in-memory ast.parse only two owned sources",
+      "count": 2,
+      "exit_code": 0
+    }
+  ],
+  "static_log": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-static-final.log",
+  "static_log_sha256": "96b65587e200081e16bf8d3c6871ccff4000a828a6d1fa0eb3b2a999b9faa9cf",
+  "final_source_stable": true,
+  "preserved_attempts": [
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-pure-initial.log",
+      "sha256": "1b24fef5d63762e5fdf416692fc8a18b224fb38c452de26f9ba4c3e39b8c5e7f",
+      "exit_code": 1,
+      "passed": 12,
+      "failed": 1
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-pure-second.log",
+      "sha256": "3815bdabae9b23ea5cf4428f96932d627a061783d82b1bf52d68540199e4a941",
+      "exit_code": 0,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-pure-final.log",
+      "sha256": "f525d39ed2c486806c7c6d4a663f9a300596593a384d5171e20346ea2e64038a",
+      "exit_code": 0,
+      "passed": 17,
+      "failed": 0
+    }
+  ],
+  "prior_frozen_staged_unchanged": true,
+  "limits": {
+    "database": false,
+    "http": false,
+    "shared_tests": false,
+    "new_qualification": false,
+    "receipt_commit_or_reservation": false,
+    "seven_gates_granted": false,
+    "actual_public_business_loop_verified": false
+  }
+}

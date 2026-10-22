@@ -1,0 +1,85 @@
+{
+  "date": "2026-09-10",
+  "scope": "persistent actual tool observations, prepared projected-context receipts, pre-call verification and scoped invocation links",
+  "tests": {
+    "distinct_passed": 123,
+    "new_cases": 18,
+    "regression_cases": 105,
+    "initial_fresh_cluster_fixture_errors": 25,
+    "first_observation_checkpoint_batch": {
+      "passed": 37,
+      "old_guard_message_assertion_repaired": 1
+    },
+    "real_role_batch_passed": 68,
+    "shared_gateway_tools_schema_batch": {
+      "passed": 51,
+      "old_exact_schema_or_head_assertions_repaired": 3
+    },
+    "final_observation_batch_passed": 18,
+    "final_gateway_schema_batch_passed": 17,
+    "distinct_formula": "68 + 54 + 1 new pagination case"
+  },
+  "checks": {
+    "ruff_files": 10,
+    "format_files": 10,
+    "mypy_files": 5,
+    "dba_port_parity": "three functions passed",
+    "exports": "common 4 and runtime 5 passed",
+    "approved_manifests": "unchanged",
+    "scoped_diff_check": "passed"
+  },
+  "databases": [
+    "127.0.0.1:57432/pdos_test",
+    "127.0.0.1:57433/pdos_test"
+  ],
+  "migration_head": "0076_tool_observation_receipts",
+  "schema_checks": "empty-history downgrade/upgrade and persistent-history refusal, including gateway legacy cost migrations",
+  "isolated_container": "pdos-observation-test",
+  "isolated_container_removed": true,
+  "shared_role_changes": false,
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "synthetic": [
+    "HTTP model transport",
+    "meter qualifications",
+    "governance unavailable selection",
+    "tool error and checkpoint lease fault injection"
+  ],
+  "production_operations": false,
+  "default_budget_mode": "legacy",
+  "goal_item_status": "N0-03 partial",
+  "sources": {
+    "server/app/ai/observations.py": "a1a990788b0f889a8f6e61dc84157d9e30a5321f2be29666575772ddba5924e9",
+    "server/app/ai/executor.py": "3a211405537825ff892a8f1d546161736e8f8dd30022faf5300f7c7d0fb3e28c",
+    "server/app/ai/gateway.py": "4fef3d4c394975c4ec46fcf12d09070e1d62ca09e5059b5f997414d86e15846d",
+    "server/app/ai/context_projection.py": "389be5d26ef722ad1e67713ee9c87e05523938728410a412d611ae64e5c2d30b",
+    "server/app/db/schema.py": "742a886bd34ac66d6cdd1ed8c7ef62940f475b9f332e5db1f949928d8878533a",
+    "server/migrations/versions/0076_tool_observation_receipts.py": "69425ac98a7f12d51f6db112021acff84431e76803cdb5998ae3fbb9128e78c7",
+    "server/tests/test_tool_observation_receipts.py": "05182ae1bf4c88bc4020159ba34dd983cc7a843071b05171a3b6886bcffcf34a",
+    "server/tests/test_agent_checkpoints.py": "06c447ab61249612c208ccc07f282e3f224482f1e9010d1d75456d842db4bd3d",
+    "server/tests/test_agent_runtime_schema.py": "559e53768c4ed843de0ca747d38146b9156ac7f2ad37da87cf720125ba004037",
+    "server/tests/test_model_gateway_schema.py": "89e888f3b93007c24be8898b39c37dc9273d06a220dadcce3b699b00f82859dc",
+    "infra/postgres/security/agent-runtime.sql": "3a651756ef4821fb2b66e171e91365e8834d119dd94248f3e4b222663c276fd3",
+    "infra/postgres/security/agent-runtime-revert.sql": "7d13b0fccad37d7582853102752378d940f2f4a1424fc620896f3c3bb8980b78",
+    "docs/runbooks/agent-tool-observations.md": "15b380cc48321dfa97e5bafefbe5be4da7a393f412f80ceef3c83f413eb537ff",
+    "docs/reports/2026-09-10-n0-03-tool-observation-receipts-validation.md": "50724d79a9973910c1f955722a58ee792f9caa62e7c745f25be40a2d5b61da94"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "d5b3d4051f86cf226ec166d2b8d93857cbbcb016c364ed1784e0eccaccc05adc",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "00ee7c89739314481c1b11f325c4a81c4e9ac233d5a961ea7888f2c871d3c8ba",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "remaining": [
+    "full ContextManifest, AuthorizationEnvelope and capability/model/runtime version bundle",
+    "context revisions, compaction and explicit omission reasons",
+    "complete derived-source ACL and retention adoption",
+    "tool intent persistence and budget reservation before execution",
+    "model-tool loop, waiting_input and step checkpoints",
+    "Owner leases and production qualification/adoption"
+  ]
+}

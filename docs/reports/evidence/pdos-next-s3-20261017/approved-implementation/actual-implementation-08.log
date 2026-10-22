@@ -1,0 +1,371 @@
+F
+=================================== FAILURES ===================================
+_ test_real_coverage_independent_approvals_then_two_actual_configuration_implementations _
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': '13fcff9f-1559-47e8-a66b-0f7d7cb8250f', 'project': ...-be8d-dc48b68064b4', 'issue_revision': 4, 'capa_id': 'da78b6d3-69e2-48fb-b5dc-943d64155f42', 'created_output': None}]})
+
+    def test_real_coverage_independent_approvals_then_two_actual_configuration_implementations(
+        quality_work,
+    ):
+        work = quality_work
+        helper.declare_people(work)
+        private = post(
+            work.quality,
+            cmd(work.quality, "evidence.artifact.register", {
+                "title": "Synthetic private receipt boundary",
+                "content": "Synthetic private input; not shared with the independent approver",
+                "source_label": "Explicit synthetic access-boundary check",
+                "visibility": "private",
+            }),
+        )
+        assert private.status_code == 200, private.text
+        private_receipt = UUID(private.json()["id"])
+        for caller, visible in ((work.quality, True), (work.engineer, False)):
+            with helper.session(work, caller) as stored:
+                assert (stored.get(Receipt, private_receipt) is not None) is visible
+                assert stored.scalar(
+                    text("SELECT public.change_receipt_key_bound(:tenant,:product,:receipt)"),
+                    {"tenant": work.setup.tenant, "product": work.setup.product,
+                     "receipt": private_receipt},
+                ) is visible
+        basis = helper.issue_and_actions(work)
+        created, create_input = change.command(
+            work, "change.request.create", {**change.create_payload(work), "visibility": "category"}
+        )
+        response = post(work.quality, created)
+        assert response.status_code == 200, response.text
+        change_id = create_input["change_id"]
+        until = now() + timedelta(hours=1)
+        scope, policy_source, selections = helper.policy_and_items(work, change_id, basis, until)
+        items = tuple(material.item for material, _ in selections)
+        config_source = helper.original(
+            work.setup,
+            {
+                "purpose": basis.purpose,
+                "issue_id": str(basis.issue_id),
+                "capa_id": str(basis.capa_id),
+                "executor_id": str(work.setup.human),
+                "engineering_action_id": str(basis.actions[0].action_id),
+                "manufacturing_action_id": str(basis.actions[1].action_id),
+                "instruction": (
+                    "After both independent approvals, save a mechanical mount design revision and "
+                    "then a manufacturing revision bound to that exact new engineering configuration. "
+                    "Preserve the motor BOM and retain all existing sample/Run evidence."
+                ),
+                "manufacturing": (
+                    "Manual assembly, motor BOM line; cycle time 1.5 minutes with a named alignment "
+                    "check. No production switch, new fixture or tooling is specified."
+                ),
+            },
+            "Synthetic proposed configuration revision instructions",
+        )
+        unknown, _ = change.capture(work, change_id)
+        graph = GraphSnapshot.model_validate(unknown["capture"]["graph"])
+        assert all(value.status == "unknown" for value in graph.coverage)
+        assert any(
+            edge.origin.kind == "part" and edge.target.kind == "operation" for edge in graph.edges
+        )
+        disposition_rows = []
+        for node in graph.nodes:
+            linked = tuple(
+                item.id
+                for item in items
+                if node.ref in item.selection.objects
+                or (node.ref.kind == "operation" and item.discipline == "manufacturing")
+            )
+            disposition_rows.append(
+                {
+                    "object": node.ref.model_dump(mode="json"),
+                    "handling": "covered_by_plan" if linked else "reviewed_no_change",
+                    "item_ids": [str(identity) for identity in linked],
+                    "rationale": (
+                        "Revise this fixed configuration/assembly through the named plan item"
+                        if linked
+                        else "Retain this exact existing prototype, failure or design reference; "
+                        "this bounded internal revision preserves its history and disposition"
+                    ),
+                }
+            )
+        reviewed = helper.original(
+            work.quality,
+            {
+                "change_id": change_id,
+                "purpose": basis.purpose,
+                "dispositions": disposition_rows,
+                "scope": (
+                    "Synthetic internal prototype configuration revision only; no PilotRun, "
+                    "production switching, customer delivery, ERP effectivity or release"
+                ),
+            },
+            "Synthetic named exact per-object dispositions",
+        )
+        paths, facet_states = coverage_declarations(graph)
+        helper.publish_coverage(
+            work, scope, change_id, graph, until, paths=paths, facet_states=facet_states
+        )
+        try:
+            captured, _ = change.capture(work, change_id)
+            fixed_graph = GraphSnapshot.model_validate(captured["capture"]["graph"])
+            assert all(value.status in {"complete", "not_applicable"} for value in fixed_graph.coverage)
+            impact, _ = change.command(work, "change.impact.compute", captured["impact_payload"])
+            response = post(work.quality, impact)
+            assert response.status_code == 200, response.text
+            analysis, _ = change.current(work, change_id)
+            assessment = ImpactAssessment.model_validate(
+                analysis["request_snapshot"]["assessments"][-1]
+            )
+            assert assessment.unknown == ()
+            assert {row.node.ref.identity for row in assessment.known} == {
+                node.ref.identity for node in graph.nodes
+            }
+            for material, source in selections:
+                response = work.quality.client.post(
+                    f"/v1/categories/{work.setup.category}/products/{work.setup.product}/change-execution/selection-material",
+                    headers=work.quality.headers,
+                    json={
+                        "change_id": change_id,
+                        "expected_change_revision": analysis["revision"],
+                        "source": source.source.model_dump(mode="json"),
+                    },
+                )
+                assert response.status_code == 200, response.text
+                assert response.json()["material"] == material.model_dump(mode="json")
+                accepted(work.quality, response.json()["command"])
+            plan = EffectivityPlan(
+                id=uuid4(),
+                items=items,
+                expires_at=until,
+                dispositions=tuple(
+                    Disposition.model_validate(
+                        {**row, "sources": [reviewed.source.model_dump(mode="json")]}
+                    )
+                    for row in disposition_rows
+                ),
+            )
+            value, review = helper.inputs(
+                work,
+                work.quality,
+                "change.order.prepare",
+                {
+                    "change_id": change_id,
+                    "expected_change_revision": analysis["revision"],
+                    "visibility": "category",
+                    "assessment_id": str(assessment.id),
+                    "plan": plan.model_dump(mode="json"),
+                    "reason": (
+                        "Prepare internal engineering and manufacturing revisions after coverage review"
+                    ),
+                },
+            )
+            assert not review["unknown"]
+            prepared, _ = accepted(work.quality, value)
+            prepared_row, _ = change.current(work, change_id)
+            fixed_order = deepcopy(prepared_row["request_snapshot"]["orders"][-1])
+            assert fixed_order["approvals"] == fixed_order["implementations"] == []
+            before = helper.counts(work)
+            self_approve = cmd(
+                work.quality,
+                "change.order.approve",
+                {
+                    "change_id": change_id,
+                    "expected_change_revision": prepared_row["revision"],
+                    "visibility": "category",
+                    "discipline": "engineering",
+                    "text": "Attempt requester self approval must remain forbidden",
+                    "expires_at": until.isoformat(),
+                    "sources": [reviewed.source.model_dump(mode="json")],
+                },
+            )
+            rejected = work.quality.client.post(
+                f"/v1/categories/{work.setup.category}/products/{work.setup.product}/change-execution/inputs",
+                headers=work.quality.headers,
+                json=self_approve,
+            )
+            assert rejected.status_code == 403 and rejected.json()["code"] == "FORBIDDEN_SCOPE"
+            assert rejected.json()["detail"]["reason"] == "SELF_APPROVAL_FORBIDDEN"
+            assert helper.counts(work) == before
+            approvals = []
+            for discipline, caller in (("engineering", work.engineer), ("manufacturing", work.setup)):
+                current, _ = change.current(work, change_id)
+                value, _ = helper.inputs(
+                    work,
+                    caller,
+                    "change.order.approve",
+                    {
+                        "change_id": change_id,
+                        "expected_change_revision": current["revision"],
+                        "visibility": "category",
+                        "discipline": discipline,
+                        "text": (
+                            f"Named {discipline} approval of exact content "
+                            f"{fixed_order['content_digest']}"
+                        ),
+                        "expires_at": until.isoformat(),
+                        "sources": [
+                            reviewed.source.model_dump(mode="json"),
+                            policy_source.source.model_dump(mode="json"),
+                        ],
+                    },
+                )
+                receipt, _ = accepted(caller, value)
+                atom = actual_group(
+                    work, receipt, caller, "change.order.approve", "change.approved", tier="T2"
+                )
+                assert atom["discipline"] == discipline
+                assert atom["approval_snapshot"]["content_digest"] == fixed_order["content_digest"]
+                approvals.append(receipt)
+            assert work.quality.human != work.engineer.human != work.setup.human != work.quality.human
+            assert (
+                stamp(prepared["created_at"])
+                < stamp(approvals[0]["created_at"])
+                < stamp(approvals[1]["created_at"])
+            )
+            approved, _ = change.current(work, change_id)
+            approved_order = deepcopy(approved["request_snapshot"]["orders"][-1])
+            assert approved["status"] == "approved"
+            assert {value["actor_id"] for value in approved_order["approvals"]} == {
+                str(work.engineer.human),
+                str(work.setup.human),
+            }
+            # Never create the manufacturing output before the engineering fact is saved.
+            engineering, engineering_command = revisions(work, config_source)
+            assert stamp(approvals[-1]["created_at"]) < stamp(engineering["created_at"])
+>           engineering_record, engineering_record_command, engineering_occurrence = record_one(
+                work, change_id, items[0], basis.actions[0], engineering, config_source
+            )
+
+tests/change_execution/test_approved_configuration_implementation_chain.py:574: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = namespace(setup=<isolated synthetic test scope>, config={'source': '13fcff9f-1559-47e8-a66b-0f7d7cb8250f', 'project': ...-be8d-dc48b68064b4', 'issue_revision': 4, 'capa_id': 'da78b6d3-69e2-48fb-b5dc-943d64155f42', 'created_output': None}]})
+change_id = '34630933-2a72-57b4-9da9-bbf732719772'
+item = PlanItem(id=UUID('565623cc-1c45-4b19-9cb5-da63628ade3f'), discipline='engineering', selection=Selection(objects=(Ref(i...t approval'), verification_requirement='New exact configuration/Run and applicable independent review remain required')
+action = ActionBinding(action_id=UUID('d9a75cbd-06e4-4121-945f-246760296a42'), executor_id=UUID('b250434d-d2e9-4bcb-b041-33ce83...n_sha256='7b17093a170fc55cfa2543eec703f4d98ee52d520d248a974fbd06013daf3861', completion_sha256=None, completed_at=None)
+output = {'id': '9be2806c-5d4e-4477-955f-88349ddc073e', 'category_id': '084b03d6-c701-48fb-bd4d-c32b6a020f19', 'product_id': 'b263b60b-45a9-48cc-95b3-dfeae34599ca', 'operation': 'engineering.configuration.create', ...}
+configuration_source = namespace(source=SourceRef(id=UUID('3b4c779f-89cb-4033-b914-09a989d83abd'), revision=1, kind='artifact', position='lin...0', 'agent_run_id': None, 'result': {'id': '3b4c779f-89cb-4033-b914-09a989d83abd', 'revision': 1, 'status': 'active'}})
+
+    def record_one(work, change_id, item, action, output, configuration_source):
+        current, _ = change.current(work, change_id)
+        order = current["request_snapshot"]["orders"][-1]
+        output_kind = (
+            "engineering_configuration"
+            if item.discipline == "engineering"
+            else "manufacturing_configuration"
+        )
+        occurrence = Occurrence(
+            schema_version="pdos-change-implementation-occurrence-v2",
+            scope=work.failure_run.scope,
+            issue_id=work.issue_id,
+            capa_id=work.capa_id,
+            action_id=action.action_id,
+            action_sha256=action.action_sha256,
+            purpose=work.binding.purpose,
+            change_id=UUID(change_id),
+            order_id=UUID(order["id"]),
+            implementation_id=uuid4(),
+            reconciles_id=None,
+            item_id=item.id,
+            intent_id=item.intent.id,
+            executor_id=work.setup.human,
+            operation="change.implementation.record",
+            outcome="succeeded",
+            occurred_at=now(),
+            original_timezone="UTC",
+            sources=(configuration_source.source,),
+            outputs=(
+                Ref(
+                    kind=output_kind, id=UUID(output["subject_id"]), revision=output["subject_revision"]
+                ),
+            ),
+            note=(
+                "Only the real saved configuration output is recorded; "
+                "no effectivity or verification is claimed"
+            ),
+            nature="synthetic",
+        )
+        assert stamp(output["created_at"]) < occurrence.occurred_at
+        source = helper.original(
+            work.setup, occurrence, f"Synthetic actual {item.discipline} implementation occurrence"
+        )
+        assert occurrence.occurred_at < stamp(source.receipt["created_at"])
+        capture_payload = {
+            "change_id": change_id,
+            "expected_change_revision": current["revision"],
+            "visibility": "category",
+            "capture_key": str(uuid4()),
+            "order_id": order["id"],
+            "item_id": str(item.id),
+            "source": source.source.model_dump(mode="json"),
+        }
+        before_capture = helper.counts(work)
+        endpoint = (
+            f"/v1/categories/{work.setup.category}/products/{work.setup.product}"
+            "/change-execution/implementation-captures"
+        )
+        captured = work.setup.client.post(endpoint, headers=work.setup.headers, json=capture_payload)
+        assert captured.status_code == 200, captured.text
+        captured = captured.json()
+>       assert captured["fact_id"] == str(occurrence.implementation_id)
+               ^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'fact_id'
+
+tests/change_execution/test_approved_configuration_implementation_chain.py:291: KeyError
+=============================== warnings summary ===============================
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-5mh7qcaf/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-5mh7qcaf/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-5mh7qcaf/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-5mh7qcaf/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-5mh7qcaf/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-5mh7qcaf/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-5mh7qcaf/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-5mh7qcaf/pdos-next/server/pdos_next/change_controlled_owner.py:770: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # BEFORE Current target guard, never a commit/second Receipt.
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-5mh7qcaf/pdos-next/server/pdos_next/domain/change_coverage_owner/importer.py:368: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([fact])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-5mh7qcaf/pdos-next/server/pdos_next/service.py:1164: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-5mh7qcaf/pdos-next/server/pdos_next/change_order_service.py:1012: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Actual candidate trigger validates parent before pointer flush.
+
+tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+  /private/tmp/pdos-s3-implementation-5mh7qcaf/pdos-next/server/pdos_next/change_implementation_owner.py:615: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([result])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_approved_configuration_implementation_chain.py::test_real_coverage_independent_approvals_then_two_actual_configuration_implementations
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 17 warnings in 424.26s (0:07:04)

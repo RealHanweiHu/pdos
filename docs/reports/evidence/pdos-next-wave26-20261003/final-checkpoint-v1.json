@@ -1,0 +1,78 @@
+{
+  "schema_version": "pdos-next-wave26-final-scoped-checkpoint-v1",
+  "recorded_at": "2026-10-05T18:45:47.293396+00:00",
+  "status": "PASS_SCOPED_RETAINED_COMPATIBILITY_AND_PILOT_MATH_WITH_CURRENT_ACCESS_AND_BUSINESS_GAPS",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "head": "next_0028",
+  "registered_tables": 122,
+  "source_manifest": "actual-core-source-v1.json",
+  "source_counts": {
+    "runtime_files": 384,
+    "backend_test_files": 47,
+    "web_files": 165,
+    "tools": 4
+  },
+  "backend_runtime_changed_paths": [
+    "pdos-next/server/pdos_next/domain/manufacturing_trials/rules.py",
+    "pdos-next/server/pdos_next/domain/test_resources/retained.py",
+    "pdos-next/server/pdos_next/domain/test_resources/service.py"
+  ],
+  "current_frontend_validated": false,
+  "current_web_delta": [
+    "pdos-next/web/src/app/globals.css",
+    "pdos-next/web/src/components/workspace-experience.tsx"
+  ],
+  "validation_selections": {
+    "real_pg_9": {
+      "passed": 9,
+      "target": "127.0.0.1:63866/pdos_test",
+      "marker": "20a17344-1e35-42e1-95ab-e100e56e9d88",
+      "seconds": 4540.3
+    },
+    "retained_pure_84": 84,
+    "resource_rules_37": 37,
+    "manufacturing_pure_162": 162
+  },
+  "counts_not_full_joint_exit": true,
+  "historical_20261003_retained_readonly_passed": true,
+  "current_20261005_old_actor_HTTP": {
+    "status": 401,
+    "code": "UNAUTHENTICATED",
+    "login_and_product_grant_expired": true,
+    "expiry_extended": false
+  },
+  "HTTP_all_122_tenant_tables_unchanged": true,
+  "business_commands": 0,
+  "new_qualifications": 0,
+  "model_calls": 0,
+  "new_v2_start_applied": false,
+  "root_test_environment_retained_for_immediate_v2_scope": true,
+  "remaining": [
+    "newStart v2 same-UOW full proof/persistence/strict dispatch/UNKNOWN recovery",
+    "manufacturing qualified first save/continuation/Current/history",
+    "pilot actual qualified resource owner/persistence/API/UI and separate releases",
+    "controlled-change facets/independent approval/implementation/new lawful A2/full observation/Review",
+    "real qualifications and original G/AT/N/P/Q/manual exits"
+  ],
+  "original_20260927_recovery_boundary_preserved": true,
+  "overall_goal_complete": false,
+  "evidence_sha256": {
+    "result.md": "c66c441462703469dc0a823dc948fc6436ba48f40801f167c8f34eb92203082f",
+    "actual-core-source-v1.json": "2e66e3d5900deb0ca7d9320274662fca77705a86fb5002444e417acc57e96d26",
+    "actual-retained-pg-completion-v1.json": "a1f479a8247575cc2b5b417393a2a55bf9d33d748f1fc80a88fd83d08b1f4be7",
+    "actual-retained-pg-v1.log": "73a94a6bac6e54a75e8de5fe4c19550817b1bd8114ab6aa57fdc085a5ada3112",
+    "actual-retained-pure-v1.log": "962891d5c484fc07413d57c36adaf0de61d4fe57515b0b12fd368c02957597a9",
+    "actual-resource-rules-v1.log": "bebebf0ca9fcbba5b7046849745f2e0abb28dc3d50d693ce29ac75268e4c8cbe",
+    "actual-manufacturing-final-v3.log": "9acd9c706c43097e35bba568fba00a9a074d1ce06f367efb21fadc57565f23a6",
+    "actual-complete-material-diagnostic-v1.json": "bc16fa44e3012eb3c057f821fa5bcb39da7ea48c26b45f9ee18be5d420b16bde",
+    "actual-retained-recovery-v1.json": "5f9cbe2cda6e21b2be7f1ea9dc2705c2b8c4968cfc6f28af91e5241b55c444bb",
+    "actual-old-quality-http-readback-v1.json": "cb029bae64349fe3f8ccb3881f9fbc78166a28f786d2208963f6bc1ce9a589bc",
+    "actual-old-quality-http-readback-v2.json": "ded41e0807ae54c748b2d67e8ab824516aeb5b4c6908bc9c59d55d1aa865be9f",
+    "retained-import-only-ast-equivalence-v1.json": "1b2ae18fbc0f0473dcabdc267796a02f411c33b699a76aee2b0b7d387764e574",
+    "pilot-adaptation-ast-equivalence-v1.json": "852e7d0a9759c2c71cf27ca201ac2757a6bdffc9102bfa27d065ff1b3e7766fd",
+    "manufacturing-count-correction-v2.json": "4048059e6b552c12b103e9a65d94b39fe4dab77ac0b8e985378c5e24014cbf4e",
+    "actual-retained-static-v2.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "actual-selected-static-v2.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "browser_used_real_authenticated_BFF": true,
+  "restored_identity_matches": true,
+  "restored_lifecycle": "active",
+  "restored_version": 3,
+  "other_category_unchanged": true,
+  "scope": "synthetic fixtures in task-owned pdos_test",
+  "no_model_calls": true,
+  "ports": {
+    "frontend": 3051,
+    "api": 8851
+  }
+}

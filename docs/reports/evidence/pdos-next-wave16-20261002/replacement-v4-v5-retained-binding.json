@@ -1,0 +1,107 @@
+{
+  "scope": "Nine required replacement scopes: eight exact v4 scopes retained and original failed node passed on assertion-only v5",
+  "required_replacement_scope_complete": true,
+  "same_candidate_whole_tree_joint_pass": false,
+  "retained_v4_nodes": {
+    "repair-v4-13": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_and_history[classification]",
+      "original_index": 13,
+      "exit_code": 0,
+      "seconds": 1708.97,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "a9eca44c6513e38b7fedd3eeae0e6e4defd1e9e05553a6546096446d1474317b"
+    },
+    "repair-v4-15": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[policy_epoch]",
+      "original_index": 15,
+      "exit_code": 0,
+      "seconds": 1730.9,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "d95c1dbe5156d1e9b2aa8d35a45cd3c1d53ab230ccd8a1954b023a14b7808406"
+    },
+    "repair-v4-14": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_mid_phase_aba_versions_are_rechecked_after_completion_assessment[original_epoch]",
+      "original_index": 14,
+      "exit_code": 0,
+      "seconds": 1732.01,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "ec6753d1a2131f926a6b4474a1326fbf319c27369406d5833dc464ac9ac05a33"
+    },
+    "repair-v4-01": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_partial_then_all_complete_keeps_real_event_clocks_history_and_original_execution",
+      "original_index": 1,
+      "exit_code": 0,
+      "seconds": 2335.66,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "9cb99ddb16ca11a580aa572af3bba9a8f4d4f301eb96a6215a57a403721737bf"
+    },
+    "repair-v4-08": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_same_and_cross_key_replay_return_original_receipt_without_second_proof_or_effect[quality.capa.followup.link]",
+      "original_index": 8,
+      "exit_code": 0,
+      "seconds": 2419.99,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "7ae1911388a9fa5051ded011b13ee51dfc9d127efabf3aef61da534c21524c25"
+    },
+    "repair-v4-17": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_classification_profile_aba_during_actual_source_checks_cannot_reuse_old_closure",
+      "original_index": 17,
+      "exit_code": 0,
+      "seconds": 1385.72,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "41d808058042d75eec17049a84ccd3459b23ba1be77bee75e2fb6ca32e9ef9f6"
+    },
+    "repair-v4-18": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.issue.root_cause.decide-issue.root_cause_decided]",
+      "original_index": 18,
+      "exit_code": 0,
+      "seconds": 1536.15,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "a880649866f12e4a0d0d9ed5b93afec474bf83e5eace10a9725367b58f327b48"
+    },
+    "repair-v4-19": {
+      "node": "tests/quality_followup_transactions/test_transactions.py::test_terminal_outbox_failure_rolls_back_new_version_pointer_proof_and_link[quality.capa.followup.link-capa.followup_linked]",
+      "original_index": 19,
+      "exit_code": 0,
+      "seconds": 1801.39,
+      "source_stable": true,
+      "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+      "log_sha256": "6f0882dea0fbd726289c0c8dad3f5fcf697acc8b0bfb7981537a66031aaef8e0"
+    }
+  },
+  "original_v4_failure_preserved": {
+    "node": "tests/quality_followup_transactions/test_transactions.py::test_link_t1_preserves_issue_pointer_and_records_exact_scoped_owner_output",
+    "original_index": 16,
+    "exit_code": 1,
+    "seconds": 2282.29,
+    "source_stable": true,
+    "candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+    "log_sha256": "c047b783ccc5e6b61df237a039d465b14c3b53bf2b2590dbc446735d1f310f4a"
+  },
+  "v5_single_recheck": {
+    "node": "tests/quality_followup_transactions/test_transactions.py::test_link_t1_preserves_issue_pointer_and_records_exact_scoped_owner_output",
+    "exit_code": 0,
+    "seconds": 1184.1,
+    "candidate_sha256": "220bf21030b0510d87012363a3967519b79941b0e5b2e708e4d4c476fdc5c1f2",
+    "log_sha256": "723232136ee03df6ea447d9ac5cc8d5b89d9f699a30724959297dfc278532902",
+    "source_stable": true
+  },
+  "only_changed_file": [
+    "pdos-next/server/tests/quality_followup_transactions/test_transactions.py"
+  ],
+  "v4_original_test_private_backup_sha256": "7e0a9bf64b4fb6a702bb7658598211e18e1194669c1a6aa0ac5563c29e1d4dfc",
+  "evidence_sha256": {
+    "repair-v4-result.json": "a69b4f91574eac2772750eb7dda8c8677eb98f50eda29fd5bca6b25f40e46bea",
+    "scope-recheck-v5-result.json": "94306d9f1376f21f3ebdab167b7cddc81c293657987083270ae518463b9eef01",
+    "scope-assertion-fix-v5.json": "92f3fe48e8a73a1e4e96fed50297a33b36a53537b5501305c32f8e2f70e8f99f",
+    "backend-candidate-source-v4.json": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+    "backend-candidate-source-v5.json": "220bf21030b0510d87012363a3967519b79941b0e5b2e708e4d4c476fdc5c1f2"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "actual_current_receipt_cases": [
+    {
+      "actual_stages": [
+        "succeeded",
+        "succeeded",
+        "conflict"
+      ],
+      "expected_visible": true,
+      "ordinary_RLS_read_matches": true,
+      "blocked": {
+        "code": "EXTERNAL_RECEIPT_EXCEPTION",
+        "message": "部分、未知、拒绝、失败或冲突仍保留；请进入原移交核对。"
+      },
+      "business_facts_unchanged": true,
+      "attention_GET_DML": 0
+    }
+  ],
+  "source": "pre-existing explicitly synthetic receipt originals; no fact/Current writes",
+  "temporary_test_Grant_expiry_restored": 1,
+  "qualification_grants": 0,
+  "real_external_calls": 0,
+  "performance_acceptance": false
+}

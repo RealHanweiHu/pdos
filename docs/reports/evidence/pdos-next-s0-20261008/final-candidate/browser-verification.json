@@ -1,0 +1,72 @@
+{
+  "head": "s0_0720",
+  "database": {
+    "name": "pdos_test",
+    "port": 62303,
+    "marker": "6712d849-f2c1-4b32-ae79-d50d9a31639d"
+  },
+  "synthetic_only": true,
+  "llm_calls": 0,
+  "surfaces": [
+    "production Next.js BFF",
+    "authenticated FastAPI",
+    "ordinary-owner PostgreSQL"
+  ],
+  "claims_by_status": [
+    [
+      "active",
+      1
+    ],
+    [
+      "reverted",
+      1
+    ]
+  ],
+  "sources_by_status": [
+    [
+      "active",
+      2
+    ]
+  ],
+  "receipts_by_operation": [
+    [
+      "ai.run.revert",
+      1
+    ],
+    [
+      "evidence.artifact.register",
+      2
+    ],
+    [
+      "evidence.claim.record",
+      2
+    ]
+  ],
+  "checked": [
+    "local session",
+    "category selection",
+    "category present in navigation href and refreshed location",
+    "Product visible as 型号",
+    "source registration",
+    "exact line reference Claim recording",
+    "T1 fact statement and effect",
+    "single T1 confirmation",
+    "reverted history and original preserved after refresh",
+    "1280x900 desktop light/dark",
+    "390x844 mobile light/dark; scrollWidth390",
+    "category run accepted durably with runtime disabled",
+    "visible runtime unavailable notice and history",
+    "explicit once-confirmed cancel persisted with cancel_epoch",
+    "zero model/tool calls",
+    "cancelled run history survives browser refresh",
+    "retired SourceWork count removed from work page and sidebar"
+  ],
+  "scope": "Source/Claim/revert browser path; actual Temporal/LangGraph runtime tested in the shared kernel regression, not in this workflow-disabled browser fixture.",
+  "run_states": [
+    [
+      "cancelled",
+      1,
+      null
+    ]
+  ]
+}

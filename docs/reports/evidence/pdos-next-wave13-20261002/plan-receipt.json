@@ -1,0 +1,15 @@
+{
+  "id": "abf8b136-c9ab-4aa0-888b-5731eafe942c",
+  "operation": "test.run.plan",
+  "subject_type": "test_run",
+  "subject_id": "acec7de4-aa17-4f04-8277-7b7d280818e5",
+  "subject_revision": 1,
+  "writer_id": "0a41538d-e721-4783-866a-39c35d382eef",
+  "requester_id": "0a41538d-e721-4783-866a-39c35d382eef",
+  "created_at": "2026-10-03T01:32:04.468130+00:00",
+  "result": {
+    "id": "acec7de4-aa17-4f04-8277-7b7d280818e5",
+    "revision": 1,
+    "status": "planned"
+  }
+}

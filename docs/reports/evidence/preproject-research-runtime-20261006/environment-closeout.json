@@ -1,0 +1,74 @@
+{
+  "container_id": "d1d1f17f275a6414a847533e067263347e6006958b8c81c7918ac7ee653f6bba",
+  "database": "pdos_test",
+  "last_port": 63201,
+  "main_preview_stopped": false,
+  "test_volume_removed": false,
+  "qa_tab_closed": true,
+  "migration_changes": false,
+  "stages": [
+    {
+      "stage": "identity_verified",
+      "at": "2026-10-07T01:18:50.737479+00:00",
+      "volume": "b70319901940c66e3136427eb9c45b8ecee5b933934dd90a069f533bf064c94e"
+    },
+    {
+      "stage": "owned_qa_services_signalled",
+      "at": "2026-10-07T01:18:50.796760+00:00",
+      "pids": [
+        66631,
+        66678
+      ]
+    },
+    {
+      "stage": "pre_backup_target_verified",
+      "at": "2026-10-07T01:18:51.102359+00:00",
+      "synthetic_counts": {
+        "tenants": 1,
+        "market_spaces": 1,
+        "product_proposals": 0,
+        "conversations": 2,
+        "preproject_confirmations": 0
+      }
+    },
+    {
+      "stage": "private_backup_verified",
+      "at": "2026-10-07T01:18:53.120613+00:00",
+      "path": "/Users/huhanwei/pdos-preview-backups/preproject-research-runtime-closeout-20261007-011851/pdos_test-after-runtime-fix.dump",
+      "bytes": 4282913,
+      "sha256": "d5724a3c3d47f8ea666055e467bb8de1c9196d82ec94ead8dd143118fdd4861c",
+      "mode": "0o600"
+    },
+    {
+      "stage": "synthetic_tenants_cleared",
+      "at": "2026-10-07T01:18:53.360680+00:00",
+      "result": {
+        "method": "delete",
+        "table_count": 472,
+        "changed_table_count": 11,
+        "deleted_rows": 41,
+        "fallback_reason": null
+      }
+    },
+    {
+      "stage": "empty_head_verified",
+      "at": "2026-10-07T01:18:53.369732+00:00",
+      "head": "0428_preproject_dialogue",
+      "tenants": 0
+    },
+    {
+      "stage": "owned_container_stopped",
+      "at": "2026-10-07T01:18:53.852229+00:00",
+      "status": "exited",
+      "volume_retained": true
+    },
+    {
+      "stage": "main_preview_listeners_preserved",
+      "at": "2026-10-07T01:18:53.918762+00:00",
+      "ports": [
+        3000,
+        8000
+      ]
+    }
+  ]
+}

@@ -1,0 +1,237 @@
+{
+  "recorded_at": "2026-10-03T18:49:03.609027+00:00",
+  "tier": "T2",
+  "named_decision": true,
+  "review": {
+    "operation": "build.manufacturing.authorize",
+    "name": "试制执行",
+    "effect": "具名制造批准或撤销固定执行范围；不替代工程批准或实际开工。",
+    "before": null,
+    "after": {
+      "id": "1e78f319-e33e-5667-b305-337d388467a7",
+      "build_id": "beb94737-d081-4f0f-a72c-326824126b58",
+      "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0",
+      "engineering_configuration_id": "becde270-4262-4728-a257-d0fa77698197",
+      "manufacturing_configuration_id": "8be025dc-0141-4bde-8e88-fe4b6be16869",
+      "revision": 1,
+      "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+      "visibility": "product",
+      "status": "approved",
+      "required_source_read_set": [
+        {
+          "artifact_id": "67f7c873-511a-4ab3-addf-e16ce2ed80a5",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "b4027069-27cb-4e2d-acca-0af1e1f0fde0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+          "expected_revision": 1
+        }
+      ],
+      "reason": "本次固定内部合成调查的具名manufacturing专业判断与四项控制；不授真实生产/测试/外发资格。",
+      "role": "manufacturing",
+      "action": "approve",
+      "previous_decision_id": null,
+      "previous_revision": null,
+      "assessment_id": "695e5cdd-7498-546d-a4b9-d990bde56207",
+      "assessment_revision": 1,
+      "assessment_sha256": "6b8ab7bf7f8fd731348abc19dfd3a0bf171048d0741063af707b2053f3b74117",
+      "valid_until": "2026-10-04T02:34:51.575100+00:00",
+      "authority_snapshot": {
+        "scope": {
+          "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+          "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+          "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0"
+        },
+        "subject_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+        "operation": "build.manufacturing.authorize",
+        "purpose": "内部共享三人调查：独立单模穴A尺寸复测（合成）",
+        "authorized": true,
+        "roles": [
+          "manufacturing"
+        ],
+        "qualified": true,
+        "reason_codes": [],
+        "fact_refs": [
+          {
+            "id": "1fc4281c-01c2-416d-8a99-7de6c046e783",
+            "revision": 1,
+            "epoch": 1,
+            "kind": "qualification",
+            "role": "engineering",
+            "nature": "synthetic",
+            "issuer_key": "wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "03fa0dc0-ad9c-4c0f-85e9-e27b9cf5bc18",
+            "revision": 1,
+            "epoch": 1,
+            "kind": "duty",
+            "role": "quality",
+            "nature": "synthetic",
+            "issuer_key": "wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "daf50345-5eea-4303-88b4-3c5029b1783b",
+            "revision": 1,
+            "epoch": 1,
+            "kind": "qualification",
+            "role": "manufacturing",
+            "nature": "synthetic",
+            "issuer_key": "wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "418643d2-072b-4e9a-8b51-13e7d43621e8",
+            "revision": 1,
+            "epoch": 1,
+            "kind": "duty",
+            "role": "manufacturing",
+            "nature": "synthetic",
+            "issuer_key": "wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "0a205402-334e-43aa-9a88-252cf7754fb7",
+            "revision": 1,
+            "epoch": 1,
+            "kind": "duty",
+            "role": "engineering",
+            "nature": "synthetic",
+            "issuer_key": "wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "57e93c07-0911-4e55-80ff-eddc44b71901",
+            "revision": 1,
+            "epoch": 1,
+            "kind": "qualification",
+            "role": "quality",
+            "nature": "synthetic",
+            "issuer_key": "wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873",
+            "issuer_version": "v1"
+          }
+        ],
+        "facts_revision": "ce4847a4f1461f2d257fed0e849bae26dde1bc64d94ac895ec4663201a94b0c8",
+        "valid_until": "2026-10-05T18:22:48.865992+00:00",
+        "synthetic": true,
+        "required_source_read_set": [
+          {
+            "artifact_id": "945468fa-cec2-42a4-8850-69e3103593c3",
+            "expected_revision": 1
+          }
+        ]
+      },
+      "fact_binding": {
+        "facts_revision": "596ecaf89119fc3a07a134ae288e12aad30cf6c1fa44358a0711527a4b9cc89a",
+        "fact_refs": [
+          {
+            "id": "0416947c-7e68-49b3-848d-6d2abfab8a09",
+            "revision": 1,
+            "epoch": 1,
+            "sha256": "b7b40552bd1bcd185aca6397af23391fab0ed572613368bb20be3f003707a77d",
+            "nature": "synthetic"
+          }
+        ],
+        "valid_until": "2026-10-04T02:34:51.575100Z",
+        "nature": "synthetic",
+        "build_revision": 1,
+        "engineering_configuration_id": "becde270-4262-4728-a257-d0fa77698197",
+        "engineering_configuration_revision": 1,
+        "manufacturing_configuration_id": "8be025dc-0141-4bde-8e88-fe4b6be16869",
+        "manufacturing_configuration_revision": 1,
+        "actual_configuration_binding": [],
+        "professional_assessments": [
+          {
+            "rule_id": "output_disposition_applicability",
+            "status": "applicable",
+            "sources": [
+              {
+                "artifact_id": "67f7c873-511a-4ab3-addf-e16ce2ed80a5",
+                "expected_revision": 1,
+                "line": 5,
+                "quote": "{\"assessment\":\"两件产出将分别保持本轮、Actual、批次和单件身份追溯；不构成品质处置、客户接受、正式放行或真实制造。\",\"binding\":{\"assessment\":{\"id\":\"695e5cdd-7498-546d-a4b9-d990bde56207\",\"revision\":1,\"sha256\":\"6b8ab7bf7f8fd731348abc19dfd3a0bf171048d0741063af707b2053f3b74117\"},\"bom\":{\"id\":\"d8f9d5e0-b61d-45b9-b50d-3c16dae26388\",\"revision\":1},\"build\":{\"id\":\"beb94737-d081-4f0f-a72c-326824126b58\",\"revision\":1},\"build_type\":\"prototype\",\"definition\":{\"id\":\"51d4b72c-c623-415d-9086-fff5f2959913\",\"revision\":1},\"engineering\":{\"id\":\"becde270-4262-4728-a257-d0fa77698197\",\"revision\":1},\"execution_scope\":{\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"quantity\":\"2\",\"site\":\"wave22-internal-lab-eb2c84ee-197d-43bf-9f93-6ea671f2ca6a\",\"unit\":\"ea\",\"window_end\":\"2026-10-04T02:34:51.575100Z\",\"window_start\":\"2026-10-03T18:34:51.575100Z\",\"window_timezone\":\"UTC\"},\"maker_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"manufacturing\":{\"id\":\"8be025dc-0141-4bde-8e88-fe4b6be16869\",\"revision\":1},\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"},\"external_delivery_authorized\":false,\"kind\":\"professional_assessment\",\"nature\":\"synthetic\",\"production_qualification\":false,\"reason\":\"固定内部保留处置与调查范围一致。\",\"reviewed_at\":\"2026-10-03T18:43:59.382024+00:00\",\"role\":\"manufacturing\",\"rule_id\":\"output_disposition_applicability\",\"schema_version\":\"wave22-synthetic-named-build-publication-v1\",\"status\":\"applicable\",\"test_run_or_sample_qualification\":false,\"valid_until\":\"2026-10-04T02:34:51.575100Z\",\"visibility\":\"product\"}"
+              }
+            ],
+            "valid_until": "2026-10-04T02:34:51.575100Z",
+            "reason": "固定内部保留处置与调查范围一致。"
+          },
+          {
+            "rule_id": "process_configuration_applicability",
+            "status": "applicable",
+            "sources": [
+              {
+                "artifact_id": "67f7c873-511a-4ab3-addf-e16ce2ed80a5",
+                "expected_revision": 1,
+                "line": 4,
+                "quote": "{\"assessment\":\"已核对当前固定工程/BOM/制造配置与已保存准备度；材料和设备均明确synthetic，后续Start仍须当前余额、资源、校准及原子保留，无未知豁免。\",\"binding\":{\"assessment\":{\"id\":\"695e5cdd-7498-546d-a4b9-d990bde56207\",\"revision\":1,\"sha256\":\"6b8ab7bf7f8fd731348abc19dfd3a0bf171048d0741063af707b2053f3b74117\"},\"bom\":{\"id\":\"d8f9d5e0-b61d-45b9-b50d-3c16dae26388\",\"revision\":1},\"build\":{\"id\":\"beb94737-d081-4f0f-a72c-326824126b58\",\"revision\":1},\"build_type\":\"prototype\",\"definition\":{\"id\":\"51d4b72c-c623-415d-9086-fff5f2959913\",\"revision\":1},\"engineering\":{\"id\":\"becde270-4262-4728-a257-d0fa77698197\",\"revision\":1},\"execution_scope\":{\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"quantity\":\"2\",\"site\":\"wave22-internal-lab-eb2c84ee-197d-43bf-9f93-6ea671f2ca6a\",\"unit\":\"ea\",\"window_end\":\"2026-10-04T02:34:51.575100Z\",\"window_start\":\"2026-10-03T18:34:51.575100Z\",\"window_timezone\":\"UTC\"},\"maker_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"manufacturing\":{\"id\":\"8be025dc-0141-4bde-8e88-fe4b6be16869\",\"revision\":1},\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"},\"external_delivery_authorized\":false,\"kind\":\"professional_assessment\",\"nature\":\"synthetic\",\"production_qualification\":false,\"reason\":\"固定assembly工序适用于所列合成现场和窗口的2ea内部调查。\",\"reviewed_at\":\"2026-10-03T18:43:59.382024+00:00\",\"role\":\"manufacturing\",\"rule_id\":\"process_configuration_applicability\",\"schema_version\":\"wave22-synthetic-named-build-publication-v1\",\"status\":\"applicable\",\"test_run_or_sample_qualification\":false,\"valid_until\":\"2026-10-04T02:34:51.575100Z\",\"visibility\":\"product\"}"
+              }
+            ],
+            "valid_until": "2026-10-04T02:34:51.575100Z",
+            "reason": "固定assembly工序适用于所列合成现场和窗口的2ea内部调查。"
+          }
+        ],
+        "accepted_controls": [
+          "no_external_delivery",
+          "no_test_run_or_sample_qualification",
+          "retain_traceable_outputs",
+          "stop_on_configuration_deviation"
+        ],
+        "template": "internal-build-manufacturing.v1"
+      },
+      "sources": [
+        {
+          "artifact_id": "67f7c873-511a-4ab3-addf-e16ce2ed80a5",
+          "expected_revision": 1,
+          "line": 1,
+          "quote": "{\"binding\":{\"assessment\":{\"id\":\"695e5cdd-7498-546d-a4b9-d990bde56207\",\"revision\":1,\"sha256\":\"6b8ab7bf7f8fd731348abc19dfd3a0bf171048d0741063af707b2053f3b74117\"},\"bom\":{\"id\":\"d8f9d5e0-b61d-45b9-b50d-3c16dae26388\",\"revision\":1},\"build\":{\"id\":\"beb94737-d081-4f0f-a72c-326824126b58\",\"revision\":1},\"build_type\":\"prototype\",\"definition\":{\"id\":\"51d4b72c-c623-415d-9086-fff5f2959913\",\"revision\":1},\"engineering\":{\"id\":\"becde270-4262-4728-a257-d0fa77698197\",\"revision\":1},\"execution_scope\":{\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"quantity\":\"2\",\"site\":\"wave22-internal-lab-eb2c84ee-197d-43bf-9f93-6ea671f2ca6a\",\"unit\":\"ea\",\"window_end\":\"2026-10-04T02:34:51.575100Z\",\"window_start\":\"2026-10-03T18:34:51.575100Z\",\"window_timezone\":\"UTC\"},\"maker_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"manufacturing\":{\"id\":\"8be025dc-0141-4bde-8e88-fe4b6be16869\",\"revision\":1},\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"},\"external_delivery_authorized\":false,\"kind\":\"scope\",\"nature\":\"synthetic\",\"production_qualification\":false,\"reviewed_at\":\"2026-10-03T18:43:59.382024+00:00\",\"schema_version\":\"wave22-synthetic-named-build-publication-v1\",\"statement\":\"仅本地合成内部制造调查，不授真实生产、测试或外发资格。\",\"test_run_or_sample_qualification\":false,\"valid_until\":\"2026-10-04T02:34:51.575100Z\",\"visibility\":\"product\"}"
+        },
+        {
+          "artifact_id": "67f7c873-511a-4ab3-addf-e16ce2ed80a5",
+          "expected_revision": 1,
+          "line": 6,
+          "quote": "{\"accepted_controls\":[\"no_test_run_or_sample_qualification\",\"no_external_delivery\",\"retain_traceable_outputs\",\"stop_on_configuration_deviation\"],\"binding\":{\"assessment\":{\"id\":\"695e5cdd-7498-546d-a4b9-d990bde56207\",\"revision\":1,\"sha256\":\"6b8ab7bf7f8fd731348abc19dfd3a0bf171048d0741063af707b2053f3b74117\"},\"bom\":{\"id\":\"d8f9d5e0-b61d-45b9-b50d-3c16dae26388\",\"revision\":1},\"build\":{\"id\":\"beb94737-d081-4f0f-a72c-326824126b58\",\"revision\":1},\"build_type\":\"prototype\",\"definition\":{\"id\":\"51d4b72c-c623-415d-9086-fff5f2959913\",\"revision\":1},\"engineering\":{\"id\":\"becde270-4262-4728-a257-d0fa77698197\",\"revision\":1},\"execution_scope\":{\"purpose\":\"内部共享三人调查：独立单模穴A尺寸复测（合成）\",\"quantity\":\"2\",\"site\":\"wave22-internal-lab-eb2c84ee-197d-43bf-9f93-6ea671f2ca6a\",\"unit\":\"ea\",\"window_end\":\"2026-10-04T02:34:51.575100Z\",\"window_start\":\"2026-10-03T18:34:51.575100Z\",\"window_timezone\":\"UTC\"},\"maker_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"manufacturing\":{\"id\":\"8be025dc-0141-4bde-8e88-fe4b6be16869\",\"revision\":1},\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\"},\"external_delivery_authorized\":false,\"kind\":\"accepted_controls\",\"nature\":\"synthetic\",\"production_qualification\":false,\"reviewed_at\":\"2026-10-03T18:43:59.382024+00:00\",\"schema_version\":\"wave22-synthetic-named-build-publication-v1\",\"statement\":\"本限定内部合成轮次具名接受四项控制；偏离或来源/资格失效即停，保留可追溯产出，禁止外发，不授Run/样件测试资格。\",\"test_run_or_sample_qualification\":false,\"valid_until\":\"2026-10-04T02:34:51.575100Z\",\"visibility\":\"product\"}"
+        },
+        {
+          "artifact_id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "expected_revision": 1,
+          "line": 3,
+          "quote": "{\"fact\":{\"approval\":{\"approved_by\":\"Root controlled local synthetic publisher; no production grant\",\"external_id\":\"wave22-195d6eae-9df7-4e94-a6ba-3114b3303873-maker-manufacturing-duty\",\"issued_at\":\"2026-10-03T18:31:20.710982+00:00\",\"system\":\"wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873\",\"version\":\"v1\"},\"external_id\":\"wave22-195d6eae-9df7-4e94-a6ba-3114b3303873-maker-manufacturing-duty\",\"kind\":\"duty\",\"operations\":[\"build.manufacturing.authorize\",\"build.sample.readiness.record\",\"build.start\",\"verification.handoff.offer\"],\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"purposes\":[\"内部共享三人调查：独立单模穴A尺寸复测（合成）\"],\"reason\":\"New shared-case synthetic duty/qualification; old scopes retained\",\"role\":\"manufacturing\",\"state\":\"active\",\"subject_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"valid_from\":\"2026-10-03T18:30:20.710982+00:00\",\"valid_until\":\"2026-10-05T18:22:48.865992+00:00\"},\"issuer\":{\"key\":\"wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873\",\"nature\":\"synthetic\",\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\",\"version\":\"v1\"},\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"schema_version\":\"wave22-synthetic-professional-publication-v1\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\",\"visibility\":\"product\"}"
+        },
+        {
+          "artifact_id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "expected_revision": 1,
+          "line": 4,
+          "quote": "{\"fact\":{\"approval\":{\"approved_by\":\"Root controlled local synthetic publisher; no production grant\",\"external_id\":\"wave22-195d6eae-9df7-4e94-a6ba-3114b3303873-maker-manufacturing-qualification\",\"issued_at\":\"2026-10-03T18:31:20.710982+00:00\",\"system\":\"wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873\",\"version\":\"v1\"},\"external_id\":\"wave22-195d6eae-9df7-4e94-a6ba-3114b3303873-maker-manufacturing-qualification\",\"kind\":\"qualification\",\"operations\":[\"build.manufacturing.authorize\",\"build.sample.readiness.record\",\"build.start\",\"verification.handoff.offer\"],\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"purposes\":[\"内部共享三人调查：独立单模穴A尺寸复测（合成）\"],\"reason\":\"New shared-case synthetic duty/qualification; old scopes retained\",\"role\":\"manufacturing\",\"state\":\"active\",\"subject_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"valid_from\":\"2026-10-03T18:30:20.710982+00:00\",\"valid_until\":\"2026-10-05T18:22:48.865992+00:00\"},\"issuer\":{\"key\":\"wave22-professional-195d6eae-9df7-4e94-a6ba-3114b3303873\",\"nature\":\"synthetic\",\"product_id\":\"c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff\",\"project_id\":\"760bcf34-f903-47ed-86d8-1b2d246cdbf0\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\",\"version\":\"v1\"},\"publisher_id\":\"c5535eca-59be-4684-975f-4858722b6e2f\",\"schema_version\":\"wave22-synthetic-professional-publication-v1\",\"tenant_id\":\"1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b\",\"visibility\":\"product\"}"
+        }
+      ],
+      "snapshot_sha256": "7727a935682bab4c4cfe63e41de6b382950ee0ce49698db9505f86745151ed3c",
+      "created_at": null,
+      "source_status": "current",
+      "server_on_save": [
+        "created_at"
+      ],
+      "execution_scope": {
+        "site": "wave22-internal-lab-eb2c84ee-197d-43bf-9f93-6ea671f2ca6a",
+        "unit": "ea",
+        "purpose": "内部共享三人调查：独立单模穴A尺寸复测（合成）",
+        "quantity": "2",
+        "window_end": "2026-10-04T02:34:51.575100Z",
+        "window_start": "2026-10-03T18:34:51.575100Z",
+        "window_timezone": "UTC"
+      }
+    },
+    "reason": "本次固定内部合成调查的具名manufacturing专业判断与四项控制；不授真实生产/测试/外发资格。"
+  },
+  "review_digest": "c03f602f5079ba5cbf770ecdb541cc6aa66d3e0273cd099c8a56d2044c327659",
+  "scope": "Exact local synthetic manufacturing approval; real production not authorized"
+}

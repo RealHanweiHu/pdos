@@ -1,0 +1,16 @@
+{
+  "previous": "../owner-review/final-source-manifest.json",
+  "changed_files": [
+    "pdos-next/server/migrations/candidates/m3_preproject.py",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py",
+    "pdos-next/server/pdos_next/agent_kernel/domain_adapter.py",
+    "pdos-next/server/pdos_next/agent_kernel/execution.py",
+    "pdos-next/server/pdos_next/api.py",
+    "pdos-next/server/pdos_next/domain/preproject/materialize.py",
+    "pdos-next/server/pdos_next/domain/preproject/service.py",
+    "pdos-next/server/pdos_next/service.py",
+    "pdos-next/server/tests/preproject/test_review_fixes.py",
+    "pdos-next/tools/m3_early_environment.py"
+  ],
+  "previous_candidate_is_historical": true
+}

@@ -1,0 +1,11 @@
+{
+  "status": "PASS_ACTUAL_MANUFACTURING_DRAFT_CURRENT_UNKNOWN_AND_ROLLBACK",
+  "exit_code": 0,
+  "source_manifest_sha256": "3770d877acc50bcc20175c625e3a79fbfe3f116fe9eb021a71e3d53d7f97d44b",
+  "explicit_target": "127.0.0.1:63866/pdos_test",
+  "marker": "20a17344-1e35-42e1-95ab-e100e56e9d88",
+  "final_head": "next_0029",
+  "synthetic_only": true,
+  "real_manufacturing_qualification_or_release": false,
+  "repository_tests_on_retained_shared_target": false
+}

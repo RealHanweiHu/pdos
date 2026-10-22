@@ -1,0 +1,50 @@
+[
+  {
+    "name": "cold-import",
+    "command": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+      "-B",
+      "-c",
+      "import sys; from pdos_next.engines.derivation import three_way, accept_changes; assert not any(n == 'app' or n.startswith('app.') or n in {'pdos_next.models','pdos_next.service','pdos_next.api','pdos_next.runtime','sqlalchemy'} for n in sys.modules); print('Independent import passed; no business/runtime/database modules')"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "pytest",
+    "command": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+      "-B",
+      "-m",
+      "pytest",
+      "tests/derivation_engine",
+      "--confcutdir=tests/derivation_engine",
+      "-o",
+      "cache_dir=/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-derivation-20261002/.pytest-cache",
+      "-q"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "ruff",
+    "command": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+      "check",
+      "--no-cache",
+      "pdos_next/engines/derivation",
+      "tests/derivation_engine"
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "format",
+    "command": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+      "format",
+      "--check",
+      "--no-cache",
+      "pdos_next/engines/derivation",
+      "tests/derivation_engine"
+    ],
+    "exit_code": 0
+  }
+]

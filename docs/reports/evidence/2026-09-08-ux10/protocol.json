@@ -1,0 +1,20 @@
+{
+  "version": "ux10-engineering-v1",
+  "scope": "Local synthetic engineering validation; not a production or pilot exit",
+  "pages": ["my-work", "projects?project=<dataset.projects[0].id>&tab=overview", "ai-review?finding=<dataset.projects[0].finding_id>"],
+  "primary_viewport": {"width": 1440, "height": 900},
+  "visual_viewports": [{"width":390,"height":844},{"width":320,"height":568}],
+  "navigation": "Full document navigation from about:blank, authenticated synthetic owner",
+  "start": "performance timeOrigin (navigation start)",
+  "end": "Expected business data, enabled primary control, successful required API responses, then two animation frames",
+  "warm_cache": "Same context; two excluded warmups per route, then 30 recorded navigations",
+  "cold_cache": "New context with restored test login per navigation; 30 recorded navigations",
+  "p95": "Nearest rank: sorted ceil(0.95 * 30), i.e. 29th observation",
+  "failures": "Retained as failures with 10000 ms measurement cap; never replace failed samples",
+  "target_ms": 1500,
+  "network": "Loopback without artificial throttling",
+  "cpu": "Native host without artificial throttling",
+  "viewport_check": "Record primary business/control intersection with viewport without scrolling",
+  "build": "Next.js 16.3 standalone production build with Webpack",
+  "outbound": "Disabled; no LLM calls or background reminder scan"
+}

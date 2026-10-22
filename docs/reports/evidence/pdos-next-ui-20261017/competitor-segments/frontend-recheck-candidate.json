@@ -1,0 +1,8 @@
+{
+  "source_sha256": {
+    "src/components/preproject/competitor-segments.tsx": "639ca6c0fe3687312bc24a0422dfe919e4cab3b7a3c7cb4a72d1b483ec3c0c03",
+    "src/components/preproject/competitor-segments.test.mjs": "69905aba86c139de65962af28d27aee962c9b17dc23419d10f355e4eb911472d",
+    "src/lib/competitor-segments.ts": "0dc15f2f1aaf9f97ac58c4bb4aebfaf8266996fcea752c2ef6eeab8f09f164a3"
+  },
+  "exit_code": 0
+}

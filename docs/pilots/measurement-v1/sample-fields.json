@@ -1,0 +1,84 @@
+{
+  "version": "1.0.0-draft.1",
+  "status": "logical_capture_contract_not_instrumentation",
+  "groups": {
+    "identity_scope": {
+      "sample_id": "唯一不可复用标识",
+      "sample_revision": "不可变修订号；纠错新版本保留前版",
+      "protocol_id_version": "使用前登记的协议ID/版本",
+      "evidence_kind": "real_business / controlled_replay / synthetic；禁止混汇",
+      "pilot_id": "D14-04 / D14-02 / 第二类型独立登记",
+      "tenant_scope_ref": "授权系统内范围引用；仓库不放敏感正文",
+      "participant_refs": "真实参与者受控引用数组，保留distinct人数",
+      "role_ids": "本次实际履行职责，可多角色但不能虚增人数",
+      "scenario_id": "pilot-register场景ID",
+      "source_refs": "原材料版本/digest/定位/许可用途/处理环境引用"
+    },
+    "comparison": {
+      "task_id": "真实工作包ID；重试不得算新任务",
+      "task_pair_id": "无AI/辅助匹配任务对ID，未配对null",
+      "mode": "baseline_without_ai / assisted / offline_ablation",
+      "order": "办理顺序及既往材料接触，标记学习污染",
+      "matching_basis": "目标/复杂度/资料完整度/验收标准一致性的核对依据",
+      "first_use": "是否首次使用；学习时长不能移出总时间",
+      "complexity_stratum": "预注册任务复杂度层，看到结果后不得改层",
+      "workflow_version": "实际流程/页面版本",
+      "runtime_bundle_ref": "实际模型/工具/预算/上下文版本；未调用为null"
+    },
+    "activity_segments": {
+      "segment_id": "去重标识",
+      "participant_ref": "活动实际执行人受控引用",
+      "phase": "prepare / learn / input / review / correct / clarify / execute / handoff / receive / passive_wait",
+      "start_at": "带时区时间戳",
+      "end_at": "带时区时间戳；未结束null",
+      "related_object_ref": "本段实际任务/轮次/资料定位",
+      "capture_method": "参与者计时 / 观察核对 / 授权系统事件；事件间隔不自动等于主动操作",
+      "participant_verified": "本人或授权观察核对，未核对为false；不能猜缺段为0"
+    },
+    "outcome": {
+      "started_at": "真实开始，UTC保存",
+      "ended_at": "已终止时刻；未完成null",
+      "as_of": "本次观察截点",
+      "terminal_state": "completed / failed / cancelled / incomplete",
+      "delivery_ref": "实际交付版本",
+      "receiver_ref": "真实下游接收人；空缺不算接收通过",
+      "reception_round": "实际接收轮次",
+      "reception_decision": "accepted / returned / pending / not_applicable",
+      "reception_evidence_ref": "裁决及理由/输入版本引用",
+      "duplicate_entry_count": "重复写同一来源事实次数；未知null",
+      "clarification_round_count": "独立追问轮次；未知null",
+      "omission_rework_count": "专业核实遗漏返工次数；未知null",
+      "false_block_count": "专业核实错误阻塞次数；未知null",
+      "notification_feedback_refs": "收件人对独立通知的分类引用；无反馈不当噪声",
+      "actual_recovery_evidence_ref": "实际恢复与验证，不是建议生成"
+    },
+    "quality_accounting": {
+      "metric_definition_versions": "本次计算所用指标版本",
+      "population_ids_digest": "预注册纳入总体ID集合摘要及有权查询引用",
+      "numerator": "真实满足项数/值，未知null",
+      "denominator": "完整分母或总体数，0不替换1",
+      "sample_count": "有效观察数；同时另列任务/人数/轮次数",
+      "missing_count": "缺关键字段或未判定数",
+      "excluded_count": "有预注册理由的排除数",
+      "exclusion_reasons": "每条排除ID与规则引用",
+      "result_status": "observed / not_applicable / incomplete / not_assessed",
+      "threshold_version": "获批阈值引用，未冻结null",
+      "result_evidence_refs": "可复算明细/来源/核对人/计算版本",
+      "model_cost": "未知null；币种、来源、费用版本单列",
+      "input_output_tokens": "实际报告usage，未知null；包括失败/重试可确认部分"
+    }
+  },
+  "invariants": [
+    "未经授权不采集人员活动",
+    "同一人的活动重叠取并集，跨人相加",
+    "未知null与真实0分开",
+    "基线或辅助缺必要段不计算节省",
+    "真正的独立员工人数来自受控映射，不数role或化名",
+    "失败/等待/未接收保留分母或删失明细",
+    "replay/synthetic不进入真实员工收益",
+    "来源当前ACL适用于明细和汇总披露",
+    "回填新版本不覆盖旧测量",
+    "不使用采样登记作为业务批准"
+  ],
+  "observations": []
+}

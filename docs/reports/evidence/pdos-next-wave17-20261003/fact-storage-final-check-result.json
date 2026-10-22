@@ -1,0 +1,45 @@
+{
+  "source_manifest": "fact-storage-final-source-manifest.json",
+  "source_manifest_sha256": "1ff2e4ef47ea96c8b295e675b60cb091369c54389297f9c51502f775c21ec44f",
+  "source_files": {
+    "pdos-next/staging/wave17/fact_storage_models.py": "c5e19ebd676ebca70421897a2ada1e3214d6fd1d6e7905bdb9a57d7be39f9a56",
+    "pdos-next/staging/wave17/fact_storage_codec.py": "962a7ad94babe6a5a4552d85dffa993cf0d8271e9ae49d4338f6ebf05fa835cf",
+    "pdos-next/staging/wave17/test_fact_storage_codec.py": "6b7e124d5b01d06896fabc129b51160da96d96261779975a5cf9027e478d0726",
+    "pdos-next/staging/wave17/fact-storage-contract.md": "eb020013ea6f10c7ca8ee6959bc361ef878679317fe1ea485d9a5a6c6e9f9f85"
+  },
+  "checks": {
+    "format": {
+      "exit_code": 0
+    },
+    "ruff": {
+      "exit_code": 0
+    },
+    "owned_pure": {
+      "exit_code": 0,
+      "passed": 38,
+      "seconds": 2.13,
+      "command": "PYTHONPATH=pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/staging/wave17/test_fact_storage_codec.py -q"
+    },
+    "ast_in_memory_compile": {
+      "exit_code": 0,
+      "files": 3
+    }
+  },
+  "raw_logs": {
+    "fact-storage-format-final.log": "44b7183e1f210a4817679f52d6f965f5de6331fb1c9174e863b4b0fc479a3e24",
+    "fact-storage-ruff-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "fact-storage-pure-tests-final.log": "0e3c34883901a5f33b5db27f12e9f6b4ca533f5f20626c63bff6743baa678690",
+    "fact-storage-ast-final.log": "5e5830606f4f23118f26e694a1be2c496ce617817c680a26c9ef930ed42332a1"
+  },
+  "prior_failure_evidence": [
+    "fact-storage-initial-check.json",
+    "fact-storage-pure-tests-v1.log",
+    "fact-storage-ruff-fix-v1.log"
+  ],
+  "limitations": [
+    "Only synthetic structural atom inputs; no actual consumed or committed provenance",
+    "Five-table DDL compiles offline; no SQL/DB/trigger/RLS validation",
+    "Current CAS/immutability/proof reciprocal guards/Confirmation composite parent unique must be supplied by Root",
+    "No server/web/model registration/migration/permissions/real qualification or public workflow enabled"
+  ]
+}

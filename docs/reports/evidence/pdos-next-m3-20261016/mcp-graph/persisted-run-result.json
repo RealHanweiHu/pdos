@@ -1,0 +1,50 @@
+{
+  "checked_at": "2026-10-16T22:20:30.525593+00:00",
+  "target": "verified independent 64245/pdos_test",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "schema_head": "s0_0770",
+  "run_id": "33ad8faa-b6e2-4c65-8dd8-4df1b4ab6e2f",
+  "run_state": "completed",
+  "model_calls_by_isolation": {
+    "mcp": 2,
+    "main": 3
+  },
+  "actual_model_ledger_records": 5,
+  "child_read_ledger_records": 1,
+  "network_dispatch_ledger_records": 1,
+  "parent_read_call_id": "208c5be0-25de-46c7-b483-08fd3da56da8",
+  "dispatch_parent_binding_matches": true,
+  "main_result": {
+    "rows": [
+      {
+        "end": 159,
+        "text": "合成事实值",
+        "quote": "synthetic factual value",
+        "start": 136
+      }
+    ],
+    "tool": "lookup",
+    "taint": "external_untrusted",
+    "job_id": "961adc45-7f56-5f24-b8fa-efed7b36cca5",
+    "call_id": "3c7d9d4a-45d7-4f0b-850f-ba2c53140514",
+    "grant_ids": [
+      "a2c0cc5a-13a5-4fee-9a97-25b9de47c81d"
+    ],
+    "raw_digest": "c7552164a7280baae6ccde7259ce352d3f97674dbd4413cc4afdaecfdc6dbd08",
+    "connector_id": "5bbdd28a-3cab-49d2-a3f1-18d6b6fbfc1e",
+    "grant_versions": {
+      "a2c0cc5a-13a5-4fee-9a97-25b9de47c81d": 1
+    },
+    "connector_revision": 1
+  },
+  "used_tokens": 75,
+  "synthetic_budget_only": true,
+  "t0_qualification_granted": false,
+  "synthetic_management_control_records": 2,
+  "raw_instruction_isolated": true,
+  "credential_echo_redacted_before_child": true,
+  "real_external_mcp_calls": 0,
+  "real_model_calls": 0,
+  "real_kms_calls": 0,
+  "source_of_synthetic_network_count": "final-admission-increment.log asserts exactly one transport call per successful/recovered read"
+}

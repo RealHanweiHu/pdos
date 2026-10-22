@@ -1,0 +1,248 @@
+F
+=================================== FAILURES ===================================
+_ test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0] _
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': 'b030acdc-d730-40cf-8819-f83b97f55858', 'project': ...22-ba51-31a19c21922f', 'expected_issue_revision': 4, 'approval_token': '[TOKEN_REDACTED]'}})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10becc500>
+
+    @pytest.mark.parametrize("launch_work", [{"window_minutes": 45, "fact_minutes": 60}], indirect=True)
+    def test_completed_approved_actions_create_new_actual_build_samples_request_and_run(
+        quality_work, monkeypatch
+    ):
+        work = quality_work
+        continuation_people(work)
+        original_failure = deepcopy(work.failure_run.model_dump(mode="json"))
+        original_result_id = work.failure_run_version_id
+        with ExitStack() as cleanup:
+    
+            def continue_round(fixed, basis, implementations, engineering, manufacturing):
+                return next_round.continue_after_implementations(
+                    fixed,
+                    basis,
+                    implementations,
+                    engineering,
+                    manufacturing,
+                    monkeypatch,
+                    cleanup=cleanup,
+                    executor=fixed.setup,
+                    test_executor=fixed.retest_executor,
+                    independent_reviewer=fixed.independent_reviewer,
+                    test_person_resource=fixed.retest_person_resource,
+                    raw_value="10.0000",
+                )
+    
+>           continued = upstream.run_approved_configuration_implementations(
+                work, after_issue=named_root_cause, continuation=continue_round
+            )
+
+tests/change_execution/test_approved_configuration_continuation_chain.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/change_execution/test_approved_configuration_implementation_chain.py:627: in run_approved_configuration_implementations
+    return continuation(
+tests/change_execution/test_approved_configuration_continuation_chain.py:179: in continue_round
+    return next_round.continue_after_implementations(
+tests/change_execution/approved_configuration_continuation_helpers.py:885: in continue_after_implementations
+    completed = complete_implemented_actions(work, basis, implementations, executor=executor)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/change_execution/approved_configuration_continuation_helpers.py:196: in complete_implemented_actions
+    value = followup.command(
+tests/quality_followup_transactions/fixtures.py:137: in command
+    response = work.quality.client.post(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx2/_client.py:1204: in post
+    return self.request(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/routing.py:1310: in handle
+    await super().handle(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/routing.py:282: in handle
+    await self.app(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+pdos_next/quality_followup_api.py:68: in followup_inputs
+    return jsonable_encoder(handler.inputs(s, ctx, product_id, data))
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/quality_followup/service.py:608: in inputs
+    bound = _load(s, ctx, command, product, payload, require_reads=False)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/quality_followup/service.py:368: in _load
+    assessed = _assessment(
+pdos_next/domain/quality_followup/service.py:239: in _assessment
+    value = callback(
+pdos_next/change_completion_adapter.py:159: in __call__
+    selected = self.action_intent.read(
+pdos_next/change_controlled_owner.py:876: in read
+    digest(handle.__dict__),
+    ^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/change_control/rules.py:77: in digest
+    json.dumps(
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/json/encoder.py:258: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x12cce0320>
+o = UUID('47f27e8a-8710-4f7b-9f8e-411e55d39915')
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type UUID is not JSON serializable
+
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/json/encoder.py:180: TypeError
+=============================== warnings summary ===============================
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-asyjqpan/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-asyjqpan/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-asyjqpan/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-asyjqpan/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-asyjqpan/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-asyjqpan/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-asyjqpan/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-asyjqpan/pdos-next/server/pdos_next/change_controlled_owner.py:770: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # BEFORE Current target guard, never a commit/second Receipt.
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-asyjqpan/pdos-next/server/pdos_next/domain/change_coverage_owner/importer.py:368: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([fact])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-asyjqpan/pdos-next/server/pdos_next/service.py:1164: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-asyjqpan/pdos-next/server/pdos_next/change_order_service.py:1012: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Actual candidate trigger validates parent before pointer flush.
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-asyjqpan/pdos-next/server/pdos_next/change_implementation_owner.py:616: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([result])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 20 warnings in 663.03s (0:11:03)

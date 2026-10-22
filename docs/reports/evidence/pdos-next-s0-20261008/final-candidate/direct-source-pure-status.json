@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "child_reaped": true,
+  "source_sha256": {
+    "pdos-next/server/pdos_next/source_current.py": "bbeadd7f0e01ecdf66478441f2ba5fae94836dd6517c3c313c945250841a2299",
+    "pdos-next/server/tests/test_source_current.py": "8908c3ab716c57f6888983eb755350c7cc975749234a924d9f500d5bb998d0ba"
+  },
+  "source_unchanged": true
+}

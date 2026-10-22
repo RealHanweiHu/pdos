@@ -1,0 +1,22 @@
+{
+  "status": "PASS_NODE_SUMMARY_REINTERPRETATION_ONLY",
+  "summary": {
+    "tests": 39,
+    "pass": 39,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "todo": 0
+  },
+  "raw_sha256": "ad2c069a598bc3e668381a8ad5ce32b0e678ea87a74a809117094048d036e053",
+  "original_failure_sha256": "7561dc44d0d9027e53cff4cab8e279635a76b1879bf2e93063fd0d37df68ba92",
+  "type_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "lint_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "actual_expected_source_still_matches": true,
+  "original_child_exit_code_not_preserved_by_v1": true,
+  "type_lint_pass_evidence": "existing empty logs and v1 control flow reaching helper invocation; not rerun",
+  "helper_rerun": false,
+  "type_lint_rerun": false,
+  "browser_http_db_build": false,
+  "historical_39_not_added": true
+}

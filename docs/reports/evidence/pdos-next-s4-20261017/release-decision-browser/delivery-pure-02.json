@@ -1,0 +1,60 @@
+{
+  "base_commit": "dab6b64e8c47f88377dec3e45b2981bd6094b548",
+  "snapshot": "/private/tmp/pdos-release-decision-browser-delivery-1iz8zmdc",
+  "started_at": "2026-10-17T23:07:32.995877+00:00",
+  "finished_at": "2026-10-17T23:07:37.686808+00:00",
+  "overlay": [
+    {
+      "path": "pdos-next/server/tests/release_policy_transactions/test_decisions.py",
+      "sha256": "0784cec05e0ef9d21f27a14e1ef492d15b717518287db00a23cca75e23439112",
+      "mode": "full_owned_file"
+    },
+    {
+      "path": "pdos-next/server/tests/release_policy_browser_seed/__init__.py",
+      "sha256": "df30f4cf544638006fa6a08400e747026230136c2259d1dbb4b4f629979a4a03",
+      "mode": "full_owned_file"
+    },
+    {
+      "path": "pdos-next/server/tests/release_policy_browser_seed/harness.py",
+      "sha256": "a1ee773a9b1691e7fcc0eebafec3088e9283ab85b97811e41309958e200c60a0",
+      "mode": "full_owned_file"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/release/rules.py",
+      "sha256": "db34572764bc36c71e83db5bcd0b4e6278f7f438fd9a283c5a84c6e3d84246ea",
+      "mode": "full_owned_file"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/release/policy_rules.py",
+      "sha256": "368897706d1c0bea15e966b8ddc9faa6865659a1d7f28c1606c1e9ddb8da4d25",
+      "mode": "full_owned_file"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/release/policy_owner.py",
+      "sha256": "82d7f029a265f53031c0ccd27dddb7352a27a9bd381433aaa57ed1ff46bff5be",
+      "mode": "full_owned_file"
+    },
+    {
+      "path": "pdos-next/server/tests/release/test_rules.py",
+      "sha256": "e156703f07b63fc17d6f5b014565f487ecdc4fcf01b050678ff43b28e2d38379",
+      "mode": "full_owned_file"
+    },
+    {
+      "path": "pdos-next/server/tests/release/test_policy_rules.py",
+      "sha256": "076db3f54b59d26760259f8369eca782a9cae2a349d32e874869a6753415b2b1",
+      "mode": "full_owned_file"
+    }
+  ],
+  "command": [
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider",
+    "tests/release"
+  ],
+  "exit": 0,
+  "foreign_context_removed": true,
+  "database_connections": 0
+}

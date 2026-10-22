@@ -1,0 +1,23 @@
+{
+  "head": "s0_0790",
+  "fulfillment_facts": 1,
+  "review_revision": 1,
+  "state": "fulfilled",
+  "task_unchanged": {
+    "revision": 5,
+    "state": "submitted"
+  },
+  "promise_unchanged": {
+    "revision": 1,
+    "promised_at": null
+  },
+  "receipt_id": "bee9767f-413c-4590-9a66-393080593a88",
+  "same_common_group_counts": {
+    "action_receipts": 1,
+    "audit_entries": 1,
+    "outbox_events": 1,
+    "request_keys": 1
+  },
+  "real_model_calls": 0,
+  "performance_acceptance": false
+}

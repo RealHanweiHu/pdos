@@ -1,0 +1,93 @@
+{
+  "version": "project-build-readiness-historical-read-manifest/v1",
+  "status": "prepared_only_not_executed",
+  "source_nature": "Three distinct Build DTOs from existing historical actual synthetic HTTP exports; no new transport",
+  "records": [
+    {
+      "source_index": "project-builds/builds/items/0",
+      "input": "docs/reports/evidence/pdos-next-ui-20261017/project-builds/pg-http-response.json",
+      "input_sha256": "add0f19f8186a839ad986cd8eca1acd11f7b0d27554fb3a64e04881d60f670cd",
+      "original_json_pointer": "/builds/items/0",
+      "original_build_id": "18fb2317-b390-4d29-9eac-a7de6a32f4cf",
+      "original_build_revision": 1,
+      "original_build_sha256_json_serialized": "0b11853fea7f247f763476a708e5701feb3949f5836cc88554992d0e1df0a096",
+      "original_readiness_id": "9b94f5df-61ea-455f-8197-018100c86d28",
+      "original_readiness_sha256_json_serialized": "1701ba05fca7e7552b82ed5bd8643d894a17b21c6f27cb3533239eceb60f61bd",
+      "scope": {
+        "categoryId": "1840eff2-d4de-4085-b52e-682112757d75",
+        "productId": "888b76dd-d4e1-475d-b5b5-fae9a637f9f2",
+        "projectId": "98801941-67b8-4da4-9bab-fdd8170d6de4"
+      },
+      "scope_origin": "Historical export scope; original test builds helper scope and ok(status=200) assertion; raw export has no route/status wrapper",
+      "readiness_present": true,
+      "historical_only": true
+    },
+    {
+      "source_index": "build-output/reads/project_builds/body/items/0",
+      "input": "docs/reports/evidence/pdos-next-ui-20261018/build-output/pg-http-responses.json",
+      "input_sha256": "a9580b9536c30ea1e62083fbc24fb0e47cd52a4d3f61f61cf1b85b14fda6cee6",
+      "original_json_pointer": "/reads/project_builds/body/items/0",
+      "original_build_id": "805baeb1-0b31-4f7f-9814-b144545d4bb5",
+      "original_build_revision": 1,
+      "original_build_sha256_json_serialized": "2ea65db5205800f88b751f40e7c38d13819dbbb996303a4df2df1cbebd5d8b01",
+      "original_readiness_id": null,
+      "original_readiness_sha256_json_serialized": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "scope": {
+        "categoryId": "5ff2c048-df46-4e22-b7d0-a633ed1a2bdc",
+        "productId": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+        "projectId": "19bce1e2-344a-452c-a7eb-81ddf551a728"
+      },
+      "scope_origin": "Exact original exported request params.project_id and project_id",
+      "readiness_present": false,
+      "historical_only": true,
+      "original_transport": {
+        "route": "/v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds",
+        "params": {
+          "project_id": "19bce1e2-344a-452c-a7eb-81ddf551a728"
+        },
+        "status_code": 200
+      }
+    },
+    {
+      "source_index": "build-output/reads/other_project_builds/body/items/0",
+      "input": "docs/reports/evidence/pdos-next-ui-20261018/build-output/pg-http-responses.json",
+      "input_sha256": "a9580b9536c30ea1e62083fbc24fb0e47cd52a4d3f61f61cf1b85b14fda6cee6",
+      "original_json_pointer": "/reads/other_project_builds/body/items/0",
+      "original_build_id": "db94591a-1376-4de7-a944-6502389ca84a",
+      "original_build_revision": 1,
+      "original_build_sha256_json_serialized": "e3a6658381ffb8cb38ff60aaa0261564fce720355e8129254d420138e0a00674",
+      "original_readiness_id": null,
+      "original_readiness_sha256_json_serialized": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "scope": {
+        "categoryId": "5ff2c048-df46-4e22-b7d0-a633ed1a2bdc",
+        "productId": "1ef49f91-338b-45c9-8b3b-912abc5847cf",
+        "projectId": "ff0ceba7-3583-4d72-8e11-317984adea00"
+      },
+      "scope_origin": "Exact original exported request params.project_id and other_project_id",
+      "readiness_present": false,
+      "historical_only": true,
+      "original_transport": {
+        "route": "/v1/categories/5ff2c048-df46-4e22-b7d0-a633ed1a2bdc/products/1ef49f91-338b-45c9-8b3b-912abc5847cf/builds",
+        "params": {
+          "project_id": "ff0ceba7-3583-4d72-8e11-317984adea00"
+        },
+        "status_code": 200
+      }
+    }
+  ],
+  "counts": {
+    "distinct_original_build_dtos": 3,
+    "distinct_nonnull_readiness": 1,
+    "distinct_null_readiness": 2,
+    "historical_original_build_reads_reused": 3,
+    "new_http_requests": 0,
+    "new_database_operations": 0,
+    "pure_component_ssr_executed_by_preparer": 0
+  },
+  "limitations": [
+    "The primary historical export lacks route/status fields; no new route/status is manufactured",
+    "Two null readiness rows supplement shape and empty rendering only; no current ACL or business qualification verification",
+    "JSON digest serializes original values only; complete input file digests preserve original bytes",
+    "No helper execution, database, HTTP, BFF, browser, credentials, migration, model or external send"
+  ]
+}

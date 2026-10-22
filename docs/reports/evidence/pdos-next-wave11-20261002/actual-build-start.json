@@ -1,0 +1,4178 @@
+{
+  "assessments": [
+    {
+      "id": "03fb8684-6e01-570f-bbba-911f7ba1e282",
+      "build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+      "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+      "engineering_configuration_id": "3693f534-e459-479f-95af-c24f62de0d1d",
+      "manufacturing_configuration_id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+      "revision": 1,
+      "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+      "visibility": "private",
+      "status": "UNKNOWN",
+      "required_source_read_set": [
+        {
+          "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+          "expected_revision": 1
+        }
+      ],
+      "reason": "本地合成演练：核对同一固定需求、受控操作事实和完整执行窗口，未知专业项待分别具名评审。",
+      "build_revision": 1,
+      "engineering_configuration_revision": 1,
+      "manufacturing_configuration_revision": 1,
+      "previous_assessment_id": null,
+      "previous_revision": null,
+      "execution_scope": {
+        "site": "SYN-INTERNAL-LAB",
+        "unit": "ea",
+        "purpose": "Verify preparation",
+        "quantity": "10",
+        "window_end": "2026-10-03T00:10:00.701382Z",
+        "window_start": "2026-10-02T18:05:00.701382Z",
+        "window_timezone": "UTC"
+      },
+      "result": {
+        "scope": {
+          "site": "SYN-INTERNAL-LAB",
+          "unit": "ea",
+          "window": {
+            "start": "2026-10-02T18:05:00.701382Z",
+            "finish": "2026-10-03T00:10:00.701382Z",
+            "original_timezone": "UTC"
+          },
+          "purpose": "Verify preparation",
+          "quantity": "10"
+        },
+        "state": "UNKNOWN",
+        "checks": [
+          {
+            "code": "fixed_plan_bound",
+            "detail": "服务器已核对固定计划双配置和全部数量。",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "binding",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "operational_validity",
+            "detail": "事实覆盖本次完整执行区间。",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "authority",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "material_candidate_complete",
+            "detail": "完整库存范围的候选可覆盖同次固定需求，开工提交时须实际保留。",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "materials",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "supply"
+          },
+          {
+            "code": "acceptance_valid",
+            "detail": "Named fact covers full execution",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "resources",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "calibration_valid",
+            "detail": "Named fact covers full execution",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "resources",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "capacity_available",
+            "detail": "Capacity checked; this is not a reservation",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "resources",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "ACTUAL_CONFIGURATION_MATCH",
+            "detail": "当前已记录实际配置未偏离固定计划。",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "configuration",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "product_definition_applicability",
+            "detail": "等待固定用途与执行范围的具名专业评审。",
+            "source": [],
+            "status": "UNKNOWN",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "product_verification",
+            "freshness": "not_reviewed",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "engineering"
+          },
+          {
+            "code": "verification_objective_applicability",
+            "detail": "等待固定用途与执行范围的具名专业评审。",
+            "source": [],
+            "status": "UNKNOWN",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "product_verification",
+            "freshness": "not_reviewed",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "engineering"
+          },
+          {
+            "code": "process_configuration_applicability",
+            "detail": "等待固定用途与执行范围的具名专业评审。",
+            "source": [],
+            "status": "UNKNOWN",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "manufacturing_applicability",
+            "freshness": "not_reviewed",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "output_disposition_applicability",
+            "detail": "等待固定用途与执行范围的具名专业评审。",
+            "source": [],
+            "status": "UNKNOWN",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "delivery_applicability",
+            "freshness": "not_reviewed",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "TEST_RUN_METHOD_OUTSIDE_MANUFACTURING_SCOPE",
+            "detail": "本固定模板仅制造试制，不启动TestRun或确认样件测试资格。",
+            "source": [
+              {
+                "id": "internal-build-manufacturing.v1",
+                "kind": "server_rule"
+              }
+            ],
+            "status": "NOT_APPLICABLE",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "product_verification",
+            "freshness": "fixed_server_rule",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "engineering"
+          },
+          {
+            "code": "EXTERNAL_DELIVERY_OUTSIDE_MANUFACTURING_SCOPE",
+            "detail": "本固定模板不批准真实外部交付、客户接收或正式外发。",
+            "source": [
+              {
+                "id": "internal-build-manufacturing.v1",
+                "kind": "server_rule"
+              }
+            ],
+            "status": "NOT_APPLICABLE",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "delivery_applicability",
+            "freshness": "fixed_server_rule",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          }
+        ],
+        "nature": "synthetic",
+        "binding": {
+          "basis": {
+            "bom": {
+              "ref": {
+                "state": "current",
+                "sha256": "cd542224dc84b3c7ce826a8b9a5d8c95e19dc6013e10337dd3cc16d5d4f20c6b",
+                "version": "1",
+                "source_id": "bom:fb75a322-3bd6-485f-be3f-bf8f442223b2",
+                "captured_at": "2026-10-02T18:09:59.003787Z",
+                "valid_until": null
+              },
+              "items": [
+                {
+                  "unit": "ea",
+                  "item_id": "motor",
+                  "critical": true,
+                  "loss_rate": "0.1",
+                  "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                  "parent_item_id": null,
+                  "supply_required": true,
+                  "quantity_per_parent": "2"
+                }
+              ],
+              "engineering_configuration": {
+                "state": "current",
+                "sha256": "6e9984da9b012b59750698eeaab7f58a2b4e4ce7145902c5382c5bf1c2d56b54",
+                "version": "1",
+                "source_id": "configuration:3693f534-e459-479f-95af-c24f62de0d1d",
+                "captured_at": "2026-10-02T18:09:59.449245Z",
+                "valid_until": null
+              }
+            },
+            "build": {
+              "ref": {
+                "state": "current",
+                "sha256": "d487f4ababf8a7c69c27899a47fef3801346f8907b8f2a35eaaefc41b2e3df1c",
+                "version": "1",
+                "source_id": "build:f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                "captured_at": "2026-10-02T18:10:00.430679Z",
+                "valid_until": null
+              },
+              "build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+              "quantity": "10.00000000",
+              "product_unit": "ea"
+            },
+            "schema_version": "supply-cost-input.v1"
+          },
+          "scope": {
+            "audience": "private:0a41538d-e721-4783-866a-39c35d382eef",
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "demand": {
+            "ref": {
+              "state": "current",
+              "sha256": "4e65111cdccac674e01c40191dc19ac7a5f2e22f1cc914bdb7cac4e070619fb8",
+              "version": "1",
+              "source_id": "build-readiness:83be95f0-6227-4623-a168-be8ff1cdfc64",
+              "captured_at": "2026-10-02T18:10:00.678545Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z"
+            },
+            "lines": [
+              {
+                "unit": "ea",
+                "issues": [],
+                "item_id": "motor",
+                "ancestry": [],
+                "critical": true,
+                "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                "required_quantity": "22.000000000",
+                "quantity_per_product": "2.2"
+              }
+            ],
+            "basis_sha256": "6e3339da4376597d43d322f1fb8f05d5ba3bba47d86c1733b35c1703179fae40",
+            "manufacturing_sha256": "482801f1e09b66a7ef6c3b026d6bcf6fd61268a4a975a3191a28f9cbe5413659"
+          },
+          "source_read_set": [
+            {
+              "state": "current",
+              "sha256": "a8d690763655118384072b601f7dee80f67ddc0009e86d35075595d21dea981d",
+              "version": "1",
+              "source_id": "artifact:7e29ea9e-2686-452a-89bb-fe08bc199e45",
+              "captured_at": "2026-10-02T09:33:01.976795Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z"
+            },
+            {
+              "state": "current",
+              "sha256": "e9c775c84611994ccb49ef47b91074f288ad1b45f5a27dd3f14e482e6aa5a118",
+              "version": "1",
+              "source_id": "artifact:e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+              "captured_at": "2026-10-02T18:09:58.648409Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z"
+            }
+          ],
+          "source_read_set_complete": true,
+          "manufacturing_configuration": {
+            "state": "current",
+            "sha256": "482801f1e09b66a7ef6c3b026d6bcf6fd61268a4a975a3191a28f9cbe5413659",
+            "version": "1",
+            "source_id": "manufacturing_configuration:1fff3f50-121b-4970-a26d-7db506dc179d",
+            "captured_at": "2026-10-02T18:09:59.729504Z",
+            "valid_until": null
+          },
+          "manufacturing_operation_ids": [
+            "assembly"
+          ]
+        },
+        "coverage": {
+          "lines": [
+            {
+              "uses": [
+                {
+                  "kind": "unreserved_candidate",
+                  "pool": {
+                    "pool_id": "SYN-PHYSICAL-POOL-1",
+                    "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                    "source_system": "SYNTHETIC-WH"
+                  },
+                  "reservation_id": null,
+                  "qualification_id": null,
+                  "quantity_in_pool_unit": "22.000000000",
+                  "quantity_in_demand_unit": "22.000000000"
+                }
+              ],
+              "demand": {
+                "unit": "ea",
+                "issues": [],
+                "item_id": "motor",
+                "ancestry": [],
+                "critical": true,
+                "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                "required_quantity": "22.000000000",
+                "quantity_per_product": "2.2"
+              },
+              "issues": [],
+              "secured_gap": "22.000000000",
+              "potential_gap": "0",
+              "secured_ready": false,
+              "potential_ready": true,
+              "known_secured_quantity": "0",
+              "known_potential_quantity": "22.000000000"
+            }
+          ],
+          "pools": [
+            {
+              "key": {
+                "pool_id": "SYN-PHYSICAL-POOL-1",
+                "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                "source_system": "SYNTHETIC-WH"
+              },
+              "unit": "ea",
+              "stage": "on_hand",
+              "issues": [],
+              "source": {
+                "state": "current",
+                "sha256": "b431aeb12f2e597a3ab0b544002bc94fc50a82ed013a136d7d822b386b8847ff",
+                "version": "1",
+                "source_id": "operational-asset:2f945cc5-9ee0-57e3-8d4f-87bc31f78bf5",
+                "captured_at": "2026-10-02T18:09:00.701382Z",
+                "valid_until": "2026-10-03T18:10:00.701382Z"
+              },
+              "quantity": "44",
+              "reserved_quantity": "0",
+              "own_secured_quantity": "0",
+              "unreserved_usable_quantity": "44"
+            }
+          ],
+          "issues": [],
+          "notice": "Snapshot calculation only; candidates do not reserve stock or approve a Build. Potential readiness/gaps describe this greedy candidate, not optimal substitution feasibility",
+          "algorithm": "fixed-bom-shared-pool.v1",
+          "input_sha256": "855ecf0e112b0f1f46590ee3089887d3b01f0cf50f84d2f99b89d47de21db03a",
+          "secured_ready": false,
+          "input_snapshot": {
+            "as_of": "2026-10-02T18:16:16.464541Z",
+            "basis": {
+              "bom": {
+                "ref": {
+                  "state": "current",
+                  "sha256": "cd542224dc84b3c7ce826a8b9a5d8c95e19dc6013e10337dd3cc16d5d4f20c6b",
+                  "version": "1",
+                  "source_id": "bom:fb75a322-3bd6-485f-be3f-bf8f442223b2",
+                  "captured_at": "2026-10-02T18:09:59.003787Z",
+                  "valid_until": null
+                },
+                "items": [
+                  {
+                    "unit": "ea",
+                    "item_id": "motor",
+                    "critical": true,
+                    "loss_rate": "0.1",
+                    "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                    "parent_item_id": null,
+                    "supply_required": true,
+                    "quantity_per_parent": "2"
+                  }
+                ],
+                "engineering_configuration": {
+                  "state": "current",
+                  "sha256": "6e9984da9b012b59750698eeaab7f58a2b4e4ce7145902c5382c5bf1c2d56b54",
+                  "version": "1",
+                  "source_id": "configuration:3693f534-e459-479f-95af-c24f62de0d1d",
+                  "captured_at": "2026-10-02T18:09:59.449245Z",
+                  "valid_until": null
+                }
+              },
+              "build": {
+                "ref": {
+                  "state": "current",
+                  "sha256": "d487f4ababf8a7c69c27899a47fef3801346f8907b8f2a35eaaefc41b2e3df1c",
+                  "version": "1",
+                  "source_id": "build:f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                  "captured_at": "2026-10-02T18:10:00.430679Z",
+                  "valid_until": null
+                },
+                "build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                "quantity": "10.00000000",
+                "product_unit": "ea"
+              },
+              "schema_version": "supply-cost-input.v1"
+            },
+            "pools": [
+              {
+                "key": {
+                  "pool_id": "SYN-PHYSICAL-POOL-1",
+                  "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                  "source_system": "SYNTHETIC-WH"
+                },
+                "ref": {
+                  "state": "current",
+                  "sha256": "b431aeb12f2e597a3ab0b544002bc94fc50a82ed013a136d7d822b386b8847ff",
+                  "version": "1",
+                  "source_id": "operational-asset:2f945cc5-9ee0-57e3-8d4f-87bc31f78bf5",
+                  "captured_at": "2026-10-02T18:09:00.701382Z",
+                  "valid_until": "2026-10-03T18:10:00.701382Z"
+                },
+                "unit": "ea",
+                "stage": "on_hand",
+                "quality": "released",
+                "quantity": "44",
+                "expected_at": null,
+                "availability": "available"
+              }
+            ],
+            "alternates": [],
+            "reservations": [],
+            "supply_snapshot": {
+              "state": "current",
+              "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+              "version": "1",
+              "source_id": "operational-fact:09648b42-730c-40a8-92ab-f274cb21ed2b",
+              "captured_at": "2026-10-02T18:10:24.142050Z",
+              "valid_until": "2026-10-03T18:10:00.701382Z"
+            },
+            "supply_scope_complete": true
+          },
+          "schema_version": "supply-coverage-result.v1",
+          "potential_ready": true,
+          "candidate_policy": "critical-then-item-primary-then-alternate.v1",
+          "critical_secured_ready": false,
+          "potential_is_feasibility_proof": false
+        },
+        "template": "internal-build-manufacturing.v1",
+        "fact_refs": [
+          {
+            "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+            "epoch": 1,
+            "nature": "synthetic",
+            "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+            "revision": 1
+          }
+        ],
+        "resources": {
+          "checks": [
+            {
+              "code": "acceptance_valid",
+              "detail": "Named fact covers full execution",
+              "source": {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "kind": "domain",
+                "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:acceptance:assembly",
+                "revision": 1
+              },
+              "status": "READY",
+              "resource": {
+                "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "kind": "equipment",
+                "revision": 1
+              }
+            },
+            {
+              "code": "calibration_valid",
+              "detail": "Named fact covers full execution",
+              "source": {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "kind": "domain",
+                "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:calibration:assembly",
+                "revision": 1
+              },
+              "status": "READY",
+              "resource": {
+                "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "kind": "equipment",
+                "revision": 1
+              }
+            },
+            {
+              "code": "capacity_available",
+              "detail": "Capacity checked; this is not a reservation",
+              "source": null,
+              "status": "READY",
+              "resource": {
+                "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "kind": "equipment",
+                "revision": 1
+              }
+            }
+          ],
+          "status": "READY",
+          "checked_at": "2026-10-02T18:16:16.464541Z",
+          "conditions": [],
+          "input_digest": "762db9f58e5bbf479401f1fe2e0637e5a371a7ab40ce02f49f6f38c9734ed337",
+          "capacity_status": "checked",
+          "fixed_resources": [
+            {
+              "ref": {
+                "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "kind": "equipment",
+                "revision": 1
+              },
+              "facts": [
+                {
+                  "kind": "acceptance",
+                  "source": {
+                    "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                    "kind": "domain",
+                    "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:acceptance:assembly",
+                    "revision": 1
+                  },
+                  "status": "accepted",
+                  "purpose": "Verify preparation",
+                  "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                  "conditions": [],
+                  "valid_from": "2026-10-01T18:10:00.701382Z",
+                  "valid_until": "2026-10-03T18:10:00.701382Z",
+                  "operation_id": "assembly",
+                  "named_decision_id": "fc0682a6-a99e-4d11-8e19-114c4f49a6b1"
+                },
+                {
+                  "kind": "calibration",
+                  "source": {
+                    "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                    "kind": "domain",
+                    "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:calibration:assembly",
+                    "revision": 1
+                  },
+                  "status": "accepted",
+                  "purpose": "Verify preparation",
+                  "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                  "conditions": [],
+                  "valid_from": "2026-10-01T18:10:00.701382Z",
+                  "valid_until": "2026-10-03T18:10:00.701382Z",
+                  "operation_id": "assembly",
+                  "named_decision_id": "db899470-aa58-49cb-a8cd-b2408b1f6c90"
+                }
+              ],
+              "scope": {
+                "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+                "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+                "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+              },
+              "source": {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "kind": "domain",
+                "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "revision": 1
+              },
+              "calendar": {
+                "weekly": [
+                  {
+                    "weekday": 0,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 1,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 2,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 3,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 4,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 5,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 6,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  }
+                ],
+                "version": "1",
+                "timezone": "UTC",
+                "exceptions": [],
+                "calendar_id": "SYN-UTC",
+                "ambiguous_time": "reject",
+                "timezone_rules_sha256": "fddce1e648a1732ac29afd9a16151b2973cdf082e7ec0c690f7e42be6b598b93"
+              },
+              "capacity": "1",
+              "purposes": [
+                "Verify preparation"
+              ],
+              "lifecycle": "active",
+              "maintenance": [],
+              "operation_ids": [
+                "assembly"
+              ],
+              "required_facts": [],
+              "calendar_source": {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "kind": "domain",
+                "position": "calendar:7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "revision": 1
+              },
+              "occupancy_revision": 1
+            }
+          ]
+        },
+        "valid_until": "2026-10-03T18:10:00.701382Z",
+        "build_revision": 1,
+        "facts_revision": "0bdaa91ab577f04e3fc8045afd2d301ae57850a95a55dab0469c867dceef6dfc",
+        "candidate_ready": true,
+        "operational_state": "READY",
+        "required_source_read_set": [
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+            "expected_revision": 1
+          }
+        ],
+        "accepted_controls_required": [
+          "no_external_delivery",
+          "no_test_run_or_sample_qualification",
+          "retain_traceable_outputs",
+          "stop_on_configuration_deviation"
+        ],
+        "actual_configuration_binding": [],
+        "engineering_configuration_id": "3693f534-e459-479f-95af-c24f62de0d1d",
+        "manufacturing_configuration_id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+        "engineering_configuration_revision": 1,
+        "manufacturing_configuration_revision": 1
+      },
+      "snapshot_sha256": "da1058b8b77b02809d3f2fd0753428702ad6e90ab34122b775f8253a145ec95c",
+      "created_at": "2026-10-02T18:16:17.170622+00:00",
+      "source_status": "current",
+      "is_current": true,
+      "expected_previous_revision": 0,
+      "exploration_boundary": {
+        "allowed": false,
+        "reason": "本版无已批准的用途限定探索例外；未知不作为通过，不支持通用绕过。",
+        "required_typed_fields": [
+          "allowed_purpose",
+          "specific_rule_ids",
+          "risk_controls",
+          "execution_limits",
+          "responsible_named_role",
+          "valid_until",
+          "exact_evidence"
+        ],
+        "non_waivable": [
+          "source_integrity_and_current_authorization",
+          "fixed_configuration_and_quantity_scope",
+          "named_professional_authority",
+          "material_identity_and_quality_release",
+          "resource_acceptance_calibration_and_qualification",
+          "complete_atomic_material_and_resource_reservation"
+        ]
+      }
+    }
+  ],
+  "current_assessment_by_build": {
+    "f59d04a9-fa77-435d-8e9d-393dc863fa95": {
+      "assessment_id": "03fb8684-6e01-570f-bbba-911f7ba1e282",
+      "revision": 1
+    }
+  },
+  "authorizations": [
+    {
+      "id": "83e57d68-81d8-50fe-a8ee-05625b29d226",
+      "build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+      "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+      "engineering_configuration_id": "3693f534-e459-479f-95af-c24f62de0d1d",
+      "manufacturing_configuration_id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+      "revision": 1,
+      "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+      "visibility": "private",
+      "status": "approved",
+      "required_source_read_set": [
+        {
+          "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+          "expected_revision": 1
+        }
+      ],
+      "reason": "本地合成演练：仅批准本专业已核对的固定内部试制范围，接受全部四项执行限制。",
+      "role": "engineering",
+      "action": "approve",
+      "previous_decision_id": null,
+      "previous_revision": null,
+      "assessment_id": "03fb8684-6e01-570f-bbba-911f7ba1e282",
+      "assessment_revision": 1,
+      "assessment_sha256": "da1058b8b77b02809d3f2fd0753428702ad6e90ab34122b775f8253a145ec95c",
+      "valid_until": "2026-10-03T01:00:00+00:00",
+      "authority_snapshot": {
+        "roles": [
+          "engineering"
+        ],
+        "scope": {
+          "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+        },
+        "purpose": "Verify preparation",
+        "fact_refs": [
+          {
+            "id": "78a79948-d9ed-4e41-b042-0125d8279bf6",
+            "kind": "qualification",
+            "role": "engineering",
+            "epoch": 1,
+            "nature": "synthetic",
+            "revision": 1,
+            "issuer_key": "local-synthetic-authority",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "1bb03838-b1c4-4a16-a286-4a6408170eb4",
+            "kind": "duty",
+            "role": "manufacturing",
+            "epoch": 1,
+            "nature": "synthetic",
+            "revision": 1,
+            "issuer_key": "local-synthetic-authority",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "ae5af540-acf4-4e80-bf9a-e5fec750521c",
+            "kind": "qualification",
+            "role": "manufacturing",
+            "epoch": 1,
+            "nature": "synthetic",
+            "revision": 1,
+            "issuer_key": "local-synthetic-authority",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "9e4cc0a9-492b-48b4-bee9-a80d3855f498",
+            "kind": "duty",
+            "role": "engineering",
+            "epoch": 1,
+            "nature": "synthetic",
+            "revision": 1,
+            "issuer_key": "local-synthetic-authority",
+            "issuer_version": "v1"
+          }
+        ],
+        "operation": "build.engineering.authorize",
+        "qualified": true,
+        "synthetic": true,
+        "authorized": true,
+        "subject_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "valid_until": "2026-10-03T18:10:24.207447+00:00",
+        "reason_codes": [],
+        "facts_revision": "978100f43d728a6afce8aa5a46f76451a0479427657b3a3ef6da6e222decd4a5",
+        "required_source_read_set": [
+          {
+            "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+            "expected_revision": 1
+          }
+        ]
+      },
+      "fact_binding": {
+        "nature": "synthetic",
+        "template": "internal-build-manufacturing.v1",
+        "fact_refs": [
+          {
+            "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+            "epoch": 1,
+            "nature": "synthetic",
+            "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+            "revision": 1
+          }
+        ],
+        "valid_until": "2026-10-03T18:10:00.701382Z",
+        "build_revision": 1,
+        "facts_revision": "0bdaa91ab577f04e3fc8045afd2d301ae57850a95a55dab0469c867dceef6dfc",
+        "accepted_controls": [
+          "no_external_delivery",
+          "no_test_run_or_sample_qualification",
+          "retain_traceable_outputs",
+          "stop_on_configuration_deviation"
+        ],
+        "professional_assessments": [
+          {
+            "reason": "合成演练：产品定义对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+            "status": "applicable",
+            "rule_id": "product_definition_applicability",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                "expected_revision": 1
+              }
+            ],
+            "valid_until": "2026-10-03T01:00:00Z"
+          },
+          {
+            "reason": "合成演练：本轮验证目标对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+            "status": "applicable",
+            "rule_id": "verification_objective_applicability",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                "expected_revision": 1
+              }
+            ],
+            "valid_until": "2026-10-03T01:00:00Z"
+          }
+        ],
+        "actual_configuration_binding": [],
+        "engineering_configuration_id": "3693f534-e459-479f-95af-c24f62de0d1d",
+        "manufacturing_configuration_id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+        "engineering_configuration_revision": 1,
+        "manufacturing_configuration_revision": 1
+      },
+      "sources": [
+        {
+          "line": 1,
+          "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+          "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+          "expected_revision": 1
+        }
+      ],
+      "snapshot_sha256": "8f783a7decf4886e3bc6e00905b4c77993f376befbbb3bf94e0aee5145b8df60",
+      "created_at": "2026-10-02T18:17:44.331232+00:00",
+      "source_status": "current",
+      "is_current": true,
+      "professional_assessments": [
+        {
+          "reason": "合成演练：产品定义对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+          "status": "applicable",
+          "rule_id": "product_definition_applicability",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+              "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+              "expected_revision": 1
+            }
+          ],
+          "valid_until": "2026-10-03T01:00:00Z"
+        },
+        {
+          "reason": "合成演练：本轮验证目标对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+          "status": "applicable",
+          "rule_id": "verification_objective_applicability",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+              "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+              "expected_revision": 1
+            }
+          ],
+          "valid_until": "2026-10-03T01:00:00Z"
+        }
+      ],
+      "accepted_controls": [
+        "no_external_delivery",
+        "no_test_run_or_sample_qualification",
+        "retain_traceable_outputs",
+        "stop_on_configuration_deviation"
+      ],
+      "expected_previous_revision": 0,
+      "execution_scope": {
+        "site": "SYN-INTERNAL-LAB",
+        "unit": "ea",
+        "purpose": "Verify preparation",
+        "quantity": "10",
+        "window_end": "2026-10-03T00:10:00.701382Z",
+        "window_start": "2026-10-02T18:05:00.701382Z",
+        "window_timezone": "UTC"
+      },
+      "expired": false
+    },
+    {
+      "id": "8ec3ad3b-bf08-52f9-8b6e-81d9cb53c16f",
+      "build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+      "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+      "engineering_configuration_id": "3693f534-e459-479f-95af-c24f62de0d1d",
+      "manufacturing_configuration_id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+      "revision": 1,
+      "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+      "visibility": "private",
+      "status": "approved",
+      "required_source_read_set": [
+        {
+          "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+          "expected_revision": 1
+        }
+      ],
+      "reason": "本地合成演练：仅批准本专业已核对的固定内部试制范围，接受全部四项执行限制。",
+      "role": "manufacturing",
+      "action": "approve",
+      "previous_decision_id": null,
+      "previous_revision": null,
+      "assessment_id": "03fb8684-6e01-570f-bbba-911f7ba1e282",
+      "assessment_revision": 1,
+      "assessment_sha256": "da1058b8b77b02809d3f2fd0753428702ad6e90ab34122b775f8253a145ec95c",
+      "valid_until": "2026-10-03T01:00:00+00:00",
+      "authority_snapshot": {
+        "roles": [
+          "manufacturing"
+        ],
+        "scope": {
+          "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+        },
+        "purpose": "Verify preparation",
+        "fact_refs": [
+          {
+            "id": "78a79948-d9ed-4e41-b042-0125d8279bf6",
+            "kind": "qualification",
+            "role": "engineering",
+            "epoch": 1,
+            "nature": "synthetic",
+            "revision": 1,
+            "issuer_key": "local-synthetic-authority",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "1bb03838-b1c4-4a16-a286-4a6408170eb4",
+            "kind": "duty",
+            "role": "manufacturing",
+            "epoch": 1,
+            "nature": "synthetic",
+            "revision": 1,
+            "issuer_key": "local-synthetic-authority",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "ae5af540-acf4-4e80-bf9a-e5fec750521c",
+            "kind": "qualification",
+            "role": "manufacturing",
+            "epoch": 1,
+            "nature": "synthetic",
+            "revision": 1,
+            "issuer_key": "local-synthetic-authority",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "9e4cc0a9-492b-48b4-bee9-a80d3855f498",
+            "kind": "duty",
+            "role": "engineering",
+            "epoch": 1,
+            "nature": "synthetic",
+            "revision": 1,
+            "issuer_key": "local-synthetic-authority",
+            "issuer_version": "v1"
+          }
+        ],
+        "operation": "build.manufacturing.authorize",
+        "qualified": true,
+        "synthetic": true,
+        "authorized": true,
+        "subject_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "valid_until": "2026-10-03T18:10:24.207447+00:00",
+        "reason_codes": [],
+        "facts_revision": "3c854e6a34e1a7de6f488ef565fd1d3255e25ab713cf063a7cd736d7993a71de",
+        "required_source_read_set": [
+          {
+            "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+            "expected_revision": 1
+          }
+        ]
+      },
+      "fact_binding": {
+        "nature": "synthetic",
+        "template": "internal-build-manufacturing.v1",
+        "fact_refs": [
+          {
+            "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+            "epoch": 1,
+            "nature": "synthetic",
+            "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+            "revision": 1
+          }
+        ],
+        "valid_until": "2026-10-03T18:10:00.701382Z",
+        "build_revision": 1,
+        "facts_revision": "0bdaa91ab577f04e3fc8045afd2d301ae57850a95a55dab0469c867dceef6dfc",
+        "accepted_controls": [
+          "no_external_delivery",
+          "no_test_run_or_sample_qualification",
+          "retain_traceable_outputs",
+          "stop_on_configuration_deviation"
+        ],
+        "professional_assessments": [
+          {
+            "reason": "合成演练：产出与异常品处置要求对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+            "status": "applicable",
+            "rule_id": "output_disposition_applicability",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                "expected_revision": 1
+              }
+            ],
+            "valid_until": "2026-10-03T01:00:00Z"
+          },
+          {
+            "reason": "合成演练：固定制造配置对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+            "status": "applicable",
+            "rule_id": "process_configuration_applicability",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                "expected_revision": 1
+              }
+            ],
+            "valid_until": "2026-10-03T01:00:00Z"
+          }
+        ],
+        "actual_configuration_binding": [],
+        "engineering_configuration_id": "3693f534-e459-479f-95af-c24f62de0d1d",
+        "manufacturing_configuration_id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+        "engineering_configuration_revision": 1,
+        "manufacturing_configuration_revision": 1
+      },
+      "sources": [
+        {
+          "line": 1,
+          "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+          "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+          "expected_revision": 1
+        }
+      ],
+      "snapshot_sha256": "0a234a83090430f7098bcaeab658195836e99157db5dd07d0006da90a86a88c3",
+      "created_at": "2026-10-02T18:18:57.197374+00:00",
+      "source_status": "current",
+      "is_current": true,
+      "professional_assessments": [
+        {
+          "reason": "合成演练：产出与异常品处置要求对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+          "status": "applicable",
+          "rule_id": "output_disposition_applicability",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+              "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+              "expected_revision": 1
+            }
+          ],
+          "valid_until": "2026-10-03T01:00:00Z"
+        },
+        {
+          "reason": "合成演练：固定制造配置对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+          "status": "applicable",
+          "rule_id": "process_configuration_applicability",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+              "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+              "expected_revision": 1
+            }
+          ],
+          "valid_until": "2026-10-03T01:00:00Z"
+        }
+      ],
+      "accepted_controls": [
+        "no_external_delivery",
+        "no_test_run_or_sample_qualification",
+        "retain_traceable_outputs",
+        "stop_on_configuration_deviation"
+      ],
+      "expected_previous_revision": 0,
+      "execution_scope": {
+        "site": "SYN-INTERNAL-LAB",
+        "unit": "ea",
+        "purpose": "Verify preparation",
+        "quantity": "10",
+        "window_end": "2026-10-03T00:10:00.701382Z",
+        "window_start": "2026-10-02T18:05:00.701382Z",
+        "window_timezone": "UTC"
+      },
+      "expired": false
+    }
+  ],
+  "current_authorization_by_build": {
+    "f59d04a9-fa77-435d-8e9d-393dc863fa95": {
+      "engineering": {
+        "decision_id": "83e57d68-81d8-50fe-a8ee-05625b29d226",
+        "revision": 1
+      },
+      "manufacturing": {
+        "decision_id": "8ec3ad3b-bf08-52f9-8b6e-81d9cb53c16f",
+        "revision": 1
+      }
+    }
+  },
+  "starts": [
+    {
+      "id": "b9afcb61-7399-5906-a3ad-035fb79914ef",
+      "build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+      "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+      "engineering_configuration_id": "3693f534-e459-479f-95af-c24f62de0d1d",
+      "manufacturing_configuration_id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+      "revision": 1,
+      "owner_id": "0a41538d-e721-4783-866a-39c35d382eef",
+      "visibility": "private",
+      "status": "executing",
+      "required_source_read_set": [
+        {
+          "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "9219faba-a350-412e-a678-65638ab72da1",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+          "expected_revision": 1
+        }
+      ],
+      "reason": "本地合成演练：在工程与制造分别具名批准后，记录固定内部试制用途的开工事件及同次物料、资源占用，不代表真实生产开工。",
+      "build_revision": 1,
+      "assessment_id": "03fb8684-6e01-570f-bbba-911f7ba1e282",
+      "assessment_revision": 1,
+      "assessment_sha256": "da1058b8b77b02809d3f2fd0753428702ad6e90ab34122b775f8253a145ec95c",
+      "engineering_authorization_id": "83e57d68-81d8-50fe-a8ee-05625b29d226",
+      "engineering_authorization_revision": 1,
+      "manufacturing_authorization_id": "8ec3ad3b-bf08-52f9-8b6e-81d9cb53c16f",
+      "manufacturing_authorization_revision": 1,
+      "occurred_at": "2026-10-02T18:19:06.414059+00:00",
+      "occurred_timezone": "UTC",
+      "execution_scope": {
+        "site": "SYN-INTERNAL-LAB",
+        "unit": "ea",
+        "purpose": "Verify preparation",
+        "quantity": "10",
+        "window_end": "2026-10-03T00:10:00.701382Z",
+        "window_start": "2026-10-02T18:05:00.701382Z",
+        "window_timezone": "UTC"
+      },
+      "event_source": {
+        "line": 1,
+        "quote": "{\"build_id\":\"f59d04a9-fa77-435d-8e9d-393dc863fa95\",\"occurred_at\":\"2026-10-02T18:19:06.414059+00:00\",\"purpose\":\"Verify preparation\",\"engineering_configuration_id\":\"3693f534-e459-479f-95af-c24f62de0d1d\",\"manufacturing_configuration_id\":\"1fff3f50-121b-4970-a26d-7db506dc179d\"}",
+        "artifact_id": "9219faba-a350-412e-a678-65638ab72da1",
+        "expected_revision": 1
+      },
+      "authority_snapshot": {
+        "roles": [
+          "manufacturing"
+        ],
+        "scope": {
+          "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+        },
+        "purpose": "Verify preparation",
+        "fact_refs": [
+          {
+            "id": "78a79948-d9ed-4e41-b042-0125d8279bf6",
+            "kind": "qualification",
+            "role": "engineering",
+            "epoch": 1,
+            "nature": "synthetic",
+            "revision": 1,
+            "issuer_key": "local-synthetic-authority",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "1bb03838-b1c4-4a16-a286-4a6408170eb4",
+            "kind": "duty",
+            "role": "manufacturing",
+            "epoch": 1,
+            "nature": "synthetic",
+            "revision": 1,
+            "issuer_key": "local-synthetic-authority",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "ae5af540-acf4-4e80-bf9a-e5fec750521c",
+            "kind": "qualification",
+            "role": "manufacturing",
+            "epoch": 1,
+            "nature": "synthetic",
+            "revision": 1,
+            "issuer_key": "local-synthetic-authority",
+            "issuer_version": "v1"
+          },
+          {
+            "id": "9e4cc0a9-492b-48b4-bee9-a80d3855f498",
+            "kind": "duty",
+            "role": "engineering",
+            "epoch": 1,
+            "nature": "synthetic",
+            "revision": 1,
+            "issuer_key": "local-synthetic-authority",
+            "issuer_version": "v1"
+          }
+        ],
+        "operation": "build.start",
+        "qualified": true,
+        "synthetic": true,
+        "authorized": true,
+        "subject_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "valid_until": "2026-10-03T18:10:24.207447+00:00",
+        "reason_codes": [],
+        "facts_revision": "b09924e2182f31364a2e99a3484f293403f01bc0ec58043ce3dab32cdf873218",
+        "required_source_read_set": [
+          {
+            "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+            "expected_revision": 1
+          }
+        ]
+      },
+      "reservations": {
+        "disposition": "staged_in_caller_uow",
+        "facts_revision": "0bdaa91ab577f04e3fc8045afd2d301ae57850a95a55dab0469c867dceef6dfc",
+        "material_holds": [
+          "ec11a2f5-4d93-56ab-8cb9-da1542172077"
+        ],
+        "execution_result": {
+          "limit": "仅固定用途的内部prototype/tool_trial制造，不授专业发布、TestRun或外部交付资格。",
+          "scope": {
+            "site": "SYN-INTERNAL-LAB",
+            "unit": "ea",
+            "window": {
+              "start": "2026-10-02T18:05:00.701382Z",
+              "finish": "2026-10-03T00:10:00.701382Z",
+              "original_timezone": "UTC"
+            },
+            "purpose": "Verify preparation",
+            "quantity": "10"
+          },
+          "state": "READY_WITH_CONDITIONS",
+          "checks": [
+            {
+              "code": "fixed_plan_bound",
+              "detail": "服务器已核对固定计划双配置和全部数量。",
+              "source": [
+                {
+                  "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                  "epoch": 1,
+                  "nature": "synthetic",
+                  "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                  "revision": 1
+                }
+              ],
+              "status": "READY",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "binding",
+              "freshness": "current",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "manufacturing"
+            },
+            {
+              "code": "operational_validity",
+              "detail": "事实覆盖本次完整执行区间。",
+              "source": [
+                {
+                  "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                  "epoch": 1,
+                  "nature": "synthetic",
+                  "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                  "revision": 1
+                }
+              ],
+              "status": "READY",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "authority",
+              "freshness": "current",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "manufacturing"
+            },
+            {
+              "code": "material_candidate_complete",
+              "detail": "完整库存范围的候选可覆盖同次固定需求，开工提交时须实际保留。",
+              "source": [
+                {
+                  "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                  "epoch": 1,
+                  "nature": "synthetic",
+                  "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                  "revision": 1
+                }
+              ],
+              "status": "READY",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "materials",
+              "freshness": "current",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "supply"
+            },
+            {
+              "code": "acceptance_valid",
+              "detail": "Named fact covers full execution",
+              "source": [
+                {
+                  "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                  "epoch": 1,
+                  "nature": "synthetic",
+                  "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                  "revision": 1
+                }
+              ],
+              "status": "READY",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "resources",
+              "freshness": "current",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "manufacturing"
+            },
+            {
+              "code": "calibration_valid",
+              "detail": "Named fact covers full execution",
+              "source": [
+                {
+                  "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                  "epoch": 1,
+                  "nature": "synthetic",
+                  "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                  "revision": 1
+                }
+              ],
+              "status": "READY",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "resources",
+              "freshness": "current",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "manufacturing"
+            },
+            {
+              "code": "capacity_available",
+              "detail": "Capacity checked; this is not a reservation",
+              "source": [
+                {
+                  "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                  "epoch": 1,
+                  "nature": "synthetic",
+                  "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                  "revision": 1
+                }
+              ],
+              "status": "READY",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "resources",
+              "freshness": "current",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "manufacturing"
+            },
+            {
+              "code": "ACTUAL_CONFIGURATION_MATCH",
+              "detail": "当前已记录实际配置未偏离固定计划。",
+              "source": [
+                {
+                  "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                  "epoch": 1,
+                  "nature": "synthetic",
+                  "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                  "revision": 1
+                }
+              ],
+              "status": "READY",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "configuration",
+              "freshness": "current",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "manufacturing"
+            },
+            {
+              "code": "product_definition_applicability",
+              "detail": "合成演练：产品定义对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+              "source": [
+                {
+                  "line": 1,
+                  "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                  "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                  "expected_revision": 1
+                }
+              ],
+              "status": "READY",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "product_verification",
+              "freshness": "current_named_decision",
+              "decision_id": "83e57d68-81d8-50fe-a8ee-05625b29d226",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "engineering",
+              "decision_revision": 1
+            },
+            {
+              "code": "verification_objective_applicability",
+              "detail": "合成演练：本轮验证目标对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+              "source": [
+                {
+                  "line": 1,
+                  "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                  "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                  "expected_revision": 1
+                }
+              ],
+              "status": "READY",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "product_verification",
+              "freshness": "current_named_decision",
+              "decision_id": "83e57d68-81d8-50fe-a8ee-05625b29d226",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "engineering",
+              "decision_revision": 1
+            },
+            {
+              "code": "process_configuration_applicability",
+              "detail": "合成演练：固定制造配置对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+              "source": [
+                {
+                  "line": 1,
+                  "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                  "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                  "expected_revision": 1
+                }
+              ],
+              "status": "READY",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "manufacturing_applicability",
+              "freshness": "current_named_decision",
+              "decision_id": "8ec3ad3b-bf08-52f9-8b6e-81d9cb53c16f",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "manufacturing",
+              "decision_revision": 1
+            },
+            {
+              "code": "output_disposition_applicability",
+              "detail": "合成演练：产出与异常品处置要求对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+              "source": [
+                {
+                  "line": 1,
+                  "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                  "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                  "expected_revision": 1
+                }
+              ],
+              "status": "READY",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "delivery_applicability",
+              "freshness": "current_named_decision",
+              "decision_id": "8ec3ad3b-bf08-52f9-8b6e-81d9cb53c16f",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "manufacturing",
+              "decision_revision": 1
+            },
+            {
+              "code": "TEST_RUN_METHOD_OUTSIDE_MANUFACTURING_SCOPE",
+              "detail": "本固定模板仅制造试制，不启动TestRun或确认样件测试资格。",
+              "source": [
+                {
+                  "id": "internal-build-manufacturing.v1",
+                  "kind": "server_rule"
+                }
+              ],
+              "status": "NOT_APPLICABLE",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "product_verification",
+              "freshness": "fixed_server_rule",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "engineering"
+            },
+            {
+              "code": "EXTERNAL_DELIVERY_OUTSIDE_MANUFACTURING_SCOPE",
+              "detail": "本固定模板不批准真实外部交付、客户接收或正式外发。",
+              "source": [
+                {
+                  "id": "internal-build-manufacturing.v1",
+                  "kind": "server_rule"
+                }
+              ],
+              "status": "NOT_APPLICABLE",
+              "severity": "hard",
+              "waivable": false,
+              "dimension": "delivery_applicability",
+              "freshness": "fixed_server_rule",
+              "rule_version": "v1",
+              "allowed_purpose": "Verify preparation",
+              "responsible_role": "manufacturing"
+            }
+          ],
+          "nature": "synthetic",
+          "binding": {
+            "basis": {
+              "bom": {
+                "ref": {
+                  "state": "current",
+                  "sha256": "cd542224dc84b3c7ce826a8b9a5d8c95e19dc6013e10337dd3cc16d5d4f20c6b",
+                  "version": "1",
+                  "source_id": "bom:fb75a322-3bd6-485f-be3f-bf8f442223b2",
+                  "captured_at": "2026-10-02T18:09:59.003787Z",
+                  "valid_until": null
+                },
+                "items": [
+                  {
+                    "unit": "ea",
+                    "item_id": "motor",
+                    "critical": true,
+                    "loss_rate": "0.1",
+                    "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                    "parent_item_id": null,
+                    "supply_required": true,
+                    "quantity_per_parent": "2"
+                  }
+                ],
+                "engineering_configuration": {
+                  "state": "current",
+                  "sha256": "6e9984da9b012b59750698eeaab7f58a2b4e4ce7145902c5382c5bf1c2d56b54",
+                  "version": "1",
+                  "source_id": "configuration:3693f534-e459-479f-95af-c24f62de0d1d",
+                  "captured_at": "2026-10-02T18:09:59.449245Z",
+                  "valid_until": null
+                }
+              },
+              "build": {
+                "ref": {
+                  "state": "current",
+                  "sha256": "d487f4ababf8a7c69c27899a47fef3801346f8907b8f2a35eaaefc41b2e3df1c",
+                  "version": "1",
+                  "source_id": "build:f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                  "captured_at": "2026-10-02T18:10:00.430679Z",
+                  "valid_until": null
+                },
+                "build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                "quantity": "10.00000000",
+                "product_unit": "ea"
+              },
+              "schema_version": "supply-cost-input.v1"
+            },
+            "scope": {
+              "audience": "private:0a41538d-e721-4783-866a-39c35d382eef",
+              "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+              "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+              "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+            },
+            "demand": {
+              "ref": {
+                "state": "current",
+                "sha256": "4e65111cdccac674e01c40191dc19ac7a5f2e22f1cc914bdb7cac4e070619fb8",
+                "version": "1",
+                "source_id": "build-readiness:83be95f0-6227-4623-a168-be8ff1cdfc64",
+                "captured_at": "2026-10-02T18:10:00.678545Z",
+                "valid_until": "2026-10-09T09:33:01.917395Z"
+              },
+              "lines": [
+                {
+                  "unit": "ea",
+                  "issues": [],
+                  "item_id": "motor",
+                  "ancestry": [],
+                  "critical": true,
+                  "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                  "required_quantity": "22.000000000",
+                  "quantity_per_product": "2.2"
+                }
+              ],
+              "basis_sha256": "6e3339da4376597d43d322f1fb8f05d5ba3bba47d86c1733b35c1703179fae40",
+              "manufacturing_sha256": "482801f1e09b66a7ef6c3b026d6bcf6fd61268a4a975a3191a28f9cbe5413659"
+            },
+            "source_read_set": [
+              {
+                "state": "current",
+                "sha256": "a8d690763655118384072b601f7dee80f67ddc0009e86d35075595d21dea981d",
+                "version": "1",
+                "source_id": "artifact:7e29ea9e-2686-452a-89bb-fe08bc199e45",
+                "captured_at": "2026-10-02T09:33:01.976795Z",
+                "valid_until": "2026-10-09T09:33:01.917395Z"
+              },
+              {
+                "state": "current",
+                "sha256": "e9c775c84611994ccb49ef47b91074f288ad1b45f5a27dd3f14e482e6aa5a118",
+                "version": "1",
+                "source_id": "artifact:e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+                "captured_at": "2026-10-02T18:09:58.648409Z",
+                "valid_until": "2026-10-09T09:33:01.917395Z"
+              }
+            ],
+            "source_read_set_complete": true,
+            "manufacturing_configuration": {
+              "state": "current",
+              "sha256": "482801f1e09b66a7ef6c3b026d6bcf6fd61268a4a975a3191a28f9cbe5413659",
+              "version": "1",
+              "source_id": "manufacturing_configuration:1fff3f50-121b-4970-a26d-7db506dc179d",
+              "captured_at": "2026-10-02T18:09:59.729504Z",
+              "valid_until": null
+            },
+            "manufacturing_operation_ids": [
+              "assembly"
+            ]
+          },
+          "controls": [
+            "no_external_delivery",
+            "no_test_run_or_sample_qualification",
+            "retain_traceable_outputs",
+            "stop_on_configuration_deviation"
+          ],
+          "coverage": {
+            "lines": [
+              {
+                "uses": [
+                  {
+                    "kind": "unreserved_candidate",
+                    "pool": {
+                      "pool_id": "SYN-PHYSICAL-POOL-1",
+                      "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                      "source_system": "SYNTHETIC-WH"
+                    },
+                    "reservation_id": null,
+                    "qualification_id": null,
+                    "quantity_in_pool_unit": "22.000000000",
+                    "quantity_in_demand_unit": "22.000000000"
+                  }
+                ],
+                "demand": {
+                  "unit": "ea",
+                  "issues": [],
+                  "item_id": "motor",
+                  "ancestry": [],
+                  "critical": true,
+                  "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                  "required_quantity": "22.000000000",
+                  "quantity_per_product": "2.2"
+                },
+                "issues": [],
+                "secured_gap": "22.000000000",
+                "potential_gap": "0",
+                "secured_ready": false,
+                "potential_ready": true,
+                "known_secured_quantity": "0",
+                "known_potential_quantity": "22.000000000"
+              }
+            ],
+            "pools": [
+              {
+                "key": {
+                  "pool_id": "SYN-PHYSICAL-POOL-1",
+                  "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                  "source_system": "SYNTHETIC-WH"
+                },
+                "unit": "ea",
+                "stage": "on_hand",
+                "issues": [],
+                "source": {
+                  "state": "current",
+                  "sha256": "b431aeb12f2e597a3ab0b544002bc94fc50a82ed013a136d7d822b386b8847ff",
+                  "version": "1",
+                  "source_id": "operational-asset:2f945cc5-9ee0-57e3-8d4f-87bc31f78bf5",
+                  "captured_at": "2026-10-02T18:09:00.701382Z",
+                  "valid_until": "2026-10-03T18:10:00.701382Z"
+                },
+                "quantity": "44",
+                "reserved_quantity": "0",
+                "own_secured_quantity": "0",
+                "unreserved_usable_quantity": "44"
+              }
+            ],
+            "issues": [],
+            "notice": "Snapshot calculation only; candidates do not reserve stock or approve a Build. Potential readiness/gaps describe this greedy candidate, not optimal substitution feasibility",
+            "algorithm": "fixed-bom-shared-pool.v1",
+            "input_sha256": "855ecf0e112b0f1f46590ee3089887d3b01f0cf50f84d2f99b89d47de21db03a",
+            "secured_ready": false,
+            "input_snapshot": {
+              "as_of": "2026-10-02T18:16:16.464541Z",
+              "basis": {
+                "bom": {
+                  "ref": {
+                    "state": "current",
+                    "sha256": "cd542224dc84b3c7ce826a8b9a5d8c95e19dc6013e10337dd3cc16d5d4f20c6b",
+                    "version": "1",
+                    "source_id": "bom:fb75a322-3bd6-485f-be3f-bf8f442223b2",
+                    "captured_at": "2026-10-02T18:09:59.003787Z",
+                    "valid_until": null
+                  },
+                  "items": [
+                    {
+                      "unit": "ea",
+                      "item_id": "motor",
+                      "critical": true,
+                      "loss_rate": "0.1",
+                      "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                      "parent_item_id": null,
+                      "supply_required": true,
+                      "quantity_per_parent": "2"
+                    }
+                  ],
+                  "engineering_configuration": {
+                    "state": "current",
+                    "sha256": "6e9984da9b012b59750698eeaab7f58a2b4e4ce7145902c5382c5bf1c2d56b54",
+                    "version": "1",
+                    "source_id": "configuration:3693f534-e459-479f-95af-c24f62de0d1d",
+                    "captured_at": "2026-10-02T18:09:59.449245Z",
+                    "valid_until": null
+                  }
+                },
+                "build": {
+                  "ref": {
+                    "state": "current",
+                    "sha256": "d487f4ababf8a7c69c27899a47fef3801346f8907b8f2a35eaaefc41b2e3df1c",
+                    "version": "1",
+                    "source_id": "build:f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                    "captured_at": "2026-10-02T18:10:00.430679Z",
+                    "valid_until": null
+                  },
+                  "build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                  "quantity": "10.00000000",
+                  "product_unit": "ea"
+                },
+                "schema_version": "supply-cost-input.v1"
+              },
+              "pools": [
+                {
+                  "key": {
+                    "pool_id": "SYN-PHYSICAL-POOL-1",
+                    "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                    "source_system": "SYNTHETIC-WH"
+                  },
+                  "ref": {
+                    "state": "current",
+                    "sha256": "b431aeb12f2e597a3ab0b544002bc94fc50a82ed013a136d7d822b386b8847ff",
+                    "version": "1",
+                    "source_id": "operational-asset:2f945cc5-9ee0-57e3-8d4f-87bc31f78bf5",
+                    "captured_at": "2026-10-02T18:09:00.701382Z",
+                    "valid_until": "2026-10-03T18:10:00.701382Z"
+                  },
+                  "unit": "ea",
+                  "stage": "on_hand",
+                  "quality": "released",
+                  "quantity": "44",
+                  "expected_at": null,
+                  "availability": "available"
+                }
+              ],
+              "alternates": [],
+              "reservations": [],
+              "supply_snapshot": {
+                "state": "current",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "version": "1",
+                "source_id": "operational-fact:09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "captured_at": "2026-10-02T18:10:24.142050Z",
+                "valid_until": "2026-10-03T18:10:00.701382Z"
+              },
+              "supply_scope_complete": true
+            },
+            "schema_version": "supply-coverage-result.v1",
+            "potential_ready": true,
+            "candidate_policy": "critical-then-item-primary-then-alternate.v1",
+            "critical_secured_ready": false,
+            "potential_is_feasibility_proof": false
+          },
+          "template": "internal-build-manufacturing.v1",
+          "fact_refs": [
+            {
+              "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+              "epoch": 1,
+              "nature": "synthetic",
+              "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+              "revision": 1
+            }
+          ],
+          "resources": {
+            "checks": [
+              {
+                "code": "acceptance_valid",
+                "detail": "Named fact covers full execution",
+                "source": {
+                  "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                  "kind": "domain",
+                  "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:acceptance:assembly",
+                  "revision": 1
+                },
+                "status": "READY",
+                "resource": {
+                  "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                  "kind": "equipment",
+                  "revision": 1
+                }
+              },
+              {
+                "code": "calibration_valid",
+                "detail": "Named fact covers full execution",
+                "source": {
+                  "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                  "kind": "domain",
+                  "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:calibration:assembly",
+                  "revision": 1
+                },
+                "status": "READY",
+                "resource": {
+                  "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                  "kind": "equipment",
+                  "revision": 1
+                }
+              },
+              {
+                "code": "capacity_available",
+                "detail": "Capacity checked; this is not a reservation",
+                "source": null,
+                "status": "READY",
+                "resource": {
+                  "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                  "kind": "equipment",
+                  "revision": 1
+                }
+              }
+            ],
+            "status": "READY",
+            "checked_at": "2026-10-02T18:16:16.464541Z",
+            "conditions": [],
+            "input_digest": "762db9f58e5bbf479401f1fe2e0637e5a371a7ab40ce02f49f6f38c9734ed337",
+            "capacity_status": "checked",
+            "fixed_resources": [
+              {
+                "ref": {
+                  "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                  "kind": "equipment",
+                  "revision": 1
+                },
+                "facts": [
+                  {
+                    "kind": "acceptance",
+                    "source": {
+                      "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                      "kind": "domain",
+                      "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:acceptance:assembly",
+                      "revision": 1
+                    },
+                    "status": "accepted",
+                    "purpose": "Verify preparation",
+                    "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                    "conditions": [],
+                    "valid_from": "2026-10-01T18:10:00.701382Z",
+                    "valid_until": "2026-10-03T18:10:00.701382Z",
+                    "operation_id": "assembly",
+                    "named_decision_id": "fc0682a6-a99e-4d11-8e19-114c4f49a6b1"
+                  },
+                  {
+                    "kind": "calibration",
+                    "source": {
+                      "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                      "kind": "domain",
+                      "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:calibration:assembly",
+                      "revision": 1
+                    },
+                    "status": "accepted",
+                    "purpose": "Verify preparation",
+                    "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                    "conditions": [],
+                    "valid_from": "2026-10-01T18:10:00.701382Z",
+                    "valid_until": "2026-10-03T18:10:00.701382Z",
+                    "operation_id": "assembly",
+                    "named_decision_id": "db899470-aa58-49cb-a8cd-b2408b1f6c90"
+                  }
+                ],
+                "scope": {
+                  "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+                  "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+                  "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+                },
+                "source": {
+                  "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                  "kind": "domain",
+                  "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                  "revision": 1
+                },
+                "calendar": {
+                  "weekly": [
+                    {
+                      "weekday": 0,
+                      "intervals": [
+                        {
+                          "end_minute": 1440,
+                          "start_minute": 0
+                        }
+                      ]
+                    },
+                    {
+                      "weekday": 1,
+                      "intervals": [
+                        {
+                          "end_minute": 1440,
+                          "start_minute": 0
+                        }
+                      ]
+                    },
+                    {
+                      "weekday": 2,
+                      "intervals": [
+                        {
+                          "end_minute": 1440,
+                          "start_minute": 0
+                        }
+                      ]
+                    },
+                    {
+                      "weekday": 3,
+                      "intervals": [
+                        {
+                          "end_minute": 1440,
+                          "start_minute": 0
+                        }
+                      ]
+                    },
+                    {
+                      "weekday": 4,
+                      "intervals": [
+                        {
+                          "end_minute": 1440,
+                          "start_minute": 0
+                        }
+                      ]
+                    },
+                    {
+                      "weekday": 5,
+                      "intervals": [
+                        {
+                          "end_minute": 1440,
+                          "start_minute": 0
+                        }
+                      ]
+                    },
+                    {
+                      "weekday": 6,
+                      "intervals": [
+                        {
+                          "end_minute": 1440,
+                          "start_minute": 0
+                        }
+                      ]
+                    }
+                  ],
+                  "version": "1",
+                  "timezone": "UTC",
+                  "exceptions": [],
+                  "calendar_id": "SYN-UTC",
+                  "ambiguous_time": "reject",
+                  "timezone_rules_sha256": "fddce1e648a1732ac29afd9a16151b2973cdf082e7ec0c690f7e42be6b598b93"
+                },
+                "capacity": "1",
+                "purposes": [
+                  "Verify preparation"
+                ],
+                "lifecycle": "active",
+                "maintenance": [],
+                "operation_ids": [
+                  "assembly"
+                ],
+                "required_facts": [],
+                "calendar_source": {
+                  "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                  "kind": "domain",
+                  "position": "calendar:7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                  "revision": 1
+                },
+                "occupancy_revision": 1
+              }
+            ]
+          },
+          "valid_until": "2026-10-03T18:10:00.701382Z",
+          "build_revision": 1,
+          "facts_revision": "0bdaa91ab577f04e3fc8045afd2d301ae57850a95a55dab0469c867dceef6dfc",
+          "candidate_ready": true,
+          "operational_state": "READY",
+          "required_source_read_set": [
+            {
+              "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+              "expected_revision": 1
+            },
+            {
+              "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+              "expected_revision": 1
+            }
+          ],
+          "accepted_controls_required": [
+            "no_external_delivery",
+            "no_test_run_or_sample_qualification",
+            "retain_traceable_outputs",
+            "stop_on_configuration_deviation"
+          ],
+          "actual_configuration_binding": [],
+          "engineering_configuration_id": "3693f534-e459-479f-95af-c24f62de0d1d",
+          "manufacturing_configuration_id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+          "engineering_configuration_revision": 1,
+          "manufacturing_configuration_revision": 1
+        },
+        "owner_execution_id": "b9afcb61-7399-5906-a3ad-035fb79914ef",
+        "resource_reservations": [
+          "20032ccc-1a9f-568a-8c26-7e23553af8e2"
+        ]
+      },
+      "sources": [
+        {
+          "line": 1,
+          "quote": "{\"build_id\":\"f59d04a9-fa77-435d-8e9d-393dc863fa95\",\"occurred_at\":\"2026-10-02T18:19:06.414059+00:00\",\"purpose\":\"Verify preparation\",\"engineering_configuration_id\":\"3693f534-e459-479f-95af-c24f62de0d1d\",\"manufacturing_configuration_id\":\"1fff3f50-121b-4970-a26d-7db506dc179d\"}",
+          "artifact_id": "9219faba-a350-412e-a678-65638ab72da1",
+          "expected_revision": 1
+        }
+      ],
+      "snapshot_sha256": "6a45d36e93f06977043b0ae4bfca2cb2294ccdba13782e789554c67dbe86412e",
+      "created_at": "2026-10-02T18:24:20.273016+00:00",
+      "source_status": "current",
+      "execution_result": {
+        "limit": "仅固定用途的内部prototype/tool_trial制造，不授专业发布、TestRun或外部交付资格。",
+        "scope": {
+          "site": "SYN-INTERNAL-LAB",
+          "unit": "ea",
+          "window": {
+            "start": "2026-10-02T18:05:00.701382Z",
+            "finish": "2026-10-03T00:10:00.701382Z",
+            "original_timezone": "UTC"
+          },
+          "purpose": "Verify preparation",
+          "quantity": "10"
+        },
+        "state": "READY_WITH_CONDITIONS",
+        "checks": [
+          {
+            "code": "fixed_plan_bound",
+            "detail": "服务器已核对固定计划双配置和全部数量。",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "binding",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "operational_validity",
+            "detail": "事实覆盖本次完整执行区间。",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "authority",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "material_candidate_complete",
+            "detail": "完整库存范围的候选可覆盖同次固定需求，开工提交时须实际保留。",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "materials",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "supply"
+          },
+          {
+            "code": "acceptance_valid",
+            "detail": "Named fact covers full execution",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "resources",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "calibration_valid",
+            "detail": "Named fact covers full execution",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "resources",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "capacity_available",
+            "detail": "Capacity checked; this is not a reservation",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "resources",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "ACTUAL_CONFIGURATION_MATCH",
+            "detail": "当前已记录实际配置未偏离固定计划。",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "configuration",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "product_definition_applicability",
+            "detail": "合成演练：产品定义对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+            "source": [
+              {
+                "line": 1,
+                "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                "expected_revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "product_verification",
+            "freshness": "current_named_decision",
+            "decision_id": "83e57d68-81d8-50fe-a8ee-05625b29d226",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "engineering",
+            "decision_revision": 1
+          },
+          {
+            "code": "verification_objective_applicability",
+            "detail": "合成演练：本轮验证目标对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+            "source": [
+              {
+                "line": 1,
+                "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                "expected_revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "product_verification",
+            "freshness": "current_named_decision",
+            "decision_id": "83e57d68-81d8-50fe-a8ee-05625b29d226",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "engineering",
+            "decision_revision": 1
+          },
+          {
+            "code": "process_configuration_applicability",
+            "detail": "合成演练：固定制造配置对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+            "source": [
+              {
+                "line": 1,
+                "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                "expected_revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "manufacturing_applicability",
+            "freshness": "current_named_decision",
+            "decision_id": "8ec3ad3b-bf08-52f9-8b6e-81d9cb53c16f",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing",
+            "decision_revision": 1
+          },
+          {
+            "code": "output_disposition_applicability",
+            "detail": "合成演练：产出与异常品处置要求对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+            "source": [
+              {
+                "line": 1,
+                "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                "expected_revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "delivery_applicability",
+            "freshness": "current_named_decision",
+            "decision_id": "8ec3ad3b-bf08-52f9-8b6e-81d9cb53c16f",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing",
+            "decision_revision": 1
+          },
+          {
+            "code": "TEST_RUN_METHOD_OUTSIDE_MANUFACTURING_SCOPE",
+            "detail": "本固定模板仅制造试制，不启动TestRun或确认样件测试资格。",
+            "source": [
+              {
+                "id": "internal-build-manufacturing.v1",
+                "kind": "server_rule"
+              }
+            ],
+            "status": "NOT_APPLICABLE",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "product_verification",
+            "freshness": "fixed_server_rule",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "engineering"
+          },
+          {
+            "code": "EXTERNAL_DELIVERY_OUTSIDE_MANUFACTURING_SCOPE",
+            "detail": "本固定模板不批准真实外部交付、客户接收或正式外发。",
+            "source": [
+              {
+                "id": "internal-build-manufacturing.v1",
+                "kind": "server_rule"
+              }
+            ],
+            "status": "NOT_APPLICABLE",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "delivery_applicability",
+            "freshness": "fixed_server_rule",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          }
+        ],
+        "nature": "synthetic",
+        "binding": {
+          "basis": {
+            "bom": {
+              "ref": {
+                "state": "current",
+                "sha256": "cd542224dc84b3c7ce826a8b9a5d8c95e19dc6013e10337dd3cc16d5d4f20c6b",
+                "version": "1",
+                "source_id": "bom:fb75a322-3bd6-485f-be3f-bf8f442223b2",
+                "captured_at": "2026-10-02T18:09:59.003787Z",
+                "valid_until": null
+              },
+              "items": [
+                {
+                  "unit": "ea",
+                  "item_id": "motor",
+                  "critical": true,
+                  "loss_rate": "0.1",
+                  "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                  "parent_item_id": null,
+                  "supply_required": true,
+                  "quantity_per_parent": "2"
+                }
+              ],
+              "engineering_configuration": {
+                "state": "current",
+                "sha256": "6e9984da9b012b59750698eeaab7f58a2b4e4ce7145902c5382c5bf1c2d56b54",
+                "version": "1",
+                "source_id": "configuration:3693f534-e459-479f-95af-c24f62de0d1d",
+                "captured_at": "2026-10-02T18:09:59.449245Z",
+                "valid_until": null
+              }
+            },
+            "build": {
+              "ref": {
+                "state": "current",
+                "sha256": "d487f4ababf8a7c69c27899a47fef3801346f8907b8f2a35eaaefc41b2e3df1c",
+                "version": "1",
+                "source_id": "build:f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                "captured_at": "2026-10-02T18:10:00.430679Z",
+                "valid_until": null
+              },
+              "build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+              "quantity": "10.00000000",
+              "product_unit": "ea"
+            },
+            "schema_version": "supply-cost-input.v1"
+          },
+          "scope": {
+            "audience": "private:0a41538d-e721-4783-866a-39c35d382eef",
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "demand": {
+            "ref": {
+              "state": "current",
+              "sha256": "4e65111cdccac674e01c40191dc19ac7a5f2e22f1cc914bdb7cac4e070619fb8",
+              "version": "1",
+              "source_id": "build-readiness:83be95f0-6227-4623-a168-be8ff1cdfc64",
+              "captured_at": "2026-10-02T18:10:00.678545Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z"
+            },
+            "lines": [
+              {
+                "unit": "ea",
+                "issues": [],
+                "item_id": "motor",
+                "ancestry": [],
+                "critical": true,
+                "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                "required_quantity": "22.000000000",
+                "quantity_per_product": "2.2"
+              }
+            ],
+            "basis_sha256": "6e3339da4376597d43d322f1fb8f05d5ba3bba47d86c1733b35c1703179fae40",
+            "manufacturing_sha256": "482801f1e09b66a7ef6c3b026d6bcf6fd61268a4a975a3191a28f9cbe5413659"
+          },
+          "source_read_set": [
+            {
+              "state": "current",
+              "sha256": "a8d690763655118384072b601f7dee80f67ddc0009e86d35075595d21dea981d",
+              "version": "1",
+              "source_id": "artifact:7e29ea9e-2686-452a-89bb-fe08bc199e45",
+              "captured_at": "2026-10-02T09:33:01.976795Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z"
+            },
+            {
+              "state": "current",
+              "sha256": "e9c775c84611994ccb49ef47b91074f288ad1b45f5a27dd3f14e482e6aa5a118",
+              "version": "1",
+              "source_id": "artifact:e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+              "captured_at": "2026-10-02T18:09:58.648409Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z"
+            }
+          ],
+          "source_read_set_complete": true,
+          "manufacturing_configuration": {
+            "state": "current",
+            "sha256": "482801f1e09b66a7ef6c3b026d6bcf6fd61268a4a975a3191a28f9cbe5413659",
+            "version": "1",
+            "source_id": "manufacturing_configuration:1fff3f50-121b-4970-a26d-7db506dc179d",
+            "captured_at": "2026-10-02T18:09:59.729504Z",
+            "valid_until": null
+          },
+          "manufacturing_operation_ids": [
+            "assembly"
+          ]
+        },
+        "controls": [
+          "no_external_delivery",
+          "no_test_run_or_sample_qualification",
+          "retain_traceable_outputs",
+          "stop_on_configuration_deviation"
+        ],
+        "coverage": {
+          "lines": [
+            {
+              "uses": [
+                {
+                  "kind": "unreserved_candidate",
+                  "pool": {
+                    "pool_id": "SYN-PHYSICAL-POOL-1",
+                    "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                    "source_system": "SYNTHETIC-WH"
+                  },
+                  "reservation_id": null,
+                  "qualification_id": null,
+                  "quantity_in_pool_unit": "22.000000000",
+                  "quantity_in_demand_unit": "22.000000000"
+                }
+              ],
+              "demand": {
+                "unit": "ea",
+                "issues": [],
+                "item_id": "motor",
+                "ancestry": [],
+                "critical": true,
+                "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                "required_quantity": "22.000000000",
+                "quantity_per_product": "2.2"
+              },
+              "issues": [],
+              "secured_gap": "22.000000000",
+              "potential_gap": "0",
+              "secured_ready": false,
+              "potential_ready": true,
+              "known_secured_quantity": "0",
+              "known_potential_quantity": "22.000000000"
+            }
+          ],
+          "pools": [
+            {
+              "key": {
+                "pool_id": "SYN-PHYSICAL-POOL-1",
+                "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                "source_system": "SYNTHETIC-WH"
+              },
+              "unit": "ea",
+              "stage": "on_hand",
+              "issues": [],
+              "source": {
+                "state": "current",
+                "sha256": "b431aeb12f2e597a3ab0b544002bc94fc50a82ed013a136d7d822b386b8847ff",
+                "version": "1",
+                "source_id": "operational-asset:2f945cc5-9ee0-57e3-8d4f-87bc31f78bf5",
+                "captured_at": "2026-10-02T18:09:00.701382Z",
+                "valid_until": "2026-10-03T18:10:00.701382Z"
+              },
+              "quantity": "44",
+              "reserved_quantity": "0",
+              "own_secured_quantity": "0",
+              "unreserved_usable_quantity": "44"
+            }
+          ],
+          "issues": [],
+          "notice": "Snapshot calculation only; candidates do not reserve stock or approve a Build. Potential readiness/gaps describe this greedy candidate, not optimal substitution feasibility",
+          "algorithm": "fixed-bom-shared-pool.v1",
+          "input_sha256": "855ecf0e112b0f1f46590ee3089887d3b01f0cf50f84d2f99b89d47de21db03a",
+          "secured_ready": false,
+          "input_snapshot": {
+            "as_of": "2026-10-02T18:16:16.464541Z",
+            "basis": {
+              "bom": {
+                "ref": {
+                  "state": "current",
+                  "sha256": "cd542224dc84b3c7ce826a8b9a5d8c95e19dc6013e10337dd3cc16d5d4f20c6b",
+                  "version": "1",
+                  "source_id": "bom:fb75a322-3bd6-485f-be3f-bf8f442223b2",
+                  "captured_at": "2026-10-02T18:09:59.003787Z",
+                  "valid_until": null
+                },
+                "items": [
+                  {
+                    "unit": "ea",
+                    "item_id": "motor",
+                    "critical": true,
+                    "loss_rate": "0.1",
+                    "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                    "parent_item_id": null,
+                    "supply_required": true,
+                    "quantity_per_parent": "2"
+                  }
+                ],
+                "engineering_configuration": {
+                  "state": "current",
+                  "sha256": "6e9984da9b012b59750698eeaab7f58a2b4e4ce7145902c5382c5bf1c2d56b54",
+                  "version": "1",
+                  "source_id": "configuration:3693f534-e459-479f-95af-c24f62de0d1d",
+                  "captured_at": "2026-10-02T18:09:59.449245Z",
+                  "valid_until": null
+                }
+              },
+              "build": {
+                "ref": {
+                  "state": "current",
+                  "sha256": "d487f4ababf8a7c69c27899a47fef3801346f8907b8f2a35eaaefc41b2e3df1c",
+                  "version": "1",
+                  "source_id": "build:f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                  "captured_at": "2026-10-02T18:10:00.430679Z",
+                  "valid_until": null
+                },
+                "build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                "quantity": "10.00000000",
+                "product_unit": "ea"
+              },
+              "schema_version": "supply-cost-input.v1"
+            },
+            "pools": [
+              {
+                "key": {
+                  "pool_id": "SYN-PHYSICAL-POOL-1",
+                  "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                  "source_system": "SYNTHETIC-WH"
+                },
+                "ref": {
+                  "state": "current",
+                  "sha256": "b431aeb12f2e597a3ab0b544002bc94fc50a82ed013a136d7d822b386b8847ff",
+                  "version": "1",
+                  "source_id": "operational-asset:2f945cc5-9ee0-57e3-8d4f-87bc31f78bf5",
+                  "captured_at": "2026-10-02T18:09:00.701382Z",
+                  "valid_until": "2026-10-03T18:10:00.701382Z"
+                },
+                "unit": "ea",
+                "stage": "on_hand",
+                "quality": "released",
+                "quantity": "44",
+                "expected_at": null,
+                "availability": "available"
+              }
+            ],
+            "alternates": [],
+            "reservations": [],
+            "supply_snapshot": {
+              "state": "current",
+              "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+              "version": "1",
+              "source_id": "operational-fact:09648b42-730c-40a8-92ab-f274cb21ed2b",
+              "captured_at": "2026-10-02T18:10:24.142050Z",
+              "valid_until": "2026-10-03T18:10:00.701382Z"
+            },
+            "supply_scope_complete": true
+          },
+          "schema_version": "supply-coverage-result.v1",
+          "potential_ready": true,
+          "candidate_policy": "critical-then-item-primary-then-alternate.v1",
+          "critical_secured_ready": false,
+          "potential_is_feasibility_proof": false
+        },
+        "template": "internal-build-manufacturing.v1",
+        "fact_refs": [
+          {
+            "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+            "epoch": 1,
+            "nature": "synthetic",
+            "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+            "revision": 1
+          }
+        ],
+        "resources": {
+          "checks": [
+            {
+              "code": "acceptance_valid",
+              "detail": "Named fact covers full execution",
+              "source": {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "kind": "domain",
+                "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:acceptance:assembly",
+                "revision": 1
+              },
+              "status": "READY",
+              "resource": {
+                "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "kind": "equipment",
+                "revision": 1
+              }
+            },
+            {
+              "code": "calibration_valid",
+              "detail": "Named fact covers full execution",
+              "source": {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "kind": "domain",
+                "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:calibration:assembly",
+                "revision": 1
+              },
+              "status": "READY",
+              "resource": {
+                "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "kind": "equipment",
+                "revision": 1
+              }
+            },
+            {
+              "code": "capacity_available",
+              "detail": "Capacity checked; this is not a reservation",
+              "source": null,
+              "status": "READY",
+              "resource": {
+                "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "kind": "equipment",
+                "revision": 1
+              }
+            }
+          ],
+          "status": "READY",
+          "checked_at": "2026-10-02T18:16:16.464541Z",
+          "conditions": [],
+          "input_digest": "762db9f58e5bbf479401f1fe2e0637e5a371a7ab40ce02f49f6f38c9734ed337",
+          "capacity_status": "checked",
+          "fixed_resources": [
+            {
+              "ref": {
+                "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "kind": "equipment",
+                "revision": 1
+              },
+              "facts": [
+                {
+                  "kind": "acceptance",
+                  "source": {
+                    "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                    "kind": "domain",
+                    "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:acceptance:assembly",
+                    "revision": 1
+                  },
+                  "status": "accepted",
+                  "purpose": "Verify preparation",
+                  "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                  "conditions": [],
+                  "valid_from": "2026-10-01T18:10:00.701382Z",
+                  "valid_until": "2026-10-03T18:10:00.701382Z",
+                  "operation_id": "assembly",
+                  "named_decision_id": "fc0682a6-a99e-4d11-8e19-114c4f49a6b1"
+                },
+                {
+                  "kind": "calibration",
+                  "source": {
+                    "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                    "kind": "domain",
+                    "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:calibration:assembly",
+                    "revision": 1
+                  },
+                  "status": "accepted",
+                  "purpose": "Verify preparation",
+                  "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                  "conditions": [],
+                  "valid_from": "2026-10-01T18:10:00.701382Z",
+                  "valid_until": "2026-10-03T18:10:00.701382Z",
+                  "operation_id": "assembly",
+                  "named_decision_id": "db899470-aa58-49cb-a8cd-b2408b1f6c90"
+                }
+              ],
+              "scope": {
+                "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+                "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+                "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+              },
+              "source": {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "kind": "domain",
+                "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "revision": 1
+              },
+              "calendar": {
+                "weekly": [
+                  {
+                    "weekday": 0,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 1,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 2,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 3,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 4,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 5,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 6,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  }
+                ],
+                "version": "1",
+                "timezone": "UTC",
+                "exceptions": [],
+                "calendar_id": "SYN-UTC",
+                "ambiguous_time": "reject",
+                "timezone_rules_sha256": "fddce1e648a1732ac29afd9a16151b2973cdf082e7ec0c690f7e42be6b598b93"
+              },
+              "capacity": "1",
+              "purposes": [
+                "Verify preparation"
+              ],
+              "lifecycle": "active",
+              "maintenance": [],
+              "operation_ids": [
+                "assembly"
+              ],
+              "required_facts": [],
+              "calendar_source": {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "kind": "domain",
+                "position": "calendar:7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "revision": 1
+              },
+              "occupancy_revision": 1
+            }
+          ]
+        },
+        "valid_until": "2026-10-03T18:10:00.701382Z",
+        "build_revision": 1,
+        "facts_revision": "0bdaa91ab577f04e3fc8045afd2d301ae57850a95a55dab0469c867dceef6dfc",
+        "candidate_ready": true,
+        "operational_state": "READY",
+        "required_source_read_set": [
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+            "expected_revision": 1
+          }
+        ],
+        "accepted_controls_required": [
+          "no_external_delivery",
+          "no_test_run_or_sample_qualification",
+          "retain_traceable_outputs",
+          "stop_on_configuration_deviation"
+        ],
+        "actual_configuration_binding": [],
+        "engineering_configuration_id": "3693f534-e459-479f-95af-c24f62de0d1d",
+        "manufacturing_configuration_id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+        "engineering_configuration_revision": 1,
+        "manufacturing_configuration_revision": 1
+      }
+    }
+  ],
+  "capabilities_by_build": {
+    "137e82b2-86d3-4874-8a8e-652fbe853ca0": {
+      "readiness_compute": true,
+      "engineering_approve": false,
+      "engineering_revoke": false,
+      "manufacturing_approve": false,
+      "manufacturing_revoke": false,
+      "start": false,
+      "authority": {},
+      "revoke_authority": {},
+      "blockers": [
+        {
+          "code": "EXECUTION_ASSESSMENT_REQUIRED",
+          "detail": "请填写固定执行范围并保存准备度评估。"
+        }
+      ],
+      "required_source_read_set": [],
+      "needs_input": true,
+      "execution_status": "planned",
+      "stop_required": false,
+      "execution_qualification": "not_started"
+    },
+    "f59d04a9-fa77-435d-8e9d-393dc863fa95": {
+      "readiness_compute": false,
+      "engineering_approve": false,
+      "engineering_revoke": true,
+      "manufacturing_approve": false,
+      "manufacturing_revoke": true,
+      "start": false,
+      "authority": {
+        "engineering_authorize": {
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "subject_id": "0a41538d-e721-4783-866a-39c35d382eef",
+          "operation": "build.engineering.authorize",
+          "purpose": "Verify preparation",
+          "authorized": true,
+          "roles": [
+            "engineering"
+          ],
+          "qualified": true,
+          "reason_codes": [],
+          "fact_refs": [
+            {
+              "id": "78a79948-d9ed-4e41-b042-0125d8279bf6",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "1bb03838-b1c4-4a16-a286-4a6408170eb4",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "ae5af540-acf4-4e80-bf9a-e5fec750521c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "9e4cc0a9-492b-48b4-bee9-a80d3855f498",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            }
+          ],
+          "facts_revision": "978100f43d728a6afce8aa5a46f76451a0479427657b3a3ef6da6e222decd4a5",
+          "valid_until": "2026-10-03T18:10:24.207447+00:00",
+          "synthetic": true,
+          "required_source_read_set": [
+            {
+              "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+              "expected_revision": 1
+            }
+          ]
+        },
+        "manufacturing_authorize": {
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "subject_id": "0a41538d-e721-4783-866a-39c35d382eef",
+          "operation": "build.manufacturing.authorize",
+          "purpose": "Verify preparation",
+          "authorized": true,
+          "roles": [
+            "manufacturing"
+          ],
+          "qualified": true,
+          "reason_codes": [],
+          "fact_refs": [
+            {
+              "id": "78a79948-d9ed-4e41-b042-0125d8279bf6",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "1bb03838-b1c4-4a16-a286-4a6408170eb4",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "ae5af540-acf4-4e80-bf9a-e5fec750521c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "9e4cc0a9-492b-48b4-bee9-a80d3855f498",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            }
+          ],
+          "facts_revision": "3c854e6a34e1a7de6f488ef565fd1d3255e25ab713cf063a7cd736d7993a71de",
+          "valid_until": "2026-10-03T18:10:24.207447+00:00",
+          "synthetic": true,
+          "required_source_read_set": [
+            {
+              "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+              "expected_revision": 1
+            }
+          ]
+        },
+        "start": {
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "subject_id": "0a41538d-e721-4783-866a-39c35d382eef",
+          "operation": "build.start",
+          "purpose": "Verify preparation",
+          "authorized": true,
+          "roles": [
+            "manufacturing"
+          ],
+          "qualified": true,
+          "reason_codes": [],
+          "fact_refs": [
+            {
+              "id": "78a79948-d9ed-4e41-b042-0125d8279bf6",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "1bb03838-b1c4-4a16-a286-4a6408170eb4",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "ae5af540-acf4-4e80-bf9a-e5fec750521c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "9e4cc0a9-492b-48b4-bee9-a80d3855f498",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            }
+          ],
+          "facts_revision": "b09924e2182f31364a2e99a3484f293403f01bc0ec58043ce3dab32cdf873218",
+          "valid_until": "2026-10-03T18:10:24.207447+00:00",
+          "synthetic": true,
+          "required_source_read_set": [
+            {
+              "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+              "expected_revision": 1
+            }
+          ]
+        }
+      },
+      "revoke_authority": {
+        "engineering": {
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "subject_id": "0a41538d-e721-4783-866a-39c35d382eef",
+          "operation": "build.engineering.authorize",
+          "purpose": "Verify preparation",
+          "authorized": true,
+          "roles": [
+            "engineering"
+          ],
+          "qualified": true,
+          "reason_codes": [],
+          "fact_refs": [
+            {
+              "id": "78a79948-d9ed-4e41-b042-0125d8279bf6",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "1bb03838-b1c4-4a16-a286-4a6408170eb4",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "ae5af540-acf4-4e80-bf9a-e5fec750521c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "9e4cc0a9-492b-48b4-bee9-a80d3855f498",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            }
+          ],
+          "facts_revision": "978100f43d728a6afce8aa5a46f76451a0479427657b3a3ef6da6e222decd4a5",
+          "valid_until": "2026-10-03T18:10:24.207447+00:00",
+          "synthetic": true,
+          "required_source_read_set": [
+            {
+              "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+              "expected_revision": 1
+            }
+          ]
+        },
+        "manufacturing": {
+          "scope": {
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "subject_id": "0a41538d-e721-4783-866a-39c35d382eef",
+          "operation": "build.manufacturing.authorize",
+          "purpose": "Verify preparation",
+          "authorized": true,
+          "roles": [
+            "manufacturing"
+          ],
+          "qualified": true,
+          "reason_codes": [],
+          "fact_refs": [
+            {
+              "id": "78a79948-d9ed-4e41-b042-0125d8279bf6",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "1bb03838-b1c4-4a16-a286-4a6408170eb4",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "ae5af540-acf4-4e80-bf9a-e5fec750521c",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "qualification",
+              "role": "manufacturing",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            },
+            {
+              "id": "9e4cc0a9-492b-48b4-bee9-a80d3855f498",
+              "revision": 1,
+              "epoch": 1,
+              "kind": "duty",
+              "role": "engineering",
+              "nature": "synthetic",
+              "issuer_key": "local-synthetic-authority",
+              "issuer_version": "v1"
+            }
+          ],
+          "facts_revision": "3c854e6a34e1a7de6f488ef565fd1d3255e25ab713cf063a7cd736d7993a71de",
+          "valid_until": "2026-10-03T18:10:24.207447+00:00",
+          "synthetic": true,
+          "required_source_read_set": [
+            {
+              "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+              "expected_revision": 1
+            }
+          ]
+        }
+      },
+      "blockers": [],
+      "required_source_read_set": [
+        {
+          "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+          "expected_revision": 1
+        }
+      ],
+      "needs_input": false,
+      "execution_status": "executing",
+      "stop_required": false,
+      "execution_qualification": "limited_current",
+      "current_result": {
+        "scope": {
+          "site": "SYN-INTERNAL-LAB",
+          "unit": "ea",
+          "window": {
+            "start": "2026-10-02T18:05:00.701382Z",
+            "finish": "2026-10-03T00:10:00.701382Z",
+            "original_timezone": "UTC"
+          },
+          "purpose": "Verify preparation",
+          "quantity": "10"
+        },
+        "state": "READY_WITH_CONDITIONS",
+        "checks": [
+          {
+            "code": "fixed_plan_bound",
+            "detail": "服务器已核对固定计划双配置和全部数量。",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "binding",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "operational_validity",
+            "detail": "事实覆盖本次完整执行区间。",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "authority",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "material_candidate_complete",
+            "detail": "完整库存范围的候选可覆盖同次固定需求，开工提交时须实际保留。",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "materials",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "supply"
+          },
+          {
+            "code": "acceptance_valid",
+            "detail": "Named fact covers full execution",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "resources",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "calibration_valid",
+            "detail": "Named fact covers full execution",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "resources",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "capacity_available",
+            "detail": "Capacity checked; this is not a reservation",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "resources",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "ACTUAL_CONFIGURATION_MATCH",
+            "detail": "当前已记录实际配置未偏离固定计划。",
+            "source": [
+              {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "epoch": 1,
+                "nature": "synthetic",
+                "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+                "revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "configuration",
+            "freshness": "current",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          },
+          {
+            "code": "product_definition_applicability",
+            "detail": "合成演练：产品定义对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+            "source": [
+              {
+                "line": 1,
+                "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                "expected_revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "product_verification",
+            "freshness": "current_named_decision",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "engineering",
+            "decision_id": "83e57d68-81d8-50fe-a8ee-05625b29d226",
+            "decision_revision": 1
+          },
+          {
+            "code": "verification_objective_applicability",
+            "detail": "合成演练：本轮验证目标对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+            "source": [
+              {
+                "line": 1,
+                "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                "expected_revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "product_verification",
+            "freshness": "current_named_decision",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "engineering",
+            "decision_id": "83e57d68-81d8-50fe-a8ee-05625b29d226",
+            "decision_revision": 1
+          },
+          {
+            "code": "process_configuration_applicability",
+            "detail": "合成演练：固定制造配置对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+            "source": [
+              {
+                "line": 1,
+                "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                "expected_revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "manufacturing_applicability",
+            "freshness": "current_named_decision",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing",
+            "decision_id": "8ec3ad3b-bf08-52f9-8b6e-81d9cb53c16f",
+            "decision_revision": 1
+          },
+          {
+            "code": "output_disposition_applicability",
+            "detail": "合成演练：产出与异常品处置要求对本用途的适用性仅适用于固定内部试制窗口，不授予测试、样件合格或外部交付。",
+            "source": [
+              {
+                "line": 1,
+                "quote": "第十一波独立临时实例的合成工程与制造职责、人员资格和适用性演练。固定内部试制用途、已知物料和双配置；保留可追溯产出；偏离时停工重核；不授权测试、样件合格或外部交付。不代表真实工厂任命或生产资格。",
+                "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+                "expected_revision": 1
+              }
+            ],
+            "status": "READY",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "delivery_applicability",
+            "freshness": "current_named_decision",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing",
+            "decision_id": "8ec3ad3b-bf08-52f9-8b6e-81d9cb53c16f",
+            "decision_revision": 1
+          },
+          {
+            "code": "TEST_RUN_METHOD_OUTSIDE_MANUFACTURING_SCOPE",
+            "detail": "本固定模板仅制造试制，不启动TestRun或确认样件测试资格。",
+            "source": [
+              {
+                "id": "internal-build-manufacturing.v1",
+                "kind": "server_rule"
+              }
+            ],
+            "status": "NOT_APPLICABLE",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "product_verification",
+            "freshness": "fixed_server_rule",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "engineering"
+          },
+          {
+            "code": "EXTERNAL_DELIVERY_OUTSIDE_MANUFACTURING_SCOPE",
+            "detail": "本固定模板不批准真实外部交付、客户接收或正式外发。",
+            "source": [
+              {
+                "id": "internal-build-manufacturing.v1",
+                "kind": "server_rule"
+              }
+            ],
+            "status": "NOT_APPLICABLE",
+            "severity": "hard",
+            "waivable": false,
+            "dimension": "delivery_applicability",
+            "freshness": "fixed_server_rule",
+            "rule_version": "v1",
+            "allowed_purpose": "Verify preparation",
+            "responsible_role": "manufacturing"
+          }
+        ],
+        "nature": "synthetic",
+        "binding": {
+          "basis": {
+            "bom": {
+              "ref": {
+                "state": "current",
+                "sha256": "cd542224dc84b3c7ce826a8b9a5d8c95e19dc6013e10337dd3cc16d5d4f20c6b",
+                "version": "1",
+                "source_id": "bom:fb75a322-3bd6-485f-be3f-bf8f442223b2",
+                "captured_at": "2026-10-02T18:09:59.003787Z",
+                "valid_until": null
+              },
+              "items": [
+                {
+                  "unit": "ea",
+                  "item_id": "motor",
+                  "critical": true,
+                  "loss_rate": "0.1",
+                  "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                  "parent_item_id": null,
+                  "supply_required": true,
+                  "quantity_per_parent": "2"
+                }
+              ],
+              "engineering_configuration": {
+                "state": "current",
+                "sha256": "6e9984da9b012b59750698eeaab7f58a2b4e4ce7145902c5382c5bf1c2d56b54",
+                "version": "1",
+                "source_id": "configuration:3693f534-e459-479f-95af-c24f62de0d1d",
+                "captured_at": "2026-10-02T18:09:59.449245Z",
+                "valid_until": null
+              }
+            },
+            "build": {
+              "ref": {
+                "state": "current",
+                "sha256": "d487f4ababf8a7c69c27899a47fef3801346f8907b8f2a35eaaefc41b2e3df1c",
+                "version": "1",
+                "source_id": "build:f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                "captured_at": "2026-10-02T18:10:00.430679Z",
+                "valid_until": null
+              },
+              "build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+              "quantity": "10.00000000",
+              "product_unit": "ea"
+            },
+            "schema_version": "supply-cost-input.v1"
+          },
+          "scope": {
+            "audience": "private:0a41538d-e721-4783-866a-39c35d382eef",
+            "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+            "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+            "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+          },
+          "demand": {
+            "ref": {
+              "state": "current",
+              "sha256": "4e65111cdccac674e01c40191dc19ac7a5f2e22f1cc914bdb7cac4e070619fb8",
+              "version": "1",
+              "source_id": "build-readiness:83be95f0-6227-4623-a168-be8ff1cdfc64",
+              "captured_at": "2026-10-02T18:10:00.678545Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z"
+            },
+            "lines": [
+              {
+                "unit": "ea",
+                "issues": [],
+                "item_id": "motor",
+                "ancestry": [],
+                "critical": true,
+                "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                "required_quantity": "22.000000000",
+                "quantity_per_product": "2.2"
+              }
+            ],
+            "basis_sha256": "6e3339da4376597d43d322f1fb8f05d5ba3bba47d86c1733b35c1703179fae40",
+            "manufacturing_sha256": "482801f1e09b66a7ef6c3b026d6bcf6fd61268a4a975a3191a28f9cbe5413659"
+          },
+          "source_read_set": [
+            {
+              "state": "current",
+              "sha256": "a8d690763655118384072b601f7dee80f67ddc0009e86d35075595d21dea981d",
+              "version": "1",
+              "source_id": "artifact:7e29ea9e-2686-452a-89bb-fe08bc199e45",
+              "captured_at": "2026-10-02T09:33:01.976795Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z"
+            },
+            {
+              "state": "current",
+              "sha256": "e9c775c84611994ccb49ef47b91074f288ad1b45f5a27dd3f14e482e6aa5a118",
+              "version": "1",
+              "source_id": "artifact:e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+              "captured_at": "2026-10-02T18:09:58.648409Z",
+              "valid_until": "2026-10-09T09:33:01.917395Z"
+            }
+          ],
+          "source_read_set_complete": true,
+          "manufacturing_configuration": {
+            "state": "current",
+            "sha256": "482801f1e09b66a7ef6c3b026d6bcf6fd61268a4a975a3191a28f9cbe5413659",
+            "version": "1",
+            "source_id": "manufacturing_configuration:1fff3f50-121b-4970-a26d-7db506dc179d",
+            "captured_at": "2026-10-02T18:09:59.729504Z",
+            "valid_until": null
+          },
+          "manufacturing_operation_ids": [
+            "assembly"
+          ]
+        },
+        "coverage": {
+          "lines": [
+            {
+              "uses": [
+                {
+                  "kind": "unreserved_candidate",
+                  "pool": {
+                    "pool_id": "SYN-PHYSICAL-POOL-1",
+                    "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                    "source_system": "SYNTHETIC-WH"
+                  },
+                  "reservation_id": null,
+                  "qualification_id": null,
+                  "quantity_in_pool_unit": "22.000000000",
+                  "quantity_in_demand_unit": "22.000000000"
+                }
+              ],
+              "demand": {
+                "unit": "ea",
+                "issues": [],
+                "item_id": "motor",
+                "ancestry": [],
+                "critical": true,
+                "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                "required_quantity": "22.000000000",
+                "quantity_per_product": "2.2"
+              },
+              "issues": [],
+              "secured_gap": "22.000000000",
+              "potential_gap": "0",
+              "secured_ready": false,
+              "potential_ready": true,
+              "known_secured_quantity": "0",
+              "known_potential_quantity": "22.000000000"
+            }
+          ],
+          "pools": [
+            {
+              "key": {
+                "pool_id": "SYN-PHYSICAL-POOL-1",
+                "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                "source_system": "SYNTHETIC-WH"
+              },
+              "unit": "ea",
+              "stage": "on_hand",
+              "issues": [],
+              "source": {
+                "state": "current",
+                "sha256": "b431aeb12f2e597a3ab0b544002bc94fc50a82ed013a136d7d822b386b8847ff",
+                "version": "1",
+                "source_id": "operational-asset:2f945cc5-9ee0-57e3-8d4f-87bc31f78bf5",
+                "captured_at": "2026-10-02T18:09:00.701382Z",
+                "valid_until": "2026-10-03T18:10:00.701382Z"
+              },
+              "quantity": "44",
+              "reserved_quantity": "0",
+              "own_secured_quantity": "0",
+              "unreserved_usable_quantity": "44"
+            }
+          ],
+          "issues": [],
+          "notice": "Snapshot calculation only; candidates do not reserve stock or approve a Build. Potential readiness/gaps describe this greedy candidate, not optimal substitution feasibility",
+          "algorithm": "fixed-bom-shared-pool.v1",
+          "input_sha256": "855ecf0e112b0f1f46590ee3089887d3b01f0cf50f84d2f99b89d47de21db03a",
+          "secured_ready": false,
+          "input_snapshot": {
+            "as_of": "2026-10-02T18:16:16.464541Z",
+            "basis": {
+              "bom": {
+                "ref": {
+                  "state": "current",
+                  "sha256": "cd542224dc84b3c7ce826a8b9a5d8c95e19dc6013e10337dd3cc16d5d4f20c6b",
+                  "version": "1",
+                  "source_id": "bom:fb75a322-3bd6-485f-be3f-bf8f442223b2",
+                  "captured_at": "2026-10-02T18:09:59.003787Z",
+                  "valid_until": null
+                },
+                "items": [
+                  {
+                    "unit": "ea",
+                    "item_id": "motor",
+                    "critical": true,
+                    "loss_rate": "0.1",
+                    "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                    "parent_item_id": null,
+                    "supply_required": true,
+                    "quantity_per_parent": "2"
+                  }
+                ],
+                "engineering_configuration": {
+                  "state": "current",
+                  "sha256": "6e9984da9b012b59750698eeaab7f58a2b4e4ce7145902c5382c5bf1c2d56b54",
+                  "version": "1",
+                  "source_id": "configuration:3693f534-e459-479f-95af-c24f62de0d1d",
+                  "captured_at": "2026-10-02T18:09:59.449245Z",
+                  "valid_until": null
+                }
+              },
+              "build": {
+                "ref": {
+                  "state": "current",
+                  "sha256": "d487f4ababf8a7c69c27899a47fef3801346f8907b8f2a35eaaefc41b2e3df1c",
+                  "version": "1",
+                  "source_id": "build:f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                  "captured_at": "2026-10-02T18:10:00.430679Z",
+                  "valid_until": null
+                },
+                "build_id": "f59d04a9-fa77-435d-8e9d-393dc863fa95",
+                "quantity": "10.00000000",
+                "product_unit": "ea"
+              },
+              "schema_version": "supply-cost-input.v1"
+            },
+            "pools": [
+              {
+                "key": {
+                  "pool_id": "SYN-PHYSICAL-POOL-1",
+                  "material_id": "d9492537-a3c3-4711-bba6-454d8aa0b4b6",
+                  "source_system": "SYNTHETIC-WH"
+                },
+                "ref": {
+                  "state": "current",
+                  "sha256": "b431aeb12f2e597a3ab0b544002bc94fc50a82ed013a136d7d822b386b8847ff",
+                  "version": "1",
+                  "source_id": "operational-asset:2f945cc5-9ee0-57e3-8d4f-87bc31f78bf5",
+                  "captured_at": "2026-10-02T18:09:00.701382Z",
+                  "valid_until": "2026-10-03T18:10:00.701382Z"
+                },
+                "unit": "ea",
+                "stage": "on_hand",
+                "quality": "released",
+                "quantity": "44",
+                "expected_at": null,
+                "availability": "available"
+              }
+            ],
+            "alternates": [],
+            "reservations": [],
+            "supply_snapshot": {
+              "state": "current",
+              "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+              "version": "1",
+              "source_id": "operational-fact:09648b42-730c-40a8-92ab-f274cb21ed2b",
+              "captured_at": "2026-10-02T18:10:24.142050Z",
+              "valid_until": "2026-10-03T18:10:00.701382Z"
+            },
+            "supply_scope_complete": true
+          },
+          "schema_version": "supply-coverage-result.v1",
+          "potential_ready": true,
+          "candidate_policy": "critical-then-item-primary-then-alternate.v1",
+          "critical_secured_ready": false,
+          "potential_is_feasibility_proof": false
+        },
+        "template": "internal-build-manufacturing.v1",
+        "fact_refs": [
+          {
+            "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+            "epoch": 1,
+            "nature": "synthetic",
+            "sha256": "9fbc5f4ef822f733927eed019cb77fad29a7cf893fb5447cb74d8ee995c998b7",
+            "revision": 1
+          }
+        ],
+        "resources": {
+          "checks": [
+            {
+              "code": "acceptance_valid",
+              "detail": "Named fact covers full execution",
+              "source": {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "kind": "domain",
+                "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:acceptance:assembly",
+                "revision": 1
+              },
+              "status": "READY",
+              "resource": {
+                "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "kind": "equipment",
+                "revision": 1
+              }
+            },
+            {
+              "code": "calibration_valid",
+              "detail": "Named fact covers full execution",
+              "source": {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "kind": "domain",
+                "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:calibration:assembly",
+                "revision": 1
+              },
+              "status": "READY",
+              "resource": {
+                "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "kind": "equipment",
+                "revision": 1
+              }
+            },
+            {
+              "code": "capacity_available",
+              "detail": "Capacity checked; this is not a reservation",
+              "source": null,
+              "status": "READY",
+              "resource": {
+                "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "kind": "equipment",
+                "revision": 1
+              }
+            }
+          ],
+          "status": "READY",
+          "checked_at": "2026-10-02T18:16:16.464541Z",
+          "conditions": [],
+          "input_digest": "762db9f58e5bbf479401f1fe2e0637e5a371a7ab40ce02f49f6f38c9734ed337",
+          "capacity_status": "checked",
+          "fixed_resources": [
+            {
+              "ref": {
+                "id": "7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "kind": "equipment",
+                "revision": 1
+              },
+              "facts": [
+                {
+                  "kind": "acceptance",
+                  "source": {
+                    "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                    "kind": "domain",
+                    "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:acceptance:assembly",
+                    "revision": 1
+                  },
+                  "status": "accepted",
+                  "purpose": "Verify preparation",
+                  "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                  "conditions": [],
+                  "valid_from": "2026-10-01T18:10:00.701382Z",
+                  "valid_until": "2026-10-03T18:10:00.701382Z",
+                  "operation_id": "assembly",
+                  "named_decision_id": "fc0682a6-a99e-4d11-8e19-114c4f49a6b1"
+                },
+                {
+                  "kind": "calibration",
+                  "source": {
+                    "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                    "kind": "domain",
+                    "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651:calibration:assembly",
+                    "revision": 1
+                  },
+                  "status": "accepted",
+                  "purpose": "Verify preparation",
+                  "actor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+                  "conditions": [],
+                  "valid_from": "2026-10-01T18:10:00.701382Z",
+                  "valid_until": "2026-10-03T18:10:00.701382Z",
+                  "operation_id": "assembly",
+                  "named_decision_id": "db899470-aa58-49cb-a8cd-b2408b1f6c90"
+                }
+              ],
+              "scope": {
+                "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+                "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+                "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+              },
+              "source": {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "kind": "domain",
+                "position": "resource:7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "revision": 1
+              },
+              "calendar": {
+                "weekly": [
+                  {
+                    "weekday": 0,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 1,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 2,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 3,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 4,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 5,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  },
+                  {
+                    "weekday": 6,
+                    "intervals": [
+                      {
+                        "end_minute": 1440,
+                        "start_minute": 0
+                      }
+                    ]
+                  }
+                ],
+                "version": "1",
+                "timezone": "UTC",
+                "exceptions": [],
+                "calendar_id": "SYN-UTC",
+                "ambiguous_time": "reject",
+                "timezone_rules_sha256": "fddce1e648a1732ac29afd9a16151b2973cdf082e7ec0c690f7e42be6b598b93"
+              },
+              "capacity": "1",
+              "purposes": [
+                "Verify preparation"
+              ],
+              "lifecycle": "active",
+              "maintenance": [],
+              "operation_ids": [
+                "assembly"
+              ],
+              "required_facts": [],
+              "calendar_source": {
+                "id": "09648b42-730c-40a8-92ab-f274cb21ed2b",
+                "kind": "domain",
+                "position": "calendar:7d83053a-e5f7-4931-b2c5-95089c2ae651",
+                "revision": 1
+              },
+              "occupancy_revision": 1
+            }
+          ]
+        },
+        "valid_until": "2026-10-03T18:10:00.701382Z",
+        "build_revision": 1,
+        "facts_revision": "0bdaa91ab577f04e3fc8045afd2d301ae57850a95a55dab0469c867dceef6dfc",
+        "candidate_ready": true,
+        "operational_state": "READY",
+        "required_source_read_set": [
+          {
+            "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+            "expected_revision": 1
+          },
+          {
+            "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+            "expected_revision": 1
+          }
+        ],
+        "accepted_controls_required": [
+          "no_external_delivery",
+          "no_test_run_or_sample_qualification",
+          "retain_traceable_outputs",
+          "stop_on_configuration_deviation"
+        ],
+        "actual_configuration_binding": [],
+        "engineering_configuration_id": "3693f534-e459-479f-95af-c24f62de0d1d",
+        "manufacturing_configuration_id": "1fff3f50-121b-4970-a26d-7db506dc179d",
+        "engineering_configuration_revision": 1,
+        "manufacturing_configuration_revision": 1,
+        "controls": [
+          "no_external_delivery",
+          "no_test_run_or_sample_qualification",
+          "retain_traceable_outputs",
+          "stop_on_configuration_deviation"
+        ],
+        "limit": "仅固定用途的内部prototype/tool_trial制造，不授专业发布、TestRun或外部交付资格。"
+      }
+    }
+  },
+  "capabilities": {
+    "public_authority_import": false,
+    "ai_t2": false,
+    "external_delivery": false,
+    "test_run_start": false
+  }
+}

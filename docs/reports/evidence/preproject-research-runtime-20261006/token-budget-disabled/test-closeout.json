@@ -1,0 +1,23 @@
+{
+  "container_id": "d1d1f17f275a6414a847533e067263347e6006958b8c81c7918ac7ee653f6bba",
+  "database": "pdos_test",
+  "port": 61533,
+  "main_target_untouched": true,
+  "head": "0430_application_token_budget",
+  "tenants_before_cleanup": 0,
+  "backup": {
+    "path": "/Users/huhanwei/pdos-preview-backups/token-budget-disable-closeout-20261007-054652/pdos_test-final.dump",
+    "bytes": 4286200,
+    "sha256": "4a6f7f27abe4887a27351c8181feb4bec65f3c63c6b8a2d258a91a3e06ac75d0"
+  },
+  "cleanup": {
+    "method": "delete",
+    "table_count": 473,
+    "changed_table_count": 0,
+    "deleted_rows": 0,
+    "fallback_reason": null
+  },
+  "stopped": true,
+  "volume_retained": true,
+  "completed_at": "2026-10-07T05:46:54.176658+00:00"
+}

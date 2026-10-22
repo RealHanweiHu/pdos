@@ -1,0 +1,19 @@
+{
+  "check": "source_and_artifact_hashes_without_application_import",
+  "results": [
+    {
+      "manifest": "docs/contracts/pdos-v1/manifest.json",
+      "sources_checked": 172,
+      "artifacts_checked": 3,
+      "status": "exact_hashes_match"
+    },
+    {
+      "manifest": "docs/contracts/pdos-runtime-v1/runtime-policy-manifest.json",
+      "sources_checked": 52,
+      "artifacts_checked": 4,
+      "status": "exact_hashes_match"
+    }
+  ],
+  "approved_snapshot": "unchanged",
+  "limitation": "Does not rerun OpenAPI generation or replace the pending full import check."
+}

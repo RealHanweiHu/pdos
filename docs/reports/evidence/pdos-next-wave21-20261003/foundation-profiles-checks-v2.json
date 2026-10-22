@@ -1,0 +1,180 @@
+{
+  "created_at": "2026-10-03T18:03:32.784130+00:00",
+  "records": [
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--config",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+        "pdos_next/operational_bootstrap.py",
+        "pdos_next/test_resource_bootstrap.py",
+        "pdos_next/quality_bootstrap.py",
+        "tests/test_operational_bootstrap_profiles.py",
+        "tests/test_test_resource_bootstrap_profiles.py",
+        "tests/test_quality_bootstrap_profiles.py"
+      ],
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.014,
+      "created_at": "2026-10-03T18:03:30.170435+00:00",
+      "scope": [
+        "pdos_next/operational_bootstrap.py",
+        "pdos_next/test_resource_bootstrap.py",
+        "pdos_next/quality_bootstrap.py",
+        "tests/test_operational_bootstrap_profiles.py",
+        "tests/test_test_resource_bootstrap_profiles.py",
+        "tests/test_quality_bootstrap_profiles.py"
+      ],
+      "no_connections": true,
+      "log": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave21-20261003/foundation-profiles-format-v2-final-02.log",
+      "log_sha256": "3926259571176267c7245e8c4a1e66910d34ad08ab95185aab4f02656f937034"
+    },
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "--config",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+        "pdos_next/operational_bootstrap.py",
+        "pdos_next/test_resource_bootstrap.py",
+        "pdos_next/quality_bootstrap.py",
+        "tests/test_operational_bootstrap_profiles.py",
+        "tests/test_test_resource_bootstrap_profiles.py",
+        "tests/test_quality_bootstrap_profiles.py"
+      ],
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.012,
+      "created_at": "2026-10-03T18:03:30.182930+00:00",
+      "scope": [
+        "pdos_next/operational_bootstrap.py",
+        "pdos_next/test_resource_bootstrap.py",
+        "pdos_next/quality_bootstrap.py",
+        "tests/test_operational_bootstrap_profiles.py",
+        "tests/test_test_resource_bootstrap_profiles.py",
+        "tests/test_quality_bootstrap_profiles.py"
+      ],
+      "no_connections": true,
+      "log": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave21-20261003/foundation-profiles-lint-v2-final-02.log",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "--config",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+        "pdos_next/operational_bootstrap.py",
+        "pdos_next/test_resource_bootstrap.py",
+        "pdos_next/quality_bootstrap.py",
+        "tests/test_operational_bootstrap_profiles.py",
+        "tests/test_test_resource_bootstrap_profiles.py",
+        "tests/test_quality_bootstrap_profiles.py"
+      ],
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.012,
+      "created_at": "2026-10-03T18:03:30.195926+00:00",
+      "scope": [
+        "pdos_next/operational_bootstrap.py",
+        "pdos_next/test_resource_bootstrap.py",
+        "pdos_next/quality_bootstrap.py",
+        "tests/test_operational_bootstrap_profiles.py",
+        "tests/test_test_resource_bootstrap_profiles.py",
+        "tests/test_quality_bootstrap_profiles.py"
+      ],
+      "no_connections": true,
+      "log": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave21-20261003/foundation-profiles-format-check-v2-final-02.log",
+      "log_sha256": "ef7d13d02214e98ca902b05257cdbe6a8e84f3b4714508efdc19766460b54209"
+    },
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--noconftest",
+        "-p",
+        "no:cacheprovider",
+        "-q",
+        "-o",
+        "addopts=",
+        "--rootdir",
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged",
+        "tests/test_operational_bootstrap_profiles.py",
+        "tests/test_test_resource_bootstrap_profiles.py",
+        "tests/test_quality_bootstrap_profiles.py"
+      ],
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged",
+      "exit_code": 0,
+      "elapsed_seconds": 1.707,
+      "created_at": "2026-10-03T18:03:31.903829+00:00",
+      "scope": [
+        "pdos_next/operational_bootstrap.py",
+        "pdos_next/test_resource_bootstrap.py",
+        "pdos_next/quality_bootstrap.py",
+        "tests/test_operational_bootstrap_profiles.py",
+        "tests/test_test_resource_bootstrap_profiles.py",
+        "tests/test_quality_bootstrap_profiles.py"
+      ],
+      "no_connections": true,
+      "log": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave21-20261003/foundation-profiles-pure-v2-final-02.log",
+      "log_sha256": "525c76fa054609af124c9dfe631ab4511f1bac4751ceb35bc156318dd3539ea9"
+    },
+    {
+      "command": [
+        "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-c",
+        "from pdos_next import operational_bootstrap, test_resource_bootstrap, quality_bootstrap; print(\"3 bootstrap imports; no app startup / connection\")"
+      ],
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/.local/wave21-foundation-staged",
+      "exit_code": 0,
+      "elapsed_seconds": 0.869,
+      "created_at": "2026-10-03T18:03:32.773335+00:00",
+      "scope": [
+        "pdos_next/operational_bootstrap.py",
+        "pdos_next/test_resource_bootstrap.py",
+        "pdos_next/quality_bootstrap.py",
+        "tests/test_operational_bootstrap_profiles.py",
+        "tests/test_test_resource_bootstrap_profiles.py",
+        "tests/test_quality_bootstrap_profiles.py"
+      ],
+      "no_connections": true,
+      "log": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave21-20261003/foundation-profiles-cold-import-v2-final-02.log",
+      "log_sha256": "782a78282559bff17c332ed0517f861b1885b3df28abc2e0d49e32535dd6a4b9"
+    }
+  ],
+  "ast": {
+    "count": 6,
+    "exit_code": 0
+  },
+  "sha256": {
+    "pdos_next/operational_bootstrap.py": "fd7ed5585dded9a0896858c5c02dbef7b18ed4ac8d09d3f08b42ec28f2cafb3e",
+    "pdos_next/test_resource_bootstrap.py": "e710c9af00d4c3c08c9c48e8b754a4e3f987713e4b52deada4e39263c5241d21",
+    "pdos_next/quality_bootstrap.py": "1b01049d9b8e6950f9bf80c4517196d3074e1476b9e1bef3839ea7ff82018e6e",
+    "tests/test_operational_bootstrap_profiles.py": "cbc6dc4c8ee0f70556f20f750d5e155ea0929b5dc54f5bed2bdcaa01e85c0fb9",
+    "tests/test_test_resource_bootstrap_profiles.py": "1bef7e390abc8363185eda210206a3f0b8e6430564e77c84aa2bdbd13ffabe5e",
+    "tests/test_quality_bootstrap_profiles.py": "a2a251106399ca42d2dc11803136a08f825041b63ae4ffb15f983143f7cd6042"
+  },
+  "source_stable": true,
+  "pure_count": 86,
+  "connections": 0,
+  "actual_source_mutations": 0,
+  "owned_actual_target_baselines_match": true,
+  "observed_unowned_actual_drift": [
+    "api.py",
+    "asgi.py",
+    "capa_rule_publisher.py",
+    "domain/professional_authority/service.py",
+    "quality_followup_integration.py"
+  ],
+  "observed_unowned_drift_note": "Root confirmed these 5 paths are authorized B/C/Root integration changes; actual package-wide stability is not claimed",
+  "staged_modified_package_files": [
+    "operational_bootstrap.py",
+    "quality_bootstrap.py",
+    "test_resource_bootstrap.py"
+  ],
+  "original_test_targets_absent": true,
+  "previous_checks": "/Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave21-20261003/foundation-profiles-checks-v1.json"
+}

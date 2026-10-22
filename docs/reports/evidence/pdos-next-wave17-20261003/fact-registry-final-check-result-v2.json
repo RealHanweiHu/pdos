@@ -1,0 +1,76 @@
+{
+  "schema_version": "pdos-wave17-fact-registry-checks-v2",
+  "manifest": "fact-registry-final-source-manifest-v2.json",
+  "manifest_sha256": "e0e881e50421fba3560a54da3c7a8a92f01f9a9aefa77b9ec898963260d38daa",
+  "raw_evidence_sha256": {
+    "fact-registry-pure-tests-v1.log": "fd7d5356c8a212063070191bece2f8f15295861122cb7f3aa0c01881f47df11e",
+    "fact-registry-pure-tests-final.log": "2395ea3efd9f9246d1c1e4eea49e6daef8ff0f6512e84195e45e260a97c2d469",
+    "fact-registry-ruff-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "fact-registry-format-final.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "fact-registry-pure-tests-v2.log": "a016e8f144e816c512ab6753059a2a9341389c91a2ea5a80c8daa0c72431786a",
+    "fact-registry-ruff-v2.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "fact-registry-format-v2.log": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+    "fact-registry-ast-v2.log": "bf0d91903143fc9f410885f6bc98feae49899f9b10fd885cfe987a66db5157cc"
+  },
+  "owned_commands": [
+    "PYTHONPATH=pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/staging/wave17/test_fact_registry_storage.py -q",
+    "pdos-next/server/.venv/bin/ruff check pdos-next/staging/wave17/fact_registry_storage.py pdos-next/staging/wave17/test_fact_registry_storage.py",
+    "pdos-next/server/.venv/bin/ruff format --check pdos-next/staging/wave17/fact_registry_storage.py pdos-next/staging/wave17/test_fact_registry_storage.py",
+    "In-memory ast.parse/compile on the two owned Python source files only"
+  ],
+  "final": {
+    "pure": {
+      "passed": 51,
+      "failed": 0,
+      "seconds": 8.63
+    },
+    "ruff": "passed",
+    "format": "passed",
+    "ast_compile_files": 2
+  },
+  "earlier_checks_preserved": [
+    {
+      "passed": 34,
+      "failed": 7,
+      "seconds": 7.49,
+      "evidence": "Initial tool console summary only; no raw file or source SHA captured. Test-only fixes: DomainError.code vs message, frozen Context mutation/replace."
+    },
+    {
+      "passed": 41,
+      "failed": 0,
+      "seconds": 7.12,
+      "log": "fact-registry-pure-tests-v1.log"
+    },
+    {
+      "passed": 48,
+      "failed": 0,
+      "seconds": 8.05,
+      "log": "fact-registry-pure-tests-final.log",
+      "scope": "Before Root-required Project ACL delta; no source SHA was captured at this point. This prior log is not evidence for the Project change."
+    }
+  ],
+  "delta_after_48": [
+    "Root-authorized exact active Project/current owner/visibility ACL + post-all-IO Project ACL stamp reread",
+    "Three targeted private-project/wrong-project-scope/post-callback-audience tests",
+    "Synthetic fixture common intents now distinct per created fact label, aligned with staged uniqueness"
+  ],
+  "boundaries": {
+    "staged_unmounted": true,
+    "database_used": false,
+    "http_or_network_used": false,
+    "public_tests_or_build_run": false,
+    "ddl_registered": false,
+    "qualification_granted": false,
+    "current_evidence_authorized": false,
+    "same_uow_consumption_attested": false,
+    "needs_lineage_owner": true,
+    "seven_owner_gates_missing": true,
+    "review_candidate_full_sha_owner_missing_by_default": true,
+    "pure_positive_transport": "Explicit SELECT and candidate-owner substitutes; frozen atom reader executed with actual no-connection Session/transaction/SAVEPOINT structures. No real persisted facts or source/professional proof."
+  },
+  "remaining": [
+    "Actual installed immutable/RLS/lifecycle/Current monotonic guards and PG/concurrency validation",
+    "Real candidate full-group/full-SHA publication+read owner",
+    "Real seven owner integrations/issuer/limited Issue lineage/current source+runtime closure and actual same-UOW consumption provenance"
+  ]
+}

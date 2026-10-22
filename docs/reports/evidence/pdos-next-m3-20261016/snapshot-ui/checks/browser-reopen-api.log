@@ -1,0 +1,11 @@
+INFO:     127.0.0.1:63474 - "GET /v1/session HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63474 - "GET /v1/categories HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63483 - "GET /v1/categories/0359ccad-8274-40e4-b523-651474968331/products HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63486 - "GET /v1/categories/0359ccad-8274-40e4-b523-651474968331/agent-runs?page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63484 - "GET /v1/categories/0359ccad-8274-40e4-b523-651474968331/knowledge?page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63485 - "GET /v1/categories/0359ccad-8274-40e4-b523-651474968331/parameters?page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63483 - "GET /v1/categories/0359ccad-8274-40e4-b523-651474968331/parameters?page_size=200 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63474 - "GET /v1/categories/0359ccad-8274-40e4-b523-651474968331/proposals?page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63523 - "GET /v1/categories/0359ccad-8274-40e4-b523-651474968331/agent-runs/de1e34d3-7d3a-409d-8221-91a56acc42b6 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63523 - "GET /v1/categories/0359ccad-8274-40e4-b523-651474968331/agent-runs/de1e34d3-7d3a-409d-8221-91a56acc42b6/events?after=0&page_size=200 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63523 - "GET /v1/categories/0359ccad-8274-40e4-b523-651474968331/agent-runs/de1e34d3-7d3a-409d-8221-91a56acc42b6/candidates?after=0&page_size=50 HTTP/1.1" 200 OK

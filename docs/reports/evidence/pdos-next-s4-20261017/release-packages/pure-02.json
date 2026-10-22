@@ -1,0 +1,27 @@
+{
+  "started_at": "2026-10-17T21:57:58.697477+00:00",
+  "finished_at": "2026-10-17T21:58:03.409774+00:00",
+  "snapshot": "/private/tmp/pdos-s4-release-n9vogeqk",
+  "command": [
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider",
+    "tests/release"
+  ],
+  "exit": 0,
+  "target": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "before_head": "s0_0778",
+    "after_head": "s0_0778"
+  },
+  "source_changed": [],
+  "real_model_calls": 0,
+  "real_KMS_calls": 0,
+  "performance_acceptance": false
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "status": "owned_ui_result_label_delta_frozen",
+  "recorded_at": "2026-10-03T05:33:26.313Z",
+  "previous_freeze": "ui-component-check.json",
+  "change": "Only component result display: top-level fixed projection is explicitly result; nested result uses existing resultsVerdict Chinese labels. Failure eligibility, payloads, read-set, command/key recovery and backend unchanged.",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+      "sha256": "0f62a4d0f3c7f792c5e02e7c1e9cfbf057f68e4fb8ebb55953b0e1d2fb174c46",
+      "changed": true
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-loop-view.ts",
+      "sha256": "ad819a023b0547f2eac578355b844da0ad94cb178382adc215e1c2a0b4e62f56",
+      "changed": false
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-loop-view.test.ts",
+      "sha256": "8b46c23f24c117c59fd34b2caeb3bf9e7ec350b5a9184b11f1976c457270c142",
+      "changed": false
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "sha256": "c17d2c59bba074b5c865ca4524405deb4c10ee36f15350a4bf0155dd8d04c900",
+      "changed": false
+    }
+  ],
+  "previous_component_sha256": "d13256535bdbffb7d386b49806a1821b38f2ecbe67c4b6cfed7fa32a8da17966",
+  "checks": [
+    {
+      "kind": "owned_typecheck",
+      "command": "node_modules/.bin/tsc --project /tmp/pdos-wave15-ui.R1c5Ff/tsconfig.json",
+      "exit_code": 0,
+      "tool_chunk": "e20db1",
+      "raw_output": ""
+    },
+    {
+      "kind": "owned_lint",
+      "command": "node_modules/.bin/eslint src/components/builds/build-quality-loop.tsx src/lib/build-quality-loop-view.ts src/lib/build-quality-loop-view.test.ts",
+      "exit_code": 0,
+      "tool_chunk": "feb43a",
+      "raw_output": ""
+    }
+  ],
+  "helper_tests": "Not rerun for display-only delta; existing 35-check raw record and unchanged helper/test hashes remain in original freeze.",
+  "public_validation": {
+    "database": "not_run_by_C",
+    "build": "not_run_by_C; root will verify new UI candidate",
+    "browser": "not_run_by_C"
+  }
+}

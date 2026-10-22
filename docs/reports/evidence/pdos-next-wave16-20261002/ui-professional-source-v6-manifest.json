@@ -1,0 +1,38 @@
+{
+  "candidate": "Wave16 owned UI v6 professional reported/disposed read compatibility",
+  "recorded_at": "2026-10-03T09:28:50.243109+00:00",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/product/verification-professional.tsx",
+      "sha256": "76ea370bf3a6607a62db54385fe0b197ab563d50224a3ae9eb6dedfcd98a3c30"
+    },
+    {
+      "path": "pdos-next/web/src/lib/verification-professional.ts",
+      "sha256": "e9e4572da9ed10ff29658c6aaed0d85fe8cab91d46f40e4fd21b173f2b71837b"
+    },
+    {
+      "path": "pdos-next/web/src/lib/verification-professional.test.ts",
+      "sha256": "481635405b5cdbf2806223e0d9d113fb9b80919de63251d48b4b8c3f8c26b9f4"
+    }
+  ],
+  "baseline": [
+    {
+      "path": "pdos-next/web/src/components/product/verification-professional.tsx",
+      "sha256": "b97d80847b1ac1865a2b08acbe0c0b057511d98aa8b4ed304d959b274eaec02f",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-professional-before-v6-source/verification-professional.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/lib/verification-professional.ts",
+      "sha256": "d864458c26151c97af9a2e2669a0cdff6757267e5065d4441d69a611f585c24c",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-professional-before-v6-source/verification-professional.ts"
+    },
+    {
+      "path": "pdos-next/web/src/lib/verification-professional.test.ts",
+      "sha256": "d42f998d93898d93924c8f54410cf0f37085713d7a5a8b7493aa9897db9e406a",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-professional-before-v6-source/verification-professional.test.ts"
+    }
+  ],
+  "delta_file": "ui-professional-before-to-v6.diff",
+  "public_paths_changed": false,
+  "backend_paths_changed": false
+}

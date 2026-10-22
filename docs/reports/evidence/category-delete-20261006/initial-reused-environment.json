@@ -1,0 +1,13 @@
+{
+  "container_id": "d1d1f17f275a6414a847533e067263347e6006958b8c81c7918ac7ee653f6bba",
+  "volume": "b70319901940c66e3136427eb9c45b8ecee5b933934dd90a069f533bf064c94e",
+  "port": 52906,
+  "database": "pdos_test",
+  "head": "0428_preproject_dialogue",
+  "initial_tenants": 0,
+  "initial_other_connections": 0,
+  "initial_running": true,
+  "backup": "/Users/huhanwei/pdos-preview-backups/category-delete-start-20261007-023741/pdos_test-before.dump",
+  "backup_bytes": 4276094,
+  "backup_sha256": "775d7aeab0c54ee8d540ecec0a6d93353845a2b456301c5826e9e787641f1739"
+}

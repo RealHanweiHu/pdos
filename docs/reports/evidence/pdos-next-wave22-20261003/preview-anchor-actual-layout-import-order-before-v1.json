@@ -1,0 +1,11 @@
+{
+  "status": "FAILED_STATIC_IMPORT_ORDER",
+  "scope": "3 newly copied tests; runtime sources static passed",
+  "before": {
+    "server/tests/test_launch_plan_preview.py": "9ffe4e2d5ecde1186ffd33af4f7777664ae948bd145670d3e397ceab2f1175e3",
+    "server/tests/test_launch_plan_integration.py": "1c71ac07053c34ae485795473c02a12f0258144a260b915ea7383c233a907493",
+    "server/tests/capa_effectiveness/test_fixed_candidate_anchor.py": "f9ecddf32ffd4d725144fc633be58b7b5dd5f60e98098710d6f627b7b665e22e"
+  },
+  "reason": "Actual server pytest Ruff source-root grouping differs from isolated layout",
+  "business_change": false
+}

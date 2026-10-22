@@ -1,0 +1,50 @@
+{
+  "result": "passed",
+  "synthetic_only": true,
+  "tested_sizes": [
+    {
+      "width": 1440,
+      "height": 1000,
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "scroll_width": 1440
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "scroll_width": 390
+    }
+  ],
+  "screenshots": [
+    "desktop-light.jpg",
+    "desktop-light-effects.jpg",
+    "desktop-dark.jpg",
+    "mobile-light.jpg",
+    "mobile-dark.jpg"
+  ],
+  "history": {
+    "formal_v6_scheduled_remains_unstarted": true,
+    "run_v1_planned_actual_start_null": true,
+    "formal_v7_and_run_v2_restored": true
+  },
+  "clock_checks": {
+    "promise": "2026-10-03T01:35:40.375459Z",
+    "actual_start": "2026-10-03T01:36:12.160096Z",
+    "server_received": "2026-10-03T01:44:16.538044Z",
+    "independent_effective_time": null
+  },
+  "saved_effects_only_not_current_resource_qualification": true,
+  "run_result_pending": true,
+  "original_submit_pending_resolved_with_receipt": true,
+  "unknown_transport_fault_injection_performed": false,
+  "console_errors_or_warnings": 0,
+  "viewport_override_reset": true,
+  "final_theme": "light",
+  "component_sha256": "7ecbea66410c289c3dc9af99394d5bb590c0e0e30afabb4fa08d7b8046f8dcea"
+}

@@ -1,0 +1,41 @@
+{
+  "status": "PASS_LIMITED_CANDIDATE_CHECKPOINT",
+  "observed_at": "2026-10-03T15:07:36.269051+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "business_writes": 0,
+  "source_manifests": [
+    {
+      "file": "candidate-actual-http-source-v7.json",
+      "sha256": "194973a0bd6a3058aaa8c896a5155de516dd0320dd46e00a74dcfce8c45bb5f9",
+      "file_count": 341,
+      "stable": true
+    },
+    {
+      "file": "web-candidate-source-v6.json",
+      "sha256": "52809312bfdebf036e694ff3ba7e44e49eae1f243a3a2fb7a2908754f70e3b47",
+      "file_count": 154,
+      "stable": true
+    }
+  ],
+  "candidate_count_after_original_ui_recovery": 2,
+  "exact_same_candidate_ids_as_closeout": true,
+  "three_columns_null_and_result_indeterminate": true,
+  "unopened_companion_table_counts": {
+    "capa_verification_rule_facts": 0,
+    "capa_observation_facts": 0,
+    "capa_named_verification_reviews": 0,
+    "capa_current_verification_rules": 0,
+    "capa_current_observations": 0
+  },
+  "browser_file": "candidate-browser-v1.json",
+  "browser_sha256": "00e9d847c3c81e5ec4348b5a0e38558f09228b93147fe9b389e0a79099095033",
+  "screenshots": {
+    "candidate-preview-final-v1.jpg": "2cdedefe8617f15cb1ef343f46c75f17ffcde7b43851063f21d5f894bd4919bc",
+    "candidate-saved-recovered-v5.jpg": "0e7c41358264a7218013697af7a2db0a23563f2083230c74f0b49f0d3139fdc4",
+    "candidate-saved-dark-v6.jpg": "cd5d5e6219ad6573c1381f1a9ef9be900861458903c158d9b8606f1188db1381",
+    "candidate-saved-final-v6.jpg": "385305b879ec03ba0a5a7f01769ea02139d4219caffc33fa5a1e02372546e720",
+    "candidate-saved-final-v6-overview.jpg": "55ed87d48f3bd07a9cff80fb35a2a001f86dc642bad57a769ff3585d12dd0a62"
+  },
+  "scope": "Final count/source/browser binding after actual original UI recovery and final GET-only refresh; full immutable groups and 24-table historical comparison remain closeout-v1 scope, not repeated. Seven owners/effectiveness/closure/real qualification remain unfinished. Actual narrow viewport request failed to change 1280px, not counted as mobile pass. No final-v6 real new-write >300s request claimed."
+}

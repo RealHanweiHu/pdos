@@ -1,0 +1,32 @@
+{
+  "checked_at": "2026-10-07T02:26:50.873987+00:00",
+  "tavily_key_present": true,
+  "firecrawl_key_present": true,
+  "local_search_configured": true,
+  "dns": {
+    "www.minimax.cn": {
+      "addresses": [
+        "198.18.0.44"
+      ],
+      "all_public": false,
+      "fake_ip_present": true
+    },
+    "www.thule.com": {
+      "addresses": [
+        "198.18.0.45"
+      ],
+      "all_public": false,
+      "fake_ip_present": true
+    },
+    "www.decathlon.com": {
+      "addresses": [
+        "198.18.0.46"
+      ],
+      "all_public": false,
+      "fake_ip_present": true
+    }
+  },
+  "llm_calls": 0,
+  "system_network_configuration_changed": false,
+  "initial_probe_error": "system Python lacked dotenv; rerun with existing server .venv"
+}

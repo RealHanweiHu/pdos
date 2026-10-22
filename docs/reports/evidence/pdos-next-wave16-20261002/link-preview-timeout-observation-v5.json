@@ -1,0 +1,20 @@
+{
+  "observed_at": "2026-10-03T10:09:32.841917+00:00",
+  "target_port": 62513,
+  "readonly": true,
+  "issue_revision": 6,
+  "saved_link_count": 0,
+  "link_receipt_count": 0,
+  "visible_confirmation_counts": [
+    {
+      "consumed": false,
+      "count": 2
+    }
+  ],
+  "ui_preview_timeouts_observed": 2,
+  "inputs_returned_200": true,
+  "T1_save_clicked": false,
+  "original_pending_command_retained": true,
+  "fresh_command_created": false,
+  "limitation": "After-the-fact snapshot while prior preview server work may still be in flight; cannot certify transaction timing or qualification."
+}

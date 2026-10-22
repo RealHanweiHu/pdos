@@ -1,0 +1,10 @@
+{
+  "candidate_source_files_unchanged": 146,
+  "legacy_source_files_unchanged": 57,
+  "old_npq_status_retained": true,
+  "queue_updated": true,
+  "old_wave1_evidence_retained": true,
+  "external_full_lint_remaining": "engines/supply_cost/dto.py:170 E501",
+  "evidence_links_exist": true,
+  "final_frontend_build_and_lint_pass": true
+}

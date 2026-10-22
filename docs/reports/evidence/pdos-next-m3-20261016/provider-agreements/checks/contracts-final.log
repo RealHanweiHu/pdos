@@ -1,0 +1,11 @@
+✔ expired approved originals remain exact recovery inputs, with scope-owned storage (1.963167ms)
+✔ only a same-person same-category provider revision receipt clears an unknown request (0.144334ms)
+✔ registration dates, explicit data categories and provider metadata must be reviewable (0.104667ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6.832416

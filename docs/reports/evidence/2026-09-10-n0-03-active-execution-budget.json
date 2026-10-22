@@ -1,0 +1,69 @@
+{
+  "date": "2026-09-10",
+  "scope": "persistent lineage active execution time and model/Finding admission and publication boundaries",
+  "tests": {
+    "core_unique_passed_after_repairs_and_new_cases": 61,
+    "event_and_restricted_budget_passed": 32,
+    "application_passed": 40,
+    "pure_heartbeat_and_factory_passed": 6,
+    "last_isolated_recheck_passed": 46,
+    "distinct_passed": 139,
+    "new_cases": 13,
+    "regression_cases": 126,
+    "initial_failures_resolved": [
+      "activity constraint metadata name mismatch",
+      "candidate migration/test database drift caused missing downgrade trigger",
+      "synthetic JSON SQL parameter required explicit text type",
+      "lease migration test hardcoded prior head"
+    ]
+  },
+  "checks": {
+    "ruff_files": 8,
+    "format_files": 8,
+    "mypy_files": 6,
+    "dba_active_budget_port_parity": "passed",
+    "exports": "common 4 and runtime 5 passed"
+  },
+  "databases": [
+    "127.0.0.1:57432/pdos_test",
+    "127.0.0.1:57433/pdos_test"
+  ],
+  "migration_head": "0072_active_execution_budget",
+  "isolated_container": "pdos-active-budget-test",
+  "isolated_container_removed": true,
+  "shared_role_password_changes": false,
+  "shared_migration_review": "initial rejection resolved after read-only proof and execution-time assertions of zero tenant/run/lineage/activity rows; subsequent review approved",
+  "real_model_calls": 0,
+  "default_budget_mode": "legacy",
+  "sources": {
+    "server/app/ai/budget_ledger.py": "61ce0d5ef9b0a6ba42b283e0f1dbf476245eb5fb427ae6eeef31c022ff4013c9",
+    "server/app/ai/agent_budget.py": "896698c7b724e066270f7ae28bc0c49a75f8e00b6fbd1a2233256e3ee0860d89",
+    "server/app/ai/model_budget.py": "8a4f4ff0f090110b317e1572361c643e38ee2b3d7fbcc8783c5d47e005b02006",
+    "server/app/db/schema.py": "f2b593c386ea5ec1c508c8d90c329098f2d5856a9808e69d70ca263d38aaa8dc",
+    "server/migrations/versions/0072_active_execution_budget.py": "87bc7567545e7f152544db46bf606838f2b19db96c634407d9ce893c82988168",
+    "server/tests/test_active_execution_budget.py": "9a7598c28d47b7ebb7cb5604fd5793cfbe0710a8dea1da545eb4e456fd160392",
+    "server/tests/test_application_run_budget_api.py": "716e97a4d8ff9a98cd81bc5be43a1c1679ff72eab2e8b1a9a3c8bb09074624c2",
+    "server/tests/test_agent_lease_expiry.py": "14601b54fa2f084df2baa7ddfdae2e63b9075c907c8564e6f2c9a9c0161d4b31",
+    "infra/postgres/security/agent-runtime.sql": "ca520e052e8b184eeafbc9679616eca067ffbf77eb9bd50e2c9d09d8984d4ff5",
+    "infra/postgres/security/agent-runtime-revert.sql": "ccff17f1d89855bc47a6280d331fe1e8c2eb0c6684f8c04a7f811adcb09688aa",
+    "docs/runbooks/active-execution-budget.md": "1e43dca2dda2d98078b512897dde536a42ae7d8be39448196f23b7b7387307c6",
+    "docs/reports/2026-09-10-n0-03-active-execution-budget-validation.md": "0eb088649e6d64cbca8da4e46f9c416bf4b5e16a37f13137786f66fc0fa752df"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "6f9b6f60e493390bc413245885d829c2429b368b39f62f144fa6aad415513a93",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "e762d4da15d23c98bad20e9ecccf31d610db581d2483e4d983111f6e10d7fe68",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "remaining": [
+    "in-flight cancellation and lease clamping to remaining active time",
+    "Owner request leases and trusted crash recovery",
+    "durable waiting/checkpoint and model-tool loop",
+    "old lineage active-history reconciliation without budget reset",
+    "real meter qualification, trusted release and approved production adoption"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "target": {
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d"
+  },
+  "backup": {
+    "size": 69976490,
+    "sha256": "ac2ca1ec2088dc1b04dea5e8e58893106733762f5c347c3c674bdf17ddc96154"
+  },
+  "steps": [
+    {
+      "command": [
+        "alembic",
+        "upgrade",
+        "s0_0788"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "alembic",
+        "downgrade",
+        "s0_0787"
+      ],
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "alembic",
+        "upgrade",
+        "s0_0788"
+      ],
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "real_external_calls": 0
+}

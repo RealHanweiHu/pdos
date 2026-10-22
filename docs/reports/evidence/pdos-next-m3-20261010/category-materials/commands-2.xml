@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="6" failures="3" skipped="0" tests="46" time="5.909" timestamp="2026-10-10T21:34:05.769847-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_material_commands_pg" name="test_parameter_versions_are_atomic_immutable_and_replayable" time="0.000"><error message="failed on setup with &quot;file /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py, line 52&#10;  def test_parameter_versions_are_atomic_immutable_and_replayable(work):&#10;E       fixture 'work' not found&#10;&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py:52&quot;">file /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py, line 52
+  def test_parameter_versions_are_atomic_immutable_and_replayable(work):
+E       fixture 'work' not found
+&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py:52</error></testcase><testcase classname="tests.preproject.test_material_commands_pg" name="test_old_parameter_reference_hints_draft_and_preserves_submitted_g0" time="0.000"><error message="failed on setup with &quot;file /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py, line 100&#10;  def test_old_parameter_reference_hints_draft_and_preserves_submitted_g0(work):&#10;E       fixture 'work' not found&#10;&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py:100&quot;">file /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py, line 100
+  def test_old_parameter_reference_hints_draft_and_preserves_submitted_g0(work):
+E       fixture 'work' not found
+&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py:100</error></testcase><testcase classname="tests.preproject.test_material_commands_pg" name="test_parameter_type_and_unit_must_match_actual_dictionary" time="0.000"><error message="failed on setup with &quot;file /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py, line 139&#10;  def test_parameter_type_and_unit_must_match_actual_dictionary(work):&#10;E       fixture 'work' not found&#10;&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py:139&quot;">file /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py, line 139
+  def test_parameter_type_and_unit_must_match_actual_dictionary(work):
+E       fixture 'work' not found
+&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py:139</error></testcase><testcase classname="tests.preproject.test_material_commands_pg" name="test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0" time="0.000"><error message="failed on setup with &quot;file /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py, line 155&#10;  def test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0(work):&#10;E       fixture 'work' not found&#10;&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py:155&quot;">file /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py, line 155
+  def test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0(work):
+E       fixture 'work' not found
+&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py:155</error></testcase><testcase classname="tests.preproject.test_material_commands_pg" name="test_promotion_identity_preview_and_private_proof" time="0.000"><error message="failed on setup with &quot;file /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py, line 184&#10;  def test_promotion_identity_preview_and_private_proof(work):&#10;E       fixture 'work' not found&#10;&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py:184&quot;">file /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py, line 184
+  def test_promotion_identity_preview_and_private_proof(work):
+E       fixture 'work' not found
+&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py:184</error></testcase><testcase classname="tests.preproject.test_material_commands_pg" name="test_receipt_failure_rolls_back_version_and_current" time="0.000"><error message="failed on setup with &quot;file /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py, line 229&#10;  def test_receipt_failure_rolls_back_version_and_current(work, monkeypatch):&#10;E       fixture 'work' not found&#10;&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory&#10;&gt;       use 'pytest --fixtures [testpath]' for help on them.&#10;&#10;/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py:229&quot;">file /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py, line 229
+  def test_receipt_failure_rolls_back_version_and_current(work, monkeypatch):
+E       fixture 'work' not found
+&gt;       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+&gt;       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&amp;D-platform/pdos-next/server/tests/preproject/test_material_commands_pg.py:229</error></testcase><testcase classname="tests.preproject.test_category_creation" name="test_unit_seed_preserves_uncertainty_and_independent_groups[auto-tire-inflator]" time="0.032" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_seed_preserves_uncertainty_and_independent_groups[bicycle-pump]" time="0.029" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_inputs_reject_origin_duplicate_keys_and_unpaired_candidate" time="0.000" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_sources_and_model_ports_fail_closed" time="0.000" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_actor_and_deidentification" time="0.001" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_preview_writes_only_proof_and_create_consumes_once" time="0.106" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_confirmation_binds_content_authority_and_deadline[payload]" time="0.001" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_confirmation_binds_content_authority_and_deadline[epoch]" time="0.001" /><testcase classname="tests.preproject.test_category_creation" name="test_unit_confirmation_binds_content_authority_and_deadline[expiry]" time="0.001" /><testcase classname="tests.preproject.test_category_creation" name="test_database_seed_atomic_provenance_and_idempotency[auto-tire-inflator]" time="1.696"><failure message="AssertionError: assert 'CONFIRMATION_REQUIRED' == 'FORBIDDEN_SCOPE'&#10;  &#10;  - FORBIDDEN_SCOPE&#10;  + CONFIRMATION_REQUIRED">setup = &lt;isolated synthetic test scope&gt;, key = 'auto-tire-inflator'
+
+    @pytest.mark.parametrize("key", creation.SEED_KEYS)
+    def test_database_seed_atomic_provenance_and_idempotency(setup, key):
+        seed = creation.load_seed(key)
+        payload = CategoryCreate(
+            **{k: seed[k] for k in ("key", "name", "purpose", "seed_key", "groups")},
+            deidentified_confirmed=True,
+            idempotency_key=str(uuid4()),
+        )
+        view = transaction(setup, lambda s, ctx: creation.preview(s, ctx, payload))
+        payload.confirmation_token = view["confirmation_token"]
+        result = transaction(setup, lambda s, ctx: creation.create(s, ctx, payload))
+        category_id = UUID(result["category_id"])
+        with Session(setup.admin) as session:
+            category = session.get(Category, category_id)
+            assert category.key == key and category.created_by_run_id is None
+            parameters = session.scalars(
+                select(ParameterVersion).where(ParameterVersion.category_id == category.id)
+            ).all()
+            knowledge = session.scalars(
+                select(KnowledgeEntry).where(KnowledgeEntry.category_id == category.id)
+            ).all()
+            assert len(parameters) == len(payload.groups.parameters)
+            assert len(knowledge) == len(payload.groups.knowledge)
+            assert all(
+                row.origin == "imported"
+                and row.writer_id == setup.human
+                and row.run_id is None
+                and str(row.receipt_id) == result["id"]
+                for row in parameters + knowledge
+            )
+            for model in (KnowledgeCurrent, ParameterCurrent, Audit, Outbox, RequestKey):
+                assert (
+                    session.scalar(
+                        select(func.count()).select_from(model).where(model.category_id == category.id)
+                    )
+                    &gt; 0
+                )
+        future = now() + timedelta(hours=1)
+        with using_clock(lambda: future):
+            assert transaction(setup, lambda s, ctx: creation.create(s, ctx, payload)) == result
+        alias = payload.model_copy(update={"idempotency_key": str(uuid4()), "confirmation_token": None})
+        assert transaction(setup, lambda s, ctx: creation.create(s, ctx, alias)) == result
+        changed = payload.model_copy(update={"purpose": "另一个用途"})
+        with pytest.raises(DomainError) as error:
+            transaction(setup, lambda s, ctx: creation.create(s, ctx, changed))
+        assert error.value.code == "DUPLICATE_INTENT_CONFLICT"
+        with Session(setup.admin) as session, session.begin():
+            grant = session.scalar(
+                select(Grant).where(Grant.category_id == category_id, Grant.principal_id == setup.human)
+            )
+            grant.expires_at = now() - timedelta(seconds=1)
+        with pytest.raises(DomainError) as error:
+            transaction(setup, lambda s, ctx: creation.create(s, ctx, payload))
+&gt;       assert error.value.code == "FORBIDDEN_SCOPE"
+E       AssertionError: assert 'CONFIRMATION_REQUIRED' == 'FORBIDDEN_SCOPE'
+E         
+E         - FORBIDDEN_SCOPE
+E         + CONFIRMATION_REQUIRED
+
+tests/preproject/test_category_creation.py:263: AssertionError</failure></testcase><testcase classname="tests.preproject.test_category_creation" name="test_database_seed_atomic_provenance_and_idempotency[bicycle-pump]" time="0.844"><failure message="AssertionError: assert 'CONFIRMATION_REQUIRED' == 'FORBIDDEN_SCOPE'&#10;  &#10;  - FORBIDDEN_SCOPE&#10;  + CONFIRMATION_REQUIRED">setup = &lt;isolated synthetic test scope&gt;, key = 'bicycle-pump'
+
+    @pytest.mark.parametrize("key", creation.SEED_KEYS)
+    def test_database_seed_atomic_provenance_and_idempotency(setup, key):
+        seed = creation.load_seed(key)
+        payload = CategoryCreate(
+            **{k: seed[k] for k in ("key", "name", "purpose", "seed_key", "groups")},
+            deidentified_confirmed=True,
+            idempotency_key=str(uuid4()),
+        )
+        view = transaction(setup, lambda s, ctx: creation.preview(s, ctx, payload))
+        payload.confirmation_token = view["confirmation_token"]
+        result = transaction(setup, lambda s, ctx: creation.create(s, ctx, payload))
+        category_id = UUID(result["category_id"])
+        with Session(setup.admin) as session:
+            category = session.get(Category, category_id)
+            assert category.key == key and category.created_by_run_id is None
+            parameters = session.scalars(
+                select(ParameterVersion).where(ParameterVersion.category_id == category.id)
+            ).all()
+            knowledge = session.scalars(
+                select(KnowledgeEntry).where(KnowledgeEntry.category_id == category.id)
+            ).all()
+            assert len(parameters) == len(payload.groups.parameters)
+            assert len(knowledge) == len(payload.groups.knowledge)
+            assert all(
+                row.origin == "imported"
+                and row.writer_id == setup.human
+                and row.run_id is None
+                and str(row.receipt_id) == result["id"]
+                for row in parameters + knowledge
+            )
+            for model in (KnowledgeCurrent, ParameterCurrent, Audit, Outbox, RequestKey):
+                assert (
+                    session.scalar(
+                        select(func.count()).select_from(model).where(model.category_id == category.id)
+                    )
+                    &gt; 0
+                )
+        future = now() + timedelta(hours=1)
+        with using_clock(lambda: future):
+            assert transaction(setup, lambda s, ctx: creation.create(s, ctx, payload)) == result
+        alias = payload.model_copy(update={"idempotency_key": str(uuid4()), "confirmation_token": None})
+        assert transaction(setup, lambda s, ctx: creation.create(s, ctx, alias)) == result
+        changed = payload.model_copy(update={"purpose": "另一个用途"})
+        with pytest.raises(DomainError) as error:
+            transaction(setup, lambda s, ctx: creation.create(s, ctx, changed))
+        assert error.value.code == "DUPLICATE_INTENT_CONFLICT"
+        with Session(setup.admin) as session, session.begin():
+            grant = session.scalar(
+                select(Grant).where(Grant.category_id == category_id, Grant.principal_id == setup.human)
+            )
+            grant.expires_at = now() - timedelta(seconds=1)
+        with pytest.raises(DomainError) as error:
+            transaction(setup, lambda s, ctx: creation.create(s, ctx, payload))
+&gt;       assert error.value.code == "FORBIDDEN_SCOPE"
+E       AssertionError: assert 'CONFIRMATION_REQUIRED' == 'FORBIDDEN_SCOPE'
+E         
+E         - FORBIDDEN_SCOPE
+E         + CONFIRMATION_REQUIRED
+
+tests/preproject/test_category_creation.py:263: AssertionError</failure></testcase><testcase classname="tests.preproject.test_category_creation" name="test_database_rollback_restores_token_and_rows" time="0.324" /><testcase classname="tests.preproject.test_seed_import" name="test_complete_seed_material_and_state_preserved" time="0.008" /><testcase classname="tests.preproject.test_seed_import" name="test_category_local_keys_and_pending_states" time="0.006" /><testcase classname="tests.preproject.test_seed_import" name="test_unknown_fields_stay_null_and_input_is_not_mutated" time="0.003" /><testcase classname="tests.preproject.test_seed_import" name="test_missing_source_catalogue_and_duplicate_keys_are_rejected" time="0.002" /><testcase classname="tests.preproject.test_category_materials" name="test_no_caller_origin_and_content_shape" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_deidentification_blocks_names_files_urls_and_nested_backrefs" time="0.001" /><testcase classname="tests.preproject.test_category_materials" name="test_overlap_is_warning_not_identity_veto" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_actual_snapshot_status_and_exact_line[ok]" time="0.001" /><testcase classname="tests.preproject.test_category_materials" name="test_actual_snapshot_status_and_exact_line[partial]" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_private_snapshot_not_promoted_by_read_access" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_promotion_apply_refuses_identity_even_with_confirmation" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_knowledge_read_filters_are_scope_bound" time="0.002" /><testcase classname="tests.preproject.test_category_materials" name="test_competitor_promotion_has_valid_content_without_source_backlinks" time="0.000" /><testcase classname="tests.preproject.test_category_materials" name="test_competitor_filters_share_one_observation_and_precede_pagination" time="0.002" /><testcase classname="tests.preproject.test_category_materials" name="test_competitor_groups_keep_versions_units_and_conditions_separate" time="0.001" /><testcase classname="tests.preproject.test_parameters" name="test_unknown_dictionary_fields_remain_null" time="0.000" /><testcase classname="tests.preproject.test_parameters" name="test_enum_preserves_unknown_options_and_known_options_are_distinct" time="0.000" /><testcase classname="tests.preproject.test_parameters" name="test_money_uses_decimal_without_invented_tax_status" time="0.000" /><testcase classname="tests.preproject.test_parameters" name="test_exact_old_version_allowed_but_unit_mismatch_rejected" time="0.001" /><testcase classname="tests.test_category_scope" name="test_direct_sql_category_tenant_and_audience_filters" time="0.230" /><testcase classname="tests.test_category_scope" name="test_missing_actor_and_pool_scope_reset_deny_rows" time="0.327" /><testcase classname="tests.test_category_scope" name="test_forged_category_model_binding_rejected_by_database" time="0.187" /><testcase classname="tests.test_category_scope" name="test_membership_revocation_removes_owner_access" time="0.192" /><testcase classname="tests.test_category_scope" name="test_agent_database_role_has_no_business_dml" time="0.186" /><testcase classname="tests.test_category_scope" name="test_category_create_is_confirmed_atomic_and_replayable" time="0.545"><failure message="assert 409 == 403&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_category_create_is_confirmed_atomic_and_replayable(setup):
+        payload = {
+            "key": "category-" + uuid4().hex,
+            "name": "汽车配件",
+            "purpose": "合成品类创建验证",
+            "idempotency_key": str(uuid4()),
+            "deidentified_confirmed": True,
+        }
+        preview = setup.client.post("/v1/categories/preview", headers=setup.headers, json=payload)
+        assert preview.status_code == 200, preview.text
+        payload["confirmation_token"] = preview.json()["confirmation_token"]
+        first = setup.client.post("/v1/categories", headers=setup.headers, json=payload)
+        assert first.status_code == 201, first.text
+        repeated = setup.client.post("/v1/categories", headers=setup.headers, json=payload)
+        assert repeated.status_code == 201 and repeated.json()["id"] == first.json()["id"]
+        listed = setup.client.get("/v1/categories", headers=setup.headers).json()
+        assert first.json()["subject_id"] in {c["id"] for c in listed}
+        with Session(setup.admin) as s:
+            grant = s.scalar(
+                select(Grant).where(
+                    Grant.category_id == first.json()["subject_id"],
+                    Grant.principal_id == setup.human,
+                )
+            )
+            assert grant.expires_at is None and grant.product_manager is False
+        denied = setup.client.post(
+            "/v1/categories",
+            headers=setup.headers,
+            json={**payload, "idempotency_key": str(uuid4()), "deidentified_confirmed": False},
+        )
+&gt;       assert denied.status_code == 403
+E       assert 409 == 403
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/test_category_scope.py:216: AssertionError</failure></testcase><testcase classname="tests.test_category_scope" name="test_category_path_body_and_product_must_agree" time="0.208" /><testcase classname="tests.test_category_scope" name="test_membership_requires_named_owner_and_records_t2_receipt" time="0.355" /><testcase classname="tests.test_category_scope" name="test_unbounded_member_and_product_manager_capability_are_explicit_t2" time="0.426" /></testsuite></testsuites>

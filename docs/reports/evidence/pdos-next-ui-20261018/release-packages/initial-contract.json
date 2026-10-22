@@ -1,0 +1,15 @@
+{
+  "head": "e845e63627cac0c9669b1427ae2590bca97033ca",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/domain/release/api.py": "b02d5583849812d0fbcdf8bbfb028358c497eea2b65173676b911d0e26a5826c",
+    "pdos-next/server/pdos_next/domain/release/service.py": "d9112e34a42fdd79daef1f9283ece16ec5f81fc24f079358b6405b0424a84eee",
+    "pdos-next/server/pdos_next/domain/release/schemas.py": "779123d0cac55edd480837f4f7aab6a5223afad48daed248c257ed067db328a1",
+    "pdos-next/server/pdos_next/domain/release/models.py": "e804a679a7c2d3c3f53641c8cb5109a33c5fa6934e2783f18942a0940395fea1",
+    "pdos-next/server/pdos_next/domain/release/policy_owner.py": "82d7f029a265f53031c0ccd27dddb7352a27a9bd381433aaa57ed1ff46bff5be",
+    "pdos-next/web/src/lib/releases.ts": "6f8315b4b7f7743b71ef689c74903934b82c924433a7f58ee5d6c5a556ae740b",
+    "pdos-next/web/src/components/projects/project-workspace.tsx": "723c6f06b9206b19385af8f5062dd2e72be375561bb3ad3036125003d9a36a2b",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "358b39311967059d892578a188287afa45bfa078f33cd9d55b3637ac81660b4a"
+  },
+  "existing_owner": "Other chat active on external-wait; release contract unchanged; no messages sent",
+  "browser": "Prior localhost55210 denial has no restoration; no browser attempted"
+}

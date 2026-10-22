@@ -1,0 +1,74 @@
+{
+  "schema_version": "pdos-candidate-write-prepare-check-result-v2",
+  "manifest": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-source-manifest-v2.json",
+  "manifest_sha256": "484d626c2f2657d835d6940d4c4b443c50d755266913e50ffeb78ead10f84112",
+  "owned_pure": {
+    "command": "PYTHONPATH=pdos-next/server:pdos-next/server/tests pdos-next/server/.venv/bin/python -m pytest --noconftest pdos-next/server/tests/capa_effectiveness/test_candidate_write_prepare.py -q",
+    "exit_code": 0,
+    "passed": 18,
+    "failed": 0,
+    "duration_seconds": 1.87,
+    "raw_output": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-pure-v2-final-2.log",
+    "raw_output_sha256": "2c6d0eb233c05f616b9dee8cad8a0424b7e5e4f457c72a46c9fdb3ffbb9e910f",
+    "scope": "actual no-connect persistent SQLAlchemy/UOW、actual ConsumptionHost+writer；原件/SQL/current owner/professional/policy为显式替身，未证明真实PG或资格。"
+  },
+  "regression": {
+    "review_json_dumps_without_default": true,
+    "all_actual_jsonb_columns_json_dumps_without_default": true,
+    "receipt_flattened_result_json_dumps_without_default": true,
+    "ordered_complete_refs_preserved": true,
+    "strict_revision_rejects_bool": true
+  },
+  "static": [
+    {
+      "command": "pdos-next/server/.venv/bin/ruff check pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py pdos-next/server/tests/capa_effectiveness/test_candidate_write_prepare.py",
+      "exit_code": 0
+    },
+    {
+      "command": "pdos-next/server/.venv/bin/ruff format --check pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py pdos-next/server/tests/capa_effectiveness/test_candidate_write_prepare.py",
+      "exit_code": 0
+    },
+    {
+      "command": "in-memory ast.parse only three owned sources",
+      "count": 3,
+      "exit_code": 0
+    }
+  ],
+  "static_log": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-static-v2.log",
+  "static_log_sha256": "4f2cb782d24f98a01b7f85c566e4c1ad6be7fdc628dc9ff00bf1031ced97d6de",
+  "preserved_attempts": [
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-pure-v2.log",
+      "sha256": "b3b4afc698a3e6e6c0a02d02041448f20aac0917757810f8be254554e794fa5f",
+      "exit_code": 1,
+      "passed": 17,
+      "failed": 1,
+      "reason": "new testcase未把Product设置为persistent ORM；源修复无额外变更"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-pure-v2-final.log",
+      "sha256": "fb7bdf7a61b60ae1808b40907b69c6f3bc99a2be8a1e614a50ae88d0e3832ed7",
+      "exit_code": 1,
+      "passed": 17,
+      "failed": 1,
+      "reason": "new testcase persistent Product缺已加载lifecycle_epoch，引发替身SQL不兼容；只补本case actual loaded ORM状态"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/candidate-write-prepare-pure-v2-final-2.log",
+      "sha256": "2c6d0eb233c05f616b9dee8cad8a0424b7e5e4f457c72a46c9fdb3ffbb9e910f",
+      "exit_code": 0,
+      "passed": 18,
+      "failed": 0,
+      "reason": "最终18项，实际writer/ConsumptionHost且所有连接被测试门禁禁止"
+    }
+  ],
+  "final_source_stable": true,
+  "prior_staged_frozen_unchanged": true,
+  "limits": {
+    "database": false,
+    "http": false,
+    "shared_tests": false,
+    "migration_or_common_edits": false,
+    "new_qualification": false
+  }
+}

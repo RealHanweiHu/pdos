@@ -1,0 +1,80 @@
+{
+  "schema_version": "actual-candidate-business-review.v1",
+  "recorded_at": "2026-10-03T13:52:56.367379+00:00",
+  "scope": "C只读复核实际v6候选预览业务解析；只存布尔与计数，不含私有正文、令牌、请求key或命令。",
+  "bindings": {
+    "actual_preview_response": {
+      "path": "pdos-next/.local/wave17-http-v6-actual-preview.json",
+      "sha256": "f984e2df12698acb4e30184d2d8b85cab8f2f388a1eda707592402e838614d31"
+    },
+    "original_host_read_v5": {
+      "path": "pdos-next/.local/wave17-http-v5-current-context.json",
+      "sha256": "b1cef1ea11919c704f725def5714360e66d3ac39ebff1e6ba9de6298537fa4a5"
+    },
+    "production_parser": {
+      "path": "pdos-next/web/src/components/capa-effectiveness/candidate-panel-contract.ts",
+      "sha256": "244065b6c06a1107745937be4fc9c1b1a545183cfa60c2630871f0ad5b99cab3"
+    }
+  },
+  "actual_response_equals_checked_plan_preview": true,
+  "result": {
+    "host_from_original_same_draft_context": true,
+    "review_has_exact_13_keys": true,
+    "actual_host_parser_pass": true,
+    "business_review_complete": true,
+    "failure_count": 1,
+    "all_failure_identities_covered": true,
+    "original_value_unit_and_condition_preserved": true,
+    "original_equipment_names_preserved": true,
+    "original_equipment_names_present": true,
+    "original_observation_clocks_preserved": true,
+    "criterion_fixed_run_item_source_preserved": true,
+    "root_cause_text_and_clock_preserved": true,
+    "completed_action_count": 1,
+    "all_completed_actions_covered": true,
+    "completion_event_strings_preserved": true,
+    "completion_microsecond_clocks_count": 1,
+    "completion_microsecond_precision_retained": true,
+    "selected_link_count": 1,
+    "all_selected_links_covered": true,
+    "selected_mapping_count": 0,
+    "missing_count": 6,
+    "all_missing_covered": true,
+    "three_null_judgments": true,
+    "result_is_indeterminate": true,
+    "effectiveness_and_close_disabled": true,
+    "authority_fields_preserved": true,
+    "policy_fields_preserved": true,
+    "synthetic_notice_present": true
+  },
+  "execution": {
+    "performed_by": "reuse_product_ui",
+    "mode": "仅本地只读、同一JavaScript realm内存调用实际冻结解析器；TypeScript transpileModule至内存CommonJS，经vm.runInThisContext加载，没有生成web产物。",
+    "functions": [
+      "normalizeCandidatePanel",
+      "candidateBusinessReview"
+    ],
+    "successful_invocation_transcript_chunk_id": "04f134",
+    "exit_code": 0,
+    "browser_executed_by_reviewer": false,
+    "http_executed_by_reviewer": false,
+    "database_executed_by_reviewer": false,
+    "production_source_modified": false,
+    "public_build_executed": false,
+    "tests_rerun_for_evidence_record": false
+  },
+  "early_check_failure": {
+    "observed_business_review_complete": false,
+    "classification": "REVIEW_HARNESS_CROSS_REALM_OBJECT_PROTOTYPE_MISMATCH",
+    "production_dto_failure": false,
+    "production_parser_failure": false,
+    "explanation": "首个核验器把模块放进不同VM realm，并传入外层Object。解析器plain-object守卫拒绝核验器自己创建的scope对象；改用同一realm调用未修改的原解析器后实际业务解析为true。首个false保留为核验器缺陷，不能当作生产DTO失败。",
+    "source_repair_applied": false
+  },
+  "limits": [
+    "v6恢复原CLI命令并复用v5已实际取得的同draft Host；不是C新发起Host请求。",
+    "CLI请求key有业务前缀；本次按Root限定独立核业务review，不调用UI validCandidateCommand重放模式，不评定实际确认期限或数据库保存成功。",
+    "UI自身UUID key与实际浏览器确认、保存、未知恢复和回读由Root后续统一验证。",
+    "完整业务解析true不赋予新配对、专业有效性、关闭或生产资格；三项null和禁用能力保持原值。"
+  ]
+}

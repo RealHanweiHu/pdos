@@ -1,0 +1,66 @@
+{
+  "date": "2026-09-10",
+  "scope": "four application run creation budgets and actual test plan continuation lineage inheritance",
+  "tests": {
+    "first_batch": 79,
+    "second_batch": 74,
+    "overlapping_cases": 7,
+    "production_config": 1,
+    "distinct_passed": 147,
+    "new_cases": 13,
+    "regression_cases": 134
+  },
+  "checks": {
+    "ruff_files": 17,
+    "format_files": 17,
+    "mypy_files": 11,
+    "exports": "common 4 and runtime 5 passed"
+  },
+  "database": "127.0.0.1:57432/pdos_test",
+  "migration_head": "0070_event_budget_binding",
+  "migration_added": false,
+  "role_password_changes": false,
+  "real_model_calls": 0,
+  "default_budget_mode": "legacy",
+  "sources": {
+    "server/app/ai/run_budget_creation.py": "cdbcf8ef45753fef0b570a5de4551b0a80105d117e82c2ab0ee5c81697465f3e",
+    "server/app/ai/budget_ledger.py": "de091a832fd56da3ed2d9998ab8749722f6331512bc6a2ad8292e67bf7a1d63b",
+    "server/app/ai/application_gateway.py": "842ede47e4cfbb58718657c09acca9290463f705b442421598b81a9e775b3336",
+    "server/app/ai/model_budget.py": "5cea99ca5dfd1b950e2159dcf380460fe21f3986f708461ae7d153c9b65ca595",
+    "server/app/ai/gateway.py": "ce23f40a7bf330ded44b9d1a4383ad44849ee946e36eab907ce468cf6422a214",
+    "server/app/ai/chat_runs.py": "7345c67ea0160ad01a5e0c5edb03d0614e803cb904ceb7848be57d5341669955",
+    "server/app/ai/import_mapping_runs.py": "1ff15d56be92d2cef7ac267bf770bf4672aa918405d10035ccbd430142783b31",
+    "server/app/ai/chat.py": "fb9776fda9d7bcf7ea8d1f13b6557a8c2515db77870bed3b2b228692be502efa",
+    "server/app/domain/test_report_import.py": "5bdb2ad12a7e7dad14f6584775a13a70ce3559b08835ad4dee5002b18190866e",
+    "server/app/ai/risk_suggestions.py": "43ea8e7bdbb020ab8c24c796cf00fcffc76800f6e10d6a06f0d21fe4b2698321",
+    "server/app/ai/test_plan_suggestions.py": "7f9b4885eb4b0a4be1386c3427d2e00a80a0028ed684a1968467b17644c89d2a",
+    "server/tests/test_run_budget_creation.py": "a62425461a4da7cfb5c2bca53c3783bd99dfd6f33547bb24c50de823c3cf68d4",
+    "server/tests/test_application_budget_factory.py": "e33860d00fe31d2facb82fd3882718256dddf9199be2cc84cf3518afb995b1a0",
+    "server/tests/test_application_run_budget_api.py": "af43d0fbbc3c2b59998f8fff37569a38cc95c0f2161dbec8c7934730c0513c1e",
+    "server/tests/test_budget_ledger.py": "9be031693c60ebe16add258142494218f08333e7075ebc5483002212e94379d6",
+    "server/tests/test_model_budget_controller.py": "02ee2ee5f981500537b4fb28f444baf0c5bed3500c12d759c8866f87f41d00d1",
+    "server/tests/test_production_deployment_contract.py": "effcee2e4d42947260c6f515c8662067445ac54144062e0df169e45dd482ea1a",
+    "compose.production.yaml": "9dd95f0bb493a2e065b9307473927ee95f72328403de5dddf0c16d6dd4ed55f1",
+    ".env.example": "22265d65a6267efbd3c096771e1f29d01ee4738ad4610a09cb0ff9684564b22f",
+    ".env.production.example": "161e71ea737dfbd4acdfda8c4526df3aa7812c2cfa7172a891a509eb3c1694d1",
+    "docs/runbooks/application-run-budget-creation.md": "412f685df698603b669f9310a245e05b4856f1a774856b14acf49e278416cf8c",
+    "docs/runbooks/application-budget-adoption.md": "81f17c328f862e147ddfa1a4ec32744c6480d8cbbbe036037a954fec4820edc4",
+    "docs/reports/2026-09-10-n0-03-application-run-budget-creation-validation.md": "b0552f39e64a64c3733de494b5327c1aa7c8c9b18affa0e44973c769b4461d38"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "6cda95973fffabe986273d9264e33ede6286545b97d714cb8ba66aca1f43b55a",
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0"
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "4a71415f5a06a63b1db30ab59cba87f2ffd44f2564ec9990be817abf2f601466",
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d"
+    }
+  },
+  "remaining": [
+    "other domain related-run and multi-seat adoption",
+    "active time and checkpoint recovery",
+    "model-tool loop and embeddings coverage",
+    "real meter qualification, trusted release and tenant/process drain switch"
+  ]
+}

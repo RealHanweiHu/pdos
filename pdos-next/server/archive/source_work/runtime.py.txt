@@ -1,0 +1,400 @@
+"""Short capability graph; persistent checkpoints do not own domain outcomes."""
+
+from contextlib import nullcontext
+from datetime import timedelta
+from typing import Protocol, TypedDict
+from uuid import UUID, uuid4
+
+from langgraph.checkpoint.postgres import PostgresSaver
+from langgraph.graph import END, START, StateGraph
+from sqlalchemy import select
+
+from pdos_next.contracts import ClaimPayload, Command, SourceRead
+from pdos_next.database import tenant_session
+from pdos_next.errors import DomainError
+from pdos_next.models import Claim, Invocation, Product, Run, WorkRequest, now
+from pdos_next.service import (
+    Context,
+    append_receipt,
+    check_qualification,
+    check_run,
+    digest,
+    execute,
+    require_access,
+    source_for,
+)
+
+
+class Provider(Protocol):
+    version: str
+    writer_id: UUID
+
+    def extract(self, *, goal: str, source: str, artifact_id: UUID) -> dict: ...
+
+
+class GraphState(TypedDict):
+    goal: str
+    source: str
+    artifact_id: UUID
+    candidate: dict
+
+
+def capability(provider: Provider, checkpointer=None):
+    def extract(state: GraphState):
+        return {
+            "candidate": provider.extract(
+                goal=state["goal"],
+                source=state["source"],
+                artifact_id=state["artifact_id"],
+            )
+        }
+
+    def validate(state: GraphState):
+        return {
+            "candidate": ClaimPayload.model_validate(state["candidate"]).model_dump(mode="json")
+        }
+
+    graph = StateGraph(GraphState)
+    graph.add_node("extract", extract)
+    graph.add_node("validate", validate)
+    graph.add_edge(START, "extract")
+    graph.add_edge("extract", "validate")
+    graph.add_edge("validate", END)
+    return graph.compile(checkpointer=checkpointer)
+
+
+class OnceInvocation:
+    """A crash after send is unknown, never permission to silently send again."""
+
+    def __init__(self, engine, ctx, product_id, source_revision, provider, synthetic_mode):
+        self.engine, self.ctx, self.product_id = engine, ctx, product_id
+        self.source_revision, self.provider = source_revision, provider
+        self.synthetic_mode = synthetic_mode
+
+    def extract(self, *, goal, source, artifact_id):
+        fingerprint = digest(
+            [goal, source, artifact_id, self.source_revision, self.provider.version]
+        )
+        unknown = False
+        call_id = None
+        with tenant_session(
+            self.engine,
+            self.ctx.tenant_id,
+            actor_id=self.ctx.actor_id,
+            requester_id=self.ctx.requester_id,
+            category_id=self.ctx.category_id,
+        ) as s:
+            s.scalar(select(Product).where(Product.id == self.product_id).with_for_update())
+            require_access(s, self.ctx, self.product_id, write=True, lock=True)
+            run = check_run(s, self.ctx, self.product_id)
+            check_qualification(s, self.ctx, "evidence.claim.record", run, self.synthetic_mode)
+            source_for(s, self.ctx, self.product_id, artifact_id, self.source_revision)
+            invocation = s.scalar(
+                select(Invocation)
+                .where(
+                    Invocation.run_id == run.id,
+                    Invocation.step_key == "source-claim-extract-v1",
+                )
+                .with_for_update()
+            )
+            if invocation:
+                if invocation.input_digest != fingerprint:
+                    raise DomainError("VERSION_CONFLICT", "原调用的模型或输入已变化。")
+                if invocation.status == "completed":
+                    return invocation.candidate
+                invocation.status = "unknown"
+                invocation.error_code = "MODEL_RESULT_UNKNOWN"
+                unknown = True
+            else:
+                call_id = uuid4()
+                s.add(
+                    Invocation(
+                        tenant_id=self.ctx.tenant_id,
+                        run_id=run.id,
+                        step_key="source-claim-extract-v1",
+                        input_digest=fingerprint,
+                        provider_version=self.provider.version,
+                        call_id=call_id,
+                    )
+                )
+        if unknown:
+            raise DomainError("MODEL_RESULT_UNKNOWN", "原模型调用结果待对账，不会再次发送。")
+        try:
+            bound_provider = self.provider
+            factory = getattr(self.provider, "for_call", None)
+            if factory is not None:
+                bound_provider = factory(
+                    ctx=self.ctx,
+                    call_id=call_id,
+                    product_id=self.product_id,
+                    source_revision=self.source_revision,
+                )
+                if (
+                    bound_provider.version != self.provider.version
+                    or bound_provider.writer_id != self.ctx.actor_id
+                ):
+                    raise DomainError("FORBIDDEN_SCOPE", "调用身份与可信运行不一致。", 403)
+            candidate = bound_provider.extract(goal=goal, source=source, artifact_id=artifact_id)
+            candidate = ClaimPayload.model_validate(candidate).model_dump(mode="json")
+        except Exception:
+            with tenant_session(
+                self.engine,
+                self.ctx.tenant_id,
+                actor_id=self.ctx.actor_id,
+                requester_id=self.ctx.requester_id,
+                category_id=self.ctx.category_id,
+            ) as s:
+                invocation = s.scalar(
+                    select(Invocation)
+                    .where(
+                        Invocation.run_id == self.ctx.run_id,
+                        Invocation.step_key == "source-claim-extract-v1",
+                    )
+                    .with_for_update()
+                )
+                invocation.status = "unknown"
+                invocation.error_code = "MODEL_RESULT_UNKNOWN"
+            raise
+        with tenant_session(
+            self.engine,
+            self.ctx.tenant_id,
+            actor_id=self.ctx.actor_id,
+            requester_id=self.ctx.requester_id,
+            category_id=self.ctx.category_id,
+        ) as s:
+            invocation = s.scalar(
+                select(Invocation)
+                .where(
+                    Invocation.run_id == self.ctx.run_id,
+                    Invocation.step_key == "source-claim-extract-v1",
+                )
+                .with_for_update()
+            )
+            invocation.candidate = candidate
+            invocation.status = "completed"
+        return candidate
+
+
+def transition(s, ctx, work, run, status, run_status, error=None):
+    if work.status == status and work.error_code == error and run.status == run_status:
+        return
+    work.status = status
+    work.error_code = error
+    work.revision += 1
+    run.status = run_status
+    s.flush()
+    cmd = Command(
+        command_id=uuid4(),
+        idempotency_key=f"state:{work.id}:{work.revision}",
+        operation="ai.work.state.update",
+        category_id=work.category_id,
+        product_id=work.product_id,
+        expected_revision=work.revision,
+        payload={"status": status, "error": error},
+    )
+    append_receipt(
+        s,
+        ctx,
+        cmd,
+        "work_request",
+        work,
+        digest(cmd.payload),
+        digest([work.id, work.revision, status, error]),
+        "private",
+    )
+
+
+def model_unavailable(engine, ctx: Context, work_id: UUID, code: str):
+    """Record missing runtime conditions with current authority and zero model calls."""
+    with tenant_session(
+        engine,
+        ctx.tenant_id,
+        actor_id=ctx.actor_id,
+        requester_id=ctx.requester_id,
+        category_id=ctx.category_id,
+    ) as session:
+        work = session.get(WorkRequest, work_id)
+        if not work or work.accountable_owner_id != ctx.requester_id:
+            raise DomainError("FORBIDDEN_SCOPE", "工作不在当前授权范围。", 403)
+        require_access(session, ctx, work.product_id, write=True, lock=True)
+        run = session.scalar(select(Run).where(Run.work_id == work.id).with_for_update())
+        if work.status in {"completed", "cancelled"}:
+            return {"work_id": str(work.id), "status": work.status}
+        transition(session, ctx, work, run, "waiting_input", "waiting", code)
+        return {"work_id": str(work.id), "status": "waiting_input", "error_code": code}
+
+
+def resume(
+    engine,
+    ctx: Context,
+    work_id: UUID,
+    provider: Provider | None,
+    *,
+    synthetic_mode=False,
+    checkpoint_url=None,
+    after_checkpoint=None,
+):
+    with tenant_session(
+        engine,
+        ctx.tenant_id,
+        actor_id=ctx.actor_id,
+        requester_id=ctx.requester_id,
+        category_id=ctx.category_id,
+    ) as s:
+        work = s.get(WorkRequest, work_id)
+        if not work or work.accountable_owner_id != ctx.requester_id:
+            raise DomainError("FORBIDDEN_SCOPE", "工作不在当前范围。", 403)
+        product = s.scalar(select(Product).where(Product.id == work.product_id).with_for_update())
+        require_access(s, ctx, work.product_id, write=work.status != "completed", lock=True)
+        run = s.scalar(select(Run).where(Run.work_id == work.id).with_for_update())
+        if work.status == "cancelled":
+            raise DomainError("CANCELLED_RUN", "工作已经取消。")
+        if work.status == "completed":
+            claim = s.get(Claim, work.result_id)
+            if claim is None:
+                raise DomainError("FORBIDDEN_SCOPE", "原工作结果不在当前可读受众范围。", 403)
+            return {
+                "work_id": str(work.id),
+                "status": "completed",
+                "result_id": str(claim.id),
+                "result_status": claim.status,
+                "source_revision": work.source_revision,
+                "history": True,
+            }
+        if provider is None:
+            transition(s, ctx, work, run, "waiting_input", "waiting", "MODEL_UNAVAILABLE")
+            return {
+                "work_id": str(work.id),
+                "status": "waiting_input",
+                "error_code": "MODEL_UNAVAILABLE",
+            }
+        if run.lease_until and run.lease_until > now():
+            raise DomainError("RUN_IN_PROGRESS", "原工作仍在执行，请读取其结果。")
+        if run.provider_version and run.provider_version != provider.version:
+            raise DomainError("VERSION_CONFLICT", "原运行绑定的模型版本不能静默替换。")
+        lease_id = uuid4()
+        run.lease_id = lease_id
+        run.lease_until = now() + timedelta(minutes=2)
+        run.writer_id = provider.writer_id
+        run.provider_version = provider.version
+        s.flush()
+        agent_ctx = Context(
+            ctx.tenant_id,
+            provider.writer_id,
+            run.requester_id,
+            run.id,
+            run.cancel_epoch,
+            category_id=work.category_id,
+        )
+        goal = work.goal
+        artifact_id, source_revision = work.artifact_id, work.source_revision
+        product_revision, product_id = product.revision, product.id
+        transition(s, ctx, work, run, "running", "running")
+
+    # The independent Agent gets its own transaction identity, never borrows the human Session.
+    try:
+        with tenant_session(
+            engine,
+            agent_ctx.tenant_id,
+            actor_id=agent_ctx.actor_id,
+            requester_id=agent_ctx.requester_id,
+            category_id=agent_ctx.category_id,
+        ) as s:
+            require_access(s, agent_ctx, product_id, write=True, lock=True)
+            run = check_run(s, agent_ctx, product_id)
+            check_qualification(s, agent_ctx, "evidence.claim.record", run, synthetic_mode)
+            source = source_for(s, agent_ctx, product_id, artifact_id, source_revision)
+            snapshot = {
+                "goal": goal,
+                "source": source.content,
+                "artifact_id": source.id,
+                "candidate": {},
+            }
+        # No provider/model/network calls inside a domain transaction.
+        safe_provider = OnceInvocation(
+            engine,
+            agent_ctx,
+            product_id,
+            source_revision,
+            provider,
+            synthetic_mode,
+        )
+        saver_context = nullcontext(None)
+        if checkpoint_url:
+            from pdos_next.workflows.checkpoints import verified_checkpoint_url
+
+            saver_context = PostgresSaver.from_conn_string(verified_checkpoint_url(checkpoint_url))
+        with saver_context as saver:
+            graph = capability(safe_provider, saver)
+            config = {"configurable": {"thread_id": f"{ctx.tenant_id}:{agent_ctx.run_id}"}}
+            saved = graph.get_state(config) if saver else None
+            candidate = (
+                saved.values["candidate"]
+                if saved and saved.values.get("candidate") and not saved.next
+                else graph.invoke(None if saved and saved.values else snapshot, config)["candidate"]
+            )
+        if after_checkpoint:
+            after_checkpoint()
+        if UUID(candidate["artifact_id"]) != snapshot["artifact_id"]:
+            raise DomainError("SOURCE_UNAVAILABLE", "能力返回了工作输入以外的来源。", 403)
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=agent_ctx.actor_id,
+            requester_id=agent_ctx.requester_id,
+            category_id=agent_ctx.category_id,
+        ) as s:
+            cmd = Command(
+                command_id=uuid4(),
+                idempotency_key=f"run:{agent_ctx.run_id}:claim:1",
+                operation="evidence.claim.record",
+                category_id=agent_ctx.category_id,
+                product_id=product_id,
+                expected_revision=product_revision,
+                source_read_set=[
+                    SourceRead(
+                        artifact_id=snapshot["artifact_id"], expected_revision=source_revision
+                    )
+                ],
+                payload=candidate,
+            )
+            result = execute(s, agent_ctx, cmd, synthetic_mode=synthetic_mode)
+            work = s.get(WorkRequest, work_id)
+            run = s.get(Run, agent_ctx.run_id)
+            if run.lease_id != lease_id or not run.lease_until or run.lease_until <= now():
+                raise DomainError("RUN_LEASE_EXPIRED", "原执行租约已失效，未继续提交。")
+            claim = s.get(Claim, UUID(result["subject_id"]))
+            if claim.status != "active" or claim.source_revision != source_revision:
+                raise DomainError("SOURCE_STALE", "原工作结果已失效，不能宣称完成。")
+            work.result_id = claim.id
+            transition(s, agent_ctx, work, run, "completed", "succeeded")
+            run.lease_id = None
+            run.lease_until = None
+            return {
+                "work_id": str(work.id),
+                "status": "completed",
+                "result_id": str(claim.id),
+                "receipt": result,
+            }
+    except Exception as exc:
+        code = exc.code if isinstance(exc, DomainError) else "MODEL_OUTPUT_INVALID"
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=ctx.category_id,
+        ) as s:
+            work = s.get(WorkRequest, work_id)
+            if work:
+                s.scalar(select(Product).where(Product.id == work.product_id).with_for_update())
+                run = s.scalar(select(Run).where(Run.work_id == work.id).with_for_update())
+                if run.lease_id == lease_id:
+                    run.lease_id = None
+                    run.lease_until = None
+                if work.status not in {"cancelled", "completed"} and run.lease_id is None:
+                    # Error paths only persist a bounded failure; they never call the model.
+                    transition(s, ctx, work, run, "waiting_input", "failed", code)
+        if isinstance(exc, DomainError):
+            raise
+        raise DomainError(code, "能力未产生有效结果；已保留原工作，可修正后继续。") from exc

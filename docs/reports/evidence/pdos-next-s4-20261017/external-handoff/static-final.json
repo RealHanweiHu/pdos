@@ -1,0 +1,94 @@
+{
+  "checks": [
+    {
+      "check": "lint",
+      "exit": 0,
+      "paths": [
+        "check",
+        "pdos-next/server/migrations/versions/s0_0783_external_handoff.py",
+        "pdos-next/server/pdos_next/api.py",
+        "pdos-next/server/pdos_next/command_handlers.py",
+        "pdos-next/server/pdos_next/contracts.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/__init__.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/api.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/constants.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/evidence_owner.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/evidence_schemas.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/material_owner.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/models.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/rules.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/schemas.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/service.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/storage_schema.py",
+        "pdos-next/server/pdos_next/domain/manufacturing_baseline/consumption.py",
+        "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+        "pdos-next/server/pdos_next/lifecycle_catalog.py",
+        "pdos-next/server/pdos_next/models.py",
+        "pdos-next/server/pdos_next/service.py",
+        "pdos-next/server/tests/external_handoff/__init__.py",
+        "pdos-next/server/tests/external_handoff/test_evidence_owner.py",
+        "pdos-next/server/tests/external_handoff/test_material_owner.py",
+        "pdos-next/server/tests/external_handoff/test_rules.py",
+        "pdos-next/server/tests/external_handoff/test_service.py",
+        "pdos-next/server/tests/external_handoff_transactions/__init__.py",
+        "pdos-next/server/tests/external_handoff_transactions/browser_seed.py",
+        "pdos-next/server/tests/external_handoff_transactions/harness.py",
+        "pdos-next/server/tests/release_policy_transactions/test_decisions.py"
+      ]
+    },
+    {
+      "check": "frozen-sql-lint",
+      "exit": 0,
+      "paths": [
+        "check",
+        "--ignore",
+        "E501",
+        "pdos-next/server/migrations/schema_s0_0783.py"
+      ]
+    },
+    {
+      "check": "format",
+      "exit": 0,
+      "paths": [
+        "format",
+        "--check",
+        "pdos-next/server/migrations/versions/s0_0783_external_handoff.py",
+        "pdos-next/server/pdos_next/command_handlers.py",
+        "pdos-next/server/pdos_next/contracts.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/__init__.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/api.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/constants.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/evidence_owner.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/evidence_schemas.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/material_owner.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/models.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/rules.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/schemas.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/service.py",
+        "pdos-next/server/pdos_next/domain/external_handoff/storage_schema.py",
+        "pdos-next/server/pdos_next/domain/manufacturing_baseline/consumption.py",
+        "pdos-next/server/pdos_next/models.py",
+        "pdos-next/server/pdos_next/service.py",
+        "pdos-next/server/tests/external_handoff/__init__.py",
+        "pdos-next/server/tests/external_handoff/test_evidence_owner.py",
+        "pdos-next/server/tests/external_handoff/test_material_owner.py",
+        "pdos-next/server/tests/external_handoff/test_rules.py",
+        "pdos-next/server/tests/external_handoff/test_service.py",
+        "pdos-next/server/tests/external_handoff_transactions/__init__.py",
+        "pdos-next/server/tests/external_handoff_transactions/browser_seed.py",
+        "pdos-next/server/tests/external_handoff_transactions/harness.py",
+        "pdos-next/server/tests/release_policy_transactions/test_decisions.py"
+      ]
+    }
+  ],
+  "ast_parse_files": 30,
+  "format_exclusions": {
+    "frozen_sql": "Exact reviewed PostgreSQL-normalized predecessor text; 460 E501 literal wrapping diagnostics retained, no semantics or installed migration edited",
+    "shared_prefixes": [
+      "pdos-next/server/pdos_next/api.py",
+      "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+      "pdos-next/server/pdos_next/lifecycle_catalog.py"
+    ],
+    "reason": "Only pre-existing formatting diagnostics outside owned added ranges; avoid unrelated prefix formatting"
+  }
+}

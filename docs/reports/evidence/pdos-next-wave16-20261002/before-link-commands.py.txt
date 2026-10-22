@@ -1,0 +1,350 @@
+"""Unregistered T1 follow-up link handler; the host owns proofs and transaction."""
+
+from dataclasses import dataclass
+from datetime import datetime
+from uuid import UUID, uuid4
+
+from sqlalchemy import select
+
+from pdos_next.domain.professional_authority import service as professional
+from pdos_next.domain.quality_execution import policy
+from pdos_next.domain.quality_execution.evidence import (
+    merge_reads,
+    refs_from_exact,
+    source_basis,
+    union_sources,
+)
+from pdos_next.errors import DomainError
+from pdos_next.service import digest
+
+from . import service as owners
+from .models import RemediationLinkRecord
+from .schemas import FollowupLinkPayload, ResolvedOutputs
+
+OPERATION = "quality.capa.followup.link"
+
+
+def configure_consumed_proof(engine, require_consumed):
+    """Install a server-owned assertion callback; no public/client proof input."""
+    if not callable(require_consumed):
+        raise TypeError("require_consumed must be a host assertion callback")
+    engine._pdos_capa_link_consumed_proof = require_consumed
+
+
+def semantic(payload):
+    return FollowupLinkPayload.model_validate(payload).model_dump(
+        mode="json", exclude={"confirmation_token"}
+    )
+
+
+def _intent(ctx, command, payload):
+    return digest(
+        {
+            "operation": OPERATION,
+            "actor": str(ctx.requester_id),
+            "product": str(command.product_id),
+            "payload": semantic(payload),
+        }
+    )
+
+
+def _authority(s, ctx, product_id, basis):
+    value = professional.assess(
+        s,
+        ctx,
+        product_id,
+        basis.scope.project_id,
+        OPERATION,
+        basis.purpose,
+        owners.now(),
+        write=True,
+    )
+    if "PROFESSIONAL_OPERATION_NOT_CONFIGURED" in value.get("reason_codes", []):
+        raise DomainError("INTEGRATION_REQUIRED", "整改回链专业操作矩阵尚未配置。", 503)
+    if value.get("authorized") is not True or value.get("qualified") is not True:
+        raise DomainError("QUALIFICATION_REQUIRED", "当前本人缺本用途整改回链专业职责或资格。", 403)
+    return value
+
+
+def _deadlines(authority, published):
+    checked_at = owners.now()
+    for value in (authority, published):
+        raw = value.get("valid_until")
+        try:
+            expiry = datetime.fromisoformat(raw)
+        except (TypeError, ValueError):
+            raise DomainError(
+                "INTEGRATION_REQUIRED", "当前专业或政策缺少可核对有效期。", 503
+            ) from None
+        if expiry.tzinfo is None or expiry.utcoffset() is None or expiry <= checked_at:
+            raise DomainError("SOURCE_STALE", "读取期间专业资格或政策已到期。")
+
+
+@dataclass(frozen=True)
+class Bound:
+    resolution: ResolvedOutputs
+    authority: dict
+    policy: dict
+    sources: tuple
+    reads: list
+    source_basis: dict
+    visibility: str
+    proof_callback: object
+    original: object = None
+
+
+def _saved(s, ctx, product_id, intent):
+    return s.scalar(
+        select(RemediationLinkRecord).where(
+            RemediationLinkRecord.tenant_id == ctx.tenant_id,
+            RemediationLinkRecord.product_id == product_id,
+            RemediationLinkRecord.owner_id == ctx.requester_id,
+            RemediationLinkRecord.intent_digest == intent,
+        )
+    )
+
+
+def _guard_saved(row, payload, bound):
+    if row is None:
+        return
+    if (
+        {key: value for key, value in row.input_snapshot.items() if key != "shared_proof"}
+        != semantic(payload)
+        or row.resolution_sha256 != bound.resolution.resolution_sha256
+        or row.authority_snapshot != bound.authority
+        or row.policy_snapshot != bound.policy
+        or row.source_basis != bound.source_basis
+        or row.required_source_read_set != bound.reads
+    ):
+        raise DomainError(
+            "SOURCE_STALE", "原回链的来源、专业或政策版本已改变，旧回执不能绕过重核。"
+        )
+
+
+def _load(s, ctx, command, product, payload, *, require_reads=True):
+    payload = FollowupLinkPayload.model_validate(payload)
+    if command.operation != OPERATION or command.product_id != product.id:
+        raise DomainError("FORBIDDEN_SCOPE", "回链命令不在当前操作产品范围。", 403)
+    owners.quality._human(s, ctx, product.id, write=True)
+    callback = getattr(s.get_bind(), "_pdos_capa_link_consumed_proof", None)
+    if not callable(callback):
+        raise DomainError("INTEGRATION_REQUIRED", "共同已消费T1证明接口尚未接通。", 503)
+    basis = owners.load_exact_followup_basis(
+        s,
+        ctx,
+        product.id,
+        payload.issue_id,
+        payload.expected_issue_revision,
+        write=True,
+    )
+    if basis.capa_id != payload.capa_id:
+        raise DomainError("FORBIDDEN_SCOPE", "回链须固定真实Issue的同一CAPA。", 403)
+    authority = _authority(s, ctx, product.id, basis)
+    published = policy.assess(s, ctx, product.id, basis.scope.project_id, basis.purpose)
+    resolved = owners.resolve_followup_outputs(
+        s,
+        ctx,
+        product.id,
+        basis,
+        payload.action_id,
+        payload.output_refs,
+        write=True,
+    )
+    refs = refs_from_exact(s, ctx, product.id, payload.sources)
+    reads = merge_reads(
+        resolved.required_source_read_set,
+        authority.get("required_source_read_set", []),
+        published["required_source_read_set"],
+        [{"artifact_id": r.id, "expected_revision": r.revision} for r in refs],
+    )
+    sources = union_sources(basis.sources, refs, published["sources"])
+    evidence, private = source_basis(s, ctx, product.id, reads)
+    visibility = (
+        "private"
+        if private or published["private"] or resolved.visibility == "private"
+        else "product"
+    )
+    if require_reads:
+        supplied = {str(r.artifact_id): r.expected_revision for r in command.source_read_set}
+        if any(supplied.get(r["artifact_id"]) != r["expected_revision"] for r in reads):
+            raise DomainError(
+                "MISSING_REQUIRED_EVIDENCE", "回链需要原失败、真实输出、政策和资格完整读集。"
+            )
+    bound = Bound(
+        resolved,
+        authority,
+        published,
+        sources,
+        reads,
+        {"artifact_sources": evidence},
+        visibility,
+        callback,
+    )
+    _refresh(s, ctx, command, product, payload, bound)
+    original = _saved(s, ctx, product.id, _intent(ctx, command, payload))
+    _guard_saved(original, payload, bound)
+    return Bound(
+        resolved,
+        authority,
+        published,
+        sources,
+        reads,
+        {"artifact_sources": evidence},
+        visibility,
+        callback,
+        original,
+    )
+
+
+def _refresh(s, ctx, command, product, payload, bound):
+    if getattr(s.get_bind(), "_pdos_capa_link_consumed_proof", None) is not bound.proof_callback:
+        raise DomainError("SOURCE_STALE", "读取期间共同证明接线已改变。")
+    current = owners.resolve_followup_outputs(
+        s,
+        ctx,
+        product.id,
+        bound.resolution.basis,
+        payload.action_id,
+        payload.output_refs,
+        write=True,
+    )
+    authority = _authority(s, ctx, product.id, current.basis)
+    published = policy.assess(
+        s, ctx, product.id, current.basis.scope.project_id, current.basis.purpose
+    )
+    evidence, _ = source_basis(s, ctx, product.id, bound.reads)
+    if (
+        current != bound.resolution
+        or authority != bound.authority
+        or published != bound.policy
+        or {"artifact_sources": evidence} != bound.source_basis
+    ):
+        raise DomainError("SOURCE_STALE", "真实输出读取期间原失败、来源、政策或专业依据发生变化。")
+    owners.quality._human(s, ctx, product.id, write=True)
+    _deadlines(authority, published)
+
+
+def validate(s, ctx, command, product, payload):
+    _load(s, ctx, command, product, payload)
+
+
+def _new_write(s, ctx, command, product, payload, bound):
+    if command.expected_revision != product.revision:
+        raise DomainError("VERSION_CONFLICT", "产品范围已变化，请重新核对。")
+    owners.load_followup_basis(
+        s, ctx, product.id, payload.issue_id, payload.expected_issue_revision, write=True
+    )
+    _refresh(s, ctx, command, product, payload, bound)
+
+
+def _review(command, payload, bound):
+    return {
+        "operation": OPERATION,
+        "effect": "固定真实输出回链；不推进Issue、不证明措施满足或整改有效。",
+        "before": None,
+        "after": {
+            "id": None,
+            "revision": 1,
+            "issue_id": str(payload.issue_id),
+            "issue_revision": bound.resolution.basis.issue_revision,
+            "capa_id": str(payload.capa_id),
+            "action_id": str(payload.action_id),
+            "resolution": bound.resolution.model_dump(mode="json"),
+            "visibility": bound.visibility,
+            "received_at": "server_on_save",
+            "action_fulfilled": None,
+        },
+        "authority": bound.authority,
+        "policy": bound.policy,
+        "required_source_read_set": bound.reads,
+        "reason": payload.reason,
+    }
+
+
+def preview_view(s, ctx, command, product, payload):
+    payload = FollowupLinkPayload.model_validate(payload)
+    bound = _load(s, ctx, command, product, payload)
+    _new_write(s, ctx, command, product, payload, bound)
+    return _review(command, payload, bound)
+
+
+def inputs(s, ctx, product_id, command):
+    from pdos_next.models import Product
+
+    product = s.get(Product, product_id)
+    if product is None or product.tenant_id != ctx.tenant_id or command.product_id != product_id:
+        raise DomainError("FORBIDDEN_SCOPE", "回链输入不在当前产品范围。", 403)
+    payload = FollowupLinkPayload.model_validate(command.payload)
+    bound = _load(s, ctx, command, product, payload, require_reads=False)
+    _new_write(s, ctx, command, product, payload, bound)
+    return {
+        "operation": OPERATION,
+        "allowed": True,
+        "required_source_read_set": bound.reads,
+        "authority": bound.authority,
+        "review": _review(command, payload, bound),
+    }
+
+
+def apply(s, ctx, command, product, payload):
+    payload = FollowupLinkPayload.model_validate(payload)
+    bound = _load(s, ctx, command, product, payload)
+    _new_write(s, ctx, command, product, payload, bound)
+    # The host assertion checks the exact already-consumed common T1 row and digest.
+    # No accepted=True flag, new confirmation or extra Receipt is created here.
+    proof_id = bound.proof_callback(s, ctx, command, product, payload)
+    if not isinstance(proof_id, UUID):
+        raise DomainError(
+            "INTEGRATION_REQUIRED",
+            "共同证明接口须返回精确已消费证明UUID，不能返回布尔值或空值。",
+            503,
+        )
+    _refresh(s, ctx, command, product, payload, bound)
+    basis = bound.resolution.basis
+    row = RemediationLinkRecord(
+        id=uuid4(),
+        tenant_id=ctx.tenant_id,
+        product_id=product.id,
+        project_id=basis.scope.project_id,
+        issue_id=basis.issue_id,
+        issue_version_id=basis.issue_version_id,
+        issue_revision=basis.issue_revision,
+        capa_id=basis.capa_id,
+        action_id=payload.action_id,
+        owner_id=ctx.requester_id,
+        writer_id=ctx.actor_id,
+        visibility=bound.visibility,
+        purpose=basis.purpose,
+        nature=basis.nature,
+        revision=1,
+        basis_snapshot=basis.model_dump(mode="json"),
+        basis_sha256=basis.basis_sha256,
+        input_snapshot={**semantic(payload), "shared_proof": {"id": str(proof_id), "tier": "T1"}},
+        output_snapshot=bound.resolution.model_dump(mode="json"),
+        resolution_sha256=bound.resolution.resolution_sha256,
+        authority_snapshot=bound.authority,
+        policy_snapshot=bound.policy,
+        sources=[source.model_dump(mode="json") for source in bound.sources],
+        required_source_read_set=bound.reads,
+        source_basis=bound.source_basis,
+        intent_digest=_intent(ctx, command, payload),
+        reason=payload.reason,
+    )
+    return row, "capa_remediation_link", row.visibility
+
+
+def replay_subject_type(payload):
+    return "capa_remediation_link"
+
+
+def replay_subject(s, ctx, command, product, payload):
+    payload = FollowupLinkPayload.model_validate(payload)
+    bound = _load(s, ctx, command, product, payload)
+    row = bound.original
+    if row is None:
+        return None
+    if {
+        key: value for key, value in row.input_snapshot.items() if key != "shared_proof"
+    } != semantic(payload) or row.resolution_sha256 != bound.resolution.resolution_sha256:
+        raise DomainError("RECHECK_REQUIRED", "原回链固定依据需要重新核对。")
+    return row

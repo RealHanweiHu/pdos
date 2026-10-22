@@ -1,0 +1,35 @@
+.......F{"registered_graph_run_id": "24d10dbc-d3fc-4277-b8ba-bc517a2727b2", "synthetic_turns": 4, "real_provider_calls": 0, "outcome": "completed"}
+......
+=================================== FAILURES ===================================
+_ test_pending_product_original_blocks_category_reference_without_committing_fake_state _
+
+work = <isolated synthetic test scope>
+lifecycle_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.original_store.OriginalStore object at 0x125b77f50>,...ays=1), effect_timeout=datetime.timedelta(seconds=20)), client=<starlette.testclient.TestClient object at 0x12647bb30>)
+
+>   ???
+E   AssertionError: Regex pattern did not match.
+E     Expected regex: 'Pending or isolated original'
+E     Actual message: '(psycopg.errors.InsufficientPrivilege) permission denied to set role "pdos_next_owner"\n[SQL: SET LOCAL ROLE pdos_next_owner]\n(Background on this error at: https://sqlalche.me/e/21/f405)'
+
+tests/agent_kernel/test_category_source_writeback_pg.py:318: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_category_source_writeback_pg.py::test_category_run_records_adopts_reads_and_replays_product_source[False]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_category_run_records_adopts_reads_and_replays_product_source[True]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_product_source_write_tail_failure_is_atomic_and_same_request_recovers[False]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_product_source_write_tail_failure_is_atomic_and_same_request_recovers[True]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_readable_but_unbound_product_artifact_cannot_expand_run_on_write[evidence.claim.record]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_readable_but_unbound_product_artifact_cannot_expand_run_on_write[proposal.item.patch]
+tests/agent_kernel/test_category_source_writeback_pg.py::test_withdrawn_product_source_stops_new_write_and_preserves_original_receipt
+tests/agent_kernel/test_category_source_writeback_pg.py::test_pending_product_original_blocks_category_reference_without_committing_fake_state
+tests/agent_kernel/test_category_source_writeback_pg.py::test_registered_graph_records_product_source_adopts_reads_and_completes
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_source_writeback_pg.py: 57 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_category_source_writeback_pg.py::test_pending_product_original_blocks_category_reference_without_committing_fake_state
+1 failed, 13 passed, 66 warnings in 28.37s

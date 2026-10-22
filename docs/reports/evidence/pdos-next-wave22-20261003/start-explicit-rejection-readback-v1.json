@@ -1,0 +1,60 @@
+{
+  "status": "VERIFIED_EXPLICIT_PREVIEW_REJECTION",
+  "recorded_at": "2026-10-03T18:54:19.125245+00:00",
+  "http_status": 409,
+  "code": "MISSING_REQUIRED_EVIDENCE",
+  "original_command_id": "644113fd-1b4d-4294-a5a7-3bbd67d10291",
+  "original_idempotency_key": "c32e5352-3aac-438a-82d7-83fc0ab07dab",
+  "original_body_sha256": "ed7c6f445ce1e641b549a6de277d641685312e856ec41037a337fa037bf9ac0e",
+  "missing_current_authorization_reads": [
+    {
+      "artifact_id": "67f7c873-511a-4ab3-addf-e16ce2ed80a5",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "945468fa-cec2-42a4-8850-69e3103593c3",
+      "expected_revision": 1
+    }
+  ],
+  "provided_reads": [
+    {
+      "artifact_id": "b4027069-27cb-4e2d-acca-0af1e1f0fde0",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "bf2fdd4c-d43d-447c-ab4d-006f3c79f4af",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+      "expected_revision": 1
+    }
+  ],
+  "complete_reads": [
+    {
+      "artifact_id": "67f7c873-511a-4ab3-addf-e16ce2ed80a5",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "945468fa-cec2-42a4-8850-69e3103593c3",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "b4027069-27cb-4e2d-acca-0af1e1f0fde0",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "bf2fdd4c-d43d-447c-ab4d-006f3c79f4af",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "c5427990-1249-4c62-b39d-df8210f19002",
+      "expected_revision": 1
+    }
+  ],
+  "actual_start_confirmation_count": 0,
+  "actual_start_receipt_count": 0,
+  "actual_start_row_count": 0,
+  "original_event_and_request_preserved": true,
+  "resolution": "Root may explicitly archive the definitively rejected unpreviewed request and prepare a new complete-evidence draft; genuine unknown still may not re-preview"
+}

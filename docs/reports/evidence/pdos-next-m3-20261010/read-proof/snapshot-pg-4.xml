@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="7" time="16.204" timestamp="2026-10-11T00:31:59.050546-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_actual_atomic_snapshot_registration_t0_and_t1[False]" time="2.387" /><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_actual_atomic_snapshot_registration_t0_and_t1[True]" time="1.825" /><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_actual_cross_requester_snapshot_read_keeps_original_run_private" time="2.029" /><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_marked_snapshot_without_actual_call_cannot_be_inserted" time="1.296" /><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_cross_run_snapshot_claim_needs_actual_current_run_page" time="2.618" /><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_cross_run_snapshot_link_requires_whole_locator_in_actual_page" time="2.655"><failure message="pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-119/test_cross_run_snapshot_link_r0')
+
+    def test_cross_run_snapshot_link_requires_whole_locator_in_actual_page(setup, tmp_path):
+        _, snapshot, _ = registration(setup, tmp_path)
+        proposal_id, _ = create(setup)
+        item = read_proposal(setup, proposal_id).json()["items"][0]
+        category_scope = SimpleNamespace(**vars(setup))
+        category_scope.product = None
+        f = read_fixture(category_scope, proposal_id=UUID(proposal_id))
+        cursor = len(snapshot.markdown.splitlines(keepends=True)[0])
+        registered_page(f, snapshot, cursor=cursor, page_chars=20)
+        spec = f.registry.get("evidence.link.create")
+        arguments = {
+            "evidence": {"type": "snapshot", "id": str(snapshot.id), "version": 1,
+                         "locator": "line:2"},
+            "target": {"type": "proposal_item", "id": item["item_id"],
+                       "version": item["version"]},
+            "relation": "supports",
+        }
+        source = model_for(f, spec.name, arguments)
+&gt;       saved = f.adapter.execute(
+            f.scope, spec.name, arguments, execution_key(f.scope.run_id, source.model_call_id, 0),
+            source=WriteSource(skill=f.source.skill, model_call_id=source.model_call_id,
+                               response_index=0),
+        )
+
+tests/agent_kernel/test_snapshot_proof_transactions.py:222: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/domain_adapter.py:306: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:81: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:281: in write
+    call, previous = prepare_domain_call(
+pdos_next/agent_kernel/execution.py:383: in prepare_domain_call
+    model, skill = verify_source(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = &lt;sqlalchemy.orm.session.Session object at 0x123893d70&gt;
+scope = RunScope(tenant_id=UUID('7a1d769b-ba7d-4126-a9eb-5745a513f29e'), requester_id=UUID('3ebc2890-3085-4045-b3da-3f7c663793...ntext=False, data_categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+run = &lt;pdos_next.agent_kernel.models.AgentRun object at 0x123a1d820&gt;
+spec = ToolSpec(name='evidence.link.create', description='办理 evidence.link.create；结果以领域回执为准。', input_schema={'$defs': {'Evide...', tier='T0', operation_key='evidence.link.create', taint='trusted', parallel_safe=False, budget_weight=1, version='1')
+arguments = {'evidence': {'type': 'snapshot', 'id': '101a4fcc-ce52-4cee-9e85-d9ba25f1a27c', 'version': 1, 'locator': 'line:2'}, 'target': {'type': 'proposal_item', 'id': '990cd2a0-5b14-49c9-a1fa-b847b690d25c', 'version': 1}, 'relation': 'supports'}
+source = WriteSource(skill=SkillBinding(key='public_research', version='0.2.0-draft', digest='a7548ceacddd94806b4420b2121062585...'339f952a-6ce6-4b59-865d-63b29655995d')), model_call_id=UUID('8054c8d8-8771-4556-8489-6f075f5a5f8a'), response_index=0)
+catalog = &lt;pdos_next.agent_kernel.skills.SkillCatalog object at 0x123de7140&gt;
+registry = &lt;pdos_next.agent_kernel.registry.ToolRegistry object at 0x123c50aa0&gt;
+route = namespace(version='synthetic@1', digest='6e9ad00716ce9b360ada47b8da2d22c754351358e4be0baaabe1dfea26e677a8')
+prepare_only = False
+
+    def verify_source(
+        session, scope, run, spec, arguments, source, *, catalog, registry, route, prepare_only=False
+    ):
+        if not isinstance(source, WriteSource):
+            raise DomainError("FORBIDDEN_SCOPE", "T0 来源须来自服务器执行账本。")
+        model_call = session.get(AgentToolCall, source.model_call_id)
+        model = validate_model_source(
+            run, model_call, scope, source, spec, arguments, route=route, prepare_only=prepare_only
+        )
+        validate_skill_load(session, scope, source.skill)
+        skill = catalog.load(
+            source.skill.key, scope, lambda _, s: policy.skill_enabled(session, scope, s)
+        )
+        if skill.version != source.skill.version or skill.digest != source.skill.digest:
+            raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
+        current = registry.get(spec.name)
+        if (
+            current != spec
+            or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
+            or current.operation_key != spec.operation_key
+            or spec.name not in skill.operations
+            or digest(registry.definitions()) != model.tool_definitions_digest
+        ):
+&gt;           raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
+E           pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。
+
+pdos_next/agent_kernel/execution.py:269: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_snapshot_proof_transactions" name="test_computed_claim_can_consume_proven_cross_run_snapshot" time="2.965" /></testsuite></testsuites>

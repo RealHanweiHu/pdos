@@ -1,0 +1,96 @@
+F
+=================================== FAILURES ===================================
+_ test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0] _
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': 'ef6a6984-7c91-4ca9-b063-5551ef56ecd5', 'project': ...n=1, kind='artifact', position='line:1;quote_sha256:193f073c88227292fa730c85d92e41273f61e7c82f5a54fd390ce452de33af4e'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11c046780>
+
+    @pytest.mark.parametrize("launch_work", [{"window_minutes": 45, "fact_minutes": 60}], indirect=True)
+    def test_completed_approved_actions_create_new_actual_build_samples_request_and_run(
+        quality_work, monkeypatch
+    ):
+        work = quality_work
+        continuation_people(work)
+        original_failure = deepcopy(work.failure_run.model_dump(mode="json"))
+        original_result_id = work.failure_run_version_id
+        with ExitStack() as cleanup:
+    
+            def continue_round(fixed, basis, implementations, engineering, manufacturing):
+                return next_round.continue_after_implementations(
+                    fixed,
+                    basis,
+                    implementations,
+                    engineering,
+                    manufacturing,
+                    monkeypatch,
+                    cleanup=cleanup,
+                    executor=fixed.setup,
+                    test_executor=fixed.retest_executor,
+                    independent_reviewer=fixed.independent_reviewer,
+                    test_person_resource=fixed.retest_person_resource,
+                    raw_value="10.0000",
+                )
+    
+>           continued = upstream.run_approved_configuration_implementations(
+                work, after_issue=named_root_cause, continuation=continue_round
+            )
+
+tests/change_execution/test_approved_configuration_continuation_chain.py:194: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/change_execution/test_approved_configuration_implementation_chain.py:381: in run_approved_configuration_implementations
+    basis = after_issue(work, basis)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+tests/change_execution/test_approved_configuration_continuation_chain.py:155: in named_root_cause
+    work.root_receipt, work.root_command = accepted(work.quality, followup.root_command(work))
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = namespace(admin=Engine([PRIVATE_DSN] engine=Engine(postgresql+psycopg:...e, cancel_epoch=None, category_id=UUID('d247d102-0928-4341-b61b-5462da9038c4'), agent_run_id=None, agent_call_id=None))
+command = {'category_id': 'd247d102-0928-4341-b61b-5462da9038c4', 'command_id': '6532c223-b2cd-47e2-b513-438a675d0238', 'idempotency_key': '85216803-357c-4ba5-b158-066fcaad9be8', 'operation': 'quality.issue.root_cause.decide', ...}
+
+    def accepted(setup, command):
+        preview = post(setup, command, True)
+        assert preview.status_code == 200, preview.text
+        result = post(setup, preview.json()["command"])
+>       assert result.status_code == 200, result.text
+E       AssertionError: {"code":"FORBIDDEN_SCOPE","message":"固定问题受众不在本人范围。","detail":{"reason":"FORBIDDEN_SCOPE"}}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/test_project_first_plan.py:88: AssertionError
+=============================== warnings summary ===============================
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-6tlb5h2o/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-6tlb5h2o/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-6tlb5h2o/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-6tlb5h2o/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-6tlb5h2o/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-6tlb5h2o/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+  /private/tmp/pdos-s3-continuation-6tlb5h2o/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_approved_configuration_continuation_chain.py::test_completed_approved_actions_create_new_actual_build_samples_request_and_run[launch_work0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 9 warnings in 94.27s (0:01:34)

@@ -1,0 +1,9 @@
+{
+  "server/app/ai/provider_streaming.py": "16109ff9f814b17711132cb5d6f160c7401ee10d2a2242c01811cac221e5a0a5",
+  "server/tests/test_xiaopai_reply_streaming.py": "29bfbcd65d8ddd6aba2aa2151a691e16ae2b5e3f603376ef1caf9664bc09f9e3",
+  "web/src/components/ai/xiaopai-provider.tsx": "18e1de346cf038e7aa76eb77f5d58786a71db12df70d254a73f88508b785984e",
+  "web/src/components/ai/xiaopai-provider.test.tsx": "7d6cde6955b6c09dcdfdaee5a23be2dbc37b88377df216401250e6e0f099831e",
+  "web/src/components/ai/xiaopai-session.tsx": "33fd0c6f0c44566ff6c30178b29ddd85dc2914fe0f889a9b2e6e67efb250da75",
+  "server/golden/model-gateway-v1.json": "9a0ee7c02391940a461c6ceaee60a771e85e5cb3587d3cb5a5dab91361ed01ab",
+  "server/golden/model-qualifications.json": "14709d7f9d0a7317e6304e2146557fdaea7279c92dfa169d559523bed60388e9"
+}

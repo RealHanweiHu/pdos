@@ -1,0 +1,7 @@
+
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/discovery/components.test.mjs
+  17:70  error  React Hook "React.useId" is called conditionally. React Hooks must be called in the exact same order in every component render                                                                    react-hooks/rules-of-hooks
+  19:30  error  React Hook "React.useState" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+
+✖ 2 problems (2 errors, 0 warnings)
+

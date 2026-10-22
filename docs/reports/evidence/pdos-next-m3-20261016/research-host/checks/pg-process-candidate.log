@@ -1,0 +1,220 @@
+F
+=================================== FAILURES ===================================
+__ test_default_research_worker_retains_child_checkpoint_and_actual_snapshot ___
+
+setup = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x12866ff80>
+tmp_path = PosixPath('/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/research-host-candidate-20261016/test_default_research_worker_r0')
+
+    def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
+        setup, monkeypatch, tmp_path
+    ):
+        fixtures = [fixture(setup, skill_key=key) for key in ("proposal_drafting", "public_research")]
+        monkeypatch.setattr(AliyunKms, "sdk", lambda _self: KmsSdk())
+        value = document(setup.tenant)
+        value["research"] = {
+            "search_endpoint": "http://127.0.0.1:18888/search",
+            "search_provider": "synthetic-search",
+            "artifact_root": str(tmp_path / "research"),
+        }
+        monkeypatch.setenv(
+            "PDOS_TENANT_RUNTIME_CONFIG", str(write_config(tmp_path / "host.json", value))
+        )
+        checkpoint_input = os.environ["M2_TEST_CHECKPOINT_URL"].replace(
+            "postgresql://", "postgresql+psycopg://", 1
+        )
+        checkpoint_url = verified_checkpoint_url(checkpoint_input)
+        with Session(setup.admin) as session, session.begin():
+            session.add(TenantAdministrator(tenant_id=setup.tenant, principal_id=setup.human))
+            for f in fixtures:
+                session.get(TenantSkillEnablement, f.qualification.id).qualified_model_version = None
+        budget_id = wallet(setup)
+        with tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.human,
+            requester_id=setup.human,
+            category_id=setup.category,
+        ) as session:
+            for provider in ("synthetic@1", "synthetic-search", "public-web:maker.example"):
+                register_agreement(
+                    session,
+                    setup.ctx,
+                    AgreementInput(
+                        provider=provider,
+                        expected_revision=0,
+                        data_categories=["internal"],
+                        decision="批准",
+                        idempotency_key=str(uuid4()),
+                        retention_terms="synthetic-only:no-real-contract",
+                        training_terms="fixture-only",
+                        signed_on=now() - timedelta(minutes=1),
+                        expires_at=now() + timedelta(hours=1),
+                    ),
+                )
+        process = None
+        with (tmp_path / "research-worker.log").open("wb") as log:
+            try:
+                with TestClient(create_app(setup.engine, setup.auth, workflow_enabled=True)) as api:
+                    saved, _ = submit(
+                        setup,
+                        api,
+                        {
+                            "command_id": str(uuid4()),
+                            "idempotency_key": str(uuid4()),
+                            "category_id": str(setup.category),
+                            "operation": "model.configuration.save",
+                            "expected_revision": 1,
+                            "source_read_set": [],
+                            "payload": {
+                                "expected_revision": 0,
+                                "enabled": True,
+                                "metadata": {
+                                    "protocol": "openai-compatible",
+                                    "base_url": "https://synthetic.invalid/v1",
+                                    "model": "synthetic-model",
+                                    "model_version": "synthetic@1",
+                                },
+                            },
+                        },
+                    )
+                    assert saved.status_code == 200, saved.text
+                    path = f"/v1/categories/{setup.category}/agent-runs"
+                    accepted = api.post(
+                        path,
+                        headers=setup.headers,
+                        json={
+                            "goal": "Synthetic default host public research",
+                            "idempotency_key": str(uuid4()),
+                        },
+                    )
+                    assert accepted.status_code == 202, accepted.text
+                    identity = UUID(accepted.json()["run_id"])
+                    env = dict(
+                        os.environ,
+                        PDOS_WORKFLOW_TENANTS=str(setup.tenant),
+                        PDOS_CHECKPOINT_DATABASE_URL=checkpoint_input,
+                        PDOS_OBJECT_ROOT=str(tmp_path / "objects"),
+                        PDOS_OBJECT_LIFECYCLE_PROFILE="local-synthetic-v1",
+                    )
+                    process = subprocess.Popen(
+                        [sys.executable, "-m", "tests.agent_kernel.test_research_runtime_process"],
+                        env=env,
+                        stdout=log,
+                        stderr=subprocess.STDOUT,
+                    )
+    
+                    def terminal():
+                        result = api.get(path + f"/{identity}", headers=setup.headers).json()
+                        return (
+                            result if result["status"] in {"completed", "partial", "failed"} else None
+                        )
+    
+                    result = wait_for(terminal, process, seconds=60)
+                    assert result["status"] == "completed", result
+                    events = api.get(path + f"/{identity}/events", headers=setup.headers)
+                    assert RAW not in events.text
+                    candidate = next(
+                        row["event"]
+                        for row in events.json()["items"]
+                        if row["event"]["type"] == "snapshot_candidate"
+                    )
+                    adopted, command = submit(setup, api, candidate["command"])
+                    assert adopted.status_code == 200, adopted.text
+                    repeated, _ = submit(setup, api, command, preview=False)
+                    assert repeated.json()["id"] == adopted.json()["id"]
+                    with Session(setup.admin) as session:
+                        run = session.get(AgentRun, identity)
+                        snapshot = session.scalar(
+                            select(PublicWebSnapshot).where(
+                                PublicWebSnapshot.registered_by_run_id == identity
+                            )
+                        )
+                        assert snapshot and snapshot.url == URL and RAW in snapshot.markdown
+                        assert session.get(Receipt, snapshot.receipt_id).agent_run_id == identity
+                        budget = session.get(ValidationBudget, budget_id)
+                        assert budget.calls == 7 and budget.spent_micro_usd == 840
+                        assert budget.held_micro_usd == 0 and run.held_tokens == 0
+                        fanout = session.scalar(
+                            select(AgentToolCall).where(
+                                AgentToolCall.run_id == identity,
+                                AgentToolCall.tool == "research.fanout",
+                            )
+                        )
+                        binding = ReadBinding.model_validate(fanout.execution_binding)
+                        previous, job_id = fanout.result, fanout.result["job_id"]
+                        session.expunge(run)
+                    owner = Bootstrap(setup.engine)
+    
+                    def no_model(*_args, **_kwargs):
+                        pytest.fail("Completed fanout replay must not make a new model request")
+    
+                    from pdos_next.agent_kernel import gateway
+    
+                    monkeypatch.setattr(gateway.AgentProviderClient, "turn", no_model)
+                    scope = owner.store.scope(
+                        tenant_id=setup.tenant,
+                        requester_id=setup.human,
+                        writer_id=setup.agent,
+                        category_id=setup.category,
+                        run_id=identity,
+                    )
+>                   restored = BoundHost(owner.store, owner.adapters()).read(
+                        scope,
+                        owner.registry.get("research.fanout"),
+                        {"tasks": [{"key": "specs", "focus": "synthetic pump"}]},
+                        execution_key(identity, binding.model_call_id, binding.response_index),
+                        source=ReadSource(
+                            model_call_id=binding.model_call_id, response_index=binding.response_index
+                        ),
+                    )
+
+tests/agent_kernel/test_research_runtime_process.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/host.py:89: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:108: in read_callback
+    model = verify_read_source(
+pdos_next/agent_kernel/read_execution.py:129: in verify_read_source
+    check_run_binding(actual, scope)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+run = <pdos_next.agent_kernel.models.AgentRun object at 0x1292285f0>
+scope = RunScope(tenant_id=UUID('ec41fc4c-b581-438c-b446-318da11a73f3'), requester_id=UUID('8757bcaf-f2d1-49c1-b0e6-a760e968d6...ext=False, data_categories=frozenset({'internal'}), isolation='main', artifact_ids=frozenset(), trigger='conversation')
+for_write = True
+
+    def check_run_binding(run, scope, *, for_write=True):
+        fields = (
+            "tenant_id",
+            "requester_id",
+            "writer_id",
+            "category_id",
+            "product_id",
+            "proposal_id",
+            "session_id",
+            "private_context",
+        )
+        if (
+            not run
+            or run.id != scope.run_id
+            or any(getattr(run, key) != getattr(scope, key) for key in fields)
+        ):
+            raise DomainError("FORBIDDEN_SCOPE", "调用不属于服务器实际运行。")
+        if (
+            frozenset(run.data_categories) != scope.data_categories
+            or tuple(run.customer_identities) != scope.customer_identities
+        ):
+            raise DomainError("FORBIDDEN_SCOPE", "调用资料范围不属于实际运行。")
+        if run.reverted_at or run.cancel_epoch != scope.cancel_epoch or run.state == "cancelled":
+            raise DomainError("CANCELLED_RUN", "原运行已取消或撤回。")
+        allowed = {"queued", "running", "waiting_input"}
+        if not for_write:
+            allowed |= {"completed", "partial", "failed"}
+        if run.state not in allowed:
+>           raise DomainError("CANCELLED_RUN", "已结束运行不能开始新调用。")
+E           pdos_next.errors.DomainError: 已结束运行不能开始新调用。
+
+pdos_next/agent_kernel/execution.py:168: DomainError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_research_runtime_process.py::test_default_research_worker_retains_child_checkpoint_and_actual_snapshot
+1 failed in 12.55s

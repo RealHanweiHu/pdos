@@ -1,0 +1,6 @@
+[
+  "tests/change_coverage_owner/test_owner_boundary.py",
+  "tests/change_execution/test_transactions.py::test_graph_capture_exact_key_fixed_roots_unknown_facets_expiry_and_qualification_aba",
+  "tests/change_coverage_transactions/test_publication.py::test_actual_synthetic_coverage_publication_whole_rollback_and_same_key_recovery",
+  "tests/change_coverage_transactions/test_public_capture_minimal.py::test_actual_minimal_public_complete_capture_impact_and_original_command_recovery"
+]

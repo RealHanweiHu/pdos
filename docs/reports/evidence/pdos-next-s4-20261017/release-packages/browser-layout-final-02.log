@@ -1,0 +1,35 @@
+### Result
+{"controls":[{"fixed_package_basis_visible":true,"false_unknown_config_cells":0,"Chinese_policy_visible":true,"diagnostics_collapsed":true,"discipline":"engineering","actual_package":{"id":"10a9d7e6-0a4d-40bf-852c-7b9a64f39266","revision":2},"valid_reason":true,"disabled":true},{"fixed_package_basis_visible":true,"false_unknown_config_cells":0,"Chinese_policy_visible":true,"diagnostics_collapsed":true,"discipline":"manufacturing","actual_package":{"id":"10a9d7e6-0a4d-40bf-852c-7b9a64f39266","revision":2},"valid_reason":true,"disabled":true}],"command_posts_on_selection":0,"viewports":[{"width":1440,"height":1000,"document_width":1440,"panel_client_width":1174,"panel_scroll_width":1174,"theme":"light"},{"width":390,"height":844,"document_width":390,"panel_client_width":356,"panel_scroll_width":356,"theme":"dark"}]}
+### Ran Playwright code
+```js
+await (async page => {
+  const panel=page.getByRole("region",{name:"固定发布包与分别决定",exact:true}), writes=[];
+  const observe=request=>{if(request.method()==="POST" && /\/commands$/.test(new URL(request.url()).pathname)) writes.push(request.url());};
+  page.on("request",observe); const controls=[];
+  for(const discipline of ["engineering","manufacturing"]){
+    await panel.getByRole("combobox",{name:"办理内容",exact:true}).selectOption("release."+discipline+".approve");
+    const box=panel.getByRole("textbox",{name:"高级材料 JSON",exact:true}), raw=JSON.parse(await box.inputValue());
+    if(!raw.package || !raw.sources?.length) throw new Error("Selected actual package evidence missing");
+    raw.reason="本人核对本专业明确范围；适用规则仍未知，不授放行"; await box.fill(JSON.stringify(raw,null,2));
+    const action=panel.getByRole("button",{name:"读取并核对本次材料",exact:true});
+    if(!await action.isDisabled()) throw new Error("Unknown policy opened a professional decision");
+    const draft=panel.getByRole("region",{name:"本次声明材料",exact:true});
+    if(!await draft.getByText("基于固定包 "+raw.package.id+" · v"+raw.package.revision,{exact:true}).isVisible()) throw new Error("Fixed package basis missing");
+    if(await draft.locator("dt").filter({hasText:/^(产品定义|工程配置|制造配置)$/}).count()) throw new Error("Sparse approval falsely renders unknown configurations");
+    if(!await panel.getByText("待核：尚无适用的放行政策",{exact:true}).first().isVisible()) throw new Error("Policy explanation not readable");
+    const codes=panel.locator("code"); for(let i=0;i<await codes.count();i++) if(await codes.nth(i).isVisible()) throw new Error("Raw diagnostic exposed outside closed details");
+    controls.push({fixed_package_basis_visible:true,false_unknown_config_cells:0,Chinese_policy_visible:true,diagnostics_collapsed:true,discipline,actual_package:raw.package,valid_reason:!!raw.reason,disabled:await action.isDisabled()});
+  }
+  page.off("request",observe); if(writes.length) throw new Error("Read-only professional selection posted a command");
+  await page.setViewportSize({width:1440,height:1000});
+  if(await page.evaluate(()=>document.documentElement.classList.contains("dark"))) await page.getByRole("button",{name:"切换明暗主题",exact:true}).click();
+  await panel.scrollIntoViewIfNeeded(); await panel.screenshot({path:"/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/release-package-final-light.png"});
+  const desktop=await panel.evaluate(el=>({width:innerWidth,height:innerHeight,document_width:document.documentElement.scrollWidth,panel_client_width:el.clientWidth,panel_scroll_width:el.scrollWidth,theme:document.documentElement.classList.contains("dark")?"dark":"light"}));
+  await page.getByRole("button",{name:"切换明暗主题",exact:true}).click(); await page.setViewportSize({width:390,height:844}); await panel.scrollIntoViewIfNeeded();
+  await panel.screenshot({path:"/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/release-package-final-dark-mobile.png"});
+  const mobile=await panel.evaluate(el=>({width:innerWidth,height:innerHeight,document_width:document.documentElement.scrollWidth,panel_client_width:el.clientWidth,panel_scroll_width:el.scrollWidth,theme:document.documentElement.classList.contains("dark")?"dark":"light"}));
+  for(const result of [desktop,mobile]) if(result.document_width>result.width || result.panel_scroll_width>result.panel_client_width) throw new Error("Horizontal overflow in actual package panel");
+  if(desktop.theme!=="light" || mobile.theme!=="dark") throw new Error("Actual theme toggle failed");
+  return {controls,command_posts_on_selection:writes.length,viewports:[desktop,mobile]};
+})(page);
+```

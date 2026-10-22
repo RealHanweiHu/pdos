@@ -1,0 +1,15 @@
+{
+  "head": "s0_0811",
+  "database_marker_verified": true,
+  "new_short_test_sessions_revoked": [
+    "upload",
+    "commitment",
+    "output"
+  ],
+  "same_existing_grant_deadlines_restored": 3,
+  "new_upload_or_run_ledger_exists": false,
+  "domain_request_log_exists": false,
+  "new_qualification": false,
+  "production_operations": false,
+  "browser_verification_passed": false
+}

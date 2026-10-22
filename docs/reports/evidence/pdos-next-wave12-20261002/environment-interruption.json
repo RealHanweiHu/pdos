@@ -1,0 +1,10 @@
+{
+  "noticed_at": "2026-10-02T23:31:14Z",
+  "api_process_started_around": "2026-10-02T19:25:20Z",
+  "observed_transaction_age_seconds": 14617,
+  "pending_operations": "read-only GET; no handoff write begun",
+  "measurement_affected": "measure-http-optimized.log",
+  "performance_conclusion": "invalid as isolated code timing; host execution gap overlaps measurement",
+  "expired_synthetic_window_finish": "2026-10-02T22:02:19.712587Z",
+  "history_preserved": true
+}

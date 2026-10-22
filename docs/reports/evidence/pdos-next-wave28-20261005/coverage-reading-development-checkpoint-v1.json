@@ -1,0 +1,24 @@
+{
+  "status": "PASS_ACTUAL_COVERAGE_READING_DEVELOPMENT_CHECKPOINT",
+  "actual_web_source_files": 175,
+  "manifest": "web-candidate-v2.json",
+  "manifest_sha256": "e029ed070134701e889698db3f7ff36e1d3214ae948b2a02587e591909ae0800",
+  "actual_new_ui_pure_tests": 55,
+  "actual_pure_failures": 0,
+  "actual_affected_lint_files": 4,
+  "lint_errors": 0,
+  "lint_warnings": 0,
+  "production_build_exit": 0,
+  "all_actual_sources_unchanged_after_build": true,
+  "raw_graph_source_details_preserved": true,
+  "no_capability_or_execution_inferred": true,
+  "offline_real_geist_font_cache": true,
+  "google_fonts_network_verified": false,
+  "browser_gui_verified": false,
+  "shared_3028_or_head30_preview_3037_replaced": false,
+  "logs": {
+    "actual-coverage-reading-pure-v1.log": "5e718492a0854bd303a93c3132105d956b8fb3ab73ac0cb5dd990903f645289e",
+    "actual-coverage-reading-lint-v1.log": "5760e18d22083cc9b97b84d26b7b4a6a1b53d3285b2b99c75df6f6b7bcf6a5b7",
+    "actual-coverage-reading-build-v1.log": "6ea2b9fd3cbd3873679e4906d79cb887eb91e05adfbe728968633bd5c7aafd84"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "snapshot": "/private/tmp/pdos-s3-orders-kxjvobrh",
+  "pytest_exit": 0,
+  "source_changed": [],
+  "tests": [
+    "tests/quality_followup/test_category_audience.py",
+    "tests/change_execution/test_current_issue_revision.py",
+    "tests/change_execution/test_preparation_view.py",
+    "tests/change_execution/test_api_query.py",
+    "tests/quality_followup/test_pure.py",
+    "tests/quality_followup_views/test_pure.py",
+    "tests/quality_followup_root/test_request_options.py",
+    "tests/change_execution/test_controlled_change.py",
+    "tests/verification_results/test_pure.py",
+    "tests/change_execution/test_retained_named_proof.py",
+    "tests/change_execution/test_change_order.py"
+  ],
+  "database_env_removed": true
+}

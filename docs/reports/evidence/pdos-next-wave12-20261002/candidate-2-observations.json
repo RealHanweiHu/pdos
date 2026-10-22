@@ -1,0 +1,201 @@
+{
+  "not_a_passing_gate": true,
+  "groups": {
+    "joint-tests-test_checkpoint_recovery": {
+      "passed": 12,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_build_demand": {
+      "passed": 25,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-build_start-1": {
+      "passed": 4,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_verification_execution": {
+      "passed": 32,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-build_start-0": {
+      "passed": 5,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_trusted_source_work": {
+      "passed": 34,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-build_start-2": {
+      "passed": 4,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-build_start-3": {
+      "passed": 4,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_supply_execution": {
+      "passed": 9,
+      "failed": 0,
+      "interrupted": true
+    },
+    "joint-verification_handoff-2": {
+      "passed": 1,
+      "failed": 2,
+      "interrupted": false
+    },
+    "joint-verification_handoff-3": {
+      "passed": 1,
+      "failed": 1,
+      "interrupted": true
+    },
+    "joint-verification_handoff-1": {
+      "passed": 2,
+      "failed": 1,
+      "interrupted": false
+    },
+    "joint-verification_handoff-0": {
+      "passed": 0,
+      "failed": 1,
+      "interrupted": true
+    },
+    "joint-tests-test_project_first_plan": {
+      "passed": 19,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-products-test_definition_transactions": {
+      "passed": 9,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-verification_front-test_read_concurrency_transactions": {
+      "passed": 2,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_build_readiness": {
+      "passed": 41,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-products-test_variants_transactions": {
+      "passed": 16,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_builds": {
+      "passed": 26,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_build_start_common": {
+      "passed": 8,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_handoff_common": {
+      "passed": 7,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-verification_front-test_transactions": {
+      "passed": 1,
+      "failed": 0,
+      "interrupted": true
+    },
+    "joint-build_operational_facts-1": {
+      "passed": 6,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-build_operational_facts-0": {
+      "passed": 4,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_original_security": {
+      "passed": 26,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-build_operational_facts-2": {
+      "passed": 3,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_build_comparison": {
+      "passed": 5,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_build_execution": {
+      "passed": 58,
+      "failed": 0,
+      "interrupted": true
+    },
+    "joint-build_operational_facts-3": {
+      "passed": 3,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-sample_handoff-3": {
+      "passed": 1,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_configurations": {
+      "passed": 25,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-sample_handoff-2": {
+      "passed": 2,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-pure": {
+      "passed": 903,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_cost_execution": {
+      "passed": 37,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-providers-test_persistent_budget_transactions": {
+      "passed": 24,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-sample_handoff-0": {
+      "passed": 2,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-sample_handoff-1": {
+      "passed": 2,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-professional_authority-test_transactions": {
+      "passed": 27,
+      "failed": 0,
+      "interrupted": false
+    },
+    "joint-tests-test_durable_evidence": {
+      "passed": 18,
+      "failed": 0,
+      "interrupted": false
+    }
+  },
+  "archive": "docs/reports/evidence/pdos-next-wave12-20261002/retired-candidate-2"
+}

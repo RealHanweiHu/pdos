@@ -1,0 +1,15 @@
+{
+  "target": "127.0.0.1:64245/pdos_test",
+  "head": "s0_0794",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "backup_filename": "post-s5-attention-20261018-s0_0794.dump",
+  "size": 71970563,
+  "sha256": "c6cf05c71b4310b9589051db6b375ffa8899c03a8fb23ff153d40e8d742248c8",
+  "known_short_login_removed": 1,
+  "own_failed_seed_short_login_removed": 1,
+  "private_token_files_removed": true,
+  "own_browser_and_previews_stopped": true,
+  "old_backups_overwritten": false,
+  "shared_database_and_temporal_kept": true,
+  "synthetic_business_fixtures_kept": true
+}

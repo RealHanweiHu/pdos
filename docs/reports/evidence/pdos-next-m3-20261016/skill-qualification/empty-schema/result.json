@@ -1,0 +1,12 @@
+{
+  "head": "s0_0769",
+  "target": "verified independent 54180/pdos_test",
+  "marker": "e9d3d9a2-93cf-4aa1-a721-3fd420b54c19",
+  "empty_0765_0769_0765_0769": true,
+  "orm_differences": [],
+  "forced_rls": true,
+  "application_pilot_write_privileges": false,
+  "agent_raw_review_select": false,
+  "backup": "pdos-next/.local/qualification-empty-schema-20261016.pgdump",
+  "container_stopped_preserved": true
+}

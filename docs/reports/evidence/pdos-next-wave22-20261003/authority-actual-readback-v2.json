@@ -1,0 +1,1057 @@
+{
+  "status": "PASS",
+  "started_at": "2026-10-03T18:54:36.919619+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "scope": {
+    "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+    "product_id": "c7d9f2d5-623f-4f91-b9c1-0aa56ec391ff",
+    "project_id": "760bcf34-f903-47ed-86d8-1b2d246cdbf0"
+  },
+  "synthetic_only": true,
+  "professional_facts": 12,
+  "policy_facts": 1,
+  "common_groups": [
+    {
+      "label": "maker-engineering-duty",
+      "receipt_id": "6d2fc5c3-5539-4b3b-b0a6-e3731e41dcd0",
+      "subject_id": "0a205402-334e-43aa-9a88-252cf7754fb7",
+      "revision": 1,
+      "operation": "professional.authority.import",
+      "audit_id": "b7c8b842-36ad-466a-9e58-3abb7d13351d",
+      "outbox_id": "bf64e705-3920-4563-9fcb-8f9f32950040",
+      "request_key_id": "ccbbe7bb-4297-436c-a05f-740b895f185b",
+      "outbox_delivery_state_not_a_business_binding": true
+    },
+    {
+      "label": "maker-engineering-qualification",
+      "receipt_id": "aa8dbee2-7635-4e0d-b3ea-cc33e4c67104",
+      "subject_id": "1fc4281c-01c2-416d-8a99-7de6c046e783",
+      "revision": 1,
+      "operation": "professional.authority.import",
+      "audit_id": "6ce9b2cd-c4f2-4108-a620-63c8f9f4c12a",
+      "outbox_id": "fe50eaff-c3ea-4b0f-9a60-eb914c17d260",
+      "request_key_id": "f60c8760-ab15-464b-bde7-56d4fb967e11",
+      "outbox_delivery_state_not_a_business_binding": true
+    },
+    {
+      "label": "maker-manufacturing-duty",
+      "receipt_id": "c974ecf4-d0bb-4882-b831-31c7950cd3cd",
+      "subject_id": "418643d2-072b-4e9a-8b51-13e7d43621e8",
+      "revision": 1,
+      "operation": "professional.authority.import",
+      "audit_id": "b3b19a3f-c4ca-4cc4-b692-70d65cc756ef",
+      "outbox_id": "109f259a-1e0a-4b03-ad0c-bb2da10011e3",
+      "request_key_id": "c8ae43e5-0ad2-42d2-a8a9-1bc324a7180b",
+      "outbox_delivery_state_not_a_business_binding": true
+    },
+    {
+      "label": "maker-manufacturing-qualification",
+      "receipt_id": "9527c9fa-aae9-4620-b4d8-a1f28b78fe85",
+      "subject_id": "daf50345-5eea-4303-88b4-3c5029b1783b",
+      "revision": 1,
+      "operation": "professional.authority.import",
+      "audit_id": "c9cd470b-6bb3-46f5-9207-0cb0e0b2796d",
+      "outbox_id": "37620a3c-9060-4d96-ba52-cc0435851b30",
+      "request_key_id": "77d6732c-3312-4be8-8c93-2f9bbba97ce6",
+      "outbox_delivery_state_not_a_business_binding": true
+    },
+    {
+      "label": "maker-quality-duty",
+      "receipt_id": "bb8e7d21-02bb-4d34-81f4-df774b8b85b4",
+      "subject_id": "03fa0dc0-ad9c-4c0f-85e9-e27b9cf5bc18",
+      "revision": 1,
+      "operation": "professional.authority.import",
+      "audit_id": "e7964b7b-fdf8-4606-977a-ff6b8dfa9ddf",
+      "outbox_id": "2cbd3a1c-d54e-4b08-bb3d-00455f16ab65",
+      "request_key_id": "bc426878-2e79-45b7-b8ca-3ff3daa45a48",
+      "outbox_delivery_state_not_a_business_binding": true
+    },
+    {
+      "label": "maker-quality-qualification",
+      "receipt_id": "d8cddce7-2f16-461c-a1a4-af34b88983f0",
+      "subject_id": "57e93c07-0911-4e55-80ff-eddc44b71901",
+      "revision": 1,
+      "operation": "professional.authority.import",
+      "audit_id": "43685b9e-a90f-47ee-a645-3cc11d794a27",
+      "outbox_id": "4963c3f4-c382-49e7-bef1-40ca3c6b1d42",
+      "request_key_id": "6386d1fd-6cf8-40ae-ad00-86f2f1756201",
+      "outbox_delivery_state_not_a_business_binding": true
+    },
+    {
+      "label": "observer-quality-front-duty",
+      "receipt_id": "3bcc1850-c4fa-4334-a7e6-e432ffca988a",
+      "subject_id": "e44e304e-b006-4f31-bfd7-d7ce3d560b47",
+      "revision": 1,
+      "operation": "professional.authority.import",
+      "audit_id": "97951d60-95d7-4e38-a425-797fbf782d02",
+      "outbox_id": "57d0109d-8f97-4612-9e7e-c04c3a40fe6a",
+      "request_key_id": "c222fbca-fe03-4f55-9856-008f418c4b83",
+      "outbox_delivery_state_not_a_business_binding": true
+    },
+    {
+      "label": "observer-quality-front-qualification",
+      "receipt_id": "e4d83a04-c44e-4e14-8a72-d284cc88dcd3",
+      "subject_id": "5ecc3c7a-4cd3-492b-8939-a70429ee6eae",
+      "revision": 1,
+      "operation": "professional.authority.import",
+      "audit_id": "54fb522a-cd2e-4a57-aaa7-5665b17e75d6",
+      "outbox_id": "79d2cb4a-be25-4da9-811d-fb6f7273a245",
+      "request_key_id": "d45e8d2e-d082-4608-8b6e-20646dee0f66",
+      "outbox_delivery_state_not_a_business_binding": true
+    },
+    {
+      "label": "observer-quality-results-duty",
+      "receipt_id": "a8cae793-df00-40bc-92e5-d54bfbbab146",
+      "subject_id": "65d09f18-f315-48cc-abb8-f37325907fc0",
+      "revision": 1,
+      "operation": "professional.authority.import",
+      "audit_id": "57cde6ab-9246-4a60-9375-c6e6498ee61f",
+      "outbox_id": "968b5fe9-4f35-4081-9e0a-c1735641dfab",
+      "request_key_id": "abb3a5d1-4996-4498-ae89-af1d2b2ab3cb",
+      "outbox_delivery_state_not_a_business_binding": true
+    },
+    {
+      "label": "observer-quality-results-qualification",
+      "receipt_id": "1bef7905-1b08-408f-91c7-7d97f4ac83fd",
+      "subject_id": "ca3c87fe-443c-4903-9d8d-2f6155b8eee3",
+      "revision": 1,
+      "operation": "professional.authority.import",
+      "audit_id": "6df3b4df-9430-4354-9f7c-d3f49df76110",
+      "outbox_id": "0ec4d6ff-0070-40ee-83e3-94b3297eed38",
+      "request_key_id": "27aaa053-6f78-4fd9-8db8-76bb72c753be",
+      "outbox_delivery_state_not_a_business_binding": true
+    },
+    {
+      "label": "independent-reviewer-quality-duty",
+      "receipt_id": "82e4d85b-b80b-4420-ade9-e02662a3cb4e",
+      "subject_id": "db8d52eb-ce0f-4812-b962-c01b3d9a08ae",
+      "revision": 1,
+      "operation": "professional.authority.import",
+      "audit_id": "4d8e9020-a607-4117-93e8-f5fff11d9c95",
+      "outbox_id": "75a4a946-729e-4e26-9bae-d0a8fb48453e",
+      "request_key_id": "2837d75b-f2e0-40a0-827c-b11223f2c7c9",
+      "outbox_delivery_state_not_a_business_binding": true
+    },
+    {
+      "label": "independent-reviewer-quality-qualification",
+      "receipt_id": "7011d875-b6a8-4a13-825b-e11c3672a271",
+      "subject_id": "45948c7c-93dc-4fe1-b28e-98010a254378",
+      "revision": 1,
+      "operation": "professional.authority.import",
+      "audit_id": "11cc4d4c-961c-4baa-be33-89cd97e26baf",
+      "outbox_id": "2b3abf1a-7e87-4015-a168-1256e10d76bf",
+      "request_key_id": "83a4f7ca-1003-4e01-8a63-1790e3895f55",
+      "outbox_delivery_state_not_a_business_binding": true
+    },
+    {
+      "label": "quality-policy",
+      "receipt_id": "483ae6fa-f7a9-492b-84c8-54d072e1330a",
+      "subject_id": "cfcf6b52-28fd-4539-a74e-49a6f0622557",
+      "revision": 1,
+      "operation": "quality.policy.import",
+      "audit_id": "c384bcdf-9f2c-46bc-95f4-e1d3a723c401",
+      "outbox_id": "719370f7-ea42-427c-ba67-98dd9dd63046",
+      "request_key_id": "b9e97ae4-ea90-4993-aed6-0bdb6b5c4593",
+      "outbox_delivery_state_not_a_business_binding": true
+    }
+  ],
+  "current_publication_source": {
+    "id": "945468fa-cec2-42a4-8850-69e3103593c3",
+    "revision": 1,
+    "whole_content_sha256": "4b75a7b3523b4386a7776a3aef65e85948c1743db77da5ba6088aba8dab1a971",
+    "raw_utf8_sha256": "4b75a7b3523b4386a7776a3aef65e85948c1743db77da5ba6088aba8dab1a971",
+    "lines": 14,
+    "current_three_actor_source_basis": [
+      [
+        {
+          "id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "revision": 1,
+          "hash": "4b75a7b3523b4386a7776a3aef65e85948c1743db77da5ba6088aba8dab1a971",
+          "status": "active",
+          "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+          "visibility": "product",
+          "source_kind": "registered_native_text",
+          "registration": {
+            "receipt_id": "f3eb4212-019d-4fe5-9eab-777c41444a87",
+            "actor_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "requester_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "run_id": null
+          }
+        }
+      ],
+      [
+        {
+          "id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "revision": 1,
+          "hash": "4b75a7b3523b4386a7776a3aef65e85948c1743db77da5ba6088aba8dab1a971",
+          "status": "active",
+          "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+          "visibility": "product",
+          "source_kind": "registered_native_text",
+          "registration": {
+            "receipt_id": "f3eb4212-019d-4fe5-9eab-777c41444a87",
+            "actor_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "requester_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "run_id": null
+          }
+        }
+      ],
+      [
+        {
+          "id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "revision": 1,
+          "hash": "4b75a7b3523b4386a7776a3aef65e85948c1743db77da5ba6088aba8dab1a971",
+          "status": "active",
+          "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+          "visibility": "product",
+          "source_kind": "registered_native_text",
+          "registration": {
+            "receipt_id": "f3eb4212-019d-4fe5-9eab-777c41444a87",
+            "actor_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "requester_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "run_id": null
+          }
+        }
+      ]
+    ],
+    "foundation_source": {
+      "id": "c5427990-1249-4c62-b39d-df8210f19002",
+      "revision": 1,
+      "stored_content_hash": "445c7b5692b89e6a78f7cfaa19497a1fd42de6ec71334916856adebfa728cbf5",
+      "raw_utf8_sha256": "445c7b5692b89e6a78f7cfaa19497a1fd42de6ec71334916856adebfa728cbf5",
+      "current_three_actor_source_basis": [
+        [
+          {
+            "id": "c5427990-1249-4c62-b39d-df8210f19002",
+            "revision": 1,
+            "hash": "445c7b5692b89e6a78f7cfaa19497a1fd42de6ec71334916856adebfa728cbf5",
+            "status": "active",
+            "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "visibility": "product",
+            "source_kind": "registered_native_text",
+            "registration": {
+              "receipt_id": "dcdac183-55d4-45b2-9b42-1f517f32c1a7",
+              "actor_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+              "requester_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+              "run_id": null
+            }
+          }
+        ],
+        [
+          {
+            "id": "c5427990-1249-4c62-b39d-df8210f19002",
+            "revision": 1,
+            "hash": "445c7b5692b89e6a78f7cfaa19497a1fd42de6ec71334916856adebfa728cbf5",
+            "status": "active",
+            "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "visibility": "product",
+            "source_kind": "registered_native_text",
+            "registration": {
+              "receipt_id": "dcdac183-55d4-45b2-9b42-1f517f32c1a7",
+              "actor_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+              "requester_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+              "run_id": null
+            }
+          }
+        ],
+        [
+          {
+            "id": "c5427990-1249-4c62-b39d-df8210f19002",
+            "revision": 1,
+            "hash": "445c7b5692b89e6a78f7cfaa19497a1fd42de6ec71334916856adebfa728cbf5",
+            "status": "active",
+            "owner_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+            "visibility": "product",
+            "source_kind": "registered_native_text",
+            "registration": {
+              "receipt_id": "dcdac183-55d4-45b2-9b42-1f517f32c1a7",
+              "actor_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+              "requester_id": "c5535eca-59be-4684-975f-4858722b6e2f",
+              "run_id": null
+            }
+          }
+        ]
+      ]
+    }
+  },
+  "assessments": [
+    {
+      "actor_role": "maker",
+      "operation": "build.engineering.authorize",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "engineering"
+      ],
+      "reason_codes": [],
+      "facts_revision": "2b1c53953daac5e66b8e7eee3b1cd2994a29a801c86aa67ba5c0b4fb0bbb8e04"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "quality.issue.create",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "engineering"
+      ],
+      "reason_codes": [],
+      "facts_revision": "cfa8a76ad7a80e70fbb513cfc6726056c25b666c15db27debda69a8bd89116e6"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "quality.issue.merge",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "engineering"
+      ],
+      "reason_codes": [],
+      "facts_revision": "42fba8217ef48214e7dd79a62c88e8528fd18a9493eb6183794c12adbde2abea"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "quality.issue.triage",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "engineering"
+      ],
+      "reason_codes": [],
+      "facts_revision": "679738c9be7730af1f7cad11282aa7afb316a3e36b1aaf6e7f7f7acec9033439"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "quality.issue.containment.record",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "engineering"
+      ],
+      "reason_codes": [],
+      "facts_revision": "285ddf48085257823477890796f0f0d02e7bda8d484b988f22120e1fe5296363"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "quality.capa.draft",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "engineering"
+      ],
+      "reason_codes": [],
+      "facts_revision": "5dcaca2e8552543e278d025b0e504293e4bbd01ee0d9b6e52a2552fbafc144af"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "quality.capa.actions.complete",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "engineering"
+      ],
+      "reason_codes": [],
+      "facts_revision": "6032b27e4366a0431413ce8972c56c649ea2bb7a802f7d9ce81adcaefb223bc6"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "quality.capa.followup.link",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "engineering"
+      ],
+      "reason_codes": [],
+      "facts_revision": "b0cb7e03391c0077a5fdcaea1aea0f87c47db90aac38a71d9ddeb2022e27d4e4"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "quality.capa.verification.candidate.record",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "engineering"
+      ],
+      "reason_codes": [],
+      "facts_revision": "1e9a021422cd53dd1d5131d27a64467342a267c7139c5ed3f36abb1bb418a9bb"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "build.manufacturing.authorize",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "manufacturing"
+      ],
+      "reason_codes": [],
+      "facts_revision": "ce4847a4f1461f2d257fed0e849bae26dde1bc64d94ac895ec4663201a94b0c8"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "build.start",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "manufacturing"
+      ],
+      "reason_codes": [],
+      "facts_revision": "340d9084ad7102744c4805b5b2fdce24aed1a022b8c2c5f96567a91d12ff8367"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "build.sample.readiness.record",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "manufacturing"
+      ],
+      "reason_codes": [],
+      "facts_revision": "b885837d13649ad0f75a11e751036fbda1e174e713baacd6a92039266c22f9a0"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "verification.handoff.offer",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "manufacturing"
+      ],
+      "reason_codes": [],
+      "facts_revision": "167948ce391477f53804a245ca4541b0f1b423e73655905f86397b9d16406535"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "quality.issue.root_cause.decide",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "6a7aa7dab55755b816fe88de457280fed19092dd48b2dba86622af9e535e541f"
+    },
+    {
+      "actor_role": "maker",
+      "operation": "quality.capa.verification.rule.import",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "f747c120827815f890cba7e0c117582ea6cfc3703f39148f71a84db9dcf30fc5"
+    },
+    {
+      "actor_role": "observer",
+      "operation": "verification.request.create",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "478e9e72f12de9b276a0491b6be0f3b08761aa1f3081c216c8b435d6e48af584"
+    },
+    {
+      "actor_role": "observer",
+      "operation": "verification.method.prepare",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "0f84dd43f56b6694fc470c4a7a4c7015e4a0643c34fb9205ff68e54ae8b379d3"
+    },
+    {
+      "actor_role": "observer",
+      "operation": "verification.actual_method.prepare",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "9dcd83db280408827b6efa9ac690d133988a528b35c3253427f36cb61d8e9b33"
+    },
+    {
+      "actor_role": "observer",
+      "operation": "verification.handoff.accept",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "610544d230a39564aa038b08038e1be75826b6ba304f3c3dbda76e0aa5e3a28e"
+    },
+    {
+      "actor_role": "observer",
+      "operation": "test.run.plan",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "780c2bb57ba69f3669a9d7a477f6cd1a4c0d33609bfd4231f5651475d490aa3f"
+    },
+    {
+      "actor_role": "observer",
+      "operation": "verification.schedule.promise",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "c49db7729818c1446e4d4857fbba994c89e8d609fb954ec187f862ddf7feba23"
+    },
+    {
+      "actor_role": "observer",
+      "operation": "test.run.start",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "582a583c6783457354ddfc16a7da2113b9950581def8edd65f37f4db2dffd2af"
+    },
+    {
+      "actor_role": "observer",
+      "operation": "test.results.import",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "7a19442ba43a6c0eda94336deec65bfa27518bbc180087788c469c7cd79e891b"
+    },
+    {
+      "actor_role": "observer",
+      "operation": "test.result.compute",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "507c2c5e7ed87f4ecdf08cc1dc6c3d3ea9d3ea69b31797de5bc17f4b887a4baf"
+    },
+    {
+      "actor_role": "observer",
+      "operation": "test.run.review",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "3cd090947d13d77285e59b9c8a92b12b22ea246774a04bb6dc89319a05397a01"
+    },
+    {
+      "actor_role": "observer",
+      "operation": "test.disposition.decide",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "89557c119376d3723c9cbc1a0666178f85f21b9edcac73150fa3f39d5b091316"
+    },
+    {
+      "actor_role": "observer",
+      "operation": "quality.capa.observation.record",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "180eea0df0d7c81e04edba364a5edf4ea8cbaf0b15eac42b590011157a794c2d"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "quality.capa.verification.review",
+      "authorized": true,
+      "qualified": true,
+      "roles": [
+        "quality"
+      ],
+      "reason_codes": [],
+      "facts_revision": "7f8f2a66f8205cc7aee1dba73d0c6686148bafa8f88de9005aa2afc8ed4c6d41"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "build.engineering.authorize",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "fd6ec3ba6279ad7045a7a9136af7db058589da334a0e7a06fbe1b9620924e18d"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "build.manufacturing.authorize",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "ecdb2a501db644f1f255f6f9a5fd58f80f99bc1583e34e453d0f3e87d4487316"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "build.sample.readiness.record",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "347507c0ca6fbdec5411a17e78d4337956934bb6883120a405bcde18ee1bc3a4"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "build.start",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "7eda05b0ac795f0957e58c2de4692da9193ce2b5fe1be8b2c24f2f138ae51703"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "quality.capa.actions.complete",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "4151cbd696c80908cd4faddcc71c5e8450766cdda1a1352d08f7f25122fec978"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "quality.capa.draft",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "d62e35e071777c159b9043af30edf5e484f301a7596142eae9c26385864d260b"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "quality.capa.followup.link",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "80e92eca1cf09f6f56a7816b721ecf31ee95aff1dcd9be62f7584b1ddb99959c"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "quality.capa.observation.record",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "58500ab41915954370d338a7def57925ce3d17c3d0c383ebdbfd3f7908e32083"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "quality.capa.verification.candidate.record",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "a5017466537a50807b53dc994c5b95108b7d7e291487af7b5d48484ccb80e39d"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "quality.capa.verification.rule.import",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "9a77f405ee805bacfd0d033a90ea159e5e10c4f12ef67f93238cd685e1798f23"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "quality.issue.containment.record",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "63846e2d5cf0ebfa83ba7507d948f17b955cdc929d7e4b305ef691e17e1c1cea"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "quality.issue.create",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "6f10502e6a6b86c007b0a193ada68c5fbf7be3e53b790e50d4cc43b37a111134"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "quality.issue.merge",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "b044467bda5061c0d610d76c7e98678843d1b89e485debebc2e79060a856c5ab"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "quality.issue.root_cause.decide",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "e4c1222e31b8970ed383564cf5f30866bcb5e67ecfc121ec42f5a0c08a470ce2"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "quality.issue.triage",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "2559e9c7eea98e21f126a07216ff5d2c8c6db5823ba5652e5a54f7a2d29dc1b7"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "test.disposition.decide",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "ce0d474d1166e70b401e5c6ec847fd863278c6239a3af5f6a0c60bfde5f1dca0"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "test.result.compute",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "22888a827e6f61e7b0e2da3d3bbc4e34a22d563814784db761212953611b0f9a"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "test.results.import",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "2036c69196f83fbf13de1daa52dcb84cb6b3d9a5b38aeb32becf7645788c1e6d"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "test.run.plan",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "53bfc049f17ce219d58dcbab81bd981a44ba304b20524e3edbc67ca7dfa4f968"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "test.run.review",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "18a3017bd3db8f3c76e3c410a2b2358656a70bcc15abddf9ef844c17feae7d9c"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "test.run.start",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "d344316736b28437b5ea60e369d20092b7c5872c41b4c9b271796a613c74edc5"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "verification.actual_method.prepare",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "4d9e22888699067a41c73f9c47ed612785234c1f0af2984e63fb643f4a8946c8"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "verification.handoff.accept",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "495b266c971a60ba9f8ccf25578da03701e44f125b6830b972da26ae485ab167"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "verification.handoff.offer",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "0b5ffa8219d8aad993497799578395cb56843528285052b077801a7a0b6902bc"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "verification.method.prepare",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "239760b036449c6a75dd936783919f58925b9bb07c27feba0e9a601562595663"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "verification.request.create",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "ddedc169d4518be4ad5d9255dc21167c366d221d294a6abc55d872ef18eab1c3"
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "operation": "verification.schedule.promise",
+      "authorized": false,
+      "qualified": null,
+      "roles": [],
+      "reason_codes": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "facts_revision": "fb624303522a24c2490ec4db3794386db699cee61ee98255beb581680e540b14"
+    }
+  ],
+  "policy_by_actor": [
+    {
+      "actor_role": "maker",
+      "id": "cfcf6b52-28fd-4539-a74e-49a6f0622557",
+      "revision": 1,
+      "risk": "high",
+      "independent_verification": true,
+      "nature": "synthetic",
+      "valid_until": "2026-10-05T18:22:48.865992+00:00",
+      "facts_revision": "a86f886182ab448a8b526ee7686a10003a4d4bf82facce697e764667caac90bc",
+      "sources": [
+        {
+          "id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "kind": "artifact",
+          "position": "line:13;quote_sha256:2c8e2a6ca8c664717cf029b955cae8c15c904f459a044fa17cf8ce0019934656",
+          "revision": 1
+        },
+        {
+          "id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "kind": "artifact",
+          "position": "line:14;quote_sha256:552460ff532d034a8d572367669e0fad10fbe7b3261fb1ed2f5cee7258c70c79",
+          "revision": 1
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "expected_revision": 1
+        }
+      ],
+      "source_basis": [
+        {
+          "id": "cfcf6b52-28fd-4539-a74e-49a6f0622557",
+          "revision": 1,
+          "epoch": 1,
+          "sha256": "496bc561bcab824971cdaee02d3e2a59ec25d415f72a0433db78c2e0326f168a",
+          "issuer_epoch": 1
+        }
+      ],
+      "private": false
+    },
+    {
+      "actor_role": "observer",
+      "id": "cfcf6b52-28fd-4539-a74e-49a6f0622557",
+      "revision": 1,
+      "risk": "high",
+      "independent_verification": true,
+      "nature": "synthetic",
+      "valid_until": "2026-10-05T18:22:48.865992+00:00",
+      "facts_revision": "a86f886182ab448a8b526ee7686a10003a4d4bf82facce697e764667caac90bc",
+      "sources": [
+        {
+          "id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "kind": "artifact",
+          "position": "line:13;quote_sha256:2c8e2a6ca8c664717cf029b955cae8c15c904f459a044fa17cf8ce0019934656",
+          "revision": 1
+        },
+        {
+          "id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "kind": "artifact",
+          "position": "line:14;quote_sha256:552460ff532d034a8d572367669e0fad10fbe7b3261fb1ed2f5cee7258c70c79",
+          "revision": 1
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "expected_revision": 1
+        }
+      ],
+      "source_basis": [
+        {
+          "id": "cfcf6b52-28fd-4539-a74e-49a6f0622557",
+          "revision": 1,
+          "epoch": 1,
+          "sha256": "496bc561bcab824971cdaee02d3e2a59ec25d415f72a0433db78c2e0326f168a",
+          "issuer_epoch": 1
+        }
+      ],
+      "private": false
+    },
+    {
+      "actor_role": "independent_reviewer",
+      "id": "cfcf6b52-28fd-4539-a74e-49a6f0622557",
+      "revision": 1,
+      "risk": "high",
+      "independent_verification": true,
+      "nature": "synthetic",
+      "valid_until": "2026-10-05T18:22:48.865992+00:00",
+      "facts_revision": "a86f886182ab448a8b526ee7686a10003a4d4bf82facce697e764667caac90bc",
+      "sources": [
+        {
+          "id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "kind": "artifact",
+          "position": "line:13;quote_sha256:2c8e2a6ca8c664717cf029b955cae8c15c904f459a044fa17cf8ce0019934656",
+          "revision": 1
+        },
+        {
+          "id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "kind": "artifact",
+          "position": "line:14;quote_sha256:552460ff532d034a8d572367669e0fad10fbe7b3261fb1ed2f5cee7258c70c79",
+          "revision": 1
+        }
+      ],
+      "required_source_read_set": [
+        {
+          "artifact_id": "945468fa-cec2-42a4-8850-69e3103593c3",
+          "expected_revision": 1
+        }
+      ],
+      "source_basis": [
+        {
+          "id": "cfcf6b52-28fd-4539-a74e-49a6f0622557",
+          "revision": 1,
+          "epoch": 1,
+          "sha256": "496bc561bcab824971cdaee02d3e2a59ec25d415f72a0433db78c2e0326f168a",
+          "issuer_epoch": 1
+        }
+      ],
+      "private": false
+    }
+  ],
+  "checked_at": "2026-10-03T18:54:48.241831+00:00",
+  "valid_until": "2026-10-05T18:22:48.865992+00:00",
+  "business_commands": 0,
+  "model_calls": 0,
+  "independent_review_decisions": 0,
+  "production_qualification": false,
+  "independence_not_attested": true,
+  "old_table_capa_private_core_preservation_not_retested": true,
+  "rollback_completed": true,
+  "driver_counts": {
+    "select": 3231,
+    "set": 0,
+    "business_dml": 0,
+    "flush": 0,
+    "commit": 0
+  },
+  "reused_evidence": [
+    {
+      "path": "docs/reports/evidence/pdos-next-wave22-20261003/retained-case-exclusion-v1.json",
+      "sha256": "9a7fe6fa42a0c19b7b6152705310e13097be6a64839d78e2820d426f02897b87",
+      "scope": "historical evidence only; no rerun/current qualification claim"
+    }
+  ],
+  "finished_at": "2026-10-03T18:54:48.244939+00:00"
+}

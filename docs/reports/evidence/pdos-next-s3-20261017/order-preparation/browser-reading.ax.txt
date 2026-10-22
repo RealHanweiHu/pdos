@@ -1,0 +1,908 @@
+Browser tab: 3, Title: "PDOS · 研发工作区", URL: "http://localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&bench=projects&view=issues&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e".
+1 AXWebArea PDOS · 研发工作区, URL: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&bench=projects&view=issues&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e
+	2 container
+		3 link Description: 跳到工作内容, Value: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&bench=projects&view=issues&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e#workspace-content
+		4 text PDOS
+		5 button 收起侧栏
+			6 image
+		7 button (collapsed) Description: 新建：选择办理入口, Help: 新建, Secondary Actions: Expand
+			8 text 新建
+		9 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			10 text ⌘K
+		11 container 工作区导航
+			12 text 日常
+			13 link Description: 我的工作, Value: localhost:52463/?area=work&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c
+			14 link Description: 项目, Value: localhost:52463/?area=projects&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c
+			15 container 最近的在办项目
+				16 link Description: Shared synthetic project 阶段尚未提供, Help: Shared synthetic project · 阶段尚未提供, Value: localhost:52463/?area=cockpit&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e
+			17 link Description: 组合与资源, Value: localhost:52463/?area=programs&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c
+			18 link Description: 知识, Value: localhost:52463/?area=knowledge&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c
+		19 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: localhost:52463/plan
+		20 link Description: 设置, Value: localhost:52463/?area=settings&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c
+		21 button 切换明暗主题
+		22 text Synthetic qualified quality
+		23 text 本地合成环境
+		24 link Description: 项目, Value: localhost:52463/?area=projects
+		25 text Shared synthetic project
+		26 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			27 image
+		28 container workspace-content
+			29 container 品类工作台区
+				30 link Description: 型号, Value: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e&bench=products&view=overview&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96
+				31 link Description: 项目, Value: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e&bench=projects&view=overview&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96
+				32 link Description: 知识, Value: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e&bench=knowledge&view=sources&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96
+				33 link Description: 设置, Value: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e&bench=settings&view=preferences&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96
+				34 button Description: 快速查找入口或型号, Help: 当前品类快速查找 · ⌘ / Ctrl Shift K
+				35 pop up button (collapsed, settable) Description: 当前型号, Value: Shared synthetic project, Secondary Actions: Expand
+					36 menu
+						37 Synthetic product
+						38 (selected) Shared synthetic project
+			39 container 项目视图
+				40 link Description: 现在, Value: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e&bench=projects&view=overview&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96
+				41 link Description: 工作与计划, Value: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e&bench=projects&view=plan&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96
+				42 link Description: 试制, Value: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e&bench=projects&view=builds&task=prepare&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96
+				43 link Description: 测试与交接, Value: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e&bench=projects&view=verification&task=prepare&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96
+				44 link Description: 问题与变更, Value: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e&bench=projects&view=issues&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96
+				45 link Description: 评审与交付 尚未接入, Value: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e&bench=projects&view=reviews&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96
+				46 link Description: 资料, Value: localhost:52463/?area=category&category=dc3389e2-68a8-42bb-b536-ec39e4a2a96c&project=1a82e48f-d34c-4d78-86d6-1d8699863a6e&bench=projects&view=files&product=a9db0a7d-b9be-4098-ba58-65d3f43e8a96
+			47 container
+				48 heading 问题与变更, Value: 1
+					49 text 问题与变更
+				50 text 当前范围：Shared synthetic project
+				51 container
+					52 heading 失败调查、措施与双线变更, Value: 2
+						53 image
+						54 text 失败调查、措施与双线变更
+					55 text 固定原报告与判定 → 具名问题办理 → 有来源的措施草稿与变更影响核对。工程和制造分别保留历史，未知范围保持未知。
+					56 button 刷新当前事实
+						57 image
+						58 text 刷新当前事实
+				59 container
+					60 text 明确选择试制轮次
+					61 pop up button (collapsed, settable) Description: 质量闭环试制轮次, Value: 请选择当前可读轮次, Secondary Actions: Expand
+						62 menu
+							63 (disabled) 请选择当前可读轮次
+							64 (disabled) Synthetic first prototype · v1
+				65 container
+					66 text 固定测试运行
+					67 pop up button (disabled, collapsed, settable) Description: 质量闭环测试运行, Value: 请选择运行，不按时间猜选, Secondary Actions: Expand
+						68 menu
+							69 (disabled) 请选择运行，不按时间猜选
+				70 text 先明确选择轮次，再读取本轮请求和结果；空选择不扫描全型号历史。
+				71 heading 2 · 当前问题与独立历史, Value: 3
+					72 text 2 · 当前问题与独立历史
+				73 container
+					74 text 真实问题
+					75 pop up button (disabled, collapsed, settable) 真实问题, Value: 请选择已有问题, Secondary Actions: Expand
+						76 menu
+							77 (disabled) 请选择已有问题
+				78 container
+					79 text 问题版本
+					80 pop up button (disabled, collapsed, settable) 问题版本, Secondary Actions: Expand
+				81 text 选择真实问题后可读取固定失败、原政策、措施与历史；未创建的对象不生成占位身份。
+				82 container
+					83 heading 根因、本人整改与独立复验回链, Value: 2
+						84 image
+						85 text 根因、本人整改与独立复验回链
+					86 text 保留原失败与假设 → 具名根因 → 本人实际完成 → 固定新输出与新复验分支。有效性、问题关闭和正式变更批准仍未开放。
+					87 button 刷新当前整改事实
+						88 image
+						89 text 刷新当前整改事实
+				90 container
+					91 text 明确选择试制轮次
+					92 pop up button (collapsed, settable) Description: 整改后续轮次, Value: 请选择当前可读轮次, Secondary Actions: Expand
+						93 menu
+							94 (disabled) 请选择当前可读轮次
+							95 (disabled) Synthetic first prototype · v1
+				96 container
+					97 text 明确选择本轮已有问题 / CAPA
+					98 pop up button (disabled, collapsed, settable) Description: 整改后续问题, Value: 请选择当前可读真实问题, Secondary Actions: Expand
+						99 menu
+							100 (disabled) 请选择当前可读真实问题
+				101 container
+					102 text 当前 / 固定历史版本
+					103 pop up button (disabled, collapsed, settable) Description: 整改问题固定版本, Value: 读取服务器当前版本, Secondary Actions: Expand
+						104 menu
+							105 (disabled) 读取服务器当前版本
+				106 text 先明确选择轮次，再读取本轮问题；空选择不深查全型号复验，也不默认选择某一轮。
+				107 container 变更适用性与正式计划准备
+					108 container
+						109 text 固定影响 · 真实适用性 · 明确生效范围
+						110 heading 变更适用性与变更令准备, Value: 2
+							111 image
+							112 text 变更适用性与变更令准备
+						113 button 刷新当前正式依据
+							114 image
+							115 text 刷新当前正式依据
+					116 text 具名决定逐项适用性，再固定真实计划项与逐对象处置。未知范围继续保留；准备计划不表示已批准、实际实施或生效。
+					125 text 本地合成演练：此处材料与决定仅验证办理闭环，不代表真实生产资格或人工验收通过。
+					117 container
+						118 text 明确选择 本项目 变更
+						119 pop up button (collapsed, settable) 明确选择本项目变更, Value: Synthetic failure requires dual-lane impact · v3 · 变更令待专业决定, Secondary Actions: Expand
+							120 menu
+								121 (disabled) 选择固定变更，不默认首条
+								122 (disabled) Synthetic failure requires dual-lane impact · v3 · 变更令待专业决定
+					126 container
+						127 heading Synthetic failure requires dual-lane impact · 当前 v3, Value: 3
+							128 text Synthetic failure requires dual-lane impact  · 当前 v
+						129 text 变更令待专业决定  · 用途： Verify preparation
+						130 heading 当前正式政策, Value: 4
+							131 image
+							132 text 当前正式政策
+						133 text 须分别办理： 工程、制造 ；有效区间： 2026/10/17 07:18:47  —  2026/10/17 07:34:47 。
+						134 container
+							135 text Shared synthetic dual-lane policy  · v 1  · 第  1  行
+						136 text {"nature":"synthetic","owner_id":"3b8dbcd0-c1a0-47ee-8f0d-e903bca1e89d","publisher_id":"9180d2bc-ddb3-44cd-81fc-7d9d9b124049","purpose":"Verify preparation","required_disciplines":["engineering","manufacturing"],"schema_version":"pdos-controlled-change-policy-v1","scope":{"product_id":"a9db0a7d-b9be-4098-ba58-65d3f43e8a96","project_id":"1a82e48f-d34c-4d78-86d6-1d8699863a6e","tenant_id":"f8235074-2fc0-46e1-8516-80e8dbeaee1d"},"valid_from":"2026-10-17T14:18:47.244607Z","valid_until":"2026-10-17T14:34:47.244614Z","visibility":"category"}
+					137 container
+						138 heading 1 · 读取原文登记的计划项与措施，再具名决定适用性, Value: 3
+							139 text 1 · 读取原文登记的计划项与措施，再具名决定适用性
+						140 text 原文须明确实际计划项、原 CAPA 措施、执行者与具名决定人。服务器逐一核对；本页不补造适用性、人员资格或单位范围。
+						141 container
+							142 text 已登记原文
+							143 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+								144 menu
+									145 (selected) 明确选择当前可读原文
+									146 Shared synthetic scope source · v1
+									147 Synthetic event · v1
+									148 Synthetic event · v1
+									149 Synthetic event · v1
+									150 Synthetic actual method dossier · v1
+									151 Synthetic event · v1
+									152 Synthetic event · v1
+									153 Synthetic event · v1
+									154 Synthetic event · v1
+									155 Synthetic exact measurement JSONL · v1
+									156 Synthetic exact measurement JSONL · v1
+									157 Synthetic event · v1
+									158 Synthetic event · v1
+									159 Synthetic scoped risk policy · v1
+									160 Shared synthetic dual-lane policy · v1
+									161 Shared engineering applicability · v1
+									162 Shared manufacturing applicability · v1
+						163 container
+							164 text 派生原文完整行
+							165 stepper (settable, integer) 派生原文完整行, Value: 1
+						166 button (disabled) 采用这一完整行作为精确依据
+						167 button (disabled) 只读核对原文中的真实适用性材料
+					168 container
+						169 heading 2 · 选择真实适用计划项并逐一处置已知对象，准备一次确认, Value: 3
+							170 text 2 · 选择真实适用计划项并逐一处置已知对象，准备一次确认
+						171 container 只采用服务器已核对的当前适用性事实；未知、不适用或过期记录保留阅读。
+							172 text 只采用服务器已核对的当前适用性事实；未知、不适用或过期记录保留阅读。
+							173 container
+								174 checkbox (settable, integer) Description: 计划项 1 · 制造 · 适用 · 事实 v1, Value: 0
+								175 text 计划项  1  ·  制造  ·  适用  · 事实 v 1
+							176 definition list
+								177 container 专业范围
+									178 text 专业范围
+								179 text 制造
+								180 container 明确生效范围
+									181 text 明确生效范围
+								182 definition list
+									183 container 固定对象
+										184 text 固定对象
+									185 definition list
+										186 container 固定版本
+											187 text 固定版本
+										188 text 1
+										189 container 类型
+											190 text 类型
+										191 text manufacturing_configuration
+									192 container 对象 / 批次 / 序号范围
+										193 text 对象 / 批次 / 序号范围
+									194 text object:manufacturing_configuration:ecdebdba-3f8b-45da-84ca-61a892d44468:1:
+									195 container 实际适用条件
+										196 text 实际适用条件
+									197 text Fixed shared configuration and the exact CAPA action only
+									198 container 精确原文依据
+										199 text 精确原文依据
+									200 container
+										201 text Shared synthetic dual-lane policy  · v 1  · 第  1  行 {"nature":"synthetic","owner_id":"3b8dbcd0-c1a0-47ee-8f0d-e903bca1e89d","publisher_id":"9180d2bc-ddb3-44cd-81fc-7d9d9b124049","purpose":"Verify preparation","required_disciplines":["engineering","manufacturing"],"schema_version":"pdos-controlled-change-policy-v1","scope":{"product_id":"a9db0a7d-b9be-4098-ba58-65d3f43e8a96","project_id":"1a82e48f-d34c-4d78-86d6-1d8699863a6e","tenant_id":"f8235074-2fc0-46e1-8516-80e8dbeaee1d"},"valid_from":"2026-10-17T14:18:47.244607Z","valid_until":"2026-10-17T14:34:47.244614Z","visibility":"category"}
+								202 container 受控实施意图
+									203 text 受控实施意图
+								204 definition list
+									205 container 类型
+										206 text 类型
+									207 text 建立新制造配置的意图
+									208 container 实施意图的固定依据
+										209 text 实施意图的固定依据
+									210 definition list
+										211 container 固定版本
+											212 text 固定版本
+										213 text 1
+										214 container 类型
+											215 text 类型
+										216 text manufacturing_configuration
+									217 container 实际说明
+										218 text 实际说明
+									219 text Plan new manufacturing configuration; execution pending
+								220 container 后续核验要求
+									221 text 后续核验要求
+								222 text New exact configuration/Run plus independent review
+							223 container
+								224 text Shared manufacturing applicability  · v 1  · 第  1  行 {"action_id":"219ce053-7ad2-4589-a1da-60a457b1e6cc","action_sha256":"0b59aeb98885814356e8a32c2944f37a7962c9a2315c856f207ac6acdca09d7c","capa_id":"ff530ccf-99af-4b55-a47f-dda0a92768f2","change_id":"a27008f8-7a82-5b64-bb42-d30e0853f862","decider_id":"9180d2bc-ddb3-44cd-81fc-7d9d9b124049","executor_id":"9180d2bc-ddb3-44cd-81fc-7d9d9b124049","issue_id":"008328b8-9463-5a2f-89bc-5154809fb3e4","item":{"discipline":"manufacturing","id":"7bd131aa-bc04-4990-9412-e7ad724ae9d2","intent":{"basis":[{"id":"ecdebdba-3f8b-45da-84ca-61a892d44468","key":null,"kind":"manufacturing_configuration","revision":1}],"description":"Plan new manufacturing configuration; execution pending","id":"17f4c0d2-b8c8-43e4-b94a-89c9fc11347a","kind":"new_manufacturing_configuration"},"selection":{"conditions":["Fixed shared configuration and the exact CAPA action only"],"objects":[{"id":"ecdebdba-3f8b-45da-84ca-61a892d44468","key":null,"kind":"manufacturing_configuration","revision":1}],"sources":[{"id":"6eefb638-fe85-4dd2-a2f5-b619bd443e19","kind":"artifact","position":"line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460","revision":1}],"units":["object:manufacturing_configuration:ecdebdba-3f8b-45da-84ca-61a892d44468:1:"]},"verification_requirement":"New exact configuration/Run plus independent review"},"nature":"synthetic","purpose":"Verify preparation","reason":"Named synthetic manufacturing applicability of the fixed action and object","schema_version":"pdos-controlled-change-selection-v1","scope":{"product_id":"a9db0a7d-b9be-4098-ba58-65d3f43e8a96","project_id":"1a82e48f-d34c-4d78-86d6-1d8699863a6e","tenant_id":"f8235074-2fc0-46e1-8516-80e8dbeaee1d"},"status":"applicable","valid_until":"2026-10-17T14:34:47.244614Z"}
+							225 container
+								226 checkbox (settable, integer) Description: 计划项 2 · 工程 · 适用 · 事实 v1, Value: 0
+								227 text 计划项  2  ·  工程  ·  适用  · 事实 v 1
+							228 definition list
+								229 container 专业范围
+									230 text 专业范围
+								231 text 工程
+								232 container 明确生效范围
+									233 text 明确生效范围
+								234 definition list
+									235 container 固定对象
+										236 text 固定对象
+									237 definition list
+										238 container 固定版本
+											239 text 固定版本
+										240 text 1
+										241 container 类型
+											242 text 类型
+										243 text engineering_configuration
+									244 container 对象 / 批次 / 序号范围
+										245 text 对象 / 批次 / 序号范围
+									246 text object:engineering_configuration:dbbbd4a6-c06a-4a50-9049-fff84515ee25:1:
+									247 container 实际适用条件
+										248 text 实际适用条件
+									249 text Fixed shared configuration and the exact CAPA action only
+									250 container 精确原文依据
+										251 text 精确原文依据
+									252 container
+										253 text Shared synthetic dual-lane policy  · v 1  · 第  1  行 {"nature":"synthetic","owner_id":"3b8dbcd0-c1a0-47ee-8f0d-e903bca1e89d","publisher_id":"9180d2bc-ddb3-44cd-81fc-7d9d9b124049","purpose":"Verify preparation","required_disciplines":["engineering","manufacturing"],"schema_version":"pdos-controlled-change-policy-v1","scope":{"product_id":"a9db0a7d-b9be-4098-ba58-65d3f43e8a96","project_id":"1a82e48f-d34c-4d78-86d6-1d8699863a6e","tenant_id":"f8235074-2fc0-46e1-8516-80e8dbeaee1d"},"valid_from":"2026-10-17T14:18:47.244607Z","valid_until":"2026-10-17T14:34:47.244614Z","visibility":"category"}
+								254 container 受控实施意图
+									255 text 受控实施意图
+								256 definition list
+									257 container 类型
+										258 text 类型
+									259 text 建立新工程配置的意图
+									260 container 实施意图的固定依据
+										261 text 实施意图的固定依据
+									262 definition list
+										263 container 固定版本
+											264 text 固定版本
+										265 text 1
+										266 container 类型
+											267 text 类型
+										268 text engineering_configuration
+									269 container 实际说明
+										270 text 实际说明
+									271 text Plan new engineering configuration; execution pending
+								272 container 后续核验要求
+									273 text 后续核验要求
+								274 text New exact configuration/Run plus independent review
+							275 container
+								276 text Shared engineering applicability  · v 1  · 第  1  行 {"action_id":"6c70c4bc-6e3f-40ab-a0d8-bed650beef63","action_sha256":"58c5130a5c4116f1a6af3f856f1c690e687f19c093c97118cbbe6014bdc70f85","capa_id":"ff530ccf-99af-4b55-a47f-dda0a92768f2","change_id":"a27008f8-7a82-5b64-bb42-d30e0853f862","decider_id":"9180d2bc-ddb3-44cd-81fc-7d9d9b124049","executor_id":"9180d2bc-ddb3-44cd-81fc-7d9d9b124049","issue_id":"008328b8-9463-5a2f-89bc-5154809fb3e4","item":{"discipline":"engineering","id":"e2985704-f656-4854-bf06-50fba7dadaba","intent":{"basis":[{"id":"dbbbd4a6-c06a-4a50-9049-fff84515ee25","key":null,"kind":"engineering_configuration","revision":1}],"description":"Plan new engineering configuration; execution pending","id":"b5beda76-0cd8-4a82-9316-568d3f075478","kind":"new_engineering_configuration"},"selection":{"conditions":["Fixed shared configuration and the exact CAPA action only"],"objects":[{"id":"dbbbd4a6-c06a-4a50-9049-fff84515ee25","key":null,"kind":"engineering_configuration","revision":1}],"sources":[{"id":"6eefb638-fe85-4dd2-a2f5-b619bd443e19","kind":"artifact","position":"line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460","revision":1}],"units":["object:engineering_configuration:dbbbd4a6-c06a-4a50-9049-fff84515ee25:1:"]},"verification_requirement":"New exact configuration/Run plus independent review"},"nature":"synthetic","purpose":"Verify preparation","reason":"Named synthetic engineering applicability of the fixed action and object","schema_version":"pdos-controlled-change-selection-v1","scope":{"product_id":"a9db0a7d-b9be-4098-ba58-65d3f43e8a96","project_id":"1a82e48f-d34c-4d78-86d6-1d8699863a6e","tenant_id":"f8235074-2fc0-46e1-8516-80e8dbeaee1d"},"status":"applicable","valid_until":"2026-10-17T14:34:47.244614Z"}
+							277 heading 全部已知影响对象的明确处置, Value: 4
+								278 text 全部已知影响对象的明确处置
+							279 container Shared known BOM · 固定 v1
+								280 container
+									281 text Shared known BOM  · 固定 v 1
+								282 container
+									283 text 固定领域事实  · v 1 。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+								284 container
+									285 text 本对象处置
+									286 pop up button (collapsed, settable) 本对象处置, Value: 未知，明确保留缺口, Secondary Actions: Expand
+										287 menu
+											288 (selected) 未知，明确保留缺口
+											289 由本次真实计划项覆盖
+											290 已具名评审无需更改
+								291 container
+									292 text 具名处置原因
+									293 text entry area (settable) 具名处置原因
+								294 container
+									295 text 已登记原文
+									296 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+										297 menu
+											298 (selected) 明确选择当前可读原文
+											299 Shared synthetic scope source · v1
+											300 Synthetic event · v1
+											301 Synthetic event · v1
+											302 Synthetic event · v1
+											303 Synthetic actual method dossier · v1
+											304 Synthetic event · v1
+											305 Synthetic event · v1
+											306 Synthetic event · v1
+											307 Synthetic event · v1
+											308 Synthetic exact measurement JSONL · v1
+											309 Synthetic exact measurement JSONL · v1
+											310 Synthetic event · v1
+											311 Synthetic event · v1
+											312 Synthetic scoped risk policy · v1
+											313 Shared synthetic dual-lane policy · v1
+											314 Shared engineering applicability · v1
+											315 Shared manufacturing applicability · v1
+									316 text 派生原文完整行
+									317 stepper (settable, integer) 派生原文完整行, Value: 1
+									318 button (disabled) 采用这一完整行作为精确依据
+							319 container Shared known BOM · 固定 v1
+								320 container
+									321 text Shared known BOM  · 固定 v 1
+								322 container
+									323 text 固定领域事实  · v 1 。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+								324 container
+									325 text 本对象处置
+									326 pop up button (collapsed, settable) 本对象处置, Value: 未知，明确保留缺口, Secondary Actions: Expand
+										327 menu
+											328 (selected) 未知，明确保留缺口
+											329 由本次真实计划项覆盖
+											330 已具名评审无需更改
+								331 container
+									332 text 具名处置原因
+									333 text entry area (settable) 具名处置原因
+								334 container
+									335 text 已登记原文
+									336 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+										337 menu
+											338 (selected) 明确选择当前可读原文
+											339 Shared synthetic scope source · v1
+											340 Synthetic event · v1
+											341 Synthetic event · v1
+											342 Synthetic event · v1
+											343 Synthetic actual method dossier · v1
+											344 Synthetic event · v1
+											345 Synthetic event · v1
+											346 Synthetic event · v1
+											347 Synthetic event · v1
+											348 Synthetic exact measurement JSONL · v1
+											349 Synthetic exact measurement JSONL · v1
+											350 Synthetic event · v1
+											351 Synthetic event · v1
+											352 Synthetic scoped risk policy · v1
+											353 Shared synthetic dual-lane policy · v1
+											354 Shared engineering applicability · v1
+											355 Shared manufacturing applicability · v1
+									356 text 派生原文完整行
+									357 stepper (settable, integer) 派生原文完整行, Value: 1
+									358 button (disabled) 采用这一完整行作为精确依据
+							359 container Synthetic first prototype · 固定 v1
+								360 container
+									361 text Synthetic first prototype  · 固定 v 1
+								362 container
+									363 text 固定领域事实  · v 1 。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+								364 container
+									365 text 本对象处置
+									366 pop up button (collapsed, settable) 本对象处置, Value: 未知，明确保留缺口, Secondary Actions: Expand
+										367 menu
+											368 (selected) 未知，明确保留缺口
+											369 由本次真实计划项覆盖
+											370 已具名评审无需更改
+								371 container
+									372 text 具名处置原因
+									373 text entry area (settable) 具名处置原因
+								374 container
+									375 text 已登记原文
+									376 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+										377 menu
+											378 (selected) 明确选择当前可读原文
+											379 Shared synthetic scope source · v1
+											380 Synthetic event · v1
+											381 Synthetic event · v1
+											382 Synthetic event · v1
+											383 Synthetic actual method dossier · v1
+											384 Synthetic event · v1
+											385 Synthetic event · v1
+											386 Synthetic event · v1
+											387 Synthetic event · v1
+											388 Synthetic exact measurement JSONL · v1
+											389 Synthetic exact measurement JSONL · v1
+											390 Synthetic event · v1
+											391 Synthetic event · v1
+											392 Synthetic scoped risk policy · v1
+											393 Shared synthetic dual-lane policy · v1
+											394 Shared engineering applicability · v1
+											395 Shared manufacturing applicability · v1
+									396 text 派生原文完整行
+									397 stepper (settable, integer) 派生原文完整行, Value: 1
+									398 button (disabled) 采用这一完整行作为精确依据
+							399 container Shared engineering fixed draft · 固定 v1
+								400 container
+									401 text Shared engineering fixed draft  · 固定 v 1
+								402 container
+									403 text 固定领域事实  · v 1 。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+								404 container
+									405 text 本对象处置
+									406 pop up button (collapsed, settable) 本对象处置, Value: 未知，明确保留缺口, Secondary Actions: Expand
+										407 menu
+											408 (selected) 未知，明确保留缺口
+											409 由本次真实计划项覆盖
+											410 已具名评审无需更改
+								411 container
+									412 text 具名处置原因
+									413 text entry area (settable) 具名处置原因
+								414 container
+									415 text 已登记原文
+									416 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+										417 menu
+											418 (selected) 明确选择当前可读原文
+											419 Shared synthetic scope source · v1
+											420 Synthetic event · v1
+											421 Synthetic event · v1
+											422 Synthetic event · v1
+											423 Synthetic actual method dossier · v1
+											424 Synthetic event · v1
+											425 Synthetic event · v1
+											426 Synthetic event · v1
+											427 Synthetic event · v1
+											428 Synthetic exact measurement JSONL · v1
+											429 Synthetic exact measurement JSONL · v1
+											430 Synthetic event · v1
+											431 Synthetic event · v1
+											432 Synthetic scoped risk policy · v1
+											433 Shared synthetic dual-lane policy · v1
+											434 Shared engineering applicability · v1
+											435 Shared manufacturing applicability · v1
+									436 text 派生原文完整行
+									437 stepper (settable, integer) 派生原文完整行, Value: 1
+									438 button (disabled) 采用这一完整行作为精确依据
+							439 container Synthetic definite failure · 固定 v4
+								440 container
+									441 text Synthetic definite failure  · 固定 v 4
+								442 container
+									443 text 固定领域事实  · v 4 。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+								444 container
+									445 text 本对象处置
+									446 pop up button (collapsed, settable) 本对象处置, Value: 未知，明确保留缺口, Secondary Actions: Expand
+										447 menu
+											448 (selected) 未知，明确保留缺口
+											449 由本次真实计划项覆盖
+											450 已具名评审无需更改
+								451 container
+									452 text 具名处置原因
+									453 text entry area (settable) 具名处置原因
+								454 container
+									455 text 已登记原文
+									456 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+										457 menu
+											458 (selected) 明确选择当前可读原文
+											459 Shared synthetic scope source · v1
+											460 Synthetic event · v1
+											461 Synthetic event · v1
+											462 Synthetic event · v1
+											463 Synthetic actual method dossier · v1
+											464 Synthetic event · v1
+											465 Synthetic event · v1
+											466 Synthetic event · v1
+											467 Synthetic event · v1
+											468 Synthetic exact measurement JSONL · v1
+											469 Synthetic exact measurement JSONL · v1
+											470 Synthetic event · v1
+											471 Synthetic event · v1
+											472 Synthetic scoped risk policy · v1
+											473 Shared synthetic dual-lane policy · v1
+											474 Shared engineering applicability · v1
+											475 Shared manufacturing applicability · v1
+									476 text 派生原文完整行
+									477 stepper (settable, integer) 派生原文完整行, Value: 1
+									478 button (disabled) 采用这一完整行作为精确依据
+							479 container Shared manufacturing fixed draft · 固定 v1
+								480 container
+									481 text Shared manufacturing fixed draft  · 固定 v 1
+								482 container
+									483 text 固定领域事实  · v 1 。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+								484 container
+									485 text 本对象处置
+									486 pop up button (collapsed, settable) 本对象处置, Value: 未知，明确保留缺口, Secondary Actions: Expand
+										487 menu
+											488 (selected) 未知，明确保留缺口
+											489 由本次真实计划项覆盖
+											490 已具名评审无需更改
+								491 container
+									492 text 具名处置原因
+									493 text entry area (settable) 具名处置原因
+								494 container
+									495 text 已登记原文
+									496 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+										497 menu
+											498 (selected) 明确选择当前可读原文
+											499 Shared synthetic scope source · v1
+											500 Synthetic event · v1
+											501 Synthetic event · v1
+											502 Synthetic event · v1
+											503 Synthetic actual method dossier · v1
+											504 Synthetic event · v1
+											505 Synthetic event · v1
+											506 Synthetic event · v1
+											507 Synthetic event · v1
+											508 Synthetic exact measurement JSONL · v1
+											509 Synthetic exact measurement JSONL · v1
+											510 Synthetic event · v1
+											511 Synthetic event · v1
+											512 Synthetic scoped risk policy · v1
+											513 Shared synthetic dual-lane policy · v1
+											514 Shared engineering applicability · v1
+											515 Shared manufacturing applicability · v1
+									516 text 派生原文完整行
+									517 stepper (settable, integer) 派生原文完整行, Value: 1
+									518 button (disabled) 采用这一完整行作为精确依据
+							519 container Synthetic assembly · 固定 v1
+								520 container
+									521 text Synthetic assembly  · 固定 v 1
+								522 container
+									523 text 固定领域事实  · v 1 。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+								524 container
+									525 text 本对象处置
+									526 pop up button (collapsed, settable) 本对象处置, Value: 未知，明确保留缺口, Secondary Actions: Expand
+										527 menu
+											528 (selected) 未知，明确保留缺口
+											529 由本次真实计划项覆盖
+											530 已具名评审无需更改
+								531 container
+									532 text 具名处置原因
+									533 text entry area (settable) 具名处置原因
+								534 container
+									535 text 已登记原文
+									536 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+										537 menu
+											538 (selected) 明确选择当前可读原文
+											539 Shared synthetic scope source · v1
+											540 Synthetic event · v1
+											541 Synthetic event · v1
+											542 Synthetic event · v1
+											543 Synthetic actual method dossier · v1
+											544 Synthetic event · v1
+											545 Synthetic event · v1
+											546 Synthetic event · v1
+											547 Synthetic event · v1
+											548 Synthetic exact measurement JSONL · v1
+											549 Synthetic exact measurement JSONL · v1
+											550 Synthetic event · v1
+											551 Synthetic event · v1
+											552 Synthetic scoped risk policy · v1
+											553 Shared synthetic dual-lane policy · v1
+											554 Shared engineering applicability · v1
+											555 Shared manufacturing applicability · v1
+									556 text 派生原文完整行
+									557 stepper (settable, integer) 派生原文完整行, Value: 1
+									558 button (disabled) 采用这一完整行作为精确依据
+							559 container Shared synthetic motor · 固定 v1
+								560 container
+									561 text Shared synthetic motor  · 固定 v 1
+								562 container
+									563 text 固定领域事实  · v 1 。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+								564 container
+									565 text 本对象处置
+									566 pop up button (collapsed, settable) 本对象处置, Value: 未知，明确保留缺口, Secondary Actions: Expand
+										567 menu
+											568 (selected) 未知，明确保留缺口
+											569 由本次真实计划项覆盖
+											570 已具名评审无需更改
+								571 container
+									572 text 具名处置原因
+									573 text entry area (settable) 具名处置原因
+								574 container
+									575 text 已登记原文
+									576 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+										577 menu
+											578 (selected) 明确选择当前可读原文
+											579 Shared synthetic scope source · v1
+											580 Synthetic event · v1
+											581 Synthetic event · v1
+											582 Synthetic event · v1
+											583 Synthetic actual method dossier · v1
+											584 Synthetic event · v1
+											585 Synthetic event · v1
+											586 Synthetic event · v1
+											587 Synthetic event · v1
+											588 Synthetic exact measurement JSONL · v1
+											589 Synthetic exact measurement JSONL · v1
+											590 Synthetic event · v1
+											591 Synthetic event · v1
+											592 Synthetic scoped risk policy · v1
+											593 Shared synthetic dual-lane policy · v1
+											594 Shared engineering applicability · v1
+											595 Shared manufacturing applicability · v1
+									596 text 派生原文完整行
+									597 stepper (settable, integer) 派生原文完整行, Value: 1
+									598 button (disabled) 采用这一完整行作为精确依据
+							599 container SYN-aa1ba57f-0f8e-4e26-9fe8-169fa66ea84d · 固定 v1
+								600 container
+									601 text SYN-aa1ba57f-0f8e-4e26-9fe8-169fa66ea84d  · 固定 v 1
+								602 container
+									603 text 固定领域事实  · v 1 。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+								604 container
+									605 text 本对象处置
+									606 pop up button (collapsed, settable) 本对象处置, Value: 未知，明确保留缺口, Secondary Actions: Expand
+										607 menu
+											608 (selected) 未知，明确保留缺口
+											609 由本次真实计划项覆盖
+											610 已具名评审无需更改
+								611 container
+									612 text 具名处置原因
+									613 text entry area (settable) 具名处置原因
+								614 container
+									615 text 已登记原文
+									616 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+										617 menu
+											618 (selected) 明确选择当前可读原文
+											619 Shared synthetic scope source · v1
+											620 Synthetic event · v1
+											621 Synthetic event · v1
+											622 Synthetic event · v1
+											623 Synthetic actual method dossier · v1
+											624 Synthetic event · v1
+											625 Synthetic event · v1
+											626 Synthetic event · v1
+											627 Synthetic event · v1
+											628 Synthetic exact measurement JSONL · v1
+											629 Synthetic exact measurement JSONL · v1
+											630 Synthetic event · v1
+											631 Synthetic event · v1
+											632 Synthetic scoped risk policy · v1
+											633 Shared synthetic dual-lane policy · v1
+											634 Shared engineering applicability · v1
+											635 Shared manufacturing applicability · v1
+									636 text 派生原文完整行
+									637 stepper (settable, integer) 派生原文完整行, Value: 1
+									638 button (disabled) 采用这一完整行作为精确依据
+							639 container SYN-062a4193-8c22-4b66-a611-9465bdadd74b · 固定 v1
+								640 container
+									641 text SYN-062a4193-8c22-4b66-a611-9465bdadd74b  · 固定 v 1
+								642 container
+									643 text 固定领域事实  · v 1 。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+								644 container
+									645 text 本对象处置
+									646 pop up button (collapsed, settable) 本对象处置, Value: 未知，明确保留缺口, Secondary Actions: Expand
+										647 menu
+											648 (selected) 未知，明确保留缺口
+											649 由本次真实计划项覆盖
+											650 已具名评审无需更改
+								651 container
+									652 text 具名处置原因
+									653 text entry area (settable) 具名处置原因
+								654 container
+									655 text 已登记原文
+									656 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+										657 menu
+											658 (selected) 明确选择当前可读原文
+											659 Shared synthetic scope source · v1
+											660 Synthetic event · v1
+											661 Synthetic event · v1
+											662 Synthetic event · v1
+											663 Synthetic actual method dossier · v1
+											664 Synthetic event · v1
+											665 Synthetic event · v1
+											666 Synthetic event · v1
+											667 Synthetic event · v1
+											668 Synthetic exact measurement JSONL · v1
+											669 Synthetic exact measurement JSONL · v1
+											670 Synthetic event · v1
+											671 Synthetic event · v1
+											672 Synthetic scoped risk policy · v1
+											673 Shared synthetic dual-lane policy · v1
+											674 Shared engineering applicability · v1
+											675 Shared manufacturing applicability · v1
+									676 text 派生原文完整行
+									677 stepper (settable, integer) 派生原文完整行, Value: 1
+									678 button (disabled) 采用这一完整行作为精确依据
+							679 container Shared synthetic project · 固定 v1
+								680 container
+									681 text Shared synthetic project  · 固定 v 1
+								682 container
+									683 text 固定领域事实  · v 1 。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+								684 container
+									685 text 本对象处置
+									686 pop up button (collapsed, settable) 本对象处置, Value: 未知，明确保留缺口, Secondary Actions: Expand
+										687 menu
+											688 (selected) 未知，明确保留缺口
+											689 由本次真实计划项覆盖
+											690 已具名评审无需更改
+								691 container
+									692 text 具名处置原因
+									693 text entry area (settable) 具名处置原因
+								694 container
+									695 text 已登记原文
+									696 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+										697 menu
+											698 (selected) 明确选择当前可读原文
+											699 Shared synthetic scope source · v1
+											700 Synthetic event · v1
+											701 Synthetic event · v1
+											702 Synthetic event · v1
+											703 Synthetic actual method dossier · v1
+											704 Synthetic event · v1
+											705 Synthetic event · v1
+											706 Synthetic event · v1
+											707 Synthetic event · v1
+											708 Synthetic exact measurement JSONL · v1
+											709 Synthetic exact measurement JSONL · v1
+											710 Synthetic event · v1
+											711 Synthetic event · v1
+											712 Synthetic scoped risk policy · v1
+											713 Shared synthetic dual-lane policy · v1
+											714 Shared engineering applicability · v1
+											715 Shared manufacturing applicability · v1
+									716 text 派生原文完整行
+									717 stepper (settable, integer) 派生原文完整行, Value: 1
+									718 button (disabled) 采用这一完整行作为精确依据
+							719 container 固定测试Run · 固定 v3
+								720 container
+									721 text 固定测试Run  · 固定 v 3
+								722 container
+									723 text 固定领域事实  · v 3 。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+								724 container
+									725 text 本对象处置
+									726 pop up button (collapsed, settable) 本对象处置, Value: 未知，明确保留缺口, Secondary Actions: Expand
+										727 menu
+											728 (selected) 未知，明确保留缺口
+											729 由本次真实计划项覆盖
+											730 已具名评审无需更改
+								731 container
+									732 text 具名处置原因
+									733 text entry area (settable) 具名处置原因
+								734 container
+									735 text 已登记原文
+									736 pop up button (collapsed, settable) 已登记原文, Value: 明确选择当前可读原文, Secondary Actions: Expand
+										737 menu
+											738 (selected) 明确选择当前可读原文
+											739 Shared synthetic scope source · v1
+											740 Synthetic event · v1
+											741 Synthetic event · v1
+											742 Synthetic event · v1
+											743 Synthetic actual method dossier · v1
+											744 Synthetic event · v1
+											745 Synthetic event · v1
+											746 Synthetic event · v1
+											747 Synthetic event · v1
+											748 Synthetic exact measurement JSONL · v1
+											749 Synthetic exact measurement JSONL · v1
+											750 Synthetic event · v1
+											751 Synthetic event · v1
+											752 Synthetic scoped risk policy · v1
+											753 Shared synthetic dual-lane policy · v1
+											754 Shared engineering applicability · v1
+											755 Shared manufacturing applicability · v1
+									756 text 派生原文完整行
+									757 stepper (settable, integer) 派生原文完整行, Value: 1
+									758 button (disabled) 采用这一完整行作为精确依据
+							759 container
+								760 text 计划到期时点（可选，含时区）
+								761 text field (settable) 计划到期时点（可选，含时区）
+							762 text 不补为当前时间，不延长政策、来源和具名适用性事实的有效期。
+							763 container
+								764 text 具名准备原因
+								765 text entry area (settable) 具名准备原因
+						766 button 核对完整变更令与生效计划，一次确认
+						767 text 未知影响和未知处置继续保留。本入口不提供专业批准、实际实施或生效按钮。
+					768 container
+						769 heading 已保存变更令与明确生效计划, Value: 3
+							770 text 已保存变更令与明确生效计划
+						771 button (expanded) 变更令 1 · 0 项已记录专业决定, Secondary Actions: Collapse
+							772 text 变更令 
+							773 text 1
+							774 text  · 
+							775 text 0
+							776 text  项已记录专业决定
+						777 container 明确生效计划
+							778 heading 生效计划 · 生效计划候选 592e48cd-f3db-4724-914c-f5fb67a9c25d · v1, Value: 3
+								779 text 生效计划 ·  生效计划候选 592e48cd-f3db-4724-914c-f5fb67a9c25d · v1
+							780 text 对象、范围、批次或序号及条件共同界定；日期到期不会自动批准或生效。
+							781 container
+								782 text e2985704-f656-4854-bf06-50fba7dadaba  ·  engineering_configuration dbbbd4a6-c06a-4a50-9049-fff84515ee25 · v1
+							783 text New exact configuration/Run plus independent review
+							784 container
+								785 text 受众  product:a9db0a7d-b9be-4098-ba58-65d3f43e8a96  · 批次  未限定 / 待核验  · 序号  未限定 / 待核验
+							786 container
+								787 text 精确对象 / 批次 / 序号范围： object:engineering_configuration:dbbbd4a6-c06a-4a50-9049-fff84515ee25:1:
+							788 container
+								789 text 条件： Fixed shared configuration and the exact CAPA action only
+							790 content list
+								791 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1 · line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460 · unknown
+							792 container
+								793 text 7bd131aa-bc04-4990-9412-e7ad724ae9d2  ·  manufacturing_configuration ecdebdba-3f8b-45da-84ca-61a892d44468 · v1
+							794 text New exact configuration/Run plus independent review
+							795 container
+								796 text 受众  product:a9db0a7d-b9be-4098-ba58-65d3f43e8a96  · 批次  未限定 / 待核验  · 序号  未限定 / 待核验
+							797 container
+								798 text 精确对象 / 批次 / 序号范围： object:manufacturing_configuration:ecdebdba-3f8b-45da-84ca-61a892d44468:1:
+							799 container
+								800 text 条件： Fixed shared configuration and the exact CAPA action only
+							801 content list
+								802 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1 · line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460 · unknown
+							803 container
+								804 text 库存 / WIP 切换： UNKNOWN · 待供应所有者核验
+							805 container
+								806 text 培训要求： UNKNOWN · 待制造所有者核验
+							807 heading 已知影响对象逐项处置, Value: 4
+								808 text 已知影响对象逐项处置
+							809 container
+								810 text bom 4cb4622f-17de-4932-9f4e-4bb642a29638 · v1  ·  UNKNOWN · 不得批准
+							811 text Configuration proposal prepared; other impact requires owner review
+							812 content list
+								813 container
+									814 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1  ·  line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460
+							815 container
+								816 text bom 4cb4622f-17de-4932-9f4e-4bb642a29638 · v1  ·  UNKNOWN · 不得批准
+							817 text Configuration proposal prepared; other impact requires owner review
+							818 content list
+								819 container
+									820 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1  ·  line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460
+							821 container
+								822 text build f168a288-1538-49bf-ba62-2a6230faddb1 · v1  ·  UNKNOWN · 不得批准
+							823 text Configuration proposal prepared; other impact requires owner review
+							824 content list
+								825 container
+									826 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1  ·  line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460
+							827 container
+								828 text engineering_configuration dbbbd4a6-c06a-4a50-9049-fff84515ee25 · v1  ·  由生效项覆盖 e2985704-f656-4854-bf06-50fba7dadaba
+							829 text Configuration proposal prepared; other impact requires owner review
+							830 content list
+								831 container
+									832 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1  ·  line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460
+							833 container
+								834 text issue 008328b8-9463-5a2f-89bc-5154809fb3e4 · v4  ·  UNKNOWN · 不得批准
+							835 text Configuration proposal prepared; other impact requires owner review
+							836 content list
+								837 container
+									838 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1  ·  line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460
+							839 container
+								840 text manufacturing_configuration ecdebdba-3f8b-45da-84ca-61a892d44468 · v1  ·  由生效项覆盖 7bd131aa-bc04-4990-9412-e7ad724ae9d2
+							841 text Configuration proposal prepared; other impact requires owner review
+							842 content list
+								843 container
+									844 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1  ·  line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460
+							845 container
+								846 text operation ecdebdba-3f8b-45da-84ca-61a892d44468 · v1  ·  UNKNOWN · 不得批准
+							847 text Configuration proposal prepared; other impact requires owner review
+							848 content list
+								849 container
+									850 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1  ·  line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460
+							851 container
+								852 text part 25450bcf-f88c-4da5-85da-a0716d94ca79 · v1  ·  UNKNOWN · 不得批准
+							853 text Configuration proposal prepared; other impact requires owner review
+							854 content list
+								855 container
+									856 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1  ·  line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460
+							857 container
+								858 text sample 225aa119-f003-4ca7-b119-78b9bf3bf626 · v1  ·  UNKNOWN · 不得批准
+							859 text Configuration proposal prepared; other impact requires owner review
+							860 content list
+								861 container
+									862 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1  ·  line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460
+							863 container
+								864 text sample 580e12ce-e876-45c4-bd91-83d65bfab7cc · v1  ·  UNKNOWN · 不得批准
+							865 text Configuration proposal prepared; other impact requires owner review
+							866 content list
+								867 container
+									868 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1  ·  line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460
+							869 container
+								870 text spec 9a42a343-ea62-4f9f-a31e-2fab54c29134 · v1  ·  UNKNOWN · 不得批准
+							871 text Configuration proposal prepared; other impact requires owner review
+							872 content list
+								873 container
+									874 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1  ·  line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460
+							875 container
+								876 text test_run e6332814-9301-4d39-aa8f-45ea14aa239f · v3  ·  UNKNOWN · 不得批准
+							877 text Configuration proposal prepared; other impact requires owner review
+							878 content list
+								879 container
+									880 text artifact 6eefb638-fe85-4dd2-a2f5-b619bd443e19 · v1  ·  line:1;quote_sha256:b8bc76a2656ccef284c73d232200e9b7e6eea1bde4b100c73ccd040cf9cc2460
+							881 heading 受控实施意图 · 实际创建由所有者办理, Value: 4
+								882 text 受控实施意图 · 实际创建由所有者办理
+							883 text Plan new engineering configuration; execution pending
+							884 container
+								885 text b5beda76-0cd8-4a82-9316-568d3f075478  · 覆盖  e2985704-f656-4854-bf06-50fba7dadaba  ·  engineering_configuration dbbbd4a6-c06a-4a50-9049-fff84515ee25 · v1
+							886 text 尚无实际对象引用；不表示已建新配置、Build、Run 或 ERP/MES 生效。
+							887 text Plan new manufacturing configuration; execution pending
+							888 container
+								889 text 17f4c0d2-b8c8-43e4-b94a-89c9fc11347a  · 覆盖  7bd131aa-bc04-4990-9412-e7ad724ae9d2  ·  manufacturing_configuration ecdebdba-3f8b-45da-84ca-61a892d44468 · v1
+							890 text 尚无实际对象引用；不表示已建新配置、Build、Run 或 ERP/MES 生效。
+						891 definition list
+							892 container 已保存专业决定
+								893 text 已保存专业决定
+							894 text 未列出本类记录；不据此补足资格或实际事实。
+							895 container 已保存实际实施
+								896 text 已保存实际实施
+							897 text 未列出本类记录；不据此补足资格或实际事实。
+							898 container 已保存实际生效
+								899 text 已保存实际生效
+							900 text 未列出本类记录；不据此补足资格或实际事实。
+							901 container 已保存独立核验
+								902 text 已保存独立核验
+							903 text 未列出本类记录；不据此补足资格或实际事实。
+							904 container 已保存关闭决定
+								905 text 已保存关闭决定
+							906 text 未知 / 尚未记录
+		124 button Description: 打开小Pai工作栏, Help: 在当前范围打开小Pai
+
+The focused UI element is 771 button (expanded) 变更令 1 · 0 项已记录专业决定, Secondary Actions: Collapse

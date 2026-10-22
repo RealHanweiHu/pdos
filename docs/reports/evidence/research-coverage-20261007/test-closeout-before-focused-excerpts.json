@@ -1,0 +1,23 @@
+{
+  "container_id": "d1d1f17f275a6414a847533e067263347e6006958b8c81c7918ac7ee653f6bba",
+  "database": "pdos_test",
+  "port": 55257,
+  "main_target_untouched": true,
+  "head": "0431_conversation_research_exploration",
+  "tenants_before_cleanup": 1,
+  "backup": {
+    "path": "/Users/huhanwei/pdos-preview-backups/research-coverage-closeout-20261007-080246/pdos_test-final.dump",
+    "bytes": 4295821,
+    "sha256": "3007cbef4aa3e58b2fce8fdc423d81c88f22b0d6d4064f26a16f66d2833d1420"
+  },
+  "cleanup": {
+    "method": "delete",
+    "table_count": 473,
+    "changed_table_count": 11,
+    "deleted_rows": 36,
+    "fallback_reason": null
+  },
+  "stopped": true,
+  "volume_retained": true,
+  "completed_at": "2026-10-07T08:02:48.105642+00:00"
+}

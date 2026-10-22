@@ -1,0 +1,23 @@
+{
+  "host": "127.0.0.1",
+  "port": 64245,
+  "database": "pdos_test",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "head": "s0_0810",
+  "other_access_exclusive_locks": 0,
+  "read_only": true,
+  "own_guard_disposed": true,
+  "migration_files_observed": [
+    "s0_0800_knowledge_receipt_boundary.py",
+    "s0_0801_field_feedback.py",
+    "s0_0802_field_location_clock.py",
+    "s0_0803_field_atom_operands.py",
+    "s0_0804_field_response_alias.py",
+    "s0_0805_field_result_variable.py",
+    "s0_0806_field_change_selection.py",
+    "s0_0807_field_selection_provenance.py",
+    "s0_0808_native_change_completion.py",
+    "s0_0809_completion_provenance.py",
+    "s0_0810_completion_receipt_events.py"
+  ]
+}

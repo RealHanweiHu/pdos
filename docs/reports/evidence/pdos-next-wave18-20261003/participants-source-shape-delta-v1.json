@@ -1,0 +1,61 @@
+{
+  "status": "owned_pure_static_pass_production_delta_frozen_actual_readback_pending_root",
+  "reason": "Root actual stored-fact-readback-v3 participant failure: VerificationRunVersion.sources saves exact DefinitionReference while participant reader previously accepted only SourceRef.",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+      "before_sha256": "a0bb90e954c68c87184cbf5b0526ea023242928f2ae8c6dddd6ea7bc7ee5c282",
+      "after_sha256": "6cdf8157a6d39c5d3489b07650daf30393e888810dbb3372f1dfc83abe3bb0e5"
+    },
+    {
+      "path": "pdos-next/server/tests/capa_effectiveness/test_participants_owner.py",
+      "before_sha256": "832306edd593c531370f19b95e1668fb72778a3b28869fe265f193b58134685b",
+      "after_sha256": "c47404584789a46b6942f81d281493b06e003ee5e23204b5bc519a8a8f35d5d7"
+    }
+  ],
+  "production_delta": [
+    "_Read.source_refs accepts saved SourceRef or DefinitionReference. Exact references use the existing quality_execution.evidence.refs_from_exact with actual current source_for and full original line SHA256.",
+    "one/person/report use the same conversion. Unknown, missing or mixed source schemas fail explicitly; no skipped references.",
+    "Original row.sources including quote/line, row order and tracked raw material are not rewritten; the complete raw material stays in participant material SHA and post-IO raw rereads.",
+    "No new attestation, qualification, independent review, shared proof, source bypass, DML, commit or public wiring."
+  ],
+  "checks": {
+    "pure": {
+      "command": "PYTHONPATH=server:server/tests server/.venv/bin/pytest --noconftest -q server/tests/capa_effectiveness/test_participants_owner.py",
+      "exit_code": 0,
+      "passed": 37,
+      "seconds": 1.1,
+      "log": "participants-source-shape-pure-final-v2.log",
+      "log_sha256": "e9a7ac1490c23a2011c964b8d4275d1aef86cac0c68d65cba84afe9c621c596f"
+    },
+    "static": {
+      "ruff_exit_code": 0,
+      "format_exit_code": 0,
+      "ast_compile_files": 2,
+      "log": "participants-source-shape-static-v1.log",
+      "log_sha256": "6c0b45898e0856dd132b1dd294efe0fcfa03672270f1024441645469ce93ec5e"
+    },
+    "first_pure": {
+      "log": "participants-source-shape-pure-v1.log",
+      "passed": 37,
+      "warning": "Imported ORM TestResultActionFact name was mistaken for a test class; alias only cleanup before final binding."
+    }
+  },
+  "covered": [
+    "Actual canonical full-line conversion with quote substring and original whitespace preserved; seven existing source-bearing row models.",
+    "Mixed SourceRef and DefinitionReference arrays and typed values used by person; report registration participant conversion.",
+    "Wrong actual line and current source access rejection remain failclosed.",
+    "Unknown/missing/mixed schema rejection; same derived source with different raw quote still fails final material reread.",
+    "Existing exact Receipt/Audit/Outbox/RequestKey, private ACL, UOW, post-SQL Grant clock and no-attestation negative checks."
+  ],
+  "unchanged_explicit_paths": {
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py": "b431151e49b72e8cce36f36486a670ecce6a2e9fc333e1bd52ba3ddc75db8126",
+    "pdos-next/server/tests/capa_effectiveness/test_fact_sources_owner.py": "c96eca8ecc176db82cf26a38d994e48afadefb4aae117e8b4189661c227e7063",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py": "ca6c235254dbc25e140bdaa4876063a2e00a7fabad59809b1c27a3dd20c7ce6a"
+  },
+  "limits": [
+    "No DB/HTTP/browser/public tests run. Pure source_for and SQL query substitutes do not attest actual stored row/current source/bytes/professional gates.",
+    "Previous participant-source/runtime checks remain historical and do not count as unified validation of this new production source.",
+    "Root owns restart and unified actual readback/public validation; source_shape repair gives no positive authorization or independent-review attestation."
+  ]
+}

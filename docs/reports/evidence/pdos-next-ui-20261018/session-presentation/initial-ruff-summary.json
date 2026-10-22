@@ -1,0 +1,11 @@
+{
+  "exit_code": 1,
+  "errors": 19,
+  "rule": "E501",
+  "scope": [
+    "schema_s0_0811.py SQL literals",
+    "lifecycle_catalog.py owned tuple"
+  ],
+  "fix": "SQL byte values unchanged; file-level E501 allowance for reviewed applied SQL, catalog tuple line breaks only",
+  "migration_sql_ast_unchanged": true
+}

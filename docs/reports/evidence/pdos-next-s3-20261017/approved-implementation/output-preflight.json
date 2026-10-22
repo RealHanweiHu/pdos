@@ -1,0 +1,24 @@
+{
+  "target_port": 64245,
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "separate_prior_failed_synthetic_scope": true,
+  "checks": [
+    {
+      "discipline": "engineering",
+      "actual_successor_revision": 2,
+      "real_T1_common_receipt": true,
+      "output_owner_binding_passed": true
+    },
+    {
+      "discipline": "manufacturing",
+      "actual_successor_revision": 2,
+      "real_T1_common_receipt": true,
+      "output_owner_binding_passed": true
+    }
+  ],
+  "saved_implementation_records": 0,
+  "production_or_model_calls": 0,
+  "source_note": "Focused helper loaded the working-tree test module after environment-loader path setup. Every pre-existing candidate source file was byte-identical to the referenced candidate at the time of the check; newly created uninstalled future helpers were outside this check. Full final pytest runs in a fresh immutable snapshot subprocess.",
+  "source_comparison_after_preflight": [],
+  "candidate_reference": "/private/tmp/pdos-s3-implementation-5mh7qcaf"
+}

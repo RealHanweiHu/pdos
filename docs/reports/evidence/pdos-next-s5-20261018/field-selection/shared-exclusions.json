@@ -1,0 +1,7 @@
+{
+  "foreign_bff_history_cursor_preserved_in_working_copy": true,
+  "foreign_bff_history_cursor_in_candidate": false,
+  "lifecycle_candidate_exact_head_plus_owned_tail": true,
+  "working_tree_files_rewritten_for_exclusion": false,
+  "candidate_owns_only_explicit_manifest_paths": true
+}

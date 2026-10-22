@@ -1,0 +1,11 @@
+{
+  "schema_version": "wave22-build-manifest-v2",
+  "files": {
+    "wave22_shared_build.py": "bd8035806019ebf22dd6b7e3079fa85ccda23d6d9400ccc1a4c8fd7bf35315c0",
+    "test_wave22_shared_build.py": "bd30e211c34fe1724c324e466194ef879346ecf66728a29513e0626f0d3be46d"
+  },
+  "baseline_unchanged": {
+    "wave22_shared_build.py": "0706238d95010d1a96e4bc86e78cde5de2a814cd918225a3e12efa6ba495df7e",
+    "test_wave22_shared_build.py": "b28b1cbd51ce191c7ac3d0ef502178c6358289bca0cf143ba8c5d6079644dcef"
+  }
+}

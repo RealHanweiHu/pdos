@@ -1,0 +1,57 @@
+### Result
+{"firstPage":20,"afterRetry":25,"afterRefresh":20,"sameCursorRetry":true,"refreshHidOldPage":true,"actualWorkLink":true,"desktop":{"width":1152,"overflow":false},"mobile":{"width":288,"overflow":false,"pageOverflow":false},"requests":3,"nonGetRequests":0,"realModelCalls":0,"performanceAcceptance":false}
+### Ran Playwright code
+```js
+await (async page => {
+  const check=(value,message)=>{if(!value)throw new Error(message);};
+  const root=page.getByRole('region',{name:'项目动态',exact:true});
+  await root.locator('ol > li').first().waitFor();
+  const requests=[];page.on('request',request=>requests.push({method:request.method(),url:request.url()}));
+  let failMore=true,holdRefresh=false,releaseRefresh;
+  const cursorRequests=[];
+  const pattern=/\/api\/.*\/project-work\/activity\?/;
+  await page.route(pattern,async route=>{
+    const url=new URL(route.request().url());
+    if(url.searchParams.has('cursor')){
+      cursorRequests.push(url.searchParams.get('cursor'));
+      if(failMore){failMore=false;await route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({code:'SOURCE_UNAVAILABLE',message:'合成分页响应中断'})});return;}
+    } else if(holdRefresh){holdRefresh=false;await new Promise(resolve=>{releaseRefresh=resolve;});}
+    await route.continue();
+  });
+  const before=await root.locator('ol > li').count();check(before===20,'first page must contain actual 20 events');
+  await root.getByRole('button',{name:'加载更多动态',exact:true}).click();
+  await root.getByRole('alert').waitFor();
+  check(await root.locator('ol > li').count()===20,'failed page must retain actual first page');
+  await root.getByRole('button',{name:'重试加载更多',exact:true}).click();
+  await root.locator('ol > li').nth(24).waitFor();
+  check(await root.locator('ol > li').count()===25,'retry must append actual remaining 5 events');
+  check(cursorRequests.length===2&&cursorRequests[0]===cursorRequests[1],'more retry must use the identical original cursor');
+  holdRefresh=true;
+  await root.getByRole('button',{name:'刷新动态',exact:true}).click();
+  await root.getByRole('status').waitFor();check(await root.locator('ol > li').count()===0,'refresh must hide old page before response');
+  check(!!releaseRefresh,'refresh request reached controlled local route');releaseRefresh();
+  await root.locator('ol > li').nth(19).waitFor();check(await root.locator('ol > li').count()===20,'refresh reads a fresh actual first page');
+  const href=await root.locator('a').first().getAttribute('href');check(!!href&&href.includes('project=')&&href.includes('view=plan'),'actual work link retains project context');
+  await page.unroute(pattern);
+  await page.setViewportSize({width:1440,height:1000});
+  await page.evaluate(()=>{document.documentElement.classList.remove('dark');document.documentElement.style.colorScheme='light';localStorage.setItem('theme','light');});
+  await root.evaluate(element=>element.scrollIntoView({block:'start'}));
+  const desktop=await root.evaluate(element=>({width:element.clientWidth,overflow:element.scrollWidth>element.clientWidth}));
+  await page.screenshot({path:'/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s5-20261018/project-activity/desktop-light.png'});
+  await page.setViewportSize({width:320,height:920});
+  await page.evaluate(()=>{document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';localStorage.setItem('theme','dark');});
+  await root.evaluate(element=>element.scrollIntoView({block:'start'}));
+  const mobile=await root.evaluate(element=>({width:element.clientWidth,overflow:element.scrollWidth>element.clientWidth,pageOverflow:document.documentElement.scrollWidth>innerWidth}));
+  check(mobile.width<=320&&!mobile.overflow&&!mobile.pageOverflow,'320px actual activity must fit without horizontal overflow');
+  await page.screenshot({path:'/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s5-20261018/project-activity/mobile-dark.png'});
+  const writes=requests.filter(request=>request.method!=='GET');check(writes.length===0,'read, refresh and pagination must issue zero writes');
+  return {firstPage:before,afterRetry:25,afterRefresh:20,sameCursorRetry:true,refreshHidOldPage:true,actualWorkLink:true,desktop,mobile,requests:requests.length,nonGetRequests:writes.length,realModelCalls:0,performanceAcceptance:false};
+}
+)(page);
+```
+### Page
+- Page URL: http://127.0.0.1:59063/?area=cockpit&category=7f9afef1-79ca-4110-8891-c1c225110315&project=3aabd504-489d-474b-8884-e61039984ff4
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T18-45-40-202Z.log#L2

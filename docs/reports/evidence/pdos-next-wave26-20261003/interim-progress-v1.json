@@ -1,0 +1,17 @@
+{
+  "status": "CURRENT_PROGRESS_BEFORE_RETAINED_APPLICATION",
+  "actual_manufacturing_selection": {
+    "passed": 162,
+    "log": "actual-manufacturing-final-v3.log",
+    "log_sha256": "9acd9c706c43097e35bba568fba00a9a074d1ce06f367efb21fadc57565f23a6",
+    "scope": "existing 102 manufacturing pure tests + new 47 fixed-scope tests + 13 count regression tests; no DB or owner qualification"
+  },
+  "actual_resources_rules": {
+    "passed": 37,
+    "log": "actual-resource-rules-v1.log"
+  },
+  "legacy_full_material_actual_match": true,
+  "retained_runtime_patch_not_yet_applied": true,
+  "previous_checkpoint_sha256": "03d809cd0c31520febc99024e578040cc3676eb6c44f5066c138a884b5f8d786",
+  "whole_goal_complete": false
+}

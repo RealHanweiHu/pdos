@@ -1,0 +1,215 @@
+{
+  "audit_kind": "actual_historical_public_dto_compatibility_only",
+  "source_evidence": [
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/project-work/browser-final-api.json",
+      "sha256": "7562405cae3f510837e3026cee5c7c15dd7910937e60e2fe380045c12768b35c",
+      "role": "Actual full GET project-work DTO, identified by its accompanying result.md and browser chain report"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/project-work/browser-refresh.log",
+      "sha256": "a1a082450f8a8738966393428074bd76613b046b3c0eb061d5d16ef2cc6af400",
+      "role": "Public recorded browser URL used only to recover actual category/product/project scope"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/project-work/browser-database-result.json",
+      "sha256": "7e4a46b04dea3208bc0ce94c215a4233ded9eed3cba4f6ff4038c242dec4f396",
+      "role": "Historical browser-chain reconciliation summary; no database accessed by this audit"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/project-work/actual-chain-browser-02.json",
+      "sha256": "53a9676a0b101f9618397e12e08ffb16cf40e3b199fc8fe72c093df3ca695fe7",
+      "role": "Historical producer-run metadata identifying synthetic fixture nature and exit 0"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/project-work/result.md",
+      "sha256": "f936fab95c89bb6852bb22be93ad148edfcb1bef40fecd7e4aa0df2754af742e",
+      "role": "Historical producer provenance and stated limitations"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/personal-work/browser-final-api-surfaces.json",
+      "sha256": "af4c59d1a4e00186c10e147fe08c9fbb9acce3a36c2be760a32c30202f33f045",
+      "role": "Actual personal queue DTOs and project summary surfaces; NOT a full project-work DTO"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-s5-20261018/personal-work/result.md",
+      "sha256": "85b8368e1b6ec2092e91665947d02f2c50cd8fbc9a2db5b077b1a7053ec307fc",
+      "role": "Independent historical explanation that completed tasks do not fulfill/close commitments"
+    }
+  ],
+  "actual_project_dto_observations": {
+    "project_id": "c51618c9-5a5e-4fb6-854d-511eab271c1d",
+    "as_of": "2026-10-18T00:55:42.564022+00:00",
+    "task_count": 2,
+    "commitment_count": 4,
+    "all_commitments_current": true,
+    "all_tasks_current_completed_v8": true,
+    "fixed_task_revisions": [
+      3
+    ],
+    "unknown_promised_at_count": 2,
+    "known_promised_at_count": 2,
+    "recorded_at_present_count": 4,
+    "recorded_at_differs_from_created_at_count": 4,
+    "original_timezones": [
+      "America/Los_Angeles",
+      "Asia/Shanghai"
+    ],
+    "tasks": [
+      {
+        "id": "39a85ad8-0fef-465e-b5d0-87ad83aa9573",
+        "current_revision": 8,
+        "current_state": "completed",
+        "current_commitment_ids": [
+          "1d14db35-edf4-437f-ac9d-55471b06c350",
+          "45933d33-797b-4658-8c17-a57c3403c22a"
+        ],
+        "distinct_recipients": 2
+      },
+      {
+        "id": "869b8ac3-4fc8-4c22-b97e-98f2a8fd8220",
+        "current_revision": 8,
+        "current_state": "completed",
+        "current_commitment_ids": [
+          "35faa65e-5e5d-416d-8ead-6a1ab46d20a8",
+          "4f6d83cb-6917-46d5-98cf-ab8ef1b5d1b6"
+        ],
+        "distinct_recipients": 2
+      }
+    ]
+  },
+  "actual_personal_dto_corrobation": {
+    "queue": "commitments",
+    "total_records": 2,
+    "pages": [
+      {
+        "json_pointer": "/api/first",
+        "item_count": 1,
+        "timing": "pending",
+        "current_task_revision": 8,
+        "current_task_state": "completed",
+        "fixed_commitment_task_revision": 3,
+        "recipient_id": "852f0a38-fadc-4d01-900f-2bcff0233809"
+      },
+      {
+        "json_pointer": "/api/second",
+        "item_count": 1,
+        "timing": "unknown",
+        "current_task_revision": 8,
+        "current_task_state": "completed",
+        "fixed_commitment_task_revision": 3,
+        "recipient_id": "31fbe031-0778-40c9-ac5d-d5bc005ca5cf"
+      }
+    ],
+    "command_posts_in_historical_browser_capture": 0
+  },
+  "offline_existing_parser_check": {
+    "passed": true,
+    "method": "Node TypeScript transpile of actual src/lib/project-work.ts; direct JSON.parse of unmodified original public full DTO; parseProjectWork returned the same original object",
+    "parser_path": "pdos-next/web/src/lib/project-work.ts",
+    "parser_sha256": "64bd5c26048ed3b0f5e11b005d398b327e855a6df02c808d1438d6e58f6d955b",
+    "preserves_task_revision_and_recorded_at": true,
+    "types_note": "Existing WorkCommitment TS type does not declare task_revision/recorded_at; decoder preserves actual extra fields. New pane must narrow these fields, never synthesize current task revision or created_at."
+  },
+  "new_pane_check": {
+    "status": "passed_actual_historical_dto_offline_compatibility",
+    "method": "Direct unmodified public JSON through actual readProjectWork/parseProjectWork and exported currentProjectCommitments; TypeScript transpilation only. React/icon/button/CSS imports were inert substitutes because only the pure narrowing helper was invoked.",
+    "files": [
+      {
+        "path": "pdos-next/web/src/components/projects/project-commitments.tsx",
+        "sha256": "2eeeb3f2fe3258eb6cb677836cf7c57a62be50d6f668e512cbdebaa48a77f62b"
+      },
+      {
+        "path": "pdos-next/web/src/components/projects/project-commitments.module.css",
+        "sha256": "1ae8062a9ad4a79ce4bed45b44393666e8881389604025276092a81fccb07a62"
+      },
+      {
+        "path": "pdos-next/web/src/components/projects/project-commitments.test.mjs",
+        "sha256": "439d8a29a83bb7c632f01be179f418918c2e043de5e8c3c2904b9bc92587efc0"
+      }
+    ],
+    "source_dto_sha256": "7562405cae3f510837e3026cee5c7c15dd7910937e60e2fe380045c12768b35c",
+    "actual_current_rows": 4,
+    "current_rows_retained_while_task_completed_v8": 4,
+    "fixed_task_revision_values": [
+      3
+    ],
+    "unknown_promised_at_count": 2,
+    "two_distinct_recipients_for_each_actual_task": true,
+    "all_recorded_at_and_created_at_values_retained_distinct": true,
+    "helper_returns_original_row_identities": true,
+    "original_dto_and_public_source_file_unchanged": true,
+    "transport_substitute_calls": [
+      {
+        "route": "v1/categories/4005cc53-21fc-4e3b-bb4a-4f9b7179a121/products/5c5b1613-08a1-4ca4-8d47-548f29ea13b1/project-work?project_id=c51618c9-5a5e-4fb6-854d-511eab271c1d",
+        "body_provided": false
+      }
+    ],
+    "component_runtime_rendering_tested_by_this_auditor": true,
+    "manual_source_review": {
+      "blocking_issues_found": [],
+      "read_only": true,
+      "uses_existing_readProjectWork": true,
+      "buttons_only_refresh_or_expand": true,
+      "no_command_preview_commit_post_local_storage_or_permission_mutation": true,
+      "does_not_filter_readers_by_can_write": true,
+      "scope_and_readVersion_key_remounts_reader": true,
+      "obsolete_async_results_guarded_by_active_cleanup": true,
+      "loading_error_empty_are_separate": true,
+      "no_task_completion_to_commitment_fulfillment_inference": true,
+      "outcome_keys_are_fixed_raw_values_and_current_task_text_is_labeled_context": true,
+      "missing_fixed_revision_or_recorded_at_fails_instead_of_filling_from_current_task_or_created_at": true,
+      "initial_three_rows_and_explicit_expand_of_remaining_one_is_visible_in_source": true
+    },
+    "scope_limit": "Actual historical DTO compatibility and manual read-only review only; no current-candidate business/HTTP/PG/browser acceptance is claimed.",
+    "executed_pane_sha256": "2eeeb3f2fe3258eb6cb677836cf7c57a62be50d6f668e512cbdebaa48a77f62b",
+    "candidate_note": "A wording change occurred during the initial audit; the actual historical DTO/helper/transport check was repeated against this exact pane hash and remained unchanged throughout that check. No future candidate or domain acceptance is inferred.",
+    "pane_unchanged_during_check": true,
+    "offline_react_render_check": {
+      "passed": true,
+      "pane_sha256": "2eeeb3f2fe3258eb6cb677836cf7c57a62be50d6f668e512cbdebaa48a77f62b",
+      "pane_unchanged_during_check": true,
+      "method": "Actual ProjectCommitments and readProjectWork, original untouched public DTO, isolated React hook/effect scheduler, actual React SSR and actual shared UI Button; no DOM/browser/network.",
+      "icon_and_css_module_imports": "Inert substitutes; no real icon or visual CSS/browser acceptance claimed.",
+      "loading_visible": true,
+      "initial_rows": 3,
+      "explicit_expand_rows": 4,
+      "all_original_commitment_ids_recorded_at_created_at_and_timezones_visible": true,
+      "dates_unknown_visible": true,
+      "fixed_v3_and_current_completed_v8_separate": true,
+      "fulfillment_pending_check_and_results_not_included_wording_visible": true,
+      "no_missing_registration_or_fulfilled_overdue_inference_wording": true,
+      "no_edit_fields_or_forms": true,
+      "api_read_calls": 1,
+      "api_body_provided": false,
+      "original_dto_unchanged": true,
+      "actual_db_http_browser_calls": 0,
+      "expanded_html_bytes": 10546,
+      "harness_adjustments": "Two preceding ad hoc render attempts stopped at dependency loading/real Phosphor icon interop under Node 25; no product file was edited. The final passing render used an inert icon import and the actual shared Button. They are harness attempts, not additional passed product checks."
+    },
+    "workspace_integration_read_review": {
+      "path": "pdos-next/web/src/components/projects/project-workspace.tsx",
+      "sha256": "356f1e88f87a9d7a84b55b72d04a1d0085332b9e489ad11e18e004e95a9af76b",
+      "child_receives_actual_category_product_project_principal_and_readVersion": true,
+      "no_duplicate_outer_commitment_heading": true,
+      "note": "Manual review only; no parent workspace runtime or browser render was executed by this auditor."
+    }
+  },
+  "safety_and_scope": {
+    "source_code_modified": false,
+    "new_business_facts_created": false,
+    "database_calls": 0,
+    "http_calls": 0,
+    "browser_calls": 0,
+    "private_credentials_read": false,
+    "original_dto_rewritten": false
+  },
+  "limitations": [
+    "These are historical actual synthetic-fixture HTTP/PG/browser DTOs. This audit does not rerun or establish current-candidate domain acceptance, current permissions or present database state.",
+    "Commitment current is the retained per-recipient Current pointer; task completed does not prove commitment fulfillment or closure.",
+    "Unknown promised_at stays null. recorded_at and created_at are distinct saved fields; neither may be substituted for the other.",
+    "The personal-work evidence corroborates queue behavior but must not be passed off as a full project-work response.",
+    "Historical project-work GET returns full history without pagination, and historical evidence has no superseded commitment row; synthetic component cases may cover that boundary only if labeled as synthetic.",
+    "This auditor did not run the author component test suite, shared typecheck/build or browser. The independent passing render uses an isolated hook scheduler plus inert icon/CSS imports, so it proves historical DTO rendering/state compatibility only, not browser behavior or visual fidelity."
+  ]
+}

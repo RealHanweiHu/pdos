@@ -1,0 +1,267 @@
+{
+  "recorded_at": "2026-10-02T17:32:52.023117+00:00",
+  "status": "local synthetic checkpoint passed; overall goal remains incomplete",
+  "candidate_files": 350,
+  "candidate_changed_during_joint": [],
+  "candidate_scope": "350 explicitly selected source/config files; build/cache/generated outputs are not implicitly part of this freeze",
+  "python_lint_files": 271,
+  "python_lint": "passed; directory-local config discovery",
+  "format_check": "No global formatting gate; 41 existing scoped files would be reformatted, left unchanged. Changed runtime files passed owned format check.",
+  "joint_test_result": {
+    "groups": {
+      "pure": {
+        "exit_code": 0,
+        "elapsed_seconds": 15.15,
+        "passed": 732
+      },
+      "products-test_definition_transactions": {
+        "exit_code": 0,
+        "elapsed_seconds": 5.54,
+        "passed": 9
+      },
+      "products-test_variants_transactions": {
+        "exit_code": 0,
+        "elapsed_seconds": 20.64,
+        "passed": 16
+      },
+      "professional_authority-test_transactions": {
+        "exit_code": 0,
+        "elapsed_seconds": 23.08,
+        "passed": 27
+      },
+      "providers-test_persistent_budget_transactions": {
+        "exit_code": 0,
+        "elapsed_seconds": 13.56,
+        "passed": 24
+      },
+      "tests-test_build_comparison": {
+        "exit_code": 0,
+        "elapsed_seconds": 2.51,
+        "passed": 5
+      },
+      "tests-test_build_demand": {
+        "exit_code": 0,
+        "elapsed_seconds": 83.8,
+        "passed": 25
+      },
+      "tests-test_build_readiness": {
+        "exit_code": 0,
+        "elapsed_seconds": 2.52,
+        "passed": 41
+      },
+      "tests-test_cost_execution": {
+        "exit_code": 0,
+        "elapsed_seconds": 184.88,
+        "passed": 37
+      },
+      "tests-test_checkpoint_recovery": {
+        "exit_code": 0,
+        "elapsed_seconds": 8.03,
+        "passed": 12
+      },
+      "tests-test_verification_execution": {
+        "exit_code": 0,
+        "elapsed_seconds": 215.99,
+        "passed": 32
+      },
+      "tests-test_configurations": {
+        "exit_code": 0,
+        "elapsed_seconds": 30.6,
+        "passed": 25
+      },
+      "tests-test_durable_evidence": {
+        "exit_code": 0,
+        "elapsed_seconds": 10.55,
+        "passed": 18
+      },
+      "tests-test_builds": {
+        "exit_code": 0,
+        "elapsed_seconds": 65.28,
+        "passed": 26
+      },
+      "tests-test_project_first_plan": {
+        "exit_code": 0,
+        "elapsed_seconds": 17.07,
+        "passed": 19
+      },
+      "tests-test_original_security": {
+        "exit_code": 0,
+        "elapsed_seconds": 24.11,
+        "passed": 26
+      },
+      "verification_front-test_read_concurrency_transactions": {
+        "exit_code": 0,
+        "elapsed_seconds": 4.01,
+        "passed": 2
+      },
+      "tests-test_trusted_source_work": {
+        "exit_code": 0,
+        "elapsed_seconds": 15.05,
+        "passed": 34
+      },
+      "tests-test_build_execution": {
+        "exit_code": 0,
+        "elapsed_seconds": 348.03,
+        "passed": 60
+      },
+      "tests-test_supply_execution": {
+        "exit_code": 0,
+        "elapsed_seconds": 127.5,
+        "passed": 29
+      },
+      "verification_front-test_transactions": {
+        "exit_code": 0,
+        "elapsed_seconds": 142.05,
+        "passed": 11
+      },
+      "lifecycle-isolated": {
+        "exit_code": 0,
+        "elapsed_seconds": 58.29,
+        "passed": 24
+      }
+    },
+    "total_passed": 1234,
+    "elapsed_seconds": 454.53,
+    "structural_tests_isolated": true
+  },
+  "schema_head": "next_0013",
+  "business_table_count": 66,
+  "agent_business_write_privileges": 0,
+  "actual_preview_tenant_model_calls": 0,
+  "previous_build_and_verification_unchanged": true,
+  "one_receipt_audit_outbox_per_action": true,
+  "browser_formal_request_versions": [
+    1,
+    2,
+    3
+  ],
+  "browser_method_positive_attempt": "correctly rejected because required calibration evidence remained missing; no positive-method UI success claimed",
+  "saved_method_statuses": [
+    "unknown",
+    "unknown"
+  ],
+  "document_gaps": 10,
+  "coverage_gaps": 4,
+  "resource_occupancy": 0,
+  "physical_timestamps_created": false,
+  "schema_and_migration_roundtrip": "next_0013 up/down/up before new business writes; final schema matched",
+  "web_build": "passed; source unchanged",
+  "web_lint": {
+    "exit_code": 0,
+    "errors": 0,
+    "warnings": 2,
+    "scope": "see ui-final-scope.json"
+  },
+  "ui_helper_tests": 13,
+  "layout_checks": 4,
+  "source_contract_check": {
+    "status": "pass",
+    "failed_checks": [],
+    "canonical_operations": 66,
+    "canonical_events": 65,
+    "acceptance_scenarios": 48,
+    "registered_payloads": 34,
+    "registered_canonical_payloads": 22,
+    "auxiliary_operations": 10,
+    "registered_host_extensions": 2,
+    "reviewed_files": 89,
+    "openapi_paths": 30,
+    "openapi_component_schemas": 19
+  },
+  "reuse_final_check": {
+    "status": "pass",
+    "scope": "Only the original explicit 57/25/7 sets. No complete old tree or whole active application preservation claim.",
+    "legacy_unchanged": 57,
+    "verification_kernel_unchanged": 25,
+    "runtime_unchanged": 5,
+    "runtime_changed": 2,
+    "distinct_source_files_checked": 89,
+    "source_bytes_stable_during_review": true,
+    "historical_evidence_preserved": true
+  },
+  "preview_url": "http://127.0.0.1:3028",
+  "runtime_services_restarted_on_final_source": {
+    "api_session": 85629,
+    "worker_session": 93617,
+    "web_session": 92658
+  },
+  "backup_evidence": "backup.json",
+  "limitations": [
+    "Explicit local synthetic professional issuer only; no real HR/certification connector, production qualification or formal exit",
+    "Canonical Build readiness/necessary named authorization/start and actual handoff/acceptance/TestRun not yet connected",
+    "Complete resource/sample reservation and consumption, actual configuration method applicability, result verification remain next dependencies",
+    "Previous OCR/S3/production scan qualification/physical purge/production Temporal PG and real model qualification boundaries remain",
+    "Two existing host extensions have schema/events but are outside canonical and auxiliary catalogs; recorded without counting them as canonical"
+  ],
+  "next": "Same Build readiness/authorization/start, then physical readiness/method applicability/offer/partial accept-or-return; keep same formal-request version chain",
+  "local_evidence_links_checked": 25,
+  "missing_links": [],
+  "artifact_sha256": {
+    "actual-preview.json": "0630971af06a09c670cecc34fe5d798dd50ac643e7a27a5eb1c4b39e233c6c01",
+    "backup.json": "25f85f241b1950d6b12e6e36676a40528dd9b08bac17e432902c3a6a73dbe173",
+    "browser-actions.json": "ef3a63bb7fb1319079b5c69f091faae7636cd6ff5dfd4a2bc6db8b200c4d71f0",
+    "browser-layouts.json": "8652d13b9df92fa6b56a5312d7758657f98a4bc4377a012e0415f9d93f9ccfd3",
+    "candidate-recovery-notes.json": "fba413176176004802c828999f1200fd609e007e948ffa9b03e62425a49757af",
+    "candidate.json": "073fda7393eb500f114e5bcf6616cfb0a1e4b66b4e08eb2e28baf0c89b02eef0",
+    "desktop-dark.jpg": "7d23d851a8e75e5538116fce5c1091f13a3f94d1343d45215d7fa4a6f2d5cc7c",
+    "desktop-light.jpg": "3486c7fa74067393c398c2adbd4441a18b268b31b4882266b8467a2a0ef70625",
+    "final-preview.jpg": "9134ecf7356cc66ad336bdaeb8bca05cbd5d86e20cec9a4ccb8e0163cb42b789",
+    "front-scoped-tests.log": "2d47a773189b4c03f73452030f58394573e991dd96a9d0d4575084f35e6063d7",
+    "history-v1.jpg": "a5ea65ef61967ead512083fdead9434b6faf7ab6b848e248e0138c2d73efde06",
+    "initial-professional-inventory.json": "f4b4054aac828f2a128fdb2641ef4bcd6eddf53182c9e8f0f850646120531a8f",
+    "integrated-test-selection.json": "9ee7b337eaa30f46917e20015acb26028b36dce5920a56e80f1bdee97c264a09",
+    "joint-lifecycle-isolated.log": "de8a23626849e1931d3aff71003e172719d385bc035fffb7e92cc8e7d20ead11",
+    "joint-products-test_definition_transactions.log": "d53f0d17907dbdb791d2999ef7433ac1fb20c618b25314605fdb973bc4675d66",
+    "joint-products-test_variants_transactions.log": "0a52eafe9eeb12fe701088a6bcab777429a0c9e8ab4c910eaa79c6b243c0b636",
+    "joint-professional_authority-test_transactions.log": "e5adefe0aa94ff885c25ad546061dc1d9e098540c6330be1f712b9da30d39288",
+    "joint-providers-test_persistent_budget_transactions.log": "4f9999402ea77cb2665cecbeb6154d1834e8e9c98ff98a45cc0a403668fb7649",
+    "joint-pure.log": "ab6e9d35b01e8cdbb6f4b1a03002e281392d999252092000b761ab9c85140d7f",
+    "joint-result.json": "3b301927e70c3f76031a0432d2337128af21567a2a93669617e00983871fd5b1",
+    "joint-shards.json": "1973a0166a0b1534c18b21915d9852a469efe8b362c86219e8e3b0f21377c7d1",
+    "joint-tests-test_build_comparison.log": "ef0e7ef49e71fa999842be0cb8d22ec1058d3a384ed5c0a2ec6efb8f434975ac",
+    "joint-tests-test_build_demand.log": "8fcf36deee522829cd8ad85cc16ec09bf21a8ed7f9bae8c9d96cfac1142daf91",
+    "joint-tests-test_build_execution.log": "aa988e7c11dae918fcb980061e1563b55a1927f5dda4fe09eac09a2e1feea73c",
+    "joint-tests-test_build_readiness.log": "74b0158fd0a1ce2c2c0fdae88c68670c08b6d8e630889b21af0f545f53ea74de",
+    "joint-tests-test_builds.log": "0568ad4841058a14ac11838898c63fc98202a0ee1025f7e6c7115c5a852dc757",
+    "joint-tests-test_checkpoint_recovery.log": "463331dbe00b4bb658dbc4e63bceddc8558273c09d0730660b89e05392283059",
+    "joint-tests-test_configurations.log": "962fa4023e45c622d19c5fc301240f20c14d258aaa6b35570345ca2ab9936e82",
+    "joint-tests-test_cost_execution.log": "b44ac574aede1e4f87e072abdb987a1949808840ab9849bbc437229d807724f1",
+    "joint-tests-test_durable_evidence.log": "150a6839c5d7095622d1b6179e848c968ae26c3e4eb6e6350056588f394bca72",
+    "joint-tests-test_original_security.log": "078c3602aa9d14a326ebb358d419e26620a664c78b2d5f691f1d9dc03715e8bb",
+    "joint-tests-test_project_first_plan.log": "28ed68c8fe956230228f34011c5cd7685e0216750e554b00ee08079d1da29f32",
+    "joint-tests-test_supply_execution.log": "54cf2fa68bfd7da9a8e8df73a60ea23ada0bc79789428b30f9e018f91e546646",
+    "joint-tests-test_trusted_source_work.log": "18a2cca680ec7eb7a7b220f12a062fcfde82231a9a39cf9a5b7a36aabe5f2556",
+    "joint-tests-test_verification_execution.log": "e07b9c835d961a38ea11786e449719f5dd611152086d03379952eb0223cfe280",
+    "joint-verification_front-test_read_concurrency_transactions.log": "47a9c850a1c9f48ded6bc721ee5b309263d402585f6e24c1fc0f4ea7a912ceef",
+    "joint-verification_front-test_transactions.log": "7e437abfc6f2d1da7cda76fee3b0d85443c6b01c1d97f801926d38c81bebb4a3",
+    "migration-roundtrip.log": "63d5944dbef1cae9385ad6128d92c84b0190ac4aae1dd48ba89414dc46d70255",
+    "mobile-dark.jpg": "ceb62d44fbe006321f44fba19f901ee1e1a9326b8549adf190ce9a0c582ac664",
+    "mobile-light.jpg": "1c0bd5702faf6823a882ae502ebac778282f4d702e5d1fb4e0c2d6adbd4f12ce",
+    "python-lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "read-concurrency-scoped.log": "cad6a96f92693b699e84e3640256ed9786401829a1426ce67ad70fbb4d99421c",
+    "result.md": "c4352187edd1dbd6d3f070578cf0e17f27cddc0fd1f477068d0e881bc6a8ceb9",
+    "reuse-final-delta.json": "93025ee4ec050db74bb6fa48acf5bb63c0a9df420885d481a3299624bd796834",
+    "reuse-freeze-review.json": "b1f04d840c3753e4ba201de9ced823dfc12c1f2970fbbf1068f952560b20db04",
+    "runtime-race-diagnostic.json": "915df2021115c6ba7129567a235a5ab71779a65035335372436f8bc6419898e2",
+    "runtime-race-recheck.json": "a1b1859682dd82bc38b92473eda87a7553389266daf5c9f9de5b3340362b7ae1",
+    "runtime-race-tests.log": "abdefde8b3dfc36ec0a4d87052f8bf40688446d5fb4713d146133f2a2036c9a1",
+    "schema-match-attempt-1.log": "43d345b67ace77ab8c4cbf575a3baddf66e8623cf7d1e0b78e602b1d641ecf50",
+    "schema-match.log": "43d345b67ace77ab8c4cbf575a3baddf66e8623cf7d1e0b78e602b1d641ecf50",
+    "scoped-tests-attempt-1.log": "2f51eefb092a63211cc303f64404fab3beb7270844632a7861feaa0fc99974b1",
+    "scoped-tests-attempt-2.log": "107054cf7634422a516b4648fa484e86fe26f272383d442dfcbd192155f82277",
+    "scoped-tests-attempt-3.log": "4ea1c9ed22ffefab4ee9f07737d98fd2ef2a243e38a1d13919209f09e573f57b",
+    "scoped-tests-attempt-4.log": "df1d84e8f5707b2c718333467d75668d203e4b95bdffe8d0209674d15a933b26",
+    "scoped-tests.log": "00e0d6602f2d354a0920329bfa4253079169716519460d64c077ecb1371a71cc",
+    "source-contract-check.json": "1e1822a5b5628f3cfb2c855f9f709d593f18e85b037ddccb893032e92af5d576",
+    "static-check-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "static-check-wrong-config-attempt.log": "60b4ccade8386805eee520cbeda86c25ec4110db0952ea5aaa58a95c7f36f245",
+    "static-format-scope.log": "8de7eca49d7092d2b066a4ce63d3651732641c3259e6c6c1686ff37fee46a8c7",
+    "synthetic-authority-seed.json": "f1c5b078060cdce0ce63b19f3698f4b7afe6652e100d997e274c536d99f0a208",
+    "tentative-window.jpg": "e7096faf6c5b9f4c5f73f47f382438fc53339e766ee9658fe1fd69aeee3f6d9b",
+    "ui-component-check.json": "d3f1c5d8dc23ba0bebc09598cd5246959ba01c17cfa73a14fd4a9aee1569d73e",
+    "ui-final-scope.json": "3a17c00762b71973fb1960bd1de924a93d4fec170e2ec5d33f06db5fbc70766e",
+    "web-build-final.log": "28ff48a37e7355cd7628930ed1b0945b18838dbeae47bd689db5d304d03cfdb4",
+    "web-build.log": "52e40d263a24f9e13581a4c42eda9dc7614dcf612f6a4356aef3c32f9719eb66",
+    "web-lint.log": "2f7b3f8ae5e6422bd582cd293feeb514f02518e8401df07f2e6267d10f04e390"
+  }
+}

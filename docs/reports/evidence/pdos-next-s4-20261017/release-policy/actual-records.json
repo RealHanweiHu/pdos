@@ -1,0 +1,63 @@
+{
+  "head": "s0_0782",
+  "scope": {
+    "tenant_id": "ec95d33b-b01f-4d3f-917c-4675390758a2",
+    "product_id": "73bb74a1-878b-4f79-979a-e2bb1e5527ed",
+    "project_id": "0982fb11-86c8-4abb-b0c4-6183de8a4f4f"
+  },
+  "policies": [
+    {
+      "id": "59807d5f-f129-4d76-b497-44cd1ebee60d",
+      "revision": 1,
+      "status": "active",
+      "receipt_id": "ff714bea-6178-4523-b838-3f56e9dd11b6",
+      "policy_version": "synthetic-documentation-v1"
+    },
+    {
+      "id": "78c68d8a-3462-47e3-85a4-e3b672501471",
+      "revision": 2,
+      "status": "withdrawn",
+      "receipt_id": "3a706948-4548-4ba5-9d65-9308a2f9d9e9",
+      "policy_version": "synthetic-documentation-v2"
+    }
+  ],
+  "packages": [
+    {
+      "id": "f0556192-a9b5-45bc-9535-5bd1ff717b83",
+      "revision": 1,
+      "receipt_id": "66357303-bb14-4129-9197-75db40a69c78"
+    },
+    {
+      "id": "2333ac0d-92cd-480e-85f1-c12e71c833f2",
+      "revision": 2,
+      "receipt_id": "7e7790b7-e506-4d53-b0ff-129127298e79"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "987fd943-6134-4302-9e21-b88befe939d1",
+      "discipline": "engineering",
+      "actor": "f85832a6-b5de-4ca9-9572-00e27b108098",
+      "receipt_id": "9d96954a-c424-4a13-b98c-a4ed1d179c9b",
+      "consumed": true,
+      "expires_at": null,
+      "audit_count": 1,
+      "outbox_count": 1
+    },
+    {
+      "id": "d04b694b-18e4-42a2-9602-cbea363ce81a",
+      "discipline": "manufacturing",
+      "actor": "da0aba6b-7279-4159-9d6e-3b5b28546cce",
+      "receipt_id": "a5e86367-698a-4b45-84a2-4396edb1a1a5",
+      "consumed": true,
+      "expires_at": null,
+      "audit_count": 1,
+      "outbox_count": 1
+    }
+  ],
+  "external_received": false,
+  "external_effective": false,
+  "customer_acceptance": null,
+  "qualification_granted_for_production": false,
+  "nature": "synthetic explicit internal documentation purpose"
+}

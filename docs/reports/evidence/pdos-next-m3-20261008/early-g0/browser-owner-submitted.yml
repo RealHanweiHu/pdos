@@ -1,0 +1,61 @@
+- generic [active] [ref=f2e1]:
+  - main [ref=f2e2]:
+    - link "品类工作区" [ref=f2e3] [cursor=pointer]:
+      - /url: /?category=56e2dc39-4c15-45cf-906f-78813e12fc7b
+    - generic [ref=f2e8]:
+      - generic [ref=f2e9]:
+        - heading "轻便充气泵" [level=1] [ref=f2e10]
+        - generic [ref=f2e11]: G0 评审中
+        - generic [ref=f2e12]: 私有提案
+      - paragraph [ref=f2e15]: 合成新品评审
+    - generic [ref=f2e16]:
+      - generic [ref=f2e17]:
+        - generic [ref=f2e18]:
+          - generic [ref=f2e19]:
+            - heading "为什么值得做" [level=2] [ref=f2e20]
+            - generic [ref=f2e21]: 人工记录
+          - paragraph [ref=f2e99]: 合成浏览器复核：便携充气需求值得进入立项评审
+          - paragraph [ref=f2e26]: 第 2 版 · 0 个来源
+        - generic [ref=f2e27]:
+          - generic [ref=f2e28]:
+            - heading "方案对比" [level=2] [ref=f2e29]
+            - generic [ref=f2e30]: 人工记录
+          - paragraph [ref=f2e100]: 开发便携款
+          - paragraph [ref=f2e35]: 第 1 版 · 0 个来源
+        - generic [ref=f2e36]:
+          - generic [ref=f2e37]:
+            - heading "方案对比" [level=2] [ref=f2e38]
+            - generic [ref=f2e39]: 人工记录
+          - paragraph [ref=f2e101]: 保持现状
+          - paragraph [ref=f2e44]: 第 1 版 · 0 个来源
+        - generic [ref=f2e45]:
+          - generic [ref=f2e46]:
+            - heading "噪声" [level=2] [ref=f2e47]
+            - generic [ref=f2e48]: 人工记录
+          - paragraph [ref=f2e49]: 值未知 （单位未定）
+          - paragraph [ref=f2e50]: 未知 · 工况未定
+          - paragraph [ref=f2e51]: 第 1 版 · 0 个来源
+        - generic [ref=f2e52]:
+          - generic [ref=f2e53]:
+            - heading "压力显示" [level=2] [ref=f2e54]
+            - generic [ref=f2e55]: 人工记录
+          - paragraph [ref=f2e56]: "true"
+          - paragraph [ref=f2e57]: 人工确认 · 工况未定
+          - paragraph [ref=f2e58]: 第 1 版 · 1 个来源
+        - generic [ref=f2e59]:
+          - generic [ref=f2e60]:
+            - heading "待决问题" [level=2] [ref=f2e61]
+            - generic [ref=f2e62]: 人工记录
+          - paragraph [ref=f2e63]: 噪声条件待确定
+          - paragraph [ref=f2e64]: 负责人：Synthetic owner · 2026-10-20 · 待答复
+          - paragraph [ref=f2e65]: 第 1 版 · 0 个来源
+      - complementary [ref=f2e66]:
+        - generic [ref=f2e67]:
+          - heading "定义成熟度" [level=2] [ref=f2e68]
+          - paragraph [ref=f2e69]: 2 条规格 · 2 个方案
+          - paragraph [ref=f2e70]: 1 条规格仍需完善
+          - list [ref=f2e71]:
+            - listitem [ref=f2e72]: 噪声：未知，单位或工况需核对
+          - paragraph [ref=f2e73]: 10–20 条关键规格仅作提示。G0 批准后封存定义 v1，保留未知与草稿状态。
+        - paragraph [ref=f2e79]: 小Pai 接入后可起草与查漏。人工编辑与 G0 可独立办理。
+  - alert [ref=f2e7]

@@ -1,0 +1,53 @@
+# 环境变量（模板 .env.example / .env.production.example 入库, 实值永不入库）
+.env
+.env.local
+.env.production
+
+# Node
+node_modules/
+.next/
+dist/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.venv
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# 系统与编辑器
+.DS_Store
+*.log
+
+# iCloud/桌面同步冲突副本（" 2" 后缀）
+* 2.*
+
+# 本地数据卷
+.docker-data/
+.local/
+tmp/agent-convergence-*/
+
+# 本地验证产物
+output/
+.playwright-cli/
+
+# 本地工具产物
+graphify-out/
+.pnpm-store/
+.video_agent/
+.understand-anything/
+.zcode/
+.zcodeignore
+
+# 临时工作区（日志、草稿、模型资产等，不入库）
+tmp/
+
+# 含本地数据库真实口令的预览证据（2026-10-08 用户要求不提交）
+docs/reports/evidence/role-scenario-ui-20261001/preview/metadata.json
+docs/reports/evidence/role-scenario-ui-20261001/preview/seed.py
+docs/reports/evidence/role-scenario-ui-20261001/preview/start_api.sh

@@ -1,0 +1,50 @@
+{
+  "closed_at": "2026-10-07T08:39:28.448126+00:00",
+  "owned_container_id": "2ca689154e098511ae4a9701fe696bcd330f17389bb515b2f953e20e936e18c4",
+  "database": "pdos_test",
+  "port": 51918,
+  "private_final_backup": "/Users/huhanwei/pdos-preview-backups/scenario-a-closed-20261007-083803/after-final-checks.dump",
+  "private_final_backup_sha256": "2b8ba5b7452684078e611e333728f5b6040383c253553636303ac06cafcf2426",
+  "backup_restore_catalog_verified": true,
+  "real_research_backups": {
+    "disconnect-backup.json": {
+      "sha256": "6a4ca9ac90a7a8c063c16eddf0f29eecfa911d359fb67c5994dfded28cea0cb6",
+      "existing_digest_verified": false,
+      "original_byte_count_verified": true,
+      "restore_catalog_verified": true
+    },
+    "quality-failure-backup.json": {
+      "sha256": "533ac983429a8b50ac4fd057fc8a53b9367812a69ea24c6780168437b94ec5b4",
+      "existing_digest_verified": true,
+      "original_byte_count_verified": false,
+      "restore_catalog_verified": true
+    },
+    "final-real-backup.json": {
+      "sha256": "75bec2cc9f1134842697b5a954ae947f2b1c2b0f9ad215dbc8fa2d491d1997c3",
+      "existing_digest_verified": true,
+      "original_byte_count_verified": false,
+      "restore_catalog_verified": true
+    }
+  },
+  "synthetic_tenants_before": 1,
+  "synthetic_tenants_after": 0,
+  "cleanup_assertion_passed_before_metadata_error": true,
+  "api8863_stopped": true,
+  "web3063_stopped": true,
+  "temporary_browser_tab_closed": true,
+  "viewport_override_reset": true,
+  "owned_container_stopped": true,
+  "container_and_volumes_preserved": true,
+  "main_preview_processes_observed_read_only": {
+    "3000": "57180",
+    "8000": "57145"
+  },
+  "shared57432_repo_tests": false,
+  "env_database_fallback": false,
+  "production_operations": false,
+  "git_push": false,
+  "cleanup_recovery": [
+    "Initial count lacked canonical cehub_core schema; transaction rolled back; qualified count fixed",
+    "Cleanup and container stop completed; final metadata reader expected path but oldest backup used private_backup; metadata-only recovery without repeating cleanup"
+  ]
+}

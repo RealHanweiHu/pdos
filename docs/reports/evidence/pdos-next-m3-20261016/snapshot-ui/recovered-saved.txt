@@ -1,0 +1,123 @@
+Browser tab: 4, Title: "PDOS · 研发工作区", URL: "http://localhost:3045/?category=0359ccad-8274-40e4-b523-651474968331&area=category".
+1 AXWebArea PDOS · 研发工作区, URL: localhost:3045/?category=0359ccad-8274-40e4-b523-651474968331&area=category
+	2 container
+		3 link Description: 跳到工作内容, Value: localhost:3045/?category=0359ccad-8274-40e4-b523-651474968331&area=category#workspace-content
+		4 button 打开导航
+			5 image
+		6 text PDOS
+		7 checkbox Description: 小Pai 工作栏, Value: 1
+			8 image
+		9 button 切换明暗主题
+			10 image
+		11 container workspace-content
+			12 heading 汽车充气泵, Value: 1
+				13 text 汽车充气泵
+			14 text 品类是权限范围根：共享知识、规格字典、型号与立项提案都在这里汇聚，项目经提案 G0 评审后建立。
+			15 button 打开品类工作台
+				16 text 打开品类工作台
+				17 image
+			18 container 标准品匹配
+				19 heading 先核对现有型号, Value: 2
+					20 text 先核对现有型号
+				21 text 只核对所选规格。全部满足且确认没有开发活动时，回到 CRM 办理报价与沟通，无需立项。
+				22 button (collapsed) 核对标准品规格, Secondary Actions: Expand
+					23 text 核对标准品规格
+			24 container 立项提案
+				25 heading 立项提案, Value: 2
+					26 text 立项提案
+				27 text 一案一页 · 唯一关卡是具名 G0 评审
+				28 text 客户需求、自主新品、派生迭代三个入口都落到同一种立项提案；AI 先起草，人做取舍。从对话创建的提案一律私有。
+				29 button 打开品类小Pai，起草立项提案
+					30 image
+					31 text 打开品类小Pai，起草立项提案
+				32 text 尚无立项提案。与品类小Pai 对话起草第一份提案；提案默认私有。
+			33 container 型号列表
+				34 heading 型号, Value: 2
+					35 text 型号
+				36 text 1  个
+				37 text Synthetic product
+				38 text Isolated command verification
+				39 button 打开
+					40 text 打开
+					41 image
+			42 container 共享知识
+				43 heading 共享知识, Value: 2
+					44 text 共享知识
+				45 button 进入知识区
+					46 text 进入知识区
+					47 image
+				48 text 尚无共享知识。品类研究产生的事实经确认后在这里共享。
+			49 container 规格字典
+				50 heading 规格字典, Value: 2
+					51 text 规格字典
+				52 text 0  条参数当前版本
+				53 text 尚无字典参数。规格条目的键、名称、单位与测试条件都来自字典；缺失时按人工映射逐步补齐。
+		54 container 小Pai 工作栏
+			55 text 小Pai
+			56 text 当前品类：汽车充气泵
+			57 button 关闭小Pai 工作栏
+				58 image
+			59 container 小Pai 运行
+				60 heading 小Pai, Value: 2
+					61 text 小Pai
+				62 button 刷新运行
+				63 text 在当前品类委派工作。结果、待答问题和未完成事项会保留，关闭页面后仍可回来查看。
+				64 button (collapsed) 新建委派, Secondary Actions: Expand
+					65 text 新建委派
+				80 heading 已完成, Value: 3
+					81 text 已完成
+				82 button 核对当前状态
+				83 text Synthetic verified research
+				84 container 研究来源与覆盖
+					85 heading 研究来源与覆盖, Value: 4
+						86 text 研究来源与覆盖
+					87 container
+						88 text 1  份实际来源 ·  1  条核对记录
+					89 content list
+						90 container
+							91 link Description: Synthetic specs, Value: maker.example/specs
+							92 text 已读取  · 读取于 
+							93 text 2026-10-16 19:12:31.150781 UTC
+					94 button (collapsed) 查看逐字核对片段, Secondary Actions: Expand
+						95 text 查看逐字核对片段
+					96 container
+						97 text 研究任务  1  ·  已核对
+					98 container
+						99 text specs ： 1  次查询， 1  页读取；采纳  1  条，未采纳  0  条。尚未读取  0  个网址、 0  段原文。
+					100 text 以上来源、片段、覆盖和失败记录由实际研究台账提供。来源登记与后续采用请另行确认。
+				101 button (collapsed) 查看实际结果与回执, Secondary Actions: Expand
+					102 text 查看实际结果与回执
+				103 container 小Pai 待确认动作
+					104 heading 待你确认的动作, Value: 3
+						105 text 待你确认的动作
+					106 button 刷新候选
+					107 text 候选保留小Pai署名。核对实际范围后由你一次确认，打开页面不会执行。
+					108 container
+						109 text 研究来源登记 已保存，回执可查。
+						110 button (expanded) 查看保存回执, Secondary Actions: Collapse
+							111 text 查看保存回执
+						120 text d197631d-7242-4eba-aa26-568d122cb2cf
+					112 container
+						113 heading 研究来源登记, Value: 4
+							114 text 研究来源登记
+						115 text 已保存，使用实际回执核对。
+						116 button (collapsed) 查看保存回执, Secondary Actions: Expand
+							117 text 查看保存回执
+				118 button (collapsed) 整次撤回草稿结果, Secondary Actions: Expand
+					119 text 整次撤回草稿结果
+				66 heading 我的运行历史, Value: 3
+					67 text 我的运行历史
+				68 checkbox Synthetic default host public research 已完成 · 10/16/2026, 12:12:24 PM, Value: 1
+					69 text Synthetic default host public research
+					70 container
+						71 text 已完成  ·  10/16/2026, 12:12:24 PM
+				72 checkbox Synthetic actual common domain adapter 正在执行 · 10/16/2026, 12:12:24 PM, Value: 0
+					73 text Synthetic actual common domain adapter
+					74 container
+						75 text 正在执行  ·  10/16/2026, 12:12:24 PM
+				76 checkbox Synthetic actual common domain adapter 正在执行 · 10/16/2026, 12:12:24 PM, Value: 0
+					77 text Synthetic actual common domain adapter
+					78 container
+						79 text 正在执行  ·  10/16/2026, 12:12:24 PM
+
+The focused UI element is 110 button (expanded) 查看保存回执, Secondary Actions: Collapse

@@ -1,0 +1,30 @@
+{
+  "persistent_receipt": "246f3775-09c5-407f-acbf-daca52bfd0d3",
+  "frames": [
+    {
+      "width": 1440,
+      "dark": false,
+      "buttons_enabled": true,
+      "card_box": {
+        "x": 1034.65625,
+        "y": 280.453125,
+        "width": 373.34375,
+        "height": 1151.15625
+      },
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "dark": true,
+      "buttons_enabled": true,
+      "card_box": {
+        "x": 16,
+        "y": 280.203125,
+        "width": 288,
+        "height": 1254.109375
+      },
+      "overflow": false
+    }
+  ],
+  "viewport_screenshots": true
+}

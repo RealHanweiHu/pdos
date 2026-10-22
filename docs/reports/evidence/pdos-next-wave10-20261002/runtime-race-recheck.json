@@ -1,0 +1,389 @@
+{
+  "synthetic_temporary_objects_only": true,
+  "database_access": false,
+  "permit_window_seconds": 90,
+  "io_timeout_seconds": 5,
+  "success": true,
+  "rounds": [
+    {
+      "round": 1,
+      "elapsed_seconds": 0.1209,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 2,
+      "elapsed_seconds": 0.1157,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 3,
+      "elapsed_seconds": 0.108,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 4,
+      "elapsed_seconds": 0.1078,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 5,
+      "elapsed_seconds": 0.1172,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 6,
+      "elapsed_seconds": 0.117,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 7,
+      "elapsed_seconds": 0.1144,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 8,
+      "elapsed_seconds": 0.1132,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 9,
+      "elapsed_seconds": 0.1039,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 10,
+      "elapsed_seconds": 0.1002,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 11,
+      "elapsed_seconds": 0.0957,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 12,
+      "elapsed_seconds": 0.1226,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 13,
+      "elapsed_seconds": 0.0994,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 14,
+      "elapsed_seconds": 0.1209,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 15,
+      "elapsed_seconds": 0.1137,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 16,
+      "elapsed_seconds": 0.0993,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 17,
+      "elapsed_seconds": 0.1142,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 18,
+      "elapsed_seconds": 0.1174,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 19,
+      "elapsed_seconds": 0.1028,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    },
+    {
+      "round": 20,
+      "elapsed_seconds": 0.1019,
+      "outcomes": [
+        "applied",
+        "applied",
+        "applied",
+        "applied"
+      ],
+      "error_codes": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "proofs_identical": true,
+      "attempt_count": 1,
+      "event_count": 1
+    }
+  ]
+}

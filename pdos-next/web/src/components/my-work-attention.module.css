@@ -1,0 +1,25 @@
+.groups { display: grid; gap: 18px; min-width: 0; }
+.queue { display: grid; gap: 10px; min-width: 0; padding: 10px 0; }
+.heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; min-width: 0; }
+.heading h3 { margin: 0; font-size: 13px; font-weight: 600; }
+.heading h4 { margin: 0; font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
+.count, .context, .note, .identity { color: var(--text-subtle, var(--muted-foreground)); font-size: 11px; line-height: 1.65; overflow-wrap: anywhere; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 275px), 1fr)); gap: 9px; min-width: 0; }
+.card { display: grid; align-content: start; gap: 9px; min-width: 0; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface, var(--card)); }
+.context, .reason, .note, .error p { margin: 0; }
+.state { padding: 2px 6px; border-radius: 5px; background: var(--muted); font-size: 10px; overflow-wrap: anywhere; max-width: 100%; }
+.reason { font-size: 12px; line-height: 1.65; overflow-wrap: anywhere; }
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin: 0; font-size: 11px; line-height: 1.55; }
+.facts dt, .stages dt { color: var(--text-subtle, var(--muted-foreground)); }
+.facts dd, .stages dd { margin: 3px 0 0; overflow-wrap: anywhere; }
+.stages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin: 0; padding-top: 7px; border-top: 1px solid var(--border); font-size: 11px; }
+.blocked { display: flex; align-items: flex-start; gap: 6px; margin: 0; padding: 8px; border-left: 2px solid var(--primary); background: var(--muted); font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+.blocked svg { flex-shrink: 0; margin-top: 2px; color: var(--primary); }
+.blocked small { font-size: inherit; color: var(--text-subtle, var(--muted-foreground)); }
+.open { display: inline-flex; align-items: center; justify-content: center; justify-self: start; gap: 5px; min-height: 28px; max-width: 100%; padding: 3px 8px; border: 1px solid var(--border); border-radius: 8px; color: var(--foreground); background: var(--background); font-size: 11px; text-decoration: none; }
+.open:hover { background: var(--muted); }
+.open:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.identity summary { cursor: pointer; }
+.identity p { margin: 5px 0 0; }
+.error { display: grid; justify-items: start; gap: 7px; margin: 0; color: var(--primary); font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+@media (max-width: 420px) { .card { padding: 9px; } .facts { grid-template-columns: 1fr; } }

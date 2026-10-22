@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="94" time="26.911" timestamp="2026-10-11T02:41:56.238139-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_frozen_catalog_matches_actual_columns_without_consuming_transport" time="0.001" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposals]" time="0.003" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_items]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_item_versions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_revisions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_sources]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_submissions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_decisions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-project_open_items]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-category_knowledge_entries]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-category_knowledge_current]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-product_target_segments]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-parameter_versions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-parameter_current]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-promotion_proofs]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-evidence_links]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-claim_withdrawals]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposals]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_items]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_item_versions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_revisions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_sources]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_submissions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_decisions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-project_open_items]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-category_knowledge_entries]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-category_knowledge_current]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-product_target_segments]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-parameter_versions]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-parameter_current]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-promotion_proofs]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-evidence_links]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-claim_withdrawals]" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_unknown_columns_tables_and_wrong_guard_implementation_fail_closed" time="0.002" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_frozen_migration_has_source_free_fast_path_and_exact_predecessor_down" time="0.000" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute" time="1.041" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[artifact]" time="0.210" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[original]" time="0.204" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[claim]" time="0.207" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[knowledge]" time="0.303" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[definition]" time="0.205" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_arbitrary_content_relation_keys_are_not_source_edges[section]" time="0.219" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_arbitrary_content_relation_keys_are_not_source_edges[option]" time="0.232" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_arbitrary_content_relation_keys_are_not_source_edges[risk]" time="0.260" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_registered_nested_reference_containers_are_retained[commercial]" time="0.221" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_registered_nested_reference_containers_are_retained[competitor]" time="0.212" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_registered_nested_reference_containers_are_retained[voice]" time="0.221" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_registered_nested_reference_containers_are_retained[frozen_link]" time="0.328" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_actual_original_roots_fence_and_advance_both_scopes[False-False]" time="2.326" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_actual_original_roots_fence_and_advance_both_scopes[False-True]" time="1.634" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_actual_original_roots_fence_and_advance_both_scopes[True-False]" time="1.552" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_actual_original_roots_fence_and_advance_both_scopes[True-True]" time="1.302" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_public_m3_source_adoption_is_counted" time="1.519" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_fixed_knowledge_claim_and_definition_edges_retain_actual_original" time="2.521" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_parameter_reference_resolves_fixed_version_not_current_head" time="0.636" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_source_free_item_never_invokes_history_node_queries" time="0.356" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_evidence_link_target_closure_retains_original_after_withdrawal[knowledge_entry]" time="1.733" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_evidence_link_target_closure_retains_original_after_withdrawal[definition_spec]" time="2.274" /><testcase classname="tests.preproject.test_m3_lifecycle_concurrency" name="test_pg_product_evidence_and_category_patch_share_category_first_fence" time="1.590"><failure message="AssertionError: {&quot;code&quot;:&quot;FORBIDDEN_SCOPE&quot;,&quot;message&quot;:&quot;私有来源 Claim 必须绑定可读提案。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;private_context_run&quot;}}&#10;assert 403 == 200&#10; +  where 403 = &lt;Response [403 Forbidden]&gt;.status_code">lifecycle_work = namespace(setup=&lt;isolated synthetic test scope&gt;, store=&lt;pdos_next.original_store.OriginalStore object at 0x11c6c7a40&gt;,...ays=1), effect_timeout=datetime.timedelta(seconds=20)), client=&lt;starlette.testclient.TestClient object at 0x12993fe60&gt;)
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1299d7950&gt;
+
+    def test_pg_product_evidence_and_category_patch_share_category_first_fence(
+        lifecycle_work, monkeypatch
+    ):
+        setup = lifecycle_work.setup
+        original_id, source_id = uploaded(lifecycle_work, True)
+        native = post(
+            setup,
+            cmd(
+                setup,
+                "evidence.artifact.register",
+                {
+                    "title": "Synthetic product definition source",
+                    "source_label": "Synthetic lifecycle concurrency fixture",
+                    "content": "Synthetic exact public source",
+                    "visibility": "category",
+                },
+            ),
+        )
+        assert native.status_code == 200, native.text
+        native_id = UUID(native.json()["subject_id"])
+        native_ref = {
+            "artifact_id": str(native_id),
+            "expected_revision": 1,
+            "line": 1,
+            "quote": "Synthetic exact public source",
+        }
+        defined = post(
+            setup,
+            cmd(
+                setup,
+                "product.definition.draft",
+                {
+                    "title": "Concurrent actual evidence target",
+                    "purpose": "Synthetic Category/Product lifecycle fence",
+                    "use_cases": ["Synthetic concurrent evidence adoption"],
+                    "change_reason": "Synthetic initial definition",
+                    "sources": [native_ref],
+                    "specs": [
+                        {
+                            "key": "unknown",
+                            "parameter": "Unknown",
+                            "value_type": "text",
+                            "availability": "unknown",
+                            "reason": "Synthetic uncertainty",
+                            "sources": [native_ref],
+                        }
+                    ],
+                },
+                str(native_id),
+            ),
+        )
+        assert defined.status_code == 200, defined.text
+        claim = post(
+            setup,
+            cmd(
+                setup,
+                "evidence.claim.record",
+                claim_body(source_id, quote="Synthetic exact M3 lifecycle source"),
+            ),
+        )
+&gt;       assert claim.status_code == 200, claim.text
+E       AssertionError: {"code":"FORBIDDEN_SCOPE","message":"私有来源 Claim 必须绑定可读提案。","detail":{"reason":"private_context_run"}}
+E       assert 403 == 200
+E        +  where 403 = &lt;Response [403 Forbidden]&gt;.status_code
+
+tests/preproject/test_m3_lifecycle_concurrency.py:90: AssertionError</failure></testcase><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_explicit_empty_source_definition_reaches_existing_process_gate" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_active_claim_with_no_artifact_edges_is_locked_and_revalidated" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_withdrawn_claim_cannot_be_new_manufacturing_basis_even_with_empty_artifacts[withdrawn]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_withdrawn_claim_cannot_be_new_manufacturing_basis_even_with_empty_artifacts[reverted]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_unusable_fixed_knowledge_cannot_be_new_manufacturing_basis[unreadable]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_unusable_fixed_knowledge_cannot_be_new_manufacturing_basis[version]" time="0.000" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_unusable_fixed_knowledge_cannot_be_new_manufacturing_basis[withdraw_entry]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_fixed_knowledge_recurses_into_its_withdrawn_claim" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_at53_fixed_knowledge_survives_later_lineage_withdrawal" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_schema_declared_nested_knowledge_claim_cannot_escape_new_consumption[metrics]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_schema_declared_nested_knowledge_claim_cannot_escape_new_consumption[features]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_schema_declared_nested_knowledge_claim_cannot_escape_new_consumption[prices]" time="0.001" /><testcase classname="tests.manufacturing_preparation.test_m3_source_closure" name="test_schema_declared_nested_knowledge_claim_cannot_escape_new_consumption[representative_refs]" time="0.001" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_new_consumption_checks_spec_sources_even_with_empty_legacy_sources[claim-project]" time="0.000" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_new_consumption_checks_spec_sources_even_with_empty_legacy_sources[claim-engineering]" time="0.000" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_new_consumption_checks_spec_sources_even_with_empty_legacy_sources[claim-manufacturing]" time="0.000" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_new_consumption_checks_spec_sources_even_with_empty_legacy_sources[claim-build]" time="0.000" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_new_consumption_checks_spec_sources_even_with_empty_legacy_sources[nested_knowledge_claim-project]" time="0.001" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_new_consumption_checks_spec_sources_even_with_empty_legacy_sources[nested_knowledge_claim-engineering]" time="0.001" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_new_consumption_checks_spec_sources_even_with_empty_legacy_sources[nested_knowledge_claim-manufacturing]" time="0.001" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_new_consumption_checks_spec_sources_even_with_empty_legacy_sources[nested_knowledge_claim-build]" time="0.001" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_new_consumption_checks_spec_sources_even_with_empty_legacy_sources[withdrawn_knowledge-project]" time="0.001" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_new_consumption_checks_spec_sources_even_with_empty_legacy_sources[withdrawn_knowledge-engineering]" time="0.001" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_new_consumption_checks_spec_sources_even_with_empty_legacy_sources[withdrawn_knowledge-manufacturing]" time="0.001" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_new_consumption_checks_spec_sources_even_with_empty_legacy_sources[withdrawn_knowledge-build]" time="0.001" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_g0_empty_sources_remain_valid_for_new_consumption[project]" time="0.000" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_g0_empty_sources_remain_valid_for_new_consumption[engineering]" time="0.000" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_g0_empty_sources_remain_valid_for_new_consumption[manufacturing]" time="0.000" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_g0_empty_sources_remain_valid_for_new_consumption[build]" time="0.000" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_build_read_cache_cannot_authorize_new_consumption" time="0.000" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_build_previously_valid_cache_is_rechecked_after_withdrawal" time="0.000" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_manufacturing_checks_actual_definition_version" time="0.000" /><testcase classname="tests.preproject.test_m3_fixed_consumption" name="test_three_consumers_request_category_before_product_fence" time="0.000" /><testcase classname="tests.preproject.test_g0_downstream_sources_pg" name="test_withdrawn_g0_source_blocks_new_consumers_but_keeps_actual_history_readable[claim-only]" time="2.148"><failure message="AssertionError: assert [{'id': '7617...': None, ...}] == [{'type': 'cl...'version': 1}]&#10;  &#10;  At index 0 diff: {'id': '76174fc8-e0aa-493d-884d-bc94e7e17f54', 'line': None, 'type': 'claim', 'quote': None, 'version': 1, 'statement': None} != {'type': 'claim', 'id': '76174fc8-e0aa-493d-884d-bc94e7e17f54', 'version': 1}&#10;  Use -v to get more diff">work = &lt;isolated synthetic test scope&gt;, nested = False
+
+    @pytest.mark.parametrize("nested", [False, True], ids=["claim-only", "nested-knowledge-claim"])
+    def test_withdrawn_g0_source_blocks_new_consumers_but_keeps_actual_history_readable(work, nested):
+&gt;       g0 = claim_only_project(work, nested=nested)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_g0_downstream_sources_pg.py:144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;, nested = False
+
+    def claim_only_project(work, *, nested):
+        original = artifact(work)
+        claim = record_claim(work, original)
+        claim_ref = {"type": "claim", "id": claim["subject_id"], "version": 1}
+        fixed_ref = claim_ref
+        if nested:
+            # Only the schema-declared nested price reference retains this Claim.
+            # Top-level knowledge.source_refs and DefinitionSource both remain empty.
+            entry = add_knowledge(
+                work,
+                kind="competitor",
+                source_refs=[],
+                content={
+                    "brand": "Synthetic observed brand",
+                    "model": "Synthetic priced model",
+                    "prices": [{
+                        "amount": "19.5", "currency": "CNY", "price_type": "retail",
+                        "observed_on": "2026-10-10", "source_ref": claim_ref,
+                    }],
+                },
+            )
+            fixed_ref = {"type": "knowledge", "id": entry["entry_id"], "version": 1}
+        body = payload(work)
+        spec = next(
+            item for item in body["groups"]["items"]
+            if item["kind"] == "spec" and item["content"]["key"] == "display"
+        )
+        spec["source_refs"] = [fixed_ref]
+        proposal_id, _ = create(work, body)
+        submit(work, proposal_id)
+        decision = decide_request(work, proposal_id)
+        decision["payload"]["project"]["owner_id"] = str(work.human)
+        receipt, _ = save(work, decision, actor=work.peer)
+        result = receipt["result"]
+        work.product = UUID(result["product_id"])
+        with human_session(work) as session:
+            assert session.scalar(select(func.count()).select_from(DefinitionSource).where(
+                DefinitionSource.definition_id == UUID(result["definition_id"]),
+            )) == 0
+            stored_spec = session.scalar(select(DefinitionSpecRow).where(
+                DefinitionSpecRow.definition_id == UUID(result["definition_id"]),
+                DefinitionSpecRow.key == "display",
+            ))
+&gt;           assert stored_spec.source_refs == [fixed_ref]
+E           AssertionError: assert [{'id': '7617...': None, ...}] == [{'type': 'cl...'version': 1}]
+E             
+E             At index 0 diff: {'id': '76174fc8-e0aa-493d-884d-bc94e7e17f54', 'line': None, 'type': 'claim', 'quote': None, 'version': 1, 'statement': None} != {'type': 'claim', 'id': '76174fc8-e0aa-493d-884d-bc94e7e17f54', 'version': 1}
+E             Use -v to get more diff
+
+tests/preproject/test_g0_downstream_sources_pg.py:73: AssertionError</failure></testcase><testcase classname="tests.preproject.test_g0_downstream_sources_pg" name="test_withdrawn_g0_source_blocks_new_consumers_but_keeps_actual_history_readable[nested-knowledge-claim]" time="2.576"><failure message="AssertionError: assert [{'id': '6b8c...': None, ...}] == [{'type': 'kn...'version': 1}]&#10;  &#10;  At index 0 diff: {'id': '6b8c208d-f7b5-436a-8d0e-45108894322e', 'line': None, 'type': 'knowledge', 'quote': None, 'version': 1, 'statement': None} != {'type': 'knowledge', 'id': '6b8c208d-f7b5-436a-8d0e-45108894322e', 'version': 1}&#10;  Use -v to get more diff">work = &lt;isolated synthetic test scope&gt;, nested = True
+
+    @pytest.mark.parametrize("nested", [False, True], ids=["claim-only", "nested-knowledge-claim"])
+    def test_withdrawn_g0_source_blocks_new_consumers_but_keeps_actual_history_readable(work, nested):
+&gt;       g0 = claim_only_project(work, nested=nested)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_g0_downstream_sources_pg.py:144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = &lt;isolated synthetic test scope&gt;, nested = True
+
+    def claim_only_project(work, *, nested):
+        original = artifact(work)
+        claim = record_claim(work, original)
+        claim_ref = {"type": "claim", "id": claim["subject_id"], "version": 1}
+        fixed_ref = claim_ref
+        if nested:
+            # Only the schema-declared nested price reference retains this Claim.
+            # Top-level knowledge.source_refs and DefinitionSource both remain empty.
+            entry = add_knowledge(
+                work,
+                kind="competitor",
+                source_refs=[],
+                content={
+                    "brand": "Synthetic observed brand",
+                    "model": "Synthetic priced model",
+                    "prices": [{
+                        "amount": "19.5", "currency": "CNY", "price_type": "retail",
+                        "observed_on": "2026-10-10", "source_ref": claim_ref,
+                    }],
+                },
+            )
+            fixed_ref = {"type": "knowledge", "id": entry["entry_id"], "version": 1}
+        body = payload(work)
+        spec = next(
+            item for item in body["groups"]["items"]
+            if item["kind"] == "spec" and item["content"]["key"] == "display"
+        )
+        spec["source_refs"] = [fixed_ref]
+        proposal_id, _ = create(work, body)
+        submit(work, proposal_id)
+        decision = decide_request(work, proposal_id)
+        decision["payload"]["project"]["owner_id"] = str(work.human)
+        receipt, _ = save(work, decision, actor=work.peer)
+        result = receipt["result"]
+        work.product = UUID(result["product_id"])
+        with human_session(work) as session:
+            assert session.scalar(select(func.count()).select_from(DefinitionSource).where(
+                DefinitionSource.definition_id == UUID(result["definition_id"]),
+            )) == 0
+            stored_spec = session.scalar(select(DefinitionSpecRow).where(
+                DefinitionSpecRow.definition_id == UUID(result["definition_id"]),
+                DefinitionSpecRow.key == "display",
+            ))
+&gt;           assert stored_spec.source_refs == [fixed_ref]
+E           AssertionError: assert [{'id': '6b8c...': None, ...}] == [{'type': 'kn...'version': 1}]
+E             
+E             At index 0 diff: {'id': '6b8c208d-f7b5-436a-8d0e-45108894322e', 'line': None, 'type': 'knowledge', 'quote': None, 'version': 1, 'statement': None} != {'type': 'knowledge', 'id': '6b8c208d-f7b5-436a-8d0e-45108894322e', 'version': 1}
+E             Use -v to get more diff
+
+tests/preproject/test_g0_downstream_sources_pg.py:73: AssertionError</failure></testcase></testsuite></testsuites>

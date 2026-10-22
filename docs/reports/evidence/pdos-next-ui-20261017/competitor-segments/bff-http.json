@@ -1,0 +1,52 @@
+{
+  "checks": [
+    {
+      "name": "actual assignment through exact BFF",
+      "status": 200,
+      "method": "GET"
+    },
+    {
+      "name": "session required",
+      "status": 401,
+      "method": "GET"
+    },
+    {
+      "name": "invalid identity",
+      "status": 404,
+      "method": "GET"
+    },
+    {
+      "name": "unknown competitor",
+      "status": 404,
+      "method": "GET"
+    },
+    {
+      "name": "alternate query rejected: category_id",
+      "status": 422,
+      "method": "GET"
+    },
+    {
+      "name": "alternate query rejected: version",
+      "status": 422,
+      "method": "GET"
+    },
+    {
+      "name": "alternate query rejected: cursor",
+      "status": 422,
+      "method": "GET"
+    },
+    {
+      "name": "GET route rejects write",
+      "status": 405,
+      "method": "POST"
+    },
+    {
+      "name": "actual matrix through existing BFF",
+      "status": 200,
+      "method": "GET"
+    }
+  ],
+  "count": 9,
+  "domain_writes": 0,
+  "synthetic_response": false
+}

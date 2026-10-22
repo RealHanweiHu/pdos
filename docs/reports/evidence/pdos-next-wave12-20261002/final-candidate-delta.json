@@ -1,0 +1,59 @@
+{
+  "from": "retired-candidate-2/candidate.json",
+  "final_candidate_sha256": "fc5f15868a010ccbda444ba5dcb3da31b330157b9688214188cb0d04693ca419",
+  "changes": {
+    "pdos-next/contracts/openapi.json": {
+      "before": "7d977136b46279acc8906a850e1ab044dfdd86f500b0396791f60125674931ba",
+      "after": "a6f2dbb76d1eae6d45684a2275fc39decb45b9716127bba122827bf1659c1fbc"
+    },
+    "pdos-next/server/pdos_next/api.py": {
+      "before": "4327f7bb87d3dda2caf9f06d6a1c1b0c7ebb9e1777cd54256d7a18a9932d68cb",
+      "after": "6f8cf5e8846b1e3a7886ce0653515e2ac0a56808070ebaa4d38a6e0ac07e4442"
+    },
+    "pdos-next/server/pdos_next/domain/verification_handoff/service.py": {
+      "before": "e4c0b72107a05cf8820106fca7506f1c34aeb69298fe47e9079b0287e64d2870",
+      "after": "b1160013a31a672cdab0b7aafda57764f303e2d52f37ecf47675efbe3d1f4a92"
+    },
+    "pdos-next/server/tests/verification_handoff/fixtures.py": {
+      "before": "a221c029a2ab9395b467b79b391f0773b76d8daee983a6c9494c1a65a27f283b",
+      "after": "e139e8e5223401e7f8613ff36ce21640cc34699cf0e0e39b8358554bdeed954d"
+    },
+    "pdos-next/server/tests/verification_handoff/test_pure.py": {
+      "before": "b445ad5f7b299a5dbf798760b664b4980dceec05fe700250dfaf4d64a6a6d213",
+      "after": "e3b5eae91103def281f770b478307b5a793ca888ef52efe1eb8ea2fccea56d62"
+    },
+    "pdos-next/server/tests/verification_handoff/test_transactions.py": {
+      "before": "183737444b897dbd4858e9991e61dde091650bfe06fc62ec1848e65186d1d64a",
+      "after": "b0370ecb212588cf98cb91e652c5f8750ab476f5b54627974e5424b2f198968e"
+    },
+    "pdos-next/tools/wave12_check.py": {
+      "before": "c8d083ef68d8dbac899585cc445fac553333b8bdfcc486c19a08753d50d03466",
+      "after": "d588869313dd6c7c0a045d6cf5881779b05820f6da4e93fa06c4fe3589c0c3da"
+    },
+    "pdos-next/tools/wave12_verify.py": {
+      "before": "303ccba25e4c91b8679e1c2e53c2328cf74b033887dcaa9b270019a96a4c7cb2",
+      "after": "6fd6a622a34bd6506d08ab8b8bf58bb46678293904688e2aa9bbcdd6c787937f"
+    },
+    "pdos-next/web/src/app/api/[...path]/route.ts": {
+      "before": "51190aa85be2ff4bd9afa322dd3b990c2267a1c0bc42d5acce35d8aea18cd4f4",
+      "after": "c30299f2509c9863783ac9499101e247803b22bcdfe5f8de837becd65006aec9"
+    },
+    "pdos-next/web/src/components/builds/build-handoff.tsx": {
+      "before": "1a30329d3babc08c219f1505edd862f3c64f188cdac85e8796d4a0b9a89e141e",
+      "after": "6b1e4d262c4a4fe253ba0785286df4f5cc12869159b2ec4c27262e9d20a3cce4"
+    },
+    "pdos-next/web/src/lib/build-handoff-view.test.ts": {
+      "before": "0796e5e17d78ded550e6af86d3350d02ba9f519c6eab74660921d8c71483bd89",
+      "after": "3e23f3b183360b5c4f9328c180a874472aeaf38e428add3d7ad3b960ca1c1c6e"
+    },
+    "pdos-next/web/src/lib/build-handoff-view.ts": {
+      "before": "4724bc4befe36f3257599fbf63f4564adba1572f89e0ceee2b355aeae28b7473",
+      "after": "d38c8296ad6167d98f0fc45e8870a4a9d16ce34e92156e92b25b4051d76aaf34"
+    }
+  },
+  "validation": "Initial joint result preserved: 1483 passed and one expected-code assertion failed. Runtime unchanged; the repaired test passed individually, followed by 24 structural checks in isolation. Final selection has 1484 passing cases; repeated structural cases are not double counted.",
+  "test_only_change_after_initial_joint": "test-only-repair.json",
+  "initial_joint_candidate_sha256": "c08f95573a60cc42b74b8a6bd116b829e49b50f1522b6a4795839005ecdf4cb0",
+  "initial_joint_candidate_manifest": "candidate-before-test-only-repair.json",
+  "resolved_result": "joint-resolved-result.json"
+}

@@ -1,0 +1,47 @@
+{
+  "applied_at": "2026-10-04T01:25:05.782836+00:00",
+  "files": [
+    {
+      "source": ".local/wave23-root-preview-staged/src/pdos_next/service.py",
+      "target": "server/pdos_next/service.py",
+      "source_sha256": "33204c2767cf9df4bfd23331e0f6da6b1ff2e1a4dc9ee0a6049a7c23a32437d1",
+      "before_sha256": "e4712878901eef8e2933482fc31db2f948767921722def6004b43c3eb135f9e9"
+    },
+    {
+      "source": ".local/wave23-root-preview-staged/src/pdos_next/launch_plan_preview.py",
+      "target": "server/pdos_next/launch_plan_preview.py",
+      "source_sha256": "7e290379ff51207085a2ee476b3818d3642abe3ab243c42436b6bb0b51321b77",
+      "before_sha256": null
+    },
+    {
+      "source": ".local/wave23-root-preview-staged/test_launch_plan_preview.py",
+      "target": "server/tests/test_launch_plan_preview.py",
+      "source_sha256": "9ffe4e2d5ecde1186ffd33af4f7777664ae948bd145670d3e397ceab2f1175e3",
+      "before_sha256": null
+    },
+    {
+      "source": ".local/wave23-root-preview-staged/test_launch_plan_integration.py",
+      "target": "server/tests/test_launch_plan_integration.py",
+      "source_sha256": "1c71ac07053c34ae485795473c02a12f0258144a260b915ea7383c233a907493",
+      "before_sha256": null
+    },
+    {
+      "source": ".local/wave22-fixed-anchor-staged/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+      "target": "server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+      "source_sha256": "378a6b0c627c6d4fe2bc48cef10827c312c5e1f33b9ddcfe1620163243afbc5c",
+      "before_sha256": "c27c60bfc02ce565adec098175651f4dc70120f7f38ef09885b5bacc41ea9cf9"
+    },
+    {
+      "source": ".local/wave22-fixed-anchor-staged/test_fixed_anchor.py",
+      "target": "server/tests/capa_effectiveness/test_fixed_candidate_anchor.py",
+      "source_sha256": "f9ecddf32ffd4d725144fc633be58b7b5dd5f60e98098710d6f627b7b665e22e",
+      "before_sha256": null
+    }
+  ],
+  "baseline_core_sealed": "retained-case-exclusion-v4.json",
+  "public_runtime_files": 3,
+  "new_test_files": 3,
+  "migration": false,
+  "database_write": 0,
+  "api_reload_still_required": true
+}

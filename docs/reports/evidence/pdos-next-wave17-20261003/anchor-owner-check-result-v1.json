@@ -1,0 +1,105 @@
+{
+  "schema_version": "anchor-owner-check-result-v1",
+  "recorded_at": "2026-10-03T11:56:17.218897+00:00",
+  "source_manifest": {
+    "path": "docs/reports/evidence/pdos-next-wave17-20261003/anchor-owner-source-manifest-v1.json",
+    "sha256": "c813b3ad0e8914f011d633328a276f58be451dad511bfc3ce026af98b6766a3f",
+    "size_bytes": 1744
+  },
+  "owned_files": [
+    {
+      "path": "pdos-next/staging/wave17/anchor_owner.py",
+      "sha256": "02048fa237fa085149151a8277aea8c8fa23763f473df2a34887964787cb05c3",
+      "size_bytes": 11654
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_anchor_owner.py",
+      "sha256": "56ad31ab1aeeaaf83d09893e755c073fd664149a66b7e25a5273e2e368d3d4e2",
+      "size_bytes": 19713
+    },
+    {
+      "path": "pdos-next/staging/wave17/anchor-owner-contract.md",
+      "sha256": "e73b3f295cb17c544e60a5a39e5eb14ea0ae6c018bc4ad46e8c9e04922c77ba8",
+      "size_bytes": 8944
+    }
+  ],
+  "public_function": "read_anchor_from_actual_owner(s,ctx,product_id,issue_id,origin_ref) -> ActualAnchorRead",
+  "pure": {
+    "command": "PYTHONPATH=pdos-next/staging/wave17:pdos-next/server:pdos-next/server/tests PYTHONDONTWRITEBYTECODE=1 pdos-next/server/.venv/bin/python -m pytest --noconftest -p no:cacheprovider pdos-next/staging/wave17/test_anchor_owner.py -q",
+    "initial": {
+      "passed": 49,
+      "failed": 2,
+      "seconds": 2.4,
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/anchor-owner-pure-v1.log",
+      "classification": "new pure substitute errors: already-present null key; ordinary assignment to frozen Context"
+    },
+    "final": {
+      "passed": 54,
+      "failed": 0,
+      "seconds": 2.41,
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/anchor-owner-pure-v2.log"
+    },
+    "replacement_rule": "final owned selection replaces initial run; do not add duplicate cases"
+  },
+  "static": {
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "ast_compile_import": "passed",
+    "command_files": [
+      "pdos-next/staging/wave17/anchor_owner.py",
+      "pdos-next/staging/wave17/test_anchor_owner.py"
+    ]
+  },
+  "logs": [
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/anchor-owner-pure-v1.log",
+      "sha256": "567e254fe29d7b3efc4efeddeabc914b2ff57a7bdd0310c32130e9de8864659f",
+      "size_bytes": 3919
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/anchor-owner-pure-v2.log",
+      "sha256": "2b1a4450663db0397d7384d3de68880d84e6a52ede81034c0ac2fc9f677845a4",
+      "size_bytes": 99
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/anchor-owner-ruff-v1.log",
+      "sha256": "53d45e74c08d52015f4c04cf57c62ce8a8af1f55a78d6d6b2bdfa534d95db754",
+      "size_bytes": 7445
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/anchor-owner-ruff-v2.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/anchor-owner-ruff-final.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/anchor-owner-format-final.log",
+      "sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938",
+      "size_bytes": 26
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-wave17-20261003/anchor-owner-static-final.log",
+      "sha256": "e04e4b36eaa86005ee74c2dc342c9b00f0a33ed7d631045080dc456a4fe6641f",
+      "size_bytes": 202
+    }
+  ],
+  "boundaries": {
+    "actual_db": false,
+    "actual_http": false,
+    "public_tests_build": false,
+    "migration_or_sql_execution": false,
+    "old_files_modified": false,
+    "actual_live_bytes_tested": false,
+    "synthetic_owned_callback_substitutes": true,
+    "current_evidence_authorized": false,
+    "same_uow_consumption_attested": false,
+    "missing_owners": [
+      "current_professional_policy_owner",
+      "limited_issue_lineage_owner if origin Current differs"
+    ]
+  }
+}

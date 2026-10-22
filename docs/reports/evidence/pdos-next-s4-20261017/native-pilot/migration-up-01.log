@@ -1,0 +1,109 @@
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1925, in _exec_single_context
+    self.dialect.do_execute_no_params(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 1195, in do_execute_no_params
+    cursor.execute(statement)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.SyntaxError: syntax error at end of input
+LINE 20: ...S DISTINCT FROM CASE WHEN v.publication_id IS NULL THEN 'nul...
+                                                              ^
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/__main__.py", line 4, in <module>
+    main(prog="alembic")
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 1039, in main
+    CommandLine(prog=prog).main(argv=argv)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 1029, in main
+    self.run_cmd(cfg, options)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 963, in run_cmd
+    fn(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/command.py", line 487, in upgrade
+    script.run_env()
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/script/base.py", line 550, in run_env
+    util.load_python_file(self.dir, "env.py")
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/util/pyfiles.py", line 114, in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/util/pyfiles.py", line 132, in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/private/tmp/pdos-s4-native-pilot-eevnxyzx/pdos-next/server/migrations/env.py", line 19, in <module>
+    context.run_migrations()
+  File "<string>", line 8, in run_migrations
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/runtime/environment.py", line 970, in run_migrations
+    self.get_context().run_migrations(**kw)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/runtime/migration.py", line 616, in run_migrations
+    step.migration_fn(**kw)
+  File "/private/tmp/pdos-s4-native-pilot-eevnxyzx/pdos-next/server/migrations/versions/s0_0778_native_pilot.py", line 55, in upgrade
+    connection.exec_driver_sql(statement, execution_options={"no_parameters": True})
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1755, in exec_driver_sql
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1822, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1962, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2332, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1925, in _exec_single_context
+    self.dialect.do_execute_no_params(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 1195, in do_execute_no_params
+    cursor.execute(statement)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+sqlalchemy.exc.ProgrammingError: (psycopg.errors.SyntaxError) syntax error at end of input
+LINE 20: ...S DISTINCT FROM CASE WHEN v.publication_id IS NULL THEN 'nul...
+                                                              ^
+[SQL: CREATE FUNCTION public.assert_native_pilot_root(t uuid,target uuid) RETURNS void
+LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,public,pg_temp AS $native_pilot$
+
+DECLARE v public.native_pilot_runs; expected jsonb; raw jsonb; vx xid;
+BEGIN
+ SELECT * INTO STRICT v FROM public.native_pilot_runs WHERE tenant_id=t AND id=target;
+ SELECT xmin INTO vx FROM public.native_pilot_runs WHERE tenant_id=t AND id=target;
+ PERFORM public.assert_native_pilot_common(t,target,'pilot_run');
+ IF v.input_snapshot->'semantic' IS DISTINCT FROM jsonb_build_object('project_id',v.project_id,
+    'details',v.details,'statistics',v.statistics_basis,'visibility',v.visibility)
+  OR v.details->>'pilot_id' IS DISTINCT FROM v.id::text
+  OR v.details->>'purpose' IS DISTINCT FROM v.purpose
+  OR v.details->'basis' IS DISTINCT FROM jsonb_build_object(
+   'build',jsonb_build_object('kind','build','id',v.build_id,'revision',v.build_revision),
+   'lot',jsonb_build_object('kind','build_lot','id',v.lot_id,'revision',v.lot_revision),
+   'actual_configuration',jsonb_build_object('kind','actual_configuration','id',v.actual_configuration_id,'revision',v.actual_configuration_revision),
+   'engineering_configuration',jsonb_build_object('kind','engineering_configuration','id',v.engineering_configuration_id,'revision',v.engineering_revision),
+   'process_revision',jsonb_build_object('kind','process_revision','id',v.process_id,'revision',v.process_revision),
+   'unit',v.details->'basis'->'unit')
+  OR v.details->'manufacturing_baseline' IS DISTINCT FROM CASE WHEN v.publication_id IS NULL THEN 'null'::jsonb
+   ELSE jsonb_build_object('kind','manufacturing_baseline','id',v.publication_id,'revision',v.publication_revision) END
+  OR v.input_snapshot->'previous_current' IS DISTINCT FROM 'null'::jsonb
+  OR v.input_snapshot->'review'->'before' IS DISTINCT FROM 'null'::jsonb
+  OR NOT EXISTS(SELECT 1 FROM public.native_pilot_currents cur WHERE cur.tenant_id=t
+   AND cur.category_id=v.category_id AND cur.product_id=v.product_id AND cur.project_id=v.project_id
+   AND cur.pilot_id=v.id AND cur.owner_id=v.owner_id AND cur.visibility=v.visibility
+   AND cur.revision=1 AND cur.epoch=1 AND cur.latest_observation_id IS NULL
+   AND cur.xmin=vx)
+ THEN RAISE EXCEPTION 'Native Pilot immutable root or initial Current mismatch' USING ERRCODE='23514'; END IF;
+ IF v.statistics_basis IS NULL THEN
+  IF v.material_snapshot->'statistics' IS DISTINCT FROM 'null'::jsonb
+   OR v.material_snapshot->'fixed_scope' IS DISTINCT FROM 'null'::jsonb THEN
+   RAISE EXCEPTION 'Missing native Pilot declaration remains unknown' USING ERRCODE='23514'; END IF;
+ ELSE
+  expected=jsonb_build_object('schema_version','pdos-pilot-statistics-declaration-v1','pilot_id',v.id,
+    'statistics',v.statistics_basis-'source');
+  raw=public.native_pilot_original_values(t,v.category_id,v.product_id,v.statistics_basis->'source');
+  IF raw IS DISTINCT FROM expected
+   OR v.material_snapshot->'statistics'->'originals'->'statistics' IS DISTINCT FROM raw
+   OR v.material_snapshot->'statistics'->'statistics' IS DISTINCT FROM v.statistics_basis THEN
+   RAISE EXCEPTION 'Native Pilot declaration differs from its actual original values' USING ERRCODE='23514'; END IF;
+ END IF;
+END;
+$native_pilot$]
+(Background on this error at: https://sqlalche.me/e/21/f405)

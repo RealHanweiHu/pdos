@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "at": "2026-10-04T01:31:23.443800+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "case_id": "84ec3fbc-17f3-5de7-ab18-55efc15d4173",
+  "issue_id": "f42a3f5c-688e-56d6-87ad-cec2e5522f66",
+  "rejected_command_id": "863fc3b3-0aef-5c57-b755-c755ec91bd2a",
+  "original_record_sha256": "64656f125e5b352708c74cca8c7b111d388c43196424a309b91db18fd7649d13",
+  "old_error": {
+    "status": 409,
+    "code": "CONFIRMATION_SCOPE_CHANGED"
+  },
+  "new_label": "triage-runtime-reload-v1",
+  "business_writes": 0,
+  "old_request_reissued": false,
+  "earlier_wrong_request_key_column_assumption_retained": true,
+  "old_action_receipts": 0,
+  "old_request_keys": 0,
+  "old_confirmation_unconsumed": true,
+  "current_issue": {
+    "id": "39c38536-03c9-4777-9bf0-f3dbeb11248b",
+    "revision": 1,
+    "status": "open"
+  }
+}

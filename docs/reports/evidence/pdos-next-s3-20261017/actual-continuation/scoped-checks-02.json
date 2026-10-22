@@ -1,0 +1,12 @@
+{
+  "snapshot": "/private/tmp/pdos-s3-continuation-a4g8bm50",
+  "owned_files": [
+    "pdos-next/server/tests/change_execution/approved_configuration_continuation_helpers.py",
+    "pdos-next/server/tests/change_execution/test_approved_configuration_continuation_chain.py",
+    "pdos-next/server/tests/change_execution/test_approved_configuration_implementation_chain.py",
+    "pdos-next/server/pdos_next/quality_followup_host.py",
+    "pdos-next/server/tests/quality_followup_host/test_pure.py"
+  ],
+  "ruff": true,
+  "format": true
+}

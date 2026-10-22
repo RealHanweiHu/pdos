@@ -1,0 +1,128 @@
+{
+  "base_commit": "d98f998e36cd6b2e019e3262f03e7b04db98e255",
+  "snapshot": "/private/tmp/pdos-release-policy-delivery-0gr1h3x9",
+  "started_at": "2026-10-17T22:40:58.694499+00:00",
+  "finished_at": "2026-10-17T22:41:03.528277+00:00",
+  "overlay": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/release/material_owner.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "e009d569aca610351f157d5c9e13cb632c209cb443e669612d5211f44be5efaf",
+      "sha256": "e009d569aca610351f157d5c9e13cb632c209cb443e669612d5211f44be5efaf",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/models.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "46f60aca7780b91a536be8080832a0b42f65828679e26664e8904d130d4e8fc3",
+      "sha256": "46f60aca7780b91a536be8080832a0b42f65828679e26664e8904d130d4e8fc3",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "10dc38193be1be1bdb01629ec5a0fcb2c5b5acb696c28298f0ab91b3863dfc94",
+      "sha256": "10dc38193be1be1bdb01629ec5a0fcb2c5b5acb696c28298f0ab91b3863dfc94",
+      "foreign_context_removed": false
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "mode": "exact_root_delta",
+      "worktree_sha256": "84edd1faf45f04925915a71a84fa8c1842204abb25229282a4739a38ebfbbdcd",
+      "sha256": "dc53f34f9cf5d73fab5776cf9dd2d95ef91e2d22deb124f63dbd53687ab5d7a3",
+      "foreign_context_removed": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/release/policy_schemas.py",
+      "mode": "full",
+      "sha256": "ae5c49aad442c279585032078c22bbb7616700b45e28a15450cd88e78ef7fc7e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/release/policy_rules.py",
+      "mode": "full",
+      "sha256": "f0a99c1499f0cf19d32352e8151f005bd36ad4a4451096f0741b87501c97353e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/release/policy_models.py",
+      "mode": "full",
+      "sha256": "ed12bfb76212c84c6c2391806718c76d98a6fc6839de61777a13f4d75fa2d781"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/release/policy_storage_schema.py",
+      "mode": "full",
+      "sha256": "0727bab0d0042926598d305866dd6b46c1344a22edcaace445eeecbaf70bc8f0"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/release/policy_owner.py",
+      "mode": "full",
+      "sha256": "649ce9337e5847c42719e042a453b02a4dd1057158fa4d010dfdf0c9924d4a26"
+    },
+    {
+      "path": "pdos-next/server/tests/release/test_policy_rules.py",
+      "mode": "full",
+      "sha256": "28400dd9b5b557a408797d9d017ce261b67b1c30bba919656b4fc82e6d499aeb"
+    },
+    {
+      "path": "pdos-next/server/tests/release/test_policy_models.py",
+      "mode": "full",
+      "sha256": "07222309f9258d2c49c646c36c6878f866429295b529b32ac8c34bbad3b856d0"
+    },
+    {
+      "path": "pdos-next/server/tests/release/test_policy_storage_schema.py",
+      "mode": "full",
+      "sha256": "67fffb4c33444b15f68ee2021b29ecdba106714c6f1ec682b62aec2ac4ca7546"
+    },
+    {
+      "path": "pdos-next/server/tests/release/test_policy_owner.py",
+      "mode": "full",
+      "sha256": "6fc6b60f9a30f6a936581fc7b49d74c19268718685e93e4bc82aecaca9921ad7"
+    },
+    {
+      "path": "pdos-next/server/tests/release/test_policy_migration.py",
+      "mode": "full",
+      "sha256": "6d954a41869c2313eb58b3588a3c960c015adbd3a62b15b140a3bbeda88b4d62"
+    },
+    {
+      "path": "pdos-next/server/tests/release/test_material_owner.py",
+      "mode": "full",
+      "sha256": "85d7d50d9597eee1c7aed2504acd4d31b1c651b591aad021a635ecc313e029fd"
+    },
+    {
+      "path": "pdos-next/server/tests/release_policy_transactions/__init__.py",
+      "mode": "full",
+      "sha256": "3bee7cfcd79758dac3bfa6cddf2f49a45c8f3e636041a305a43a32766667fb28"
+    },
+    {
+      "path": "pdos-next/server/tests/release_policy_transactions/conftest.py",
+      "mode": "full",
+      "sha256": "1d564d54108f0a871e811671378357e4d20d9958c2add0d2d3786ad4d77a0ec9"
+    },
+    {
+      "path": "pdos-next/server/tests/release_policy_transactions/test_decisions.py",
+      "mode": "full",
+      "sha256": "e6cc0a5283154ea6baf7137135515966b7b23e601b3515eeb5700201d38972f9"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0781.py",
+      "mode": "full",
+      "sha256": "8ec87ccfa072bab7e88a6064ffb17e99b0e2f538f3a9d3df962a6cb2bef35434"
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0781_release_policy.py",
+      "mode": "full",
+      "sha256": "05c313c34278cb570d040f802ec33468d4a2bf01fa2a14510d5522771785bb24"
+    }
+  ],
+  "command": [
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider",
+    "tests/release"
+  ],
+  "exit": 0,
+  "foreign_context_removed": true,
+  "database_connections": 0
+}

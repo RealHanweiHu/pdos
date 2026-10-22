@@ -1,0 +1,929 @@
+{
+  "schema_version": 1,
+  "reviewer": "reuse_foundation",
+  "reviewed_at": "2026-10-02T17:25:00.479316+00:00",
+  "result": {
+    "status": "pass",
+    "failed_checks": [],
+    "canonical_operations": 66,
+    "canonical_events": 65,
+    "acceptance_scenarios": 48,
+    "registered_payloads": 34,
+    "registered_canonical_payloads": 22,
+    "auxiliary_operations": 10,
+    "registered_host_extensions": 2,
+    "reviewed_files": 89,
+    "openapi_paths": 30,
+    "openapi_component_schemas": 19
+  },
+  "method": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 pdos-next/server/.venv/bin/python -",
+    "execution": "One in-memory reconstruction of the exporter schemas and create_app(engine=object(), auth_engine=object()).openapi(), plus read-only source/catalog comparisons. exporter was read, not executed; no export or source files written.",
+    "runtime_guards": "sqlalchemy.create_engine, Engine.connect/raw_connection and socket connect entry points replaced with a raising function before application imports.",
+    "database_access": false,
+    "network_access": false,
+    "lifespan_started": false,
+    "tests_run": false,
+    "ui_or_joint_checks_run": false,
+    "old_track_read_or_written": false,
+    "runtime_secrets_read": false,
+    "only_written_file": "docs/reports/evidence/pdos-next-wave10-20261002/source-contract-check.json",
+    "exporter_source": "pdos-next/tools/export_contracts.py",
+    "validator_source": "pdos-next/tools/validate_contracts.py",
+    "program_sha256": "5b47e4c994d0eb3db3efb65d02a9c307b7fb2e365c95c7ea82a033191e82def5",
+    "program": "import hashlib\nimport inspect\nimport json\nimport re\nimport socket\nimport sys\nfrom datetime import UTC, datetime\nfrom pathlib import Path\n\nROOT = Path.cwd().resolve()\nNEXT = ROOT / \"pdos-next\"\nSERVER = NEXT / \"server\"\nOUTPUT = ROOT / \"docs/reports/evidence/pdos-next-wave10-20261002/source-contract-check.json\"\nsys.path.insert(0, str(SERVER))\nfiles = {}\ndef hashed(path):\n    data = path.read_bytes()\n    return {\"path\": str(path.relative_to(ROOT)), \"sha256\": hashlib.sha256(data).hexdigest(), \"size_bytes\": len(data)}\ntracked = [\n    ROOT / \"docs/design/2026-10-02-pdos-complete-target-architecture-v1.md\",\n    NEXT / \"tools/export_contracts.py\",\n    NEXT / \"tools/validate_contracts.py\",\n    SERVER / \"pdos_next/contracts.py\",\n    SERVER / \"pdos_next/api.py\",\n    SERVER / \"pdos_next/service.py\",\n    SERVER / \"pdos_next/command_handlers.py\",\n    *sorted((NEXT / \"contracts\").glob(\"*.json\")),\n]\nfor path in tracked:\n    files[str(path.relative_to(ROOT))] = hashed(path)\nattempts = []\ndef deny_io(*args, **kwargs):\n    attempts.append(\"forbidden database/network construction or connection\")\n    raise AssertionError(\"Read-only schema inspection cannot create/connect engines or sockets\")\nimport sqlalchemy\nfrom sqlalchemy.engine import Engine\nsqlalchemy.create_engine = deny_io\nEngine.connect = deny_io\nEngine.raw_connection = deny_io\nsocket.create_connection = deny_io\nsocket.socket.connect = deny_io\nsocket.socket.connect_ex = deny_io\nfrom pdos_next.api import create_app\nfrom pdos_next.contracts import PAYLOADS, Command\nfrom pdos_next.command_handlers import T1_OPERATIONS\nfrom pdos_next.service import EVENTS\n\n# Hash imported source before evaluating model schemas or constructing app routes.\nfor module in list(sys.modules.values()):\n    filename = getattr(module, \"__file__\", None)\n    if filename:\n        path = Path(filename).resolve()\n        if path.is_file() and path.is_relative_to(SERVER / \"pdos_next\") and path.suffix == \".py\":\n            files[str(path.relative_to(ROOT))] = hashed(path)\ncatalogs = {name: json.loads((NEXT / \"contracts\" / f\"{name}.json\").read_text())\n            for name in (\"operations\", \"events\", \"acceptance\", \"auxiliary-operations\")}\nsource_path = ROOT / \"docs/design/2026-10-02-pdos-complete-target-architecture-v1.md\"\nsource = source_path.read_text()\nsource_hash = hashlib.sha256(source_path.read_bytes()).hexdigest()\ncanonical = {v[\"operation\"]: v for v in catalogs[\"operations\"][\"items\"]}\nauxiliary = {v[\"operation\"]: v for v in catalogs[\"auxiliary-operations\"][\"items\"]}\ntick = chr(96)\nsource_operations = re.findall(r\"\\| \" + tick + r\"([^\" + tick + r\"]+)\" + tick + r\" \\| (READ|T[012]) \\| ([^|]+) \\| ([^|]+) \\|\", source)\nsource_acceptance = re.findall(r\"\\| (AT-\\d{2}) \\| ([^|]+) \\| ([^|]+) \\|\", source)\nchecks = {}\ndef check(name, condition, details=None):\n    checks[name] = {\"passed\": bool(condition)}\n    if details is not None:\n        checks[name][\"details\"] = details\ncheck(\"canonical_counts_and_unique_keys\",\n      len(canonical) == len(catalogs[\"operations\"][\"items\"]) == 66\n      and len({v[\"type\"] for v in catalogs[\"events\"][\"items\"]}) == len(catalogs[\"events\"][\"items\"]) == 65\n      and len({v[\"id\"] for v in catalogs[\"acceptance\"][\"items\"]}) == len(catalogs[\"acceptance\"][\"items\"]) == 48)\ncheck(\"canonical_catalogs_source_provenance\",\n      all(catalogs[name][\"provenance\"][\"sha256\"] == source_hash\n          and catalogs[name][\"provenance\"][\"original_contract_package_received\"] is False\n          for name in (\"operations\", \"events\", \"acceptance\")))\ncheck(\"canonical_operation_policy_matches_design\",\n      len(source_operations) == 66 and {v[0] for v in source_operations} == set(canonical)\n      and all(canonical[op][\"write_tier\"] == tier\n              and canonical[op][\"ai_execution\"] == ai.strip()\n              and canonical[op][\"event\"] == (None if tier == \"READ\" else event.strip())\n              for op, tier, ai, event in source_operations))\ncheck(\"canonical_event_operation_pairs\",\n      {(v[\"type\"], v[\"operation\"]) for v in catalogs[\"events\"][\"items\"]}\n      == {(v[\"event\"], op) for op, v in canonical.items() if v[\"event\"]})\ncheck(\"canonical_stage_mapping_closed\",\n      all(v[\"stage\"] in {f\"G{n}\" for n in range(6)}\n          for name in (\"operations\", \"events\", \"acceptance\") for v in catalogs[name][\"items\"])\n      and all(v[\"stage\"] == canonical[v[\"operation\"]][\"stage\"] for v in catalogs[\"events\"][\"items\"]))\ncheck(\"acceptance_ids_and_text_match_design\",\n      len(source_acceptance) == 48\n      and {v[\"id\"] for v in catalogs[\"acceptance\"][\"items\"]} == {f\"AT-{n:02}\" for n in range(1, 49)}\n      and {(v[\"id\"], v[\"scenario\"], v[\"expected\"]) for v in catalogs[\"acceptance\"][\"items\"]}\n      == {(identifier, scenario.strip(), expected.strip()) for identifier, scenario, expected in source_acceptance})\ncheck(\"acceptance_definition_only\",\n      all(v.get(\"definition_only\") is True and \"evidence_status\" not in v\n          for v in catalogs[\"acceptance\"][\"items\"]))\nimplemented = set(PAYLOADS)\ncanonical_implemented = implemented & set(canonical)\nauxiliary_implemented = implemented & set(auxiliary)\nhost_extensions = implemented - set(canonical) - set(auxiliary)\ncheck(\"registered_payload_count\", len(PAYLOADS) == 34)\ncheck(\"canonical_implementation_markers_match_registry\",\n      {op for op, v in canonical.items() if v.get(\"implementation\") == \"implemented_local_slice\"}\n      == canonical_implemented\n      and all(canonical[op].get(\"payload_schema\") == \"payloads.schema.json\" for op in canonical_implemented))\ncheck(\"auxiliary_registered_closed_and_t1\",\n      len(auxiliary) == len(catalogs[\"auxiliary-operations\"][\"items\"]) == 10\n      and set(auxiliary) <= implemented and not (set(auxiliary) & set(canonical))\n      and all(v[\"write_tier\"] == \"T1\" and op in T1_OPERATIONS\n              and v[\"implementation\"] == \"implemented_local_slice\"\n              and v[\"payload_schema\"] == \"payloads.schema.json\"\n              for op, v in auxiliary.items()))\ncheck(\"auxiliary_runtime_events_match\",\n      all(EVENTS.get(op) == v[\"event\"] for op, v in auxiliary.items()))\ncheck(\"auxiliary_canonical_policy_preserved\",\n      all(rule.rsplit(\":\", 1)[0] in canonical\n          and canonical[rule.rsplit(\":\", 1)[0]][\"write_tier\"] == rule.rsplit(\":\", 1)[1]\n          for v in auxiliary.values() for rule in v.get(\"canonical_policy_preserved\", [])))\ncheck(\"implemented_canonical_runtime_events_match\",\n      all(EVENTS.get(op) == canonical[op][\"event\"] for op in canonical_implemented))\ngenerated_payloads = {\n    \"command_envelope\": Command.model_json_schema(),\n    \"operation_payloads\": {op: payload.model_json_schema() for op, payload in PAYLOADS.items()},\n    \"scope\": \"implemented local domain slices; real AI qualification and formal exits are separate\",\n}\nsaved_payloads = json.loads((NEXT / \"contracts/payloads.schema.json\").read_text())\ncheck(\"payload_export_exact_structural_equality\", generated_payloads == saved_payloads)\ncheck(\"payload_export_operation_set_exact\", set(saved_payloads[\"operation_payloads\"]) == implemented)\ncheck(\"registered_payload_extra_forbid\", all(payload.model_config.get(\"extra\") == \"forbid\" for payload in PAYLOADS.values()))\n# The exporter uses these two inert objects too. No lifespan/request/startup runs.\napp = create_app(engine=object(), auth_engine=object())\ngenerated_openapi = app.openapi()\nsaved_openapi = json.loads((NEXT / \"contracts/openapi.json\").read_text())\ncheck(\"openapi_export_exact_structural_equality\", generated_openapi == saved_openapi)\ncheck(\"professional_read_route_exported\",\n      \"get\" in generated_openapi[\"paths\"].get(\"/v1/products/{product_id}/verification-professional\", {}))\ncheck(\"no_database_or_network_attempts\", not attempts, {\"attempts\": attempts})\nstable = []\nfor path, before in files.items():\n    after = hashed(ROOT / path)\n    if after != before:\n        stable.append({\"before\": before, \"after\": after})\ncheck(\"all_reviewed_files_stable_during_inspection\", not stable, {\"changed_files\": stable})\npayload_sources = []\nfor op, model in sorted(PAYLOADS.items()):\n    path = Path(inspect.getsourcefile(model)).resolve()\n    payload_sources.append({\n        \"operation\": op, \"model\": f\"{model.__module__}.{model.__name__}\",\n        \"source\": str(path.relative_to(ROOT)),\n        \"source_sha256\": files[str(path.relative_to(ROOT))][\"sha256\"],\n        \"classification\": \"canonical\" if op in canonical else \"auxiliary\" if op in auxiliary else \"host_extension\",\n        \"event\": EVENTS.get(op),\n    })\nfailed = [name for name, result in checks.items() if not result[\"passed\"]]\nreport = {\n    \"schema_version\": 1,\n    \"reviewer\": \"reuse_foundation\",\n    \"reviewed_at\": datetime.now(UTC).isoformat(),\n    \"result\": {\n        \"status\": \"pass\" if not failed else \"fail\",\n        \"failed_checks\": failed,\n        \"canonical_operations\": len(canonical),\n        \"canonical_events\": len(catalogs[\"events\"][\"items\"]),\n        \"acceptance_scenarios\": len(catalogs[\"acceptance\"][\"items\"]),\n        \"registered_payloads\": len(PAYLOADS),\n        \"registered_canonical_payloads\": len(canonical_implemented),\n        \"auxiliary_operations\": len(auxiliary),\n        \"registered_host_extensions\": len(host_extensions),\n        \"reviewed_files\": len(files),\n        \"openapi_paths\": len(generated_openapi[\"paths\"]),\n        \"openapi_component_schemas\": len(generated_openapi[\"components\"][\"schemas\"]),\n    },\n    \"method\": {\n        \"command\": \"PYTHONDONTWRITEBYTECODE=1 pdos-next/server/.venv/bin/python - <<'PY' ... PY\",\n        \"execution\": \"One in-memory reconstruction of the exporter schemas and create_app(engine=object(), auth_engine=object()).openapi(), plus read-only source/catalog comparisons. exporter was read, not executed; no export or source files written.\",\n        \"runtime_guards\": \"sqlalchemy.create_engine, Engine.connect/raw_connection and socket connect entry points replaced with a raising function before application imports.\",\n        \"database_access\": False, \"network_access\": False, \"lifespan_started\": False,\n        \"tests_run\": False, \"ui_or_joint_checks_run\": False, \"old_track_read_or_written\": False,\n        \"runtime_secrets_read\": False,\n        \"only_written_file\": str(OUTPUT.relative_to(ROOT)),\n        \"exporter_source\": \"pdos-next/tools/export_contracts.py\",\n        \"validator_source\": \"pdos-next/tools/validate_contracts.py\",\n        \"program_sha256\": hashlib.sha256(__inspection_program__.encode()).hexdigest(),\n        \"program\": __inspection_program__,\n    },\n    \"checks\": checks,\n    \"registered_payload_sources\": payload_sources,\n    \"canonical_registered_operations\": sorted(canonical_implemented),\n    \"canonical_not_registered_operations\": sorted(set(canonical) - implemented),\n    \"auxiliary_registered_operations\": sorted(auxiliary_implemented),\n    \"host_extensions_outside_both_catalogs\": sorted(host_extensions),\n    \"findings\": [\n        {\n            \"severity\": \"traceability_note\",\n            \"code\": \"HOST_EXTENSIONS_NOT_IN_AUXILIARY_CATALOG\",\n            \"operations\": sorted(host_extensions),\n            \"detail\": \"These two pre-existing host extensions are present in server PAYLOADS and exact exported payload schemas, and runtime EVENTS; they are not entries in the 66-operation canonical or 10-operation auxiliary catalog. Count them separately; the auxiliary catalog is not exhaustive of every server extension.\",\n        }\n    ] if host_extensions else [],\n    \"limitations\": [\n        \"66 operations/65 events/48 AT are reconstructed design coverage, not completed runtime acceptance.\",\n        \"34 registered payload schemas do not prove real AI/professional qualification, production enablement, or human G/N/P/Q exits.\",\n        \"OpenAPI uses the generic Command payload dictionary; per-operation schemas are the separate exported payloads.schema.json contract, not a discriminated OpenAPI union.\",\n        \"No database, migration, API request, lifespan, UI, model, original-content, old-track or joint regression run was performed by this review.\",\n    ],\n    \"file_hashes\": [files[path] for path in sorted(files)],\n}\nOUTPUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + \"\\n\")\nprint(json.dumps({\"output\": str(OUTPUT.relative_to(ROOT)), \"result\": report[\"result\"], \"findings\": report[\"findings\"]}, ensure_ascii=False))\n",
+    "stdin": "__inspection_program__ = \"import hashlib\\nimport inspect\\nimport json\\nimport re\\nimport socket\\nimport sys\\nfrom datetime import UTC, datetime\\nfrom pathlib import Path\\n\\nROOT = Path.cwd().resolve()\\nNEXT = ROOT / \\\"pdos-next\\\"\\nSERVER = NEXT / \\\"server\\\"\\nOUTPUT = ROOT / \\\"docs/reports/evidence/pdos-next-wave10-20261002/source-contract-check.json\\\"\\nsys.path.insert(0, str(SERVER))\\nfiles = {}\\ndef hashed(path):\\n    data = path.read_bytes()\\n    return {\\\"path\\\": str(path.relative_to(ROOT)), \\\"sha256\\\": hashlib.sha256(data).hexdigest(), \\\"size_bytes\\\": len(data)}\\ntracked = [\\n    ROOT / \\\"docs/design/2026-10-02-pdos-complete-target-architecture-v1.md\\\",\\n    NEXT / \\\"tools/export_contracts.py\\\",\\n    NEXT / \\\"tools/validate_contracts.py\\\",\\n    SERVER / \\\"pdos_next/contracts.py\\\",\\n    SERVER / \\\"pdos_next/api.py\\\",\\n    SERVER / \\\"pdos_next/service.py\\\",\\n    SERVER / \\\"pdos_next/command_handlers.py\\\",\\n    *sorted((NEXT / \\\"contracts\\\").glob(\\\"*.json\\\")),\\n]\\nfor path in tracked:\\n    files[str(path.relative_to(ROOT))] = hashed(path)\\nattempts = []\\ndef deny_io(*args, **kwargs):\\n    attempts.append(\\\"forbidden database/network construction or connection\\\")\\n    raise AssertionError(\\\"Read-only schema inspection cannot create/connect engines or sockets\\\")\\nimport sqlalchemy\\nfrom sqlalchemy.engine import Engine\\nsqlalchemy.create_engine = deny_io\\nEngine.connect = deny_io\\nEngine.raw_connection = deny_io\\nsocket.create_connection = deny_io\\nsocket.socket.connect = deny_io\\nsocket.socket.connect_ex = deny_io\\nfrom pdos_next.api import create_app\\nfrom pdos_next.contracts import PAYLOADS, Command\\nfrom pdos_next.command_handlers import T1_OPERATIONS\\nfrom pdos_next.service import EVENTS\\n\\n# Hash imported source before evaluating model schemas or constructing app routes.\\nfor module in list(sys.modules.values()):\\n    filename = getattr(module, \\\"__file__\\\", None)\\n    if filename:\\n        path = Path(filename).resolve()\\n        if path.is_file() and path.is_relative_to(SERVER / \\\"pdos_next\\\") and path.suffix == \\\".py\\\":\\n            files[str(path.relative_to(ROOT))] = hashed(path)\\ncatalogs = {name: json.loads((NEXT / \\\"contracts\\\" / f\\\"{name}.json\\\").read_text())\\n            for name in (\\\"operations\\\", \\\"events\\\", \\\"acceptance\\\", \\\"auxiliary-operations\\\")}\\nsource_path = ROOT / \\\"docs/design/2026-10-02-pdos-complete-target-architecture-v1.md\\\"\\nsource = source_path.read_text()\\nsource_hash = hashlib.sha256(source_path.read_bytes()).hexdigest()\\ncanonical = {v[\\\"operation\\\"]: v for v in catalogs[\\\"operations\\\"][\\\"items\\\"]}\\nauxiliary = {v[\\\"operation\\\"]: v for v in catalogs[\\\"auxiliary-operations\\\"][\\\"items\\\"]}\\ntick = chr(96)\\nsource_operations = re.findall(r\\\"\\\\| \\\" + tick + r\\\"([^\\\" + tick + r\\\"]+)\\\" + tick + r\\\" \\\\| (READ|T[012]) \\\\| ([^|]+) \\\\| ([^|]+) \\\\|\\\", source)\\nsource_acceptance = re.findall(r\\\"\\\\| (AT-\\\\d{2}) \\\\| ([^|]+) \\\\| ([^|]+) \\\\|\\\", source)\\nchecks = {}\\ndef check(name, condition, details=None):\\n    checks[name] = {\\\"passed\\\": bool(condition)}\\n    if details is not None:\\n        checks[name][\\\"details\\\"] = details\\ncheck(\\\"canonical_counts_and_unique_keys\\\",\\n      len(canonical) == len(catalogs[\\\"operations\\\"][\\\"items\\\"]) == 66\\n      and len({v[\\\"type\\\"] for v in catalogs[\\\"events\\\"][\\\"items\\\"]}) == len(catalogs[\\\"events\\\"][\\\"items\\\"]) == 65\\n      and len({v[\\\"id\\\"] for v in catalogs[\\\"acceptance\\\"][\\\"items\\\"]}) == len(catalogs[\\\"acceptance\\\"][\\\"items\\\"]) == 48)\\ncheck(\\\"canonical_catalogs_source_provenance\\\",\\n      all(catalogs[name][\\\"provenance\\\"][\\\"sha256\\\"] == source_hash\\n          and catalogs[name][\\\"provenance\\\"][\\\"original_contract_package_received\\\"] is False\\n          for name in (\\\"operations\\\", \\\"events\\\", \\\"acceptance\\\")))\\ncheck(\\\"canonical_operation_policy_matches_design\\\",\\n      len(source_operations) == 66 and {v[0] for v in source_operations} == set(canonical)\\n      and all(canonical[op][\\\"write_tier\\\"] == tier\\n              and canonical[op][\\\"ai_execution\\\"] == ai.strip()\\n              and canonical[op][\\\"event\\\"] == (None if tier == \\\"READ\\\" else event.strip())\\n              for op, tier, ai, event in source_operations))\\ncheck(\\\"canonical_event_operation_pairs\\\",\\n      {(v[\\\"type\\\"], v[\\\"operation\\\"]) for v in catalogs[\\\"events\\\"][\\\"items\\\"]}\\n      == {(v[\\\"event\\\"], op) for op, v in canonical.items() if v[\\\"event\\\"]})\\ncheck(\\\"canonical_stage_mapping_closed\\\",\\n      all(v[\\\"stage\\\"] in {f\\\"G{n}\\\" for n in range(6)}\\n          for name in (\\\"operations\\\", \\\"events\\\", \\\"acceptance\\\") for v in catalogs[name][\\\"items\\\"])\\n      and all(v[\\\"stage\\\"] == canonical[v[\\\"operation\\\"]][\\\"stage\\\"] for v in catalogs[\\\"events\\\"][\\\"items\\\"]))\\ncheck(\\\"acceptance_ids_and_text_match_design\\\",\\n      len(source_acceptance) == 48\\n      and {v[\\\"id\\\"] for v in catalogs[\\\"acceptance\\\"][\\\"items\\\"]} == {f\\\"AT-{n:02}\\\" for n in range(1, 49)}\\n      and {(v[\\\"id\\\"], v[\\\"scenario\\\"], v[\\\"expected\\\"]) for v in catalogs[\\\"acceptance\\\"][\\\"items\\\"]}\\n      == {(identifier, scenario.strip(), expected.strip()) for identifier, scenario, expected in source_acceptance})\\ncheck(\\\"acceptance_definition_only\\\",\\n      all(v.get(\\\"definition_only\\\") is True and \\\"evidence_status\\\" not in v\\n          for v in catalogs[\\\"acceptance\\\"][\\\"items\\\"]))\\nimplemented = set(PAYLOADS)\\ncanonical_implemented = implemented & set(canonical)\\nauxiliary_implemented = implemented & set(auxiliary)\\nhost_extensions = implemented - set(canonical) - set(auxiliary)\\ncheck(\\\"registered_payload_count\\\", len(PAYLOADS) == 34)\\ncheck(\\\"canonical_implementation_markers_match_registry\\\",\\n      {op for op, v in canonical.items() if v.get(\\\"implementation\\\") == \\\"implemented_local_slice\\\"}\\n      == canonical_implemented\\n      and all(canonical[op].get(\\\"payload_schema\\\") == \\\"payloads.schema.json\\\" for op in canonical_implemented))\\ncheck(\\\"auxiliary_registered_closed_and_t1\\\",\\n      len(auxiliary) == len(catalogs[\\\"auxiliary-operations\\\"][\\\"items\\\"]) == 10\\n      and set(auxiliary) <= implemented and not (set(auxiliary) & set(canonical))\\n      and all(v[\\\"write_tier\\\"] == \\\"T1\\\" and op in T1_OPERATIONS\\n              and v[\\\"implementation\\\"] == \\\"implemented_local_slice\\\"\\n              and v[\\\"payload_schema\\\"] == \\\"payloads.schema.json\\\"\\n              for op, v in auxiliary.items()))\\ncheck(\\\"auxiliary_runtime_events_match\\\",\\n      all(EVENTS.get(op) == v[\\\"event\\\"] for op, v in auxiliary.items()))\\ncheck(\\\"auxiliary_canonical_policy_preserved\\\",\\n      all(rule.rsplit(\\\":\\\", 1)[0] in canonical\\n          and canonical[rule.rsplit(\\\":\\\", 1)[0]][\\\"write_tier\\\"] == rule.rsplit(\\\":\\\", 1)[1]\\n          for v in auxiliary.values() for rule in v.get(\\\"canonical_policy_preserved\\\", [])))\\ncheck(\\\"implemented_canonical_runtime_events_match\\\",\\n      all(EVENTS.get(op) == canonical[op][\\\"event\\\"] for op in canonical_implemented))\\ngenerated_payloads = {\\n    \\\"command_envelope\\\": Command.model_json_schema(),\\n    \\\"operation_payloads\\\": {op: payload.model_json_schema() for op, payload in PAYLOADS.items()},\\n    \\\"scope\\\": \\\"implemented local domain slices; real AI qualification and formal exits are separate\\\",\\n}\\nsaved_payloads = json.loads((NEXT / \\\"contracts/payloads.schema.json\\\").read_text())\\ncheck(\\\"payload_export_exact_structural_equality\\\", generated_payloads == saved_payloads)\\ncheck(\\\"payload_export_operation_set_exact\\\", set(saved_payloads[\\\"operation_payloads\\\"]) == implemented)\\ncheck(\\\"registered_payload_extra_forbid\\\", all(payload.model_config.get(\\\"extra\\\") == \\\"forbid\\\" for payload in PAYLOADS.values()))\\n# The exporter uses these two inert objects too. No lifespan/request/startup runs.\\napp = create_app(engine=object(), auth_engine=object())\\ngenerated_openapi = app.openapi()\\nsaved_openapi = json.loads((NEXT / \\\"contracts/openapi.json\\\").read_text())\\ncheck(\\\"openapi_export_exact_structural_equality\\\", generated_openapi == saved_openapi)\\ncheck(\\\"professional_read_route_exported\\\",\\n      \\\"get\\\" in generated_openapi[\\\"paths\\\"].get(\\\"/v1/products/{product_id}/verification-professional\\\", {}))\\ncheck(\\\"no_database_or_network_attempts\\\", not attempts, {\\\"attempts\\\": attempts})\\nstable = []\\nfor path, before in files.items():\\n    after = hashed(ROOT / path)\\n    if after != before:\\n        stable.append({\\\"before\\\": before, \\\"after\\\": after})\\ncheck(\\\"all_reviewed_files_stable_during_inspection\\\", not stable, {\\\"changed_files\\\": stable})\\npayload_sources = []\\nfor op, model in sorted(PAYLOADS.items()):\\n    path = Path(inspect.getsourcefile(model)).resolve()\\n    payload_sources.append({\\n        \\\"operation\\\": op, \\\"model\\\": f\\\"{model.__module__}.{model.__name__}\\\",\\n        \\\"source\\\": str(path.relative_to(ROOT)),\\n        \\\"source_sha256\\\": files[str(path.relative_to(ROOT))][\\\"sha256\\\"],\\n        \\\"classification\\\": \\\"canonical\\\" if op in canonical else \\\"auxiliary\\\" if op in auxiliary else \\\"host_extension\\\",\\n        \\\"event\\\": EVENTS.get(op),\\n    })\\nfailed = [name for name, result in checks.items() if not result[\\\"passed\\\"]]\\nreport = {\\n    \\\"schema_version\\\": 1,\\n    \\\"reviewer\\\": \\\"reuse_foundation\\\",\\n    \\\"reviewed_at\\\": datetime.now(UTC).isoformat(),\\n    \\\"result\\\": {\\n        \\\"status\\\": \\\"pass\\\" if not failed else \\\"fail\\\",\\n        \\\"failed_checks\\\": failed,\\n        \\\"canonical_operations\\\": len(canonical),\\n        \\\"canonical_events\\\": len(catalogs[\\\"events\\\"][\\\"items\\\"]),\\n        \\\"acceptance_scenarios\\\": len(catalogs[\\\"acceptance\\\"][\\\"items\\\"]),\\n        \\\"registered_payloads\\\": len(PAYLOADS),\\n        \\\"registered_canonical_payloads\\\": len(canonical_implemented),\\n        \\\"auxiliary_operations\\\": len(auxiliary),\\n        \\\"registered_host_extensions\\\": len(host_extensions),\\n        \\\"reviewed_files\\\": len(files),\\n        \\\"openapi_paths\\\": len(generated_openapi[\\\"paths\\\"]),\\n        \\\"openapi_component_schemas\\\": len(generated_openapi[\\\"components\\\"][\\\"schemas\\\"]),\\n    },\\n    \\\"method\\\": {\\n        \\\"command\\\": \\\"PYTHONDONTWRITEBYTECODE=1 pdos-next/server/.venv/bin/python - <<'PY' ... PY\\\",\\n        \\\"execution\\\": \\\"One in-memory reconstruction of the exporter schemas and create_app(engine=object(), auth_engine=object()).openapi(), plus read-only source/catalog comparisons. exporter was read, not executed; no export or source files written.\\\",\\n        \\\"runtime_guards\\\": \\\"sqlalchemy.create_engine, Engine.connect/raw_connection and socket connect entry points replaced with a raising function before application imports.\\\",\\n        \\\"database_access\\\": False, \\\"network_access\\\": False, \\\"lifespan_started\\\": False,\\n        \\\"tests_run\\\": False, \\\"ui_or_joint_checks_run\\\": False, \\\"old_track_read_or_written\\\": False,\\n        \\\"runtime_secrets_read\\\": False,\\n        \\\"only_written_file\\\": str(OUTPUT.relative_to(ROOT)),\\n        \\\"exporter_source\\\": \\\"pdos-next/tools/export_contracts.py\\\",\\n        \\\"validator_source\\\": \\\"pdos-next/tools/validate_contracts.py\\\",\\n        \\\"program_sha256\\\": hashlib.sha256(__inspection_program__.encode()).hexdigest(),\\n        \\\"program\\\": __inspection_program__,\\n    },\\n    \\\"checks\\\": checks,\\n    \\\"registered_payload_sources\\\": payload_sources,\\n    \\\"canonical_registered_operations\\\": sorted(canonical_implemented),\\n    \\\"canonical_not_registered_operations\\\": sorted(set(canonical) - implemented),\\n    \\\"auxiliary_registered_operations\\\": sorted(auxiliary_implemented),\\n    \\\"host_extensions_outside_both_catalogs\\\": sorted(host_extensions),\\n    \\\"findings\\\": [\\n        {\\n            \\\"severity\\\": \\\"traceability_note\\\",\\n            \\\"code\\\": \\\"HOST_EXTENSIONS_NOT_IN_AUXILIARY_CATALOG\\\",\\n            \\\"operations\\\": sorted(host_extensions),\\n            \\\"detail\\\": \\\"These two pre-existing host extensions are present in server PAYLOADS and exact exported payload schemas, and runtime EVENTS; they are not entries in the 66-operation canonical or 10-operation auxiliary catalog. Count them separately; the auxiliary catalog is not exhaustive of every server extension.\\\",\\n        }\\n    ] if host_extensions else [],\\n    \\\"limitations\\\": [\\n        \\\"66 operations/65 events/48 AT are reconstructed design coverage, not completed runtime acceptance.\\\",\\n        \\\"34 registered payload schemas do not prove real AI/professional qualification, production enablement, or human G/N/P/Q exits.\\\",\\n        \\\"OpenAPI uses the generic Command payload dictionary; per-operation schemas are the separate exported payloads.schema.json contract, not a discriminated OpenAPI union.\\\",\\n        \\\"No database, migration, API request, lifespan, UI, model, original-content, old-track or joint regression run was performed by this review.\\\",\\n    ],\\n    \\\"file_hashes\\\": [files[path] for path in sorted(files)],\\n}\\nOUTPUT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + \\\"\\\\n\\\")\\nprint(json.dumps({\\\"output\\\": str(OUTPUT.relative_to(ROOT)), \\\"result\\\": report[\\\"result\\\"], \\\"findings\\\": report[\\\"findings\\\"]}, ensure_ascii=False))\\n\"\nexec(compile(__inspection_program__, '<source-contract-readonly-review>', 'exec'))\n"
+  },
+  "checks": {
+    "canonical_counts_and_unique_keys": {
+      "passed": true
+    },
+    "canonical_catalogs_source_provenance": {
+      "passed": true
+    },
+    "canonical_operation_policy_matches_design": {
+      "passed": true
+    },
+    "canonical_event_operation_pairs": {
+      "passed": true
+    },
+    "canonical_stage_mapping_closed": {
+      "passed": true
+    },
+    "acceptance_ids_and_text_match_design": {
+      "passed": true
+    },
+    "acceptance_definition_only": {
+      "passed": true
+    },
+    "registered_payload_count": {
+      "passed": true
+    },
+    "canonical_implementation_markers_match_registry": {
+      "passed": true
+    },
+    "auxiliary_registered_closed_and_t1": {
+      "passed": true
+    },
+    "auxiliary_runtime_events_match": {
+      "passed": true
+    },
+    "auxiliary_canonical_policy_preserved": {
+      "passed": true
+    },
+    "implemented_canonical_runtime_events_match": {
+      "passed": true
+    },
+    "payload_export_exact_structural_equality": {
+      "passed": true
+    },
+    "payload_export_operation_set_exact": {
+      "passed": true
+    },
+    "registered_payload_extra_forbid": {
+      "passed": true
+    },
+    "openapi_export_exact_structural_equality": {
+      "passed": true
+    },
+    "professional_read_route_exported": {
+      "passed": true
+    },
+    "no_database_or_network_attempts": {
+      "passed": true,
+      "details": {
+        "attempts": []
+      }
+    },
+    "all_reviewed_files_stable_during_inspection": {
+      "passed": true,
+      "details": {
+        "changed_files": []
+      }
+    }
+  },
+  "registered_payload_sources": [
+    {
+      "operation": "ai.model_call.reconcile",
+      "model": "pdos_next.model_gateway.reconciliation_schema.ReconciliationPayload",
+      "source": "pdos-next/server/pdos_next/model_gateway/reconciliation_schema.py",
+      "source_sha256": "9b06651833b85284c84bd8814a3b120b698ad4e6f8b6b59d5664ccbf490231a3",
+      "classification": "host_extension",
+      "event": "ai.model_call_reconciled"
+    },
+    {
+      "operation": "ai.run.cancel",
+      "model": "pdos_next.contracts.CancelPayload",
+      "source": "pdos-next/server/pdos_next/contracts.py",
+      "source_sha256": "ebc184f2ba23ea2e729c398ef926a583d1f1004cf4a03941b14b7078c65fd472",
+      "classification": "canonical",
+      "event": "ai.run_cancelled"
+    },
+    {
+      "operation": "ai.run.revert",
+      "model": "pdos_next.contracts.RevertPayload",
+      "source": "pdos-next/server/pdos_next/contracts.py",
+      "source_sha256": "ebc184f2ba23ea2e729c398ef926a583d1f1004cf4a03941b14b7078c65fd472",
+      "classification": "canonical",
+      "event": "ai.run_reverted"
+    },
+    {
+      "operation": "ai.work.start",
+      "model": "pdos_next.contracts.WorkPayload",
+      "source": "pdos-next/server/pdos_next/contracts.py",
+      "source_sha256": "ebc184f2ba23ea2e729c398ef926a583d1f1004cf4a03941b14b7078c65fd472",
+      "classification": "canonical",
+      "event": "ai.work_started"
+    },
+    {
+      "operation": "build.configuration.actual.record",
+      "model": "pdos_next.domain.build_execution.schemas.ActualConfigurationPayload",
+      "source": "pdos-next/server/pdos_next/domain/build_execution/schemas.py",
+      "source_sha256": "6570827c0c286e57a3264cd190ce731ae0e1950daccbf6caf297073bdedd8b81",
+      "classification": "canonical",
+      "event": "actual_configuration.recorded"
+    },
+    {
+      "operation": "build.create",
+      "model": "pdos_next.domain.builds.schemas.BuildCreatePayload",
+      "source": "pdos-next/server/pdos_next/domain/builds/schemas.py",
+      "source_sha256": "bc002e93a9f8070f552efaf759fdfcc7cf1003580217b2d7aa37ef330600c086",
+      "classification": "canonical",
+      "event": "build.created"
+    },
+    {
+      "operation": "build.output.record",
+      "model": "pdos_next.domain.build_execution.schemas.OutputPayload",
+      "source": "pdos-next/server/pdos_next/domain/build_execution/schemas.py",
+      "source_sha256": "6570827c0c286e57a3264cd190ce731ae0e1950daccbf6caf297073bdedd8b81",
+      "classification": "canonical",
+      "event": "build.output_recorded"
+    },
+    {
+      "operation": "build.readiness.compute",
+      "model": "pdos_next.domain.builds.schemas.BuildReadinessPayload",
+      "source": "pdos-next/server/pdos_next/domain/builds/schemas.py",
+      "source_sha256": "bc002e93a9f8070f552efaf759fdfcc7cf1003580217b2d7aa37ef330600c086",
+      "classification": "canonical",
+      "event": "readiness.computed"
+    },
+    {
+      "operation": "build.sample.allocate",
+      "model": "pdos_next.domain.build_execution.schemas.SampleAllocatePayload",
+      "source": "pdos-next/server/pdos_next/domain/build_execution/schemas.py",
+      "source_sha256": "6570827c0c286e57a3264cd190ce731ae0e1950daccbf6caf297073bdedd8b81",
+      "classification": "canonical",
+      "event": "sample.allocated"
+    },
+    {
+      "operation": "cost.estimate.compute",
+      "model": "pdos_next.domain.cost_execution.schemas.EstimateComputePayload",
+      "source": "pdos-next/server/pdos_next/domain/cost_execution/schemas.py",
+      "source_sha256": "15d662abd55b1cf5dfb3411170452d5dc1c7962220bf77bb282738c26c2bbb2b",
+      "classification": "canonical",
+      "event": "cost.estimated"
+    },
+    {
+      "operation": "cost.inputs.record",
+      "model": "pdos_next.domain.cost_execution.schemas.InputsRecordPayload",
+      "source": "pdos-next/server/pdos_next/domain/cost_execution/schemas.py",
+      "source_sha256": "15d662abd55b1cf5dfb3411170452d5dc1c7962220bf77bb282738c26c2bbb2b",
+      "classification": "auxiliary",
+      "event": "cost.inputs_recorded"
+    },
+    {
+      "operation": "engineering.bom.revise",
+      "model": "pdos_next.domain.configurations.schemas.EngineeringBomRevisePayload",
+      "source": "pdos-next/server/pdos_next/domain/configurations/schemas.py",
+      "source_sha256": "b8b42023631664f401bfb6537f2cb98e80838bfe093eeda66ef69568f65bbdf8",
+      "classification": "canonical",
+      "event": "bom.revised"
+    },
+    {
+      "operation": "engineering.configuration.create",
+      "model": "pdos_next.domain.configurations.schemas.EngineeringConfigurationCreatePayload",
+      "source": "pdos-next/server/pdos_next/domain/configurations/schemas.py",
+      "source_sha256": "b8b42023631664f401bfb6537f2cb98e80838bfe093eeda66ef69568f65bbdf8",
+      "classification": "canonical",
+      "event": "configuration.created"
+    },
+    {
+      "operation": "evidence.artifact.register",
+      "model": "pdos_next.contracts.ArtifactPayload",
+      "source": "pdos-next/server/pdos_next/contracts.py",
+      "source_sha256": "ebc184f2ba23ea2e729c398ef926a583d1f1004cf4a03941b14b7078c65fd472",
+      "classification": "canonical",
+      "event": "artifact.registered"
+    },
+    {
+      "operation": "evidence.claim.record",
+      "model": "pdos_next.contracts.ClaimPayload",
+      "source": "pdos-next/server/pdos_next/contracts.py",
+      "source_sha256": "ebc184f2ba23ea2e729c398ef926a583d1f1004cf4a03941b14b7078c65fd472",
+      "classification": "canonical",
+      "event": "claim.recorded"
+    },
+    {
+      "operation": "evidence.lifecycle.cancel",
+      "model": "pdos_next.domain.original_lifecycle_execution.schemas.LifecycleCancelPayload",
+      "source": "pdos-next/server/pdos_next/domain/original_lifecycle_execution/schemas.py",
+      "source_sha256": "c0990190ab7bd74d8b0fdd80783bfbcf0fcd2a52066909c652ac0757dd5c9546",
+      "classification": "auxiliary",
+      "event": "original.lifecycle_cancelled"
+    },
+    {
+      "operation": "evidence.lifecycle.protection.record",
+      "model": "pdos_next.domain.original_lifecycle_execution.schemas.LifecycleProtectionPayload",
+      "source": "pdos-next/server/pdos_next/domain/original_lifecycle_execution/schemas.py",
+      "source_sha256": "c0990190ab7bd74d8b0fdd80783bfbcf0fcd2a52066909c652ac0757dd5c9546",
+      "classification": "auxiliary",
+      "event": "original.protection_recorded"
+    },
+    {
+      "operation": "evidence.lifecycle.quarantine",
+      "model": "pdos_next.domain.original_lifecycle_execution.schemas.LifecycleCommandPayload",
+      "source": "pdos-next/server/pdos_next/domain/original_lifecycle_execution/schemas.py",
+      "source_sha256": "c0990190ab7bd74d8b0fdd80783bfbcf0fcd2a52066909c652ac0757dd5c9546",
+      "classification": "auxiliary",
+      "event": "original.lifecycle_requested"
+    },
+    {
+      "operation": "evidence.lifecycle.restore",
+      "model": "pdos_next.domain.original_lifecycle_execution.schemas.LifecycleCommandPayload",
+      "source": "pdos-next/server/pdos_next/domain/original_lifecycle_execution/schemas.py",
+      "source_sha256": "c0990190ab7bd74d8b0fdd80783bfbcf0fcd2a52066909c652ac0757dd5c9546",
+      "classification": "auxiliary",
+      "event": "original.lifecycle_requested"
+    },
+    {
+      "operation": "evidence.lifecycle.upload.abandon",
+      "model": "pdos_next.contracts.UploadAbandonPayload",
+      "source": "pdos-next/server/pdos_next/contracts.py",
+      "source_sha256": "ebc184f2ba23ea2e729c398ef926a583d1f1004cf4a03941b14b7078c65fd472",
+      "classification": "auxiliary",
+      "event": "original.upload_abandoned"
+    },
+    {
+      "operation": "evidence.original.withdraw",
+      "model": "pdos_next.contracts.OriginalWithdrawPayload",
+      "source": "pdos-next/server/pdos_next/contracts.py",
+      "source_sha256": "ebc184f2ba23ea2e729c398ef926a583d1f1004cf4a03941b14b7078c65fd472",
+      "classification": "auxiliary",
+      "event": "original.withdrawn"
+    },
+    {
+      "operation": "npi.process.revise",
+      "model": "pdos_next.domain.configurations.schemas.NpiProcessRevisePayload",
+      "source": "pdos-next/server/pdos_next/domain/configurations/schemas.py",
+      "source_sha256": "b8b42023631664f401bfb6537f2cb98e80838bfe093eeda66ef69568f65bbdf8",
+      "classification": "canonical",
+      "event": "process.revised"
+    },
+    {
+      "operation": "product.definition.draft",
+      "model": "pdos_next.schemas.products.definitions.DefinitionDraftPayload",
+      "source": "pdos-next/server/pdos_next/schemas/products/definitions.py",
+      "source_sha256": "591c8e070a1d36e146da212cb266e055ed51de553183b1e6364af372b5f57424",
+      "classification": "canonical",
+      "event": "definition.draft_created"
+    },
+    {
+      "operation": "product.variant.derive",
+      "model": "pdos_next.schemas.products.variants.VariantDerivePayload",
+      "source": "pdos-next/server/pdos_next/schemas/products/variants.py",
+      "source_sha256": "903b6fc4741c6804cc04dac507825c0f4b54ba0810ebe243cf79c03cdf2501aa",
+      "classification": "canonical",
+      "event": "variant.derived"
+    },
+    {
+      "operation": "product.variant.rebase",
+      "model": "pdos_next.schemas.products.variants.VariantRebasePayload",
+      "source": "pdos-next/server/pdos_next/schemas/products/variants.py",
+      "source_sha256": "903b6fc4741c6804cc04dac507825c0f4b54ba0810ebe243cf79c03cdf2501aa",
+      "classification": "host_extension",
+      "event": "variant.rebased"
+    },
+    {
+      "operation": "project.create",
+      "model": "pdos_next.domain.projects.schemas.ProjectCreatePayload",
+      "source": "pdos-next/server/pdos_next/domain/projects/schemas.py",
+      "source_sha256": "d1d535720f01d6407e25fdb4e392c4dece8f9a13c7dc5f90105d064e6b2cb254",
+      "classification": "canonical",
+      "event": "project.created"
+    },
+    {
+      "operation": "supply.kit.compute",
+      "model": "pdos_next.domain.supply_execution.schemas.KitComputePayload",
+      "source": "pdos-next/server/pdos_next/domain/supply_execution/schemas.py",
+      "source_sha256": "1b5387578a6adf35eacaee95e139e582122807ba37559dd7cdc9d31ffb14bc0b",
+      "classification": "canonical",
+      "event": "kit.computed"
+    },
+    {
+      "operation": "supply.snapshot.record",
+      "model": "pdos_next.domain.supply_execution.schemas.SnapshotRecordPayload",
+      "source": "pdos-next/server/pdos_next/domain/supply_execution/schemas.py",
+      "source_sha256": "1b5387578a6adf35eacaee95e139e582122807ba37559dd7cdc9d31ffb14bc0b",
+      "classification": "auxiliary",
+      "event": "supply.snapshot_recorded"
+    },
+    {
+      "operation": "verification.method.prepare",
+      "model": "pdos_next.domain.verification_front.schemas.MethodPreparePayload",
+      "source": "pdos-next/server/pdos_next/domain/verification_front/schemas.py",
+      "source_sha256": "5eb13acb8df7a6eeb7e1dd105e39ae12beedccb0b445472a95c13755a5e8a233",
+      "classification": "auxiliary",
+      "event": "verification.method_prepared"
+    },
+    {
+      "operation": "verification.preparation.record",
+      "model": "pdos_next.domain.verification_execution.schemas.PreparationRecordPayload",
+      "source": "pdos-next/server/pdos_next/domain/verification_execution/schemas.py",
+      "source_sha256": "e1911d9ae7682ac8e4016d2481253d005b148fe5ce387188c76ca7b9f210ce26",
+      "classification": "auxiliary",
+      "event": "verification.preparation_recorded"
+    },
+    {
+      "operation": "verification.request.create",
+      "model": "pdos_next.domain.verification_front.schemas.RequestCreatePayload",
+      "source": "pdos-next/server/pdos_next/domain/verification_front/schemas.py",
+      "source_sha256": "5eb13acb8df7a6eeb7e1dd105e39ae12beedccb0b445472a95c13755a5e8a233",
+      "classification": "canonical",
+      "event": "verification.requested"
+    },
+    {
+      "operation": "verification.schedule.propose",
+      "model": "pdos_next.domain.verification_front.schemas.ScheduleProposePayload",
+      "source": "pdos-next/server/pdos_next/domain/verification_front/schemas.py",
+      "source_sha256": "5eb13acb8df7a6eeb7e1dd105e39ae12beedccb0b445472a95c13755a5e8a233",
+      "classification": "canonical",
+      "event": "verification.schedule_proposed"
+    },
+    {
+      "operation": "work.plan.apply",
+      "model": "pdos_next.domain.projects.schemas.PlanApplyPayload",
+      "source": "pdos-next/server/pdos_next/domain/projects/schemas.py",
+      "source_sha256": "d1d535720f01d6407e25fdb4e392c4dece8f9a13c7dc5f90105d064e6b2cb254",
+      "classification": "canonical",
+      "event": "plan.applied"
+    },
+    {
+      "operation": "work.plan.propose",
+      "model": "pdos_next.domain.projects.schemas.PlanProposePayload",
+      "source": "pdos-next/server/pdos_next/domain/projects/schemas.py",
+      "source_sha256": "d1d535720f01d6407e25fdb4e392c4dece8f9a13c7dc5f90105d064e6b2cb254",
+      "classification": "canonical",
+      "event": "plan.proposed"
+    }
+  ],
+  "canonical_registered_operations": [
+    "ai.run.cancel",
+    "ai.run.revert",
+    "ai.work.start",
+    "build.configuration.actual.record",
+    "build.create",
+    "build.output.record",
+    "build.readiness.compute",
+    "build.sample.allocate",
+    "cost.estimate.compute",
+    "engineering.bom.revise",
+    "engineering.configuration.create",
+    "evidence.artifact.register",
+    "evidence.claim.record",
+    "npi.process.revise",
+    "product.definition.draft",
+    "product.variant.derive",
+    "project.create",
+    "supply.kit.compute",
+    "verification.request.create",
+    "verification.schedule.propose",
+    "work.plan.apply",
+    "work.plan.propose"
+  ],
+  "canonical_not_registered_operations": [
+    "ai.loop.activate",
+    "ai.loop.pause",
+    "build.start",
+    "change.impact.compute",
+    "change.implementation.record",
+    "change.order.approve",
+    "change.request.create",
+    "customer.acceptance.record",
+    "customer.sample.send",
+    "engineering.interface.update",
+    "evidence.link.create",
+    "evidence.source.withdraw",
+    "integration.handoff.authorize",
+    "integration.receipt.record",
+    "knowledge.candidate.create",
+    "knowledge.rule.publish",
+    "my_work.query",
+    "npi.fixture.accept",
+    "npi.pilot.create",
+    "npi.pilot.result.record",
+    "npi.tooltrial.create",
+    "product.definition.publish",
+    "product.definition.update",
+    "product.research.start",
+    "quality.capa.draft",
+    "quality.capa.effectiveness.decide",
+    "quality.issue.create",
+    "quality.issue.merge",
+    "release.engineering.approve",
+    "release.manufacturing.approve",
+    "release.package.assemble",
+    "supply.alternate.approve",
+    "supply.commitment.record",
+    "test.disposition.decide",
+    "test.result.compute",
+    "test.results.import",
+    "verification.handoff.accept",
+    "verification.handoff.offer",
+    "work.baseline.approve",
+    "work.commitment.accept",
+    "work.external_wait.record",
+    "work.forecast.refresh",
+    "work.task.assign",
+    "work.task.create"
+  ],
+  "auxiliary_registered_operations": [
+    "cost.inputs.record",
+    "evidence.lifecycle.cancel",
+    "evidence.lifecycle.protection.record",
+    "evidence.lifecycle.quarantine",
+    "evidence.lifecycle.restore",
+    "evidence.lifecycle.upload.abandon",
+    "evidence.original.withdraw",
+    "supply.snapshot.record",
+    "verification.method.prepare",
+    "verification.preparation.record"
+  ],
+  "host_extensions_outside_both_catalogs": [
+    "ai.model_call.reconcile",
+    "product.variant.rebase"
+  ],
+  "findings": [
+    {
+      "severity": "traceability_note",
+      "code": "HOST_EXTENSIONS_NOT_IN_AUXILIARY_CATALOG",
+      "operations": [
+        "ai.model_call.reconcile",
+        "product.variant.rebase"
+      ],
+      "detail": "These two pre-existing host extensions are present in server PAYLOADS and exact exported payload schemas, and runtime EVENTS; they are not entries in the 66-operation canonical or 10-operation auxiliary catalog. Count them separately; the auxiliary catalog is not exhaustive of every server extension."
+    }
+  ],
+  "limitations": [
+    "66 operations/65 events/48 AT are reconstructed design coverage, not completed runtime acceptance.",
+    "34 registered payload schemas do not prove real AI/professional qualification, production enablement, or human G/N/P/Q exits.",
+    "OpenAPI uses the generic Command payload dictionary; per-operation schemas are the separate exported payloads.schema.json contract, not a discriminated OpenAPI union.",
+    "No database, migration, API request, lifespan, UI, model, original-content, old-track or joint regression run was performed by this review."
+  ],
+  "file_hashes": [
+    {
+      "path": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
+      "sha256": "87954bc03f8556a74b0d24a32a268f131717ce3797ead13fcfb92025302a75e6",
+      "size_bytes": 91682
+    },
+    {
+      "path": "pdos-next/contracts/acceptance.json",
+      "sha256": "61d666521c0b1b582677c65dffe178f064e05a23393767f053b1cb67e8141848",
+      "size_bytes": 9869
+    },
+    {
+      "path": "pdos-next/contracts/auxiliary-operations.json",
+      "sha256": "e71326eb913505b7c5d1e22ab17e35f53db734d5688edbe5c9de3214d0201af4",
+      "size_bytes": 5628
+    },
+    {
+      "path": "pdos-next/contracts/events.json",
+      "sha256": "d930174a6f1b1815cc80492af894e6720ff4481c03933012cac327458bd39840",
+      "size_bytes": 9513
+    },
+    {
+      "path": "pdos-next/contracts/openapi.json",
+      "sha256": "2efa596ac1fb45df02a9b4c8a5b7301d2bbe51565a2f3594d6f0a1e451f10380",
+      "size_bytes": 76109
+    },
+    {
+      "path": "pdos-next/contracts/operations.json",
+      "sha256": "03719890fa7b185c243478abd914ccb5806d506b70e97113e93a2654b9cba744",
+      "size_bytes": 16598
+    },
+    {
+      "path": "pdos-next/contracts/payloads.schema.json",
+      "sha256": "9dfa0e09e8dc5bed6c14d51156467b9b374d1f33e17ce8bf6264a3720d2823b2",
+      "size_bytes": 122949
+    },
+    {
+      "path": "pdos-next/server/pdos_next/__init__.py",
+      "sha256": "bc0de14c2bc2427df7dafa801a0bb30342deaffdac2f31a3ae214b9cada881cc",
+      "size_bytes": 74
+    },
+    {
+      "path": "pdos-next/server/pdos_next/api.py",
+      "sha256": "11ae0422e9a96a07ac481a73e24a48cca83094837e348b27b1fc26e5e6dc559a",
+      "size_bytes": 30308
+    },
+    {
+      "path": "pdos-next/server/pdos_next/command_handlers.py",
+      "sha256": "64adbee66b94c1f9bcd651533daed2ac379d5829c611d780816653b97bb6b957",
+      "size_bytes": 4143
+    },
+    {
+      "path": "pdos-next/server/pdos_next/contracts.py",
+      "sha256": "ebc184f2ba23ea2e729c398ef926a583d1f1004cf4a03941b14b7078c65fd472",
+      "size_bytes": 7829
+    },
+    {
+      "path": "pdos-next/server/pdos_next/database.py",
+      "sha256": "a64c91d9f9a465be48b2585198ca7db802d37de0a38b2fed1064e445535c0858",
+      "size_bytes": 806
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/build_execution/__init__.py",
+      "sha256": "fbcbf580144382039c4870b6b5474c41a3a29264782666e8d8e6bd197c2ea3be",
+      "size_bytes": 98
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/build_execution/models.py",
+      "sha256": "87560e4c5836f8f956249c6d2aad98fffb6659e97079365542ab5ddf9aeb4413",
+      "size_bytes": 8506
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/build_execution/schemas.py",
+      "sha256": "6570827c0c286e57a3264cd190ce731ae0e1950daccbf6caf297073bdedd8b81",
+      "size_bytes": 4050
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/builds/__init__.py",
+      "sha256": "00ae0c5e301cb4fb849a87780382d3c24e1161bbf6c7f7c87d986fd30253ca5b",
+      "size_bytes": 85
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/builds/models.py",
+      "sha256": "6f01acd30b8f645d337277268d5a216c669c80b5dde242d0225e675339ad8b13",
+      "size_bytes": 4314
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/builds/schemas.py",
+      "sha256": "bc002e93a9f8070f552efaf759fdfcc7cf1003580217b2d7aa37ef330600c086",
+      "size_bytes": 1730
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/configurations/__init__.py",
+      "sha256": "2d06ce8b86ae6f7d2fa4d0366b6357a321a78d8b17c5e1ea0ce6fc490bf986e0",
+      "size_bytes": 92
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/configurations/models.py",
+      "sha256": "7d366adab2fd2e9cf04a570f7b5821a1efe0a60ead9894954d11fb4c0d2606b4",
+      "size_bytes": 6018
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/configurations/schemas.py",
+      "sha256": "b8b42023631664f401bfb6537f2cb98e80838bfe093eeda66ef69568f65bbdf8",
+      "size_bytes": 7331
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/cost_execution/__init__.py",
+      "sha256": "712011397dde4ece02e69109ce00eb43000e664641bd7adabb859d32cdfc672f",
+      "size_bytes": 87
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/cost_execution/models.py",
+      "sha256": "ea9206c0ad8c4bc27054f639b619842820e0c1cb313fcfb14d4352cb87baa2b7",
+      "size_bytes": 6328
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/cost_execution/schemas.py",
+      "sha256": "15d662abd55b1cf5dfb3411170452d5dc1c7962220bf77bb282738c26c2bbb2b",
+      "size_bytes": 5152
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/original_lifecycle_execution/__init__.py",
+      "sha256": "bb8472a2ff764375952c2c509fc5aa207c12db25b79104655853b2c77fa618e8",
+      "size_bytes": 183
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/original_lifecycle_execution/runtime.py",
+      "sha256": "d4033d126b55f04d21be29f60e95bc5faf209f423201746da8b8b0de746468e0",
+      "size_bytes": 2120
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/original_lifecycle_execution/schemas.py",
+      "sha256": "c0990190ab7bd74d8b0fdd80783bfbcf0fcd2a52066909c652ac0757dd5c9546",
+      "size_bytes": 1155
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/products/definitions.py",
+      "sha256": "80a3cb56b0e8060162e45387fd4c315cfa15da35937cb1e1185e8597755eef2d",
+      "size_bytes": 13431
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/products/models.py",
+      "sha256": "5a6157bfdf4d1ddf4731a1a4bf4d65c2d57c7f2dd1bd9d7cf8de99cce33be92a",
+      "size_bytes": 5683
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/products/variant_models.py",
+      "sha256": "df6f2a5276b749a21465bdf0b937aa03c39dcf9bc0fcfb56f0df1c07716ac385",
+      "size_bytes": 3352
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/professional_authority/__init__.py",
+      "sha256": "07a87d7fc31933035d1a6f508739e57edffddd39cf6142739e1b749051aec5d7",
+      "size_bytes": 81
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/professional_authority/models.py",
+      "sha256": "843211f8971765994759eaa9b6e2e61c20e60de26bfb1cfb95dd58232ea04fc7",
+      "size_bytes": 6251
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/projects/models.py",
+      "sha256": "74414ad221e4026129f60b180490468b68897750433c6e6278dc047193044f73",
+      "size_bytes": 7352
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/projects/schemas.py",
+      "sha256": "d1d535720f01d6407e25fdb4e392c4dece8f9a13c7dc5f90105d064e6b2cb254",
+      "size_bytes": 1615
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_execution/__init__.py",
+      "sha256": "7716ec841780ee4eb285c57188844e5ef380bb9c36d8fddd7cfef1f8efadf1df",
+      "size_bytes": 94
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_execution/models.py",
+      "sha256": "7b19619aefdff9416693ee3cb200959d4a048888a6f6ce67c0cde971e1478a79",
+      "size_bytes": 6285
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/supply_execution/schemas.py",
+      "sha256": "1b5387578a6adf35eacaee95e139e582122807ba37559dd7cdc9d31ffb14bc0b",
+      "size_bytes": 4225
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification_execution/__init__.py",
+      "sha256": "1d3ce5a77f44a76ef60456fafd61e8c98bcc68b097f1448f0548db5a1d39716b",
+      "size_bytes": 88
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification_execution/models.py",
+      "sha256": "b8f18932a9f316a93bf229cf90fbd2d9951d484015c1c626405e43a08faee597",
+      "size_bytes": 5121
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification_execution/schemas.py",
+      "sha256": "e1911d9ae7682ac8e4016d2481253d005b148fe5ce387188c76ca7b9f210ce26",
+      "size_bytes": 4585
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification_front/__init__.py",
+      "sha256": "f1ab82ac22c85145c5c4e4babba056dc1f4815308403e0e22ca798c014fd8e83",
+      "size_bytes": 83
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification_front/models.py",
+      "sha256": "3d60c140073cdedb88461130a563be4c75f0b14123595b6646557f7911d7f774",
+      "size_bytes": 8862
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/verification_front/schemas.py",
+      "sha256": "5eb13acb8df7a6eeb7e1dd105e39ae12beedccb0b445472a95c13755a5e8a233",
+      "size_bytes": 3534
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/__init__.py",
+      "sha256": "da41441ab73ff5c024f1f39095eab7f93f739728b2828d328be5b14a37e12364",
+      "size_bytes": 387
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/calendar.py",
+      "sha256": "8d57a37a5137f2bbd058986d7220296c0c0a9da0613decc7e97c19808434d42d",
+      "size_bytes": 7241
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/dto.py",
+      "sha256": "22acd27e207250208e86c37b9dcef4d79d31817948c125602c1d5c2ff5693a4f",
+      "size_bytes": 9400
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/planning/forecast.py",
+      "sha256": "d5f43e78b8b9cad59ad928e91d5a9d1d366fc0a50fbefdecd4ff1daf4cb8d7b1",
+      "size_bytes": 29589
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/__init__.py",
+      "sha256": "9a2929d5c8b965def4c59dd6189244bc029b5f4007ebdb8bc8701b3c34c21fa6",
+      "size_bytes": 427
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/bom.py",
+      "sha256": "cdad615b84a349dae4cb3d7c9e447491ed70d9ab7b63b1e95f67112a4649cdf2",
+      "size_bytes": 4576
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/common.py",
+      "sha256": "cd7f43ffb1c46bf8175fe59da3c76b9aeaf598d03def82aa03b8a10d4dab7379",
+      "size_bytes": 4962
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/costs.py",
+      "sha256": "6e5af8ec6a13fc9d5309dc9ca9afbb0111882bf686498b45730551fdced0ea36",
+      "size_bytes": 20366
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/coverage.py",
+      "sha256": "534737cf0117ddc1607d7f56e705ebefb2311e72f25dca1a9ff386cfb6ef7e6d",
+      "size_bytes": 18292
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/dto.py",
+      "sha256": "14f3cc902abde9ffcf98639a577812ba8577445a532299899cfb63541718a1d8",
+      "size_bytes": 8929
+    },
+    {
+      "path": "pdos-next/server/pdos_next/engines/supply_cost/units.py",
+      "sha256": "565c193c687a5d9898379bb90e613056a079e5c26387d86bc597cdebc1277c48",
+      "size_bytes": 1139
+    },
+    {
+      "path": "pdos-next/server/pdos_next/errors.py",
+      "sha256": "156ed50d73580761af3203a586bcc31aa5e251c9109d2a8d0d9b978a92c5a7fd",
+      "size_bytes": 217
+    },
+    {
+      "path": "pdos-next/server/pdos_next/evidence_processing/__init__.py",
+      "sha256": "f9f025154be5889d55fce2dc5f36e89b060c1b12b6220d47119782d39b5ea823",
+      "size_bytes": 350
+    },
+    {
+      "path": "pdos-next/server/pdos_next/evidence_processing/isolation.py",
+      "sha256": "0dc212566dcf95f5ac56511f7c64e962c5380adf32ab983d3f296fd41746f63b",
+      "size_bytes": 6179
+    },
+    {
+      "path": "pdos-next/server/pdos_next/evidence_processing/parsers.py",
+      "sha256": "66a6b407933728d45b90b4e8c2b9f4a21b738326bc47102280185202282df907",
+      "size_bytes": 12972
+    },
+    {
+      "path": "pdos-next/server/pdos_next/evidence_processing/types.py",
+      "sha256": "3bdb7eec20948def3f0ddec45cbf41ec21a37b6333d7b8247edbe4d6811b7e10",
+      "size_bytes": 2690
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_gateway/__init__.py",
+      "sha256": "036d626fc218bab50de629fe5db6020f1f2539751122ab676beddf423534f101",
+      "size_bytes": 324
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_gateway/claim.py",
+      "sha256": "6c385f5c6aee5ca781b9169b9f69ad0b0831f6b9709eb5cf40563adb2d0f17a8",
+      "size_bytes": 7526
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_gateway/ports.py",
+      "sha256": "6484e82d7918c3f38824b6f78655cbefb1e09d79082ee64a38cc5e02bafed81b",
+      "size_bytes": 2333
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_gateway/reconciliation_schema.py",
+      "sha256": "9b06651833b85284c84bd8814a3b120b698ad4e6f8b6b59d5664ccbf490231a3",
+      "size_bytes": 2247
+    },
+    {
+      "path": "pdos-next/server/pdos_next/models.py",
+      "sha256": "0de01e27a7a9a58b5bd5c86b5819e67d9383247548aa876be76d84a29a593d5b",
+      "size_bytes": 27667
+    },
+    {
+      "path": "pdos-next/server/pdos_next/object_storage/__init__.py",
+      "sha256": "db02b4363a147de4ec18bc4d7d54148b20bf580961365068ffa3c7e4bc46d341",
+      "size_bytes": 381
+    },
+    {
+      "path": "pdos-next/server/pdos_next/object_storage/adapters.py",
+      "sha256": "bb24af925be876eb2dcbcc8cb75d44ada8b20127de74f68368466de9894d6f0d",
+      "size_bytes": 7730
+    },
+    {
+      "path": "pdos-next/server/pdos_next/object_storage/types.py",
+      "sha256": "6a96ee13bb918473e856d1e88bf65bf93c010800b76a1431266beb63abeac737",
+      "size_bytes": 2302
+    },
+    {
+      "path": "pdos-next/server/pdos_next/original_lifecycle/__init__.py",
+      "sha256": "7f40f5e9cdd8c0532fbeacd9f07e5d5b6c23e8f03dbc8e2269e9d6a2a9c94ee4",
+      "size_bytes": 1593
+    },
+    {
+      "path": "pdos-next/server/pdos_next/original_lifecycle/adapters.py",
+      "sha256": "68906159710f67479318b1b77044642fb1c1fb318c27ee12083070a91e7c0aa5",
+      "size_bytes": 1080
+    },
+    {
+      "path": "pdos-next/server/pdos_next/original_lifecycle/ports.py",
+      "sha256": "5c10b63b31abbf42ec8870190513d98a1943bee46509820ab2360dd51fcd23c2",
+      "size_bytes": 4935
+    },
+    {
+      "path": "pdos-next/server/pdos_next/original_lifecycle/rules.py",
+      "sha256": "263f0783169fe6d74ebe008eee500ab3e276888a79261313fe63f7bb98e7653a",
+      "size_bytes": 7529
+    },
+    {
+      "path": "pdos-next/server/pdos_next/original_lifecycle/service.py",
+      "sha256": "ae82b9212b56b8e10c39cab062bdd164154f7d4a1fcca94819e61c6422cff398",
+      "size_bytes": 24139
+    },
+    {
+      "path": "pdos-next/server/pdos_next/original_lifecycle/types.py",
+      "sha256": "d8a4a564a1b58e330ce491ca5062a881fc2183d60ddf1662519da9cdf7f2c3d1",
+      "size_bytes": 20257
+    },
+    {
+      "path": "pdos-next/server/pdos_next/originals.py",
+      "sha256": "5e27b30bed12cacb9a5704904ee16e3933448948c2d97685bafc7a19cb9400a6",
+      "size_bytes": 13435
+    },
+    {
+      "path": "pdos-next/server/pdos_next/providers/__init__.py",
+      "sha256": "6986a5320a4dc0c8003ec48c093f06a1b2c6db691f98911b94864d50da97e73d",
+      "size_bytes": 383
+    },
+    {
+      "path": "pdos-next/server/pdos_next/providers/client.py",
+      "sha256": "9f41fc92a75e5fc403fe7f8fef947ea71c6ee620e8dcd6f1c8591393115e638e",
+      "size_bytes": 9397
+    },
+    {
+      "path": "pdos-next/server/pdos_next/providers/types.py",
+      "sha256": "7685aed45bcf7df33b9c11f2d0ba98a698059da45cd695a97cfeda6b9326b6cf",
+      "size_bytes": 5400
+    },
+    {
+      "path": "pdos-next/server/pdos_next/runtime.py",
+      "sha256": "312f709a3d2ead597135c3d2e5f78d24ffe49b44040e80395e92c2cc89c0a1ea",
+      "size_bytes": 13527
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/planning/__init__.py",
+      "sha256": "f0dc71b3ef368bf75c3510faf6ff5909cc0e2c200dde2ec3bcc4d1ba9115740f",
+      "size_bytes": 371
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/planning/plan.py",
+      "sha256": "c98ac6c365164c293663afbb603c52f0b3e162cfd29979f2da6eb47f5d39217b",
+      "size_bytes": 5150
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/products/definitions.py",
+      "sha256": "591c8e070a1d36e146da212cb266e055ed51de553183b1e6364af372b5f57424",
+      "size_bytes": 6519
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/products/variants.py",
+      "sha256": "903b6fc4741c6804cc04dac507825c0f4b54ba0810ebe243cf79c03cdf2501aa",
+      "size_bytes": 4700
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/resource_readiness/__init__.py",
+      "sha256": "7d90a63e154b7b5376b31211bbdfcb710624abfaaa4944729f4ad20e127b2a64",
+      "size_bytes": 82
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/resource_readiness/contracts.py",
+      "sha256": "563b181ad3e4051a6360e61f701223364cdb5d53087ff499abfd275d877dd871",
+      "size_bytes": 8701
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/verification/__init__.py",
+      "sha256": "9c5d73deba86ef0ba3535f8f8ac6b350382e0c0a4a323283e80a4b401f89a504",
+      "size_bytes": 82
+    },
+    {
+      "path": "pdos-next/server/pdos_next/schemas/verification/contracts.py",
+      "sha256": "5262b95c950a20625da5abb54b4c47dc5e77bb790f97518ca21cd3c422039734",
+      "size_bytes": 12103
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "sha256": "b8353c996e30e9824c069a702ea56cf6d60d07a751e354c8e586c4dafa256470",
+      "size_bytes": 27984
+    },
+    {
+      "path": "pdos-next/tools/export_contracts.py",
+      "sha256": "31da8aa75deed9af7e50d094d567e8c728262a61b707b7a57752e1f3c0530057",
+      "size_bytes": 1661
+    },
+    {
+      "path": "pdos-next/tools/validate_contracts.py",
+      "sha256": "47719c7491804318577749e9766442657dcbbbaebb8df0a56320a6b9be7103b3",
+      "size_bytes": 1496
+    }
+  ]
+}

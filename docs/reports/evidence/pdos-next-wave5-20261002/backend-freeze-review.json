@@ -1,0 +1,151 @@
+{
+  "schema_version": "pdos-next-backend-freeze-review.v1",
+  "reviewer": "reuse_foundation",
+  "reviewed_at_utc": "2026-10-02T12:41:04.761848+00:00",
+  "method": "Independent filesystem-only SHA-256 comparison and existing log/source review; no tests, database operations, credentials, backup bytes, network or model calls were executed.",
+  "result": "pass_with_scope_limits",
+  "backend_delivery_blockers": [],
+  "freeze": {
+    "manifest": "docs/reports/evidence/pdos-next-wave5-20261002/backend-before-tests.json",
+    "manifest_file_sha256": "fdc721c4fe39ed62d010b152f3e5f7e6a68717fe617c04627d68dd0c704334fc",
+    "manifest_recorded_mtime_utc": "2026-10-02T12:31:07.141962+00:00",
+    "hash_algorithm": "SHA-256 of each listed file bytes",
+    "listed_files": 153,
+    "matching_files": 153,
+    "missing_files": [],
+    "changed_files": [],
+    "test_selection": "docs/reports/evidence/pdos-next-wave5-20261002/integrated-test-selection.json",
+    "test_selection_sha256": "5d98b8422f552cb61c86418b7b59aa61f1349b75d073477e3b3c6bd00ba2b5c2",
+    "selected_test_files": 28,
+    "selected_tests_absent_from_manifest": [],
+    "lint_selection": "docs/reports/evidence/pdos-next-wave5-20261002/integrated-lint-selection.json",
+    "lint_selection_sha256": "9d08ebcc048b5b54f91745bf1fa461c1bd9f9c9115d7a2ab6f9fecf59543124e",
+    "lint_selection_exactly_matches_manifest": true
+  },
+  "test_evidence": {
+    "scoped": {
+      "path": "docs/reports/evidence/pdos-next-wave5-20261002/scoped-tests.log",
+      "sha256": "8f0498eb1924e62ab6158478ebd8c0ed31c2d1cf4c8c7725ed9d363718d24365",
+      "size_bytes": 111,
+      "summary": "54 passed in 118.57s (0:01:58)",
+      "recorded_mtime_utc": "2026-10-02T12:30:27.817064+00:00",
+      "passed": 54,
+      "elapsed_seconds": 118.57,
+      "summary_verified": true
+    },
+    "joint": {
+      "path": "docs/reports/evidence/pdos-next-wave5-20261002/postgres-tests.log",
+      "sha256": "aa273d1029f05ba074ba27e7fa00b261064f89eef1af341b73ee6c2e0a7fde6b",
+      "size_bytes": 912,
+      "summary": "750 passed in 414.63s (0:06:54)",
+      "recorded_mtime_utc": "2026-10-02T12:38:03.355502+00:00",
+      "passed": 750,
+      "elapsed_seconds": 414.63,
+      "selected_test_files": 28,
+      "summary_verified": true
+    },
+    "count_interpretation": "54 scoped cases are a subset of the later selected joint suite, not 804 unique cases; the joint run covers 28 explicitly selected mainline test files, not every independent package in the repository.",
+    "candidate_binding": "The freeze manifest predates completion of the joint run and all current listed files still match. The scoped log predates creation of this manifest, so it is preserved supporting evidence; the joint run is the current frozen-candidate result.",
+    "initial_failure_preserved": {
+      "path": "docs/reports/evidence/pdos-next-wave5-20261002/initial-demand-tests.log",
+      "sha256": "f11c593cc72449011e6171b19fcadcdf9f7606ed7567b3521e48f63793462180",
+      "size_bytes": 246523,
+      "summary": "20 failed, 5 passed in 42.99s",
+      "recorded_mtime_utc": "2026-10-02T12:27:21.985142+00:00",
+      "passed": 5,
+      "failed": 20,
+      "failure_cause": "FOR UPDATE on immutable Build/BuildReadiness required UPDATE privileges absent from pdos_next_app.",
+      "resolution": "Removed those two locks, retained Product/Grant and source locks; no UPDATE privileges were granted. The affected files are in the subsequent 54 scoped and 750 joint selections.",
+      "superseded_for_current_candidate": true
+    }
+  },
+  "migration_evidence": {
+    "head": "next_0007",
+    "parent": "next_0006",
+    "version_source": "pdos-next/server/migrations/versions/0007_supply_source_snapshots_and_kit.py",
+    "version_source_sha256": "1a959f8215b6af47446e4c4bddb352196eff628440c51057fcc2a1c8693d720e",
+    "roundtrip": {
+      "path": "docs/reports/evidence/pdos-next-wave5-20261002/migration-roundtrip.log",
+      "sha256": "7c5a13b15933570cbf31f11aecceb98982c94e66f689450fd4fe18ba27bea01d",
+      "size_bytes": 116,
+      "summary": "upgrade next_0007: passed",
+      "recorded_mtime_utc": "2026-10-02T12:25:32.045001+00:00",
+      "recorded_steps": [
+        "upgrade next_0007: passed",
+        "downgrade next_0006: passed",
+        "upgrade next_0007: passed"
+      ]
+    },
+    "schema_match": {
+      "path": "docs/reports/evidence/pdos-next-wave5-20261002/schema-match.log",
+      "sha256": "43d345b67ace77ab8c4cbf575a3baddf66e8623cf7d1e0b78e602b1d641ecf50",
+      "size_bytes": 36,
+      "summary": "No new upgrade operations detected.",
+      "recorded_mtime_utc": "2026-10-02T12:28:29.709886+00:00",
+      "summary_verified": true
+    },
+    "recorded_test_target": "62513/pdos_test, task-owned unique marker, as described by scope.md and guarded wave5_check.py; no live DB identity probe was performed in this review.",
+    "retained_backup_metadata": {
+      "path": "pdos-next/.local/pre-wave5-next_0006.dump",
+      "exists": true,
+      "size_bytes": 5117246,
+      "mode": "0o600",
+      "content_read": false,
+      "restore_verified_by_this_review": false
+    },
+    "source_boundary": "Current migration forces tenant RLS on four supply tables; immutable history tables allow app SELECT/INSERT, controlled current pointer allows UPDATE only along the fixed predecessor chain; pdos_agent remains without direct business writes."
+  },
+  "reuse_evidence": {
+    "record": "docs/reports/evidence/pdos-next-wave5-20261002/supply-package-reuse.json",
+    "record_sha256": "b9fe946b15d0cbf240348f2c586290814cb61c05bb05b9cd76d5cddd5b747783",
+    "source_candidate": "docs/reports/evidence/pdos-next-supply-business-20261002/candidate.json",
+    "declared_candidate_id": "8876b5bc371bd86fdf2ca9b3afd0311907463b2937aadc2657bf6c7e26274763",
+    "reuse_declared_candidate_id_matches": true,
+    "candidate_manifest_file_sha256": "571e4c53d077be76231c0adab7635c4eea3aeeb460f096ce0d7fdf486d19f7db",
+    "digest_semantics": "The declared candidate ID is the candidate.json field; it is distinct from the SHA-256 of the candidate.json file bytes, both retained above.",
+    "files_checked": 24,
+    "matching_files": 24,
+    "changed_files": [],
+    "integration": "supply_execution directly calls coverage_candidate, canonical_supply, basis_binding, reconcile, freshness and existing read mappers. The common command service owns T1 confirmation and Receipt/Audit/Outbox. BuildDemandPort reads the persisted same-run basis/demands; it does not recompute MaterialDemand from the current BOM.",
+    "separate_package_tests": "Standalone supply_cost_domain tests are retained source assets, not represented as rerun in the 750 mainline selection."
+  },
+  "additional_existing_checks": {
+    "backend_lint": {
+      "path": "docs/reports/evidence/pdos-next-wave5-20261002/integrated-lint.log",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+      "size_bytes": 19,
+      "summary": "All checks passed!",
+      "recorded_mtime_utc": "2026-10-02T12:31:07.111990+00:00"
+    },
+    "catalog": {
+      "path": "docs/reports/evidence/pdos-next-wave5-20261002/catalog-validation.log",
+      "sha256": "e5b43ca077ab456acae52596a79a2aef70d2ce30698d59c39847f78387bb67f4",
+      "size_bytes": 166,
+      "summary": "This is design coverage only; no runtime, model or manufacturing qualification inferred.",
+      "recorded_mtime_utc": "2026-10-02T12:26:27.531504+00:00"
+    }
+  },
+  "scope_limits_and_remaining_work": [
+    {
+      "code": "UI_CHECKPOINT_SEPARATE",
+      "blocking_for_backend_review": false,
+      "detail": "This file reviews backend freeze/evidence only; final UI second-snapshot/kit/browser evidence is still owned by the root thread and is not approved by this review."
+    },
+    {
+      "code": "FREEZE_MANIFEST_SCOPE",
+      "blocking_for_backend_review": false,
+      "detail": "Byte identity applies to the 153 listed Python source/migration/test/tool files. Dependency lockfiles, catalogs and web files outside this manifest are not covered by this backend hash comparison; catalog validation is a separate existing log."
+    },
+    {
+      "code": "NO_LIVE_EXTERNAL_AUTHORITY",
+      "blocking_for_backend_review": false,
+      "detail": "No authoritative external inventory or complete cross-Build occupation port is connected. Pool scope remains incomplete; unknown quantity stays null, quality/availability do not become released/available, alternates remain unqualified, and kit results do not authorize Build start."
+    },
+    {
+      "code": "LOCAL_EVIDENCE_ONLY",
+      "blocking_for_backend_review": false,
+      "detail": "Successful synthetic isolated-PG logs and matching files establish this local candidate only; no live model/business materials, production deployment, real qualification or named human Exit is inferred."
+    }
+  ],
+  "production_or_formal_exit_authorization": false
+}

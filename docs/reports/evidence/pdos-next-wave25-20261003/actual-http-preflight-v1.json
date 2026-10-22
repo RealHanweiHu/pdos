@@ -1,0 +1,10 @@
+{
+  "status": "FAIL_BEFORE_ANY_HTTP",
+  "source_sha256": "e09c3da57d033ca361902a273e8fb77eafc9a0af1cca5836d5f42b03e2ed32a9",
+  "error_type": "UndefinedTable",
+  "incorrect_probe_table": "professional_facts",
+  "actual_table": "professional_authority_facts",
+  "http_requests_sent": 0,
+  "runtime_or_schema_changed": false,
+  "private_original_bodies_retained": true
+}

@@ -1,0 +1,17 @@
+{
+  "snapshot": "/private/tmp/pdos-s3-implementation-adh4uttk",
+  "distinct_passed": 370,
+  "groups": [
+    {
+      "log": "backend-pure-01.log",
+      "passed": 253
+    },
+    {
+      "log": "backend-owner-existing.log",
+      "passed": 117
+    }
+  ],
+  "fixture_setup_repair": "Initial closure pure setup omitted six nullable current Product columns; explicit fixture values restored. Production exact-column guard retained.",
+  "PG_included": false,
+  "no_model_calls": true
+}

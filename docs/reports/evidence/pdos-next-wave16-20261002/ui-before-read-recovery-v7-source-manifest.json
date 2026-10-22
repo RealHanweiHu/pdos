@@ -1,0 +1,20 @@
+{
+  "candidate": "Wave16 current-facts and cancelled-initial-read recovery before v7 UI",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/workspace.tsx",
+      "sha256": "b152e0a9ae7e96942513f7a1df711abc3c74c5dac80919c87a653dbe174a07b7",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-before-read-recovery-v7-source/workspace.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+      "sha256": "0f62a4d0f3c7f792c5e02e7c1e9cfbf057f68e4fb8ebb55953b0e1d2fb174c46",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-before-read-recovery-v7-source/build-quality-loop.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "aad32a09053227f1ac7007a3a8430f2a04cb2bbb8d20ef76469509a75b320922",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-before-read-recovery-v7-source/build-quality-followup.tsx"
+    }
+  ]
+}

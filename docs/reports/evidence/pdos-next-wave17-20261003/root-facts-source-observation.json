@@ -1,0 +1,12 @@
+{
+  "files": {
+    "facts.py": "5b711db84275b2c9e88d633a6e782fca63bee90f41207a1116a94f24676a017d",
+    "test_facts.py": "bb676aa2cd1a0008c0c2100360515469ef8894dccc3ac6c9be54403d35b411d3",
+    "facts-contract.md": "fbcf3b5bb959a556e8b801ab9436e4180700c6a9b54ef39769a9407b8f2292e1"
+  },
+  "scope": "Root verification of three newly staged facts files only",
+  "owned_pure_checks": 77,
+  "publicly_mounted": false,
+  "business_proof": false,
+  "whole_backend_frozen": false
+}

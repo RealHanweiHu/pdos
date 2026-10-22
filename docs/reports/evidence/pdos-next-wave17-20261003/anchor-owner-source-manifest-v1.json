@@ -1,0 +1,51 @@
+{
+  "schema_version": "anchor-owner-source-manifest-v1",
+  "recorded_at": "2026-10-03T11:56:17.216860+00:00",
+  "owned_files": [
+    {
+      "path": "pdos-next/staging/wave17/anchor_owner.py",
+      "sha256": "02048fa237fa085149151a8277aea8c8fa23763f473df2a34887964787cb05c3",
+      "size_bytes": 11654
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_anchor_owner.py",
+      "sha256": "56ad31ab1aeeaaf83d09893e755c073fd664149a66b7e25a5273e2e368d3d4e2",
+      "size_bytes": 19713
+    },
+    {
+      "path": "pdos-next/staging/wave17/anchor-owner-contract.md",
+      "sha256": "e73b3f295cb17c544e60a5a39e5eb14ea0ae6c018bc4ad46e8c9e04922c77ba8",
+      "size_bytes": 8944
+    }
+  ],
+  "readonly_dependencies": [
+    {
+      "path": "pdos-next/staging/wave17/anchor.py",
+      "sha256": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+      "size_bytes": 19994
+    },
+    {
+      "path": "pdos-next/staging/wave17/anchor_storage.py",
+      "sha256": "b3d71c70e076d1f77ee9a9b95fe0300b54ace14ba48fe0ca59334b832c9b325c",
+      "size_bytes": 25213
+    },
+    {
+      "path": "pdos-next/staging/wave17/fact_atom_storage.py",
+      "sha256": "b3794750da19f6394dc12cce062489e1aad7022619f4aac7dccb7e7246b9e604",
+      "size_bytes": 14229
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/quality_execution/evidence.py",
+      "sha256": "f9b128b0cff62607415d16824bd6a8c1a7e9b30c397b1252991f1ec76bd98903",
+      "size_bytes": 6699
+    },
+    {
+      "path": "pdos-next/server/pdos_next/quality_result_bridge.py",
+      "sha256": "28eef312b51350f1085329c59a45d3dd28efafbda0b25a466dc0ce6c791d3077",
+      "size_bytes": 15842
+    }
+  ],
+  "publicly_mounted": false,
+  "actual_db_checks": false,
+  "http_checks": false
+}

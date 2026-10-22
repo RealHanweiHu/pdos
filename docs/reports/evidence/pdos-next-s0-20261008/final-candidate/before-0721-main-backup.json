@@ -1,0 +1,9 @@
+{
+  "database": "pdos_test",
+  "port": 53502,
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0720",
+  "backup_mode": "0600",
+  "backup_created": true,
+  "bytes": 55150991
+}

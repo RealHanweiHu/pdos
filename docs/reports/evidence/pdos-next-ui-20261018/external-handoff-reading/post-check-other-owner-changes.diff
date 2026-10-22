@@ -1,0 +1,1294 @@
+diff --git a/pdos-next/server/pdos_next/change_controlled_owner.py b/pdos-next/server/pdos_next/change_controlled_owner.py
+index a89e835..88833a5 100644
+--- a/pdos-next/server/pdos_next/change_controlled_owner.py
++++ b/pdos-next/server/pdos_next/change_controlled_owner.py
+@@ -11,6 +11,8 @@ from sqlalchemy import select
+ 
+ from pdos_next import change_controlled_store as models
+ from pdos_next import change_order_store as outputs
++from pdos_next import field_change_selection as field
++from pdos_next.change_controlled_schemas import FieldIntentTarget, FieldSelectionMaterial
+ from pdos_next.change_implementation_owner import _atom_proof, _json, common_group
+ from pdos_next.change_order_service import _one, current_fixed, snapshot
+ from pdos_next.clock import deadline_current, earliest_deadline
+@@ -403,7 +405,7 @@ def selection_callback(s, ctx, pid, *, scope, purpose, item, request, previous=N
+     require(row is not None, "CHANGE_SELECTION_OWNER_REQUIRED", 503)
+     require(row.visibility != "private" or row.owner_id == ctx.requester_id, "FORBIDDEN_SCOPE", 403)
+     material, _ = original(
+-        s, ctx, pid, SourceRef.model_validate(row.source), models.SelectionMaterial
++        s, ctx, pid, SourceRef.model_validate(row.source), field.SelectionMaterialReader
+     )
+     require(
+         material.model_dump(mode="json") == row.material
+@@ -422,23 +424,69 @@ def selection_callback(s, ctx, pid, *, scope, purpose, item, request, previous=N
+     require(row.status == "applicable", "SELECTION_NOT_APPLICABLE")
+     current_policy = policy_callback(s, ctx, pid, scope=scope, purpose=purpose, request=request)
+     require(same(current_policy.model_dump(mode="json"), row.policy_snapshot), "RECHECK_REQUIRED")
+-    target = models.ActionTarget(
+-        issue_id=row.issue_id,
+-        expected_issue_revision=_current_issue_revision(s, ctx, pid, scope, row.issue_id),
+-        capa_id=row.capa_id,
+-        action_id=row.action_id,
+-    )
+-    basis, action = action_basis(s, ctx, pid, target, scope, purpose)
++    is_field = isinstance(material, FieldSelectionMaterial)
+     require(
+-        (action.action_sha256, action.executor_id)
+-        == (material.action_sha256, material.executor_id),
+-        "ACTION_INTENT_CHANGED",
++        getattr(row, "basis_kind", "capa_action")
++        == ("field_intent" if is_field else "capa_action"),
++        "INTEGRITY_MISMATCH",
+     )
+-    require(
+-        row.visibility == basis.visibility and row.owner_id == basis.owner_id,
+-        "AUDIENCE_USE_FORBIDDEN",
+-        403,
++    target = (
++        FieldIntentTarget(
++            kind="field_intent", feedback=material.feedback, executor_id=material.executor_id
++        )
++        if is_field
++        else models.ActionTarget(
++            issue_id=row.issue_id,
++            expected_issue_revision=_current_issue_revision(s, ctx, pid, scope, row.issue_id),
++            capa_id=row.capa_id,
++            action_id=row.action_id,
++        )
+     )
++
++    def action_read():
++        if is_field:
++            return field.load_basis(
++                s, ctx, pid, target, item, request, scope, purpose, current_policy.nature
++            )
++        return action_basis(s, ctx, pid, target, scope, purpose)
++
++    basis, action = action_read()
++    if is_field:
++        require(
++            (
++                row.feedback_id,
++                row.feedback_version_id,
++                row.feedback_revision,
++                row.feedback_sha256,
++                row.executor_id,
++                row.intent_id,
++            )
++            == (
++                material.feedback.id,
++                material.feedback_version_id,
++                material.feedback.revision,
++                material.feedback_sha256,
++                material.executor_id,
++                action.intent_id,
++            ),
++            "INTEGRITY_MISMATCH",
++        )
++        require(
++            (basis.feedback_version_id, basis.feedback_sha256, action.executor_id)
++            == (material.feedback_version_id, material.feedback_sha256, material.executor_id),
++            "ACTION_INTENT_CHANGED",
++        )
++    else:
++        require(
++            (action.action_sha256, action.executor_id)
++            == (material.action_sha256, material.executor_id),
++            "ACTION_INTENT_CHANGED",
++        )
++        require(
++            row.visibility == basis.visibility and row.owner_id == basis.owner_id,
++            "AUDIENCE_USE_FORBIDDEN",
++            403,
++        )
+     require(
+         [v.model_dump(mode="json") for v in exact_units(item)] == row.units_snapshot,
+         "SELECTION_SCOPE_MISMATCH",
+@@ -483,7 +531,7 @@ def selection_callback(s, ctx, pid, *, scope, purpose, item, request, previous=N
+         s, ctx, pid, scope=scope, purpose=purpose, request=request, previous=current_policy
+     )
+     final_original_until = original_authority(s, ctx, pid, row)
+-    last_basis, last_action = action_basis(s, ctx, pid, target, scope, purpose)
++    last_basis, last_action = action_read()
+     require(
+         last_basis == basis
+         and last_action == action
+diff --git a/pdos-next/server/pdos_next/change_controlled_schemas.py b/pdos-next/server/pdos_next/change_controlled_schemas.py
+index c16d705..66854f8 100644
+--- a/pdos-next/server/pdos_next/change_controlled_schemas.py
++++ b/pdos-next/server/pdos_next/change_controlled_schemas.py
+@@ -93,11 +93,22 @@ class ActionTarget(Exact):
+     action_id: UUID
+ 
+ 
++class FieldFeedbackRef(Exact):
++    id: UUID
++    revision: int = Field(strict=True, ge=1)
++
++
++class FieldIntentTarget(Exact):
++    kind: Literal["field_intent"]
++    feedback: FieldFeedbackRef
++    executor_id: UUID
++
++
+ class SelectionPayload(Target, Exact):
+     """A named proposal: actual applicability is established only by T2 consumption."""
+ 
+     item: PlanItem
+-    action: ActionTarget
++    action: ActionTarget | FieldIntentTarget
+     status: Literal["applicable", "not_applicable", "unknown"]
+     source: SourceRef
+     valid_until: AwareDatetime | None = None
+@@ -131,6 +142,25 @@ class SelectionMaterial(Exact):
+     nature: Literal["real", "synthetic"]
+ 
+ 
++class FieldSelectionMaterial(Exact):
++    """A future PlanItem explicitly declared by a named person, never a response."""
++
++    schema_version: Literal["pdos-field-change-selection-v1"]
++    scope: Scope
++    purpose: Text
++    change_id: UUID
++    item: PlanItem
++    feedback: FieldFeedbackRef
++    feedback_version_id: UUID
++    feedback_sha256: str = Field(pattern="^[0-9a-f]{64}$")
++    executor_id: UUID
++    decider_id: UUID
++    status: Literal["applicable", "not_applicable", "unknown"]
++    valid_until: AwareDatetime | None
++    reason: Text
++    nature: Literal["real", "synthetic"]
++
++
+ class UnitBinding(Exact):
+     unit: Text
+     object_identity: Text
+diff --git a/pdos-next/server/pdos_next/change_controlled_store.py b/pdos-next/server/pdos_next/change_controlled_store.py
+index 474dff4..3e4a0a3 100644
+--- a/pdos-next/server/pdos_next/change_controlled_store.py
++++ b/pdos-next/server/pdos_next/change_controlled_store.py
+@@ -10,6 +10,7 @@ from sqlalchemy import (
+     Integer,
+     String,
+     UniqueConstraint,
++    text,
+ )
+ from sqlalchemy.dialects.postgresql import JSONB
+ from sqlalchemy.orm import Mapped, mapped_column
+@@ -113,18 +114,26 @@ class ChangePolicyFact(_Fact, Base):
+ 
+ class ChangeSelectionFact(_Fact, Base):
+     __tablename__ = "controlled_change_selection_facts"
++    basis_kind: Mapped[str] = mapped_column(
++        String(24), default="capa_action", server_default=text("'capa_action'")
++    )
+     change_id: Mapped[UUID]
+     change_version_id: Mapped[UUID]
+     change_revision: Mapped[int] = mapped_column(Integer)
+     item_id: Mapped[UUID]
+     item_sha256: Mapped[str] = mapped_column(String(64))
+     intent_id: Mapped[UUID]
+-    issue_id: Mapped[UUID]
+-    issue_version_id: Mapped[UUID]
+-    issue_revision: Mapped[int] = mapped_column(Integer)
+-    capa_id: Mapped[UUID]
+-    action_id: Mapped[UUID]
+-    action_sha256: Mapped[str] = mapped_column(String(64))
++    issue_id: Mapped[UUID | None]
++    issue_version_id: Mapped[UUID | None]
++    issue_revision: Mapped[int | None] = mapped_column(Integer)
++    capa_id: Mapped[UUID | None]
++    action_id: Mapped[UUID | None]
++    action_sha256: Mapped[str | None] = mapped_column(String(64))
++    feedback_id: Mapped[UUID | None]
++    feedback_version_id: Mapped[UUID | None]
++    feedback_revision: Mapped[int | None] = mapped_column(Integer)
++    feedback_sha256: Mapped[str | None] = mapped_column(String(64))
++    executor_id: Mapped[UUID | None]
+     policy_id: Mapped[UUID]
+     policy_revision: Mapped[int] = mapped_column(Integer)
+     policy_snapshot: Mapped[dict] = mapped_column(JSONB)
+@@ -182,6 +191,22 @@ class ChangeSelectionFact(_Fact, Base):
+                 "quality_issue_versions.revision",
+             ],
+         ),
++        ForeignKeyConstraint(
++            ["tenant_id", "executor_id"],
++            ["principals.tenant_id", "principals.id"],
++            name="controlled_selection_executor_fk",
++        ),
++        ForeignKeyConstraint(
++            ["tenant_id", "category_id", "feedback_id", "feedback_version_id", "feedback_revision"],
++            [
++                "field_feedback_versions.tenant_id",
++                "field_feedback_versions.category_id",
++                "field_feedback_versions.feedback_id",
++                "field_feedback_versions.id",
++                "field_feedback_versions.revision",
++            ],
++            name="controlled_selection_field_feedback_fk",
++        ),
+         ForeignKeyConstraint(
+             ["tenant_id", "product_id", "project_id", "policy_id", "policy_revision"],
+             [
+@@ -200,7 +225,27 @@ class ChangeSelectionFact(_Fact, Base):
+         ),
+         CheckConstraint(
+             "operation='change.selection.decide' AND status IN "
+-            "('applicable','not_applicable','unknown') AND change_revision>0 AND issue_revision>0"
++            "('applicable','not_applicable','unknown') AND change_revision>0",
++            name="controlled_selection_operation",
++        ),
++        CheckConstraint(
++            "basis_kind IN ('capa_action','field_intent')",
++            name="controlled_selection_basis_kind",
++        ),
++        CheckConstraint(
++            "(basis_kind='capa_action' AND issue_id IS NOT NULL AND issue_version_id IS NOT NULL "
++            "AND issue_revision IS NOT NULL AND issue_revision>0 AND capa_id IS NOT NULL "
++            "AND action_id IS NOT NULL AND action_sha256 IS NOT NULL "
++            "AND action_sha256 ~ '^[a-f0-9]{64}$' AND feedback_id IS NULL "
++            "AND feedback_version_id IS NULL AND feedback_revision IS NULL "
++            "AND feedback_sha256 IS NULL AND executor_id IS NULL) OR "
++            "(basis_kind='field_intent' AND category_id IS NOT NULL AND feedback_id IS NOT NULL "
++            "AND feedback_version_id IS NOT NULL AND feedback_revision IS NOT NULL "
++            "AND feedback_revision>0 AND feedback_sha256 IS NOT NULL "
++            "AND feedback_sha256 ~ '^[a-f0-9]{64}$' AND executor_id IS NOT NULL "
++            "AND issue_id IS NULL AND issue_version_id IS NULL AND issue_revision IS NULL "
++            "AND capa_id IS NULL AND action_id IS NULL AND action_sha256 IS NULL)",
++            name="controlled_selection_origin_binding",
+         ),
+         CheckConstraint(
+             "proof_consumed_at<=created_at AND "
+diff --git a/pdos-next/server/pdos_next/change_implementation_owner.py b/pdos-next/server/pdos_next/change_implementation_owner.py
+index 24d1a7a..8881487 100644
+--- a/pdos-next/server/pdos_next/change_implementation_owner.py
++++ b/pdos-next/server/pdos_next/change_implementation_owner.py
+@@ -5,6 +5,7 @@ import json
+ from copy import deepcopy
+ from dataclasses import dataclass
+ from datetime import datetime
++from typing import Literal
+ from uuid import UUID, uuid4
+ from weakref import WeakKeyDictionary
+ 
+@@ -12,6 +13,7 @@ from pydantic import AwareDatetime, ConfigDict, Field, field_validator, model_va
+ from sqlalchemy import select, text
+ 
+ from pdos_next import change_order_store as store
++from pdos_next.change_controlled_schemas import FieldFeedbackRef
+ from pdos_next.clock import deadline_current, earliest_deadline, proof_deadline_current
+ from pdos_next.clock import now as server_now
+ from pdos_next.database import category_for_product
+@@ -49,14 +51,9 @@ def _require(value, code="IMPLEMENTATION_OWNER_MISMATCH", status=409):
+         raise DomainError(code, "实施原件、批准、本人、实际配置或共同保存组未满足。", status)
+ 
+ 
+-class Occurrence(DTO):
++class _Occurrence(DTO):
+     model_config = ConfigDict(extra="forbid", frozen=True, str_strip_whitespace=False)
+-    schema_version: str = Field(pattern="^pdos-change-implementation-occurrence-v2$")
+     scope: Scope
+-    issue_id: UUID
+-    capa_id: UUID
+-    action_id: UUID
+-    action_sha256: str = Field(pattern="^[0-9a-f]{64}$")
+     purpose: Text
+     change_id: UUID
+     order_id: UUID
+@@ -97,6 +94,36 @@ class Occurrence(DTO):
+         return self
+ 
+ 
++class Occurrence(_Occurrence):
++    """The existing CAPA occurrence retains its exact v2 meaning."""
++
++    schema_version: str = Field(pattern="^pdos-change-implementation-occurrence-v2$")
++    issue_id: UUID
++    capa_id: UUID
++    action_id: UUID
++    action_sha256: str = Field(pattern="^[0-9a-f]{64}$")
++
++
++class FieldOccurrence(_Occurrence):
++    """Actual Field execution of a fixed, named, approved selection."""
++
++    schema_version: Literal["pdos-field-change-implementation-occurrence-v1"]
++    feedback: FieldFeedbackRef
++    feedback_version_id: UUID
++    feedback_sha256: str = Field(pattern="^[0-9a-f]{64}$")
++    selection_id: UUID
++    selection_revision: int = Field(strict=True, ge=1)
++    selection_sha256: str = Field(pattern="^[0-9a-f]{64}$")
++
++
++def parse_occurrence(raw):
++    kind = raw.get("schema_version") if isinstance(raw, dict) else None
++    model = (
++        FieldOccurrence if kind == "pdos-field-change-implementation-occurrence-v1" else Occurrence
++    )
++    return model.model_validate(raw)
++
++
+ def original_occurrence(s, ctx, pid, source):
+     _require(source.kind == "artifact", "MISSING_REQUIRED_EVIDENCE", 422)
+     artifact = source_for(s, ctx, pid, source.id, source.revision)
+@@ -113,7 +140,7 @@ def original_occurrence(s, ctx, pid, source):
+     line = lines[number - 1]
+     _require(hashlib.sha256(line.encode("utf-8")).hexdigest() == match[2], "SOURCE_STALE")
+     try:
+-        value = Occurrence.model_validate(
++        value = parse_occurrence(
+             json.loads(line, object_pairs_hook=_pairs, parse_constant=_constant)
+         )
+     except (ValueError, TypeError) as error:
+@@ -393,6 +420,8 @@ def validate_binding(s, ctx, pid, request, order, occurrence, *, new_write=False
+             "NAMED_EXECUTOR_REQUIRED",
+             403,
+         )
++    if isinstance(occurrence, FieldOccurrence):
++        return _field_binding(s, ctx, pid, request, item, occurrence), item
+     basis = load_followup_basis(
+         s,
+         ctx,
+@@ -419,6 +448,67 @@ def validate_binding(s, ctx, pid, request, order, occurrence, *, new_write=False
+     return basis, item
+ 
+ 
++def _field_binding(s, ctx, pid, request, item, occurrence):
++    """Use the actual selected Field intent, never fabricate a CAPA basis."""
++    from pdos_next import change_controlled_owner as controlled
++    from pdos_next.change_controlled_schemas import FieldIntentTarget, FieldSelectionMaterial
++    from pdos_next.field_change_selection import load_basis, parse_material
++
++    proof = controlled.selection_callback(
++        s, ctx, pid, scope=request.scope, purpose=occurrence.purpose, item=item, request=request
++    )
++    _, selected = controlled.selection_pointer(s, ctx, pid, request.scope, request.id, item.id)
++    _require(selected is not None and selected.basis_kind == "field_intent")
++    material = parse_material(selected.material)
++    _require(isinstance(material, FieldSelectionMaterial), "IMPLEMENTATION_MATERIAL_MISMATCH")
++    _require(
++        occurrence.selection_id == selected.id
++        and occurrence.selection_revision == selected.revision
++        and occurrence.selection_sha256 == selected.material_sha256
++        and occurrence.selection_sha256 == digest(material)
++        and material.scope == request.scope
++        and material.purpose == occurrence.purpose
++        and material.change_id == request.id
++        and material.item == item
++        and material.feedback == occurrence.feedback
++        and material.feedback_version_id == occurrence.feedback_version_id
++        and material.feedback_sha256 == occurrence.feedback_sha256
++        and selected.feedback_id == occurrence.feedback.id
++        and selected.feedback_version_id == occurrence.feedback_version_id
++        and selected.feedback_revision == occurrence.feedback.revision
++        and selected.feedback_sha256 == occurrence.feedback_sha256
++        and selected.executor_id == occurrence.executor_id
++        and material.executor_id == occurrence.executor_id
++        and material.nature == occurrence.nature == proof.nature,
++        "IMPLEMENTATION_MATERIAL_MISMATCH",
++    )
++    basis, intent = load_basis(
++        s,
++        ctx,
++        pid,
++        FieldIntentTarget(
++            kind="field_intent",
++            feedback=occurrence.feedback,
++            executor_id=occurrence.executor_id,
++        ),
++        item,
++        request,
++        request.scope,
++        occurrence.purpose,
++        material.nature,
++    )
++    _require(
++        basis.feedback_id == occurrence.feedback.id
++        and basis.feedback_revision == occurrence.feedback.revision
++        and basis.feedback_version_id == occurrence.feedback_version_id
++        and basis.feedback_sha256 == occurrence.feedback_sha256
++        and intent.intent_id == occurrence.intent_id
++        and intent.executor_id == occurrence.executor_id,
++        "IMPLEMENTATION_MATERIAL_MISMATCH",
++    )
++    return basis
++
++
+ def _current_issue_revision(s, ctx, pid, identity):
+     from pdos_next.domain.quality_execution.service import get_issue
+ 
+@@ -430,7 +520,7 @@ def _current_issue_revision(s, ctx, pid, identity):
+ class CaptureRead:
+     row: object
+     fact: ImplementationFact
+-    occurrence: Occurrence
++    occurrence: Occurrence | FieldOccurrence
+     output_basis: dict
+ 
+ 
+@@ -472,7 +562,7 @@ def read_capture(s, ctx, pid, request, order, fact_id, *, new_write=False):
+     if row.visibility == "private":
+         _require(row.owner_id == ctx.requester_id, "FORBIDDEN_SCOPE", 403)
+     fact = ImplementationFact.model_validate(row.fact_snapshot)
+-    occurrence = Occurrence.model_validate(row.occurrence_snapshot)
++    occurrence = parse_occurrence(row.occurrence_snapshot)
+     _require(
+         fact.id == occurrence.implementation_id == row.fact_id
+         and fact.executor_id == row.executor_id
+@@ -568,7 +658,10 @@ def prepare_capture(s, ctx, pid, input):
+     reads = old._merge_reads(
+         old._source_reads(sources),
+         row.required_source_read_set,
+-        [v.model_dump(mode="json") for v in basis.required_source_read_set],
++        [
++            v.model_dump(mode="json") if hasattr(v, "model_dump") else dict(v)
++            for v in basis.required_source_read_set
++        ],
+         *[v.reads for v in reader.objects.values()],
+     )
+     sourcebasis, private, _ = old._evidence(s, ctx, pid, reads, sources)
+@@ -649,7 +742,7 @@ class ApprovedImplementationRead:
+     version: object
+     implementation: object
+     receipt_id: UUID
+-    occurrence: Occurrence
++    occurrence: Occurrence | FieldOccurrence
+     material: dict
+     valid_until: datetime
+ 
+diff --git a/pdos-next/server/pdos_next/change_preparation_view.py b/pdos-next/server/pdos_next/change_preparation_view.py
+index 9950ec1..d4f844f 100644
+--- a/pdos-next/server/pdos_next/change_preparation_view.py
++++ b/pdos-next/server/pdos_next/change_preparation_view.py
+@@ -1,14 +1,17 @@
+ """Read actual order inputs and registered selection material; never save a decision."""
+ 
+ from types import SimpleNamespace
++from typing import Literal
+ from uuid import UUID, uuid4
+ 
+-from pydantic import Field, ValidationError
++from pydantic import AwareDatetime, Field, ValidationError, model_validator
+ from sqlalchemy import select
+ 
+ from pdos_next import change_controlled_owner as controlled
+ from pdos_next import change_controlled_store as models
+ from pdos_next import change_selection_service as selection
++from pdos_next import field_change_selection as field
++from pdos_next.change_controlled_schemas import FieldIntentTarget, FieldSelectionMaterial
+ from pdos_next.change_implementation_owner import common_group
+ from pdos_next.change_order_service import _one, current_fixed, snapshot
+ from pdos_next.contracts import Command
+@@ -18,13 +21,31 @@ from pdos_next.domain.change_execution.graph import OwnerReader
+ from pdos_next.errors import DomainError
+ from pdos_next.models import Product
+ from pdos_next.schema_base import StrictModel
++from pdos_next.schemas.change_control.contracts import PlanItem
+ from pdos_next.schemas.verification.contracts import SourceRef
+ 
+ 
+ class SelectionMaterialInput(StrictModel):
+     change_id: UUID
+     expected_change_revision: int = Field(strict=True, ge=1)
+-    source: SourceRef
++    source: SourceRef | None = None
++    field_intent: FieldIntentTarget | None = None
++    item: PlanItem | None = None
++    status: Literal["applicable", "not_applicable", "unknown"] | None = None
++    valid_until: AwareDatetime | None = None
++    reason: str | None = Field(default=None, min_length=3, max_length=2000)
++
++    @model_validator(mode="after")
++    def exact_input(self):
++        draft = {"field_intent", "item", "status", "valid_until", "reason"}
++        if self.source is not None:
++            if self.model_fields_set & draft:
++                raise ValueError("Registered material and future-plan drafting are separate inputs")
++        elif "source" in self.model_fields_set or any(
++            getattr(self, key) is None for key in ("field_intent", "item", "status", "reason")
++        ):
++            raise ValueError("Declare an exact future Field intent or choose registered material")
++        return self
+ 
+ 
+ def _missing(error):
+@@ -82,11 +103,13 @@ def _objects(s, ctx, pid, request):
+ 
+ 
+ def _actions(s, ctx, pid, row, request, purpose):
+-    loader = change._issue_loader(s)
+     issue_ids = dict.fromkeys(
+         ref.id for ref in (*request.roots, *request.references) if ref.kind in {"issue", "capa"}
+     )
+     actions = []
++    if not issue_ids:
++        return actions
++    loader = change._issue_loader(s)
+     for issue_id in issue_ids:
+         issue_row, typed = loader(s, ctx, pid, issue_id)
+         view = typed.model_dump(mode="json") if hasattr(typed, "model_dump") else typed
+@@ -134,8 +157,8 @@ def _selection_record(s, ctx, pid, row, request, purpose, fact):
+         403,
+     )
+     try:
+-        material = models.SelectionMaterial.model_validate(fact.material)
+-    except ValidationError:
++        material = field.parse_material(fact.material)
++    except (ValidationError, ValueError):
+         raise DomainError("INTEGRITY_MISMATCH", "保存的逐项适用材料无法核对。") from None
+     controlled.require(
+         material.scope == request.scope
+@@ -148,8 +171,11 @@ def _selection_record(s, ctx, pid, row, request, purpose, fact):
+         and material.status == fact.status
+         and material.valid_until == fact.valid_until
+         and material.nature == fact.nature
+-        and (material.issue_id, material.capa_id, material.action_id, material.action_sha256)
+-        == (fact.issue_id, fact.capa_id, fact.action_id, fact.action_sha256),
++        and (
++            isinstance(material, FieldSelectionMaterial)
++            or (material.issue_id, material.capa_id, material.action_id, material.action_sha256)
++            == (fact.issue_id, fact.capa_id, fact.action_id, fact.action_sha256)
++        ),
+         "INTEGRITY_MISMATCH",
+     )
+     value = {
+@@ -163,14 +189,27 @@ def _selection_record(s, ctx, pid, row, request, purpose, fact):
+         "current": True,
+         "source_status": "needs_recheck",
+         "missing": [],
+-        "issue_id": str(fact.issue_id),
+-        "capa_id": str(fact.capa_id),
+-        "action_id": str(fact.action_id),
++        "basis_kind": getattr(fact, "basis_kind", "capa_action"),
++        "material_sha256": fact.material_sha256,
++        **(
++            {
++                "feedback": material.feedback.model_dump(mode="json"),
++                "feedback_version_id": str(material.feedback_version_id),
++                "feedback_sha256": material.feedback_sha256,
++                "intent_id": str(material.item.intent.id),
++            }
++            if isinstance(material, FieldSelectionMaterial)
++            else {
++                "issue_id": str(fact.issue_id),
++                "capa_id": str(fact.capa_id),
++                "action_id": str(fact.action_id),
++            }
++        ),
+         "executor_id": str(material.executor_id),
+     }
+     try:
+         original, _ = controlled.original(
+-            s, ctx, pid, SourceRef.model_validate(fact.source), models.SelectionMaterial
++            s, ctx, pid, SourceRef.model_validate(fact.source), field.SelectionMaterialReader
+         )
+         controlled.require(original == material, "SOURCE_STALE")
+         controlled.original_authority(s, ctx, pid, fact)
+@@ -221,6 +260,7 @@ def order_context(s, ctx, pid, change_id):
+     row, request, purpose = _current(s, ctx, pid, change_id)
+     objects = _objects(s, ctx, pid, request)
+     actions = _actions(s, ctx, pid, row, request, purpose)
++    field_options = field.options(s, ctx, pid, request)
+     missing, policy = [], None
+     try:
+         actual = controlled.policy_callback(
+@@ -256,7 +296,7 @@ def order_context(s, ctx, pid, change_id):
+         value = _selection_record(s, ctx, pid, row, request, purpose, fact)
+         selections.append(value)
+         missing.extend(value["missing"])
+-    if not actions:
++    if not actions and not field_options:
+         missing.append({"code": "INTEGRATION_REQUIRED", "detail": "关联问题尚无实际CAPA措施。"})
+     if not request.assessments:
+         missing.append({"code": "RECHECK_REQUIRED", "detail": "尚无当前固定影响评估。"})
+@@ -275,6 +315,8 @@ def order_context(s, ctx, pid, change_id):
+         },
+         "policy": policy,
+         "actions": actions,
++        "field_basis_options": field_options,
++        "executor_options": field.executor_options(s, ctx) if field_options else [],
+         "selections": selections,
+         "object_options": objects,
+         "missing": missing,
+@@ -284,7 +326,9 @@ def order_context(s, ctx, pid, change_id):
+ def selection_material(s, ctx, pid, data):
+     row, request, purpose = _current(s, ctx, pid, data.change_id)
+     controlled.require(row.revision == data.expected_change_revision, "VERSION_CONFLICT")
+-    material, _ = controlled.original(s, ctx, pid, data.source, models.SelectionMaterial)
++    if data.source is None:
++        return _field_material_draft(s, ctx, pid, row, request, purpose, data)
++    material, _ = controlled.original(s, ctx, pid, data.source, field.SelectionMaterialReader)
+     controlled.require(
+         material.scope == request.scope
+         and material.purpose == purpose
+@@ -293,25 +337,30 @@ def selection_material(s, ctx, pid, data):
+         "ACTION_INTENT_SCOPE_MISMATCH",
+         403,
+     )
+-    actions = _actions(s, ctx, pid, row, request, purpose)
+-    action = next(
+-        (
+-            value
+-            for value in actions
+-            if (value["issue_id"], value["capa_id"], value["action_id"], value["executor_id"])
+-            == tuple(
+-                str(value)
+-                for value in (
+-                    material.issue_id,
+-                    material.capa_id,
+-                    material.action_id,
+-                    material.executor_id,
++    is_field = isinstance(material, FieldSelectionMaterial)
++    actions = [] if is_field else _actions(s, ctx, pid, row, request, purpose)
++    action = (
++        None
++        if is_field
++        else next(
++            (
++                value
++                for value in actions
++                if (value["issue_id"], value["capa_id"], value["action_id"], value["executor_id"])
++                == tuple(
++                    str(value)
++                    for value in (
++                        material.issue_id,
++                        material.capa_id,
++                        material.action_id,
++                        material.executor_id,
++                    )
+                 )
+-            )
+-        ),
+-        None,
++            ),
++            None,
++        )
+     )
+-    controlled.require(action is not None, "ACTION_INTENT_REQUIRED", 422)
++    controlled.require(is_field or action is not None, "ACTION_INTENT_REQUIRED", 422)
+     _, prior = controlled.selection_pointer(
+         s, ctx, pid, request.scope, request.id, material.item.id
+     )
+@@ -320,7 +369,11 @@ def selection_material(s, ctx, pid, data):
+         expected_change_revision=row.revision,
+         visibility=row.visibility,
+         item=material.item,
+-        action=models.ActionTarget(
++        action=FieldIntentTarget(
++            kind="field_intent", feedback=material.feedback, executor_id=material.executor_id
++        )
++        if is_field
++        else models.ActionTarget(
+             issue_id=material.issue_id,
+             expected_issue_revision=action["issue_revision"],
+             capa_id=material.capa_id,
+@@ -350,3 +403,73 @@ def selection_material(s, ctx, pid, data):
+         "material": material.model_dump(mode="json"),
+         "required_source_read_set": prepared["required_source_read_set"],
+     }
++
++
++def _field_material_draft(s, ctx, pid, row, request, purpose, data):
++    policy = controlled.policy_callback(
++        s, ctx, pid, scope=request.scope, purpose=purpose, request=request
++    )
++    authority, _ = controlled.authority(
++        s, ctx, pid, request.scope, models.SELECTION_OPERATION, purpose
++    )
++    controlled.require(
++        data.item.discipline in authority["roles"]
++        and data.item.discipline in policy.required_disciplines,
++        "FORBIDDEN_DISCIPLINE",
++        403,
++    )
++    controlled.require(
++        policy.nature != "real" or authority.get("synthetic") is False, "NATURE_MISMATCH", 403
++    )
++    known = (
++        {value.node.ref.identity for value in request.assessments[-1].known}
++        if request.assessments
++        else set()
++    )
++    controlled.require(
++        all(
++            ref.identity in known for ref in (*data.item.selection.objects, *data.item.intent.basis)
++        ),
++        "PLAN_SCOPE_MISMATCH",
++        422,
++    )
++    controlled.exact_units(data.item)
++    basis, _ = field.load_basis(
++        s, ctx, pid, data.field_intent, data.item, request, request.scope, purpose, policy.nature
++    )
++    _, object_reads, object_sources = controlled.objects(s, ctx, pid, request, data.item)
++    reads = controlled._reads(
++        row.required_source_read_set,
++        basis.required_source_read_set,
++        object_reads,
++        policy.required_source_read_set,
++        authority["required_source_read_set"],
++    )
++    sources = tuple(
++        dict.fromkeys((*request.sources, policy.source, *basis.sources, *object_sources))
++    )
++    controlled._source_guard(s, ctx, pid, row.visibility, row.owner_id, reads, sources)
++    material = field.material_for(
++        ctx,
++        request,
++        data.item,
++        data.field_intent,
++        basis,
++        status=data.status,
++        valid_until=data.valid_until,
++        reason=data.reason,
++    )
++    content = controlled.canonical(material.model_dump(mode="json"))
++    return {
++        "stage": "material_draft",
++        "material": material.model_dump(mode="json"),
++        "material_content": content,
++        "material_visibility": row.visibility,
++        "required_source_read_set": reads,
++        "artifact_payload": {
++            "title": f"Field变更计划：{request.title[:60]}",
++            "content": content,
++            "source_label": "服务端形成的具名未来计划，待T2确认",
++            "visibility": row.visibility,
++        },
++    }
+diff --git a/pdos-next/server/pdos_next/change_selection_service.py b/pdos-next/server/pdos_next/change_selection_service.py
+index 31b1367..ce48fe0 100644
+--- a/pdos-next/server/pdos_next/change_selection_service.py
++++ b/pdos-next/server/pdos_next/change_selection_service.py
+@@ -7,6 +7,8 @@ from uuid import uuid4
+ from weakref import WeakKeyDictionary
+ 
+ from pdos_next import change_controlled_owner as owner
++from pdos_next import field_change_selection as field
++from pdos_next.change_controlled_schemas import FieldIntentTarget, FieldSelectionMaterial
+ from pdos_next import change_controlled_store as models
+ from pdos_next.change_order_service import _one, current_fixed, snapshot
+ from pdos_next.change_selection_consumption import ConsumptionHost
+@@ -65,7 +67,7 @@ class PreparedSelection:
+     prior: object
+     policy: object
+     policy_snapshot: dict
+-    material: models.SelectionMaterial
++    material: object
+     basis: object
+     units: tuple
+     object_basis: dict
+@@ -141,9 +143,10 @@ def _read(s, ctx, command, payload, *, new_write, require_reads=True):
+         s, ctx, command.product_id, scope=scope, purpose=purpose, request=request
+     )
+     _, policy_row = owner.policy_pointer(s, ctx, command.product_id, scope, purpose)
++    is_field = isinstance(payload.action, FieldIntentTarget)
+     action_target = (
+         payload.action
+-        if new_write
++        if new_write or is_field
+         else payload.action.model_copy(
+             update={
+                 "expected_issue_revision": owner._current_issue_revision(
+@@ -152,31 +155,61 @@ def _read(s, ctx, command, payload, *, new_write, require_reads=True):
+             }
+         )
+     )
+-    basis, action = owner.action_basis(s, ctx, command.product_id, action_target, scope, purpose)
+-    owner.require(
+-        (selected.owner_id, selected.visibility) == (basis.owner_id, basis.visibility),
+-        "AUDIENCE_USE_FORBIDDEN",
+-        403,
+-    )
++
++    def action_read():
++        if is_field:
++            return field.load_basis(
++                s,
++                ctx,
++                command.product_id,
++                action_target,
++                payload.item,
++                request,
++                scope,
++                purpose,
++                policy.nature,
++            )
++        return owner.action_basis(s, ctx, command.product_id, action_target, scope, purpose)
++
++    basis, action = action_read()
++    if not is_field:
++        owner.require(
++            (selected.owner_id, selected.visibility) == (basis.owner_id, basis.visibility),
++            "AUDIENCE_USE_FORBIDDEN",
++            403,
++        )
+     material, _ = owner.original(
+-        s, ctx, command.product_id, payload.source, models.SelectionMaterial
+-    )
+-    expected = models.SelectionMaterial(
+-        schema_version="pdos-controlled-change-selection-v1",
+-        scope=scope,
+-        purpose=purpose,
+-        change_id=request.id,
+-        item=payload.item,
+-        issue_id=basis.issue_id,
+-        capa_id=basis.capa_id,
+-        action_id=action.action_id,
+-        action_sha256=action.action_sha256,
+-        executor_id=action.executor_id,
+-        decider_id=ctx.actor_id,
+-        status=payload.status,
+-        valid_until=payload.valid_until,
+-        reason=payload.reason,
+-        nature=basis.nature,
++        s, ctx, command.product_id, payload.source, field.SelectionMaterialReader
++    )
++    expected = (
++        field.material_for(
++            ctx,
++            request,
++            payload.item,
++            action_target,
++            basis,
++            status=payload.status,
++            valid_until=payload.valid_until,
++            reason=payload.reason,
++        )
++        if is_field
++        else models.SelectionMaterial(
++            schema_version="pdos-controlled-change-selection-v1",
++            scope=scope,
++            purpose=purpose,
++            change_id=request.id,
++            item=payload.item,
++            issue_id=basis.issue_id,
++            capa_id=basis.capa_id,
++            action_id=action.action_id,
++            action_sha256=action.action_sha256,
++            executor_id=action.executor_id,
++            decider_id=ctx.actor_id,
++            status=payload.status,
++            valid_until=payload.valid_until,
++            reason=payload.reason,
++            nature=basis.nature,
++        )
+     )
+     owner.require(material == expected, "ACTION_INTENT_SOURCE_MISMATCH")
+     owner.require(policy.nature == basis.nature, "NATURE_MISMATCH", 403)
+@@ -203,26 +236,58 @@ def _read(s, ctx, command, payload, *, new_write, require_reads=True):
+         )
+         owner.require(
+             prior is None
+-            or (
+-                prior.owner_id,
+-                prior.visibility,
+-                prior.purpose,
+-                prior.intent_id,
+-                prior.action_id,
+-                prior.capa_id,
+-                prior.issue_id,
+-            )
+-            == (
+-                selected.owner_id,
+-                selected.visibility,
+-                purpose,
+-                payload.item.intent.id,
+-                action.action_id,
+-                basis.capa_id,
+-                basis.issue_id,
+-            ),
++            or getattr(prior, "basis_kind", "capa_action")
++            == ("field_intent" if is_field else "capa_action"),
+             "SELECTION_SERIES_SCOPE_CHANGED",
+         )
++        if is_field:
++            owner.require(
++                prior is None
++                or (
++                    prior.owner_id,
++                    prior.visibility,
++                    prior.purpose,
++                    prior.intent_id,
++                    prior.feedback_id,
++                    prior.feedback_version_id,
++                    prior.feedback_revision,
++                    prior.feedback_sha256,
++                )
++                == (
++                    selected.owner_id,
++                    selected.visibility,
++                    purpose,
++                    payload.item.intent.id,
++                    basis.feedback_id,
++                    basis.feedback_version_id,
++                    basis.feedback_revision,
++                    basis.feedback_sha256,
++                ),
++                "SELECTION_SERIES_SCOPE_CHANGED",
++            )
++        else:
++            owner.require(
++                prior is None
++                or (
++                    prior.owner_id,
++                    prior.visibility,
++                    prior.purpose,
++                    prior.intent_id,
++                    prior.action_id,
++                    prior.capa_id,
++                    prior.issue_id,
++                )
++                == (
++                    selected.owner_id,
++                    selected.visibility,
++                    purpose,
++                    payload.item.intent.id,
++                    action.action_id,
++                    basis.capa_id,
++                    basis.issue_id,
++                ),
++                "SELECTION_SERIES_SCOPE_CHANGED",
++            )
+     else:
+         revision, epoch = (prior.revision, prior.epoch) if prior else (1, 1)
+     sources = tuple(
+@@ -251,9 +316,7 @@ def _read(s, ctx, command, payload, *, new_write, require_reads=True):
+     owner.policy_callback(
+         s, ctx, command.product_id, scope=scope, purpose=purpose, request=request, previous=policy
+     )
+-    final_basis, final_action = owner.action_basis(
+-        s, ctx, command.product_id, action_target, scope, purpose
+-    )
++    final_basis, final_action = action_read()
+     owner.require(
+         final_basis == basis
+         and final_action == action
+@@ -343,6 +406,7 @@ def _read(s, ctx, command, payload, *, new_write, require_reads=True):
+ 
+ def review(phase):
+     """Stable 13 keys; no prospective UUID or evaluated clock enters material."""
++    is_field = isinstance(phase.material, FieldSelectionMaterial)
+     return {
+         "operation": OPERATION,
+         "payload_semantic": deepcopy(phase.payload_semantic),
+@@ -355,7 +419,14 @@ def review(phase):
+         "after": {
+             "selection_revision": phase.next_revision,
+             "material": phase.material.model_dump(mode="json"),
+-            "issue_version_id": str(phase.basis.issue_version_id),
++            **(
++                {
++                    "feedback_version_id": str(phase.basis.feedback_version_id),
++                    "feedback_sha256": phase.basis.feedback_sha256,
++                }
++                if is_field
++                else {"issue_version_id": str(phase.basis.issue_version_id)}
++            ),
+         },
+         "read_set": deepcopy(phase.reads),
+         "sources": [v.model_dump(mode="json") for v in phase.sources],
+@@ -366,9 +437,17 @@ def review(phase):
+             "item_sha256": digest(phase.material.item),
+             "units": [v.model_dump(mode="json") for v in phase.units],
+             "objects": deepcopy(phase.object_basis),
+-            "action_sha256": phase.material.action_sha256,
++            **(
++                {"intent_sha256": digest(phase.material.item.intent)}
++                if is_field
++                else {"action_sha256": phase.material.action_sha256}
++            ),
+         },
+-        "effect": "保存逐项适用与真实CAPA措施关联；未批准变更令、未实施、未授资格或完整影响覆盖。",
++        "effect": (
++            "保存现场反馈的明确未来实施意图与逐项适用；不代表执行人已承诺、已实施或复验。"
++            if is_field
++            else "保存逐项适用与真实CAPA措施关联；未批准变更令、未实施、未授资格或完整影响覆盖。"
++        ),
+         "unknown": ["八维影响完整性、实际实施和生效由原独立owner办理。"]
+         if phase.material.status == "applicable"
+         else ["该项不适用/未知，不能批准或实施。"],
+@@ -444,6 +523,7 @@ def _stage_without_io(s, ctx, command, phase, marker, saved_at):
+         "SOURCE_STALE",
+     )
+     material, prior = phase.material, phase.prior
++    is_field = isinstance(material, FieldSelectionMaterial)
+     atom = models.ChangeSelectionFact(
+         id=uuid4(),
+         tenant_id=ctx.tenant_id,
+@@ -481,12 +561,25 @@ def _stage_without_io(s, ctx, command, phase, marker, saved_at):
+         item_id=material.item.id,
+         item_sha256=digest(material.item),
+         intent_id=material.item.intent.id,
+-        issue_id=material.issue_id,
+-        issue_version_id=phase.basis.issue_version_id,
+-        issue_revision=phase.basis.issue_revision,
+-        capa_id=material.capa_id,
+-        action_id=material.action_id,
+-        action_sha256=material.action_sha256,
++        basis_kind="field_intent" if is_field else "capa_action",
++        issue_id=None if is_field else material.issue_id,
++        issue_version_id=None if is_field else phase.basis.issue_version_id,
++        issue_revision=None if is_field else phase.basis.issue_revision,
++        capa_id=None if is_field else material.capa_id,
++        action_id=None if is_field else material.action_id,
++        action_sha256=None if is_field else material.action_sha256,
++        **(
++            {
++                "category_id": phase.basis.category_id,
++                "feedback_id": phase.basis.feedback_id,
++                "feedback_version_id": phase.basis.feedback_version_id,
++                "feedback_revision": phase.basis.feedback_revision,
++                "feedback_sha256": phase.basis.feedback_sha256,
++                "executor_id": material.executor_id,
++            }
++            if is_field
++            else {}
++        ),
+         policy_id=phase.policy.id,
+         policy_revision=phase.policy.revision,
+         policy_snapshot=phase.policy_snapshot,
+@@ -500,7 +593,11 @@ def _stage_without_io(s, ctx, command, phase, marker, saved_at):
+     )
+     atom.action_result = {
+         "item_id": str(atom.item_id),
+-        "action_id": str(atom.action_id),
++        **(
++            {"intent_id": str(atom.intent_id), "feedback_id": str(atom.feedback_id)}
++            if is_field
++            else {"action_id": str(atom.action_id)}
++        ),
+         "material_sha256": atom.material_sha256,
+     }
+     s.add(atom)
+diff --git a/pdos-next/web/src/components/builds/build-change-approvals.tsx b/pdos-next/web/src/components/builds/build-change-approvals.tsx
+index 0a7b4f4..3f57741 100644
+--- a/pdos-next/web/src/components/builds/build-change-approvals.tsx
++++ b/pdos-next/web/src/components/builds/build-change-approvals.tsx
+@@ -13,7 +13,7 @@ import {
+ import { qualityRecord, qualitySource, qualitySourceKey, qualityStable, validQualitySource } from "@/lib/build-quality-loop-view";
+ import { sourceLines, type DefinitionSource } from "@/lib/product-view";
+ 
+-type Props = { projectId?: string; changeId: string; product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: OrderApi; onSaved: () => void | Promise<void>; blocked?: boolean; onLockChange?: (locked: boolean) => void };
++type Props = { projectId?: string; changeId: string; product: { id: string; revision: number }; principalId: string; api: OrderApi; onSaved: () => void | Promise<void>; blocked?: boolean; onLockChange?: (locked: boolean) => void };
+ const time = (value: string | null) => value === null ? "未另设到期时点" : value === "server_on_save" ? "保存时由服务器记录" : Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "尚未提供";
+ 
+ function Evidence({ reference, sources }: { reference: OrderReadSource; sources: DefinitionSource[] }) {
+diff --git a/pdos-next/web/src/components/builds/build-change-implementations.tsx b/pdos-next/web/src/components/builds/build-change-implementations.tsx
+index 645b851..6b2ae22 100644
+--- a/pdos-next/web/src/components/builds/build-change-implementations.tsx
++++ b/pdos-next/web/src/components/builds/build-change-implementations.tsx
+@@ -15,7 +15,7 @@ import {
+ import { qualityRecord, qualitySame, qualitySource, qualityStable, validQualitySource } from "@/lib/build-quality-loop-view";
+ import { sourceLines, type DefinitionSource } from "@/lib/product-view";
+ 
+-type Props = { projectId?: string; changeId: string; product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: OrderApi; onSaved: () => void | Promise<void>; blocked?: boolean; onLockChange?: (locked: boolean) => void };
++type Props = { projectId?: string; changeId: string; product: { id: string; revision: number }; principalId: string; api: OrderApi; onSaved: () => void | Promise<void>; blocked?: boolean; onLockChange?: (locked: boolean) => void };
+ const time = (value: string | null) => value === null ? "未另设到期时点" : Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "尚未返回";
+ function Evidence({ reference, sources }: { reference: OrderReadSource; sources: DefinitionSource[] }) {
+   if (!validQualitySource(reference)) return <p className="subtle">{reference.kind === "command" ? "固定保存回执" : "固定领域依据"} · v{reference.revision}</p>;
+diff --git a/pdos-next/web/src/components/builds/build-change-orders.tsx b/pdos-next/web/src/components/builds/build-change-orders.tsx
+index e760b79..80094ad 100644
+--- a/pdos-next/web/src/components/builds/build-change-orders.tsx
++++ b/pdos-next/web/src/components/builds/build-change-orders.tsx
+@@ -16,11 +16,11 @@ import {
+   type OrderApi, type OrderCandidate, type OrderChange, type OrderContext, type OrderDispositionDraft, type OrderDraft, type OrderLocal, type OrderPending, type OrderPreview, type OrderReadSource, type OrderSource,
+ } from "@/lib/build-change-orders-view";
+ 
+-type Props = { projectId?: string; product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: OrderApi; onSaved: () => void | Promise<void> };
++type Props = { projectId?: string; changeId?: string; product: { id: string; purpose?: string; revision: number }; principalId: string; api: OrderApi; onSaved: () => void | Promise<void>; blocked?: boolean; onLockChange?: (locked: boolean) => void };
+ const stateNames: Record<string, string> = { draft: "请求草稿", analysis: "固定影响已核对", review: "变更令待专业决定", approved: "已有专业批准", implementing: "实施办理中", verifying: "等待独立核验", closed: "已具名关闭", applicable: "适用", not_applicable: "不适用", unknown: "未知，不能当作适用或无需变更", current: "当前来源已核对", needs_recheck: "来源需重核", covered_by_plan: "由所选计划项覆盖", reviewed_no_change: "已具名评审无需更改", synthetic: "本地合成演练", real: "真实事实", engineering: "工程", manufacturing: "制造", quality: "品质", customer: "客户", regulatory: "法规", new_engineering_configuration: "建立新工程配置的意图", new_manufacturing_configuration: "建立新制造配置的意图", new_build: "建立新试制轮次的意图", new_test_run: "建立新测试运行的意图", erp_mes_effectivity: "ERP / MES 生效办理意图" };
+ const fields: Record<string, string> = { material: "原文登记的完整适用性材料", item: "固定计划项", items: "固定计划项", discipline: "专业范围", selection: "明确生效范围", objects: "固定对象", units: "对象 / 批次 / 序号范围", conditions: "实际适用条件", sources: "精确原文依据", source: "精确原文", intent: "受控实施意图", basis: "实施意图的固定依据", description: "实际说明", verification_requirement: "后续核验要求", status: "具名适用性 / 办理状态", reason: "具名原因", text: "实际内容", purpose: "固定用途", valid_from: "生效起点", valid_until: "事实有效至", expires_at: "计划有效至", required_disciplines: "须分别具名决定的专业", nature: "事实性质", before: "保存前", after: "将保存内容", plan: "完整生效计划", dispositions: "已知影响对象逐项处置", object: "固定影响对象", handling: "本对象处理方式", rationale: "具名处理原因", item_ids: "本次关联的真实计划项", approvals: "已保存专业决定", implementations: "已保存实际实施", effectivity: "已保存实际生效", verifications: "已保存独立核验", closure: "已保存关闭决定", unknown: "明确未知范围", policy: "服务器核对的正式政策", authority: "当前具名职责及专业资格", authorized: "当前操作授权", qualified: "本用途专业资格", roles: "具名专业职责", missing: "当前缺项", detail: "缺项说明", title: "标题", orders: "正式变更令记录", revision: "固定版本", change_revision: "固定变更版本", selection_revision: "本次适用性事实版本", read_set: "固定来源范围", effect: "本次实际影响" };
+ const hidden = new Set(["id", "command_id", "idempotency_key", "confirmation_token", "approval_token", "scope", "owner_id", "actor_id", "publisher_id", "decider_id", "executor_id", "change_id", "issue_id", "capa_id", "action_id", "assessment_id", "input_digest", "content_digest", "action_sha256", "item_sha256", "material_sha256", "source_basis", "read_set", "required_source_read_set", "payload_semantic", "proof_tier", "issue_version_id", "requester_id"]);
+-const formatTime = (value: unknown) => typeof value === "string" && Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "尚未提供";
++const formatTime = (value: unknown) => value === null ? "未另设截止时点" : typeof value === "string" && Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleString("zh-CN", { hour12: false }) : "尚未提供";
+ 
+ function SourceReading({ reference, sources }: { reference: OrderReadSource; sources: DefinitionSource[] }) {
+   if (!validQualitySource(reference)) return <p className="text-sm">{reference.kind === "command" ? "固定办理回执" : reference.kind === "domain" ? "固定领域事实" : "固定来源"} · v{reference.revision}。保留其真实出处；本对象的处置说明仍需另选可核对原文。</p>;
+@@ -53,36 +53,38 @@ function SavedPlans({ context, sources, names }: { context: OrderContext; source
+   }) : <p className="subtle">尚无已保存变更令。适用性决定或计划候选不代表批准、实施或实际生效。</p>}</section>;
+ }
+ 
+-export function BuildChangeOrders(props: Props) { return <OrderPanel key={`${props.principalId}:${props.product.id}:${props.projectId ?? ""}`} {...props}/>; }
+-function OrderPanel({ product, principalId, api, onSaved, projectId = "" }: Props) {
++export function BuildChangeOrders(props: Props) { return <OrderPanel key={`${props.principalId}:${props.product.id}:${props.projectId ?? ""}:${props.changeId ?? ""}`} {...props}/>; }
++function OrderPanel({ product, principalId, api, onSaved, projectId = "", changeId = "", blocked = false, onLockChange }: Props) {
+   const [approvalLocked, setApprovalLocked] = useState(false), [implementationLocked, setImplementationLocked] = useState(false);
+   const childLocks = useRef({ approval: false, implementation: false });
+   const lockApproval = useCallback((locked: boolean) => { childLocks.current.approval = locked; setApprovalLocked(locked); }, []);
+   const lockImplementation = useCallback((locked: boolean) => { childLocks.current.implementation = locked; setImplementationLocked(locked); }, []);
+-  const [local, setLocal] = useState<OrderLocal>(blankOrderLocal), [changes, setChanges] = useState<OrderChange[]>([]), [sources, setSources] = useState<DefinitionSource[]>([]), [context, setContext] = useState<OrderContext | null>(null), [loading, setLoading] = useState(true), [readFailed, setReadFailed] = useState(true), [busy, setBusy] = useState(false), [error, setError] = useState(""), [notice, setNotice] = useState("");
++  const [local, setLocal] = useState<OrderLocal>(() => ({ ...blankOrderLocal(), selectedChangeId: changeId, drafts: changeId ? { [changeId]: blankOrderDraft(crypto.randomUUID()) } : {} })), [changes, setChanges] = useState<OrderChange[]>([]), [sources, setSources] = useState<DefinitionSource[]>([]), [context, setContext] = useState<OrderContext | null>(null), [loading, setLoading] = useState(true), [readFailed, setReadFailed] = useState(true), [busy, setBusy] = useState(false), [error, setError] = useState(""), [notice, setNotice] = useState("");
+   const [preview, setPreview] = useState<OrderPreview | null>(null), [previewScope, setPreviewScope] = useState(""), [inputs, setInputs] = useState<unknown>(null);
+   const state = useRef(local), alive = useRef(true), restored = useRef(false), sequence = useRef(0), lock = useRef(false), scopeRef = useRef(""), dialog = useRef<HTMLDialogElement>(null), trigger = useRef<HTMLElement | null>(null);
+   const invalidateReads = useCallback(() => { sequence.current++; }, []);
+-  const storageKey = `pdos-next:build-change-orders:${principalId}:${product.id}${projectId ? `:project:${projectId}` : ""}`, pending = local.pending, draft = local.drafts[local.selectedChangeId] ?? blankOrderDraft("");
++  const storageKey = `pdos-next:build-change-orders:${principalId}:${product.id}${projectId ? `:project:${projectId}` : ""}${changeId ? `:change:${changeId}` : ""}`, pending = local.pending, draft = local.drafts[local.selectedChangeId] ?? blankOrderDraft("");
+   const scope = JSON.stringify(qualityStable([principalId, product.id, product.revision, projectId, local.selectedChangeId, context, sources.map(row => [row.id, row.revision, row.status])]));
+   useEffect(() => { scopeRef.current = scope; }, [scope]);
+-  const activePreview = preview && scope === previewScope ? preview : null, childrenLocked = approvalLocked || implementationLocked, unlocked = !loading && !readFailed && !busy && !pending && !preview && !childrenLocked;
++  const activePreview = preview && scope === previewScope ? preview : null, childrenLocked = approvalLocked || implementationLocked, unlocked = !blocked && !loading && !readFailed && !busy && !pending && !preview && !childrenLocked;
++  useEffect(() => { onLockChange?.(busy || !!pending || !!preview || childrenLocked); }, [busy, pending, preview, childrenLocked, onLockChange]);
++  useEffect(() => () => { onLockChange?.(false); }, [onLockChange]);
+   const names = new Map<string, string>(sources.map(row => [row.id, row.title]));
+   context?.object_options.forEach(row => names.set(row.ref.id, row.label));
+   context?.selections.forEach((row, index) => { names.set(row.item.id, `真实计划项 ${index + 1} · ${stateNames[row.item.discipline] ?? "专业"}`); });
+-  function save(patch: Partial<OrderLocal>) { const next = { ...state.current, ...patch }; state.current = next; setLocal(next); try { localStorage.setItem(storageKey, JSON.stringify({ schema_version: 1, product_id: product.id, principal_id: principalId, project_id: projectId, ...next })); } catch { setNotice("本机恢复暂不可用，请保留当前页面并核对原请求。"); } }
++  function save(patch: Partial<OrderLocal>): boolean { const next = { ...state.current, ...patch }; try { localStorage.setItem(storageKey, JSON.stringify({ schema_version: 1, product_id: product.id, principal_id: principalId, project_id: projectId, ...next })); state.current = next; setLocal(next); return true; } catch { setNotice("本机恢复记录暂不可保存；本次尚未发送。请保留本页，恢复存储后继续原请求。"); return false; } }
+   function edit(patch: Partial<OrderDraft>) { if (!unlocked || childLocks.current.approval || childLocks.current.implementation || !local.selectedChangeId) return; save({ drafts: { ...state.current.drafts, [local.selectedChangeId]: { ...(state.current.drafts[local.selectedChangeId] ?? blankOrderDraft(crypto.randomUUID())), ...patch } } }); }
+   function editDisposition(key: string, patch: Partial<OrderDispositionDraft>) { edit({ dispositions: { ...draft.dispositions, [key]: { ...(draft.dispositions[key] ?? blankOrderDisposition()), ...patch } } }); }
+   const refresh = useCallback(async (owner: "parent" | "approval" | "implementation" = "parent") => {
+     if (owner !== "approval" && childLocks.current.approval || owner !== "implementation" && childLocks.current.implementation) return;
+-    const read = ++sequence.current, changeId = state.current.selectedChangeId, current = () => alive.current && read === sequence.current && state.current.selectedChangeId === changeId;
+-    try { const value = await readOrderScope(api, product.id, changeId, projectId, current); if (!value || !current()) return; setChanges(value.changes); setSources(value.sources); setContext(value.context); setReadFailed(false); setLoading(false); setError(""); }
++    const read = ++sequence.current, selectedChange = state.current.selectedChangeId, current = () => alive.current && read === sequence.current && state.current.selectedChangeId === selectedChange;
++    try { const value = await readOrderScope(api, product.id, selectedChange, projectId, current, changeId); if (!value || !current()) return; setChanges(value.changes); setSources(value.sources); setContext(value.context); setReadFailed(false); setLoading(false); setError(""); }
+     catch (failure) { if (!current()) return; setChanges([]); setSources([]); setContext(null); setReadFailed(true); setLoading(false); throw failure; }
+-  }, [api, product.id, projectId]);
+-  useEffect(() => { alive.current = true; void Promise.resolve().then(() => { if (!alive.current) return; if (!restored.current) { try { const value = restoreOrders(JSON.parse(localStorage.getItem(storageKey) ?? "null"), product.id, principalId, projectId); if (value) { state.current = value; setLocal(value); } } catch { /* Restore only this exact named project scope. */ } restored.current = true; } return refresh(); }).catch(failure => { if (alive.current) setError(orderError(failure, true).message); }); return () => { alive.current = false; invalidateReads(); }; }, [refresh, storageKey, product.id, principalId, projectId, invalidateReads]);
++  }, [api, product.id, projectId, changeId]);
++  useEffect(() => { alive.current = true; void Promise.resolve().then(() => { if (!alive.current) return; if (!restored.current) { try { const value = restoreOrders(JSON.parse(localStorage.getItem(storageKey) ?? "null"), product.id, principalId, projectId, changeId); if (value) { state.current = value; setLocal(value); } } catch { /* Restore only this exact named project scope. */ } restored.current = true; } return refresh(); }).catch(failure => { if (alive.current) setError(orderError(failure, true).message); }); return () => { alive.current = false; invalidateReads(); }; }, [refresh, storageKey, product.id, principalId, projectId, changeId, invalidateReads]);
+   useEffect(() => { if (activePreview) { if (!dialog.current?.open) dialog.current?.showModal(); } else { dialog.current?.close(); if (preview) void Promise.resolve().then(() => { if (alive.current) { setPreview(null); setNotice("项目、变更版本、政策、来源或适用性已变化，旧确认已废弃；请重新核对。"); } }); } }, [activePreview, preview]);
+-  function reread() { if (lock.current || childLocks.current.approval || childLocks.current.implementation) return; setLoading(true); setError(""); void refresh().catch(failure => { if (alive.current) setError(orderError(failure, true).message); }); }
+-  function chooseChange(id: string) { if (!unlocked || childLocks.current.approval || childLocks.current.implementation) return; sequence.current++; save({ selectedChangeId: id, drafts: id && !state.current.drafts[id] ? { ...state.current.drafts, [id]: blankOrderDraft(crypto.randomUUID()) } : state.current.drafts }); setContext(null); setInputs(null); setPreview(null); setLoading(true); void refresh().catch(failure => { if (alive.current) setError(orderError(failure, true).message); }); }
++  function reread() { if (blocked || lock.current || childLocks.current.approval || childLocks.current.implementation) return; setLoading(true); setError(""); void refresh().catch(failure => { if (alive.current) setError(orderError(failure, true).message); }); }
++  function chooseChange(id: string) { if (changeId && id !== changeId || !unlocked || childLocks.current.approval || childLocks.current.implementation) return; sequence.current++; save({ selectedChangeId: id, drafts: id && !state.current.drafts[id] ? { ...state.current.drafts, [id]: blankOrderDraft(crypto.randomUUID()) } : state.current.drafts }); setContext(null); setInputs(null); setPreview(null); setLoading(true); void refresh().catch(failure => { if (alive.current) setError(orderError(failure, true).message); }); }
+   function closePreview() { if (lock.current || state.current.pending) return; setPreview(null); dialog.current?.close(); trigger.current?.focus(); }
+   async function readMaterial() {
+     if (!unlocked || childLocks.current.approval || childLocks.current.implementation || !context || !draft.selectionSource) return;
+@@ -92,11 +94,12 @@ function OrderPanel({ product, principalId, api, onSaved, projectId = "" }: Prop
+     finally { lock.current = false; if (alive.current) setBusy(false); }
+   }
+   async function perform(waiting: OrderPending, element?: HTMLElement) {
+-    if (lock.current || childLocks.current.approval || childLocks.current.implementation || loading || readFailed || !context || waiting.command.payload.change_id !== local.selectedChangeId) return;
+-    const originalScope = scopeRef.current; sequence.current++; lock.current = true; setBusy(true); setError(""); setNotice(""); if (element) trigger.current = element; save({ pending: waiting }); let current = waiting, committed = false;
++    if (blocked || lock.current || childLocks.current.approval || childLocks.current.implementation || loading || readFailed || !context || waiting.command.payload.change_id !== local.selectedChangeId) return;
++    const originalScope = scopeRef.current; sequence.current++; lock.current = true; setBusy(true); setError(""); setNotice(""); if (element) trigger.current = element; let current = waiting, committed = false;
+     try {
+-      if (current.stage === "inputs") { const value = await api<unknown>(`v1/products/${product.id}/change-execution/inputs`, current.command); const command = orderInputs(value, current.command); if (!alive.current) return; setInputs(value); if (!command) { save({ pending: null }); setError("当前政策、来源、适用性或专业条件仍有缺项，本次未提交。"); return; } current = { stage: "preview", command }; save({ pending: current }); }
+-      if (current.stage === "preview") { const value = await api<unknown>("v1/commands/preview", current.command); if (!validOrderPreview(value, current.command)) throw new Error("尚未取得与原请求范围一致的一次确认，请保留原请求并重新核对。"); if (!alive.current) return; save({ pending: null }); if (originalScope !== scopeRef.current) { setNotice("读取期间固定范围已变化，返回预览已废弃，请重新核对。"); return; } setPreview(value); setPreviewScope(originalScope); return; }
++      if (!save({ pending: waiting })) return;
++      if (current.stage === "inputs") { const value = await api<unknown>(`v1/products/${product.id}/change-execution/inputs`, current.command); const command = orderInputs(value, current.command); if (!alive.current) return; setInputs(value); if (!command) { save({ pending: null }); setError("当前政策、来源、适用性或专业条件仍有缺项，本次未提交。"); return; } current = { stage: "preview", command }; if (!save({ pending: current })) return; }
++      if (current.stage === "preview") { const value = await api<unknown>("v1/commands/preview", current.command); if (!validOrderPreview(value, current.command)) throw new Error("尚未取得与原请求范围一致的一次确认，请保留原请求并重新核对。"); if (!alive.current) return; if (!save({ pending: null })) return; if (originalScope !== scopeRef.current) { setNotice("读取期间固定范围已变化，返回预览已废弃，请重新核对。"); return; } setPreview(value); setPreviewScope(originalScope); return; }
+       const receipt = await api<unknown>("v1/commands", current.command); if (!validOrderReceipt(receipt, current.command)) throw new Error("尚未取得确定的本次回执，请只恢复同一原请求。"); committed = true; if (!alive.current) return; save({ pending: null, drafts: state.current.drafts[local.selectedChangeId] ? { ...state.current.drafts, [local.selectedChangeId]: { ...state.current.drafts[local.selectedChangeId], candidate: null } } : state.current.drafts }); setPreview(null); setInputs(null); dialog.current?.close(); setNotice(current.command.operation === "change.selection.decide" ? "本项具名适用性决定已保存或取得原回执；未批准变更令、未实施或生效。" : "变更令及明确生效计划已保存或取得原回执；各专业批准、实际实施与生效仍须分别办理。"); await refresh(); await onSaved();
+     } catch (failure) {
+       if (!alive.current) return;
+@@ -108,8 +111,8 @@ function OrderPanel({ product, principalId, api, onSaved, projectId = "" }: Prop
+   function prepare(element: HTMLElement) { if (!unlocked || !context) return; setError(""); try { const payload = orderPreparePayload(context, draft), command = makeOrderPrepare(product, payload, crypto.randomUUID(), crypto.randomUUID()); void perform({ stage: "inputs", command }, element); } catch (failure) { setError(failure instanceof Error ? failure.message : "请核对实际计划项与逐对象处置。"); } }
+   const candidate: OrderCandidate | null = draft.candidate, usable = context?.selections.filter(row => orderSelectionUsable(row)) ?? [], synthetic = context?.policy?.nature === "synthetic";
+   return <section className="panel min-w-0 space-y-5 [&_*]:min-w-0 [overflow-wrap:anywhere]" aria-label="变更适用性与正式计划准备"><header className="flex flex-wrap items-start justify-between gap-3"><div><p className="eyebrow">固定影响 · 真实适用性 · 明确生效范围</p><h2 className="flex items-center gap-2 text-xl font-semibold"><ClipboardText/>变更适用性与变更令准备</h2></div><Button variant="outline" disabled={busy || childrenLocked} onClick={reread}><ArrowClockwise/>刷新当前正式依据</Button></header><p className="subtle">具名决定逐项适用性，再固定真实计划项与逐对象处置。未知范围继续保留；准备计划不表示已批准、实际实施或生效。</p>{synthetic && <p className="rounded-lg border border-primary p-3 text-sm">本地合成演练：此处材料与决定仅验证办理闭环，不代表真实生产资格或人工验收通过。</p>}{error && <p role="alert" className="rounded-lg border border-destructive p-3 text-sm"><WarningCircle className="mr-2 inline"/>{error}</p>}{notice && <p role="status" className="rounded-lg border border-border p-3 text-sm">{notice}</p>}{pending && <div className="space-y-3 rounded-lg border border-primary p-3"><p className="text-sm">{readFailed ? "当前读取范围尚不可用，原请求已保留；请先刷新当前权限与范围，再核对回执。" : `${orderNames[pending.command.operation]}的${pending.stage === "execute" ? "提交尚待确定回执" : "范围核对尚未完成"}。原请求已保留，请核对回执，不重复办理。`}</p><Button disabled={busy || childrenLocked || loading || readFailed || !context} onClick={event => void perform(pending, event.currentTarget)}>核对并恢复同一原请求</Button></div>}
+-    <label className="block">明确选择{projectId ? "本项目" : "当前可读范围的"}变更<select value={local.selectedChangeId} disabled={!unlocked} onChange={event => chooseChange(event.target.value)}><option value="">选择固定变更，不默认首条</option>{changes.map(row => <option key={row.change_id} value={row.change_id}>{String(row.request.title ?? "固定变更")} · v{row.revision} · {stateNames[row.status] ?? "当前状态待核对"}</option>)}</select></label>{loading && <p role="status" className="subtle">正在读取明确项目及变更的固定范围…</p>}{!loading && !local.selectedChangeId && <p className="subtle">先明确选择变更，再读取政策、逐项决定和完整正式计划；空选择不深查全部历史。</p>}
+-    {context && <><section className="space-y-3 rounded-lg border border-border p-4"><h3 className="font-semibold">{String(context.change.request.title ?? "固定变更")} · 当前 v{context.change.revision}</h3><p className="text-sm">{stateNames[context.change.status] ?? "状态待核对"} · 用途：{context.change.purpose ?? product.purpose}</p><h4 className="flex items-center gap-2 font-medium"><ShieldCheck/>当前正式政策</h4>{context.policy ? <><p className="text-sm">须分别办理：{context.policy.required_disciplines.map(row => stateNames[row] ?? "具名专业").join("、")}；有效区间：{formatTime(context.policy.valid_from)} — {formatTime(context.policy.valid_until)}。</p><SourceReading reference={context.policy.source} sources={sources}/></> : <p className="subtle">尚无当前可采用的正式政策，不能由前端补造。政策由受控发布入口登记后再刷新。</p>}{context.missing.length > 0 && <ul className="list-disc space-y-2 pl-5 text-sm">{context.missing.map((row, index) => <li key={`${row.code}:${index}`}>{row.detail}</li>)}</ul>}</section>
++    {!changeId && <label className="block">明确选择{projectId ? "本项目" : "当前可读范围的"}变更<select value={local.selectedChangeId} disabled={!unlocked} onChange={event => chooseChange(event.target.value)}><option value="">选择固定变更，不默认首条</option>{changes.map(row => <option key={row.change_id} value={row.change_id}>{String(row.request.title ?? "固定变更")} · v{row.revision} · {stateNames[row.status] ?? "当前状态待核对"}</option>)}</select></label>}{loading && <p role="status" className="subtle">正在读取明确项目及变更的固定范围…</p>}{!loading && !local.selectedChangeId && <p className="subtle">先明确选择变更，再读取政策、逐项决定和完整正式计划；空选择不深查全部历史。</p>}
++    {context && <><section className="space-y-3 rounded-lg border border-border p-4"><h3 className="font-semibold">{String(context.change.request.title ?? "固定变更")} · 当前 v{context.change.revision}</h3><p className="text-sm">{stateNames[context.change.status] ?? "状态待核对"} · 用途：{context.change.purpose ?? product.purpose ?? "用途待核对"}</p><h4 className="flex items-center gap-2 font-medium"><ShieldCheck/>当前正式政策</h4>{context.policy ? <><p className="text-sm">须分别办理：{context.policy.required_disciplines.map(row => stateNames[row] ?? "具名专业").join("、")}；有效区间：{formatTime(context.policy.valid_from)} — {formatTime(context.policy.valid_until)}。</p><SourceReading reference={context.policy.source} sources={sources}/></> : <p className="subtle">尚无当前可采用的正式政策，不能由前端补造。政策由受控发布入口登记后再刷新。</p>}{context.missing.length > 0 && <ul className="list-disc space-y-2 pl-5 text-sm">{context.missing.map((row, index) => <li key={`${row.code}:${index}`}>{row.detail}</li>)}</ul>}</section>
+       <section className="space-y-4 rounded-lg border border-border p-4"><h3 className="font-semibold">1 · 读取原文登记的计划项与措施，再具名决定适用性</h3><p className="subtle">原文须明确实际计划项、原 CAPA 措施、执行者与具名决定人。服务器逐一核对；本页不补造适用性、人员资格或单位范围。</p><SourceChoice key={`selection:${local.selectedChangeId}`} value={draft.selectionSource} sources={sources} disabled={!unlocked} onChange={selectionSource => edit({ selectionSource, candidate: null })}/><Button variant="outline" disabled={!unlocked || !draft.selectionSource} onClick={() => void readMaterial()}>只读核对原文中的真实适用性材料</Button>{candidate && <div className="space-y-4 rounded-lg border border-border p-3"><Details value={{ material: candidate.material }} sources={sources} names={names}/><p className="subtle">上述内容来自所选原文，当前尚未作出具名决定。只有下方实质预览中的明确确认会保存本项决定。</p><Button disabled={!unlocked} onClick={event => void perform({ stage: "inputs", command: candidate.command }, event.currentTarget)}>读取本项具名适用性决定的实质预览</Button></div>}</section>
+       <section className="space-y-4 rounded-lg border border-border p-4"><h3 className="font-semibold">2 · 选择真实适用计划项并逐一处置已知对象，准备一次确认</h3><fieldset disabled={!unlocked} className="space-y-4"><legend className="subtle mb-3">只采用服务器已核对的当前适用性事实；未知、不适用或过期记录保留阅读。</legend>{context.selections.map((row, index) => { const valid = orderSelectionUsable(row), checked = draft.selectedSelectionIds.includes(row.id); return <div key={row.id} className="space-y-3 rounded-lg border border-border p-3"><label className="flex items-start gap-2"><input className="mt-1 shrink-0" type="checkbox" checked={checked} disabled={!valid} onChange={() => edit({ selectedSelectionIds: checked ? draft.selectedSelectionIds.filter(id => id !== row.id) : [...draft.selectedSelectionIds, row.id] })}/><span>计划项 {index + 1} · {stateNames[row.item.discipline] ?? "专业范围"} · {stateNames[row.status] ?? "状态待核对"} · 事实 v{row.revision}{!valid ? " · 当前不可采用" : ""}</span></label><Details value={row.item} sources={sources} names={names}/><SourceReading reference={row.source} sources={sources}/>{row.missing.length > 0 && <ul className="list-disc pl-5 text-sm">{row.missing.map((gap, i) => <li key={i}>{gap.detail}</li>)}</ul>}</div>; })}{!context.selections.length && <p className="subtle">尚无真实具名适用性事实。图中出现对象不代表该对象已适用本项实施计划。</p>}
+         <h4 className="font-medium">全部已知影响对象的明确处置</h4>{context.object_options.map(option => { const key = orderRefKey(option.ref), disposition = draft.dispositions[key] ?? blankOrderDisposition(); return <fieldset key={key} className="space-y-3 rounded-lg border border-border p-3"><legend className="px-1 text-sm font-medium">{option.label} · 固定 v{option.ref.revision}</legend><SourceReading reference={option.source} sources={sources}/><label>本对象处置<select value={disposition.handling} onChange={event => editDisposition(key, { handling: event.target.value as OrderDispositionDraft["handling"], itemIds: [] })}><option value="unknown">未知，明确保留缺口</option><option value="covered_by_plan">由本次真实计划项覆盖</option><option value="reviewed_no_change">已具名评审无需更改</option></select></label>{disposition.handling === "covered_by_plan" && <fieldset className="space-y-2"><legend className="subtle mb-2">明确关联本次选中的真实计划项</legend>{usable.filter(row => draft.selectedSelectionIds.includes(row.id)).map(row => <label key={row.item.id} className="flex items-start gap-2 text-sm"><input type="checkbox" checked={disposition.itemIds.includes(row.item.id)} onChange={() => editDisposition(key, { itemIds: disposition.itemIds.includes(row.item.id) ? disposition.itemIds.filter(id => id !== row.item.id) : [...disposition.itemIds, row.item.id] })}/><span>{names.get(row.item.id)} · {row.item.intent.description}</span></label>)}</fieldset>}<label>具名处置原因<textarea required maxLength={2000} value={disposition.rationale} onChange={event => editDisposition(key, { rationale: event.target.value })}/></label><SourceChoice value={disposition.source} sources={sources} disabled={!unlocked} onChange={source => editDisposition(key, { source })}/></fieldset>; })}{!context.object_options.length && <p className="subtle">已知影响对象完整内容尚未提供，不能以空处置准备变更令。</p>}<div className="grid gap-3 sm:grid-cols-2"><label>计划到期时点（可选，含时区）<input value={draft.expiresAt} placeholder="留空不另设计划到期" onChange={event => edit({ expiresAt: event.target.value })}/></label><p className="subtle self-end">不补为当前时间，不延长政策、来源和具名适用性事实的有效期。</p></div><label>具名准备原因<textarea required maxLength={2000} value={draft.reason} onChange={event => edit({ reason: event.target.value })}/></label></fieldset><Button disabled={!unlocked || !context.policy || !usable.length} onClick={event => prepare(event.currentTarget)}>核对完整变更令与生效计划，一次确认</Button><p className="subtle">未知影响和未知处置继续保留。本节只准备计划；专业批准在下方分别办理，实际实施与生效仍须另行核对。</p></section>
+diff --git a/pdos-next/web/src/lib/build-change-orders-view.ts b/pdos-next/web/src/lib/build-change-orders-view.ts
+index ee83866..689ef5c 100644
+--- a/pdos-next/web/src/lib/build-change-orders-view.ts
++++ b/pdos-next/web/src/lib/build-change-orders-view.ts
+@@ -2,6 +2,7 @@ import type { CommandPlan, EffectivityPlan, Ref, Source } from "../components/ch
+ import type { DefinitionSource } from "./product-view";
+ import type { SourceRead } from "./project-plan-view";
+ import { handoffTime } from "./build-handoff-view";
++import { proofClockCurrent } from "./proof-clock";
+ import { qualityReads, qualityRecord, qualityRevision, qualitySame, qualitySource, qualitySourceKey, qualityTime, validQualitySource, type QualitySource } from "./build-quality-loop-view";
+ 
+ export type OrderApi = <T>(path: string, body?: unknown) => Promise<T>;
+@@ -15,11 +16,13 @@ export type OrderMissing = { code: string; detail: string };
+ export type OrderSelection = { id: string; revision: number; item: OrderItem; status: "applicable" | "not_applicable" | "unknown"; valid_until: string | null; source: OrderSource; receipt_id: string | null; current: boolean; source_status: string; missing: OrderMissing[] };
+ export type OrderReadSource = { id: string; revision: number; kind: string; position: string };
+ export type OrderObject = { ref: Ref; label: string; source: OrderReadSource };
+-export type OrderContext = { change: OrderChange; policy: { current: true; required_disciplines: string[]; valid_from: string; valid_until: string; nature: string; source: OrderSource } | null; actions: Record<string, unknown>[]; selections: OrderSelection[]; object_options: OrderObject[]; missing: OrderMissing[] };
++export type FieldIntentTarget = { kind: "field_intent"; feedback: { id: string; revision: number }; executor_id: string };
++export type FieldBasisOption = { feedback: { id: string; revision: number }; version_id: string; sha256: string; title: string };
++export type OrderContext = { change: OrderChange; policy: { current: true; required_disciplines: string[]; valid_from: string; valid_until: string; nature: string; source: OrderSource } | null; actions: Record<string, unknown>[]; selections: OrderSelection[]; object_options: OrderObject[]; missing: OrderMissing[]; field_basis_options?: FieldBasisOption[]; executor_options?: { id: string; name: string }[] };
+ export type OrderCommand = { command_id: string; idempotency_key: string; product_id: string; expected_revision: number; operation: OrderOperation; payload: Record<string, unknown>; source_read_set: SourceRead[]; category_id?: string | null };
+ export type OrderCandidate = { command: OrderCommand; material: Record<string, unknown>; required_source_read_set: SourceRead[] };
+ export type OrderPending = { stage: "inputs" | "preview" | "execute"; command: OrderCommand };
+-export type OrderPreview = { command: OrderCommand; expires_at: string; write_tier?: string; named_decision?: boolean; review: Record<string, unknown> & { before: Record<string, unknown>; after: Record<string, unknown>; effect: string } };
++export type OrderPreview = { command: OrderCommand; expires_at: string | null; write_tier?: string; named_decision?: boolean; review: Record<string, unknown> & { before: Record<string, unknown>; after: Record<string, unknown>; effect: string } };
+ export type OrderDispositionDraft = { handling: "covered_by_plan" | "reviewed_no_change" | "unknown"; itemIds: string[]; rationale: string; source: OrderSource | null };
+ export type OrderDraft = { planId: string; selectedSelectionIds: string[]; dispositions: Record<string, OrderDispositionDraft>; expiresAt: string; reason: string; selectionSource: OrderSource | null; candidate: OrderCandidate | null };
+ export type OrderLocal = { selectedChangeId: string; drafts: Record<string, OrderDraft>; pending: OrderPending | null };
+@@ -28,6 +31,9 @@ export const blankOrderDraft = (planId: string): OrderDraft => ({ planId, select
+ export const blankOrderDisposition = (): OrderDispositionDraft => ({ handling: "unknown", itemIds: [], rationale: "", source: null });
+ export const orderRefKey = (ref: Ref): string => JSON.stringify([ref.kind, ref.id, ref.revision, ref.key ?? null]);
+ const uuid = (value: unknown): value is string => typeof value === "string" && /^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(value);
++const exactKeys = (v: Record<string, unknown>, keys: string[]) => Object.keys(v).every(key => keys.includes(key));
++const feedbackRef = (v: unknown): v is { id: string; revision: number } => qualityRecord(v) && exactKeys(v, ["id", "revision"]) && uuid(v.id) && qualityRevision(v.revision);
++const fieldIntent = (v: unknown): v is FieldIntentTarget => qualityRecord(v) && exactKeys(v, ["kind", "feedback", "executor_id"]) && v.kind === "field_intent" && feedbackRef(v.feedback) && uuid(v.executor_id);
+ const validRef = (value: unknown): value is Ref => qualityRecord(value) && uuid(value.id) && qualityRevision(value.revision) && typeof value.kind === "string" && !!value.kind && (value.key == null || typeof value.key === "string");
+ const strings = (value: unknown): value is string[] => Array.isArray(value) && value.every(row => typeof row === "string");
+ const refs = (value: unknown): value is Ref[] => Array.isArray(value) && !!value.length && value.every(validRef);
+@@ -51,6 +57,8 @@ export function normalizeOrderContext(value: unknown, changeId: string, projectI
+   if (policy !== null && (!qualityRecord(policy) || policy.current !== true || !strings(policy.required_disciplines) || !qualityTime(policy.valid_from) || !qualityTime(policy.valid_until) || typeof policy.nature !== "string" || !validQualitySource(policy.source))) throw new Error("政策原文、有效期或专业范围不完整，不能沿用旧政策。");
+   if (value.selections.some(row => !qualityRecord(row) || !uuid(row.id) || !qualityRevision(row.revision) || !validItem(row.item) || !["applicable", "not_applicable", "unknown"].includes(String(row.status)) || !(row.valid_until === null || qualityTime(row.valid_until)) || !validQualitySource(row.source) || typeof row.current !== "boolean" || typeof row.source_status !== "string" || !missing(row.missing) || !(uuid(row.receipt_id) || (row.receipt_id === null && row.source_status !== "current" && row.missing.length > 0))) || value.object_options.some(row => !qualityRecord(row) || !validRef(row.ref) || typeof row.label !== "string" || !readSource(row.source))) throw new Error("适用性事实或已知对象缺少真实版本、回执或精确来源。");
+   if (new Set(value.object_options.map(row => orderRefKey(row.ref))).size !== value.object_options.length) throw new Error("已知对象重复，须重新读取完整处置范围。");
++  if (value.field_basis_options !== undefined && (!Array.isArray(value.field_basis_options) || value.field_basis_options.some(row => !qualityRecord(row) || !feedbackRef(row.feedback) || !uuid(row.version_id) || typeof row.sha256 !== "string" || !/^[0-9a-f]{64}$/.test(row.sha256) || typeof row.title !== "string" || !row.title.trim()))) throw new Error("现场反馈的固定来源依据尚未完整返回。");
++  if (value.executor_options !== undefined && (!Array.isArray(value.executor_options) || value.executor_options.some(row => !qualityRecord(row) || !uuid(row.id) || typeof row.name !== "string" || !row.name.trim()))) throw new Error("实际执行者选项尚未完整返回。");
+   return value as unknown as OrderContext;
+ }
+ export function orderSelectionUsable(row: OrderSelection, now = Date.now()): boolean { return row.current && row.status === "applicable" && row.source_status === "current" && uuid(row.receipt_id) && !row.missing.length && (row.valid_until === null || Date.parse(row.valid_until) > now); }
+@@ -67,7 +75,8 @@ function sameCommand(returned: unknown, original: OrderCommand, includeReads: bo
+ export function normalizeOrderCandidate(value: unknown, productId: string, context: OrderContext, source: OrderSource, principalId?: string): OrderCandidate {
+   if (!qualityRecord(value) || !validOrderCommand(value.command, productId) || value.command.operation !== "change.selection.decide" || value.command.payload.change_id !== context.change.change_id || value.command.payload.expected_change_revision !== context.change.revision || !qualitySame(value.command.payload.source, source) || !qualityRecord(value.material) || !Array.isArray(value.required_source_read_set) || value.material.change_id !== context.change.change_id || !qualitySame(value.material.item, value.command.payload.item) || value.material.status !== value.command.payload.status) throw new Error("未取得与原文、变更版本及真实计划项一致的适用性候选。");
+   const payload = value.command.payload, action = payload.action as Record<string, unknown>, material = value.material;
+-  if (!context.actions.some(row => row.issue_id === action.issue_id && row.issue_revision === action.expected_issue_revision && row.capa_id === action.capa_id && row.action_id === action.action_id && row.executor_id === material.executor_id) || !qualityRecord(material.scope) || material.scope.product_id !== productId || material.scope.project_id !== context.change.project_id || !["issue_id", "capa_id", "action_id"].every(key => material[key] === action[key]) || material.reason !== payload.reason || !qualitySame(normalizePayload({ valid_until: material.valid_until }), normalizePayload({ valid_until: payload.valid_until })) || (principalId && material.decider_id !== principalId)) throw new Error("原文计划项、原措施、执行者或具名决定人未与当前真实范围一致。");
++  const nativeBasis = fieldIntent(action) ? material.schema_version === "pdos-field-change-selection-v1" && qualitySame(material.feedback, action.feedback) && material.executor_id === action.executor_id && context.field_basis_options?.some(row => qualitySame(row.feedback, action.feedback) && material.feedback_version_id === row.version_id && material.feedback_sha256 === row.sha256) && context.executor_options?.some(row => row.id === action.executor_id) : context.actions.some(row => row.issue_id === action.issue_id && row.issue_revision === action.expected_issue_revision && row.capa_id === action.capa_id && row.action_id === action.action_id && row.executor_id === material.executor_id) && ["issue_id", "capa_id", "action_id"].every(key => material[key] === action[key]);
++  if (!nativeBasis || !qualityRecord(material.scope) || material.scope.product_id !== productId || material.scope.project_id !== context.change.project_id || material.reason !== payload.reason || !qualitySame(normalizePayload({ valid_until: material.valid_until }), normalizePayload({ valid_until: payload.valid_until })) || (principalId && material.decider_id !== principalId)) throw new Error("原文计划项、原生依据、执行者或具名决定人未与当前真实范围一致。");
+   qualityReads(value.required_source_read_set as SourceRead[], value.command.source_read_set);
+   return value as unknown as OrderCandidate;
+ }
+@@ -79,13 +88,14 @@ export function orderInputs(value: unknown, command: OrderCommand): OrderCommand
+   return value.allowed ? returned : null;
+ }
+ export function validOrderPreview(value: unknown, command: OrderCommand, now = Date.now()): value is OrderPreview {
+-  if (!qualityRecord(value) || !sameCommand(value.command, command, true) || !qualityTime(value.expires_at) || Date.parse(String(value.expires_at)) <= now || !qualityRecord(value.review) || value.review.operation !== command.operation || !qualityRecord(value.review.before) || !qualityRecord(value.review.after) || typeof value.review.effect !== "string" || !value.review.effect) return false;
++  if (!qualityRecord(value) || !sameCommand(value.command, command, true) || !proofClockCurrent(command.operation === "change.selection.decide" ? "T2" : "T1", value.expires_at, now) || !qualityRecord(value.review) || value.review.operation !== command.operation || !qualityRecord(value.review.before) || !qualityRecord(value.review.after) || typeof value.review.effect !== "string" || !value.review.effect) return false;
+   const token = command.operation === "change.selection.decide" ? "approval_token" : "confirmation_token", payload = value.command.payload;
+   if (typeof payload[token] !== "string" || payload[token].length < 16) return false;
+   const before = value.review.before, after = value.review.after;
+   if (command.operation === "change.selection.decide") {
+     const action = command.payload.action, material = after.material;
+-    return value.write_tier === "T2" && value.named_decision === true && before.change_id === command.payload.change_id && before.change_revision === command.payload.expected_change_revision && qualityRevision(after.selection_revision) && qualityRecord(action) && qualityRecord(material) && material.change_id === command.payload.change_id && qualitySame(material.item, command.payload.item) && material.issue_id === action.issue_id && material.capa_id === action.capa_id && material.action_id === action.action_id && material.status === command.payload.status && material.reason === command.payload.reason && qualitySame(normalizePayload({ valid_until: material.valid_until }), normalizePayload({ valid_until: command.payload.valid_until }));
++    const nativeBasis = fieldIntent(action) ? qualityRecord(material) && material.schema_version === "pdos-field-change-selection-v1" && qualitySame(material.feedback, action.feedback) && material.executor_id === action.executor_id : qualityRecord(action) && qualityRecord(material) && material.issue_id === action.issue_id && material.capa_id === action.capa_id && material.action_id === action.action_id;
++    return value.write_tier === "T2" && value.named_decision === true && before.change_id === command.payload.change_id && before.change_revision === command.payload.expected_change_revision && qualityRevision(after.selection_revision) && qualityRecord(material) && nativeBasis && material.change_id === command.payload.change_id && qualitySame(material.item, command.payload.item) && material.status === command.payload.status && material.reason === command.payload.reason && qualitySame(normalizePayload({ valid_until: material.valid_until }), normalizePayload({ valid_until: command.payload.valid_until }));
+   }
+   const orders = after.orders;
+   if (before.id !== command.payload.change_id || before.revision !== command.payload.expected_change_revision || after.id !== command.payload.change_id || after.revision !== Number(command.payload.expected_change_revision) + 1 || after.status !== "review" || !Array.isArray(orders) || !orders.length) return false;
+@@ -118,12 +128,13 @@ function validOrderCommand(value: unknown, productId: string): value is OrderCom
+   if (!qualityRecord(value) || !uuid(value.command_id) || typeof value.idempotency_key !== "string" || !value.idempotency_key || value.product_id !== productId || !qualityRevision(value.expected_revision) || !["change.selection.decide", "change.order.prepare"].includes(String(value.operation)) || !qualityRecord(value.payload) || !uuid(value.payload.change_id) || !qualityRevision(value.payload.expected_change_revision) || !Array.isArray(value.source_read_set)) return false;
+   try { qualityReads(value.source_read_set as SourceRead[]); } catch { return false; }
+   const payload = value.payload;
+-  if (value.operation === "change.selection.decide") return validItem(payload.item) && qualityRecord(payload.action) && ["issue_id", "capa_id", "action_id"].every(key => uuid((payload.action as Record<string, unknown>)[key])) && qualityRevision(payload.action.expected_issue_revision) && ["applicable", "not_applicable", "unknown"].includes(String(payload.status)) && validQualitySource(payload.source) && typeof payload.reason === "string";
++  if (value.operation === "change.selection.decide") return validItem(payload.item) && qualityRecord(payload.action) && (fieldIntent(payload.action) || payload.action.kind === undefined && ["issue_id", "capa_id", "action_id"].every(key => uuid((payload.action as Record<string, unknown>)[key])) && qualityRevision(payload.action.expected_issue_revision)) && ["applicable", "not_applicable", "unknown"].includes(String(payload.status)) && validQualitySource(payload.source) && typeof payload.reason === "string";
+   const plan = payload.plan;
+   return uuid(payload.assessment_id) && qualityRecord(plan) && uuid(plan.id) && Array.isArray(plan.items) && !!plan.items.length && plan.items.every(validItem) && Array.isArray(plan.dispositions) && !!plan.dispositions.length && (plan.expires_at === null || !!qualityTime(plan.expires_at)) && typeof payload.reason === "string";
+ }
+-export function restoreOrders(value: unknown, productId: string, principalId: string, projectId = ""): OrderLocal | null {
++export function restoreOrders(value: unknown, productId: string, principalId: string, projectId = "", fixedChangeId = ""): OrderLocal | null {
+   if (!qualityRecord(value) || value.schema_version !== 1 || value.product_id !== productId || value.principal_id !== principalId || value.project_id !== projectId || typeof value.selectedChangeId !== "string" || (value.selectedChangeId && !uuid(value.selectedChangeId)) || !qualityRecord(value.drafts)) return null;
++  if (fixedChangeId && value.selectedChangeId !== fixedChangeId) return null;
+   for (const [id, row] of Object.entries(value.drafts)) {
+     if (!uuid(id) || !qualityRecord(row) || !uuid(row.planId) || !strings(row.selectedSelectionIds) || !row.selectedSelectionIds.every(uuid) || !qualityRecord(row.dispositions) || typeof row.expiresAt !== "string" || typeof row.reason !== "string" || !(row.selectionSource === null || validQualitySource(row.selectionSource))) return null;
+     for (const disposition of Object.values(row.dispositions)) if (!qualityRecord(disposition) || !["covered_by_plan", "reviewed_no_change", "unknown"].includes(String(disposition.handling)) || !strings(disposition.itemIds) || !disposition.itemIds.every(uuid) || typeof disposition.rationale !== "string" || !(disposition.source === null || validQualitySource(disposition.source))) return null;
+@@ -144,8 +155,9 @@ export function orderError(value: unknown, reading = false): { status?: number;
+   const status = qualityRecord(value) && typeof value.status === "number" ? value.status : undefined;
+   return { status, message: reading ? "当前项目变更、政策或真实适用性材料读取失败，请刷新核对；本次读取未保存或批准。" : status === 401 || status === 403 ? "当前项目、原文或具名专业权限不可用。原请求已保留，请刷新当前权限与范围，再核对回执。" : "尚未取得确定回执；原请求继续保留，请核对回执，不重复办理。" };
+ }
+-export async function readOrderScope(api: OrderApi, productId: string, changeId: string, projectId: string, current: () => boolean): Promise<{ changes: OrderChange[]; sources: DefinitionSource[]; context: OrderContext | null } | null> {
+-  const query = projectId ? `?${new URLSearchParams({ project_id: projectId })}` : "";
++export async function readOrderScope(api: OrderApi, productId: string, changeId: string, projectId: string, current: () => boolean, fixedChangeId = ""): Promise<{ changes: OrderChange[]; sources: DefinitionSource[]; context: OrderContext | null } | null> {
++  if (fixedChangeId && (fixedChangeId !== changeId || !uuid(fixedChangeId))) throw new Error("本次正式办理须保留原已选变更。");
++  const parameters = new URLSearchParams(); if (projectId) parameters.set("project_id", projectId); if (fixedChangeId) parameters.set("change_id", fixedChangeId); const query = parameters.size ? `?${parameters}` : "";
+   const values = await Promise.all([api<unknown>(`v1/products/${productId}/change-execution${query}`), api<{ sources: DefinitionSource[] }>(`v1/products/${productId}/workspace`)]);
+   if (!current()) return null;
+   const changes = normalizeOrderChanges(values[0], projectId);

@@ -1,0 +1,10 @@
+{
+  "scope": "Readonly closeout expected semantics corrected; unchanged business source",
+  "before_sha256": "2a1b6d34b8e46b0730db705d426ea4048775948c839c0e4e6758c144c7af88f6",
+  "after_sha256": "72a1aac6f01c7244c9ed5a262af98f0fd5be460297e79788131867249fcb806d",
+  "change": "Current formal draft is status=draft, meaning=planned in existing capa_verification owner reader; not performed/action_fulfilled. Other new request/history/empty physical/actual atom checks kept.",
+  "review": "Root exact service._reading inspected; independent C review confirmed no other mandatory mismatch for selected newDraft+singleLink scope",
+  "actual_closeout_run": false,
+  "backend480_modified": false,
+  "ast_valid": true
+}

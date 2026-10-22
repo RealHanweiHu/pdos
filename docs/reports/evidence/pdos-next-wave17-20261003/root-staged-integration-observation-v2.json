@@ -1,0 +1,27 @@
+{
+  "recorded_at": "2026-10-03T10:03:20.320563+00:00",
+  "files": {
+    "pdos-next/staging/wave17/anchor.py": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+    "pdos-next/staging/wave17/lineage.py": "252a11c5a48f9d6db8a270e07f979ae1437de4156bd1b16d6fe4bd7dcea6dcce",
+    "pdos-next/staging/wave17/test_anchor_lineage.py": "c8150cbcf326dc9b441d21bec56c5cca095d8ff889210499c17498ef8d6a8e68",
+    "pdos-next/staging/wave17/anchor-contract.md": "97072e8fa394a290587b3c41ba928c6038aa69788cddb0220b73ee062decf54a",
+    "pdos-next/staging/wave17/paired.py": "da00ee74196eb5a5165cec97c2ec3d16c57b93b6f23913b619fd796103354141",
+    "pdos-next/staging/wave17/test_paired.py": "3358e8b1405738c4b4e12f5e65a065b9122f11a0864f78ab275325a2615b72a9",
+    "pdos-next/staging/wave17/paired-contract.md": "3a597197ae30ebdfc94515c25d5c12f201770a0b2073e086e0e3b5265f5900f1"
+  },
+  "backend_v3_480_unchanged": true,
+  "backend_v3_manifest_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+  "checks_by_owned_scope": {
+    "anchor_lineage": 57,
+    "paired": 57
+  },
+  "paired_final_delta_sha256": "be94b8ee04e7127d2858fc97618c758a9584774a94a4f5c892ad45ff986b9a44",
+  "prior_as_of_snapshot_retained": "root-staged-integration-observation.json",
+  "unmounted": true,
+  "public_effectiveness_close_enabled": false,
+  "actual_business_or_same_uow_proof_claim": false,
+  "wave16_pg_completed": 11,
+  "wave16_pg_passed": 10,
+  "wave16_pg_failed": 1,
+  "remaining": "Root live owner callbacks/DDL/common T2/companion facts/API/BFF/current ACL/bytes/real qualification and scoped SQL/browser validation still required."
+}

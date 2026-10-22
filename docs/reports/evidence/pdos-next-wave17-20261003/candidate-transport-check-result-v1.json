@@ -1,0 +1,130 @@
+{
+  "status": "FROZEN",
+  "scope": "candidate-only BFF Node transport; affected route VM and own synthetic sockets; no PDOS requests",
+  "files": [
+    {
+      "path": "pdos-next/web/package.json",
+      "sha256": "719e661dce12750a645ec0f31645428ca7b6caf491d8fe6497193c3c1a330fdf"
+    },
+    {
+      "path": "pdos-next/web/pnpm-lock.yaml",
+      "sha256": "b87b4658544fc1146c1cb363f95f63480a3977466276aad1610bb16cf1203aa4"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "sha256": "5d5a4bf01e4b0ba74ec7beaad6afcd3f7aba1632fd811f764558fdbde683f806"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.test.ts",
+      "sha256": "88b7dd724cc00d21cfa9984d868f7fac25d1a27dd6b1cad30fd08a2283034ec2"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/wave16-route.test.ts",
+      "sha256": "c7b4afeaa9d9dfdf397bb3b17c4013adf52fc6732c24aae313358239bae453d2"
+    },
+    {
+      "path": "pdos-next/web/src/lib/candidate-transport.ts",
+      "sha256": "c1629d06bd715111cb1c01f26221b78d0d74fe95e633c7277f89a9ddfc8a46dd"
+    },
+    {
+      "path": "pdos-next/web/src/lib/candidate-transport.test.ts",
+      "sha256": "1c79ba9848122135692f7b792204f7c02548d500dedc60abd7477f16b9634237"
+    }
+  ],
+  "before_manifest": "candidate-transport-before-v1.json",
+  "versions": {
+    "node": "25.8.1",
+    "next": "16.3.3",
+    "node_builtin_undici": "7.22.0",
+    "explicit_undici": "7.22.0",
+    "pnpm": "11.16.0"
+  },
+  "install": {
+    "command": "pnpm add undici@7.22.0 --save-exact --ignore-scripts",
+    "exit_code": 0,
+    "packages_added": 1,
+    "raw_log": "not saved separately; tool stdout retained in task transcript"
+  },
+  "checks": [
+    {
+      "command": "node 'src/app/api/[...path]/route.test.ts'",
+      "cwd": "pdos-next/web",
+      "exit_code": 0,
+      "passed": 25,
+      "failed": 0,
+      "log": "candidate-transport-route-v1.log",
+      "log_sha256": "5cd51780a28c07a3d440c2eb125fcd5237c64e6c0af7eb76ffa07ee83adee5de"
+    },
+    {
+      "command": "node 'src/app/api/[...path]/wave16-route.test.ts'",
+      "cwd": "pdos-next/web",
+      "exit_code": 0,
+      "passed": 30,
+      "failed": 0,
+      "log": "candidate-transport-wave16-route-v1.log",
+      "log_sha256": "5633b73859dfe886cc5d911221af0a0e38e65b40aab2d410ac9aecae74acf1db"
+    },
+    {
+      "command": "node --test src/lib/candidate-transport.test.ts",
+      "cwd": "pdos-next/web",
+      "exit_code": 0,
+      "passed": 4,
+      "failed": 0,
+      "log": "candidate-transport-socket-v2.log",
+      "log_sha256": "533d6aaa3d3d57f9ffa10cd841bfef70c7e60e754a6169d087036bf1be0834ba"
+    }
+  ],
+  "total_distinct_affected_tests": 59,
+  "eslint": {
+    "exit_code": 0,
+    "log": "candidate-transport-eslint-final.log",
+    "scope": [
+      "pdos-next/web/src/app/api/[...path]/route.ts",
+      "pdos-next/web/src/app/api/[...path]/route.test.ts",
+      "pdos-next/web/src/app/api/[...path]/wave16-route.test.ts",
+      "pdos-next/web/src/lib/candidate-transport.ts",
+      "pdos-next/web/src/lib/candidate-transport.test.ts"
+    ]
+  },
+  "typecheck": {
+    "exit_code": 0,
+    "log": "candidate-transport-types-final.log",
+    "diagnostics": 0,
+    "implementation": "TypeScript createProgram with existing tsconfig options, five affected root TS files + existing next-env.d.ts, noEmit=true/incremental=false; no next typegen/build"
+  },
+  "earlier_attempts": [
+    {
+      "log": "candidate-transport-tests-v1.log",
+      "passed": 4,
+      "note": "Node --test interprets bracketed path as a glob: only helper selected, not counted twice; actual route tests later executed directly by node."
+    },
+    {
+      "note": "First lint found prohibited local variable named module in new helper test; renamed helperModule. No production change; final lint passed."
+    }
+  ],
+  "synthetic_checks": {
+    "server": "127.0.0.1 ephemeral port, synthetic bytes only",
+    "delay_ms": 1500,
+    "narrow_timeout_ms": 100,
+    "long_abort_ms": 5000,
+    "observed_error_codes": [
+      "UND_ERR_HEADERS_TIMEOUT",
+      "UND_ERR_BODY_TIMEOUT"
+    ],
+    "candidate_agent_ms": 600000,
+    "requests_per_call": 1,
+    "retry": false,
+    "short_total_abort_ms": 100
+  },
+  "not_run": [
+    "PDOS HTTP",
+    "database",
+    "browser",
+    "build",
+    "public or full repo validation"
+  ],
+  "limits": [
+    "Original UI UNKNOWN is consistent with independent timeout but its original cause was not retained; this does not uniquely attribute that historical event.",
+    "Short synthetic timing validates supported dispatcher mechanics, not ten-minute real end-to-end service delivery. Root owns actual build/restart/receipt recovery."
+  ]
+}

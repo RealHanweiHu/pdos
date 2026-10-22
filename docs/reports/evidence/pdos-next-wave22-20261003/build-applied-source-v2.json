@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-03T18:39:14.997607+00:00",
+  "files": {
+    "pdos-next/tools/wave22_shared_build.py": "bd8035806019ebf22dd6b7e3079fa85ccda23d6d9400ccc1a4c8fd7bf35315c0",
+    "pdos-next/tools/tests/test_wave22_shared_build.py": "bd30e211c34fe1724c324e466194ef879346ecf66728a29513e0626f0d3be46d"
+  },
+  "previous_manifest": "build-applied-source-v1.json",
+  "actual_pure_count": 38,
+  "checks": {
+    "pure": {
+      "exit_code": 0,
+      "log_sha256": "07b2a2f9cd5b60f374f7824f86d5236a2063dfa7c78b885f7a0b32cfc3f596bc"
+    },
+    "static": {
+      "exit_code": 0,
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "format": {
+      "exit_code": 0,
+      "log_sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    }
+  },
+  "actual_db_http": false,
+  "change": "Finite exact Decimal equality; original quantity source strings and all saved requests unchanged"
+}

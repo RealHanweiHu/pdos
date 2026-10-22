@@ -1,0 +1,10 @@
+{
+  "status_code": 503,
+  "seconds": 30.703,
+  "response": {
+    "code": "INTEGRATION_REQUIRED",
+    "message": "固定输出缺少精确共同保存回执。"
+  },
+  "read_only": true,
+  "loopback_direct": true
+}

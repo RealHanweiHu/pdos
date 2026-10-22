@@ -1,0 +1,35 @@
+{
+  "document_links_resolved": true,
+  "frozen_source_count": 97,
+  "frozen_hashes_match": true,
+  "legacy_sample_count": 57,
+  "legacy_sample_unchanged": true,
+  "browser": {
+    "desktop_width": 1440,
+    "mobile_widths": [
+      390,
+      320
+    ],
+    "horizontal_overflow": false,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "definition_saved_versions": [
+      1,
+      2
+    ],
+    "original_download_exact": true,
+    "pdf_pages_visible": [
+      1,
+      2
+    ],
+    "xlsx_cells_visible": [
+      "A1",
+      "B1"
+    ],
+    "viewport_restored": true
+  },
+  "git_push": false,
+  "real_model_calls": 0
+}

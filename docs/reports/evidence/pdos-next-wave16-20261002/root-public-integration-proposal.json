@@ -1,0 +1,58 @@
+{
+  "applied": false,
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/command_handlers.py",
+      "base_sha256": "9b96694882f74587e3c399651cdec051620f04ceca35ab592dceafccfa645e68",
+      "proposed_sha256": "b669d0b9cf0a58a38892b5c385ba800a717899aaea1c0a76e000f442120b280c"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/contracts.py",
+      "base_sha256": "fd994a3d3e60beaf9e60b51e551b1ef77fb924b2c5ce5eaedc4fabe8947bc436",
+      "proposed_sha256": "6cc5958611277a27682b13b9b07c8e4f4683c6112b16b845f3e33f8c344c7a37"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "base_sha256": "d74345be7fc877852a8c2b35369c2cfa631acda1b1164d2ce011f94491a85919",
+      "proposed_sha256": "8df806e61ad64cc6f87aa2cfea92114c9877e2ba3af7cfba347d729ccf663d84"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/professional_authority/service.py",
+      "base_sha256": "ea4c5c761c8d99c0433abb375a1db916d71089a55936b516a75e9a91312b623c",
+      "proposed_sha256": "640bb0ce26dda5fe6ecc02caf1216ee3a5cec04d165ede119095f37ec5280f15"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/api.py",
+      "base_sha256": "ddc0a4b0076ead12155d36fb5c877aedf6cf0c23267c45e2cbf92dcb86600b10",
+      "proposed_sha256": "e70b65cc99e23574a8091df135a0f44b3d30cc98427c95871a6bd1e85f0116a8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/asgi.py",
+      "base_sha256": "838799e1022887b676df2aebc2a991d88a4dac78f1d0c80187b2dda87f9a0672",
+      "proposed_sha256": "6862d3c19b773dd4c06f25ff69262d483cd038627206516034d3a41642935d5c"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/models.py",
+      "base_sha256": "8a6b68235464e1f30e19dfbb1575754645f26f26781f32ca2c54f655e590f289",
+      "proposed_sha256": "bb94d209c69f176261bba3dea3549d7daf31ba92a5285b75d45ac4c25cef987e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/quality_execution/models.py",
+      "base_sha256": "e421c569e89c746795d60d9acbbf87fce4324eef360c8c950713c2af64c3d517",
+      "proposed_sha256": "c8dab50b927abe5fbb63fb05fc0fe2d9d0ae67b78b0ef5115a3595ef7a092537"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/lifecycle_catalog.py",
+      "base_sha256": "bb7f113195133ed38a1a913c5ddb8e9db4d965c382ae1bf0bf901b95d40dbefb",
+      "proposed_sha256": "cdc40c2ce80e59ac545a611abf82b160a645f4b2ddd75a5319e80a839181d322"
+    },
+    {
+      "path": "pdos-next/tools/local_environment.py",
+      "base_sha256": "9a08a9a30e759d2132edc965268824894d63bf78c95c7d5ee0aedb369ac75a11",
+      "proposed_sha256": "1a53f925e2fee8121a695ac3ef08a4d74db25be0bd6a3325e1ed0ffb11f9ed41"
+    }
+  ],
+  "syntax_checked": true,
+  "patch_sha256": "e9047fb546da4bb029c8a5ff42e3e35fb2913bc7840c53b85b4f37ed7bddec1f",
+  "scope": "Unapplied public wiring only; migration and actual validation remain Root-owned."
+}

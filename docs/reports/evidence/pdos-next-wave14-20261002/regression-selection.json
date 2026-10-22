@@ -1,0 +1,32 @@
+{
+  "regression-professional": [
+    "tests/professional_authority/test_transactions.py",
+    "tests/professional_authority/test_assessment.py"
+  ],
+  "regression-build": [
+    "tests/build_start/test_transactions.py::test_atomic_start_holds_receipt_and_read_projection_do_not_modify_original_plan",
+    "tests/build_start/test_transactions.py::test_original_approver_qualification_revoke_restore_aba_invalidates_old_t1",
+    "tests/build_start/test_transactions.py::test_source_withdrawal_guards_successful_start_replay_and_keeps_history",
+    "tests/build_start/test_rules.py",
+    "tests/test_build_start_common.py"
+  ],
+  "regression-handoff": [
+    "tests/sample_handoff/test_transactions.py::test_targeted_execution_projection_preserves_qualification_stop_and_source_guards",
+    "tests/sample_handoff/test_transactions.py::test_signer_qualification_revoke_restore_epoch_does_not_revive_readiness",
+    "tests/sample_handoff/test_read_context.py",
+    "tests/sample_handoff/test_rules.py"
+  ],
+  "regression-launch": [
+    "tests/verification_launch/test_transactions.py::test_fixed_full_accepted_plan_promise_and_atomic_actual_start_leave_old_history",
+    "tests/verification_launch/test_transactions.py::test_complete_accepted_scope_and_fixed_resource_binding_cannot_be_shrunk_or_replaced",
+    "tests/verification_launch/test_transactions.py::test_build_writer_or_agent_cannot_claim_quality_or_write_run_directly",
+    "tests/verification_launch/test_pure.py",
+    "tests/test_launch_common.py"
+  ],
+  "regression-pure": [
+    "tests/measurement_evidence",
+    "tests/verification_results/test_pure.py",
+    "tests/test_resources/test_rules.py",
+    "tests/verification_front/test_pure.py"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "files": {
+    "pdos-next/server/tests/professional_authority/test_assessment.py": {
+      "before": "3eb694b47e29965cf9b1204926414ec81f8be70e31768f9a86687f8b9ba64ff0",
+      "after": "90ecb9ba4d9100caa74ef784bd70ec9ae9ace04d1d28b8ea892319891e90b75e"
+    },
+    "pdos-next/tools/wave13_closeout.py": {
+      "before": "d2913532e04ede0de372a554f5c14bc97370de0893830bc4648390a9c47a99a4",
+      "after": "9d93e5ad140598395c20b04b139452ad2b474c84e27f0958bbc91afa99335c96"
+    },
+    "pdos-next/web/src/components/builds/build-launch.tsx": {
+      "before": "39ff385f4edcfd69bc77b356a9a92a6509f0be38b5fd556bf4a367787c391766",
+      "after": "7ecbea66410c289c3dc9af99394d5bb590c0e0e30afabb4fa08d7b8046f8dcea"
+    },
+    "pdos-next/server/tests/verification_handoff/test_pure.py": {
+      "before": "e3b5eae91103def281f770b478307b5a793ca888ef52efe1eb8ea2fccea56d62",
+      "after": "4dc6ac9d34ac71a928d5b30fe2faccbe9becdfbb8c2e87bec9a3f6c95f2f072a"
+    }
+  },
+  "server_production_unchanged": true,
+  "joint_backend_production_candidate_unchanged": true,
+  "verification": "Final pure selection renewed; changed display receives renewed build and browser checks; closeout query joins actual Run schema."
+}

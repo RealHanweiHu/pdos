@@ -1,0 +1,15 @@
+{
+  "purpose": "metadata-only diagnosis of prolonged single retry; no query text, PIDs, credentials or business content exported",
+  "read_only": true,
+  "records": [
+    {
+      "usename": "pdos_next_app",
+      "state": "active",
+      "wait_event_type": null,
+      "wait_event": null,
+      "query_age_seconds": 0.058014,
+      "blocker_count": 0
+    }
+  ],
+  "other_sessions_terminated": false
+}

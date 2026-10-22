@@ -1,0 +1,66 @@
+{
+  "schema_version": "staged-ui-state-check.v1",
+  "recorded_at": "2026-10-03T11:01:38.026050+00:00",
+  "files": {
+    "pdos-next/staging/wave17/ui-contract.ts": "87f1494834414a04076cc107ac22c942228c7a4b6ad8d6a525774b48ea8a0a5b",
+    "pdos-next/staging/wave17/ui-state.ts": "a7983c72185edc561d6c563b9b971dbed4aa11b7013b217d32b085ec17db941e",
+    "pdos-next/staging/wave17/ui-state.test.ts": "f8cb21508784b1677820921419e16321b8deee0238196628cdc5fdc0359062b7",
+    "pdos-next/staging/wave17/ui-state-contract.md": "ea4003d79242b803905db0a97520f66e37d69d6af5cc9fa89a3ab0b95bb11cf7"
+  },
+  "sources_unchanged_during_checks": true,
+  "typecheck_argv": [
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/.bin/tsc",
+    "--target",
+    "ES2022",
+    "--module",
+    "commonjs",
+    "--moduleResolution",
+    "node",
+    "--strict",
+    "--esModuleInterop",
+    "--noEmitOnError",
+    "--noUnusedLocals",
+    "--noUnusedParameters",
+    "--types",
+    "node",
+    "--typeRoots",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/@types",
+    "--outDir",
+    "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-ui-state-zqimqo4s",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/ui-contract.ts",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/ui-state.ts",
+    "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/ui-state.test.ts"
+  ],
+  "test_argv": [
+    "node",
+    "--test",
+    "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-ui-state-zqimqo4s/ui-state.test.js"
+  ],
+  "cwd_typecheck": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+  "temporary_output": "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-ui-state-zqimqo4s",
+  "typecheck_exit": 0,
+  "test_exit": 0,
+  "raw_typecheck": "ui-state-typecheck.log",
+  "raw_tests": "ui-state-pure-tests.log",
+  "initial_logs_preserved": [
+    "ui-state-typecheck-first-failure.log",
+    "ui-state-typecheck-unused-import-failure.log",
+    "ui-state-typecheck-initial-pass.log",
+    "ui-state-pure-tests-initial-23.log"
+  ],
+  "limits": [
+    "Only owned staged TypeScript DTO/state tests",
+    "No HTTP/DB/browser/public check/build",
+    "No actual profession/bytes/UOW/Proof/Receipt/Current attestation",
+    "No real new-op expiry transport configured; default stays UNKNOWN"
+  ],
+  "tests": {
+    "tests": 26,
+    "pass": 26,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "duration_ms": 148.784458
+}

@@ -1,0 +1,7 @@
+### Result
+{"posts":[{"command_id":"47fb3b3f-3785-4bd9-b720-392a2089e14e","operation":"release.exception.decide","status":200,"subject_id":"4fb416d4-775d-45fa-8bde-1c4e0876325e","same_original":true}],"dropped":true,"status":["提交结果尚未核实。请保留原请求，明确重放并核对同一原提交。"],"replayVisible":true}
+### Ran Playwright code
+```js
+await (async page => ({posts:page.__exceptionBrowser.posts,dropped:page.__exceptionBrowser.dropped,status:await page.getByRole("region",{name:"具名例外决定与撤回",exact:true}).getByRole("status").allTextContents(),replayVisible:await page.getByRole("button",{name:"重放并核对同一原提交",exact:true}).isVisible()}))(page);
+```
+

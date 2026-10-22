@@ -1,0 +1,93 @@
+{
+  "pure": [
+    "tests/derivation_engine/test_derivation.py",
+    "tests/evidence_processing/test_documents.py",
+    "tests/evidence_processing/test_storage.py",
+    "tests/evidence_security/test_scanning.py",
+    "tests/object_journal/test_store.py",
+    "tests/object_lifecycle_runtime/test_runtime.py",
+    "tests/original_lifecycle/test_rules.py",
+    "tests/original_lifecycle/test_safety_guard.py",
+    "tests/original_lifecycle/test_service.py",
+    "tests/original_lifecycle_execution/test_codec.py",
+    "tests/original_lifecycle_execution/test_fact_clock.py",
+    "tests/original_lifecycle_execution/test_ports.py",
+    "tests/planning/test_scheduling.py",
+    "tests/planning_engine/test_calendar.py",
+    "tests/planning_engine/test_forecast.py",
+    "tests/products/test_definition_payload.py",
+    "tests/products/test_variants_payload.py",
+    "tests/professional_authority/test_assessment.py",
+    "tests/providers/test_claim_gateway.py",
+    "tests/providers/test_persistent_budget_contract.py",
+    "tests/providers/test_reconciliation_schema.py",
+    "tests/security_runtime/test_runtime.py",
+    "tests/supply_cost_engine/test_contract.py",
+    "tests/supply_cost_engine/test_costs.py",
+    "tests/supply_cost_engine/test_coverage.py",
+    "tests/verification_front/test_pure.py"
+  ],
+  "tests-test_build_execution": [
+    "tests/test_build_execution.py"
+  ],
+  "tests-test_cost_execution": [
+    "tests/test_cost_execution.py"
+  ],
+  "tests-test_verification_execution": [
+    "tests/test_verification_execution.py"
+  ],
+  "products-test_definition_transactions": [
+    "tests/products/test_definition_transactions.py"
+  ],
+  "products-test_variants_transactions": [
+    "tests/products/test_variants_transactions.py"
+  ],
+  "professional_authority-test_transactions": [
+    "tests/professional_authority/test_transactions.py"
+  ],
+  "providers-test_persistent_budget_transactions": [
+    "tests/providers/test_persistent_budget_transactions.py"
+  ],
+  "tests-test_build_comparison": [
+    "tests/test_build_comparison.py"
+  ],
+  "tests-test_build_demand": [
+    "tests/test_build_demand.py"
+  ],
+  "tests-test_build_readiness": [
+    "tests/test_build_readiness.py"
+  ],
+  "tests-test_builds": [
+    "tests/test_builds.py"
+  ],
+  "tests-test_checkpoint_recovery": [
+    "tests/test_checkpoint_recovery.py"
+  ],
+  "tests-test_configurations": [
+    "tests/test_configurations.py"
+  ],
+  "tests-test_durable_evidence": [
+    "tests/test_durable_evidence.py"
+  ],
+  "tests-test_original_security": [
+    "tests/test_original_security.py"
+  ],
+  "tests-test_project_first_plan": [
+    "tests/test_project_first_plan.py"
+  ],
+  "tests-test_supply_execution": [
+    "tests/test_supply_execution.py"
+  ],
+  "tests-test_trusted_source_work": [
+    "tests/test_trusted_source_work.py"
+  ],
+  "verification_front-test_read_concurrency_transactions": [
+    "tests/verification_front/test_read_concurrency_transactions.py"
+  ],
+  "verification_front-test_transactions": [
+    "tests/verification_front/test_transactions.py"
+  ],
+  "lifecycle-isolated": [
+    "tests/test_original_lifecycle_integration.py"
+  ]
+}

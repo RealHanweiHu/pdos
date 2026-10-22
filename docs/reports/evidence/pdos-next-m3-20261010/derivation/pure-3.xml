@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="9" skipped="0" tests="230" time="0.617" timestamp="2026-10-10T23:14:09.447355-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.derivation_engine.test_derivation" name="test_all_five_three_way_classes_include_child_only_and_sorted_paths" time="0.004" /><testcase classname="tests.derivation_engine.test_derivation" name="test_deletion_conflict_and_additions_have_distinct_missing_states" time="0.002" /><testcase classname="tests.derivation_engine.test_derivation" name="test_deletion_classification[new_specs0-child_specs0-parent_only]" time="0.001" /><testcase classname="tests.derivation_engine.test_derivation" name="test_deletion_classification[new_specs1-child_specs1-child_only]" time="0.001" /><testcase classname="tests.derivation_engine.test_derivation" name="test_deletion_classification[new_specs2-child_specs2-same_change]" time="0.001" /><testcase classname="tests.derivation_engine.test_derivation" name="test_absent_null_and_explicitly_deleted_sections_are_not_equal" time="0.001" /><testcase classname="tests.derivation_engine.test_derivation" name="test_unknown_spec_is_present_and_requires_confirmation_without_zero" time="0.005" /><testcase classname="tests.derivation_engine.test_derivation" name="test_decimal_and_collection_order_do_not_create_changes" time="0.002" /><testcase classname="tests.derivation_engine.test_derivation" name="test_definition_source_order_is_not_an_effective_content_change" time="0.001" /><testcase classname="tests.derivation_engine.test_derivation" name="test_small_decimal_delta_survives_a_low_precision_context" time="0.003" /><testcase classname="tests.derivation_engine.test_derivation" name="test_units_and_test_conditions_remain_semantic_and_need_reconfirmation[changes0]" time="0.001" /><testcase classname="tests.derivation_engine.test_derivation" name="test_units_and_test_conditions_remain_semantic_and_need_reconfirmation[changes1]" time="0.001" /><testcase classname="tests.derivation_engine.test_derivation" name="test_same_value_explicit_override_conflicts_when_parent_changes" time="0.005" /><testcase classname="tests.derivation_engine.test_derivation" name="test_adoption_never_inherits_parent_identity_approval_or_decisions" time="0.002" /><testcase classname="tests.derivation_engine.test_derivation" name="test_new_parent_spec_cannot_inherit_parent_owner" time="0.002" /><testcase classname="tests.derivation_engine.test_derivation" name="test_selective_parent_deletion_is_a_candidate_and_preserves_other_specs" time="0.003" /><testcase classname="tests.derivation_engine.test_derivation" name="test_selective_section_deletion_remains_explicit_in_candidate" time="0.001" /><testcase classname="tests.derivation_engine.test_derivation" name="test_source_section_deletion_keeps_trace_evidence_and_reports_missing_source" time="0.001" /><testcase classname="tests.derivation_engine.test_derivation" name="test_parent_deletion_conflict_requires_explicit_resolution_before_removing_child" time="0.005" /><testcase classname="tests.derivation_engine.test_derivation" name="test_selective_adoption_preserves_unselected_set_and_delete_overrides" time="0.004" /><testcase classname="tests.derivation_engine.test_derivation" name="test_no_validation_port_returns_preview_with_pending_authority" time="0.002" /><testcase classname="tests.derivation_engine.test_derivation" name="test_denied_or_unknown_port_cannot_adopt[assessment0]" time="0.002" /><testcase classname="tests.derivation_engine.test_derivation" name="test_denied_or_unknown_port_cannot_adopt[assessment1]" time="0.002" /><testcase classname="tests.derivation_engine.test_derivation" name="test_denied_or_unknown_port_cannot_adopt[assessment2]" time="0.002" /><testcase classname="tests.derivation_engine.test_derivation" name="test_denied_or_unknown_port_cannot_adopt[assessment3]" time="0.002" /><testcase classname="tests.derivation_engine.test_derivation" name="test_denied_or_unknown_port_cannot_adopt[assessment4]" time="0.002" /><testcase classname="tests.derivation_engine.test_derivation" name="test_denied_or_unknown_port_cannot_adopt[assessment5]" time="0.002" /><testcase classname="tests.derivation_engine.test_derivation" name="test_fixed_parent_and_snapshot_version_mismatches_are_rejected[mutation0]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_fixed_parent_and_snapshot_version_mismatches_are_rejected[mutation1]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_fixed_parent_and_snapshot_version_mismatches_are_rejected[mutation2]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_fixed_parent_and_snapshot_version_mismatches_are_rejected[mutation3]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_fixed_parent_and_snapshot_version_mismatches_are_rejected[mutation4]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_invalid_override_paths_are_rejected[field/title]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_invalid_override_paths_are_rejected[specs/../power]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_invalid_override_paths_are_rejected[specs/power/value]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_invalid_override_paths_are_rejected[specs/]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_invalid_override_paths_are_rejected[other/power]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_duplicate_keys_and_inconsistent_unknown_numbers_are_rejected" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_specification_does_not_accept_float_or_bool_as_exact_decimal[1.25-value]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_specification_does_not_accept_float_or_bool_as_exact_decimal[1.25-lower]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_specification_does_not_accept_float_or_bool_as_exact_decimal[1.25-upper]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_specification_does_not_accept_float_or_bool_as_exact_decimal[1.25-tolerance]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_specification_does_not_accept_float_or_bool_as_exact_decimal[True-value]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_specification_does_not_accept_float_or_bool_as_exact_decimal[True-lower]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_specification_does_not_accept_float_or_bool_as_exact_decimal[True-upper]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_specification_does_not_accept_float_or_bool_as_exact_decimal[True-tolerance]" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_stale_digest_duplicate_selection_and_scope_mismatch_are_rejected" time="0.008" /><testcase classname="tests.derivation_engine.test_derivation" name="test_algorithms_leave_inputs_unchanged_and_bind_content_in_digest" time="0.005" /><testcase classname="tests.derivation_engine.test_derivation" name="test_current_definition_view_adapter_retains_exact_decimals_and_fixed_identity" time="0.000" /><testcase classname="tests.derivation_engine.test_derivation" name="test_source_null_selection_stays_null_and_reports_missing_sources" time="0.001" /><testcase classname="tests.derivation_engine.test_derivation" name="test_unchanged_unknown_spec_still_exposes_confirmation_requirement" time="0.001" /><testcase classname="tests.derivation_engine.test_derivation" name="test_adoption_repairs_only_the_selected_missing_override" time="0.003" /><testcase classname="tests.derivation_engine.test_legacy_projection" name="test_real_legacy_number_assembly_removes_only_migration_defaults" time="0.001" /><testcase classname="tests.derivation_engine.test_legacy_projection" name="test_actual_m3_facts_require_proposal_without_silent_projection[changes0]" time="0.000" /><testcase classname="tests.derivation_engine.test_legacy_projection" name="test_actual_m3_facts_require_proposal_without_silent_projection[changes1]" time="0.000" /><testcase classname="tests.derivation_engine.test_legacy_projection" name="test_actual_m3_facts_require_proposal_without_silent_projection[changes2]" time="0.000" /><testcase classname="tests.derivation_engine.test_legacy_projection" name="test_actual_m3_facts_require_proposal_without_silent_projection[changes3]" time="0.000" /><testcase classname="tests.derivation_engine.test_legacy_projection" name="test_actual_m3_facts_require_proposal_without_silent_projection[changes4]" time="0.001" /><testcase classname="tests.derivation_engine.test_legacy_projection" name="test_actual_m3_facts_require_proposal_without_silent_projection[changes5]" time="0.000" /><testcase classname="tests.derivation_engine.test_legacy_projection" name="test_actual_m3_facts_require_proposal_without_silent_projection[changes6]" time="0.000" /><testcase classname="tests.derivation_engine.test_legacy_projection" name="test_actual_m3_facts_require_proposal_without_silent_projection[changes7]" time="0.000" /><testcase classname="tests.derivation_engine.test_legacy_projection" name="test_definition_level_m3_source_requires_proposal" time="0.000" /><testcase classname="tests.derivation_engine.test_legacy_projection" name="test_explicit_legacy_title_override_requires_choice_and_keeps_local" time="0.005" /><testcase classname="tests.derivation_engine.test_legacy_projection" name="test_explicit_title_override_is_bound_in_comparison_digest" time="0.003" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_real_definition_shape_preserves_all_spec_fields_and_exact_decimals" time="0.000" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_five_m3_value_types_and_proposal_field_aliases[number-target0]" time="0.000" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_five_m3_value_types_and_proposal_field_aliases[range-target1]" time="0.000" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_five_m3_value_types_and_proposal_field_aliases[text-target2]" time="0.000" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_five_m3_value_types_and_proposal_field_aliases[boolean-target3]" time="0.000" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_five_m3_value_types_and_proposal_field_aliases[enum-target4]" time="0.000" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_non_artifact_evidence_is_computable_and_remains_in_adoption[human]" time="0.003" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_non_artifact_evidence_is_computable_and_remains_in_adoption[snapshot]" time="0.003" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_non_artifact_evidence_is_computable_and_remains_in_adoption[knowledge]" time="0.003" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_non_artifact_evidence_is_computable_and_remains_in_adoption[parameter]" time="0.003" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_non_artifact_evidence_is_computable_and_remains_in_adoption[definition]" time="0.003" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_non_artifact_evidence_is_computable_and_remains_in_adoption[claim]" time="0.003" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_adoption_keeps_source_provenance_in_trace_without_inheriting_confirmation" time="0.003" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_incomplete_specifications_remain_computable_with_diagnostics" time="0.001" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_m3_semantics_change_comparison_and_bound_digest[parameter_version-4]" time="0.003" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_m3_semantics_change_comparison_and_bound_digest[condition_note-0 \xb0C]" time="0.003" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_m3_semantics_change_comparison_and_bound_digest[source_refs-value2]" time="0.003" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_m3_semantics_change_comparison_and_bound_digest[origin-human]" time="0.003" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_legacy_adapter_preserves_full_m3_values_and_calls_rich_engine" time="0.004" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_explicit_legacy_override_uses_rich_conflict_classification" time="0.004" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_adapter_rejects_unknown_business_fields_instead_of_silently_dropping_them" time="0.000" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_known_missing_unit_is_diagnostic_not_a_new_g0_gate" time="0.001" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_rich_adapter_never_coerces_inexact_or_nonfinite_numbers[True]" time="0.000" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_rich_adapter_never_coerces_inexact_or_nonfinite_numbers[1.1]" time="0.000" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_rich_adapter_never_coerces_inexact_or_nonfinite_numbers[NaN]" time="0.000" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_rich_adapter_never_coerces_inexact_or_nonfinite_numbers[Infinity]" time="0.000" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_dictionary_keys_remain_lossless_and_paths_escape_nested_syntax" time="0.004" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_production_comparison_calls_rich_engine_without_database" time="0.004" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_production_assembly_uses_engine_and_still_invokes_write_validation" time="0.002" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_explicit_override_without_evidence_remains_visible_and_needs_evidence" time="0.002" /><testcase classname="tests.derivation_engine.test_m3_adapter" name="test_view_adapter_preserves_explicit_section_deletion" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_digest_preserves_decimal_precision_and_uuid_representation" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_source_labels_statuses_ui_and_publication_pointer_are_not_fixed_content" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_digest_binds_complete_m3_spec_semantics[parameter_version-3]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_digest_binds_complete_m3_spec_semantics[item_status-expert_pending]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_digest_binds_complete_m3_spec_semantics[condition_note-0C]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_digest_binds_complete_m3_spec_semantics[origin-human]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_digest_binds_complete_m3_spec_semantics[writer_id-00000000-0000-0000-0000-000000000050]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_digest_binds_complete_m3_spec_semantics[run_id-00000000-0000-0000-0000-000000000051]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_digest_binds_complete_m3_spec_semantics[confirmed_by-00000000-0000-0000-0000-000000000052]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_digest_binds_complete_m3_spec_semantics[receipt_id-00000000-0000-0000-0000-000000000053]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_digest_binds_complete_m3_spec_semantics[exceptions-value8]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_digest_binds_complete_m3_spec_semantics[applicable_variants-value9]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_digest_binds_fixed_source_ids_versions_quotes_and_spec_relations" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_digest_ignores_collection_order_and_decimal_scale" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_unknown_spec_field_cannot_escape_digest" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_published_baseline_reads_exact_scope_and_receipt" time="0.001"><failure message="TypeError: fixture.&lt;locals&gt;.&lt;lambda&gt;() got an unexpected keyword argument 'extra_refs'">fixture = namespace(ctx=namespace(tenant_id=UUID('00000000-0000-0000-0000-000000000001'), category_id=UUID('00000000-0000-0000-0...c28bfe8a0024829905ff83a3f29edca3a6f057ae900c2977116a163e67'}), accesses=[UUID('00000000-0000-0000-0000-000000000003')])
+
+    def test_published_baseline_reads_exact_scope_and_receipt(fixture):
+        f = fixture
+        s = session(f)
+&gt;       result = baseline.published_baseline(s, f.ctx, PRODUCT, 1, DEFINITION)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_baseline.py:258: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = &lt;test_baseline.Session object at 0x11143e4b0&gt;
+ctx = namespace(tenant_id=UUID('00000000-0000-0000-0000-000000000001'), category_id=UUID('00000000-0000-0000-0000-0000000000...00-0000-0000-000000000005'), requester_id=UUID('00000000-0000-0000-0000-000000000005'), run_id=None, agent_run_id=None)
+product_id = UUID('00000000-0000-0000-0000-000000000003'), revision = 1
+definition_id = UUID('00000000-0000-0000-0000-000000000004'), variant_id = None
+extra_refs = ()
+
+    def published_baseline(
+        s, ctx, product_id, revision, definition_id=None, variant_id=None, *, extra_refs=()
+    ):
+        """Read one exact published baseline through ordinary caller RLS."""
+        _scope(s, ctx, product_id, variant_id)
+        if type(revision) is not int or revision &lt; 1:
+            fail("VERSION_CONFLICT", "baseline_version_changed", "请选择明确的固定定义版本。")
+        query = _query(ctx, product_id, variant_id)
+        query = query.where(
+            DefinitionRevision.id == definition_id
+            if definition_id is not None
+            else DefinitionRevision.revision == revision
+        )
+        row = s.scalar(query)
+        _row_scope(row, ctx, product_id, variant_id)
+        if row.revision != revision or (definition_id is not None and row.id != definition_id):
+            fail("VERSION_CONFLICT", "baseline_version_changed", "固定父定义版本不匹配。")
+        view = _published_view(s, ctx, row)
+&gt;       claim_refs = validate_sources(s, ctx, view, extra_refs=extra_refs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: fixture.&lt;locals&gt;.&lt;lambda&gt;() got an unexpected keyword argument 'extra_refs'
+
+pdos_next/domain/preproject/baseline.py:372: TypeError</failure></testcase><testcase classname="tests.preproject.test_baseline" name="test_synthetic_publication_stays_explicit" time="0.001"><failure message="TypeError: fixture.&lt;locals&gt;.&lt;lambda&gt;() got an unexpected keyword argument 'extra_refs'">fixture = namespace(ctx=namespace(tenant_id=UUID('00000000-0000-0000-0000-000000000001'), category_id=UUID('00000000-0000-0000-0...f83a3f29edca3a6f057ae900c2977116a163e67', 'synthetic': True}), accesses=[UUID('00000000-0000-0000-0000-000000000003')])
+
+    def test_synthetic_publication_stays_explicit(fixture):
+        f = fixture
+        f.receipt.result["synthetic"] = True
+&gt;       result = baseline.published_baseline(session(f), f.ctx, PRODUCT, 1)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_baseline.py:272: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = &lt;test_baseline.Session object at 0x11143e510&gt;
+ctx = namespace(tenant_id=UUID('00000000-0000-0000-0000-000000000001'), category_id=UUID('00000000-0000-0000-0000-0000000000...00-0000-0000-000000000005'), requester_id=UUID('00000000-0000-0000-0000-000000000005'), run_id=None, agent_run_id=None)
+product_id = UUID('00000000-0000-0000-0000-000000000003'), revision = 1
+definition_id = None, variant_id = None, extra_refs = ()
+
+    def published_baseline(
+        s, ctx, product_id, revision, definition_id=None, variant_id=None, *, extra_refs=()
+    ):
+        """Read one exact published baseline through ordinary caller RLS."""
+        _scope(s, ctx, product_id, variant_id)
+        if type(revision) is not int or revision &lt; 1:
+            fail("VERSION_CONFLICT", "baseline_version_changed", "请选择明确的固定定义版本。")
+        query = _query(ctx, product_id, variant_id)
+        query = query.where(
+            DefinitionRevision.id == definition_id
+            if definition_id is not None
+            else DefinitionRevision.revision == revision
+        )
+        row = s.scalar(query)
+        _row_scope(row, ctx, product_id, variant_id)
+        if row.revision != revision or (definition_id is not None and row.id != definition_id):
+            fail("VERSION_CONFLICT", "baseline_version_changed", "固定父定义版本不匹配。")
+        view = _published_view(s, ctx, row)
+&gt;       claim_refs = validate_sources(s, ctx, view, extra_refs=extra_refs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: fixture.&lt;locals&gt;.&lt;lambda&gt;() got an unexpected keyword argument 'extra_refs'
+
+pdos_next/domain/preproject/baseline.py:372: TypeError</failure></testcase><testcase classname="tests.preproject.test_baseline" name="test_current_caller_and_historical_signer_need_not_be_same_human" time="0.001"><failure message="TypeError: fixture.&lt;locals&gt;.&lt;lambda&gt;() got an unexpected keyword argument 'extra_refs'">fixture = namespace(ctx=namespace(tenant_id=UUID('00000000-0000-0000-0000-000000000001'), category_id=UUID('00000000-0000-0000-0...c28bfe8a0024829905ff83a3f29edca3a6f057ae900c2977116a163e67'}), accesses=[UUID('00000000-0000-0000-0000-000000000003')])
+
+    def test_current_caller_and_historical_signer_need_not_be_same_human(fixture):
+        f = fixture
+        f.ctx.actor_id = f.ctx.requester_id = UUID(int=70)
+        f.signer.active = False
+&gt;       result = baseline.published_baseline(session(f), f.ctx, PRODUCT, 1)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_baseline.py:280: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = &lt;test_baseline.Session object at 0x1114b6b10&gt;
+ctx = namespace(tenant_id=UUID('00000000-0000-0000-0000-000000000001'), category_id=UUID('00000000-0000-0000-0000-0000000000...00-0000-0000-000000000046'), requester_id=UUID('00000000-0000-0000-0000-000000000046'), run_id=None, agent_run_id=None)
+product_id = UUID('00000000-0000-0000-0000-000000000003'), revision = 1
+definition_id = None, variant_id = None, extra_refs = ()
+
+    def published_baseline(
+        s, ctx, product_id, revision, definition_id=None, variant_id=None, *, extra_refs=()
+    ):
+        """Read one exact published baseline through ordinary caller RLS."""
+        _scope(s, ctx, product_id, variant_id)
+        if type(revision) is not int or revision &lt; 1:
+            fail("VERSION_CONFLICT", "baseline_version_changed", "请选择明确的固定定义版本。")
+        query = _query(ctx, product_id, variant_id)
+        query = query.where(
+            DefinitionRevision.id == definition_id
+            if definition_id is not None
+            else DefinitionRevision.revision == revision
+        )
+        row = s.scalar(query)
+        _row_scope(row, ctx, product_id, variant_id)
+        if row.revision != revision or (definition_id is not None and row.id != definition_id):
+            fail("VERSION_CONFLICT", "baseline_version_changed", "固定父定义版本不匹配。")
+        view = _published_view(s, ctx, row)
+&gt;       claim_refs = validate_sources(s, ctx, view, extra_refs=extra_refs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: fixture.&lt;locals&gt;.&lt;lambda&gt;() got an unexpected keyword argument 'extra_refs'
+
+pdos_next/domain/preproject/baseline.py:372: TypeError</failure></testcase><testcase classname="tests.preproject.test_baseline" name="test_unpublished_or_wrong_scope_definition_never_becomes_baseline[tenant_id-value0]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_unpublished_or_wrong_scope_definition_never_becomes_baseline[category_id-value1]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_unpublished_or_wrong_scope_definition_never_becomes_baseline[product_id-value2]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_unpublished_or_wrong_scope_definition_never_becomes_baseline[variant_id-value3]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_unpublished_or_wrong_scope_definition_never_becomes_baseline[status-draft]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_unpublished_or_wrong_scope_definition_never_becomes_baseline[sealed-False]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_unpublished_or_wrong_scope_definition_never_becomes_baseline[publication_receipt_id-None]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[tenant_id-value0]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[category_id-value1]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[product_id-value2]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[operation-proposal.g0.decide]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[subject_type-proposal_decision]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[subject_id-value5]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[subject_revision-2]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[actor_id-value7]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[requester_id-value8]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[run_id-value9]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[agent_run_id-value10]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[result-value11]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_invalid_receipt_is_not_publication[result-value12]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_publication_signer_must_be_same_tenant_human[kind-agent]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_publication_signer_must_be_same_tenant_human[tenant_id-value1]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_rls_hidden_rows_are_unavailable[0]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_rls_hidden_rows_are_unavailable[1]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_rls_hidden_rows_are_unavailable[2]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_rls_hidden_rows_are_unavailable[3]" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_version_mismatch_is_explicit_conflict" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_variant_baseline_requires_visible_matching_variant" time="0.001"><failure message="TypeError: fixture.&lt;locals&gt;.&lt;lambda&gt;() got an unexpected keyword argument 'extra_refs'">fixture = namespace(ctx=namespace(tenant_id=UUID('00000000-0000-0000-0000-000000000001'), category_id=UUID('00000000-0000-0000-0...45c5e3536adf520df5fd410482ec9885f73042b8e39322559d270210d6'}), accesses=[UUID('00000000-0000-0000-0000-000000000003')])
+
+    def test_variant_baseline_requires_visible_matching_variant(fixture):
+        f = fixture
+        f.definition.variant_id = VARIANT
+        f.document["variant_id"] = str(VARIANT)
+        f.receipt.result["definition_digest"] = baseline.publication_digest(f.document)
+&gt;       result = baseline.published_baseline(
+            Session([f.product, f.variant, f.definition, f.receipt, f.signer]),
+            f.ctx,
+            PRODUCT,
+            1,
+            DEFINITION,
+            VARIANT,
+        )
+
+tests/preproject/test_baseline.py:354: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = &lt;test_baseline.Session object at 0x11143e960&gt;
+ctx = namespace(tenant_id=UUID('00000000-0000-0000-0000-000000000001'), category_id=UUID('00000000-0000-0000-0000-0000000000...00-0000-0000-000000000005'), requester_id=UUID('00000000-0000-0000-0000-000000000005'), run_id=None, agent_run_id=None)
+product_id = UUID('00000000-0000-0000-0000-000000000003'), revision = 1
+definition_id = UUID('00000000-0000-0000-0000-000000000004')
+variant_id = UUID('00000000-0000-0000-0000-000000000007'), extra_refs = ()
+
+    def published_baseline(
+        s, ctx, product_id, revision, definition_id=None, variant_id=None, *, extra_refs=()
+    ):
+        """Read one exact published baseline through ordinary caller RLS."""
+        _scope(s, ctx, product_id, variant_id)
+        if type(revision) is not int or revision &lt; 1:
+            fail("VERSION_CONFLICT", "baseline_version_changed", "请选择明确的固定定义版本。")
+        query = _query(ctx, product_id, variant_id)
+        query = query.where(
+            DefinitionRevision.id == definition_id
+            if definition_id is not None
+            else DefinitionRevision.revision == revision
+        )
+        row = s.scalar(query)
+        _row_scope(row, ctx, product_id, variant_id)
+        if row.revision != revision or (definition_id is not None and row.id != definition_id):
+            fail("VERSION_CONFLICT", "baseline_version_changed", "固定父定义版本不匹配。")
+        view = _published_view(s, ctx, row)
+&gt;       claim_refs = validate_sources(s, ctx, view, extra_refs=extra_refs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: fixture.&lt;locals&gt;.&lt;lambda&gt;() got an unexpected keyword argument 'extra_refs'
+
+pdos_next/domain/preproject/baseline.py:372: TypeError</failure></testcase><testcase classname="tests.preproject.test_baseline" name="test_source_read_guard_failure_is_preserved" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_digest_mismatch_after_content_change_is_unavailable" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_read_prefers_publication_over_later_draft_and_g0" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_g0_fallback_is_not_a_published_baseline" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_draft_and_empty_fallbacks_are_explicit" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_unreadable_definition_is_not_returned_by_fallback" time="0.001" /><testcase classname="tests.preproject.test_baseline" name="test_source_tree_uses_one_union_lock_and_actual_products" time="0.009"><failure message="AttributeError: 'types.SimpleNamespace' object has no attribute 'revision'">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1114b6e70&gt;
+
+    def test_source_tree_uses_one_union_lock_and_actual_products(monkeypatch):
+        from pdos_next.domain.preproject import claim_access, root_sources
+        from pdos_next.domain.preproject import service as proposals
+    
+        child_id, child_product = UUID(int=90), UUID(int=91)
+        root = view()
+        root["source_refs"] = [{"type": "definition", "id": str(child_id), "version": 4}]
+        child = view()
+        child.update(
+            id=str(child_id),
+            product_id=str(child_product),
+            revision=4,
+            sources=[ref(30)],
+            specs=[],
+            source_refs=[
+                {"type": "claim", "id": str(UUID(int=10)), "version": 1},
+                {"type": "snapshot", "id": str(UUID(int=31)), "version": 1},
+                {"type": "human", "id": str(ACTOR), "version": 1, "statement": "Named"},
+                {"type": "knowledge", "id": str(UUID(int=32)), "version": 2},
+            ],
+        )
+        calls = []
+    
+        def lock(s, ctx, refs, **kwargs):
+            ids = {r.id for r in refs if r.type == "claim"}
+            calls.append(("claims", ids))
+            return {identity: NS(quote="Fixed claim", line=1) for identity in ids}
+    
+        monkeypatch.setattr(root_sources, "lock_claim_refs", lock)
+        monkeypatch.setattr(baseline, "definition_view", lambda *args: child)
+        monkeypatch.setattr(
+            claim_access,
+            "load_source",
+            lambda s, ctx, r, **kw: calls.append(("artifact", r.id, kw["product_id"])),
+        )
+        monkeypatch.setattr(
+            proposals,
+            "_references",
+            lambda s, ctx, refs, **kw: calls.extend((r.type, r.id) for r in refs),
+        )
+        ctx = NS(tenant_id=TENANT, category_id=CATEGORY)
+        row = NS(tenant_id=TENANT, category_id=CATEGORY, revision=4)
+&gt;       baseline.validate_sources(Session([row]), ctx, root)
+
+tests/preproject/test_baseline.py:480: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/domain/preproject/baseline.py:348: in validate_sources
+    return tuple(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+.0 = &lt;list_iterator object at 0x1114dcb80&gt;
+
+    return tuple(
+&gt;       Reference(type="claim", id=identity, version=claims[identity].revision)
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+        for identity in sorted({ref.id for _, ref in pending if ref.type == "claim"}, key=str)
+    )
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'revision'
+
+pdos_next/domain/preproject/baseline.py:349: AttributeError</failure></testcase><testcase classname="tests.preproject.test_baseline" name="test_definition_source_cycle_rejected_before_claim_locks" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_source_failure_blocks_derivation_without_falling_back" time="0.001"><failure message="TypeError: test_source_failure_blocks_derivation_without_falling_back.&lt;locals&gt;.stale() got an unexpected keyword argument 'extra_refs'">fixture = namespace(ctx=namespace(tenant_id=UUID('00000000-0000-0000-0000-000000000001'), category_id=UUID('00000000-0000-0000-0...c28bfe8a0024829905ff83a3f29edca3a6f057ae900c2977116a163e67'}), accesses=[UUID('00000000-0000-0000-0000-000000000003')])
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1114dcef0&gt;
+
+    def test_source_failure_blocks_derivation_without_falling_back(fixture, monkeypatch):
+        def stale(*args):
+            baseline.fail("SOURCE_STALE", "claim_withdrawn", "Withdrawn")
+    
+        monkeypatch.setattr(baseline, "validate_sources", stale)
+        with pytest.raises(DomainError) as error:
+&gt;           baseline.published_baseline(session(fixture), fixture.ctx, PRODUCT, 1)
+
+tests/preproject/test_baseline.py:514: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = &lt;test_baseline.Session object at 0x1114dd880&gt;
+ctx = namespace(tenant_id=UUID('00000000-0000-0000-0000-000000000001'), category_id=UUID('00000000-0000-0000-0000-0000000000...00-0000-0000-000000000005'), requester_id=UUID('00000000-0000-0000-0000-000000000005'), run_id=None, agent_run_id=None)
+product_id = UUID('00000000-0000-0000-0000-000000000003'), revision = 1
+definition_id = None, variant_id = None, extra_refs = ()
+
+    def published_baseline(
+        s, ctx, product_id, revision, definition_id=None, variant_id=None, *, extra_refs=()
+    ):
+        """Read one exact published baseline through ordinary caller RLS."""
+        _scope(s, ctx, product_id, variant_id)
+        if type(revision) is not int or revision &lt; 1:
+            fail("VERSION_CONFLICT", "baseline_version_changed", "请选择明确的固定定义版本。")
+        query = _query(ctx, product_id, variant_id)
+        query = query.where(
+            DefinitionRevision.id == definition_id
+            if definition_id is not None
+            else DefinitionRevision.revision == revision
+        )
+        row = s.scalar(query)
+        _row_scope(row, ctx, product_id, variant_id)
+        if row.revision != revision or (definition_id is not None and row.id != definition_id):
+            fail("VERSION_CONFLICT", "baseline_version_changed", "固定父定义版本不匹配。")
+        view = _published_view(s, ctx, row)
+&gt;       claim_refs = validate_sources(s, ctx, view, extra_refs=extra_refs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: test_source_failure_blocks_derivation_without_falling_back.&lt;locals&gt;.stale() got an unexpected keyword argument 'extra_refs'
+
+pdos_next/domain/preproject/baseline.py:372: TypeError</failure></testcase><testcase classname="tests.preproject.test_baseline" name="test_read_exact_revision_filters_query_and_keeps_draft" time="0.118" /><testcase classname="tests.preproject.test_baseline" name="test_real_traversal_propagates_resolver_rejection[artifact]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_real_traversal_propagates_resolver_rejection[snapshot]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_real_traversal_propagates_resolver_rejection[parameter]" time="0.000" /><testcase classname="tests.preproject.test_baseline" name="test_real_traversal_propagates_resolver_rejection[knowledge]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_plain_proposal_does_not_read_parent" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_parent_is_read_with_exact_user_reference[derivative-new_product]" time="0.001"><failure message="AssertionError: assert [(('s', 'c', ...a_refs': []})] == [(('s', 'c', ...000000002')})]&#10;  &#10;  At index 0 diff: (('s', 'c', UUID('00000000-0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002'), 'extra_refs': []}) != (('s', 'c', UUID('00000000-0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002')})&#10;  Use -v to get more diff">parent = namespace(view={'id': '00000000-0000-0000-0000-000000000002', 'revision': 4, 'category_id': '00000000-0000-0000-0000-0...0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002'), 'extra_refs': []})])
+entry = 'derivative', target = 'new_product'
+
+    @pytest.mark.parametrize(
+        "entry,target", [("derivative", "new_product"), ("new_product", "new_variant")]
+    )
+    def test_parent_is_read_with_exact_user_reference(parent, entry, target):
+        baseline, _ = derivation.prepare_create("s", "c", payload(entry_kind=entry, target_kind=target))
+        assert baseline == parent.view
+&gt;       assert parent.calls == [(("s", "c", PRODUCT, 4), {"definition_id": DEFINITION})]
+E       AssertionError: assert [(('s', 'c', ...a_refs': []})] == [(('s', 'c', ...000000002')})]
+E         
+E         At index 0 diff: (('s', 'c', UUID('00000000-0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002'), 'extra_refs': []}) != (('s', 'c', UUID('00000000-0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002')})
+E         Use -v to get more diff
+
+tests/preproject/test_derivation_adapter.py:163: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_adapter" name="test_parent_is_read_with_exact_user_reference[new_product-new_variant]" time="0.001"><failure message="AssertionError: assert [(('s', 'c', ...a_refs': []})] == [(('s', 'c', ...000000002')})]&#10;  &#10;  At index 0 diff: (('s', 'c', UUID('00000000-0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002'), 'extra_refs': []}) != (('s', 'c', UUID('00000000-0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002')})&#10;  Use -v to get more diff">parent = namespace(view={'id': '00000000-0000-0000-0000-000000000002', 'revision': 4, 'category_id': '00000000-0000-0000-0000-0...0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002'), 'extra_refs': []})])
+entry = 'new_product', target = 'new_variant'
+
+    @pytest.mark.parametrize(
+        "entry,target", [("derivative", "new_product"), ("new_product", "new_variant")]
+    )
+    def test_parent_is_read_with_exact_user_reference(parent, entry, target):
+        baseline, _ = derivation.prepare_create("s", "c", payload(entry_kind=entry, target_kind=target))
+        assert baseline == parent.view
+&gt;       assert parent.calls == [(("s", "c", PRODUCT, 4), {"definition_id": DEFINITION})]
+E       AssertionError: assert [(('s', 'c', ...a_refs': []})] == [(('s', 'c', ...000000002')})]
+E         
+E         At index 0 diff: (('s', 'c', UUID('00000000-0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002'), 'extra_refs': []}) != (('s', 'c', UUID('00000000-0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002')})
+E         Use -v to get more diff
+
+tests/preproject/test_derivation_adapter.py:163: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_adapter" name="test_unavailable_parent_is_not_replaced_by_payload" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_inherits_full_semantics_without_borrowing_signature[number-values0]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_inherits_full_semantics_without_borrowing_signature[range-values1]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_inherits_full_semantics_without_borrowing_signature[text-values2]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_inherits_full_semantics_without_borrowing_signature[boolean-values3]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_inherits_full_semantics_without_borrowing_signature[enum-values4]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_unknown_and_not_applicable_never_become_facts[unknown]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_unknown_and_not_applicable_never_become_facts[conflicted]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_unknown_and_not_applicable_never_become_facts[not_applicable]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_ai_parent_does_not_launder_ai_signature" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_explicit_spec_wins_with_own_sources_and_preserves_difference" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_explicit_removal_uses_exact_parent_reference[pressure]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_explicit_removal_uses_exact_parent_reference[specs/pressure]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_explicit_removal_uses_exact_parent_reference[item_ref2]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_explicit_removal_uses_exact_parent_reference[item_ref3]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_explicit_removal_uses_exact_parent_reference[item_ref4]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_explicit_removal_uses_exact_parent_reference[00000000-0000-0000-0000-000000000007@3]" time="0.001" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_escaped_key_removal" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_other_area_does_not_remove_spec" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_ambiguous_or_forged_input_cannot_silently_change_meaning[items0-duplicate_spec_key]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_ambiguous_or_forged_input_cannot_silently_change_meaning[items1-derivation_conflicting_override]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_ambiguous_or_forged_input_cannot_silently_change_meaning[items2-derivation_item_reference_invalid]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_ambiguous_or_forged_input_cannot_silently_change_meaning[items3-derivation_item_reference_invalid]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_ambiguous_or_forged_input_cannot_silently_change_meaning[items4-derivation_provenance_supplied]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_validate_reads_frozen_exact_reference" time="0.001"><failure message="AssertionError: assert [(('s', 'c', ...a_refs': []})] == [(('s', 'c', ...000000002')})]&#10;  &#10;  At index 0 diff: (('s', 'c', UUID('00000000-0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002'), 'extra_refs': []}) != (('s', 'c', UUID('00000000-0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002')})&#10;  Use -v to get more diff">parent = namespace(view={'id': '00000000-0000-0000-0000-000000000002', 'revision': 4, 'category_id': '00000000-0000-0000-0000-0...0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002'), 'extra_refs': []})])
+
+    def test_validate_reads_frozen_exact_reference(parent):
+        assert derivation.validate_baseline("s", "c", NS(frozen_document=document())) == parent.view
+&gt;       assert parent.calls == [(("s", "c", PRODUCT, 4), {"definition_id": DEFINITION})]
+E       AssertionError: assert [(('s', 'c', ...a_refs': []})] == [(('s', 'c', ...000000002')})]
+E         
+E         At index 0 diff: (('s', 'c', UUID('00000000-0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002'), 'extra_refs': []}) != (('s', 'c', UUID('00000000-0000-0000-0000-000000000001'), 4), {'definition_id': UUID('00000000-0000-0000-0000-000000000002')})
+E         Use -v to get more diff
+
+tests/preproject/test_derivation_adapter.py:307: AssertionError</failure></testcase><testcase classname="tests.preproject.test_derivation_adapter" name="test_validate_plain_skips_parent" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_validate_rejects_incomplete_reference[baseline_product_id-None]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_validate_rejects_incomplete_reference[baseline_definition_id-None]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_validate_rejects_incomplete_reference[baseline_definition_revision-0]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_validate_detects_row_document_mismatch" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_calculation_uses_real_fixed_parent_and_actual_child" time="0.002" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_calculation_deletion_is_absence_not_unknown" time="0.001" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_request_digest_binds_difference_trace[change0]" time="0.003" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_request_digest_binds_difference_trace[change1]" time="0.003" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_request_digest_binds_difference_trace[change2]" time="0.003" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_request_digest_binds_proposal_revision" time="0.003" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_incomplete_difference_is_diagnostic[change0-difference_reason_missing]" time="0.002" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_incomplete_difference_is_diagnostic[change1-difference_applicability_missing]" time="0.001" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_incomplete_difference_is_diagnostic[change2-difference_reference_unknown]" time="0.002" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_incomplete_difference_is_diagnostic[change3-difference_value_mismatch]" time="0.002" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_calculation_requires_real_identity_and_revision" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_validate_invalid_uuid_is_domain_error[baseline_product_id]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_validate_invalid_uuid_is_domain_error[baseline_definition_id]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_calculation_does_not_compare_another_parent[baseline_product_id-00000000-0000-0000-0000-000000000032]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_calculation_does_not_compare_another_parent[baseline_definition_id-00000000-0000-0000-0000-000000000033]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_calculation_does_not_compare_another_parent[baseline_definition_revision-3]" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_calculation_unknown_change_is_not_invented_as_set" time="0.001" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_calculation_invalid_proposal_uuid_is_domain_error" time="0.000" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_duplicate_traces_are_preserved_without_picking_one" time="0.002" /><testcase classname="tests.preproject.test_derivation_adapter" name="test_unknown_child_retains_unknown_and_actual_source_and_author" time="0.001" /><testcase classname="tests.products.test_variants_payload" name="test_override_rejects_trusted_fields_and_arbitrary_path[owner_id]" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_override_rejects_trusted_fields_and_arbitrary_path[status]" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_override_rejects_trusted_fields_and_arbitrary_path[id]" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_override_rejects_trusted_fields_and_arbitrary_path[approval]" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_override_rejects_trusted_fields_and_arbitrary_path[__proto__]" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_override_rejects_trusted_fields_and_arbitrary_path[sources]" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_rebase_choice_paths_are_closed[owner_id]" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_rebase_choice_paths_are_closed[status]" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_rebase_choice_paths_are_closed[specs/x/owner_id]" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_rebase_choice_paths_are_closed[../../status]" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_rebase_choice_paths_are_closed[__class__]" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_semantic_identity_removes_expiring_confirmation_token" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_three_way_classifies_independent_changes[parent_only-old-new-old]" time="0.001" /><testcase classname="tests.products.test_variants_payload" name="test_three_way_classifies_independent_changes[child_only-old-old-child]" time="0.001" /><testcase classname="tests.products.test_variants_payload" name="test_three_way_classifies_independent_changes[same_change-old-same-same]" time="0.001" /><testcase classname="tests.products.test_variants_payload" name="test_three_way_classifies_independent_changes[conflict-old-parent-child]" time="0.001" /><testcase classname="tests.products.test_variants_payload" name="test_conflict_requires_explicit_choice_and_unknown_choice_cannot_be_applied" time="0.002" /><testcase classname="tests.products.test_variants_payload" name="test_derive_keeps_parent_unchanged_and_drops_inherited_appointment" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_spec_overrides_cannot_claim_appointment_or_fill_unknown_zero" time="0.000" /><testcase classname="tests.products.test_variants_payload" name="test_exact_decimal_comparison_preserves_38_digits_and_ignores_scale" time="0.002" /><testcase classname="tests.products.test_variants_payload" name="test_spec_add_remove_are_visible_and_deletion_conflict_requires_choice" time="0.002" /><testcase classname="tests.products.test_variants_payload" name="test_rebase_duplicate_choices_and_null_overrides_rejected" time="0.000" /></testsuite></testsuites>

@@ -1,0 +1,60 @@
+{
+  "snapshot": "/private/tmp/pdos-release-exceptions-web-27hv4_m1",
+  "base_commit": "2b6162c7909b14c4da98f7e0d140112fe09295d2",
+  "frontend_overlay": {
+    "pdos-next/web/src/lib/release-exceptions.ts": "2fc649c23b1bbdea517903364955d8172a557b05d8ea64ca046980505a5f50bc",
+    "pdos-next/web/src/lib/release-exceptions.test.ts": "bbf22b5d93368de92215cbc2f1a74d0396114e5a9ce18f725d42ef2d460d4c4b",
+    "pdos-next/web/src/components/manufacturing/release-exceptions.tsx": "80b1e54ea6222b39c51e0aa13824b562fbaf8d9a32d25ae831a11067a2345f21",
+    "pdos-next/web/src/components/manufacturing/release-exceptions.module.css": "bcd562f466de9caaaff064fa464f236c9477ee5be4d83281b339184e3def1513",
+    "pdos-next/web/src/components/manufacturing/release-exceptions.test.mjs": "2f2b0327deb9f0656c9b62f84c153cc77883a8a57ec560bdf11b9a341ec534bf",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "5e0ea9bb8f9a6a94c7814a5e39705c9e2f3af98a65f45e70ba91095b3316a92d",
+    "pdos-next/web/src/app/api/release-exception-route.test.mjs": "d564d64acca99076356cfb42484e5e9cc85a29fc19eb4f16f7f3b4723912cfdd",
+    "pdos-next/web/src/components/workspace.tsx": "eb09bbb8e0c7bb44c63d663cf2d28bcb93f79347fefe7fbda07c4348fc1c85bf"
+  },
+  "foreign_pending_frontend_removed": true,
+  "checks": [
+    {
+      "command": [
+        "node",
+        "../tools/s0_web_checkpoint.cjs",
+        "release-exceptions",
+        "releases",
+        "external-handoffs"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "src/app/api/release-exception-route.test.mjs",
+        "src/app/api/release-route.test.mjs",
+        "src/app/api/external-handoff-route.test.mjs",
+        "src/components/manufacturing/release-exceptions.test.mjs",
+        "src/components/manufacturing/release-packages.test.mjs",
+        "src/components/manufacturing/external-handoffs.test.mjs"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "src/lib/release-exceptions.ts",
+        "src/lib/release-exceptions.test.ts",
+        "src/components/manufacturing/release-exceptions.tsx",
+        "src/components/manufacturing/release-exceptions.test.mjs",
+        "src/app/api/[...path]/route.ts",
+        "src/app/api/release-exception-route.test.mjs",
+        "src/components/workspace.tsx",
+        "--max-warnings=0"
+      ],
+      "exit": 0
+    }
+  ],
+  "shared_worktree_typecheck": {
+    "exit": 0,
+    "command": "tsc --noEmit --incremental false",
+    "scope": "includes unrelated pending UI; independent build provides delivery-specific typecheck"
+  }
+}

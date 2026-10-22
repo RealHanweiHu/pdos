@@ -1,0 +1,11 @@
+{
+  "status": "PASS_ACTUAL_REPAIRED_V2_ATOMIC_AND_UNKNOWN_REPLAY",
+  "exit_code": 0,
+  "source_manifest_sha256": "c36835da89d921c021cdb5b586c634b18f53d11472102d4609a57de89d8c62e9",
+  "explicit_target": "127.0.0.1:63866/pdos_test",
+  "marker": "20a17344-1e35-42e1-95ab-e100e56e9d88",
+  "final_head": "next_0029",
+  "synthetic_only": true,
+  "real_professional_qualification_or_release": false,
+  "repository_tests_on_retained_shared_target": false
+}

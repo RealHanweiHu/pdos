@@ -1,0 +1,21 @@
+{
+  "status": "PASS_SYNTHETIC_RULE",
+  "action": "rule",
+  "started_at": "2026-10-03T15:40:32.002543+00:00",
+  "target": "127.0.0.1:62513/pdos_test",
+  "model_calls": 0,
+  "steps": [
+    {
+      "name": "actual-rule-common-group-readback",
+      "receipt_id": "9f7dccdd-029b-4d56-86df-295ebad3565d",
+      "fact_id": "85603435-0d97-4f4f-9bc2-41b85041b2c6",
+      "read_count": 18,
+      "host_import_proof_null": true
+    }
+  ],
+  "synthetic_only": true,
+  "review_writes": 0,
+  "effectiveness_writes": 0,
+  "close_writes": 0,
+  "finished_at": "2026-10-03T15:41:54.339654+00:00"
+}

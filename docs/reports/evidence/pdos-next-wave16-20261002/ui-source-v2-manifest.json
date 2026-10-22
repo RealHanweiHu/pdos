@@ -1,0 +1,17 @@
+{
+  "candidate": "Wave16 UI v2",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+      "sha256": "00693636cc32fcea7a1ae5acb0cc5ebdae4ca2d0dbaf0f71baf5b3d72c69c6ef"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.ts",
+      "sha256": "89c39e5a70dbb648e858a2e5d83b2bbf20bac8b7b4aef5c15d19b9b9e8710406"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-followup-view.test.ts",
+      "sha256": "520cf807f82b9fd28fd256f7557924d1b4a51fec186d60334973ef88d58a88ee"
+    }
+  ]
+}

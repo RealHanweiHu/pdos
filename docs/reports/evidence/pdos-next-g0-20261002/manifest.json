@@ -1,0 +1,211 @@
+{
+  "scope": "only independent new-engineering candidate; excludes credentials, caches and old dirty tree",
+  "date": "2026-10-02",
+  "migration_head": "next_0002",
+  "files": [
+    {
+      "path": "pdos-next/.env.example",
+      "sha256": "6d5b250da0e8116d83e318ea080c5d52074c4953fb67e59c9622d0a94d0263fc"
+    },
+    {
+      "path": "pdos-next/.gitignore",
+      "sha256": "ed92c90aa7041a04a79c80512c491338ee456a05f6d31acb30bc5e4fc4377100"
+    },
+    {
+      "path": "pdos-next/README.md",
+      "sha256": "385e5c7d5ca427db39715da9b110a81e30b704c217b20a48d924035db2cf28d3"
+    },
+    {
+      "path": "pdos-next/contracts/acceptance.json",
+      "sha256": "61d666521c0b1b582677c65dffe178f064e05a23393767f053b1cb67e8141848"
+    },
+    {
+      "path": "pdos-next/contracts/events.json",
+      "sha256": "d930174a6f1b1815cc80492af894e6720ff4481c03933012cac327458bd39840"
+    },
+    {
+      "path": "pdos-next/contracts/openapi.json",
+      "sha256": "e658ff058e981a5fc5f28e304ace6267043c5168028dcd7bf9e64900f1f311fe"
+    },
+    {
+      "path": "pdos-next/contracts/operations.json",
+      "sha256": "a5d2526778294a9ca2c1053dad4e86cb8403f1ddf35ca1f33a19715d10cadcda"
+    },
+    {
+      "path": "pdos-next/contracts/payloads.schema.json",
+      "sha256": "177dae7ad4566781cc0e616a49dee4ef83a0c082dce65e2447d4fc3a4ac6daa9"
+    },
+    {
+      "path": "pdos-next/ruff.toml",
+      "sha256": "47d082a0b44b20fca2bff25524f1047f668abdacb47ec17f295ebb6f6ba878f5"
+    },
+    {
+      "path": "pdos-next/server/alembic.ini",
+      "sha256": "ebfad8a9c8f352d2381e48df599dd04dad764ca95b03f0dc9949d0691c6d2517"
+    },
+    {
+      "path": "pdos-next/server/migrations/env.py",
+      "sha256": "9a6e718ef83f4c34fa9f888f9d27b7431c0865da60823c0cca2a5362129b2554"
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_0001.py",
+      "sha256": "bca6aa0b0d42794549957e89120efe11af8085ce932ec948d800feae6d1a4d5b"
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/0001_trusted_source_work.py",
+      "sha256": "332e63de5fc5316fa61c37d3b2532f28feb9cd959bf34444b05055f0938c34e3"
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/0002_qualification_read_lock.py",
+      "sha256": "7df9c06650f9f9aa60bd47dcf66a2bbfe931fdbe8815cebea2fafd0202c33b10"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/__init__.py",
+      "sha256": "bc0de14c2bc2427df7dafa801a0bb30342deaffdac2f31a3ae214b9cada881cc"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/api.py",
+      "sha256": "d0af5fc464b279f544858036f3d5bb3f4deea5ba1b025a43fd1cbecd6bcb08c0"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/asgi.py",
+      "sha256": "4a3fc1252c63effc08a0052911b6397c6ec3d1416e89acf471a513638920503c"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/contracts.py",
+      "sha256": "c3e6663b8c3beccc6ce6d52de127d0134fc9b0519278d48781214a67533e58e4"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/database.py",
+      "sha256": "a64c91d9f9a465be48b2585198ca7db802d37de0a38b2fed1064e445535c0858"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/errors.py",
+      "sha256": "156ed50d73580761af3203a586bcc31aa5e251c9109d2a8d0d9b978a92c5a7fd"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/models.py",
+      "sha256": "5af026ae895062013800dee7ea0803f4e071e185e566ec46cab7372d96b68327"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/runtime.py",
+      "sha256": "a7cde38f638c3d7175d34e374d4d805295278531052e3135e45b44fe310253fd"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/safety.py",
+      "sha256": "f51ba8cca61f3e20bb4b089f07cf272650aa5f0adf7d02bd6206c889ef38a8d2"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "sha256": "6a0a5534d774dfe73e1b22dd64a2a88c60c60d98be5c43284c1f698cc5379027"
+    },
+    {
+      "path": "pdos-next/server/pyproject.toml",
+      "sha256": "f8879e8485a45b01ad9af496a4f21cb8a7f2bdc446bbc66179e9ac0b662e0fe4"
+    },
+    {
+      "path": "pdos-next/server/tests/conftest.py",
+      "sha256": "ba2615051bfbffdb53109437aa055b854887b36b94495cd0f888919ad2fa3486"
+    },
+    {
+      "path": "pdos-next/server/tests/test_trusted_source_work.py",
+      "sha256": "2ba510e9f718d095cb0daf023f3fc2f6c39933b8167fa1be9d108ab3d9b0f1e0"
+    },
+    {
+      "path": "pdos-next/server/uv.lock",
+      "sha256": "dbf9fa0c46643681bc2652a0682124feb429cf997a93196df312b2d759af0d9f"
+    },
+    {
+      "path": "pdos-next/tools/export_contracts.py",
+      "sha256": "6b9c45b1a7cc09441e6d9a535de7e9ceeff0c4a3b1deb667878035f332344c3c"
+    },
+    {
+      "path": "pdos-next/tools/local_environment.py",
+      "sha256": "eeee45068ca0a67d7c4cf6c41f071ff7fe817ce4a3bde2d14bab28466f71a91d"
+    },
+    {
+      "path": "pdos-next/tools/validate_contracts.py",
+      "sha256": "47719c7491804318577749e9766442657dcbbbaebb8df0a56320a6b9be7103b3"
+    },
+    {
+      "path": "pdos-next/web/eslint.config.mjs",
+      "sha256": "5fdde8ef206d87d3e82a239eb18b984c878e1387b3123a04655c0a7d88292008"
+    },
+    {
+      "path": "pdos-next/web/next-env.d.ts",
+      "sha256": "1862ac4bbbc5192d4bf562161df66ea547ed3e67173100656ab606ae9797db2b"
+    },
+    {
+      "path": "pdos-next/web/next.config.ts",
+      "sha256": "7eba77a1bee720ae17a4df36386ea1351c3d1ec624106af44efe37e40057bd54"
+    },
+    {
+      "path": "pdos-next/web/package.json",
+      "sha256": "efaf6569960e954d39d6a7f2ddefc2d87c61d1fbac447f1ebb47d20abe62c9e8"
+    },
+    {
+      "path": "pdos-next/web/pnpm-lock.yaml",
+      "sha256": "be7fceea859d01075be4889843f4fc8c955f34770b2d5a244b34569b159517e0"
+    },
+    {
+      "path": "pdos-next/web/pnpm-workspace.yaml",
+      "sha256": "44fd1f2aefbb5fafbb86a23df9ce6092e0dd9a3db3654901b58e5d21de371136"
+    },
+    {
+      "path": "pdos-next/web/postcss.config.mjs",
+      "sha256": "a1a188221f064d964dd9958c3d48b0c23252fabbeb6099d95ee8e15c764718b0"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "sha256": "c3ec5c766119996f5f9bc0d221f499a84f6281d333c64199715b205c7ee79982"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/local-session/route.ts",
+      "sha256": "95e5f0b8fe1f2c046213012d7bbc7ed5a31a8efa347e9b897e148ec536c32e40"
+    },
+    {
+      "path": "pdos-next/web/src/app/globals.css",
+      "sha256": "83927e87630415f8ef70438bcd42f20c036eff1c3469c3e64634175dde9a0e16"
+    },
+    {
+      "path": "pdos-next/web/src/app/layout.tsx",
+      "sha256": "0cd971eef3b411d6704368949268ef4c3aa8565d638f2a221f5722b0d2df81e6"
+    },
+    {
+      "path": "pdos-next/web/src/app/page.tsx",
+      "sha256": "eb7c980400b51be545dded38de4d5f14a08847cc0bfd541a1756404e33d58b00"
+    },
+    {
+      "path": "pdos-next/web/src/components/providers.tsx",
+      "sha256": "5f0a052d30c45e0159aaaaa311717143392a339d7bbd166caaf873caacac3c30"
+    },
+    {
+      "path": "pdos-next/web/src/components/ui/button.tsx",
+      "sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24"
+    },
+    {
+      "path": "pdos-next/web/src/components/workspace.tsx",
+      "sha256": "4b966426c0d0bba2a3bedf8c60b8e5b640f42e0f9288bfb79af2bf594faf0517"
+    },
+    {
+      "path": "pdos-next/web/src/lib/request-origin.ts",
+      "sha256": "c0e2ddc00d747f0aae1f325e256cb8f32f9ef6fbe81e59ec0173007d46173f34"
+    },
+    {
+      "path": "pdos-next/web/src/lib/utils.ts",
+      "sha256": "64fc84c1be627f0d586fb4ba64d824a1604f44282381f5bae68cdf86e10bb6ec"
+    },
+    {
+      "path": "pdos-next/web/tsconfig.json",
+      "sha256": "ce638cf8d45d1b4718fa3943a514811886830e0f9d9f14e9f4ebcdfa15e93f3e"
+    },
+    {
+      "path": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
+      "sha256": "87954bc03f8556a74b0d24a32a268f131717ce3797ead13fcfb92025302a75e6"
+    },
+    {
+      "path": "docs/design/2026-10-02-pdos-next-execution-plan.md",
+      "sha256": "63e4bf73a812bbbfc07bc3aadf0826d05ea0a45a432f2730e33c2e9682c775c3"
+    }
+  ]
+}

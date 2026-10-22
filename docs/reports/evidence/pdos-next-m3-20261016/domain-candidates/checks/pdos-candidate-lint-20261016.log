@@ -1,0 +1,29 @@
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/pai/run-candidates.tsx
+  105:129  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/pai/run-candidates.tsx:105:129
+  103 |     return () => clearInterval(timer);
+  104 |   }, [preview]);
+> 105 |   const expired = !!preview && (!Number.isFinite(Date.parse(preview.expires_at)) || Date.parse(preview.expires_at) <= (clock || Date.now()));
+      |                                                                                                                                 ^^^^^^^^^^ Cannot call impure function
+  106 |   async function prepare(item: DomainCandidate, element: HTMLElement) {
+  107 |     if (lock.current || pending || !item.command || !boundCandidateCommand(item.command, categoryId, runId)) return;
+  108 |     lock.current = true; setBusy(true); setError(""); trigger.current = element;              react-hooks/purity
+  112:37   error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/pai/run-candidates.tsx:112:37
+  110 |       const result = await api<CandidatePreview>("v1/commands/preview", item.command);
+  111 |       if (!boundCandidateCommand(result.command, categoryId, runId) || !sameCandidateCommand(result.command, item.command) || !result.command.payload.confirmation_token || !result.review) throw new Error("预览与原候选不一致，请重新读取核对。");
+> 112 |       if (alive.current) { setClock(Date.now()); setPreview({ ...result, eventId: item.event_id }); }
+      |                                     ^^^^^^^^^^ Cannot call impure function
+  113 |     } catch (failure) { if (alive.current) setError(failureMessage(failure)); }
+  114 |     finally { lock.current = false; if (alive.current) setBusy(false); }
+  115 |   }  react-hooks/purity
+
+✖ 2 problems (2 errors, 0 warnings)
+

@@ -1,0 +1,128 @@
+- generic [ref=f2e1]:
+  - alert [ref=f2e4]
+  - generic [ref=f2e5]:
+    - link "跳到工作内容" [ref=f2e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f2e7]:
+      - generic [ref=f2e8]:
+        - generic [ref=f2e11]: PDOS
+        - button "收起侧栏" [ref=f2e12]
+      - navigation "工作区导航" [ref=f2e13]:
+        - paragraph [ref=f2e14]: 日常
+        - link "我的工作" [ref=f2e16] [cursor=pointer]:
+          - /url: "?area=work"
+        - generic [ref=f2e20]:
+          - link "项目" [ref=f2e21] [cursor=pointer]:
+            - /url: "?area=projects"
+          - generic "最近的在办项目" [ref=f2e25]:
+            - link "合成项目 · 双级电动泵 阶段尚未提供" [ref=f2e26] [cursor=pointer]:
+              - /url: "?area=cockpit&category=22222222-2222-4222-8222-222222222222&project=55555555-5555-4555-8555-555555555551"
+              - generic [ref=f2e28]: 合成项目 · 双级电动泵
+              - generic "阶段尚未提供" [ref=f2e29]: —
+            - link "合成项目 · 便携充气泵 阶段尚未提供" [ref=f2e30] [cursor=pointer]:
+              - /url: "?area=cockpit&category=22222222-2222-4222-8222-222222222222&project=55555555-5555-4555-8555-555555555552"
+              - generic [ref=f2e32]: 合成项目 · 便携充气泵
+              - generic "阶段尚未提供" [ref=f2e33]: —
+        - link "组合与资源" [ref=f2e35] [cursor=pointer]:
+          - /url: "?area=programs"
+          - generic [ref=f2e39]: 尚未接入
+        - link "知识" [ref=f2e41] [cursor=pointer]:
+          - /url: "?area=knowledge"
+        - generic [ref=f2e45]:
+          - paragraph [ref=f2e46]: 产品管理
+          - link "品类开发" [ref=f2e47] [cursor=pointer]:
+            - /url: "?area=category"
+            - generic [ref=f2e51]: 立项前
+          - link "立项提案" [ref=f2e52] [cursor=pointer]:
+            - /url: "?area=category&category=22222222-2222-4222-8222-222222222222&focus=proposals"
+          - paragraph [ref=f2e56]: 按你在各品类的产品管理权限显示。
+      - generic [ref=f2e57]:
+        - link "计划执行进度" [ref=f2e58] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=f2e61]: 计划进度
+        - button "小Pai 工作栏" [ref=f2e62]:
+          - generic [ref=f2e65]: 小Pai
+        - link "设置" [ref=f2e66] [cursor=pointer]:
+          - /url: "?area=settings"
+        - generic [ref=f2e70]:
+          - generic [aria-hidden] [ref=f2e71]: 合
+          - generic [ref=f2e72]:
+            - paragraph [ref=f2e73]: 合成人员
+            - paragraph [ref=f2e74]: 本地合成环境
+    - generic [ref=f2e75]:
+      - banner [ref=f2e76]:
+        - generic [ref=f2e77]:
+          - generic [ref=f2e78]: PDOS
+          - generic [ref=f2e81]: 项目
+        - generic [ref=f2e82]:
+          - button "搜索对象" [ref=f2e83]:
+            - generic [ref=f2e84]: 搜索
+          - button "小Pai 工作栏" [ref=f2e85]
+          - button "切换明暗主题" [ref=f2e86]
+      - main [ref=f2e87]:
+        - generic [ref=f2e88]:
+          - generic [ref=f2e89]:
+            - generic [ref=f2e90]: 研发与制造导入
+            - heading "项目" [level=1] [ref=f2e91]
+            - paragraph [ref=f2e92]: 从立项结果接续到每一次实物、验证与交付。
+          - button "刷新" [active] [ref=f2e93]
+        - generic [ref=f2e94]:
+          - group "项目视图" [ref=f2e95]:
+            - button "列表" [pressed] [ref=f2e96] [cursor=pointer]
+            - button "看板" [ref=f2e99] [cursor=pointer]
+            - button "时间轴" [ref=f2e102] [cursor=pointer]
+          - generic [ref=f2e105]:
+            - text: 分组
+            - combobox "项目分组" [ref=f2e106]:
+              - option "阶段" [selected]
+              - option "负责人"
+              - option "品类"
+          - generic [ref=f2e107]:
+            - text: 品类
+            - combobox "筛选品类" [ref=f2e108]:
+              - option "全部品类" [selected]
+              - option "合成品类"
+          - generic [ref=f2e109] [cursor=pointer]:
+            - checkbox "我负责的" [ref=f2e110]
+            - text: 我负责的
+          - textbox "搜索项目" [ref=f2e114]:
+            - /placeholder: 搜索项目、型号或编号…
+            - text: 便携
+        - generic [ref=f2e115]:
+          - generic [ref=f2e116]: 1 个可见项目 / 共 2 个
+          - time [ref=f2e231]: 读取于 10/17/2026, 5:00:00 AM
+        - region "阶段记录待接入的项目" [ref=f2e232]:
+          - heading "阶段记录待接入 1" [level=2] [ref=f2e233]:
+            - text: 阶段记录待接入
+            - generic [ref=f2e236]: "1"
+          - table [ref=f2e238]:
+            - rowgroup [ref=f2e246]:
+              - row [ref=f2e247]:
+                - columnheader "项目" [ref=f2e248]
+                - columnheader "阶段" [ref=f2e249]
+                - columnheader "健康度" [ref=f2e250]
+                - columnheader "负责人" [ref=f2e251]
+                - columnheader "下一门禁 / 计划预测" [ref=f2e252]
+                - columnheader "最新状态更新" [ref=f2e253]
+            - rowgroup [ref=f2e254]:
+              - row [ref=f2e255]:
+                - cell "合成项目 · 便携充气泵 合成型号 · 合成品类 55555555 待建计划" [ref=f2e256]:
+                  - button "合成项目 · 便携充气泵" [ref=f2e257] [cursor=pointer]
+                  - paragraph [ref=f2e258]: 合成型号 · 合成品类
+                  - paragraph [ref=f2e259]: "55555555"
+                  - generic [ref=f2e260]: 待建计划
+                - cell "未提供" [ref=f2e261]
+                - cell "—" [ref=f2e262]
+                - cell [ref=f2e263]:
+                  - generic [ref=f2e264]:
+                    - generic [aria-hidden] [ref=f2e265]: 合
+                    - text: 合成协作人
+                - cell [ref=f2e266]:
+                  - paragraph [ref=f2e267]: 门禁承诺：未知
+                  - paragraph [ref=f2e268]: 计划完成预测未知 — 未知
+                - cell [ref=f2e269]:
+                  - paragraph [ref=f2e270]: 具名更新待接入
+                  - generic [ref=f2e271]:
+                    - button "打开项目" [ref=f2e272] [cursor=pointer]
+                    - button "工作与计划" [ref=f2e275] [cursor=pointer]
+        - paragraph [ref=f2e276]: 阶段、健康度、下一门禁、冻结点和具名更新按真实记录显示；当前未提供的字段保持未知。

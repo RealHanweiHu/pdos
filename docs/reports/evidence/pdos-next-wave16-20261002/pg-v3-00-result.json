@@ -1,0 +1,9 @@
+{
+  "node": "tests/quality_followup_transactions/test_transactions.py::test_t2_named_root_cause_uses_actual_common_uuid_and_atomic_shared_receipt",
+  "exit_code": 0,
+  "seconds": 1866.7,
+  "source_stable": true,
+  "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+  "log_file": "pg-v3-00.log",
+  "log_sha256": "06744b58ab58b4b96f40d0349166c4cb67ecca0464afb18ce0dc863086f55132"
+}

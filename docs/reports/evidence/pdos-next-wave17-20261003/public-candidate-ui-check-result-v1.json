@@ -1,0 +1,90 @@
+{
+  "schema_version": "public-candidate-ui-check.v1",
+  "candidate_manifest": "public-candidate-ui-source-manifest-v1.json",
+  "candidate_manifest_sha256": "41fc9cfada5559c5012b077c65516d17f972b1bde3e100201476a73fa203929d",
+  "checks": [
+    {
+      "kind": "owned-strict-react-typecheck",
+      "command": "pdos-next/web/node_modules/.bin/tsc --project /tmp/pdos-public-candidate-tsconfig.json --pretty false",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+      "configuration_copy": "public-candidate-ui-typecheck-config.json",
+      "exit_code": 0,
+      "log": "public-candidate-ui-typecheck-final.log",
+      "scope": "8 owned files and imported types; noEmit; no Next/public build"
+    },
+    {
+      "kind": "owned-pure-compile",
+      "command": "pdos-next/web/node_modules/.bin/tsc --project /tmp/pdos-public-candidate-tests.json --pretty false",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+      "configuration_copy": "public-candidate-ui-helper-compile-config.json",
+      "exit_code": 0,
+      "log": "public-candidate-ui-helper-compile-final.log",
+      "scope": "4 pure files; emitted CommonJS only to temporary directory, no src.js"
+    },
+    {
+      "kind": "owned-pure-tests",
+      "command": "node --test /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-public-candidate-tests-q_zeqd23/candidate-workflow-state.test.js",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+      "exit_code": 0,
+      "tests": 17,
+      "passed": 17,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "duration_ms": 115.245875,
+      "log": "public-candidate-ui-helper-final.log",
+      "scope": "actual DTO binding/controller helpers only; no real API/qualification/UOW/bytes attestation"
+    },
+    {
+      "kind": "owned-eslint",
+      "command": "node node_modules/eslint/bin/eslint.js src/components/capa-effectiveness --format json",
+      "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+      "exit_code": 0,
+      "files": 8,
+      "errors": 0,
+      "warnings": 0,
+      "log": "public-candidate-ui-lint-final.json"
+    }
+  ],
+  "raw_logs": [
+    {
+      "path": "public-candidate-ui-helper-final.log",
+      "sha256": "83b919818d2712946c3e25530a0105e3819828a2275e672bd2bba5524be75582"
+    },
+    {
+      "path": "public-candidate-ui-helper-compile-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "public-candidate-ui-typecheck-final.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "public-candidate-ui-lint-final.json",
+      "sha256": "96e2e1944519ee362381a7c969e0d0c02d4d3fe111abdfe3eaa2629ceb27e800"
+    },
+    {
+      "path": "public-candidate-ui-lint-final-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "preserved_earlier_results": [
+    "public-candidate-ui-lint-initial.json: 1 react-hooks/set-state-in-effect error; restored asynchronously before final check",
+    "public-candidate-ui-typecheck-missing-node-types.log: temporary check configuration lacked node typeRoots; final explicit typeRoots fixed",
+    "public-candidate-ui-lint-iteration2.json: preceding 8-file pass; preserved before receipt/refresh gate tightening"
+  ],
+  "not_run": [
+    "public Next build",
+    "browser/viewport/theme verification",
+    "HTTP",
+    "PostgreSQL",
+    "real candidate save/replay",
+    "G3 qualification/effectiveness/close"
+  ],
+  "limits": [
+    "Five migrated files are byte-identical to frozen staging sources.",
+    "No full editable unsubmitted form rehydration is claimed; persisted exact pending command/key is restored before mounting form.",
+    "Candidate expiry unlock not implemented: no dedicated server not-saved recovery marker is frozen for this operation.",
+    "Host must provide complete real business renderReview and actual capability/material/read refresh callbacks."
+  ]
+}

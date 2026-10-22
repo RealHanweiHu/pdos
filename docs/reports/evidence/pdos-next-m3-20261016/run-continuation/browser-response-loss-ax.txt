@@ -1,0 +1,133 @@
+Browser tab: 14, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:3051/?category=1ed80db8-43dd-435e-a02b-319f25f7c8eb".
+0 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3051/?category=1ed80db8-43dd-435e-a02b-319f25f7c8eb
+	1 container
+		2 link Description: 跳到工作内容, Value: 127.0.0.1:3051/?category=1ed80db8-43dd-435e-a02b-319f25f7c8eb#workspace-content
+		3 text PDOS
+		4 button 收起侧栏
+			5 image
+		6 container 工作区导航
+			7 link Description: 我的工作, Value: 127.0.0.1:3051/?category=1ed80db8-43dd-435e-a02b-319f25f7c8eb&area=work
+			8 link Description: 项目驾驶舱, Value: 127.0.0.1:3051/?category=1ed80db8-43dd-435e-a02b-319f25f7c8eb&area=cockpit
+			9 link Description: 项目列表, Value: 127.0.0.1:3051/?category=1ed80db8-43dd-435e-a02b-319f25f7c8eb&area=projects
+			10 link Description: 项目集, Value: 127.0.0.1:3051/?category=1ed80db8-43dd-435e-a02b-319f25f7c8eb&area=programs
+			11 link Description: 产品品类工作区, Value: 127.0.0.1:3051/?category=1ed80db8-43dd-435e-a02b-319f25f7c8eb&area=category
+			12 link Description: 知识, Value: 127.0.0.1:3051/?category=1ed80db8-43dd-435e-a02b-319f25f7c8eb&area=knowledge
+			27 text 当前品类
+			28 text 连续工作联验
+			29 text 项目与专业工作按品类范围授权
+		13 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: 127.0.0.1:3051/plan
+		14 checkbox Description: 小Pai 工作栏, Value: 1
+		15 link Description: 设置, Value: 127.0.0.1:3051/?category=1ed80db8-43dd-435e-a02b-319f25f7c8eb&area=settings
+		16 text 合成连续工作用户
+		17 text 本地合成环境
+		18 text PDOS 产品品类工作区 连续工作联验
+		19 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			20 image
+			21 text 搜索
+		22 checkbox Description: 小Pai 工作栏, Value: 1
+			23 image
+		24 button 切换明暗主题
+			30 image
+		26 container workspace-content
+			31 heading 连续工作联验, Value: 1
+				32 text 连续工作联验
+			33 text 品类是权限范围根：共享知识、规格字典、型号与立项提案都在这里汇聚，项目经提案 G0 评审后建立。
+			34 button 打开品类工作台
+				35 text 打开品类工作台
+				36 image
+			77 container 标准品匹配
+				78 heading 先核对现有型号, Value: 2
+					79 text 先核对现有型号
+				80 text 只核对所选规格。全部满足且确认没有开发活动时，回到 CRM 办理报价与沟通，无需立项。
+				81 button (collapsed) 核对标准品规格, Secondary Actions: Expand
+					82 text 核对标准品规格
+			37 container 立项提案
+				38 heading 立项提案, Value: 2
+					39 text 立项提案
+				40 text 一案一页 · 唯一关卡是具名 G0 评审
+				41 text 客户需求、自主新品、派生迭代三个入口都落到同一种立项提案；AI 先起草，人做取舍。从对话创建的提案一律私有。
+				42 button 打开品类小Pai，起草立项提案
+					43 image
+					44 text 打开品类小Pai，起草立项提案
+				45 text 尚无立项提案。与品类小Pai 对话起草第一份提案；提案默认私有。
+			46 container 型号列表
+				47 heading 型号, Value: 2
+					48 text 型号
+				49 text 1  个
+				83 text 合成型号
+				84 text 反馈示例
+				85 button 打开
+					86 text 打开
+					87 image
+			51 container 共享知识
+				52 heading 共享知识, Value: 2
+					53 text 共享知识
+				54 button 进入知识区
+					55 text 进入知识区
+					56 image
+				57 text 尚无共享知识。品类研究产生的事实经确认后在这里共享。
+			58 container 规格字典
+				59 heading 规格字典, Value: 2
+					60 text 规格字典
+				61 text 0  条参数当前版本
+				88 text 尚无字典参数。规格条目的键、名称、单位与测试条件都来自字典；缺失时按人工映射逐步补齐。
+		63 container 小Pai 工作栏
+			64 text 小Pai
+			65 text 当前品类：连续工作联验
+			66 button 关闭小Pai 工作栏
+				67 image
+			68 container 小Pai 运行
+				69 heading 小Pai, Value: 2
+					70 text 小Pai
+				71 button 刷新运行
+				72 text 在当前品类委派工作。结果、待答问题和未完成事项会保留，关闭页面后仍可回来查看。
+				73 button (collapsed) 新建委派, Secondary Actions: Expand
+					74 text 新建委派
+				89 heading 已形成部分结果, Value: 3
+					90 text 已形成部分结果
+				91 button 核对当前状态
+				92 text 合成联验：已保存一条有来源的压力事实，待反馈核对。
+				93 container 小Pai处理过程
+					94 text 处理过程 受理至结束 1 秒
+					95 text 已形成部分结果，仍有待完成事项
+					96 container
+						97 text 已保存  2  次处理 · 已提交  1  条动作
+					98 button (collapsed) 查看步骤、依据与提交记录, Secondary Actions: Expand
+						99 text 查看步骤、依据与提交记录
+				100 button (collapsed) 反馈这次工作, Secondary Actions: Expand
+					101 text 反馈这次工作
+				124 container
+					125 button (expanded) 基于这次工作继续, Secondary Actions: Collapse
+						126 text 基于这次工作继续
+					127 text 补充目标或继续追问，沿用本人的原会话、对象与来源。旧结果保留；事实与权限在继续前重新核对。 合成联验：后续工作已受理，响应丢失。请读取原后续记录。
+					128 button 读取后续记录
+					129 container
+						130 text 接下来希望得到什么结果
+						131 text entry area (disabled) 接下来希望得到什么结果, Value: 继续核对压力单位和使用工况；保留原事实及回执，不把未知写成已满足。
+					132 button (disabled) 保存并继续
+					133 text 原受理结果待核对。刷新只读取，不自动重新提交。
+					134 button 核对并重试原请求
+				104 heading 未完成事项, Value: 4
+					105 text 未完成事项
+				106 content list
+					107 container
+						108 AXListMarker • 
+						109 text 合成案例，尚未形成完整对标或立项决定。
+				110 button (collapsed) 查看实际结果与回执, Secondary Actions: Expand
+					111 text 查看实际结果与回执
+				112 container 小Pai 待确认动作
+					113 heading 待你确认的动作, Value: 3
+						114 text 待你确认的动作
+					115 button 刷新候选
+					116 text 候选保留小Pai署名。核对实际范围后由你一次确认，打开页面不会执行。
+					117 text 当前没有领域候选。
+				118 button (collapsed) 整次撤回草稿结果, Secondary Actions: Expand
+					119 text 整次撤回草稿结果
+				75 heading 我的运行历史, Value: 3
+					76 text 我的运行历史
+				120 checkbox Synthetic whole-run revert history 已形成部分结果 · 10/16/2026, 4:58:33 PM, Value: 1
+					121 text Synthetic whole-run revert history
+					122 container
+						123 text 已形成部分结果  ·  10/16/2026, 4:58:33 PM
+
+The focused UI element is 0 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:3051/?category=1ed80db8-43dd-435e-a02b-319f25f7c8eb

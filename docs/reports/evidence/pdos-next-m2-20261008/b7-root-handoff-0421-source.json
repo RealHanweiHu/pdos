@@ -1,0 +1,1852 @@
+{
+  "audit": "b7-root-wiring-0421-source-only",
+  "main_head": "s0_0421 parent-reported; no database inspection",
+  "database_operations": 0,
+  "model_calls": 0,
+  "tests_rerun": false,
+  "code_or_frozen_candidate_changes": false,
+  "handoff": "docs/reports/evidence/pdos-next-m2-20261008/b7-root-handoff-0421.md",
+  "handoff_sha256": "7572238e91456185cc7dfb2b31c4770467d6022516a54033c406491efba53e00",
+  "source_snapshot": [
+    {
+      "path": "pdos-next/server/pdos_next/service.py",
+      "sha256": "b069d3e9963286e47c518dde784c1a8232ed985ae4762c082231c87a05912e53",
+      "definitions": [
+        {
+          "name": "digest",
+          "line": 49
+        },
+        {
+          "name": "Context",
+          "line": 60
+        },
+        {
+          "name": "require_access",
+          "line": 158
+        },
+        {
+          "name": "command_scope",
+          "line": 215
+        },
+        {
+          "name": "confirmation_subject",
+          "line": 263
+        },
+        {
+          "name": "source_for",
+          "line": 285
+        },
+        {
+          "name": "prove_sources",
+          "line": 344
+        },
+        {
+          "name": "receipt_view",
+          "line": 378
+        },
+        {
+          "name": "remember_key",
+          "line": 395
+        },
+        {
+          "name": "append_receipt",
+          "line": 416
+        },
+        {
+          "name": "check_run",
+          "line": 465
+        },
+        {
+          "name": "check_qualification",
+          "line": 483
+        },
+        {
+          "name": "confirmation_for",
+          "line": 528
+        },
+        {
+          "name": "reversible_claim",
+          "line": 551
+        },
+        {
+          "name": "preview_confirmation",
+          "line": 568
+        },
+        {
+          "name": "material_digest",
+          "line": 624
+        },
+        {
+          "name": "preview_command",
+          "line": 643
+        },
+        {
+          "name": "consume_material_confirmation",
+          "line": 701
+        },
+        {
+          "name": "execute",
+          "line": 767
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/database.py",
+      "sha256": "b90d69040680ad77f01bd7ee1fe0492af5321804b588009d6561f2a7caaa20b0",
+      "definitions": [
+        {
+          "name": "engine_for",
+          "line": 10
+        },
+        {
+          "name": "configured_engines",
+          "line": 16
+        },
+        {
+          "name": "tenant_session",
+          "line": 21
+        },
+        {
+          "name": "require_context",
+          "line": 53
+        },
+        {
+          "name": "category_for_product",
+          "line": 65
+        },
+        {
+          "name": "category_transaction",
+          "line": 70
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/api.py",
+      "sha256": "c099c4504dcaef4cd18e153761b48e680900f29f0b2384f5a8e9fba5648fbad7",
+      "definitions": [
+        {
+          "name": "create_app",
+          "line": 51
+        },
+        {
+          "name": "create_app.lifespan",
+          "line": 243
+        },
+        {
+          "name": "create_app.domain_error",
+          "line": 260
+        },
+        {
+          "name": "create_app.lifecycle_error",
+          "line": 266
+        },
+        {
+          "name": "create_app.invalid_payload",
+          "line": 272
+        },
+        {
+          "name": "create_app.conflict",
+          "line": 283
+        },
+        {
+          "name": "create_app.authenticated",
+          "line": 305
+        },
+        {
+          "name": "create_app.health",
+          "line": 366
+        },
+        {
+          "name": "create_app.session_info",
+          "line": 375
+        },
+        {
+          "name": "create_app.categories",
+          "line": 387
+        },
+        {
+          "name": "create_app.category_create",
+          "line": 407
+        },
+        {
+          "name": "create_app.category_member_grant",
+          "line": 414
+        },
+        {
+          "name": "create_app.products",
+          "line": 425
+        },
+        {
+          "name": "create_app.create_product",
+          "line": 456
+        },
+        {
+          "name": "create_app.command",
+          "line": 517
+        },
+        {
+          "name": "create_app.material_preview",
+          "line": 541
+        },
+        {
+          "name": "create_app.workspace",
+          "line": 545
+        },
+        {
+          "name": "create_app.revert_preview",
+          "line": 671
+        },
+        {
+          "name": "create_app.run_revert_preview",
+          "line": 682
+        },
+        {
+          "name": "create_app.cancel_preview",
+          "line": 705
+        },
+        {
+          "name": "create_app.definitions",
+          "line": 716
+        },
+        {
+          "name": "create_app.variants",
+          "line": 728
+        },
+        {
+          "name": "create_app.compare_variant",
+          "line": 741
+        },
+        {
+          "name": "create_app.projects",
+          "line": 759
+        },
+        {
+          "name": "create_app.configurations",
+          "line": 778
+        },
+        {
+          "name": "create_app.builds",
+          "line": 791
+        },
+        {
+          "name": "create_app.build_execution",
+          "line": 805
+        },
+        {
+          "name": "create_app.compare_actual_configuration",
+          "line": 819
+        },
+        {
+          "name": "create_app.supply_capture",
+          "line": 846
+        },
+        {
+          "name": "create_app.supply",
+          "line": 863
+        },
+        {
+          "name": "create_app.cost_capture",
+          "line": 876
+        },
+        {
+          "name": "create_app.costs",
+          "line": 893
+        },
+        {
+          "name": "create_app.verification",
+          "line": 906
+        },
+        {
+          "name": "create_app.verification_professional",
+          "line": 920
+        },
+        {
+          "name": "create_app.build_start",
+          "line": 934
+        },
+        {
+          "name": "create_app.sample_handoff",
+          "line": 948
+        },
+        {
+          "name": "create_app.verification_handoff",
+          "line": 967
+        },
+        {
+          "name": "create_app.build_assessment_inputs",
+          "line": 983
+        },
+        {
+          "name": "create_app.verification_launch",
+          "line": 998
+        },
+        {
+          "name": "create_app.verification_launch_inputs",
+          "line": 1014
+        },
+        {
+          "name": "create_app.model_calls",
+          "line": 1028
+        },
+        {
+          "name": "create_app.verification_results",
+          "line": 1055
+        },
+        {
+          "name": "create_app.verification_result_inputs",
+          "line": 1074
+        },
+        {
+          "name": "create_app.verification_result_capture",
+          "line": 1090
+        },
+        {
+          "name": "create_app.original_upload",
+          "line": 1124
+        },
+        {
+          "name": "create_app.category_original_upload",
+          "line": 1168
+        },
+        {
+          "name": "create_app.category_originals",
+          "line": 1172
+        },
+        {
+          "name": "create_app.LifecycleCandidateInput",
+          "line": 1185
+        },
+        {
+          "name": "create_app.lifecycle_inventory",
+          "line": 1190
+        },
+        {
+          "name": "create_app.lifecycle_candidate",
+          "line": 1207
+        },
+        {
+          "name": "create_app.lifecycle_reconcile",
+          "line": 1227
+        },
+        {
+          "name": "create_app.category_lifecycle_inventory",
+          "line": 1257
+        },
+        {
+          "name": "create_app.category_lifecycle_candidate",
+          "line": 1261
+        },
+        {
+          "name": "create_app.category_lifecycle_reconcile",
+          "line": 1267
+        },
+        {
+          "name": "create_app.original_scan",
+          "line": 1271
+        },
+        {
+          "name": "create_app.category_original_scan",
+          "line": 1293
+        },
+        {
+          "name": "create_app.original_download",
+          "line": 1299
+        },
+        {
+          "name": "create_app.category_original_download",
+          "line": 1340
+        },
+        {
+          "name": "create_app.resume_work",
+          "line": 1344
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/asgi.py",
+      "sha256": "278b1a9e3ac70a52faaa9d298644c139d46e031866912e938f2670b17b602dfd",
+      "definitions": []
+    },
+    {
+      "path": "pdos-next/server/pdos_next/category_scope.py",
+      "sha256": "56b1d8ba909b8aca421a93d4b416f3e04344727983b8b31e31df0355224bd974",
+      "definitions": [
+        {
+          "name": "CategoryScope",
+          "line": 18
+        },
+        {
+          "name": "category_scope",
+          "line": 30
+        },
+        {
+          "name": "CategoryCreate",
+          "line": 81
+        },
+        {
+          "name": "MemberGrant",
+          "line": 88
+        },
+        {
+          "name": "grant_member",
+          "line": 98
+        },
+        {
+          "name": "create_category",
+          "line": 206
+        },
+        {
+          "name": "require_command_category",
+          "line": 298
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/contracts.py",
+      "sha256": "56246f5356829cc33c6d9c70d4ca84de6f527a628c0c65de3da3f77865b5e195",
+      "definitions": [
+        {
+          "name": "SourceRead",
+          "line": 9
+        },
+        {
+          "name": "Command",
+          "line": 14
+        },
+        {
+          "name": "ArtifactPayload",
+          "line": 25
+        },
+        {
+          "name": "ArtifactPayload.safe_text",
+          "line": 34
+        },
+        {
+          "name": "ClaimPayload",
+          "line": 44
+        },
+        {
+          "name": "OutcomeSpec",
+          "line": 54
+        },
+        {
+          "name": "WorkPayload",
+          "line": 60
+        },
+        {
+          "name": "RevertPayload",
+          "line": 71
+        },
+        {
+          "name": "RevertPayload.exact_target",
+          "line": 77
+        },
+        {
+          "name": "CancelPayload",
+          "line": 83
+        },
+        {
+          "name": "OriginalScanInput",
+          "line": 88
+        },
+        {
+          "name": "OriginalWithdrawPayload",
+          "line": 93
+        },
+        {
+          "name": "UploadAbandonPayload",
+          "line": 100
+        },
+        {
+          "name": "ProductInput",
+          "line": 118
+        },
+        {
+          "name": "UploadInput",
+          "line": 124
+        },
+        {
+          "name": "ResumeInput",
+          "line": 134
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/command_handlers.py",
+      "sha256": "25d6f6f2218f8b03e7e1446ffc9f03ca7394153cc315580a40e8ecc42b8d4ad1",
+      "definitions": [
+        {
+          "name": "handler",
+          "line": 93
+        },
+        {
+          "name": "reviewed_view",
+          "line": 245
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/run_revert.py",
+      "sha256": "8e50b98c20f6190fdc16b55e9c0f7ffe223a6376366897e2d6cf94a10c901da5",
+      "definitions": [
+        {
+          "name": "semantic",
+          "line": 14
+        },
+        {
+          "name": "RevertPlan",
+          "line": 19
+        },
+        {
+          "name": "prepared",
+          "line": 27
+        },
+        {
+          "name": "validate",
+          "line": 95
+        },
+        {
+          "name": "confirmation_subject",
+          "line": 99
+        },
+        {
+          "name": "preview_view",
+          "line": 104
+        },
+        {
+          "name": "apply",
+          "line": 121
+        },
+        {
+          "name": "finalize_receipt",
+          "line": 141
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/runtime.py",
+      "sha256": "dcb918da54d5ae1a330895549fdd538056e4678c5782d284ccce5e7049c63cd0",
+      "definitions": [
+        {
+          "name": "Provider",
+          "line": 28
+        },
+        {
+          "name": "Provider.extract",
+          "line": 32
+        },
+        {
+          "name": "GraphState",
+          "line": 35
+        },
+        {
+          "name": "capability",
+          "line": 42
+        },
+        {
+          "name": "capability.extract",
+          "line": 43
+        },
+        {
+          "name": "capability.validate",
+          "line": 52
+        },
+        {
+          "name": "OnceInvocation",
+          "line": 66
+        },
+        {
+          "name": "OnceInvocation.__init__",
+          "line": 69
+        },
+        {
+          "name": "OnceInvocation.extract",
+          "line": 74
+        },
+        {
+          "name": "transition",
+          "line": 178
+        },
+        {
+          "name": "model_unavailable",
+          "line": 207
+        },
+        {
+          "name": "resume",
+          "line": 227
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_execution.py",
+      "sha256": "8cfb5fd3d89614d36938e32261ca44665d88d5c11dce109aca8e9e925ed71277",
+      "definitions": [
+        {
+          "name": "ProviderFactory",
+          "line": 26
+        },
+        {
+          "name": "ProviderFactory.__call__",
+          "line": 29
+        },
+        {
+          "name": "ModelRuntimePorts",
+          "line": 33
+        },
+        {
+          "name": "ConfiguredProviderFactory",
+          "line": 42
+        },
+        {
+          "name": "ConfiguredProviderFactory.__init__",
+          "line": 43
+        },
+        {
+          "name": "ConfiguredProviderFactory.__call__",
+          "line": 46
+        },
+        {
+          "name": "ConfiguredProviderFactory.__call__.authorize",
+          "line": 93
+        },
+        {
+          "name": "configure_model_runtime",
+          "line": 130
+        },
+        {
+          "name": "configured_provider_factory",
+          "line": 136
+        },
+        {
+          "name": "selected_provider",
+          "line": 141
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_configuration/persistence.py",
+      "sha256": "1e0efc129042e0c48ee9a7b01b3a11f1a8a1b7261ce80154f67c0700c79b8569",
+      "definitions": [
+        {
+          "name": "ModelConfigurationHead",
+          "line": 28
+        },
+        {
+          "name": "ModelConfigurationVersion",
+          "line": 35
+        },
+        {
+          "name": "decode",
+          "line": 61
+        },
+        {
+          "name": "SessionConfigurationStore",
+          "line": 89
+        },
+        {
+          "name": "SessionConfigurationStore.__init__",
+          "line": 90
+        },
+        {
+          "name": "SessionConfigurationStore.current",
+          "line": 93
+        },
+        {
+          "name": "SessionConfigurationStore.append",
+          "line": 115
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_configuration/service.py",
+      "sha256": "2d72dfc56f91bc5285ef3c6a8de1519c0e5e58702c3cf5cb7e037909912de86d",
+      "definitions": [
+        {
+          "name": "digest",
+          "line": 30
+        },
+        {
+          "name": "fail",
+          "line": 36
+        },
+        {
+          "name": "utc",
+          "line": 40
+        },
+        {
+          "name": "ConfigurationVersion",
+          "line": 45
+        },
+        {
+          "name": "ConfigurationVersion.binding_digest",
+          "line": 56
+        },
+        {
+          "name": "ConfigurationVersion.provider_version",
+          "line": 69
+        },
+        {
+          "name": "ConfigurationStore",
+          "line": 74
+        },
+        {
+          "name": "ConfigurationStore.current",
+          "line": 75
+        },
+        {
+          "name": "ConfigurationStore.append",
+          "line": 76
+        },
+        {
+          "name": "secret_digest",
+          "line": 81
+        },
+        {
+          "name": "current_secret",
+          "line": 94
+        },
+        {
+          "name": "SavePlan",
+          "line": 114
+        },
+        {
+          "name": "SavePlan.digest",
+          "line": 122
+        },
+        {
+          "name": "SavePlan.preview",
+          "line": 134
+        },
+        {
+          "name": "ConfigurationService",
+          "line": 148
+        },
+        {
+          "name": "ConfigurationService.__init__",
+          "line": 149
+        },
+        {
+          "name": "ConfigurationService._admin",
+          "line": 157
+        },
+        {
+          "name": "ConfigurationService._head",
+          "line": 167
+        },
+        {
+          "name": "ConfigurationService.plan",
+          "line": 173
+        },
+        {
+          "name": "ConfigurationService.restore_reviewed_plan",
+          "line": 219
+        },
+        {
+          "name": "ConfigurationService.apply_plan",
+          "line": 241
+        },
+        {
+          "name": "ConfigurationService.reading",
+          "line": 271
+        },
+        {
+          "name": "parse_save_payload",
+          "line": 298
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/model_configuration/runtime.py",
+      "sha256": "354f4a7f01885b9a2c52145c5179a0d8490e2e5e18c384f0f58cbbf845f1cbc7",
+      "definitions": [
+        {
+          "name": "Selection",
+          "line": 29
+        },
+        {
+          "name": "RuntimeConfiguration",
+          "line": 36
+        },
+        {
+          "name": "RuntimeConfiguration.__init__",
+          "line": 37
+        },
+        {
+          "name": "RuntimeConfiguration._config",
+          "line": 45
+        },
+        {
+          "name": "RuntimeConfiguration._facts",
+          "line": 62
+        },
+        {
+          "name": "RuntimeConfiguration.select",
+          "line": 97
+        },
+        {
+          "name": "RuntimeConfiguration.currentness",
+          "line": 119
+        },
+        {
+          "name": "RuntimeConfiguration.currentness.check",
+          "line": 133
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/providers/types.py",
+      "sha256": "7685aed45bcf7df33b9c11f2d0ba98a698059da45cd695a97cfeda6b9326b6cf",
+      "definitions": [
+        {
+          "name": "ProviderRoute",
+          "line": 16
+        },
+        {
+          "name": "ProviderRoute.__post_init__",
+          "line": 29
+        },
+        {
+          "name": "ProviderRoute.target_url",
+          "line": 51
+        },
+        {
+          "name": "ProviderRoute.digest",
+          "line": 56
+        },
+        {
+          "name": "ProviderRoute.assert_target_allowed",
+          "line": 70
+        },
+        {
+          "name": "ProviderUsage",
+          "line": 98
+        },
+        {
+          "name": "ProviderUsage.__post_init__",
+          "line": 106
+        },
+        {
+          "name": "ProviderResponse",
+          "line": 120
+        },
+        {
+          "name": "ProviderError",
+          "line": 127
+        },
+        {
+          "name": "ProviderError.__init__",
+          "line": 128
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/api.py",
+      "sha256": "991252eb8cbe166555fdc5cf2fdca57fe64f52a1809f7fc76967d9236232310e",
+      "definitions": [
+        {
+          "name": "StartInput",
+          "line": 21
+        },
+        {
+          "name": "AnswerInput",
+          "line": 29
+        },
+        {
+          "name": "ApiPorts",
+          "line": 35
+        },
+        {
+          "name": "reference",
+          "line": 43
+        },
+        {
+          "name": "router",
+          "line": 53
+        },
+        {
+          "name": "router.scoped_context",
+          "line": 58
+        },
+        {
+          "name": "router.transaction",
+          "line": 66
+        },
+        {
+          "name": "router.start",
+          "line": 77
+        },
+        {
+          "name": "router.read",
+          "line": 118
+        },
+        {
+          "name": "router.events",
+          "line": 135
+        },
+        {
+          "name": "router.answer",
+          "line": 155
+        },
+        {
+          "name": "router.cancel",
+          "line": 166
+        },
+        {
+          "name": "router.stream",
+          "line": 177
+        },
+        {
+          "name": "router.stream.generate",
+          "line": 182
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/activities.py",
+      "sha256": "1077851ab9a7440242d3c5c892c009ac0577a8ce2b8dbb2f52aecea862d1e700",
+      "definitions": [
+        {
+          "name": "configure_agent_kernel",
+          "line": 24
+        },
+        {
+          "name": "KernelActivities",
+          "line": 28
+        },
+        {
+          "name": "KernelActivities.__init__",
+          "line": 29
+        },
+        {
+          "name": "KernelActivities.scope_failed",
+          "line": 34
+        },
+        {
+          "name": "KernelActivities.scope_failure",
+          "line": 49
+        },
+        {
+          "name": "KernelActivities.advance",
+          "line": 53
+        },
+        {
+          "name": "KernelActivities.advance.heartbeat",
+          "line": 129
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/temporal_port.py",
+      "sha256": "f70e47b3792c58eb8c4794b689c51b3f14ee9d544e810a4642da126e2c995ba5",
+      "definitions": [
+        {
+          "name": "workflow_id",
+          "line": 11
+        },
+        {
+          "name": "TemporalPort",
+          "line": 15
+        },
+        {
+          "name": "TemporalPort.__init__",
+          "line": 16
+        },
+        {
+          "name": "TemporalPort.start",
+          "line": 19
+        },
+        {
+          "name": "TemporalPort.signal",
+          "line": 39
+        },
+        {
+          "name": "TemporalPort.cancel",
+          "line": 44
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/graph.py",
+      "sha256": "bbf3d9e4f86faffc4726acc32093a5b5bcf189e524f554c1cd7a0c1cf99542fd",
+      "definitions": [
+        {
+          "name": "HostPorts",
+          "line": 32
+        },
+        {
+          "name": "HostPorts.current",
+          "line": 33
+        },
+        {
+          "name": "HostPorts.context",
+          "line": 34
+        },
+        {
+          "name": "HostPorts.enabled",
+          "line": 35
+        },
+        {
+          "name": "HostPorts.qualified",
+          "line": 36
+        },
+        {
+          "name": "HostPorts.model",
+          "line": 37
+        },
+        {
+          "name": "HostPorts.read",
+          "line": 40
+        },
+        {
+          "name": "HostPorts.prepare",
+          "line": 41
+        },
+        {
+          "name": "HostPorts.write",
+          "line": 42
+        },
+        {
+          "name": "HostPorts.receipt",
+          "line": 45
+        },
+        {
+          "name": "HostPorts.verify",
+          "line": 46
+        },
+        {
+          "name": "HostPorts.emit",
+          "line": 47
+        },
+        {
+          "name": "HostPorts.finish",
+          "line": 48
+        },
+        {
+          "name": "GraphState",
+          "line": 51
+        },
+        {
+          "name": "Budget",
+          "line": 68
+        },
+        {
+          "name": "AgentKernel",
+          "line": 74
+        },
+        {
+          "name": "AgentKernel.__init__",
+          "line": 75
+        },
+        {
+          "name": "AgentKernel.compile",
+          "line": 86
+        },
+        {
+          "name": "AgentKernel.compile.load_binding",
+          "line": 90
+        },
+        {
+          "name": "AgentKernel.compile.restore_loaded",
+          "line": 100
+        },
+        {
+          "name": "AgentKernel.compile.prepare",
+          "line": 115
+        },
+        {
+          "name": "AgentKernel.compile.partial",
+          "line": 146
+        },
+        {
+          "name": "AgentKernel.compile.model",
+          "line": 159
+        },
+        {
+          "name": "AgentKernel.compile.route",
+          "line": 196
+        },
+        {
+          "name": "AgentKernel.compile.choose",
+          "line": 225
+        },
+        {
+          "name": "AgentKernel.compile.tools",
+          "line": 230
+        },
+        {
+          "name": "AgentKernel.compile.tools.call_tool",
+          "line": 240
+        },
+        {
+          "name": "AgentKernel.compile.verify",
+          "line": 336
+        },
+        {
+          "name": "AgentKernel.compile.finalize",
+          "line": 369
+        },
+        {
+          "name": "AgentKernel.execute",
+          "line": 394
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/host.py",
+      "sha256": "1c61a4979b8ea102523aa8cf2a5583abf18cec62d314349da0cb30d1fb305f04",
+      "definitions": [
+        {
+          "name": "KernelAdapters",
+          "line": 18
+        },
+        {
+          "name": "BoundHost",
+          "line": 34
+        },
+        {
+          "name": "BoundHost.__init__",
+          "line": 35
+        },
+        {
+          "name": "BoundHost.current",
+          "line": 47
+        },
+        {
+          "name": "BoundHost.context",
+          "line": 50
+        },
+        {
+          "name": "BoundHost.enabled",
+          "line": 57
+        },
+        {
+          "name": "BoundHost.qualified",
+          "line": 61
+        },
+        {
+          "name": "BoundHost.model",
+          "line": 73
+        },
+        {
+          "name": "BoundHost.read",
+          "line": 76
+        },
+        {
+          "name": "BoundHost.prepare",
+          "line": 95
+        },
+        {
+          "name": "BoundHost.write",
+          "line": 99
+        },
+        {
+          "name": "BoundHost.receipt",
+          "line": 120
+        },
+        {
+          "name": "BoundHost.verify",
+          "line": 150
+        },
+        {
+          "name": "BoundHost.emit",
+          "line": 157
+        },
+        {
+          "name": "BoundHost.finish",
+          "line": 160
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/bindings.py",
+      "sha256": "5f6f20e45790be017d4aa56d16fcfd81b08f5e5f55a50fb528d605d842fae1d6",
+      "definitions": [
+        {
+          "name": "SkillBinding",
+          "line": 13
+        },
+        {
+          "name": "WriteSource",
+          "line": 21
+        },
+        {
+          "name": "ModelBinding",
+          "line": 28
+        },
+        {
+          "name": "DomainBinding",
+          "line": 40
+        },
+        {
+          "name": "execution_key",
+          "line": 50
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/execution.py",
+      "sha256": "06514f276a2fa97e517f658b557092b9da576f3b7d8dc2e0c7c9a6a3eee5d511",
+      "definitions": [
+        {
+          "name": "check_run_binding",
+          "line": 23
+        },
+        {
+          "name": "validate_skill_load",
+          "line": 47
+        },
+        {
+          "name": "validate_model_source",
+          "line": 62
+        },
+        {
+          "name": "verify_source",
+          "line": 106
+        },
+        {
+          "name": "_check_session",
+          "line": 127
+        },
+        {
+          "name": "_locked_call",
+          "line": 139
+        },
+        {
+          "name": "_check_completed_intent",
+          "line": 154
+        },
+        {
+          "name": "recover_domain_call",
+          "line": 169
+        },
+        {
+          "name": "prepare_domain_call",
+          "line": 187
+        },
+        {
+          "name": "finish_domain_call",
+          "line": 240
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/persistence.py",
+      "sha256": "5b98cf37dfc6ab82c0ab3be6a3fd4b38d0dc8c24f253b6d0c5dcead2156ffdc5",
+      "definitions": [
+        {
+          "name": "KernelStore",
+          "line": 18
+        },
+        {
+          "name": "KernelStore.__init__",
+          "line": 19
+        },
+        {
+          "name": "KernelStore.release_call",
+          "line": 22
+        },
+        {
+          "name": "KernelStore.transaction",
+          "line": 58
+        },
+        {
+          "name": "KernelStore.authority",
+          "line": 98
+        },
+        {
+          "name": "KernelStore.scope",
+          "line": 130
+        },
+        {
+          "name": "KernelStore.current",
+          "line": 161
+        },
+        {
+          "name": "KernelStore.emit",
+          "line": 165
+        },
+        {
+          "name": "KernelStore.events",
+          "line": 181
+        },
+        {
+          "name": "KernelStore.claim",
+          "line": 191
+        },
+        {
+          "name": "KernelStore._claim",
+          "line": 212
+        },
+        {
+          "name": "KernelStore.settle",
+          "line": 283
+        },
+        {
+          "name": "KernelStore.reconcile",
+          "line": 325
+        },
+        {
+          "name": "KernelStore.finish",
+          "line": 370
+        },
+        {
+          "name": "create_run",
+          "line": 378
+        },
+        {
+          "name": "cancel_run",
+          "line": 469
+        },
+        {
+          "name": "prepare_run_revert",
+          "line": 502
+        },
+        {
+          "name": "finish_run_revert",
+          "line": 559
+        },
+        {
+          "name": "run_revert_status",
+          "line": 620
+        },
+        {
+          "name": "record_answers",
+          "line": 630
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/gateway.py",
+      "sha256": "9b32c03049aee885efa05922fb2172776fc39c058c0ace5c7d63077d89718e27",
+      "definitions": [
+        {
+          "name": "AgentGateway",
+          "line": 17
+        },
+        {
+          "name": "AgentGateway.__init__",
+          "line": 18
+        },
+        {
+          "name": "AgentGateway.close",
+          "line": 34
+        },
+        {
+          "name": "AgentGateway.turn",
+          "line": 37
+        },
+        {
+          "name": "AgentGateway._cancelled",
+          "line": 272
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/policy.py",
+      "sha256": "bcc2fa339ccf309a73efb43bfd91ce93678b4739c7bbeb23b584dd9204820454",
+      "definitions": [
+        {
+          "name": "EgressDecision",
+          "line": 17
+        },
+        {
+          "name": "egress",
+          "line": 25
+        },
+        {
+          "name": "skill_enabled",
+          "line": 71
+        },
+        {
+          "name": "qualified",
+          "line": 81
+        },
+        {
+          "name": "mcp_admission",
+          "line": 102
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/models.py",
+      "sha256": "320724d2abf65c5821c2a5acfe8ee907b7166ca981c4614dac33b4b732990e38",
+      "definitions": [
+        {
+          "name": "KernelRow",
+          "line": 25
+        },
+        {
+          "name": "AgentSession",
+          "line": 31
+        },
+        {
+          "name": "AgentRun",
+          "line": 51
+        },
+        {
+          "name": "AgentToolCall",
+          "line": 111
+        },
+        {
+          "name": "AgentEvent",
+          "line": 145
+        },
+        {
+          "name": "TenantAdministrator",
+          "line": 156
+        },
+        {
+          "name": "ProviderDataAgreement",
+          "line": 168
+        },
+        {
+          "name": "TenantSkillEnablement",
+          "line": 191
+        },
+        {
+          "name": "McpConnector",
+          "line": 205
+        },
+        {
+          "name": "McpToolGrant",
+          "line": 217
+        },
+        {
+          "name": "PublicWebSnapshot",
+          "line": 233
+        },
+        {
+          "name": "AgentInput",
+          "line": 264
+        },
+        {
+          "name": "ValidationBudget",
+          "line": 280
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/registry.py",
+      "sha256": "0ee250d41533db062ec4ec463f69f64efe641de9aa1e84ab35e91641523b75b8",
+      "definitions": [
+        {
+          "name": "ToolSpec",
+          "line": 63
+        },
+        {
+          "name": "ToolSpec.definition",
+          "line": 77
+        },
+        {
+          "name": "ToolRegistry",
+          "line": 81
+        },
+        {
+          "name": "ToolRegistry.__init__",
+          "line": 82
+        },
+        {
+          "name": "ToolRegistry.add",
+          "line": 87
+        },
+        {
+          "name": "ToolRegistry.get",
+          "line": 94
+        },
+        {
+          "name": "ToolRegistry.definitions",
+          "line": 102
+        },
+        {
+          "name": "ToolRegistry.version",
+          "line": 116
+        },
+        {
+          "name": "ToolRegistry.authorize",
+          "line": 123
+        },
+        {
+          "name": "command_tools",
+          "line": 163
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/tools.py",
+      "sha256": "fb7a75e2231ecbc543ed8ca888bd39d682513f4feea81a706ac7230e55ac39cc",
+      "definitions": [
+        {
+          "name": "default_registry",
+          "line": 50
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/types.py",
+      "sha256": "aab9c330f051ad2616ae3263a10aa21063b481cf63319a2ad1bd6cc4463bbe05",
+      "definitions": [
+        {
+          "name": "RunScope",
+          "line": 16
+        },
+        {
+          "name": "RunScope.child",
+          "line": 33
+        },
+        {
+          "name": "ToolCall",
+          "line": 39
+        },
+        {
+          "name": "ClarifyOption",
+          "line": 45
+        },
+        {
+          "name": "ClarifyQuestion",
+          "line": 50
+        },
+        {
+          "name": "AgentOutput",
+          "line": 60
+        },
+        {
+          "name": "ModelTurn",
+          "line": 69
+        },
+        {
+          "name": "WireRecommendation",
+          "line": 78
+        },
+        {
+          "name": "WireQuestion",
+          "line": 83
+        },
+        {
+          "name": "WireAgentOutput",
+          "line": 93
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/workflows/worker.py",
+      "sha256": "d114415b437bf181f0a71733c43c7dbcad7ee4f1f7c41c1dd438369d926caba2",
+      "definitions": [
+        {
+          "name": "Activities",
+          "line": 32
+        },
+        {
+          "name": "Activities.__init__",
+          "line": 33
+        },
+        {
+          "name": "Activities.advance",
+          "line": 40
+        },
+        {
+          "name": "Activities.advance.execute",
+          "line": 71
+        },
+        {
+          "name": "Activities.parse",
+          "line": 99
+        },
+        {
+          "name": "Activities.queue",
+          "line": 106
+        },
+        {
+          "name": "Activities.scan",
+          "line": 113
+        },
+        {
+          "name": "Activities.lifecycle",
+          "line": 120
+        },
+        {
+          "name": "Activities.terminal_upload",
+          "line": 132
+        },
+        {
+          "name": "main",
+          "line": 161
+        },
+        {
+          "name": "main.deliver",
+          "line": 195
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/workflows/definitions.py",
+      "sha256": "49e87fff8b94ca301a0fb53b18bf889422826d22c30f42584ab828d92c883015",
+      "definitions": [
+        {
+          "name": "SourceWork",
+          "line": 8
+        },
+        {
+          "name": "SourceWork.__init__",
+          "line": 9
+        },
+        {
+          "name": "SourceWork.wake",
+          "line": 14
+        },
+        {
+          "name": "SourceWork.run",
+          "line": 20
+        },
+        {
+          "name": "ParseOriginal",
+          "line": 41
+        },
+        {
+          "name": "ParseOriginal.run",
+          "line": 43
+        },
+        {
+          "name": "QueueOriginalSecurity",
+          "line": 53
+        },
+        {
+          "name": "QueueOriginalSecurity.run",
+          "line": 55
+        },
+        {
+          "name": "SecureOriginal",
+          "line": 65
+        },
+        {
+          "name": "SecureOriginal.run",
+          "line": 67
+        },
+        {
+          "name": "OriginalLifecycle",
+          "line": 85
+        },
+        {
+          "name": "OriginalLifecycle.run",
+          "line": 87
+        },
+        {
+          "name": "UploadTerminal",
+          "line": 97
+        },
+        {
+          "name": "UploadTerminal.run",
+          "line": 99
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/workflows/transport.py",
+      "sha256": "0879dd258f190fb2189d538bf2253ae404eef9c7c9964e04918fb634fa031340",
+      "definitions": [
+        {
+          "name": "TemporalSender",
+          "line": 15
+        },
+        {
+          "name": "TemporalSender.__init__",
+          "line": 16
+        },
+        {
+          "name": "TemporalSender.__call__",
+          "line": 19
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/workflows/xiaopai.py",
+      "sha256": "a065b2e9035d07c83f2761c885e13671af23a51efed8b723b8b382a4cce37952",
+      "definitions": [
+        {
+          "name": "XiaopaiWork",
+          "line": 10
+        },
+        {
+          "name": "XiaopaiWork.__init__",
+          "line": 11
+        },
+        {
+          "name": "XiaopaiWork.resume",
+          "line": 15
+        },
+        {
+          "name": "XiaopaiWork.run",
+          "line": 20
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/workflows/checkpoints.py",
+      "sha256": "2c32065d538249097537916fa27d65a84b8c91fa207b7e79a4fa0b1e91890e75",
+      "definitions": [
+        {
+          "name": "verified_checkpoint_url",
+          "line": 9
+        }
+      ]
+    },
+    {
+      "path": "packages/pdos-agent-runtime/src/pdos_agent_runtime/graph.py",
+      "sha256": "bb3947a84a60a87b2ba49aee53d6dda53d07b943fe0be869635d53ccf6410f41",
+      "definitions": [
+        {
+          "name": "in_agent_graph",
+          "line": 13
+        },
+        {
+          "name": "in_registered_agent_graph",
+          "line": 17
+        },
+        {
+          "name": "State",
+          "line": 21
+        },
+        {
+          "name": "execute_graph",
+          "line": 26
+        },
+        {
+          "name": "execute_graph.execute",
+          "line": 34
+        },
+        {
+          "name": "execute_graph.validate",
+          "line": 41
+        },
+        {
+          "name": "registered_graph_context",
+          "line": 66
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_s0_0700.py",
+      "sha256": "76e925cea45fb5dff12648969f4e792c9fc768cbd869555c25a7e66f64fb9827",
+      "definitions": []
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0700_agent_kernel.py",
+      "sha256": "e1fec28bd543ddb17861d79d5b05d20125359b9d95b4f2f8cf08960447063901",
+      "definitions": [
+        {
+          "name": "upgrade",
+          "line": 13
+        },
+        {
+          "name": "downgrade",
+          "line": 18
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0703_committed_answers.py",
+      "sha256": "b7a86ddea7a37d6b1b8199d136e50b0a0057c0fc960887d7d55fc41f93fb0ae8",
+      "definitions": [
+        {
+          "name": "upgrade",
+          "line": 11
+        },
+        {
+          "name": "downgrade",
+          "line": 35
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0707_validation_cost_budget.py",
+      "sha256": "396c12958725df1592dac3032caa0a7450fbe0037e9e7a3d28623ce4e7b459d6",
+      "definitions": [
+        {
+          "name": "upgrade",
+          "line": 11
+        },
+        {
+          "name": "downgrade",
+          "line": 131
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0714_receipt_run_binding.py",
+      "sha256": "74b484a88f8d4e200d6f45b17d9c3db7a48408defd674ee9d3ccbbe657aef79e",
+      "definitions": [
+        {
+          "name": "upgrade",
+          "line": 11
+        },
+        {
+          "name": "downgrade",
+          "line": 21
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0716_trusted_execution_binding.py",
+      "sha256": "da928650926e81dca243531c1b7353ff0974e588cb066614c49398c4b091aeba",
+      "definitions": [
+        {
+          "name": "upgrade",
+          "line": 13
+        },
+        {
+          "name": "downgrade",
+          "line": 18
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0420_category_clock_owner.py",
+      "sha256": "9bffa512621f772e680d3ede01cb250d9b9964f64779ecf0f54cede12d07f352",
+      "definitions": [
+        {
+          "name": "upgrade",
+          "line": 24
+        },
+        {
+          "name": "downgrade",
+          "line": 41
+        }
+      ]
+    },
+    {
+      "path": "pdos-next/server/migrations/versions/s0_0421_category_source_reference_fence.py",
+      "sha256": "7f327a17925d83f795fd329eae126f15810bc240379552150ea4e32d587f9e0d",
+      "definitions": [
+        {
+          "name": "upgrade",
+          "line": 127
+        },
+        {
+          "name": "downgrade",
+          "line": 140
+        }
+      ]
+    }
+  ],
+  "frozen_candidate_verification": {
+    "manifest": "docs/reports/evidence/pdos-next-m2-20261008/trusted-call-binding/private-db/source-manifest.json",
+    "files": 34,
+    "hash_mismatches": [],
+    "source_digest": "701785a12e32c159e212a944c1c51e1a968cbc32b8acbda6f1de2b7536638a62",
+    "port_selection": {
+      "passed": 76,
+      "seconds": 12.87,
+      "actual_postgresql_cases": 29,
+      "pure_cases": 47
+    },
+    "separate_graph_selection": {
+      "passed": 11,
+      "seconds": 1.9
+    },
+    "summed_as_single_selection": false
+  },
+  "migration_reconnection_planned_not_executed": {
+    "original_0700_parent": "s0_0011",
+    "target_parent": "actual root B6 head at B7; not fixed 0421",
+    "0700_0716_chain_retained": true
+  }
+}

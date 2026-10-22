@@ -1,0 +1,124 @@
+{
+  "schema_version": "wave17-anchor-staged-review-v1",
+  "created_at": "2026-10-03T09:50:21.621545+00:00",
+  "result": "staged_pure_structural_validation_passed",
+  "mounted": false,
+  "source_files": [
+    {
+      "path": "pdos-next/staging/wave17/anchor.py",
+      "sha256": "55a8446b68e9bbd466b9bf80ba7de44680ad587da353a4b56b3ed0b93156073e",
+      "bytes": 19994
+    },
+    {
+      "path": "pdos-next/staging/wave17/lineage.py",
+      "sha256": "9dc4e94b4c80661aafec8e4d08d6cc2940364bb22cca22e55fcb6fca6e031540",
+      "bytes": 24609
+    },
+    {
+      "path": "pdos-next/staging/wave17/test_anchor_lineage.py",
+      "sha256": "999d8bb5f1447ea4ecb96aeb50f84aff5ae504fe5cbc35acdcbd0cd6437bae1e",
+      "bytes": 36837
+    },
+    {
+      "path": "pdos-next/staging/wave17/anchor-contract.md",
+      "sha256": "97072e8fa394a290587b3c41ba928c6038aa69788cddb0220b73ee062decf54a",
+      "bytes": 11234
+    }
+  ],
+  "source_manifest_sha256": "c1cb9e967103271d1466dbc5d91b5544df0468f84ec3630476ba31dea2444060",
+  "contract_inputs": [
+    {
+      "path": "docs/design/2026-10-03-pdos-next-wave17-staged-implementation-contract.md",
+      "sha256": "918144f56d47344d3066f2419bef04dfd2750884ec7ec69e912df92b3c25b64d",
+      "bytes": 3812
+    },
+    {
+      "path": "docs/design/2026-10-03-pdos-next-wave17-effectiveness-contract-draft.md",
+      "sha256": "05163de7294e0150995f21e75a4cee2dc10032d1ad2cce5330f0c68e6330cdb9",
+      "bytes": 46238
+    }
+  ],
+  "exports": [
+    "anchor.build_anchor",
+    "lineage.validate_lineage",
+    "lineage.verify_from_host",
+    "lineage.LineageHost"
+  ],
+  "checks": {
+    "pure": {
+      "command": "PYTHONPATH=pdos-next/server:pdos-next/server/tests:pdos-next/staging/wave17 pdos-next/server/.venv/bin/python -m pytest --noconftest -q -x --tb=short pdos-next/staging/wave17/test_anchor_lineage.py",
+      "exit_code": 0,
+      "passed": 56,
+      "seconds": 0.94,
+      "log": {
+        "path": "docs/reports/evidence/pdos-next-wave17-20261003/anchor-pure-tests.log",
+        "sha256": "e0550888741d3681c0358b157025b97484c85206935e3ca50ffe3c3e185e4904",
+        "bytes": 99
+      },
+      "database_fixtures": false
+    },
+    "ruff_check": {
+      "exit_code": 0,
+      "scope": [
+        "pdos-next/staging/wave17/anchor.py",
+        "pdos-next/staging/wave17/lineage.py",
+        "pdos-next/staging/wave17/test_anchor_lineage.py"
+      ],
+      "output": "All checks passed!"
+    },
+    "ruff_format_check": {
+      "exit_code": 0,
+      "scope": [
+        "pdos-next/staging/wave17/anchor.py",
+        "pdos-next/staging/wave17/lineage.py",
+        "pdos-next/staging/wave17/test_anchor_lineage.py"
+      ],
+      "output": "3 files already formatted"
+    },
+    "ast": {
+      "scope": [
+        "pdos-next/staging/wave17/anchor.py",
+        "pdos-next/staging/wave17/lineage.py",
+        "pdos-next/staging/wave17/test_anchor_lineage.py"
+      ],
+      "passed": 3
+    }
+  },
+  "stable_failure_observation_exclusions": [
+    "result.retained.checked_at",
+    "result.retained.execution_window_elapsed",
+    "result.source_basis.runtime_stamp"
+  ],
+  "proof_boundaries": {
+    "full_origin_history_preserved": true,
+    "full_failure_proof_sha256_separate_and_preserved": true,
+    "original_start_plan_occupancy_usage_source_and_issuer_epochs_preserved": true,
+    "finite_operations": [
+      "quality.capa.effectiveness.decide",
+      "quality.issue.close"
+    ],
+    "distinct_actual_t2_and_receipts_required": true,
+    "post_final_current_io_clock_checked": true,
+    "max_source_reads": 20,
+    "missing_host": {
+      "code": "INTEGRATION_REQUIRED",
+      "status": 503
+    },
+    "output": "IssueLineageProof.structural_validation_only=True"
+  },
+  "coverage": [
+    "complete exact origin/material/failure/source-basis hashing and nested-observation non-exclusion",
+    "finite exact effect/close deltas with immutable history prefix and no alternate append path",
+    "complete current source closure, private owner boundary, no truncation, conflicting versions",
+    "exact professional signer recheck, independent verification and nature rules",
+    "typed T2, material/readset/delta, Receipt/Audit/Outbox and same-group binding",
+    "missing host, source/runtime drift after owner IO, expiry during final Current IO"
+  ],
+  "limits": [
+    "All pure positive inputs are explicit synthetic structural fixtures, not actual qualifications or real observations.",
+    "Input consumed bool/UUID/hash cannot prove same-UOW consumption: real host must read shared marker/Invocation.decision_id and actual committed reciprocal atom.",
+    "No real DB/source bytes/Current/Receipt/authorization host has been integrated here.",
+    "No server/web/lock/migration/current 480-source candidate files were edited by this staged task; no full 480-file re-hash claim is made.",
+    "No PG/HTTP/browser/public tests ran; G3, production enablement and formal human Exit are not claimed."
+  ]
+}

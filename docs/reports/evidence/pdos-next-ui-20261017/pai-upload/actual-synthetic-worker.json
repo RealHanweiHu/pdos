@@ -1,0 +1,30 @@
+{
+  "original_id": "b5321584-6dbf-49b7-8819-513d19317e87",
+  "parse_result": {
+    "status": "parsed",
+    "original_id": "b5321584-6dbf-49b7-8819-513d19317e87"
+  },
+  "source": {
+    "artifact_id": "f08ec2b2-46aa-4ece-bcfc-d5351ee5e902",
+    "artifact_revision": 1,
+    "title": "pai-upload-browser-note.txt",
+    "product_id": null,
+    "status": "active",
+    "original": {
+      "id": "b5321584-6dbf-49b7-8819-513d19317e87",
+      "revision": 2,
+      "filename": "pai-upload-browser-note.txt",
+      "parse_status": "parsed",
+      "parse_code": null,
+      "scan_status": "clean"
+    },
+    "availability": {
+      "available": true,
+      "code": null
+    }
+  },
+  "actual_worker_calls": true,
+  "synthetic_scanner_only": true,
+  "models_called": false,
+  "temporal_full_chain_executed": false
+}

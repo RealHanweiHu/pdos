@@ -1,0 +1,57 @@
+.....                                                                    [100%]
+=============================== warnings summary ===============================
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[customer_request]
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[new_product]
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[derivative]
+tests/preproject/test_g0_handoff_pg.py::test_nonapproved_decision_has_no_project_handoff[returned]
+tests/preproject/test_g0_handoff_pg.py::test_nonapproved_decision_has_no_project_handoff[rejected]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/preproject/test_g0_handoff_pg.py: 36 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[customer_request]
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[new_product]
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[derivative]
+tests/preproject/test_g0_handoff_pg.py::test_nonapproved_decision_has_no_project_handoff[returned]
+tests/preproject/test_g0_handoff_pg.py::test_nonapproved_decision_has_no_project_handoff[rejected]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:863: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[customer_request]
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[new_product]
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[derivative]
+tests/preproject/test_g0_handoff_pg.py::test_nonapproved_decision_has_no_project_handoff[returned]
+tests/preproject/test_g0_handoff_pg.py::test_nonapproved_decision_has_no_project_handoff[rejected]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:918: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[customer_request]
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[new_product]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[customer_request]
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[new_product]
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[derivative]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[customer_request]
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[new_product]
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[derivative]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[derivative]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/variants.py:1318: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[derivative]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/variants.py:1352: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+5 passed, 61 warnings in 82.80s (0:01:22)

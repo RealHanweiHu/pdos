@@ -1,0 +1,21 @@
+{
+  "checkpoint": "after-original-retry",
+  "head": "s0_0759",
+  "counts": {
+    "platforms": 1,
+    "platform_product_links": 1,
+    "platform_link_current": 1,
+    "action_receipts": 2,
+    "audit_entries": 2,
+    "outbox_events": 2
+  },
+  "links": [
+    {
+      "id": "13a80967-a45c-42e8-8c7b-0f8e40f52b10",
+      "platform_id": "a9de9dd9-e685-42d6-af41-855f175ceb03",
+      "version": 1,
+      "action": "attach",
+      "receipt_id": "ebe503d7-1ad7-4f09-8717-6cb766f3e4c8"
+    }
+  ]
+}

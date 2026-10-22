@@ -1,0 +1,1479 @@
+### Browser `pdos-s5-external-wait-20261018` opened with pid 24744.
+### Ran Playwright code
+```js
+await page.goto('about:blank');
+```
+### Page
+- Page URL: about:blank
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T20-54-22-808Z.yml)
+
+### Result
+{"syntheticLoginSet":true}
+### Ran Playwright code
+```js
+await (async page => { await page.context().addCookies([{"name": "pdos-next-session", "value": "[SYNTHETIC_LOGIN_REDACTED]", "domain": "127.0.0.1", "path": "/", "httpOnly": true, "sameSite": "Lax"}]); return { syntheticLoginSet: true }; })(page);
+```
+
+### Ran Playwright code
+```js
+await page.goto('http://127.0.0.1:62022/?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950&project=62520600-4831-47e2-9285-a02e61bebba9');
+```
+### Page
+- Page URL: http://127.0.0.1:62022/?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950&project=62520600-4831-47e2-9285-a02e61bebba9
+- Page Title: PDOS · 研发工作区
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T20-54-24-057Z.yml)
+
+### Page
+- Page URL: http://127.0.0.1:62022/?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950&project=62520600-4831-47e2-9285-a02e61bebba9
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e4]
+  - generic [ref=e5]:
+    - link "跳到工作内容" [ref=e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e11]: PDOS
+        - button "收起侧栏" [ref=e12]
+      - navigation "工作区导航" [ref=e13]:
+        - link "我的工作" [ref=e14] [cursor=pointer]:
+          - /url: "?area=work&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - link "项目驾驶舱" [ref=e18] [cursor=pointer]:
+          - /url: "?area=cockpit&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - link "项目列表" [ref=e22] [cursor=pointer]:
+          - /url: "?area=projects&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - link "项目集" [ref=e26] [cursor=pointer]:
+          - /url: "?area=programs&category=a051a908-5996-4290-b6cf-9b9166210d36"
+          - generic [ref=e30]: 尚未接入
+        - link "产品品类工作区" [ref=e31] [cursor=pointer]:
+          - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+        - link "知识" [ref=e35] [cursor=pointer]:
+          - /url: "?area=knowledge&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - generic [ref=e39]:
+          - paragraph [ref=e40]: 当前品类
+          - paragraph [ref=e41]: 汽车充气泵
+          - paragraph [ref=e42]: 项目与专业工作按品类范围授权
+      - generic [ref=e43]:
+        - link "计划执行进度" [ref=e44] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=e47]: 计划进度
+        - button "小Pai 工作栏" [ref=e48]:
+          - generic [ref=e51]: 小Pai
+        - link "设置" [ref=e52] [cursor=pointer]:
+          - /url: "?area=settings&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - generic [ref=e56]:
+          - generic [aria-hidden] [ref=e57]: S
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Synthetic owner
+            - paragraph [ref=e60]: 本地合成环境
+    - generic [ref=e61]:
+      - banner [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]: PDOS
+          - generic [ref=e67]: 产品品类工作区
+          - generic [ref=e70]: 汽车充气泵
+        - generic [ref=e71]:
+          - button "搜索对象" [ref=e72]:
+            - generic [ref=e73]: 搜索
+          - button "小Pai 工作栏" [ref=e74]
+          - button "切换明暗主题" [ref=e75]
+      - main [ref=e76]:
+        - navigation "品类工作台区" [ref=e77]:
+          - link "型号" [ref=e78] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=products&view=overview&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "项目" [ref=e82] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=overview&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "知识" [ref=e86] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=knowledge&view=sources&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "设置" [ref=e90] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=settings&view=preferences&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - button "快速查找入口或型号" [ref=e94] [cursor=pointer]
+          - combobox "当前型号" [ref=e97]:
+            - option "Synthetic product"
+            - option "Synthetic named work loop" [selected]
+        - navigation "项目视图" [ref=e98]:
+          - link "现在" [ref=e99] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=overview&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "工作与计划" [ref=e103] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "试制" [ref=e107] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=builds&task=prepare&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "测试与交接" [ref=e111] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=verification&task=prepare&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "问题与变更" [ref=e115] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=issues&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "评审与交付 尚未接入" [ref=e119] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=reviews&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+            - generic [ref=e122]: 评审与交付
+            - generic "尚未接入" [ref=e123]
+          - link "资料" [ref=e124] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=files&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+        - generic [ref=e128]:
+          - generic [ref=e130]:
+            - heading "工作与计划" [level=1] [ref=e131]
+            - paragraph [ref=e132]: 当前范围：Synthetic named work loop
+          - generic [ref=e134]:
+            - region "项目与首版计划" [ref=e135]:
+              - generic [ref=e136]:
+                - generic [ref=e137]:
+                  - paragraph [ref=e138]: 固定型号定义，组织真实研发工作
+                  - heading "项目与首版计划" [level=2] [ref=e139]
+                - generic [ref=e140]:
+                  - button "编排首版计划" [ref=e141]
+                  - button "刷新项目" [ref=e142]
+              - paragraph [ref=e143]: 项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。当前只办理所选项目。
+              - link "返回项目驾驶舱" [ref=e144] [cursor=pointer]:
+                - /url: "?area=cockpit&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9"
+              - region "已保存项目与计划" [ref=e146]:
+                - heading "已保存项目" [level=3] [ref=e147]
+                - article [ref=e148]:
+                  - generic [ref=e149]:
+                    - generic [ref=e150]:
+                      - heading "Synthetic named work loop" [level=4] [ref=e151]
+                      - generic [ref=e152]: 本人负责 · 品类授权成员
+                    - paragraph [ref=e153]: Actual work acceptance with bounded independent commitments
+                    - paragraph [ref=e154]: 固定定义 v1 · Synthetic named work loop · 尚未正式发布
+                    - group [ref=e155]:
+                      - generic "查看固定研发范围" [ref=e156] [cursor=pointer]
+                  - generic [ref=e157]:
+                    - generic [ref=e158]:
+                      - term [ref=e159]: 批准基线
+                      - definition [ref=e160]: 尚未批准
+                    - generic [ref=e161]:
+                      - term [ref=e162]: 个人承诺
+                      - definition [ref=e163]: 尚未记录
+                    - generic [ref=e164]:
+                      - term [ref=e165]: 实绩
+                      - definition [ref=e166]: 尚未记录
+                  - generic [ref=e167]:
+                    - paragraph [ref=e168]: 首版计划 v1 已应用
+                    - paragraph [ref=e171]: 已建立工程与 NPI 工作包及 2 个任务。后续修订入口暂未开放。
+                    - generic [ref=e172]:
+                      - generic [ref=e173]:
+                        - paragraph [ref=e174]: 全部任务预测完成区间
+                        - paragraph [ref=e175]: 未知 / 暂不可预测 ～ 未知 / 暂不可预测
+                        - paragraph [ref=e176]: 工作日历：Asia/Shanghai · synthetic-workday@1。区间上界来自最高工时估计，不代表承诺日期；未考虑资源预约。
+                      - generic [ref=e177]:
+                        - article [ref=e178]:
+                          - paragraph [ref=e179]: Engineering verification
+                          - paragraph [ref=e180]: 工程 · 60 ～ 120 分钟
+                          - generic [ref=e181]:
+                            - term [ref=e182]: 最低估时下的开始 / 完成
+                            - definition [ref=e183]: 2026-10-02 01:00 UTC / 2026-10-02 02:00 UTC
+                            - term [ref=e184]: 最高估时下的开始 / 完成
+                            - definition [ref=e185]: 2026-10-02 01:00 UTC / 2026-10-02 03:00 UTC
+                            - term [ref=e186]: 估计依据
+                            - definition [ref=e187]: Synthetic owner estimate for trial
+                            - term [ref=e188]: 前置任务
+                            - definition [ref=e189]: 无
+                        - article [ref=e190]:
+                          - paragraph [ref=e191]: NPI preparation
+                          - paragraph [ref=e192]: NPI / 制造导入 · 未知 ～ 未知 分钟
+                          - generic [ref=e193]:
+                            - term [ref=e194]: 最低估时下的开始 / 完成
+                            - definition [ref=e195]: 2026-10-02 02:00 UTC / 未知 / 暂不可预测
+                            - term [ref=e196]: 最高估时下的开始 / 完成
+                            - definition [ref=e197]: 2026-10-02 03:00 UTC / 未知 / 暂不可预测
+                            - term [ref=e198]: 估计依据
+                            - definition [ref=e199]: 尚未记录
+                            - term [ref=e200]: 前置任务
+                            - definition [ref=e201]: Engineering verification
+                          - paragraph [ref=e202]: 暂不可精确预测：最低工时未知；最高工时未知
+            - generic [ref=e203]:
+              - generic [ref=e204]:
+                - generic [ref=e205]:
+                  - paragraph [ref=e206]: 本项目的执行与交付
+                  - heading "任务、个人承诺与成果" [level=2] [ref=e207]
+                - button "刷新任务" [ref=e208]
+              - paragraph [ref=e209]: Synthetic named work loop · 项目 v2 · 读取时点 2026-10-18T20:54:25.210484+00:00。本人承接只确认责任，不形成日期承诺。
+              - region "G0 决定留下的事项" [ref=e210]:
+                - heading "G0 决定留下的事项" [level=3] [ref=e211]
+                - paragraph [ref=e212]: 原安排期限是 G0 决定中的日期；个人承诺需要另行具名办理。接续只建立任务草稿，成果定义须本人填写。
+                - paragraph [ref=e213]: 当前项目没有可读的 G0 待办或风险。
+              - region "当前项目任务" [ref=e214]:
+                - generic [ref=e215]:
+                  - heading "当前任务" [level=3] [ref=e216]
+                  - generic [ref=e217]:
+                    - button "新建任务" [ref=e218]
+                    - button "写具名周报" [ref=e219]
+                - paragraph [ref=e220]: 当前可读范围内尚无人工任务。
+              - region "任务办理表单" [ref=e221]:
+                - heading "新建人工任务" [level=3] [ref=e222]
+                - group [ref=e223]:
+                  - generic [ref=e224]:
+                    - text: 任务标题
+                    - textbox "任务标题" [ref=e225]
+                  - generic [ref=e226]:
+                    - text: 任务目标
+                    - textbox "任务目标" [ref=e227]
+                  - generic [ref=e228]:
+                    - heading "成果定义" [level=4] [ref=e229]
+                    - generic [ref=e230]:
+                      - textbox "成果 1 标识" [ref=e231]: outcome-1
+                      - textbox "成果 1 说明" [ref=e232]
+                      - generic [ref=e233]:
+                        - checkbox "必需" [checked] [ref=e234]
+                        - text: 必需
+                    - button "添加成果定义" [ref=e235]
+                  - group [ref=e236]:
+                    - generic "高级：成果定义与计划任务引用" [ref=e237] [cursor=pointer]
+                  - generic [ref=e238]:
+                    - text: 办理理由
+                    - textbox "办理理由" [ref=e239]
+                  - group [ref=e240]:
+                    - generic "实际来源引用（高级 JSON，必填）" [ref=e241] [cursor=pointer]
+                  - button "保存人工任务草稿" [ref=e242]
+              - region "外部等待与跟进" [ref=e243]:
+                - generic [ref=e244]:
+                  - generic [ref=e245]:
+                    - paragraph [ref=e246]: 原请求、送达与回复分别留痕
+                    - heading "外部等待与跟进" [level=3] [ref=e247]
+                  - button "刷新外部等待" [ref=e248]
+                - paragraph [ref=e249]: 这里保存内部跟进记录。对方声明的时间与回复、实际送达、正式业务接收分别核对。
+                - generic [ref=e250]:
+                  - paragraph [ref=e251]: Synthetic named work loop · 已读 1 条 · 时点 2026-10-18T20:54:25.312155+00:00
+                  - button "新建外部等待" [ref=e252]
+                - article [ref=e254]:
+                  - generic [ref=e255]:
+                    - heading "Synthetic supplier drawing response" [level=4] [ref=e256]
+                    - generic [ref=e257]: 内部等待进行中 · v2
+                  - generic [ref=e258]:
+                    - generic [ref=e259]:
+                      - term [ref=e260]: 等待对象
+                      - definition [ref=e261]: Synthetic supplier drawing contact
+                    - generic [ref=e262]:
+                      - term [ref=e263]: 当前跟进责任人
+                      - definition [ref=e264]: Synthetic owner
+                    - generic [ref=e265]:
+                      - term [ref=e266]: 原请求
+                      - definition [ref=e267]: Return the fixed drawing evidence for this project
+                    - generic [ref=e268]:
+                      - term [ref=e269]: 关闭条件
+                      - definition [ref=e270]: Record the response or an explicit internal disposition
+                    - generic [ref=e271]:
+                      - term [ref=e272]: 下次内部检查
+                      - definition [ref=e273]: 未知，未登记时间 · Asia/Shanghai
+                    - generic [ref=e274]:
+                      - term [ref=e275]: 阻塞关键进展
+                      - definition [ref=e276]: 是，已登记阻塞
+                  - generic [ref=e277]:
+                    - strong [ref=e278]: 按已登记有效送达与所采用日历计时
+                    - paragraph [ref=e279]: 有效送达起点 2026-10-18T20:51:56.025483+00:00
+                    - paragraph [ref=e280]: 累计工作响应时长 0 分钟 · default · synthetic-workday@1
+                    - paragraph [ref=e281]: 下次内部检查时效未知
+                    - paragraph [ref=e282]: 对方声明承诺的时效未知
+                  - generic [ref=e283]:
+                    - strong [ref=e284]: 已发起材料
+                    - paragraph [ref=e285]: 尚无此类登记。
+                  - generic [ref=e286]:
+                    - strong [ref=e287]: 本人核对为有效送达
+                    - paragraph [ref=e288]: Actual synthetic delivery with explicitly adopted native calendar
+                    - paragraph [ref=e289]: 所记发生时间 2026-10-18T20:51:56.025483Z · 原时区 Asia/Shanghai · 人工登记时间
+                    - paragraph [ref=e290]: 登记人 Synthetic owner · 服务器留存时点 2026-10-18T20:52:57.248673Z
+                  - generic [ref=e291]:
+                    - strong [ref=e292]: 对方声明承诺
+                    - paragraph [ref=e293]: 尚未登记对方声明；时间未知。
+                  - generic [ref=e294]:
+                    - strong [ref=e295]: 对方回复材料
+                    - paragraph [ref=e296]: 尚无此类登记。
+                  - generic [ref=e297]:
+                    - button "维护检查与关闭条件" [ref=e298]
+                    - button "登记已发起材料" [ref=e299]
+                    - button "登记送达核对" [ref=e300]
+                    - button "登记对方声明承诺" [ref=e301]
+                    - button "登记对方回复" [ref=e302]
+                    - button "关闭内部等待" [ref=e303]
+                    - button "请求责任接收" [ref=e304]
+                    - button "按原等待新建替代" [ref=e305]
+                  - group [ref=e306]:
+                    - generic "固定身份、锚点与历史" [ref=e307] [cursor=pointer]
+                - region "外部等待登记表单" [ref=e308]:
+                  - heading "新建外部等待" [level=4] [ref=e309]
+                  - group [ref=e310]:
+                    - generic [ref=e311]:
+                      - text: 等待对象
+                      - textbox "等待对象" [ref=e312]
+                    - generic [ref=e313]:
+                      - text: 原请求内容
+                      - textbox "原请求内容" [ref=e314]
+                    - group [ref=e315]:
+                      - generic "固定业务锚点（可空）" [ref=e316] [cursor=pointer]
+                    - generic [ref=e317]:
+                      - text: 等待标题
+                      - textbox "等待标题" [ref=e318]
+                    - generic [ref=e319]:
+                      - text: 内部关闭条件
+                      - textbox "内部关闭条件" [ref=e320]
+                    - generic [ref=e321]:
+                      - checkbox "此等待阻塞关键进展" [ref=e322]
+                      - text: 此等待阻塞关键进展
+                    - generic [ref=e323]:
+                      - text: 下次内部检查时间（未知留空，含时区）
+                      - textbox "下次内部检查时间（未知留空，含时区）" [ref=e324]:
+                        - /placeholder: 2030-10-20T09:00:00+08:00
+                    - generic [ref=e325]:
+                      - text: 明确采用的实际工作日历
+                      - combobox "明确采用的实际工作日历 只采用本项目实际计划或资源中的日历；这不代表对方已认可同一日历。" [ref=e326]:
+                        - option "未知，暂不采用日历" [selected]
+                        - option "采用的项目工作日历 · default/synthetic-workday@1 · Asia/Shanghai"
+                      - generic [ref=e327]: 只采用本项目实际计划或资源中的日历；这不代表对方已认可同一日历。
+                    - generic [ref=e328]:
+                      - text: 原时区（IANA）
+                      - textbox "原时区（IANA）" [ref=e329]: America/Los_Angeles
+                    - generic [ref=e330]:
+                      - text: 本次登记理由
+                      - textbox "本次登记理由" [ref=e331]
+                    - group [ref=e332]:
+                      - generic "实际原件来源（高级 JSON，必填）" [ref=e333] [cursor=pointer]
+                    - button "保存本次等待登记" [ref=e334]
+              - region "承诺履行核对" [ref=e335]:
+                - generic [ref=e336]:
+                  - generic [ref=e337]:
+                    - paragraph [ref=e338]: 个人承诺 · 接收者逐条核对
+                    - heading "承诺履行" [level=2] [ref=e339]
+                  - button "刷新履行记录" [ref=e340]
+                - paragraph [ref=e341]: 任务验收与承诺履行分开。每位承诺接收者核对自己的成果范围；任务已验收或日期已过都不代表承诺已履行。
+                - paragraph [ref=e342]: Synthetic named work loop · 读取于 2026-10-18T20:54:25.599118+00:00
+                - paragraph [ref=e343]: 尚无可读承诺记录。
+              - region "具名周报历史" [ref=e344]:
+                - heading "已保存的具名周报" [level=3] [ref=e345]
+                - paragraph [ref=e346]: 尚无可读周报记录。
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T20-54-23-889Z.log#L1
+
+### Page
+- Page URL: http://127.0.0.1:62022/?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950&project=62520600-4831-47e2-9285-a02e61bebba9
+- Page Title: PDOS · 研发工作区
+- Console: 2 errors, 0 warnings
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e4]
+  - generic [ref=e5]:
+    - link "跳到工作内容" [ref=e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e11]: PDOS
+        - button "收起侧栏" [ref=e12]
+      - navigation "工作区导航" [ref=e13]:
+        - link "我的工作" [ref=e14] [cursor=pointer]:
+          - /url: "?area=work&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - link "项目驾驶舱" [ref=e18] [cursor=pointer]:
+          - /url: "?area=cockpit&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - link "项目列表" [ref=e22] [cursor=pointer]:
+          - /url: "?area=projects&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - link "项目集" [ref=e26] [cursor=pointer]:
+          - /url: "?area=programs&category=a051a908-5996-4290-b6cf-9b9166210d36"
+          - generic [ref=e30]: 尚未接入
+        - link "产品品类工作区" [ref=e31] [cursor=pointer]:
+          - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+        - link "知识" [ref=e35] [cursor=pointer]:
+          - /url: "?area=knowledge&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - generic [ref=e39]:
+          - paragraph [ref=e40]: 当前品类
+          - paragraph [ref=e41]: 汽车充气泵
+          - paragraph [ref=e42]: 项目与专业工作按品类范围授权
+      - generic [ref=e43]:
+        - link "计划执行进度" [ref=e44] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=e47]: 计划进度
+        - button "小Pai 工作栏" [ref=e48]:
+          - generic [ref=e51]: 小Pai
+        - link "设置" [ref=e52] [cursor=pointer]:
+          - /url: "?area=settings&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - generic [ref=e56]:
+          - generic [aria-hidden] [ref=e57]: S
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Synthetic owner
+            - paragraph [ref=e60]: 本地合成环境
+    - generic [ref=e61]:
+      - banner [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]: PDOS
+          - generic [ref=e67]: 产品品类工作区
+          - generic [ref=e70]: 汽车充气泵
+        - generic [ref=e71]:
+          - button "搜索对象" [ref=e72]:
+            - generic [ref=e73]: 搜索
+          - button "小Pai 工作栏" [ref=e74]
+          - button "切换明暗主题" [ref=e75]
+      - main [ref=e76]:
+        - navigation "品类工作台区" [ref=e77]:
+          - link "型号" [ref=e78] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=products&view=overview&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "项目" [ref=e82] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=overview&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "知识" [ref=e86] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=knowledge&view=sources&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "设置" [ref=e90] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=settings&view=preferences&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - button "快速查找入口或型号" [ref=e94] [cursor=pointer]
+          - combobox "当前型号" [ref=e97]:
+            - option "Synthetic product"
+            - option "Synthetic named work loop" [selected]
+        - navigation "项目视图" [ref=e98]:
+          - link "现在" [ref=e99] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=overview&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "工作与计划" [ref=e103] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "试制" [ref=e107] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=builds&task=prepare&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "测试与交接" [ref=e111] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=verification&task=prepare&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "问题与变更" [ref=e115] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=issues&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "评审与交付 尚未接入" [ref=e119] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=reviews&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+            - generic [ref=e122]: 评审与交付
+            - generic "尚未接入" [ref=e123]
+          - link "资料" [ref=e124] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=files&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+        - generic [ref=e128]:
+          - generic [ref=e130]:
+            - heading "工作与计划" [level=1] [ref=e131]
+            - paragraph [ref=e132]: 当前范围：Synthetic named work loop
+          - generic [ref=e134]:
+            - region "项目与首版计划" [ref=e135]:
+              - generic [ref=e136]:
+                - generic [ref=e137]:
+                  - paragraph [ref=e138]: 固定型号定义，组织真实研发工作
+                  - heading "项目与首版计划" [level=2] [ref=e139]
+                - generic [ref=e140]:
+                  - button "编排首版计划" [ref=e141]
+                  - button "刷新项目" [ref=e142]
+              - paragraph [ref=e143]: 项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。当前只办理所选项目。
+              - link "返回项目驾驶舱" [ref=e144] [cursor=pointer]:
+                - /url: "?area=cockpit&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9"
+              - region "已保存项目与计划" [ref=e146]:
+                - heading "已保存项目" [level=3] [ref=e147]
+                - article [ref=e148]:
+                  - generic [ref=e149]:
+                    - generic [ref=e150]:
+                      - heading "Synthetic named work loop" [level=4] [ref=e151]
+                      - generic [ref=e152]: 本人负责 · 品类授权成员
+                    - paragraph [ref=e153]: Actual work acceptance with bounded independent commitments
+                    - paragraph [ref=e154]: 固定定义 v1 · Synthetic named work loop · 尚未正式发布
+                    - group [ref=e155]:
+                      - generic "查看固定研发范围" [ref=e156] [cursor=pointer]
+                  - generic [ref=e157]:
+                    - generic [ref=e158]:
+                      - term [ref=e159]: 批准基线
+                      - definition [ref=e160]: 尚未批准
+                    - generic [ref=e161]:
+                      - term [ref=e162]: 个人承诺
+                      - definition [ref=e163]: 尚未记录
+                    - generic [ref=e164]:
+                      - term [ref=e165]: 实绩
+                      - definition [ref=e166]: 尚未记录
+                  - generic [ref=e167]:
+                    - paragraph [ref=e168]: 首版计划 v1 已应用
+                    - paragraph [ref=e171]: 已建立工程与 NPI 工作包及 2 个任务。后续修订入口暂未开放。
+                    - generic [ref=e172]:
+                      - generic [ref=e173]:
+                        - paragraph [ref=e174]: 全部任务预测完成区间
+                        - paragraph [ref=e175]: 未知 / 暂不可预测 ～ 未知 / 暂不可预测
+                        - paragraph [ref=e176]: 工作日历：Asia/Shanghai · synthetic-workday@1。区间上界来自最高工时估计，不代表承诺日期；未考虑资源预约。
+                      - generic [ref=e177]:
+                        - article [ref=e178]:
+                          - paragraph [ref=e179]: Engineering verification
+                          - paragraph [ref=e180]: 工程 · 60 ～ 120 分钟
+                          - generic [ref=e181]:
+                            - term [ref=e182]: 最低估时下的开始 / 完成
+                            - definition [ref=e183]: 2026-10-02 01:00 UTC / 2026-10-02 02:00 UTC
+                            - term [ref=e184]: 最高估时下的开始 / 完成
+                            - definition [ref=e185]: 2026-10-02 01:00 UTC / 2026-10-02 03:00 UTC
+                            - term [ref=e186]: 估计依据
+                            - definition [ref=e187]: Synthetic owner estimate for trial
+                            - term [ref=e188]: 前置任务
+                            - definition [ref=e189]: 无
+                        - article [ref=e190]:
+                          - paragraph [ref=e191]: NPI preparation
+                          - paragraph [ref=e192]: NPI / 制造导入 · 未知 ～ 未知 分钟
+                          - generic [ref=e193]:
+                            - term [ref=e194]: 最低估时下的开始 / 完成
+                            - definition [ref=e195]: 2026-10-02 02:00 UTC / 未知 / 暂不可预测
+                            - term [ref=e196]: 最高估时下的开始 / 完成
+                            - definition [ref=e197]: 2026-10-02 03:00 UTC / 未知 / 暂不可预测
+                            - term [ref=e198]: 估计依据
+                            - definition [ref=e199]: 尚未记录
+                            - term [ref=e200]: 前置任务
+                            - definition [ref=e201]: Engineering verification
+                          - paragraph [ref=e202]: 暂不可精确预测：最低工时未知；最高工时未知
+            - generic [ref=e203]:
+              - generic [ref=e204]:
+                - generic [ref=e205]:
+                  - paragraph [ref=e206]: 本项目的执行与交付
+                  - heading "任务、个人承诺与成果" [level=2] [ref=e207]
+                - button "刷新任务" [ref=e208]
+              - paragraph [ref=e209]: Synthetic named work loop · 项目 v2 · 读取时点 2026-10-18T20:54:25.210484+00:00。本人承接只确认责任，不形成日期承诺。
+              - region "G0 决定留下的事项" [ref=e210]:
+                - heading "G0 决定留下的事项" [level=3] [ref=e211]
+                - paragraph [ref=e212]: 原安排期限是 G0 决定中的日期；个人承诺需要另行具名办理。接续只建立任务草稿，成果定义须本人填写。
+                - paragraph [ref=e213]: 当前项目没有可读的 G0 待办或风险。
+              - region "当前项目任务" [ref=e214]:
+                - generic [ref=e215]:
+                  - heading "当前任务" [level=3] [ref=e216]
+                  - generic [ref=e217]:
+                    - button "新建任务" [ref=e218]
+                    - button "写具名周报" [ref=e219]
+                - paragraph [ref=e220]: 当前可读范围内尚无人工任务。
+              - region "任务办理表单" [ref=e221]:
+                - heading "新建人工任务" [level=3] [ref=e222]
+                - group [ref=e223]:
+                  - generic [ref=e224]:
+                    - text: 任务标题
+                    - textbox "任务标题" [ref=e225]
+                  - generic [ref=e226]:
+                    - text: 任务目标
+                    - textbox "任务目标" [ref=e227]
+                  - generic [ref=e228]:
+                    - heading "成果定义" [level=4] [ref=e229]
+                    - generic [ref=e230]:
+                      - textbox "成果 1 标识" [ref=e231]: outcome-1
+                      - textbox "成果 1 说明" [ref=e232]
+                      - generic [ref=e233]:
+                        - checkbox "必需" [checked] [ref=e234]
+                        - text: 必需
+                    - button "添加成果定义" [ref=e235]
+                  - group [ref=e236]:
+                    - generic "高级：成果定义与计划任务引用" [ref=e237] [cursor=pointer]
+                  - generic [ref=e238]:
+                    - text: 办理理由
+                    - textbox "办理理由" [ref=e239]
+                  - group [ref=e240]:
+                    - generic "实际来源引用（高级 JSON，必填）" [ref=e241] [cursor=pointer]
+                  - button "保存人工任务草稿" [ref=e242]
+              - region "外部等待与跟进" [ref=e243]:
+                - generic [ref=e244]:
+                  - generic [ref=e245]:
+                    - paragraph [ref=e246]: 原请求、送达与回复分别留痕
+                    - heading "外部等待与跟进" [level=3] [ref=e247]
+                  - button "刷新外部等待" [ref=e248]
+                - paragraph [ref=e249]: 这里保存内部跟进记录。对方声明的时间与回复、实际送达、正式业务接收分别核对。
+                - status [ref=e347]: 材料尚未核对完成，原请求已保留，可重新核对。
+                - alert [ref=e348]: 原件尚无当前有效的安全扫描，或来源已失效。
+                - generic [ref=e250]:
+                  - paragraph [ref=e251]: Synthetic named work loop · 已读 1 条 · 时点 2026-10-18T20:54:25.312155+00:00
+                  - button "新建外部等待" [disabled]
+                - article [ref=e254]:
+                  - generic [ref=e255]:
+                    - heading "Synthetic supplier drawing response" [level=4] [ref=e256]
+                    - generic [ref=e257]: 内部等待进行中 · v2
+                  - generic [ref=e258]:
+                    - generic [ref=e259]:
+                      - term [ref=e260]: 等待对象
+                      - definition [ref=e261]: Synthetic supplier drawing contact
+                    - generic [ref=e262]:
+                      - term [ref=e263]: 当前跟进责任人
+                      - definition [ref=e264]: Synthetic owner
+                    - generic [ref=e265]:
+                      - term [ref=e266]: 原请求
+                      - definition [ref=e267]: Return the fixed drawing evidence for this project
+                    - generic [ref=e268]:
+                      - term [ref=e269]: 关闭条件
+                      - definition [ref=e270]: Record the response or an explicit internal disposition
+                    - generic [ref=e271]:
+                      - term [ref=e272]: 下次内部检查
+                      - definition [ref=e273]: 未知，未登记时间 · Asia/Shanghai
+                    - generic [ref=e274]:
+                      - term [ref=e275]: 阻塞关键进展
+                      - definition [ref=e276]: 是，已登记阻塞
+                  - generic [ref=e277]:
+                    - strong [ref=e278]: 按已登记有效送达与所采用日历计时
+                    - paragraph [ref=e279]: 有效送达起点 2026-10-18T20:51:56.025483+00:00
+                    - paragraph [ref=e280]: 累计工作响应时长 0 分钟 · default · synthetic-workday@1
+                    - paragraph [ref=e281]: 下次内部检查时效未知
+                    - paragraph [ref=e282]: 对方声明承诺的时效未知
+                  - generic [ref=e283]:
+                    - strong [ref=e284]: 已发起材料
+                    - paragraph [ref=e285]: 尚无此类登记。
+                  - generic [ref=e286]:
+                    - strong [ref=e287]: 本人核对为有效送达
+                    - paragraph [ref=e288]: Actual synthetic delivery with explicitly adopted native calendar
+                    - paragraph [ref=e289]: 所记发生时间 2026-10-18T20:51:56.025483Z · 原时区 Asia/Shanghai · 人工登记时间
+                    - paragraph [ref=e290]: 登记人 Synthetic owner · 服务器留存时点 2026-10-18T20:52:57.248673Z
+                  - generic [ref=e291]:
+                    - strong [ref=e292]: 对方声明承诺
+                    - paragraph [ref=e293]: 尚未登记对方声明；时间未知。
+                  - generic [ref=e294]:
+                    - strong [ref=e295]: 对方回复材料
+                    - paragraph [ref=e296]: 尚无此类登记。
+                  - generic [ref=e297]:
+                    - button "维护检查与关闭条件" [disabled]
+                    - button "登记已发起材料" [disabled]
+                    - button "登记送达核对" [disabled]
+                    - button "登记对方声明承诺" [disabled]
+                    - button "登记对方回复" [disabled]
+                    - button "关闭内部等待" [disabled]
+                    - button "请求责任接收" [disabled]
+                    - button "按原等待新建替代" [disabled]
+                  - group [ref=e306]:
+                    - generic "固定身份、锚点与历史" [ref=e307] [cursor=pointer]
+                - region "已保留的等待原请求" [ref=e349]:
+                  - heading "等待登记材料尚待核对" [level=4] [ref=e350]
+                  - paragraph [ref=e351]: 原请求已保留，重新打开不会自动提交。
+                  - button "重新核对等待原请求" [ref=e352]
+                  - button "返回等待编辑" [ref=e353]
+              - region "承诺履行核对" [ref=e335]:
+                - generic [ref=e336]:
+                  - generic [ref=e337]:
+                    - paragraph [ref=e338]: 个人承诺 · 接收者逐条核对
+                    - heading "承诺履行" [level=2] [ref=e339]
+                  - button "刷新履行记录" [ref=e340]
+                - paragraph [ref=e341]: 任务验收与承诺履行分开。每位承诺接收者核对自己的成果范围；任务已验收或日期已过都不代表承诺已履行。
+                - paragraph [ref=e342]: Synthetic named work loop · 读取于 2026-10-18T20:54:25.599118+00:00
+                - paragraph [ref=e343]: 尚无可读承诺记录。
+              - region "具名周报历史" [ref=e344]:
+                - heading "已保存的具名周报" [level=3] [ref=e345]
+                - paragraph [ref=e346]: 尚无可读周报记录。
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T20-54-23-889Z.log#L2
+
+Browser 'pdos-s5-external-wait-20261018' closed
+
+
+/Users/huhanwei/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/tools/cli-client/session.js:254
+      callback.reject(new Error("Session closed"));
+                      ^
+
+Error: Session closed
+    at SocketConnectionClient._rejectCallbacks (/Users/huhanwei/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/tools/cli-client/session.js:254:23)
+    at SocketConnectionClient._connection.onclose (/Users/huhanwei/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/tools/cli-client/session.js:212:43)
+    at Socket.<anonymous> (/Users/huhanwei/.npm/_npx/31e32ef8478fbf80/node_modules/playwright-core/lib/tools/utils/socketConnection.js:31:21)
+    at Socket.emit (node:events:508:20)
+    at Pipe.<anonymous> (node:net:350:12)
+
+Node.js v25.8.1
+
+### Browser `pdos-s5-external-wait-20261018` opened with pid 24997.
+### Ran Playwright code
+```js
+await page.goto('about:blank');
+```
+### Page
+- Page URL: about:blank
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T20-56-57-955Z.yml)
+
+### Result
+{"syntheticLoginSet":true}
+### Ran Playwright code
+```js
+await (async page => { await page.context().addCookies([{"name": "pdos-next-session", "value": "[SYNTHETIC_LOGIN_REDACTED]", "domain": "127.0.0.1", "path": "/", "httpOnly": true, "sameSite": "Lax"}]); return { syntheticLoginSet: true }; })(page);
+```
+
+### Ran Playwright code
+```js
+await page.goto('http://127.0.0.1:62022/?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950&project=62520600-4831-47e2-9285-a02e61bebba9');
+```
+### Page
+- Page URL: http://127.0.0.1:62022/?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950&project=62520600-4831-47e2-9285-a02e61bebba9
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-18T20-56-59-138Z.yml)
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T20-56-59-024Z.log#L1
+
+### Page
+- Page URL: http://127.0.0.1:62022/?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950&project=62520600-4831-47e2-9285-a02e61bebba9
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e4]
+  - generic [ref=e5]:
+    - link "跳到工作内容" [ref=e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=e7]:
+      - generic [ref=e8]:
+        - generic [ref=e11]: PDOS
+        - button "收起侧栏" [ref=e12]
+      - navigation "工作区导航" [ref=e13]:
+        - link "我的工作" [ref=e14] [cursor=pointer]:
+          - /url: "?area=work&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - link "项目驾驶舱" [ref=e18] [cursor=pointer]:
+          - /url: "?area=cockpit&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - link "项目列表" [ref=e22] [cursor=pointer]:
+          - /url: "?area=projects&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - link "项目集" [ref=e26] [cursor=pointer]:
+          - /url: "?area=programs&category=a051a908-5996-4290-b6cf-9b9166210d36"
+          - generic [ref=e30]: 尚未接入
+        - link "产品品类工作区" [ref=e31] [cursor=pointer]:
+          - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+        - link "知识" [ref=e35] [cursor=pointer]:
+          - /url: "?area=knowledge&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - generic [ref=e39]:
+          - paragraph [ref=e40]: 当前品类
+          - paragraph [ref=e41]: 汽车充气泵
+          - paragraph [ref=e42]: 项目与专业工作按品类范围授权
+      - generic [ref=e43]:
+        - link "计划执行进度" [ref=e44] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=e47]: 计划进度
+        - button "小Pai 工作栏" [ref=e48]:
+          - generic [ref=e51]: 小Pai
+        - link "设置" [ref=e52] [cursor=pointer]:
+          - /url: "?area=settings&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - generic [ref=e56]:
+          - generic [aria-hidden] [ref=e57]: S
+          - generic [ref=e58]:
+            - paragraph [ref=e59]: Synthetic owner
+            - paragraph [ref=e60]: 本地合成环境
+    - generic [ref=e61]:
+      - banner [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]: PDOS
+          - generic [ref=e67]: 产品品类工作区
+          - generic [ref=e70]: 汽车充气泵
+        - generic [ref=e71]:
+          - button "搜索对象" [ref=e72]:
+            - generic [ref=e73]: 搜索
+          - button "小Pai 工作栏" [ref=e74]
+          - button "切换明暗主题" [ref=e75]
+      - main [ref=e76]:
+        - navigation "品类工作台区" [ref=e77]:
+          - link "型号" [ref=e78] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=products&view=overview&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "项目" [ref=e82] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=overview&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "知识" [ref=e86] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=knowledge&view=sources&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "设置" [ref=e90] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=settings&view=preferences&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - button "快速查找入口或型号" [ref=e94] [cursor=pointer]
+          - combobox "当前型号" [ref=e97]:
+            - option "Synthetic product"
+            - option "Synthetic named work loop" [selected]
+        - navigation "项目视图" [ref=e98]:
+          - link "现在" [ref=e99] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=overview&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "工作与计划" [ref=e103] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "试制" [ref=e107] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=builds&task=prepare&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "测试与交接" [ref=e111] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=verification&task=prepare&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "问题与变更" [ref=e115] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=issues&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "评审与交付 尚未接入" [ref=e119] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=reviews&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+            - generic [ref=e122]: 评审与交付
+            - generic "尚未接入" [ref=e123]
+          - link "资料" [ref=e124] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=files&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+        - generic [ref=e128]:
+          - generic [ref=e130]:
+            - heading "工作与计划" [level=1] [ref=e131]
+            - paragraph [ref=e132]: 当前范围：Synthetic named work loop
+          - generic [ref=e134]:
+            - region "项目与首版计划" [ref=e135]:
+              - generic [ref=e136]:
+                - generic [ref=e137]:
+                  - paragraph [ref=e138]: 固定型号定义，组织真实研发工作
+                  - heading "项目与首版计划" [level=2] [ref=e139]
+                - generic [ref=e140]:
+                  - button "编排首版计划" [ref=e141]
+                  - button "刷新项目" [ref=e142]
+              - paragraph [ref=e143]: 项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。当前只办理所选项目。
+              - link "返回项目驾驶舱" [ref=e144] [cursor=pointer]:
+                - /url: "?area=cockpit&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9"
+              - region "已保存项目与计划" [ref=e146]:
+                - heading "已保存项目" [level=3] [ref=e147]
+                - article [ref=e148]:
+                  - generic [ref=e149]:
+                    - generic [ref=e150]:
+                      - heading "Synthetic named work loop" [level=4] [ref=e151]
+                      - generic [ref=e152]: 本人负责 · 品类授权成员
+                    - paragraph [ref=e153]: Actual work acceptance with bounded independent commitments
+                    - paragraph [ref=e154]: 固定定义 v1 · Synthetic named work loop · 尚未正式发布
+                    - group [ref=e155]:
+                      - generic "查看固定研发范围" [ref=e156] [cursor=pointer]
+                  - generic [ref=e157]:
+                    - generic [ref=e158]:
+                      - term [ref=e159]: 批准基线
+                      - definition [ref=e160]: 尚未批准
+                    - generic [ref=e161]:
+                      - term [ref=e162]: 个人承诺
+                      - definition [ref=e163]: 尚未记录
+                    - generic [ref=e164]:
+                      - term [ref=e165]: 实绩
+                      - definition [ref=e166]: 尚未记录
+                  - generic [ref=e167]:
+                    - paragraph [ref=e168]: 首版计划 v1 已应用
+                    - paragraph [ref=e171]: 已建立工程与 NPI 工作包及 2 个任务。后续修订入口暂未开放。
+                    - generic [ref=e172]:
+                      - generic [ref=e173]:
+                        - paragraph [ref=e174]: 全部任务预测完成区间
+                        - paragraph [ref=e175]: 未知 / 暂不可预测 ～ 未知 / 暂不可预测
+                        - paragraph [ref=e176]: 工作日历：Asia/Shanghai · synthetic-workday@1。区间上界来自最高工时估计，不代表承诺日期；未考虑资源预约。
+                      - generic [ref=e177]:
+                        - article [ref=e178]:
+                          - paragraph [ref=e179]: Engineering verification
+                          - paragraph [ref=e180]: 工程 · 60 ～ 120 分钟
+                          - generic [ref=e181]:
+                            - term [ref=e182]: 最低估时下的开始 / 完成
+                            - definition [ref=e183]: 2026-10-02 01:00 UTC / 2026-10-02 02:00 UTC
+                            - term [ref=e184]: 最高估时下的开始 / 完成
+                            - definition [ref=e185]: 2026-10-02 01:00 UTC / 2026-10-02 03:00 UTC
+                            - term [ref=e186]: 估计依据
+                            - definition [ref=e187]: Synthetic owner estimate for trial
+                            - term [ref=e188]: 前置任务
+                            - definition [ref=e189]: 无
+                        - article [ref=e190]:
+                          - paragraph [ref=e191]: NPI preparation
+                          - paragraph [ref=e192]: NPI / 制造导入 · 未知 ～ 未知 分钟
+                          - generic [ref=e193]:
+                            - term [ref=e194]: 最低估时下的开始 / 完成
+                            - definition [ref=e195]: 2026-10-02 02:00 UTC / 未知 / 暂不可预测
+                            - term [ref=e196]: 最高估时下的开始 / 完成
+                            - definition [ref=e197]: 2026-10-02 03:00 UTC / 未知 / 暂不可预测
+                            - term [ref=e198]: 估计依据
+                            - definition [ref=e199]: 尚未记录
+                            - term [ref=e200]: 前置任务
+                            - definition [ref=e201]: Engineering verification
+                          - paragraph [ref=e202]: 暂不可精确预测：最低工时未知；最高工时未知
+            - generic [ref=e203]:
+              - generic [ref=e204]:
+                - generic [ref=e205]:
+                  - paragraph [ref=e206]: 本项目的执行与交付
+                  - heading "任务、个人承诺与成果" [level=2] [ref=e207]
+                - button "刷新任务" [ref=e208]
+              - paragraph [ref=e209]: Synthetic named work loop · 项目 v2 · 读取时点 2026-10-18T20:56:59.806406+00:00。本人承接只确认责任，不形成日期承诺。
+              - region "G0 决定留下的事项" [ref=e210]:
+                - heading "G0 决定留下的事项" [level=3] [ref=e211]
+                - paragraph [ref=e212]: 原安排期限是 G0 决定中的日期；个人承诺需要另行具名办理。接续只建立任务草稿，成果定义须本人填写。
+                - paragraph [ref=e213]: 当前项目没有可读的 G0 待办或风险。
+              - region "当前项目任务" [ref=e214]:
+                - generic [ref=e215]:
+                  - heading "当前任务" [level=3] [ref=e216]
+                  - generic [ref=e217]:
+                    - button "新建任务" [ref=e218]
+                    - button "写具名周报" [ref=e219]
+                - paragraph [ref=e220]: 当前可读范围内尚无人工任务。
+              - region "任务办理表单" [ref=e221]:
+                - heading "新建人工任务" [level=3] [ref=e222]
+                - group [ref=e223]:
+                  - generic [ref=e224]:
+                    - text: 任务标题
+                    - textbox "任务标题" [ref=e225]
+                  - generic [ref=e226]:
+                    - text: 任务目标
+                    - textbox "任务目标" [ref=e227]
+                  - generic [ref=e228]:
+                    - heading "成果定义" [level=4] [ref=e229]
+                    - generic [ref=e230]:
+                      - textbox "成果 1 标识" [ref=e231]: outcome-1
+                      - textbox "成果 1 说明" [ref=e232]
+                      - generic [ref=e233]:
+                        - checkbox "必需" [checked] [ref=e234]
+                        - text: 必需
+                    - button "添加成果定义" [ref=e235]
+                  - group [ref=e236]:
+                    - generic "高级：成果定义与计划任务引用" [ref=e237] [cursor=pointer]
+                  - generic [ref=e238]:
+                    - text: 办理理由
+                    - textbox "办理理由" [ref=e239]
+                  - group [ref=e240]:
+                    - generic "实际来源引用（高级 JSON，必填）" [ref=e241] [cursor=pointer]
+                  - button "保存人工任务草稿" [ref=e242]
+              - region "外部等待与跟进" [ref=e243]:
+                - generic [ref=e244]:
+                  - generic [ref=e245]:
+                    - paragraph [ref=e246]: 原请求、送达与回复分别留痕
+                    - heading "外部等待与跟进" [level=3] [ref=e247]
+                  - button "刷新外部等待" [ref=e248]
+                - paragraph [ref=e249]: 这里保存内部跟进记录。对方声明的时间与回复、实际送达、正式业务接收分别核对。
+                - generic [ref=e250]:
+                  - paragraph [ref=e251]: Synthetic named work loop · 已读 1 条 · 时点 2026-10-18T20:56:59.852907+00:00
+                  - button "新建外部等待" [ref=e252]
+                - article [ref=e254]:
+                  - generic [ref=e255]:
+                    - heading "Synthetic supplier drawing response" [level=4] [ref=e256]
+                    - generic [ref=e257]: 内部等待进行中 · v2
+                  - generic [ref=e258]:
+                    - generic [ref=e259]:
+                      - term [ref=e260]: 等待对象
+                      - definition [ref=e261]: Synthetic supplier drawing contact
+                    - generic [ref=e262]:
+                      - term [ref=e263]: 当前跟进责任人
+                      - definition [ref=e264]: Synthetic owner
+                    - generic [ref=e265]:
+                      - term [ref=e266]: 原请求
+                      - definition [ref=e267]: Return the fixed drawing evidence for this project
+                    - generic [ref=e268]:
+                      - term [ref=e269]: 关闭条件
+                      - definition [ref=e270]: Record the response or an explicit internal disposition
+                    - generic [ref=e271]:
+                      - term [ref=e272]: 下次内部检查
+                      - definition [ref=e273]: 未知，未登记时间 · Asia/Shanghai
+                    - generic [ref=e274]:
+                      - term [ref=e275]: 阻塞关键进展
+                      - definition [ref=e276]: 是，已登记阻塞
+                  - generic [ref=e277]:
+                    - strong [ref=e278]: 按已登记有效送达与所采用日历计时
+                    - paragraph [ref=e279]: 有效送达起点 2026-10-18T20:51:56.025483+00:00
+                    - paragraph [ref=e280]: 累计工作响应时长 0 分钟 · default · synthetic-workday@1
+                    - paragraph [ref=e281]: 下次内部检查时效未知
+                    - paragraph [ref=e282]: 对方声明承诺的时效未知
+                  - generic [ref=e283]:
+                    - strong [ref=e284]: 已发起材料
+                    - paragraph [ref=e285]: 尚无此类登记。
+                  - generic [ref=e286]:
+                    - strong [ref=e287]: 本人核对为有效送达
+                    - paragraph [ref=e288]: Actual synthetic delivery with explicitly adopted native calendar
+                    - paragraph [ref=e289]: 所记发生时间 2026-10-18T20:51:56.025483Z · 原时区 Asia/Shanghai · 人工登记时间
+                    - paragraph [ref=e290]: 登记人 Synthetic owner · 服务器留存时点 2026-10-18T20:52:57.248673Z
+                  - generic [ref=e291]:
+                    - strong [ref=e292]: 对方声明承诺
+                    - paragraph [ref=e293]: 尚未登记对方声明；时间未知。
+                  - generic [ref=e294]:
+                    - strong [ref=e295]: 对方回复材料
+                    - paragraph [ref=e296]: 尚无此类登记。
+                  - generic [ref=e297]:
+                    - button "维护检查与关闭条件" [ref=e298]
+                    - button "登记已发起材料" [ref=e299]
+                    - button "登记送达核对" [ref=e300]
+                    - button "登记对方声明承诺" [ref=e301]
+                    - button "登记对方回复" [ref=e302]
+                    - button "关闭内部等待" [ref=e303]
+                    - button "请求责任接收" [ref=e304]
+                    - button "按原等待新建替代" [ref=e305]
+                  - group [ref=e306]:
+                    - generic "固定身份、锚点与历史" [ref=e307] [cursor=pointer]
+                - region "外部等待登记表单" [ref=e308]:
+                  - heading "新建外部等待" [level=4] [ref=e309]
+                  - group [ref=e310]:
+                    - generic [ref=e311]:
+                      - text: 等待对象
+                      - textbox "等待对象" [ref=e312]
+                    - generic [ref=e313]:
+                      - text: 原请求内容
+                      - textbox "原请求内容" [ref=e314]
+                    - group [ref=e315]:
+                      - generic "固定业务锚点（可空）" [ref=e316] [cursor=pointer]
+                    - generic [ref=e317]:
+                      - text: 等待标题
+                      - textbox "等待标题" [ref=e318]
+                    - generic [ref=e319]:
+                      - text: 内部关闭条件
+                      - textbox "内部关闭条件" [ref=e320]
+                    - generic [ref=e321]:
+                      - checkbox "此等待阻塞关键进展" [ref=e322]
+                      - text: 此等待阻塞关键进展
+                    - generic [ref=e323]:
+                      - text: 下次内部检查时间（未知留空，含时区）
+                      - textbox "下次内部检查时间（未知留空，含时区）" [ref=e324]:
+                        - /placeholder: 2030-10-20T09:00:00+08:00
+                    - generic [ref=e325]:
+                      - text: 明确采用的实际工作日历
+                      - combobox "明确采用的实际工作日历 只采用本项目实际计划或资源中的日历；这不代表对方已认可同一日历。" [ref=e326]:
+                        - option "未知，暂不采用日历" [selected]
+                        - option "采用的项目工作日历 · default/synthetic-workday@1 · Asia/Shanghai"
+                      - generic [ref=e327]: 只采用本项目实际计划或资源中的日历；这不代表对方已认可同一日历。
+                    - generic [ref=e328]:
+                      - text: 原时区（IANA）
+                      - textbox "原时区（IANA）" [ref=e329]: America/Los_Angeles
+                    - generic [ref=e330]:
+                      - text: 本次登记理由
+                      - textbox "本次登记理由" [ref=e331]
+                    - group [ref=e332]:
+                      - generic "实际原件来源（高级 JSON，必填）" [ref=e333] [cursor=pointer]
+                    - button "保存本次等待登记" [ref=e334]
+              - region "承诺履行核对" [ref=e335]:
+                - generic [ref=e336]:
+                  - generic [ref=e337]:
+                    - paragraph [ref=e338]: 个人承诺 · 接收者逐条核对
+                    - heading "承诺履行" [level=2] [ref=e339]
+                  - button "刷新履行记录" [ref=e340]
+                - paragraph [ref=e341]: 任务验收与承诺履行分开。每位承诺接收者核对自己的成果范围；任务已验收或日期已过都不代表承诺已履行。
+                - paragraph [ref=e342]: Synthetic named work loop · 读取于 2026-10-18T20:57:00.239124+00:00
+                - paragraph [ref=e343]: 尚无可读承诺记录。
+              - region "具名周报历史" [ref=e344]:
+                - heading "已保存的具名周报" [level=3] [ref=e345]
+                - paragraph [ref=e346]: 尚无可读周报记录。
+```
+
+### Page
+- Page URL: http://127.0.0.1:62022/?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950&project=62520600-4831-47e2-9285-a02e61bebba9
+- Page Title: PDOS · 研发工作区
+### Snapshot
+```yaml
+- generic [active] [ref=f1e1]:
+  - alert [ref=f1e2]
+  - generic [ref=f1e3]:
+    - link "跳到工作内容" [ref=f1e4] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f1e5]:
+      - generic [ref=f1e6]:
+        - generic [ref=f1e9]: PDOS
+        - button "收起侧栏" [ref=f1e10]
+      - navigation "工作区导航" [ref=f1e11]:
+        - link "我的工作" [ref=f1e12] [cursor=pointer]:
+          - /url: "?area=work&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - link "项目驾驶舱" [ref=f1e16] [cursor=pointer]:
+          - /url: "?area=cockpit&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - link "项目列表" [ref=f1e20] [cursor=pointer]:
+          - /url: "?area=projects&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - link "项目集" [ref=f1e24] [cursor=pointer]:
+          - /url: "?area=programs&category=a051a908-5996-4290-b6cf-9b9166210d36"
+          - generic [ref=f1e28]: 尚未接入
+        - link "产品品类工作区" [ref=f1e29] [cursor=pointer]:
+          - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+        - link "知识" [ref=f1e33] [cursor=pointer]:
+          - /url: "?area=knowledge&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - generic [ref=f1e37]:
+          - paragraph [ref=f1e38]: 当前品类
+          - paragraph [ref=f1e39]: 汽车充气泵
+          - paragraph [ref=f1e40]: 项目与专业工作按品类范围授权
+      - generic [ref=f1e41]:
+        - link "计划执行进度" [ref=f1e42] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=f1e45]: 计划进度
+        - button "小Pai 工作栏" [ref=f1e46]:
+          - generic [ref=f1e49]: 小Pai
+        - link "设置" [ref=f1e50] [cursor=pointer]:
+          - /url: "?area=settings&category=a051a908-5996-4290-b6cf-9b9166210d36"
+        - generic [ref=f1e54]:
+          - generic [aria-hidden] [ref=f1e55]: S
+          - generic [ref=f1e56]:
+            - paragraph [ref=f1e57]: Synthetic owner
+            - paragraph [ref=f1e58]: 本地合成环境
+    - generic [ref=f1e59]:
+      - banner [ref=f1e60]:
+        - generic [ref=f1e61]:
+          - generic [ref=f1e62]: PDOS
+          - generic [ref=f1e65]: 产品品类工作区
+          - generic [ref=f1e68]: 汽车充气泵
+        - generic [ref=f1e69]:
+          - button "搜索对象" [ref=f1e70]:
+            - generic [ref=f1e71]: 搜索
+          - button "小Pai 工作栏" [ref=f1e72]
+          - button "切换明暗主题" [ref=f1e73]
+      - main [ref=f1e74]:
+        - navigation "品类工作台区" [ref=f1e75]:
+          - link "型号" [ref=f1e76] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=products&view=overview&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "项目" [ref=f1e80] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=overview&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "知识" [ref=f1e84] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=knowledge&view=sources&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "设置" [ref=f1e88] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=settings&view=preferences&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - button "快速查找入口或型号" [ref=f1e92] [cursor=pointer]
+          - combobox "当前型号" [ref=f1e95]:
+            - option "Synthetic product"
+            - option "Synthetic named work loop" [selected]
+        - navigation "项目视图" [ref=f1e96]:
+          - link "现在" [ref=f1e97] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=overview&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "工作与计划" [ref=f1e101] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=plan&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "试制" [ref=f1e105] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=builds&task=prepare&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "测试与交接" [ref=f1e109] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=verification&task=prepare&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "问题与变更" [ref=f1e113] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=issues&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+          - link "评审与交付 尚未接入" [ref=f1e117] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=reviews&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+            - generic [ref=f1e120]: 评审与交付
+            - generic "尚未接入" [ref=f1e121]
+          - link "资料" [ref=f1e122] [cursor=pointer]:
+            - /url: "?area=category&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9&bench=projects&view=files&product=b8127689-cc89-4f28-83d6-aef8ca30e950"
+        - generic [ref=f1e126]:
+          - generic [ref=f1e128]:
+            - heading "工作与计划" [level=1] [ref=f1e129]
+            - paragraph [ref=f1e130]: 当前范围：Synthetic named work loop
+          - generic [ref=f1e132]:
+            - region "项目与首版计划" [ref=f1e133]:
+              - generic [ref=f1e134]:
+                - generic [ref=f1e135]:
+                  - paragraph [ref=f1e136]: 固定型号定义，组织真实研发工作
+                  - heading "项目与首版计划" [level=2] [ref=f1e137]
+                - generic [ref=f1e138]:
+                  - button "编排首版计划" [ref=f1e139]
+                  - button "刷新项目" [ref=f1e140]
+              - paragraph [ref=f1e141]: 项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。当前只办理所选项目。
+              - link "返回项目驾驶舱" [ref=f1e142] [cursor=pointer]:
+                - /url: "?area=cockpit&category=a051a908-5996-4290-b6cf-9b9166210d36&project=62520600-4831-47e2-9285-a02e61bebba9"
+              - region "已保存项目与计划" [ref=f1e144]:
+                - heading "已保存项目" [level=3] [ref=f1e145]
+                - article [ref=f1e146]:
+                  - generic [ref=f1e147]:
+                    - generic [ref=f1e148]:
+                      - heading "Synthetic named work loop" [level=4] [ref=f1e149]
+                      - generic [ref=f1e150]: 本人负责 · 品类授权成员
+                    - paragraph [ref=f1e151]: Actual work acceptance with bounded independent commitments
+                    - paragraph [ref=f1e152]: 固定定义 v1 · Synthetic named work loop · 尚未正式发布
+                    - group [ref=f1e153]:
+                      - generic "查看固定研发范围" [ref=f1e154] [cursor=pointer]
+                  - generic [ref=f1e155]:
+                    - generic [ref=f1e156]:
+                      - term [ref=f1e157]: 批准基线
+                      - definition [ref=f1e158]: 尚未批准
+                    - generic [ref=f1e159]:
+                      - term [ref=f1e160]: 个人承诺
+                      - definition [ref=f1e161]: 尚未记录
+                    - generic [ref=f1e162]:
+                      - term [ref=f1e163]: 实绩
+                      - definition [ref=f1e164]: 尚未记录
+                  - generic [ref=f1e165]:
+                    - paragraph [ref=f1e166]: 首版计划 v1 已应用
+                    - paragraph [ref=f1e169]: 已建立工程与 NPI 工作包及 2 个任务。后续修订入口暂未开放。
+                    - generic [ref=f1e170]:
+                      - generic [ref=f1e171]:
+                        - paragraph [ref=f1e172]: 全部任务预测完成区间
+                        - paragraph [ref=f1e173]: 未知 / 暂不可预测 ～ 未知 / 暂不可预测
+                        - paragraph [ref=f1e174]: 工作日历：Asia/Shanghai · synthetic-workday@1。区间上界来自最高工时估计，不代表承诺日期；未考虑资源预约。
+                      - generic [ref=f1e175]:
+                        - article [ref=f1e176]:
+                          - paragraph [ref=f1e177]: Engineering verification
+                          - paragraph [ref=f1e178]: 工程 · 60 ～ 120 分钟
+                          - generic [ref=f1e179]:
+                            - term [ref=f1e180]: 最低估时下的开始 / 完成
+                            - definition [ref=f1e181]: 2026-10-02 01:00 UTC / 2026-10-02 02:00 UTC
+                            - term [ref=f1e182]: 最高估时下的开始 / 完成
+                            - definition [ref=f1e183]: 2026-10-02 01:00 UTC / 2026-10-02 03:00 UTC
+                            - term [ref=f1e184]: 估计依据
+                            - definition [ref=f1e185]: Synthetic owner estimate for trial
+                            - term [ref=f1e186]: 前置任务
+                            - definition [ref=f1e187]: 无
+                        - article [ref=f1e188]:
+                          - paragraph [ref=f1e189]: NPI preparation
+                          - paragraph [ref=f1e190]: NPI / 制造导入 · 未知 ～ 未知 分钟
+                          - generic [ref=f1e191]:
+                            - term [ref=f1e192]: 最低估时下的开始 / 完成
+                            - definition [ref=f1e193]: 2026-10-02 02:00 UTC / 未知 / 暂不可预测
+                            - term [ref=f1e194]: 最高估时下的开始 / 完成
+                            - definition [ref=f1e195]: 2026-10-02 03:00 UTC / 未知 / 暂不可预测
+                            - term [ref=f1e196]: 估计依据
+                            - definition [ref=f1e197]: 尚未记录
+                            - term [ref=f1e198]: 前置任务
+                            - definition [ref=f1e199]: Engineering verification
+                          - paragraph [ref=f1e200]: 暂不可精确预测：最低工时未知；最高工时未知
+            - generic [ref=f1e201]:
+              - generic [ref=f1e202]:
+                - generic [ref=f1e203]:
+                  - paragraph [ref=f1e204]: 本项目的执行与交付
+                  - heading "任务、个人承诺与成果" [level=2] [ref=f1e205]
+                - button "刷新任务" [ref=f1e206]
+              - paragraph [ref=f1e207]: Synthetic named work loop · 项目 v2 · 读取时点 2026-10-18T20:57:28.918573+00:00。本人承接只确认责任，不形成日期承诺。
+              - region "G0 决定留下的事项" [ref=f1e208]:
+                - heading "G0 决定留下的事项" [level=3] [ref=f1e209]
+                - paragraph [ref=f1e210]: 原安排期限是 G0 决定中的日期；个人承诺需要另行具名办理。接续只建立任务草稿，成果定义须本人填写。
+                - paragraph [ref=f1e211]: 当前项目没有可读的 G0 待办或风险。
+              - region "当前项目任务" [ref=f1e212]:
+                - generic [ref=f1e213]:
+                  - heading "当前任务" [level=3] [ref=f1e214]
+                  - generic [ref=f1e215]:
+                    - button "新建任务" [ref=f1e216]
+                    - button "写具名周报" [ref=f1e217]
+                - paragraph [ref=f1e218]: 当前可读范围内尚无人工任务。
+              - region "任务办理表单" [ref=f1e219]:
+                - heading "新建人工任务" [level=3] [ref=f1e220]
+                - group [ref=f1e221]:
+                  - generic [ref=f1e222]:
+                    - text: 任务标题
+                    - textbox "任务标题" [ref=f1e223]
+                  - generic [ref=f1e224]:
+                    - text: 任务目标
+                    - textbox "任务目标" [ref=f1e225]
+                  - generic [ref=f1e226]:
+                    - heading "成果定义" [level=4] [ref=f1e227]
+                    - generic [ref=f1e228]:
+                      - textbox "成果 1 标识" [ref=f1e229]: outcome-1
+                      - textbox "成果 1 说明" [ref=f1e230]
+                      - generic [ref=f1e231]:
+                        - checkbox "必需" [checked] [ref=f1e232]
+                        - text: 必需
+                    - button "添加成果定义" [ref=f1e233]
+                  - group [ref=f1e234]:
+                    - generic "高级：成果定义与计划任务引用" [ref=f1e235] [cursor=pointer]
+                  - generic [ref=f1e236]:
+                    - text: 办理理由
+                    - textbox "办理理由" [ref=f1e237]
+                  - group [ref=f1e238]:
+                    - generic "实际来源引用（高级 JSON，必填）" [ref=f1e239] [cursor=pointer]
+                  - button "保存人工任务草稿" [ref=f1e240]
+              - region "外部等待与跟进" [ref=f1e241]:
+                - generic [ref=f1e242]:
+                  - generic [ref=f1e243]:
+                    - paragraph [ref=f1e244]: 原请求、送达与回复分别留痕
+                    - heading "外部等待与跟进" [level=3] [ref=f1e245]
+                  - button "刷新外部等待" [ref=f1e246]
+                - paragraph [ref=f1e247]: 这里保存内部跟进记录。对方声明的时间与回复、实际送达、正式业务接收分别核对。
+                - generic [ref=f1e248]:
+                  - paragraph [ref=f1e249]: Synthetic named work loop · 已读 2 条 · 时点 2026-10-18T20:57:28.968014+00:00
+                  - button "新建外部等待" [ref=f1e250]
+                - generic [ref=f1e251]:
+                  - article [ref=f1e252]:
+                    - generic [ref=f1e253]:
+                      - heading "Synthetic supplier drawing response" [level=4] [ref=f1e254]
+                      - generic [ref=f1e255]: 内部等待进行中 · v2
+                    - generic [ref=f1e256]:
+                      - generic [ref=f1e257]:
+                        - term [ref=f1e258]: 等待对象
+                        - definition [ref=f1e259]: Synthetic supplier drawing contact
+                      - generic [ref=f1e260]:
+                        - term [ref=f1e261]: 当前跟进责任人
+                        - definition [ref=f1e262]: Synthetic owner
+                      - generic [ref=f1e263]:
+                        - term [ref=f1e264]: 原请求
+                        - definition [ref=f1e265]: Return the fixed drawing evidence for this project
+                      - generic [ref=f1e266]:
+                        - term [ref=f1e267]: 关闭条件
+                        - definition [ref=f1e268]: Record the response or an explicit internal disposition
+                      - generic [ref=f1e269]:
+                        - term [ref=f1e270]: 下次内部检查
+                        - definition [ref=f1e271]: 未知，未登记时间 · Asia/Shanghai
+                      - generic [ref=f1e272]:
+                        - term [ref=f1e273]: 阻塞关键进展
+                        - definition [ref=f1e274]: 是，已登记阻塞
+                    - generic [ref=f1e275]:
+                      - strong [ref=f1e276]: 按已登记有效送达与所采用日历计时
+                      - paragraph [ref=f1e277]: 有效送达起点 2026-10-18T20:51:56.025483+00:00
+                      - paragraph [ref=f1e278]: 累计工作响应时长 0 分钟 · default · synthetic-workday@1
+                      - paragraph [ref=f1e279]: 下次内部检查时效未知
+                      - paragraph [ref=f1e280]: 对方声明承诺的时效未知
+                    - generic [ref=f1e281]:
+                      - strong [ref=f1e282]: 已发起材料
+                      - paragraph [ref=f1e283]: 尚无此类登记。
+                    - generic [ref=f1e284]:
+                      - strong [ref=f1e285]: 本人核对为有效送达
+                      - paragraph [ref=f1e286]: Actual synthetic delivery with explicitly adopted native calendar
+                      - paragraph [ref=f1e287]: 所记发生时间 2026-10-18T20:51:56.025483Z · 原时区 Asia/Shanghai · 人工登记时间
+                      - paragraph [ref=f1e288]: 登记人 Synthetic owner · 服务器留存时点 2026-10-18T20:52:57.248673Z
+                    - generic [ref=f1e289]:
+                      - strong [ref=f1e290]: 对方声明承诺
+                      - paragraph [ref=f1e291]: 尚未登记对方声明；时间未知。
+                    - generic [ref=f1e292]:
+                      - strong [ref=f1e293]: 对方回复材料
+                      - paragraph [ref=f1e294]: 尚无此类登记。
+                    - generic [ref=f1e295]:
+                      - button "维护检查与关闭条件" [ref=f1e296]
+                      - button "登记已发起材料" [ref=f1e297]
+                      - button "登记送达核对" [ref=f1e298]
+                      - button "登记对方声明承诺" [ref=f1e299]
+                      - button "登记对方回复" [ref=f1e300]
+                      - button "关闭内部等待" [ref=f1e301]
+                      - button "请求责任接收" [ref=f1e302]
+                      - button "按原等待新建替代" [ref=f1e303]
+                    - group [ref=f1e304]:
+                      - generic "固定身份、锚点与历史" [ref=f1e305] [cursor=pointer]
+                  - article [ref=f1e306]:
+                    - generic [ref=f1e307]:
+                      - heading "合成外部等待：原请求恢复 1792357045748" [level=4] [ref=f1e308]
+                      - generic [ref=f1e309]: 内部等待进行中 · v1
+                    - generic [ref=f1e310]:
+                      - generic [ref=f1e311]:
+                        - term [ref=f1e312]: 等待对象
+                        - definition [ref=f1e313]: 合成供应商图纸联系人
+                      - generic [ref=f1e314]:
+                        - term [ref=f1e315]: 当前跟进责任人
+                        - definition [ref=f1e316]: Synthetic owner
+                      - generic [ref=f1e317]:
+                        - term [ref=f1e318]: 原请求
+                        - definition [ref=f1e319]: 请返回原始图纸核对材料
+                      - generic [ref=f1e320]:
+                        - term [ref=f1e321]: 关闭条件
+                        - definition [ref=f1e322]: 原件核对完成或明确内部处置
+                      - generic [ref=f1e323]:
+                        - term [ref=f1e324]: 下次内部检查
+                        - definition [ref=f1e325]: 未知，未登记时间 · America/Los_Angeles
+                      - generic [ref=f1e326]:
+                        - term [ref=f1e327]: 阻塞关键进展
+                        - definition [ref=f1e328]: 否，未登记阻塞
+                    - generic [ref=f1e329]:
+                      - strong [ref=f1e330]: 有效送达尚未确定，响应计时未知
+                      - paragraph [ref=f1e331]: 有效送达起点 未知，未登记时间
+                      - paragraph [ref=f1e332]: 工作响应时长未知 · default · synthetic-workday@1
+                      - paragraph [ref=f1e333]: 下次内部检查时效未知
+                      - paragraph [ref=f1e334]: 对方声明承诺的时效未知
+                    - generic [ref=f1e335]:
+                      - strong [ref=f1e336]: 已发起材料
+                      - paragraph [ref=f1e337]: 尚无此类登记。
+                    - generic [ref=f1e338]:
+                      - strong [ref=f1e339]: 送达核对
+                      - paragraph [ref=f1e340]: 尚无此类登记。
+                    - generic [ref=f1e341]:
+                      - strong [ref=f1e342]: 对方声明承诺
+                      - paragraph [ref=f1e343]: 尚未登记对方声明；时间未知。
+                    - generic [ref=f1e344]:
+                      - strong [ref=f1e345]: 对方回复材料
+                      - paragraph [ref=f1e346]: 尚无此类登记。
+                    - generic [ref=f1e347]:
+                      - button "维护检查与关闭条件" [ref=f1e348]
+                      - button "登记已发起材料" [ref=f1e349]
+                      - button "登记送达核对" [ref=f1e350]
+                      - button "登记对方声明承诺" [ref=f1e351]
+                      - button "登记对方回复" [ref=f1e352]
+                      - button "关闭内部等待" [ref=f1e353]
+                      - button "请求责任接收" [ref=f1e354]
+                      - button "按原等待新建替代" [ref=f1e355]
+                    - group [ref=f1e356]:
+                      - generic "固定身份、锚点与历史" [ref=f1e357] [cursor=pointer]
+                - region "外部等待登记表单" [ref=f1e358]:
+                  - heading "新建外部等待" [level=4] [ref=f1e359]
+                  - group [ref=f1e360]:
+                    - generic [ref=f1e361]:
+                      - text: 等待对象
+                      - textbox "等待对象" [ref=f1e362]: 合成供应商图纸联系人
+                    - generic [ref=f1e363]:
+                      - text: 原请求内容
+                      - textbox "原请求内容" [ref=f1e364]: 请返回原始图纸核对材料
+                    - group [ref=f1e365]:
+                      - generic "固定业务锚点（可空）" [ref=f1e366] [cursor=pointer]
+                    - generic [ref=f1e367]:
+                      - text: 等待标题
+                      - textbox "等待标题" [ref=f1e368]: 合成外部等待：原请求恢复 1792357045748
+                    - generic [ref=f1e369]:
+                      - text: 内部关闭条件
+                      - textbox "内部关闭条件" [ref=f1e370]: 原件核对完成或明确内部处置
+                    - generic [ref=f1e371]:
+                      - checkbox "此等待阻塞关键进展" [ref=f1e372]
+                      - text: 此等待阻塞关键进展
+                    - generic [ref=f1e373]:
+                      - text: 下次内部检查时间（未知留空，含时区）
+                      - textbox "下次内部检查时间（未知留空，含时区）" [ref=f1e374]:
+                        - /placeholder: 2030-10-20T09:00:00+08:00
+                    - generic [ref=f1e375]:
+                      - text: 明确采用的实际工作日历
+                      - combobox "明确采用的实际工作日历 只采用本项目实际计划或资源中的日历；这不代表对方已认可同一日历。" [ref=f1e376]:
+                        - option "未知，暂不采用日历"
+                        - option "采用的项目工作日历 · default/synthetic-workday@1 · Asia/Shanghai" [selected]
+                      - generic [ref=f1e377]: 只采用本项目实际计划或资源中的日历；这不代表对方已认可同一日历。
+                    - generic [ref=f1e378]:
+                      - text: 原时区（IANA）
+                      - textbox "原时区（IANA）" [ref=f1e379]: America/Los_Angeles
+                    - generic [ref=f1e380]:
+                      - text: 本次登记理由
+                      - textbox "本次登记理由" [ref=f1e381]: 合成页面闭环核对，保持实际送达未知
+                    - group [ref=f1e382]:
+                      - generic "实际原件来源（高级 JSON，必填）" [ref=f1e383] [cursor=pointer]
+                    - button "保存本次等待登记" [ref=f1e384]
+                - paragraph [ref=f1e385]: 已保存：新建外部等待 · 等待 7dda26f1-6758-488e-babd-e6fe642b078d · 回执 26dd9dbc-be43-4f56-bec0-bb7e6291b8d9。刷新只读回结果。
+              - region "承诺履行核对" [ref=f1e386]:
+                - generic [ref=f1e387]:
+                  - generic [ref=f1e388]:
+                    - paragraph [ref=f1e389]: 个人承诺 · 接收者逐条核对
+                    - heading "承诺履行" [level=2] [ref=f1e390]
+                  - button "刷新履行记录" [ref=f1e391]
+                - paragraph [ref=f1e392]: 任务验收与承诺履行分开。每位承诺接收者核对自己的成果范围；任务已验收或日期已过都不代表承诺已履行。
+                - paragraph [ref=f1e393]: Synthetic named work loop · 读取于 2026-10-18T20:57:29.017931+00:00
+                - paragraph [ref=f1e394]: 尚无可读承诺记录。
+              - region "具名周报历史" [ref=f1e395]:
+                - heading "已保存的具名周报" [level=3] [ref=f1e396]
+                - paragraph [ref=f1e397]: 尚无可读周报记录。
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T20-56-59-024Z.log#L2
+
+### Error
+TimeoutError: locator.waitFor: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('region', { name: '外部等待与跟进', exact: true }).getByText('已取得真实等待登记回执，正在读回当前版本。', { exact: true }) to be visible[22m
+
+
+### Result
+{"status":[],"alerts":[],"pending":0,"saved":[{"key":"pdos.external-waits.v1:70067771-f8f7-40b1-b9ec-d687fbd16e13:a051a908-5996-4290-b6cf-9b9166210d36:b8127689-cc89-4f28-83d6-aef8ca30e950:62520600-4831-47e2-9285-a02e61bebba9","pending":null,"receipt":{"id":"26dd9dbc-be43-4f56-bec0-bb7e6291b8d9"}}]}
+### Ran Playwright code
+```js
+await (async page=>({status:await page.getByRole('region',{name:'外部等待与跟进',exact:true}).getByRole('status').allTextContents(),alerts:await page.getByRole('region',{name:'外部等待与跟进',exact:true}).getByRole('alert').allTextContents(),pending:await page.getByRole('region',{name:'已保留的等待原请求',exact:true}).count(),saved:await page.evaluate(()=>Object.keys(localStorage).filter(k=>k.includes('external-wait')).map(k=>{const v=JSON.parse(localStorage.getItem(k));return {key:k,pending:v.pending?{stage:v.pending.stage,id:v.pending.command.command_id}:null,receipt:v.receipt?{id:v.receipt.id}:null};}))})
+)(page);
+```
+
+### Result
+{"actual_wait_id":"c74b397e-e4ec-4e56-ab8e-2249605f879d","receipt_id":"246f3775-09c5-407f-acbf-daca52bfd0d3","command_id":"3c745364-41ea-464a-b266-ce95f1995ae7","successful_save_response_replaced_with_503":true,"fulfillment_completed_before_reload":true,"refresh_auto_POSTs":0,"one_inputs_POST":true,"explicit_replay_same_command_and_key":true,"one_create_version":true,"actual_delivery":null,"response_clock_unknown":true,"adopted_actual_calendar":{"kind":"project_plan","id":"ff6ec384-2974-4627-b116-5c02f6b7eb1f","revision":1,"calendar_key":"default","calendar_version":"synthetic-workday@1","resource_id":null},"actual_attention_and_activity":true,"light":{"width":1440,"overflow":false},"dark":{"width":320,"overflow":false}}
+### Ran Playwright code
+```js
+await (async page => {
+ const config={"sources": [{"kind": "artifact", "id": "eb9a7c45-42da-4acc-b776-301b00f74eda", "revision": 1, "position": "line:1;quote_sha256:9c977154fe229552ab3d3cd6847478cabb7c3ebeebf112c4368f35ed74227db8"}], "category_id": "a051a908-5996-4290-b6cf-9b9166210d36", "product_id": "b8127689-cc89-4f28-83d6-aef8ca30e950", "project_id": "62520600-4831-47e2-9285-a02e61bebba9", "light": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-s5-external-wait-20261018/light-1440.png", "dark": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-s5-external-wait-20261018/dark-320.png"};
+ const section=()=>page.getByRole('region',{name:'外部等待与跟进',exact:true});
+ await section().getByRole('button',{name:'新建外部等待',exact:true}).waitFor({timeout:60000});
+ const writes=[]; const listener=req=>{if(req.url().includes('/api/')&&req.method()!=='GET'){let p={};try{p=req.postDataJSON()??{}}catch{}writes.push({path:new URL(req.url()).pathname,operation:p.operation,command_id:p.command_id,key:p.idempotency_key});}};page.on('request',listener);
+ if(await page.getByRole('button',{name:'返回等待编辑',exact:true}).count())await page.getByRole('button',{name:'返回等待编辑',exact:true}).click();
+ await section().getByRole('button',{name:'新建外部等待',exact:true}).click();
+ const form=page.getByRole('region',{name:'外部等待登记表单',exact:true});
+ const title='合成外部等待：原请求恢复 '+Date.now();
+ await form.getByLabel('等待对象',{exact:true}).fill('合成供应商图纸联系人');
+ await form.getByLabel('原请求内容',{exact:true}).fill('请返回原始图纸核对材料');
+ await form.getByLabel('等待标题',{exact:true}).fill(title);
+ await form.getByLabel('内部关闭条件',{exact:true}).fill('原件核对完成或明确内部处置');
+ await form.getByLabel('本次登记理由',{exact:true}).fill('合成页面闭环核对，保持实际送达未知');
+ const calendarSelect=form.getByLabel('明确采用的实际工作日历',{exact:false});
+ if(await calendarSelect.locator('option').count()>1)await calendarSelect.selectOption({index:1});
+ await form.getByText('实际原件来源（高级 JSON，必填）',{exact:true}).click();
+ await form.getByLabel('等待登记实际来源 JSON',{exact:true}).fill(JSON.stringify(config.sources));
+ let injected=false,committed=null,original=null,doneResolve,doneReject;
+ const done=new Promise((resolve,reject)=>{doneResolve=resolve;doneReject=reject;});
+ const handler=async route=>{const req=route.request();if(req.method()==='POST'&&req.postDataJSON()?.operation==='work.external_wait.record'&&!injected){injected=true;try{original=req.postDataJSON();const res=await route.fetch({timeout:60000});if(res.status()!==200)throw new Error('Actual save failed '+res.status()+' '+await res.text());committed=await res.json();await route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({code:'SOURCE_UNAVAILABLE',message:'合成已保存响应丢失'})});doneResolve();}catch(error){doneReject(error);throw error;}}else await route.continue();};
+ await page.route(/\/api\/v1\/categories\/.*\/commands$/,handler);
+ await form.getByRole('button',{name:'保存本次等待登记',exact:true}).click();
+ await Promise.race([done,new Promise((_,reject)=>setTimeout(()=>reject(new Error('No completed external-wait execution observed within 60 seconds')),60000))]);
+ await section().getByText('保存结果尚待核实。原请求、编号和材料已保留，请显式按原请求重放。',{exact:true}).waitFor({timeout:60000});
+ await page.unroute(/\/api\/v1\/categories\/.*\/commands$/,handler);
+ const beforeReload=writes.length;
+ await page.reload({waitUntil:'domcontentloaded'});
+ const pending=page.getByRole('region',{name:'已保留的等待原请求',exact:true});
+ await pending.getByRole('button',{name:'按原请求核对等待保存结果',exact:true}).waitFor({timeout:60000});
+ if(writes.length!==beforeReload)throw new Error('Reload automatically submitted a command');
+ await pending.getByRole('button',{name:'按原请求核对等待保存结果',exact:true}).click();
+ await section().getByText('已保存：新建外部等待 · 等待 '+committed.result.wait_id+' · 回执 '+committed.id+'。刷新只读回结果。',{exact:true}).waitFor({timeout:60000});
+ await section().getByRole('heading',{name:title,exact:true}).waitFor({timeout:60000});
+ const commands=writes.filter(x=>x.path.endsWith('/commands'));
+ if(commands.length!==2||commands[0].command_id!==commands[1].command_id||commands[0].key!==commands[1].key)throw new Error('Replay changed original request identity');
+ const base='/api/v1/categories/'+config.category_id+'/products/'+config.product_id+'/project-work';
+ const response=await page.request.get(new URL(base+'/external-waits?project_id='+config.project_id,page.url()).href);if(response.status()!==200)throw new Error('Actual waiting read failed');
+ const current=(await response.json()).waits.filter(w=>w.title===title);if(current.length!==1||current[0].revision!==1||current[0].history.length!==1||current[0].delivery!==null||current[0].clock.response_started_at!==null)throw new Error('Duplicate or invented delivery');
+ const wait=current[0];if(wait.history[0].receipt_id!==committed.id)throw new Error('Actual receipt differs');
+ const attention=await page.request.get(new URL('/api/v1/personal/attention?queue=external',page.url()).href);if(attention.status()!==200||!(await attention.json()).items.some(x=>x.id==='external_wait:'+wait.id))throw new Error('Actual personal queue does not reflect responsibility');
+ const activity=await page.request.get(new URL(base+'/activity?project_id='+config.project_id+'&page_size=100',page.url()).href);if(activity.status()!==200||!(await activity.json()).items.some(x=>x.operation==='work.external_wait.record'&&x.receipt_id===committed.id))throw new Error('Actual project activity missing');
+ const card=section().locator('article').filter({has:page.getByRole('heading',{name:title,exact:true})});
+ await page.setViewportSize({width:1440,height:1000});if(await page.locator('html').evaluate(el=>el.classList.contains('dark')))await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();await page.waitForFunction(()=>!document.documentElement.classList.contains('dark'));await card.screenshot({path:config.light});const lightOverflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);if(lightOverflow)throw new Error('Desktop overflow');
+ await page.setViewportSize({width:320,height:950});if(!(await page.locator('html').evaluate(el=>el.classList.contains('dark'))))await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();await page.waitForFunction(()=>document.documentElement.classList.contains('dark'));await card.screenshot({path:config.dark});const darkOverflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);if(darkOverflow)throw new Error('Mobile overflow');
+ if(writes.length!==3)throw new Error('Unexpected business write count');
+ page.off('request',listener);
+ return {actual_wait_id:wait.id,receipt_id:committed.id,command_id:original.command_id,successful_save_response_replaced_with_503:true,fulfillment_completed_before_reload:true,refresh_auto_POSTs:0,one_inputs_POST:writes.filter(x=>x.path.endsWith('/external-waits/inputs')).length===1,explicit_replay_same_command_and_key:true,one_create_version:true,actual_delivery:null,response_clock_unknown:true,adopted_actual_calendar:wait.calendar,actual_attention_and_activity:true,light:{width:1440,overflow:lightOverflow},dark:{width:320,overflow:darkOverflow}};
+}
+)(page);
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-18T20-56-59-024Z.log#L3
+
+### Result
+{"persistent_receipt":"246f3775-09c5-407f-acbf-daca52bfd0d3","frames":[{"width":1440,"dark":false,"buttons_enabled":true,"card_box":{"x":1034.65625,"y":280.453125,"width":373.34375,"height":1151.15625},"overflow":false},{"width":320,"dark":true,"buttons_enabled":true,"card_box":{"x":16,"y":280.203125,"width":288,"height":1254.109375},"overflow":false}],"viewport_screenshots":true}
+### Ran Playwright code
+```js
+await (async page=>{
+ const config={"receipt": "246f3775-09c5-407f-acbf-daca52bfd0d3", "light": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-s5-external-wait-20261018/light-1440.png", "dark": "/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-s5-external-wait-20261018/dark-320.png"};
+ const saved=await page.evaluate(()=>Object.keys(localStorage).filter(k=>k.startsWith('pdos.external-waits.v1:')).map(k=>JSON.parse(localStorage.getItem(k)))).then(v=>v.find(x=>x.receipt?.id===config.receipt));if(!saved||saved.pending)throw new Error('Persistent receipt missing');
+ const title=saved.completed.payload.record.title;
+ const card=()=>page.getByRole('region',{name:'外部等待与跟进',exact:true}).locator('article').filter({has:page.getByRole('heading',{name:title,exact:true})});
+ const frames=[];
+ for(const [width,dark,path] of [[1440,false,config.light],[320,true,config.dark]]){
+  await page.setViewportSize({width,height:1000});
+  if(await page.locator('html').evaluate(e=>e.classList.contains('dark'))!==dark)await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();
+  await page.waitForFunction(({title,dark})=>document.documentElement.classList.contains('dark')===dark&&[...document.querySelectorAll('article')].find(e=>[...e.querySelectorAll('h4')].some(h=>h.textContent===title))?.querySelector('button')?.disabled===false,{title,dark});
+  await card().evaluate(e=>{e.scrollIntoView({block:'start'});});
+  await page.evaluate(()=>window.scrollBy(0,-280));
+  await page.screenshot({path});
+  frames.push({width,dark,buttons_enabled:await card().getByRole('button',{name:'关闭内部等待',exact:true}).isEnabled(),card_box:await card().boundingBox(),overflow:await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)});
+ }
+ return {persistent_receipt:config.receipt,frames,viewport_screenshots:true};
+}
+)(page);
+```
+
+Browser 'pdos-s5-external-wait-20261018' closed
+
+

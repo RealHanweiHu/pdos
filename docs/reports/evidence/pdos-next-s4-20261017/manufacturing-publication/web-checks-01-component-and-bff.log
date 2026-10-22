@@ -1,0 +1,32 @@
+✔ publication history forwards exact project and opaque cursor as a read (30.692125ms)
+✔ ambiguous or missing publication scope cannot reach host: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/manufacturing-publications?project_id=00000000-0000-4000-8000-000000000005&project_id=00000000-0000-4000-8000-000000000006 (2.25575ms)
+✔ ambiguous or missing publication scope cannot reach host: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/manufacturing-publications (1.229584ms)
+✔ ambiguous or missing publication scope cannot reach host: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/manufacturing-publications/00000000-0000-4000-8000-000000000009?revision=0 (1.458ms)
+✔ ambiguous or missing publication scope cannot reach host: v1/categories/00000000-0000-4000-8000-000000000001/products/00000000-0000-4000-8000-000000000002/manufacturing-publications/inputs?project_id=00000000-0000-4000-8000-000000000005 (1.262041ms)
+✔ inputs preserve the actual original command and key (2.482542ms)
+✔ publication inputs reject product substitution (1.367ms)
+✔ publication inputs reject baseline substitution (1.362708ms)
+✔ publication inputs reject operation substitution (1.340625ms)
+✔ publication input retains same-origin and session guards (2.994167ms)
+✔ uncertain POST and unavailable GET are distinguished without a transport retry (1.861667ms)
+✔ failed initial reading stays an error and cannot become an empty successful publication list (16.951333ms)
+✔ actual selections and inputs produce a visible named preview; no decision POST precedes explicit confirmation (8.70275ms)
+✔ UNKNOWN preserves exact command/key/token through refresh and remount without auto POST (10.967666ms)
+✔ actual 401 failure clears persisted and rendered private state (7.551125ms)
+✔ actual 403 failure clears persisted and rendered private state (7.124583ms)
+✔ known success persists its receipt and performs only readonly refresh/remount/fixed-content reads (12.271667ms)
+✔ scope changes and unmount dispose inputs callbacks before they can preview, save or mutate the next scope (7.738958ms)
+✔ storage failure prevents both first request submission and irreversible named execution (6.352292ms)
+✔ 403 with unavailable storage deletion still clears page state, denies actions and reports retained local data honestly (6.986667ms)
+✔ storage failure when adopting inputs stops before preview and preserves the recoverable original phase (4.540792ms)
+✔ late preview response cannot write state or storage after a different project mounts (5.91125ms)
+✔ late execute response cannot write state or storage after a different project mounts (6.943166ms)
+✔ historical paging preserves its actual project and exact original cursor, deduplicating saved versions (3.563042ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 620.618375

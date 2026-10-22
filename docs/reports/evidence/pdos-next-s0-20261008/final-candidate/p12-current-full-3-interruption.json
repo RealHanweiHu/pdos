@@ -1,0 +1,12 @@
+{
+  "status": "interrupted_by_turn_abort",
+  "full_pass": false,
+  "complete_collection_execution": false,
+  "final_pytest_exit_code": null,
+  "parent_70958_present": false,
+  "child_70973_present": false,
+  "unified_session_48879_unavailable": true,
+  "log_sha256": "b555c32685cb0b21ead5abd5d7073e6e57233f282038c94cd3a72f3e7948ec9f",
+  "observed_failures": 2,
+  "evidence_scope": "Partial log only; no final JSON/JUnit or exit result recovered"
+}

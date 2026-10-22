@@ -1,0 +1,44 @@
+{
+  "head": "s0_0798",
+  "target": "127.0.0.1:64245/pdos_test",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "steps": [
+    {
+      "action": "upgrade",
+      "revision": "head",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "action": "downgrade",
+      "revision": "s0_0797",
+      "exit": 0,
+      "output": ""
+    },
+    {
+      "action": "upgrade",
+      "revision": "head",
+      "exit": 0,
+      "output": ""
+    }
+  ],
+  "ordinary_owner_force_rls": [
+    [
+      "project_risk_followup_currents",
+      "pdos_next_owner",
+      true,
+      true
+    ],
+    [
+      "project_risk_followups",
+      "pdos_next_owner",
+      true,
+      true
+    ]
+  ],
+  "agent_direct_insert_update": [
+    false,
+    false
+  ],
+  "historical_facts_rewritten": false
+}

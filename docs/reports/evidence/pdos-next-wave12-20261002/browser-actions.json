@@ -1,0 +1,32 @@
+{
+  "result": "passed",
+  "nature": "synthetic",
+  "build": "第十二波 · 实物交接后续第3轮（合成）",
+  "current_request_revision": 5,
+  "accepted_sample": "SYN-W12-R3-A",
+  "held_sample": "SYN-W12-R3-B",
+  "ui_operation": "verification.actual_method.prepare",
+  "method_sample": "SYN-W12-R3-B",
+  "method_revision_before": 1,
+  "method_revision_after": 2,
+  "method_status": "unknown",
+  "one_confirmation": true,
+  "success_message_verified": true,
+  "old_formal_v2_read_only": true,
+  "old_formal_v2_action_disabled": true,
+  "historical_current_qualification_not_evaluated": true,
+  "no_browser_errors": true,
+  "screenshots": [
+    "desktop-light.png",
+    "desktop-dark.png",
+    "mobile-light.png",
+    "mobile-dark.png",
+    "method-renewal.png"
+  ],
+  "backend_readback_passed": true,
+  "additional_receipt_id": "058d06f1-98d7-4585-8d8f-39872107b79a",
+  "audit_count": 1,
+  "outbox_count": 1,
+  "formal_pointer_unchanged": true,
+  "accepted_a_method_unchanged": true
+}

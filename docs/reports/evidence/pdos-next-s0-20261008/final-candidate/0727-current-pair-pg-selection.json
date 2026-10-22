@@ -1,0 +1,17 @@
+[
+  "tests/sample_handoff/test_current_pair_reads.py",
+  "tests/sample_handoff/test_transactions.py::test_ready_is_exact_purpose_current_and_three_readers_have_same_objective_fingerprint",
+  "tests/sample_handoff/test_transactions.py::test_new_observation_source_withdrawal_blocks_current_ready_and_new_ready_write",
+  "tests/sample_handoff/test_transactions.py::test_signer_qualification_revoke_restore_epoch_does_not_revive_readiness",
+  "tests/sample_handoff/test_transactions.py::test_physical_fact_and_current_pointer_immutable_history_cannot_be_overwritten",
+  "tests/sample_handoff/test_transactions.py::test_shared_transaction_failure_rolls_back_fact_pointer_receipt_and_confirmation",
+  "tests/verification_handoff/test_transactions.py::test_three_named_roles_actual_method_offer_partial_accept_and_return_are_one_request_truth",
+  "tests/verification_handoff/test_transactions.py::test_method_pair_concurrent_cas_has_one_batch_and_one_common_receipt",
+  "tests/verification_handoff/test_transactions.py::test_terminal_common_receipt_failure_rolls_back_actual_facts_pointer_and_confirmation",
+  "tests/verification_handoff/test_transactions.py::test_source_withdrawal_keeps_saved_receipt_replay_and_blocks_new_material",
+  "tests/verification_handoff/test_transactions.py::test_quality_and_engineering_roles_not_interchangeable_and_cross_tenant_hidden",
+  "tests/verification_handoff/test_transactions.py::test_actual_fact_immutable_rls_agent_zero_write_and_current_pointer_cannot_backtrack",
+  "tests/verification_handoff/test_transactions.py::test_stale_actual_qualification_keeps_real_pair_pointer_and_can_be_renewed",
+  "tests/professional_authority/test_current_policy.py",
+  "tests/professional_authority_batch_transactions/test_current_fact_batch.py::test_current_summary_is_read_once_and_pending_full_fact_tamper_is_rejected"
+]

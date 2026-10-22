@@ -1,0 +1,37 @@
+{
+  "tool": "pdos-next/tools/wave15_seed.py",
+  "before_sha256": "29ab0a4e70c5920e0066a4d685ef57f7b5fcbdfff249f466df4d238c9dcae8b2",
+  "after_sha256": "a44d2eaafda0ca89a6d2d6909c2002fad9785893b6b890873d5533565c921ac1",
+  "root_observed_failure": {
+    "phase": "prepare02",
+    "operation": "build.sample.readiness.record",
+    "code": "MISSING_REQUIRED_EVIDENCE",
+    "saved_command_token": false
+  },
+  "cause": "Tool used Build capability readset; SampleReadiness requires physical chain, current Start and action-specific professional source reads",
+  "fix": {
+    "endpoint": "GET /v1/products/{product_id}/sample-handoff",
+    "query": {
+      "build_id": "exact new Build id",
+      "purpose": "exact fixed PURPOSE"
+    },
+    "selection": "capabilities_by_sample[exact SampleUnit.id].required_source_read_set",
+    "complete_merge": "sample server readset + exact event Artifact id/revision + existing source; no truncation"
+  },
+  "authority_reference": "pdos-next/server/pdos_next/domain/sample_handoff/service.py::_inputs/_caps/list_sample_handoff",
+  "recovery": {
+    "private_checkpoint_modified_by_this_agent": false,
+    "command_or_key_changed": false,
+    "domain_objects_recreated": false,
+    "automatic_saved_command_repair": false,
+    "root_required_action": "Verify no Receipt/RequestKey/Confirmation; merge server required reads into the unpreviewed saved command with original payload/id/key"
+  },
+  "unchanged": "Frozen production/PG tests/previous static/revision evidence",
+  "validation": {
+    "ruff": "passed",
+    "ast_compile": "passed",
+    "ast_sample_endpoint_scope_and_event_merge": "passed",
+    "database_http_pytest": "not run"
+  },
+  "runtime_status": "Static complete; root resumes original command and verifies actual guard"
+}

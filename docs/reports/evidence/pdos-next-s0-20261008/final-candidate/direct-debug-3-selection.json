@@ -1,0 +1,4 @@
+[
+  "tests/verification_launch/test_transactions.py::test_fixed_full_accepted_plan_promise_and_atomic_actual_start_leave_old_history",
+  "tests/quality_execution_transactions/test_minimal_current.py::test_direct_read_inputs_preview_confirmation_and_replay_do_not_reinspect_upstream"
+]

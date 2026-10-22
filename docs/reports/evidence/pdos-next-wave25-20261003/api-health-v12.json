@@ -1,0 +1,10 @@
+{
+  "http_status": 200,
+  "json": {
+    "status": "ok",
+    "model_available": false,
+    "slice": "wave1-source-definition",
+    "durable_queue_enabled": true
+  },
+  "actual_source_manifest_sha256": "9c8c57ce5be4186534d6acd9b7602d5faf03ffb05521718c3d10fab205145a03"
+}

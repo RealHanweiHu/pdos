@@ -1,0 +1,152 @@
+{
+  "functional_case_count": 30,
+  "source_unchanged": true,
+  "summary": {
+    "launch_read_before": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.6743097500002477,
+      "p95_seconds": 0.9243889579993265,
+      "sql_range": [
+        57,
+        57
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "launch_read_running": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.6587863329987158,
+      "p95_seconds": 0.7932902080028725,
+      "sql_range": [
+        50,
+        50
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "test.run.plan_inputs": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.6014432090014452,
+      "p95_seconds": 0.9633293330007291,
+      "sql_range": [
+        55,
+        55
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "test.run.plan_preview": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.7665007079995121,
+      "p95_seconds": 1.0203499590024876,
+      "sql_range": [
+        75,
+        75
+      ],
+      "limit_seconds": 2,
+      "passed": true
+    },
+    "test.run.plan_commit": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 1.3555383749990142,
+      "p95_seconds": 1.829943083001126,
+      "sql_range": [
+        122,
+        122
+      ],
+      "limit_seconds": 2,
+      "passed": true
+    },
+    "verification.schedule.promise_inputs": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.6120799999989686,
+      "p95_seconds": 0.9270758750026289,
+      "sql_range": [
+        56,
+        56
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    },
+    "verification.schedule.promise_preview": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.8389306249991932,
+      "p95_seconds": 1.0988325829966925,
+      "sql_range": [
+        76,
+        76
+      ],
+      "limit_seconds": 2,
+      "passed": true
+    },
+    "verification.schedule.promise_commit": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 1.4235517919987615,
+      "p95_seconds": 1.7031349159988167,
+      "sql_range": [
+        122,
+        122
+      ],
+      "limit_seconds": 2,
+      "passed": true
+    },
+    "test.run.start_inputs": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.645468874998187,
+      "p95_seconds": 1.016853541997989,
+      "sql_range": [
+        57,
+        57
+      ],
+      "limit_seconds": 1,
+      "passed": false
+    },
+    "test.run.start_preview": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.8416595830021834,
+      "p95_seconds": 0.9440359159998479,
+      "sql_range": [
+        77,
+        77
+      ],
+      "limit_seconds": 2,
+      "passed": true
+    },
+    "test.run.start_commit": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 2.129889167001238,
+      "p95_seconds": 2.7483915829980106,
+      "sql_range": [
+        195,
+        195
+      ],
+      "limit_seconds": 3,
+      "passed": true
+    },
+    "test.run.start_replay": {
+      "samples": 30,
+      "failures": 0,
+      "p50_seconds": 0.040059875002043555,
+      "p95_seconds": 0.07508950000192272,
+      "sql_range": [
+        8,
+        8
+      ],
+      "limit_seconds": 1,
+      "passed": true
+    }
+  },
+  "all_passed": false,
+  "scope": "B4 only; not complete32-group summary"
+}

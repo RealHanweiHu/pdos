@@ -1,0 +1,193 @@
+{
+  "at": "2026-10-03T06:33:34.313681+00:00",
+  "scope": "verified isolated synthetic test metadata only; no original bytes or new source proof fabricated",
+  "candidates": [
+    {
+      "change_id": "668b526a-3c3e-5e32-a972-abf49b7b098d",
+      "tenant_id": "a365ba21-8ac3-4381-860b-fb90743e4a0a",
+      "product_id": "f1f40a9e-8b59-46a7-ab43-3eb0f63804a9",
+      "created_at": "2026-10-03T06:31:07.429412+00:00",
+      "fixed_issue_revision": 4,
+      "fixed_failure_run": {
+        "id": "3db84476-fbb3-4f9a-9f28-f9ab971b9227",
+        "revision": 3
+      },
+      "build_id": "9cf86bd6-45a9-45ff-8e70-ee9895e9d749",
+      "build_graph_enumerates": [
+        {
+          "row_id": "e9daaeaf-f573-4729-91a9-6bb97eea95f7",
+          "run_id": "3db84476-fbb3-4f9a-9f28-f9ab971b9227",
+          "revision": 1,
+          "operation": "test.run.plan",
+          "status": "planned",
+          "actual_start": null
+        },
+        {
+          "row_id": "7add80a0-a058-4361-b80f-ce45c015e19a",
+          "run_id": "3db84476-fbb3-4f9a-9f28-f9ab971b9227",
+          "revision": 2,
+          "operation": "test.run.start",
+          "status": "running",
+          "actual_start": {
+            "source": {
+              "id": "ab7e325e-98db-40d0-85d2-7a2c32d95c62",
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:d3a2d5d1a1cccf3ff7bef547a4013e5e4cdd575fb22ca5a7ae5081d19ee7687c",
+              "revision": 1
+            },
+            "actor_id": "25ded196-395b-4e09-8168-b4d712ced80a",
+            "occurred_at": "2026-10-03T06:09:13.717546Z",
+            "received_at": "2026-10-03T06:11:10.021018Z",
+            "effective_at": null,
+            "original_timezone": "UTC"
+          }
+        },
+        {
+          "row_id": "6b0e5728-730f-4500-9ef1-c280929afa55",
+          "run_id": "3db84476-fbb3-4f9a-9f28-f9ab971b9227",
+          "revision": 3,
+          "operation": "test.results.import",
+          "status": "results_pending",
+          "actual_start": {
+            "source": {
+              "id": "ab7e325e-98db-40d0-85d2-7a2c32d95c62",
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:d3a2d5d1a1cccf3ff7bef547a4013e5e4cdd575fb22ca5a7ae5081d19ee7687c",
+              "revision": 1
+            },
+            "actor_id": "25ded196-395b-4e09-8168-b4d712ced80a",
+            "occurred_at": "2026-10-03T06:09:13.717546Z",
+            "received_at": "2026-10-03T06:11:10.021018Z",
+            "effective_at": null,
+            "original_timezone": "UTC"
+          }
+        }
+      ]
+    },
+    {
+      "change_id": "7c4ed64d-8b2d-5fc2-aac3-d10c60e473aa",
+      "tenant_id": "3c6f4cbc-b489-4252-aa5f-00c2a65c8aa2",
+      "product_id": "3ee42aed-402c-4f26-9d37-248385f917ae",
+      "created_at": "2026-10-03T06:26:09.921090+00:00",
+      "fixed_issue_revision": 4,
+      "fixed_failure_run": {
+        "id": "7f4eada1-1234-4476-8f1a-83ed7851a757",
+        "revision": 3
+      },
+      "build_id": "6b5e0a08-feca-43e4-8575-62fc21bd445c",
+      "build_graph_enumerates": [
+        {
+          "row_id": "bbc9d3bb-9a27-4224-9eb8-c67c96a2a097",
+          "run_id": "7f4eada1-1234-4476-8f1a-83ed7851a757",
+          "revision": 1,
+          "operation": "test.run.plan",
+          "status": "planned",
+          "actual_start": null
+        },
+        {
+          "row_id": "37006bed-d0d7-4dba-a575-4647adf5c499",
+          "run_id": "7f4eada1-1234-4476-8f1a-83ed7851a757",
+          "revision": 2,
+          "operation": "test.run.start",
+          "status": "running",
+          "actual_start": {
+            "source": {
+              "id": "a88f1ad2-e016-4608-bfea-4c7633290382",
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:365d838a9d20c43c4a31c31c4b08bf19351f6ec5396c2c20bab9b021b0535fa5",
+              "revision": 1
+            },
+            "actor_id": "905315be-3853-48ff-81c4-95f5674676d4",
+            "occurred_at": "2026-10-03T06:02:09.078445Z",
+            "received_at": "2026-10-03T06:04:07.610820Z",
+            "effective_at": null,
+            "original_timezone": "UTC"
+          }
+        },
+        {
+          "row_id": "3d8e8b1a-b2e2-4cdb-aec8-4bfed6db8a0c",
+          "run_id": "7f4eada1-1234-4476-8f1a-83ed7851a757",
+          "revision": 3,
+          "operation": "test.results.import",
+          "status": "results_pending",
+          "actual_start": {
+            "source": {
+              "id": "a88f1ad2-e016-4608-bfea-4c7633290382",
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:365d838a9d20c43c4a31c31c4b08bf19351f6ec5396c2c20bab9b021b0535fa5",
+              "revision": 1
+            },
+            "actor_id": "905315be-3853-48ff-81c4-95f5674676d4",
+            "occurred_at": "2026-10-03T06:02:09.078445Z",
+            "received_at": "2026-10-03T06:04:07.610820Z",
+            "effective_at": null,
+            "original_timezone": "UTC"
+          }
+        }
+      ]
+    },
+    {
+      "change_id": "9a59f5a9-608f-580e-a630-067bcc5d9384",
+      "tenant_id": "ce5f7c19-0de2-47da-8166-6e591119d714",
+      "product_id": "e991ed83-e9a0-4510-82c6-563b854ae050",
+      "created_at": "2026-10-03T06:26:02.217963+00:00",
+      "fixed_issue_revision": 4,
+      "fixed_failure_run": {
+        "id": "f8cf261d-931f-4765-a27e-f7186ffbeab8",
+        "revision": 3
+      },
+      "build_id": "de42bffd-7141-421f-ad41-0bec3f0f1a9c",
+      "build_graph_enumerates": [
+        {
+          "row_id": "d8b9cbe8-5d2a-4fa3-95ba-a81aa5e07455",
+          "run_id": "f8cf261d-931f-4765-a27e-f7186ffbeab8",
+          "revision": 1,
+          "operation": "test.run.plan",
+          "status": "planned",
+          "actual_start": null
+        },
+        {
+          "row_id": "de2a016a-e589-47f8-bf0f-d8beba31bebf",
+          "run_id": "f8cf261d-931f-4765-a27e-f7186ffbeab8",
+          "revision": 2,
+          "operation": "test.run.start",
+          "status": "running",
+          "actual_start": {
+            "source": {
+              "id": "0eb541b0-133d-41ae-98bc-95d9f1e494cd",
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:bbe2be03e5fe328b034a27023f409b6f928c4fa413a667d755f21f028b84a071",
+              "revision": 1
+            },
+            "actor_id": "58b88e58-d160-4bb3-8100-3996df7a5428",
+            "occurred_at": "2026-10-03T06:02:04.338604Z",
+            "received_at": "2026-10-03T06:04:02.141644Z",
+            "effective_at": null,
+            "original_timezone": "UTC"
+          }
+        },
+        {
+          "row_id": "0324fc4e-2c41-4824-82b7-37c6cffb255e",
+          "run_id": "f8cf261d-931f-4765-a27e-f7186ffbeab8",
+          "revision": 3,
+          "operation": "test.results.import",
+          "status": "results_pending",
+          "actual_start": {
+            "source": {
+              "id": "0eb541b0-133d-41ae-98bc-95d9f1e494cd",
+              "kind": "artifact",
+              "position": "line:1;quote_sha256:bbe2be03e5fe328b034a27023f409b6f928c4fa413a667d755f21f028b84a071",
+              "revision": 1
+            },
+            "actor_id": "58b88e58-d160-4bb3-8100-3996df7a5428",
+            "occurred_at": "2026-10-03T06:02:04.338604Z",
+            "received_at": "2026-10-03T06:04:02.141644Z",
+            "effective_at": null,
+            "original_timezone": "UTC"
+          }
+        }
+      ]
+    }
+  ],
+  "static_inference": "graph includes planned Run v1; existing retained inspector explicitly rejects planned as RUN_NOT_STARTED. This is a plan-vs-execution owner read defect, not capture expiry."
+}

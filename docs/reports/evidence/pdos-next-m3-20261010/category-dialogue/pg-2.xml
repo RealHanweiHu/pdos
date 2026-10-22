@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="11" skipped="0" tests="11" time="8.806" timestamp="2026-10-11T00:53:07.990682-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_actual_t1_sources_signature_and_replay" time="1.389"><failure message="pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-124/test_personal_candidate_actual0')
+
+    def test_personal_candidate_actual_t1_sources_signature_and_replay(setup, tmp_path):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:261: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_candidate_transactions.py:193: in personal_fixture
+    actual = host.read(
+pdos_next/agent_kernel/host.py:89: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:108: in read_callback
+    model = verify_read_source(
+pdos_next/agent_kernel/read_execution.py:164: in verify_read_source
+    _deny("read_route_or_registry_changed", code="VERSION_CONFLICT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'read_route_or_registry_changed', code = 'VERSION_CONFLICT'
+
+    def _deny(reason, *, code="FORBIDDEN_SCOPE"):
+&gt;       raise DomainError(code, "读取须绑定实际运行、模型回复和登记工具。", detail={"reason": reason})
+E       pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。
+
+pdos_next/agent_kernel/read_execution.py:95: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_whole_groups_may_be_omitted[omit0]" time="0.633"><failure message="pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-124/test_personal_candidate_whole_0')
+omit = ('knowledge',)
+
+    @pytest.mark.parametrize(
+        "omit", [("knowledge",), ("parameters",), ("knowledge", "parameters", "snapshot_refs")]
+    )
+    def test_personal_candidate_whole_groups_may_be_omitted(setup, tmp_path, omit):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:297: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_candidate_transactions.py:193: in personal_fixture
+    actual = host.read(
+pdos_next/agent_kernel/host.py:89: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:108: in read_callback
+    model = verify_read_source(
+pdos_next/agent_kernel/read_execution.py:164: in verify_read_source
+    _deny("read_route_or_registry_changed", code="VERSION_CONFLICT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'read_route_or_registry_changed', code = 'VERSION_CONFLICT'
+
+    def _deny(reason, *, code="FORBIDDEN_SCOPE"):
+&gt;       raise DomainError(code, "读取须绑定实际运行、模型回复和登记工具。", detail={"reason": reason})
+E       pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。
+
+pdos_next/agent_kernel/read_execution.py:95: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_whole_groups_may_be_omitted[omit1]" time="0.622"><failure message="pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-124/test_personal_candidate_whole_1')
+omit = ('parameters',)
+
+    @pytest.mark.parametrize(
+        "omit", [("knowledge",), ("parameters",), ("knowledge", "parameters", "snapshot_refs")]
+    )
+    def test_personal_candidate_whole_groups_may_be_omitted(setup, tmp_path, omit):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:297: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_candidate_transactions.py:193: in personal_fixture
+    actual = host.read(
+pdos_next/agent_kernel/host.py:89: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:108: in read_callback
+    model = verify_read_source(
+pdos_next/agent_kernel/read_execution.py:164: in verify_read_source
+    _deny("read_route_or_registry_changed", code="VERSION_CONFLICT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'read_route_or_registry_changed', code = 'VERSION_CONFLICT'
+
+    def _deny(reason, *, code="FORBIDDEN_SCOPE"):
+&gt;       raise DomainError(code, "读取须绑定实际运行、模型回复和登记工具。", detail={"reason": reason})
+E       pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。
+
+pdos_next/agent_kernel/read_execution.py:95: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_personal_candidate_whole_groups_may_be_omitted[omit2]" time="0.789"><failure message="pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-124/test_personal_candidate_whole_2')
+omit = ('knowledge', 'parameters', 'snapshot_refs')
+
+    @pytest.mark.parametrize(
+        "omit", [("knowledge",), ("parameters",), ("knowledge", "parameters", "snapshot_refs")]
+    )
+    def test_personal_candidate_whole_groups_may_be_omitted(setup, tmp_path, omit):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:297: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_candidate_transactions.py:193: in personal_fixture
+    actual = host.read(
+pdos_next/agent_kernel/host.py:89: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:108: in read_callback
+    model = verify_read_source(
+pdos_next/agent_kernel/read_execution.py:164: in verify_read_source
+    _deny("read_route_or_registry_changed", code="VERSION_CONFLICT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'read_route_or_registry_changed', code = 'VERSION_CONFLICT'
+
+    def _deny(reason, *, code="FORBIDDEN_SCOPE"):
+&gt;       raise DomainError(code, "读取须绑定实际运行、模型回复和登记工具。", detail={"reason": reason})
+E       pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。
+
+pdos_next/agent_kernel/read_execution.py:95: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[wrong_person]" time="0.690"><failure message="pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-124/test_actual_candidate_rejects_0')
+change = 'wrong_person'
+
+    @pytest.mark.parametrize(
+        "change", ["wrong_person", "name", "partial_group", "unread_quote", "cancelled"]
+    )
+    def test_actual_candidate_rejects_changed_identity_content_or_sources(setup, tmp_path, change):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:306: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_candidate_transactions.py:193: in personal_fixture
+    actual = host.read(
+pdos_next/agent_kernel/host.py:89: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:108: in read_callback
+    model = verify_read_source(
+pdos_next/agent_kernel/read_execution.py:164: in verify_read_source
+    _deny("read_route_or_registry_changed", code="VERSION_CONFLICT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'read_route_or_registry_changed', code = 'VERSION_CONFLICT'
+
+    def _deny(reason, *, code="FORBIDDEN_SCOPE"):
+&gt;       raise DomainError(code, "读取须绑定实际运行、模型回复和登记工具。", detail={"reason": reason})
+E       pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。
+
+pdos_next/agent_kernel/read_execution.py:95: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[name]" time="0.669"><failure message="pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-124/test_actual_candidate_rejects_1')
+change = 'name'
+
+    @pytest.mark.parametrize(
+        "change", ["wrong_person", "name", "partial_group", "unread_quote", "cancelled"]
+    )
+    def test_actual_candidate_rejects_changed_identity_content_or_sources(setup, tmp_path, change):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:306: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_candidate_transactions.py:193: in personal_fixture
+    actual = host.read(
+pdos_next/agent_kernel/host.py:89: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:108: in read_callback
+    model = verify_read_source(
+pdos_next/agent_kernel/read_execution.py:164: in verify_read_source
+    _deny("read_route_or_registry_changed", code="VERSION_CONFLICT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'read_route_or_registry_changed', code = 'VERSION_CONFLICT'
+
+    def _deny(reason, *, code="FORBIDDEN_SCOPE"):
+&gt;       raise DomainError(code, "读取须绑定实际运行、模型回复和登记工具。", detail={"reason": reason})
+E       pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。
+
+pdos_next/agent_kernel/read_execution.py:95: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[partial_group]" time="0.663"><failure message="pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-124/test_actual_candidate_rejects_2')
+change = 'partial_group'
+
+    @pytest.mark.parametrize(
+        "change", ["wrong_person", "name", "partial_group", "unread_quote", "cancelled"]
+    )
+    def test_actual_candidate_rejects_changed_identity_content_or_sources(setup, tmp_path, change):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:306: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_candidate_transactions.py:193: in personal_fixture
+    actual = host.read(
+pdos_next/agent_kernel/host.py:89: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:108: in read_callback
+    model = verify_read_source(
+pdos_next/agent_kernel/read_execution.py:164: in verify_read_source
+    _deny("read_route_or_registry_changed", code="VERSION_CONFLICT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'read_route_or_registry_changed', code = 'VERSION_CONFLICT'
+
+    def _deny(reason, *, code="FORBIDDEN_SCOPE"):
+&gt;       raise DomainError(code, "读取须绑定实际运行、模型回复和登记工具。", detail={"reason": reason})
+E       pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。
+
+pdos_next/agent_kernel/read_execution.py:95: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[unread_quote]" time="0.735"><failure message="pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-124/test_actual_candidate_rejects_3')
+change = 'unread_quote'
+
+    @pytest.mark.parametrize(
+        "change", ["wrong_person", "name", "partial_group", "unread_quote", "cancelled"]
+    )
+    def test_actual_candidate_rejects_changed_identity_content_or_sources(setup, tmp_path, change):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:306: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_candidate_transactions.py:193: in personal_fixture
+    actual = host.read(
+pdos_next/agent_kernel/host.py:89: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:108: in read_callback
+    model = verify_read_source(
+pdos_next/agent_kernel/read_execution.py:164: in verify_read_source
+    _deny("read_route_or_registry_changed", code="VERSION_CONFLICT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'read_route_or_registry_changed', code = 'VERSION_CONFLICT'
+
+    def _deny(reason, *, code="FORBIDDEN_SCOPE"):
+&gt;       raise DomainError(code, "读取须绑定实际运行、模型回复和登记工具。", detail={"reason": reason})
+E       pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。
+
+pdos_next/agent_kernel/read_execution.py:95: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_actual_candidate_rejects_changed_identity_content_or_sources[cancelled]" time="0.606"><failure message="pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-124/test_actual_candidate_rejects_4')
+change = 'cancelled'
+
+    @pytest.mark.parametrize(
+        "change", ["wrong_person", "name", "partial_group", "unread_quote", "cancelled"]
+    )
+    def test_actual_candidate_rejects_changed_identity_content_or_sources(setup, tmp_path, change):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:306: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_candidate_transactions.py:193: in personal_fixture
+    actual = host.read(
+pdos_next/agent_kernel/host.py:89: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:108: in read_callback
+    model = verify_read_source(
+pdos_next/agent_kernel/read_execution.py:164: in verify_read_source
+    _deny("read_route_or_registry_changed", code="VERSION_CONFLICT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'read_route_or_registry_changed', code = 'VERSION_CONFLICT'
+
+    def _deny(reason, *, code="FORBIDDEN_SCOPE"):
+&gt;       raise DomainError(code, "读取须绑定实际运行、模型回复和登记工具。", detail={"reason": reason})
+E       pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。
+
+pdos_next/agent_kernel/read_execution.py:95: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_category_transaction_failure_rolls_back_every_fact_and_confirmation" time="0.611"><failure message="pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-124/test_category_transaction_fail0')
+
+    def test_category_transaction_failure_rolls_back_every_fact_and_confirmation(setup, tmp_path):
+&gt;       f = personal_fixture(setup, tmp_path)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:328: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_candidate_transactions.py:193: in personal_fixture
+    actual = host.read(
+pdos_next/agent_kernel/host.py:89: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:108: in read_callback
+    model = verify_read_source(
+pdos_next/agent_kernel/read_execution.py:164: in verify_read_source
+    _deny("read_route_or_registry_changed", code="VERSION_CONFLICT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'read_route_or_registry_changed', code = 'VERSION_CONFLICT'
+
+    def _deny(reason, *, code="FORBIDDEN_SCOPE"):
+&gt;       raise DomainError(code, "读取须绑定实际运行、模型回复和登记工具。", detail={"reason": reason})
+E       pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。
+
+pdos_next/agent_kernel/read_execution.py:95: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_category_candidate_transactions" name="test_sql_cannot_insert_ai_category_without_actual_receipt_or_change_run_identity" time="0.855"><failure message="AssertionError: {'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}&#10;assert 422 == 201&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">setup = &lt;isolated synthetic test scope&gt;
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-124/test_sql_cannot_insert_ai_cate0')
+
+    def test_sql_cannot_insert_ai_category_without_actual_receipt_or_change_run_identity(
+        setup, tmp_path
+    ):
+        f = personal_fixture(setup, tmp_path, sources=False)
+        with pytest.raises(DBAPIError):
+            with tenant_session(setup.engine, setup.tenant, actor_id=setup.human) as session:
+                session.add(
+                    Category(
+                        tenant_id=setup.tenant,
+                        owner_id=setup.human,
+                        key="forged-" + uuid4().hex,
+                        name="forged",
+                        purpose="forged",
+                        created_by_run_id=f.run.id,
+                    )
+                )
+&gt;       receipt, _ = adopted(setup, f)
+                     ^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_candidate_transactions.py:375: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+f = namespace(scope=RunScope(tenant_id=UUID('8888437a-09ba-4c13-a787-9c758d308f9c'), requester_id=UUID('d5392b0c-f8b2-4e4c... 'requires_human': True, 'write_tier': 'T1', 'state': 'candidate', 'event_id': '8619d8b3-8a5b-48c5-bf66-422d2d9475c5'})
+omit = ()
+
+    def adopted(setup, f, *, omit=()):
+        payload = deepcopy(f.candidate["payload"])
+        payload["deidentified_confirmed"] = True
+        for group in omit:
+            payload["groups"][group] = []
+        preview = setup.client.post("/v1/categories/preview", headers=setup.headers, json=payload)
+        assert preview.status_code == 200, preview.json()
+        payload["confirmation_token"] = preview.json()["confirmation_token"]
+        response = setup.client.post("/v1/categories", headers=setup.headers, json=payload)
+&gt;       assert response.status_code == 201, response.json()
+E       AssertionError: {'code': 'VALIDATION_FAILED', 'message': '请求条件发生冲突，未提交此操作。', 'detail': {'reason': 'CONSTRAINT_VALIDATION_FAILED'}}
+E       assert 422 == 201
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_category_candidate_transactions.py:237: AssertionError</failure></testcase></testsuite></testsuites>

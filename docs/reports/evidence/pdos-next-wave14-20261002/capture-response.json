@@ -1,0 +1,773 @@
+{
+  "capture": {
+    "id": "4e1d62e9-1cbf-449d-9114-de7c7b67f104",
+    "revision": 1,
+    "run_id": "050b0f95-39b6-4c90-8131-04118dfa32e3",
+    "request_id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+    "status": "prepared",
+    "created_at": "2026-10-03T03:32:44.879914+00:00",
+    "expires_at": "2026-10-03T04:02:44.878633+00:00",
+    "expired": false,
+    "observations": [
+      {
+        "coverage": {
+          "sample_id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+          "item_id": "dimension"
+        },
+        "sample": {
+          "id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+          "revision": 1,
+          "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+          "actual_configuration": {
+            "id": "d75bc010-242d-4d65-9b62-2730725b9345",
+            "revision": 1
+          },
+          "cavity": "A"
+        },
+        "source": {
+          "id": "10abb48e-7139-4acd-a7c7-252c76b70d44",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:c5a01d2960e95b6612bed1fc1822a69aaab2a884974f9e15f2950a9444ae30ef"
+        },
+        "line": 1,
+        "row_sha256": "c5a01d2960e95b6612bed1fc1822a69aaab2a884974f9e15f2950a9444ae30ef",
+        "raw_value": "  10.0  ",
+        "unit": "mm",
+        "conditions": "固定合成20°C，结果与处置尚未接入",
+        "equipment": {
+          "id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:f0c5e4419a8cfe4b9349a43319312fb5076052069e117c465006a42e5bd9d7f4"
+        },
+        "equipment_label": "本地合成固定设备",
+        "calibration": {
+          "id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:8075e2660b33c8a2168e20730104f87563904a73c021f63300730e605e9df11b"
+        },
+        "environment": "本地合成测试室",
+        "method": {
+          "id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+          "revision": 1,
+          "kind": "artifact",
+          "position": "line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb"
+        },
+        "executor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "observed_at": "2026-10-03T01:46:12.160096Z",
+        "observed_timezone": "UTC",
+        "note": "Synthetic native report; no instrument data",
+        "field_locations": [
+          {
+            "line": 1,
+            "field": "actual_configuration",
+            "presence": "value",
+            "raw_token": "{\"id\":\"d75bc010-242d-4d65-9b62-2730725b9345\",\"revision\":1}",
+            "character_start": 180,
+            "character_end": 238,
+            "byte_start": 180,
+            "byte_end": 238
+          },
+          {
+            "line": 1,
+            "field": "actual_configuration.id",
+            "presence": "value",
+            "raw_token": "\"d75bc010-242d-4d65-9b62-2730725b9345\"",
+            "character_start": 186,
+            "character_end": 224,
+            "byte_start": 186,
+            "byte_end": 224
+          },
+          {
+            "line": 1,
+            "field": "actual_configuration.revision",
+            "presence": "value",
+            "raw_token": "1",
+            "character_start": 236,
+            "character_end": 237,
+            "byte_start": 236,
+            "byte_end": 237
+          },
+          {
+            "line": 1,
+            "field": "calibration",
+            "presence": "value",
+            "raw_token": "{\"id\":\"85e07eaf-52b0-4567-a1f0-e379f688e883\",\"revision\":1,\"kind\":\"artifact\",\"position\":\"line:2;quote_sha256:8075e2660b33c8a2168e20730104f87563904a73c021f63300730e605e9df11b\"}",
+            "character_start": 573,
+            "character_end": 747,
+            "byte_start": 618,
+            "byte_end": 792
+          },
+          {
+            "line": 1,
+            "field": "calibration.id",
+            "presence": "value",
+            "raw_token": "\"85e07eaf-52b0-4567-a1f0-e379f688e883\"",
+            "character_start": 579,
+            "character_end": 617,
+            "byte_start": 624,
+            "byte_end": 662
+          },
+          {
+            "line": 1,
+            "field": "calibration.kind",
+            "presence": "value",
+            "raw_token": "\"artifact\"",
+            "character_start": 638,
+            "character_end": 648,
+            "byte_start": 683,
+            "byte_end": 693
+          },
+          {
+            "line": 1,
+            "field": "calibration.position",
+            "presence": "value",
+            "raw_token": "\"line:2;quote_sha256:8075e2660b33c8a2168e20730104f87563904a73c021f63300730e605e9df11b\"",
+            "character_start": 660,
+            "character_end": 746,
+            "byte_start": 705,
+            "byte_end": 791
+          },
+          {
+            "line": 1,
+            "field": "calibration.revision",
+            "presence": "value",
+            "raw_token": "1",
+            "character_start": 629,
+            "character_end": 630,
+            "byte_start": 674,
+            "byte_end": 675
+          },
+          {
+            "line": 1,
+            "field": "cavity",
+            "presence": "value",
+            "raw_token": "\"A\"",
+            "character_start": 248,
+            "character_end": 251,
+            "byte_start": 248,
+            "byte_end": 251
+          },
+          {
+            "line": 1,
+            "field": "conditions",
+            "presence": "value",
+            "raw_token": "\"固定合成20°C，结果与处置尚未接入\"",
+            "character_start": 322,
+            "character_end": 342,
+            "byte_start": 322,
+            "byte_end": 371
+          },
+          {
+            "line": 1,
+            "field": "environment",
+            "presence": "value",
+            "raw_token": "\"本地合成测试室\"",
+            "character_start": 762,
+            "character_end": 771,
+            "byte_start": 807,
+            "byte_end": 830
+          },
+          {
+            "line": 1,
+            "field": "equipment",
+            "presence": "value",
+            "raw_token": "{\"id\":\"85e07eaf-52b0-4567-a1f0-e379f688e883\",\"revision\":1,\"kind\":\"artifact\",\"position\":\"line:1;quote_sha256:f0c5e4419a8cfe4b9349a43319312fb5076052069e117c465006a42e5bd9d7f4\"}",
+            "character_start": 355,
+            "character_end": 529,
+            "byte_start": 384,
+            "byte_end": 558
+          },
+          {
+            "line": 1,
+            "field": "equipment.id",
+            "presence": "value",
+            "raw_token": "\"85e07eaf-52b0-4567-a1f0-e379f688e883\"",
+            "character_start": 361,
+            "character_end": 399,
+            "byte_start": 390,
+            "byte_end": 428
+          },
+          {
+            "line": 1,
+            "field": "equipment.kind",
+            "presence": "value",
+            "raw_token": "\"artifact\"",
+            "character_start": 420,
+            "character_end": 430,
+            "byte_start": 449,
+            "byte_end": 459
+          },
+          {
+            "line": 1,
+            "field": "equipment.position",
+            "presence": "value",
+            "raw_token": "\"line:1;quote_sha256:f0c5e4419a8cfe4b9349a43319312fb5076052069e117c465006a42e5bd9d7f4\"",
+            "character_start": 442,
+            "character_end": 528,
+            "byte_start": 471,
+            "byte_end": 557
+          },
+          {
+            "line": 1,
+            "field": "equipment.revision",
+            "presence": "value",
+            "raw_token": "1",
+            "character_start": 411,
+            "character_end": 412,
+            "byte_start": 440,
+            "byte_end": 441
+          },
+          {
+            "line": 1,
+            "field": "equipment_label",
+            "presence": "value",
+            "raw_token": "\"本地合成固定设备\"",
+            "character_start": 548,
+            "character_end": 558,
+            "byte_start": 577,
+            "byte_end": 603
+          },
+          {
+            "line": 1,
+            "field": "executor_id",
+            "presence": "value",
+            "raw_token": "\"0a41538d-e721-4783-866a-39c35d382eef\"",
+            "character_start": 970,
+            "character_end": 1008,
+            "byte_start": 1029,
+            "byte_end": 1067
+          },
+          {
+            "line": 1,
+            "field": "format",
+            "presence": "value",
+            "raw_token": "\"pdos-measurement-jsonl-v1\"",
+            "character_start": 10,
+            "character_end": 37,
+            "byte_start": 10,
+            "byte_end": 37
+          },
+          {
+            "line": 1,
+            "field": "item_id",
+            "presence": "value",
+            "raw_token": "\"dimension\"",
+            "character_start": 262,
+            "character_end": 273,
+            "byte_start": 262,
+            "byte_end": 273
+          },
+          {
+            "line": 1,
+            "field": "method",
+            "presence": "value",
+            "raw_token": "{\"id\":\"46e412b2-7e40-4ca0-a451-2b066cff620b\",\"revision\":1,\"kind\":\"artifact\",\"position\":\"line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb\"}",
+            "character_start": 781,
+            "character_end": 955,
+            "byte_start": 840,
+            "byte_end": 1014
+          },
+          {
+            "line": 1,
+            "field": "method.id",
+            "presence": "value",
+            "raw_token": "\"46e412b2-7e40-4ca0-a451-2b066cff620b\"",
+            "character_start": 787,
+            "character_end": 825,
+            "byte_start": 846,
+            "byte_end": 884
+          },
+          {
+            "line": 1,
+            "field": "method.kind",
+            "presence": "value",
+            "raw_token": "\"artifact\"",
+            "character_start": 846,
+            "character_end": 856,
+            "byte_start": 905,
+            "byte_end": 915
+          },
+          {
+            "line": 1,
+            "field": "method.position",
+            "presence": "value",
+            "raw_token": "\"line:2;quote_sha256:854448be36963731b70f38099edc9a986ab6351cde4af3f41920eaf2997915fb\"",
+            "character_start": 868,
+            "character_end": 954,
+            "byte_start": 927,
+            "byte_end": 1013
+          },
+          {
+            "line": 1,
+            "field": "method.revision",
+            "presence": "value",
+            "raw_token": "1",
+            "character_start": 837,
+            "character_end": 838,
+            "byte_start": 896,
+            "byte_end": 897
+          },
+          {
+            "line": 1,
+            "field": "note",
+            "presence": "value",
+            "raw_token": "\"Synthetic native report; no instrument data\"",
+            "character_start": 1091,
+            "character_end": 1136,
+            "byte_start": 1150,
+            "byte_end": 1195
+          },
+          {
+            "line": 1,
+            "field": "observed_at",
+            "presence": "value",
+            "raw_token": "\"2026-10-03T01:46:12.160096+00:00\"",
+            "character_start": 1023,
+            "character_end": 1057,
+            "byte_start": 1082,
+            "byte_end": 1116
+          },
+          {
+            "line": 1,
+            "field": "observed_timezone",
+            "presence": "value",
+            "raw_token": "\"UTC\"",
+            "character_start": 1078,
+            "character_end": 1083,
+            "byte_start": 1137,
+            "byte_end": 1142
+          },
+          {
+            "line": 1,
+            "field": "raw_value",
+            "presence": "value",
+            "raw_token": "\"  10.0  \"",
+            "character_start": 286,
+            "character_end": 296,
+            "byte_start": 286,
+            "byte_end": 296
+          },
+          {
+            "line": 1,
+            "field": "run_id",
+            "presence": "value",
+            "raw_token": "\"050b0f95-39b6-4c90-8131-04118dfa32e3\"",
+            "character_start": 47,
+            "character_end": 85,
+            "byte_start": 47,
+            "byte_end": 85
+          },
+          {
+            "line": 1,
+            "field": "sample_id",
+            "presence": "value",
+            "raw_token": "\"7c16ba29-4598-4240-941c-40ddc6b8348a\"",
+            "character_start": 98,
+            "character_end": 136,
+            "byte_start": 98,
+            "byte_end": 136
+          },
+          {
+            "line": 1,
+            "field": "sample_revision",
+            "presence": "value",
+            "raw_token": "1",
+            "character_start": 155,
+            "character_end": 156,
+            "byte_start": 155,
+            "byte_end": 156
+          },
+          {
+            "line": 1,
+            "field": "unit",
+            "presence": "value",
+            "raw_token": "\"mm\"",
+            "character_start": 304,
+            "character_end": 308,
+            "byte_start": 304,
+            "byte_end": 308
+          }
+        ],
+        "missing": [],
+        "metadata_mismatches": [],
+        "value_state": "known"
+      }
+    ],
+    "source_status": "current",
+    "applied_action_id": null,
+    "applied_run_version_id": null,
+    "report_binding": {
+      "scope": {
+        "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+        "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+        "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+      },
+      "run_id": "050b0f95-39b6-4c90-8131-04118dfa32e3",
+      "run_revision": 2,
+      "request_id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+      "request_revision": 5,
+      "run_basis_sha256": "cad8957cea34402da17c21ea459b36be6f6830ec1d06f7d85f973637b01173fd",
+      "report": {
+        "id": "10abb48e-7139-4acd-a7c7-252c76b70d44",
+        "revision": 1,
+        "kind": "artifact",
+        "position": "measurement-report"
+      },
+      "original": {
+        "id": "3f540b71-d364-4312-b8d2-a1d8072159ef",
+        "revision": 1,
+        "sha256": "557664e63842da43344806b679faee00425777a9b9a1327ce729c2d3cbf778f3",
+        "size": 1197,
+        "media_type": "text/plain"
+      },
+      "security_epoch": 2,
+      "pairs": [
+        {
+          "sample": {
+            "id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+            "revision": 1,
+            "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+            "actual_configuration": {
+              "id": "d75bc010-242d-4d65-9b62-2730725b9345",
+              "revision": 1
+            },
+            "cavity": "A"
+          },
+          "item_id": "dimension"
+        }
+      ],
+      "execution_plan": {
+        "window": {
+          "start": "2026-10-03T01:35:40.375459Z",
+          "finish": "2026-10-03T03:25:40.375459Z",
+          "original_timezone": "UTC"
+        },
+        "executor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+        "equipment": {
+          "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+          "expected_revision": 1,
+          "line": 1,
+          "quote": "SYN-W13-EQUIPMENT:固定合成设备，本次完整窗口可用，未授真实资格。"
+        },
+        "calibration": {
+          "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+          "expected_revision": 1,
+          "line": 2,
+          "quote": "SYN-W13-CALIBRATION:合成具名校准依据，不代表生产校准。"
+        },
+        "environment": "本地合成测试室",
+        "conditions": "固定合成20°C，结果与处置尚未接入",
+        "resource_fact_id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+        "expected_resource_fact_revision": 1
+      },
+      "parser_version": "pdos-measurement-jsonl-v1"
+    },
+    "sources": [
+      {
+        "line": 1,
+        "quote": "Synthetic drawing for preparation only",
+        "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+        "expected_revision": 1
+      },
+      {
+        "line": 2,
+        "quote": "Synthetic numeric limits 9.5 to 10.5; method not approved",
+        "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+        "expected_revision": 1
+      },
+      {
+        "line": 3,
+        "quote": "Synthetic attachment for dimension; no professional approval",
+        "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+        "expected_revision": 1
+      },
+      {
+        "line": 1,
+        "quote": "{\"executor_id\": \"0a41538d-e721-4783-866a-39c35d382eef\", \"occurred_at\": \"2026-10-03T01:35:40.375459+00:00\", \"operation\": \"verification.schedule.promise\", \"purpose\": \"Verify preparation\", \"request_id\": \"8ab2f1ad-716d-404b-8a69-013c2a2015d7\", \"run_id\": \"050b0f95-39b6-4c90-8131-04118dfa32e3\"}",
+        "artifact_id": "809213bb-d988-44f2-a409-46c383d009ae",
+        "expected_revision": 1
+      },
+      {
+        "line": 1,
+        "quote": "SYN-W13-EQUIPMENT:固定合成设备，本次完整窗口可用，未授真实资格。",
+        "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+        "expected_revision": 1
+      },
+      {
+        "line": 2,
+        "quote": "SYN-W13-CALIBRATION:合成具名校准依据，不代表生产校准。",
+        "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+        "expected_revision": 1
+      },
+      {
+        "line": 1,
+        "quote": "{\"executor_id\": \"0a41538d-e721-4783-866a-39c35d382eef\", \"occurred_at\": \"2026-10-03T01:36:12.160096+00:00\", \"operation\": \"test.run.start\", \"purpose\": \"Verify preparation\", \"request_id\": \"8ab2f1ad-716d-404b-8a69-013c2a2015d7\", \"run_id\": \"050b0f95-39b6-4c90-8131-04118dfa32e3\"}",
+        "artifact_id": "9afc242a-0bca-43d7-b9cc-be8684713294",
+        "expected_revision": 1
+      },
+      {
+        "line": 1,
+        "quote": "{\"actual_configuration_id\": \"d75bc010-242d-4d65-9b62-2730725b9345\", \"build_id\": \"c4bd36e6-b8e6-47cd-8497-2fd8d80aa577\", \"lot_id\": \"88a053e3-2d90-4f75-8af8-67d0199c6d69\", \"occurred_at\": \"2026-10-03T01:20:07.698415+00:00\", \"purpose\": \"Verify preparation\", \"sample_id\": \"7c16ba29-4598-4240-941c-40ddc6b8348a\", \"state\": \"ready\"}",
+        "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+        "expected_revision": 1
+      },
+      {
+        "line": 1,
+        "quote": "{\"actual_configuration_id\": \"d75bc010-242d-4d65-9b62-2730725b9345\", \"build_id\": \"c4bd36e6-b8e6-47cd-8497-2fd8d80aa577\", \"lot_id\": \"88a053e3-2d90-4f75-8af8-67d0199c6d69\", \"occurred_at\": \"2026-10-03T01:20:07.908819+00:00\", \"purpose\": \"Verify preparation\", \"sample_id\": \"407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8\", \"state\": \"hold\"}",
+        "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+        "expected_revision": 1
+      }
+    ],
+    "required_source_read_set": [
+      {
+        "artifact_id": "10abb48e-7139-4acd-a7c7-252c76b70d44",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "809213bb-d988-44f2-a409-46c383d009ae",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "9afc242a-0bca-43d7-b9cc-be8684713294",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "9cebc9f0-03f4-4acf-8ca0-a6dda1facd07",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "c598c044-b427-4052-85fe-c29f18e0ed96",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "fa2ba9c7-63e5-40dd-b1d0-a84fd1e0d2c8",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "fd89cebd-1b9a-49db-8e50-14e6c7d85dc3",
+        "expected_revision": 1
+      }
+    ],
+    "results_import_payload": {
+      "request_id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+      "expected_request_revision": 7,
+      "run_id": "050b0f95-39b6-4c90-8131-04118dfa32e3",
+      "expected_run_revision": 2,
+      "capture_id": "4e1d62e9-1cbf-449d-9114-de7c7b67f104",
+      "expected_capture_revision": 1,
+      "final": false,
+      "sources": [
+        {
+          "line": 1,
+          "quote": "Synthetic drawing for preparation only",
+          "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+          "expected_revision": 1
+        },
+        {
+          "line": 2,
+          "quote": "Synthetic numeric limits 9.5 to 10.5; method not approved",
+          "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+          "expected_revision": 1
+        },
+        {
+          "line": 3,
+          "quote": "Synthetic attachment for dimension; no professional approval",
+          "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+          "expected_revision": 1
+        },
+        {
+          "line": 1,
+          "quote": "{\"executor_id\": \"0a41538d-e721-4783-866a-39c35d382eef\", \"occurred_at\": \"2026-10-03T01:35:40.375459+00:00\", \"operation\": \"verification.schedule.promise\", \"purpose\": \"Verify preparation\", \"request_id\": \"8ab2f1ad-716d-404b-8a69-013c2a2015d7\", \"run_id\": \"050b0f95-39b6-4c90-8131-04118dfa32e3\"}",
+          "artifact_id": "809213bb-d988-44f2-a409-46c383d009ae",
+          "expected_revision": 1
+        },
+        {
+          "line": 1,
+          "quote": "SYN-W13-EQUIPMENT:固定合成设备，本次完整窗口可用，未授真实资格。",
+          "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+          "expected_revision": 1
+        },
+        {
+          "line": 2,
+          "quote": "SYN-W13-CALIBRATION:合成具名校准依据，不代表生产校准。",
+          "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+          "expected_revision": 1
+        },
+        {
+          "line": 1,
+          "quote": "{\"executor_id\": \"0a41538d-e721-4783-866a-39c35d382eef\", \"occurred_at\": \"2026-10-03T01:36:12.160096+00:00\", \"operation\": \"test.run.start\", \"purpose\": \"Verify preparation\", \"request_id\": \"8ab2f1ad-716d-404b-8a69-013c2a2015d7\", \"run_id\": \"050b0f95-39b6-4c90-8131-04118dfa32e3\"}",
+          "artifact_id": "9afc242a-0bca-43d7-b9cc-be8684713294",
+          "expected_revision": 1
+        },
+        {
+          "line": 1,
+          "quote": "{\"actual_configuration_id\": \"d75bc010-242d-4d65-9b62-2730725b9345\", \"build_id\": \"c4bd36e6-b8e6-47cd-8497-2fd8d80aa577\", \"lot_id\": \"88a053e3-2d90-4f75-8af8-67d0199c6d69\", \"occurred_at\": \"2026-10-03T01:20:07.698415+00:00\", \"purpose\": \"Verify preparation\", \"sample_id\": \"7c16ba29-4598-4240-941c-40ddc6b8348a\", \"state\": \"ready\"}",
+          "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+          "expected_revision": 1
+        },
+        {
+          "line": 1,
+          "quote": "{\"actual_configuration_id\": \"d75bc010-242d-4d65-9b62-2730725b9345\", \"build_id\": \"c4bd36e6-b8e6-47cd-8497-2fd8d80aa577\", \"lot_id\": \"88a053e3-2d90-4f75-8af8-67d0199c6d69\", \"occurred_at\": \"2026-10-03T01:20:07.908819+00:00\", \"purpose\": \"Verify preparation\", \"sample_id\": \"407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8\", \"state\": \"hold\"}",
+          "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+          "expected_revision": 1
+        }
+      ],
+      "reason": "选取合成原生报告的真实原件行号，原空格与缺项逐字保留。"
+    }
+  },
+  "results_import_payload": {
+    "request_id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+    "expected_request_revision": 7,
+    "run_id": "050b0f95-39b6-4c90-8131-04118dfa32e3",
+    "expected_run_revision": 2,
+    "capture_id": "4e1d62e9-1cbf-449d-9114-de7c7b67f104",
+    "expected_capture_revision": 1,
+    "final": false,
+    "sources": [
+      {
+        "line": 1,
+        "quote": "Synthetic drawing for preparation only",
+        "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+        "expected_revision": 1
+      },
+      {
+        "line": 2,
+        "quote": "Synthetic numeric limits 9.5 to 10.5; method not approved",
+        "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+        "expected_revision": 1
+      },
+      {
+        "line": 3,
+        "quote": "Synthetic attachment for dimension; no professional approval",
+        "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+        "expected_revision": 1
+      },
+      {
+        "line": 1,
+        "quote": "{\"executor_id\": \"0a41538d-e721-4783-866a-39c35d382eef\", \"occurred_at\": \"2026-10-03T01:35:40.375459+00:00\", \"operation\": \"verification.schedule.promise\", \"purpose\": \"Verify preparation\", \"request_id\": \"8ab2f1ad-716d-404b-8a69-013c2a2015d7\", \"run_id\": \"050b0f95-39b6-4c90-8131-04118dfa32e3\"}",
+        "artifact_id": "809213bb-d988-44f2-a409-46c383d009ae",
+        "expected_revision": 1
+      },
+      {
+        "line": 1,
+        "quote": "SYN-W13-EQUIPMENT:固定合成设备，本次完整窗口可用，未授真实资格。",
+        "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+        "expected_revision": 1
+      },
+      {
+        "line": 2,
+        "quote": "SYN-W13-CALIBRATION:合成具名校准依据，不代表生产校准。",
+        "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+        "expected_revision": 1
+      },
+      {
+        "line": 1,
+        "quote": "{\"executor_id\": \"0a41538d-e721-4783-866a-39c35d382eef\", \"occurred_at\": \"2026-10-03T01:36:12.160096+00:00\", \"operation\": \"test.run.start\", \"purpose\": \"Verify preparation\", \"request_id\": \"8ab2f1ad-716d-404b-8a69-013c2a2015d7\", \"run_id\": \"050b0f95-39b6-4c90-8131-04118dfa32e3\"}",
+        "artifact_id": "9afc242a-0bca-43d7-b9cc-be8684713294",
+        "expected_revision": 1
+      },
+      {
+        "line": 1,
+        "quote": "{\"actual_configuration_id\": \"d75bc010-242d-4d65-9b62-2730725b9345\", \"build_id\": \"c4bd36e6-b8e6-47cd-8497-2fd8d80aa577\", \"lot_id\": \"88a053e3-2d90-4f75-8af8-67d0199c6d69\", \"occurred_at\": \"2026-10-03T01:20:07.698415+00:00\", \"purpose\": \"Verify preparation\", \"sample_id\": \"7c16ba29-4598-4240-941c-40ddc6b8348a\", \"state\": \"ready\"}",
+        "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+        "expected_revision": 1
+      },
+      {
+        "line": 1,
+        "quote": "{\"actual_configuration_id\": \"d75bc010-242d-4d65-9b62-2730725b9345\", \"build_id\": \"c4bd36e6-b8e6-47cd-8497-2fd8d80aa577\", \"lot_id\": \"88a053e3-2d90-4f75-8af8-67d0199c6d69\", \"occurred_at\": \"2026-10-03T01:20:07.908819+00:00\", \"purpose\": \"Verify preparation\", \"sample_id\": \"407e7cd3-77b6-48c1-bb4d-ecba2fbd0dc8\", \"state\": \"hold\"}",
+        "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+        "expected_revision": 1
+      }
+    ],
+    "reason": "选取合成原生报告的真实原件行号，原空格与缺项逐字保留。"
+  },
+  "required_source_read_set": [
+    {
+      "artifact_id": "10abb48e-7139-4acd-a7c7-252c76b70d44",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "809213bb-d988-44f2-a409-46c383d009ae",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "9afc242a-0bca-43d7-b9cc-be8684713294",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "9cebc9f0-03f4-4acf-8ca0-a6dda1facd07",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "c598c044-b427-4052-85fe-c29f18e0ed96",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "fa2ba9c7-63e5-40dd-b1d0-a84fd1e0d2c8",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "fd89cebd-1b9a-49db-8e50-14e6c7d85dc3",
+      "expected_revision": 1
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{"run_id": "9521bd69-1182-4a49-a16b-d54c7d767569", "actual_proposal": true, "cost_micro_usd": 240, "default_host_ports": true, "external_model_calls": 0, "external_kms_calls": 0}
+.
+=============================== warnings summary ===============================
+tests/agent_kernel/test_host_runtime_process.py::test_default_host_process_prepares_actual_proposal_and_settles_declared_costs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 1 warning in 7.82s

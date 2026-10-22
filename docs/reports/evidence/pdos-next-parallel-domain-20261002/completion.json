@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-02 11:59:49 UTC",
+  "source": "Codex read_thread 状态、各独立包 result.md/integration.md 与当前队列只读核对",
+  "threads": [
+    {
+      "id": "01a0fc5f-3974-79c1-a945-bca40ca02567",
+      "title": "PDOS Next：品质验证与交接",
+      "status": "idle",
+      "turnStatus": "completed",
+      "completedAt": 1790942104,
+      "error": null,
+      "result": "docs/reports/evidence/pdos-next-verification-20261002/result.md",
+      "integration": "docs/reports/evidence/pdos-next-verification-20261002/integration.md",
+      "reportedChecksPassed": {
+        "backend": 156,
+        "frontend": 23
+      },
+      "scope": "独立模块合成检查；不代表主线联合验收"
+    },
+    {
+      "id": "01a0fc5f-5f63-7f73-8676-62982da76b03",
+      "title": "PDOS Next：供应与成本业务接入",
+      "status": "idle",
+      "turnStatus": "completed",
+      "completedAt": 1790941699,
+      "error": null,
+      "result": "docs/reports/evidence/pdos-next-supply-business-20261002/result.md",
+      "integration": "docs/reports/evidence/pdos-next-supply-business-20261002/integration.md",
+      "reportedChecksPassed": {
+        "domain": 106,
+        "frontend": 15
+      },
+      "scope": "独立模块合成检查；不代表主线联合验收"
+    },
+    {
+      "id": "01a0fc5f-6336-7753-913c-2f6be216c4cd",
+      "title": "PDOS Next：文件安全与原件生命周期",
+      "status": "idle",
+      "turnStatus": "completed",
+      "completedAt": 1790941871,
+      "error": null,
+      "result": "docs/reports/evidence/pdos-next-evidence-security-20261002/result.md",
+      "integration": "docs/reports/evidence/pdos-next-evidence-security-20261002/integration.md",
+      "reportedChecksPassed": {
+        "scanning": 80,
+        "lifecycle": 75
+      },
+      "scope": "独立模块合成检查；不代表主线联合验收"
+    }
+  ],
+  "mainlineAtCheck": {
+    "id": "01a0fbeb-3050-7662-912f-7a380996ed6a",
+    "title": "按新设计完成并执行方案",
+    "status": "active",
+    "turnStatus": "inProgress",
+    "work": "实际配置、产出批次和样件；保留未知开工准备条件"
+  },
+  "nextIntegration": [
+    "现有固定BOM/计划Build可先接权威需求/来源端口、供应快照和成本，并接品质请求/方法/暂定时段。",
+    "实际配置/批次/样件及资源消费端口齐备后接真实交接、部分接收、TestRun和原值返回。",
+    "扫描持久回执和解析双门禁可独立接入；完整上传日志、引用保护和持久存储适配器齐备后再办理生命周期效果。"
+  ],
+  "limitations": [
+    "未在本轮重跑已通过候选检查。",
+    "独立模块交付不表示数据库、API、页面、worker整链已集成。",
+    "真实扫描器、OS沙箱、存储操作资格及原G/N/P/Q批准边界保持。",
+    "本轮仅核对状态与更新清单；未新建会话或向现有会话发送指令。"
+  ]
+}

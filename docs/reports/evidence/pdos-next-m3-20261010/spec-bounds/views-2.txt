@@ -1,0 +1,28 @@
+✔ source details retain exact identity, version, locator and unavailable status (5.827ms)
+✔ source addresses and markup remain inert text and missing content is not invented (0.679292ms)
+✔ empty references remain explicitly unavailable (0.172375ms)
+✔ comparison preserves server groups, precision, reasons and sample counts (1.996375ms)
+✔ feature booleans retain false and enum text; unmapped names are kept separate (2.376042ms)
+✔ positioning plots known coordinates only and distinguishes evidence styles (3.728917ms)
+✔ separate server price facets remain separate even with identical parameter ids (5.109791ms)
+✔ nonfinite numeric coordinates never generate invalid SVG or invented values (0.998625ms)
+✔ every document identity dimension rejects an old result (0.699834ms)
+✔ loading, failed reads, wrong view and incomplete payload hide old successful content (0.500417ms)
+✔ maturity renders only server counts, question assignments and exact blocker reasons (1.399208ms)
+✔ rendering never issues requests or starts an agent (6.773ms)
+✔ nonmeasurement evidence uses a separate marker and retains the original nature (2.519167ms)
+✔ free-text feature sections remain separate and never become mapped feature values (0.922958ms)
+✔ nullable unavailable feature text retains its source identity without displaying hidden content (1.23ms)
+✔ unknown positioning records drill into the returned redacted references (0.693208ms)
+✔ unrepresentable decimal coordinates retain exact text and explain why they are not plotted (3.38675ms)
+✔ finite extreme endpoints do not overflow the SVG scale (1.103917ms)
+✔ true zero and equivalent decimal spellings remain plotable (3.916958ms)
+✔ single numeric source bounds remain explicit constraints in the actual comparison view (1.4725ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 523.8475

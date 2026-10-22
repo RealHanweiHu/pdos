@@ -1,0 +1,12 @@
+{
+  "schema_version": "wave22-build-source-manifest-v3",
+  "files": {
+    "wave22_shared_build.py": "3911be2ab31f651bc8447db1ddb4551ce20e1b0eff39e4196a41d09fd5109cc6",
+    "test_wave22_shared_build.py": "51ccfc53862be2969702789781ced7821667484cb60459885c6eea77219c23b3",
+    "start-source-and-rejection-contract-v3.md": "0e35af5df6fa2837563a801bb57aaf8aed7643ed5f750356b52b863cc6428709"
+  },
+  "v2_unchanged": {
+    "wave22_shared_build.py": "bd8035806019ebf22dd6b7e3079fa85ccda23d6d9400ccc1a4c8fd7bf35315c0",
+    "test_wave22_shared_build.py": "bd30e211c34fe1724c324e466194ef879346ecf66728a29513e0626f0d3be46d"
+  }
+}

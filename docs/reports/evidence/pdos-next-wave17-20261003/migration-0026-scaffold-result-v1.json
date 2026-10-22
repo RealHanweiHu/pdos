@@ -1,0 +1,41 @@
+{
+  "status": "SCAFFOLD_STATIC_PASS_AWAIT_FINAL_ROOT_PLAN",
+  "captured_at": "2026-10-03T12:24:02.506554+00:00",
+  "scope": "two owned new files; no SQL execution/DB/HTTP/public checks; not mounted migration",
+  "revision": "next_0026",
+  "down_revision": "next_0025",
+  "final_plan_bound": false,
+  "checks": [
+    {
+      "command": "pdos-next/server/.venv/bin/ruff check pdos-next/staging/wave17/migration_0026.py",
+      "exit_code": 0
+    },
+    {
+      "command": "pdos-next/server/.venv/bin/ruff format --check pdos-next/staging/wave17/migration_0026.py",
+      "exit_code": 0
+    },
+    {
+      "command": "owned AST/import; both unbound upgrade/downgrade reject before IO",
+      "exit_code": 0
+    }
+  ],
+  "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/migration-0026-scaffold-checks-v1.log",
+  "log_sha256": "2a017169978fdd2db0a8495d1af547f6660ae2f69a9dcc3e095fe683b19a2779",
+  "sources": [
+    {
+      "path": "pdos-next/staging/wave17/migration_0026.py",
+      "sha256": "913ca18d06d9484efb97be3a7437493180c79d21705f02bfb880ee7952787d48"
+    },
+    {
+      "path": "pdos-next/staging/wave17/migration-0026-contract.md",
+      "sha256": "4bea7dda657db2ee7863239e707c2a6172ce2df03ab469364ba8f424c993a6dd"
+    }
+  ],
+  "remaining": [
+    "Root final v3 plan SHA and static SQL must be embedded",
+    "Root actual migration/up-down-up/schema/permissions and atom checks"
+  ],
+  "database_connections": 0,
+  "sql_executions": 0,
+  "public_registration": false
+}

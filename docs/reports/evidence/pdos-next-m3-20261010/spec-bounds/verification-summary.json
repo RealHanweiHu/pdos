@@ -1,0 +1,12 @@
+{
+  "schema_head": "s0_0757",
+  "pg_unique": 139,
+  "final_compare_overlap": 7,
+  "pure_final": 491,
+  "frontend_unique": 60,
+  "model_calls": 0,
+  "migration_roundtrip": true,
+  "actual_browser": true,
+  "source_digest": "6e4e3d1ed9a4f22a0597bd20e07223b75188cae50260bccd4720b1dd22bd88f9",
+  "stage_complete": false
+}

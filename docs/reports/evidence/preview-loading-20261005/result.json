@@ -1,0 +1,28 @@
+{
+  "changed_source": "web/next.config.ts",
+  "source_sha256": "802637a9162b9d2521360501eaf7c2eec7fe02c83d821d1cd89d25e31d023290",
+  "root_causes": [
+    "Next.js dev cross-origin guard rejected 127.0.0.1 script requests with 403",
+    "Live preview database remained at 0417; current authentication query needs users.work_modules from 0419"
+  ],
+  "checks": {
+    "eslint_next_config": "passed",
+    "http_origins": "http-result.json",
+    "backup": "backup-result.json",
+    "migration": "migration-result.json",
+    "read_only_authentication_query": "auth-read-result.json",
+    "browser": {
+      "url": "http://127.0.0.1:3000/login",
+      "visible_heading": "登录 PDOS",
+      "loading_placeholder_removed": true,
+      "login_form_rendered": true
+    }
+  },
+  "limits": [
+    "No repository tests on live 57432/pdos",
+    "No account, password or role changes",
+    "No password-based login verification or authenticated product journey in this repair",
+    "No production, model calls or external sends",
+    "2026-09-27 historical partial loss remains unchanged"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "started_at": "2026-10-17T21:07:11.871421+00:00",
+  "finished_at": "2026-10-17T21:07:27.603219+00:00",
+  "snapshot": "/private/tmp/pdos-s4-native-pilot-ik91a0if",
+  "checks": [
+    {
+      "label": "affected-pure",
+      "exit": 0,
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "--confcutdir=tests/manufacturing_trials",
+        "tests/manufacturing_trials",
+        "tests/build_operational_facts/test_pure.py",
+        "tests/manufacturing_preparation/test_preparation.py",
+        "tests/manufacturing_preparation/test_publication_consumption.py",
+        "tests/manufacturing_preparation/test_publication_service.py",
+        "tests/manufacturing_preparation/test_publication_material_owner.py",
+        "tests/manufacturing_preparation/test_publication_rules.py",
+        "tests/manufacturing_preparation/test_publication_storage_schema.py",
+        "tests/professional_authority/test_signature_watermarks.py",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider"
+      ]
+    }
+  ],
+  "source_changed": [],
+  "database_or_http": false,
+  "excluded_old_namespace_assertion": false,
+  "exclusion_reason": null
+}

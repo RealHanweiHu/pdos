@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "steps": [
+    {
+      "name": "lint",
+      "exit_code": 0
+    },
+    {
+      "name": "build",
+      "exit_code": 0
+    },
+    {
+      "name": "typecheck",
+      "exit_code": 0
+    }
+  ],
+  "source_files": 165,
+  "source_stable": true
+}

@@ -1,0 +1,23 @@
+{
+  "algorithm": "sha256",
+  "candidate_hash": "7ada664c5e900d0f85d919770a915c8764ee657a934366bd4a2acc6369b69b57",
+  "files": {
+    "pdos-next/server/pdos_next/domain/discovery/__init__.py": "5433f21b0666a44a8fe132a10ed744afdd0817ce48c8a57677360bc34ebc33ff",
+    "pdos-next/server/pdos_next/domain/discovery/handlers.py": "9b549dd2b0e99d97532fbbe00db8ef04ddfa66cc81388250329dbba5c640ce73",
+    "pdos-next/server/pdos_next/domain/discovery/ports.py": "e8c96e7503540ae65293b1dbb467cdc4cd3db2ca9ff50230760c1ffa7aeb2a07",
+    "pdos-next/server/pdos_next/domain/discovery/rules.py": "f2cb30dd34b9733d13104a141f0ca148a34ac2e406f12b0708c93b540c637cb1",
+    "pdos-next/server/pdos_next/domain/discovery/sources.py": "4db47395046747b537279b89bd254fade56cf0be65b34c019a896a52c788ed25",
+    "pdos-next/server/pdos_next/schemas/discovery/__init__.py": "cd544e445e6b214900c3e98381069c97aafa221f2355a5d254c684f5ef0f9e91",
+    "pdos-next/server/pdos_next/schemas/discovery/contracts.py": "7984b38309958d115c621c0fc3a255ecc53c16688464c09d09a33737e5bd73ca",
+    "pdos-next/server/tests/discovery/test_discovery.py": "ec2f0e7a2913f83019c62e88d7fb435a07a47b7cda9f757f2afcaa6b48db1874",
+    "pdos-next/web/src/components/discovery/candidate-reading.tsx": "7e6b1f464d41ebe52e7d1ff411dbf03eb45ab2346edbc76af7c49fc839453569",
+    "pdos-next/web/src/components/discovery/components.test.mjs": "2c08d834c50d1b114d6ddf41e0aeb149487de9451fa5fabf70fd800b8ba78b36",
+    "pdos-next/web/src/components/discovery/contracts.ts": "ad54393aa8ef82af76ec83f81838c97f7a6173251b2eaaa99b83599915b3ea7d",
+    "pdos-next/web/src/components/discovery/definition-selection.tsx": "61839d7e12d4c40912edf3ff73abe6b67ac3b3f7c3418c222b46b3909e5fc916",
+    "pdos-next/web/src/components/discovery/index.ts": "9f6723d32ac5f7630ecc78967edee3a54c241dbf0ef7c6539ce834226fb4f4e6",
+    "pdos-next/web/src/components/discovery/research-start.tsx": "a7d13c77d4c07aa11b44be01df132eed6a3e11ff0aa162b4890702578baf1be5",
+    "pdos-next/web/src/components/discovery/source-import.tsx": "e2e0e1940af282f2bd4fff38fa939f8f95f0f06c966eb55d2cafdea5c7c9b629",
+    "pdos-next/web/src/components/discovery/source-package.tsx": "38f49945aa25ca64ef27ab7c65bff4d66cc0609f5953fcf2815ee1096337649c",
+    "pdos-next/web/src/components/discovery/tsconfig.check.json": "ffa5d8af294f55913424b86bc3d4be1939d1492c4ae7bf554618a979e906273c"
+  }
+}

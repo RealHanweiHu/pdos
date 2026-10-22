@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "recorded_at": "2026-10-03T18:33:42.972783+00:00",
+  "files": {
+    "pdos-next/tools/wave22_shared_build.py": "0706238d95010d1a96e4bc86e78cde5de2a814cd918225a3e12efa6ba495df7e",
+    "pdos-next/tools/tests/test_wave22_shared_build.py": "b28b1cbd51ce191c7ac3d0ef502178c6358289bca0cf143ba8c5d6079644dcef"
+  },
+  "stage_files": {
+    "pdos-next/tools/wave22_shared_build.py": "0706238d95010d1a96e4bc86e78cde5de2a814cd918225a3e12efa6ba495df7e",
+    "pdos-next/tools/tests/test_wave22_shared_build.py": "b28b1cbd51ce191c7ac3d0ef502178c6358289bca0cf143ba8c5d6079644dcef"
+  },
+  "only_test_import_group_change": true,
+  "checks": {
+    "pure": {
+      "exit_code": 0,
+      "log_sha256": "497841fea505d526410bf352d05ac2a73e9ff7524d6be27e7c72493b396682be"
+    },
+    "static": {
+      "exit_code": 0,
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    "format": {
+      "exit_code": 0,
+      "log_sha256": "3bc53bf3e981a98a34a852e175bf9b77af841edea74fca595d9aedcbaf9a4938"
+    }
+  },
+  "actual_pure_count": 33,
+  "stage_manifest_sha256": "10bf8c4a97ad5edbccf8ebf8cc24359fcdb69b57a1b5b8fb8d226a800ad558ae",
+  "actual_db_http": false
+}

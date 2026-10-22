@@ -1,0 +1,22 @@
+{
+  "nature": "synthetic",
+  "browser": "Codex IAB",
+  "tab_id": "3",
+  "origin": "http://127.0.0.1:3028",
+  "sequence": [
+    "选同一新Build固定计划，保存完整用途/数量/单位/场地/UTC窗口及IANA时区的准备评估v1",
+    "保存工程两项适用核对、4项条件及精确原文，读取T2完整预览后具名批准v1",
+    "保存制造两项适用核对、4项条件及精确原文，读取T2完整预览后具名批准v1",
+    "两项批准保存后经受控来源入口登记单行合成事件；原发生时间与服务器收到时间分别保留",
+    "浏览器选择精确事件行及原始微秒时点；核对T1完整预览，确认开工",
+    "实际页面显示1条开工，物料保留1条、资源占用1条；同次保存已由独立只读数据库证据核对",
+    "最后一次UI-only条数与中文展示调整完成生产构建并重载页面",
+    "1440×900和390×844亮/暗四种布局无横向溢出；恢复临时viewport，保留原亮色主题"
+  ],
+  "synthetic_banner_visible": true,
+  "real_factory_qualification": false,
+  "formal_exit": false,
+  "start_count": 1,
+  "old_user_tab_untouched": true,
+  "ui_only_after_backend_freeze": "ui-only-final-delta.json"
+}

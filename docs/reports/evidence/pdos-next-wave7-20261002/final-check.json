@@ -1,0 +1,72 @@
+{
+  "recorded_at": "2026-10-02T13:59:33.271303+00:00",
+  "candidate_files": 242,
+  "candidate_files_changed": [],
+  "backend_files_frozen": 175,
+  "backend_changed_since_joint_start": [],
+  "local_evidence_links_checked": 29,
+  "missing_links": [],
+  "payloads_match_runtime": true,
+  "openapi_matches_runtime": true,
+  "implemented_payload_count": 25,
+  "schema_head": "next_0009",
+  "joint_test_result": "819 passed in 596.46s",
+  "artifact_sha256": {
+    "actual-preview.json": "2b5ad334220b5a12796b96570de2569b0dbe872965e964105c1dd426d1716e79",
+    "backend-before-tests.json": "31b8d1ff84748ac4d86ebadae12ead8c5dba46f562282ac8c2297a9fc53472ba",
+    "backend-freeze-review.json": "631e38cf910f6aedeb6a16ff4925d6b601b5dedb3a4f2ebb3445312325fdd4e9",
+    "browser-layouts.json": "baffc007118be0f202bfa9a1802f70714a1f702d341f9ba35326cb225d84c6af",
+    "candidate-before-validation.json": "0cb40aa4bf2d88dfc45de25510282b96eb682dbf51f74ef91d7ce35f69700b1a",
+    "candidate.json": "2704d2a6334ebdf78122142d0c3c6f13d06d2f7be75a4b639c26d36d06112b2b",
+    "catalog-export.log": "30ba8060cbb51b4527e69c4c5290de423f3f6bc1adc457f7ae49d7affa96e059",
+    "catalog-validation.log": "e5b43ca077ab456acae52596a79a2aef70d2ce30698d59c39847f78387bb67f4",
+    "initial-web-build.log": "9cc94d790bc438babb9573034520bd751eb883d8d108929f6b2106ab3a5b992f",
+    "initial-web-lint.log": "dd1bf47cbb2da617b6ddb7cf1a7d8d01728f9ef51cf35d7bc2540dd5dd63bfea",
+    "integrated-lint-selection.json": "5bdfefb94f4b957a0e522e234b267dbd503471c3e4746ae7b65556f12a9ce517",
+    "integrated-lint.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "integrated-test-selection.json": "f3c77547655ea08dbedf1d283c842a931038437b4eb2d5a07bb8fd2d727fb76e",
+    "migration-roundtrip.log": "f4ecda934541ef718fdb91b2e3702238350560ff3e601105ab5de9b0cadf6483",
+    "postgres-tests.log": "fbcd4d4c8b9eeea103926bb8f864166c4d92fa26554520169f42058bd0042e76",
+    "preparation-320-dark.png": "d633f2d9ad3ae71b43edd237b794bafee4e39508b44721ff4c4d33b003b26e9a",
+    "preparation-320-light.png": "4969dd0468913116268ebed1de6edc3cfdcbf9e97db1997d17c5b99cbbc7528c",
+    "preparation-390-dark.png": "b35372889d34b0cd0a5383a2e35a7cab04ebe6134592e84ccc8483eeae5ca8f9",
+    "preparation-390-light.png": "27b971e84b6fa6c89d928ee74a5764d78cbec12270ce4eb2542754d1a43e73eb",
+    "preparation-blockers-light.png": "016d8571f6c17cac23a4297c30e652bda3e40d792bb271bd05ac0ba61ebf5b63",
+    "preparation-current-dark.png": "62c93ae1e7f3ab0076ba49a1aab11c260fc7ce2d71749c0c46dcd8986ed171b5",
+    "preparation-current-light.png": "3fb25e475982a36c70402aa7d56ee93194a8ef0eefd8cd5436f2cf93fe86ad6e",
+    "preparation-history-light.png": "66698e121494a3b72c6d31d7715fc1c709ea78dd0014b52bd51d80eba534d04d",
+    "preparation-times-light.png": "e35c33751a6ba3f9cae62a8b691cffcc3f8ef9631d4f186eaad9a64015e99982",
+    "result.md": "1be75480efa0b1b4b448b778fdcb76bd00d625e0413bbbb7e321e62f35859ef0",
+    "schema-match.log": "43d345b67ace77ab8c4cbf575a3baddf66e8623cf7d1e0b78e602b1d641ecf50",
+    "scope.md": "fe097cc4e1c9aa33949406594ed1b9659f31bf6d9fc7467e393f760a69abef47",
+    "scoped-tests.log": "6a02b8465823ea4ccf3056a1a1d8aa025753514659499168d752fecfa7ecd33a",
+    "verification-package-reuse.json": "6b7911f84e6e5d7d92355115a00080b471ea72423a1fedc1c68e0c0f2fdf48d2",
+    "web-before-build.json": "66d22c002d29124f69c6df60b9eed2088d8595071154e7658f91f2ee5b709286",
+    "web-build.log": "2e98287b247caa4dc455004d352cbc489a07186b2cf7be0d7236a8713354c9ae",
+    "web-lint.log": "dd1bf47cbb2da617b6ddb7cf1a7d8d01728f9ef51cf35d7bc2540dd5dd63bfea"
+  },
+  "production_preview_url": "http://127.0.0.1:3028",
+  "limitations": "Human synthetic preparation only. No physical reception, resource/person qualification, TestRun, measurement import, production, model qualification or formal G/N/P/Q Exit.",
+  "independent_review_scope": "Independent review confirmed source/transaction boundaries and scoped checks. Final mainline aggregation below is checked by root from completed evidence; any intermediate pending status is historical.",
+  "final_mainline_evidence": {
+    "joint": "819 passed in 596.46s",
+    "backend_unchanged": 175,
+    "candidate_unchanged": 242,
+    "business_table_count": 52,
+    "preparation_versions": [
+      1,
+      2
+    ],
+    "document_gaps": [
+      10,
+      8
+    ],
+    "coverage_gaps": [
+      4,
+      4
+    ],
+    "test_runs": 0,
+    "formal_actions_enabled": false,
+    "final_web_build_and_six_layout_checks": "passed"
+  }
+}

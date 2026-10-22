@@ -1,0 +1,18 @@
+{
+  "base_commit": "c0cfc6a4daea2c67ec86e785348328716ba06456",
+  "started_at": "2026-10-18T01:47:16.233362+00:00",
+  "finished_at": "2026-10-18T01:47:20.301281+00:00",
+  "steps": [
+    {
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-B",
+        "tools/export_contracts.py"
+      ],
+      "exit": 0
+    }
+  ],
+  "source_changed": [],
+  "real_external_calls": 0,
+  "performance_acceptance": false
+}

@@ -1,0 +1,8 @@
+{
+  "status": "POST_SAVE_READBACK_DRIVER_FAILED",
+  "failure": "artifact helper returns six references, not one reference dict",
+  "source_command_saved": true,
+  "same_saved_source_receipt_used": "c025f3ec-97cd-4a23-802c-00628fa7d34d",
+  "new_source_replay": false,
+  "resolution": "Read existing saved source and full exact lines before deriving T2 materials"
+}

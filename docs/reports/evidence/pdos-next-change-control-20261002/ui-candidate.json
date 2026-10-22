@@ -1,0 +1,20 @@
+{
+  "algorithm": "sha256(path:sha256(file) LF)",
+  "candidate": "6552e1e750dc3e8cc26dcdb88d8684c3ef2aba52ba8002cbf6986b020eaa5bc6",
+  "files": {
+    "pdos-next/web/src/components/change_control/__tests__/fixtures.ts": "3a8fcc5da391c17c1397070f377a3be02de39ac9497b480daf66d04cbce8b23d",
+    "pdos-next/web/src/components/change_control/contracts.ts": "9f8c801b7c7360fee6e3550e098096605a4444e90c37b8054bc98b65cb1bc870",
+    "pdos-next/web/src/components/change_control/editor.ts": "3a0cc954100c8671fdfc67d60565d8a9893058d7d65d989a1701c8a258ea7127",
+    "pdos-next/web/src/components/change_control/index.ts": "96275cafebe43c05276c73657f24c158b63e4c763f950763c98ad501f10fc85a",
+    "pdos-next/web/src/components/change_control/reading.tsx": "cceb33a3c54d9bb8d7cb7a9ac355002ddc5a1617e5b616ace37b23cbab763d26",
+    "pdos-next/web/src/components/change_control/render.test.mjs": "8560086a68c9f2161982e52b9eb561c7e52dd2d4dd0fc866adf18653c4642df9",
+    "pdos-next/web/src/components/change_control/tsconfig.check.json": "ffa5d8af294f55913424b86bc3d4be1939d1492c4ae7bf554618a979e906273c",
+    "pdos-next/web/src/components/change_control/workbench.tsx": "f50124569afc2723ddef1990e561b2d3a7d1c06ef8f6aa16f9dbe4c3f550d27c"
+  },
+  "checks": {
+    "typescript": "pass",
+    "eslint": "pass",
+    "synthetic_checks": 22
+  },
+  "database_http_browser_verified": false
+}

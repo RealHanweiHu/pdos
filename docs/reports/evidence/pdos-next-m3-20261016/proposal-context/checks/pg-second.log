@@ -1,0 +1,426 @@
+.....FF..F                                                               [100%]
+=================================== FAILURES ===================================
+____ test_changed_source_scope_cannot_reach_model_or_read_port[new_source] _____
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...470>, parser=<function parse_original at 0x118344680>), client=<starlette.testclient.TestClient object at 0x139395f40>)
+change = 'new_source'
+
+    @pytest.mark.parametrize("change", ["withdraw_source", "new_source", "identity", "manifest"])
+    def test_changed_source_scope_cannot_reach_model_or_read_port(work, security_work, change):
+        owner, scope = start(work, security_work, "customer_request")
+        agree(work, scope, scope.data_categories)
+        client = Client(lambda _: pytest.fail("Changed private context must not reach a model"))
+        if change == "new_source":
+            _, source = uploaded(work, security_work)
+            response = post(
+                work,
+                request(
+                    work,
+                    "proposal.item.patch",
+                    {
+                        "proposal_id": str(scope.proposal_id),
+                        "ops": [
+                            {
+                                "kind": "section",
+                                "content": {
+                                    "key": "later_evidence",
+                                    "text": "New synthetic mounted source",
+                                },
+                                "source_refs": [
+                                    {
+                                        "type": "original",
+                                        "id": str(source),
+                                        "version": 1,
+                                        "line": 1,
+                                        "quote": QUOTE,
+                                    }
+                                ],
+                            }
+                        ],
+                    },
+                ),
+            )
+>           assert response.status_code == 200, response.text
+E           AssertionError: {"code":"VALIDATION_FAILED","message":"内容不符合此操作的专用格式。","detail":{"reason":"INVALID_PAYLOAD"}}
+E           assert 422 == 200
+E            +  where 422 = <Response [422 Unprocessable Content]>.status_code
+
+tests/agent_kernel/test_proposal_context_pg.py:171: AssertionError
+_____ test_changed_source_scope_cannot_reach_model_or_read_port[identity] ______
+
+self = <sqlalchemy.engine.base.Connection object at 0x1382bfa40>
+dialect = <sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x11b1f5580>
+context = <sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x11f43bbf0>
+statement = <sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x11fc5a8d0>
+parameters = [{'customer_identities': Jsonb(['Another synthetic customer']), 'proposals_id': UUID('6f4c6e6b-d4aa-45f6-bc85-d6e7db2cb1ca')}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -> CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+
+        effective_parameters: Optional[_AnyExecuteParams]
+
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+
+            if self._echo:
+                self._log_info(str_statement)
+
+                stats = context._get_cache_stats()
+
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+>                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x13beea510>
+query = 'UPDATE proposals SET customer_identities=%(customer_identities)s::JSONB WHERE proposals.id = %(proposals_id)s::UUID'
+params = {'customer_identities': Jsonb(['Another synthetic customer']), 'proposals_id': UUID('6f4c6e6b-d4aa-45f6-bc85-d6e7db2cb1ca')}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -> Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+>           raise ex.with_traceback(None)
+E           psycopg.errors.CheckViolation: read owner may only apply named share
+E           CONTEXT:  PL/pgSQL function m3_proposal_guard() line 31 at RAISE
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: CheckViolation
+
+The above exception was the direct cause of the following exception:
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...7b0>, parser=<function parse_original at 0x118344680>), client=<starlette.testclient.TestClient object at 0x11ff518e0>)
+change = 'identity'
+
+    @pytest.mark.parametrize("change", ["withdraw_source", "new_source", "identity", "manifest"])
+    def test_changed_source_scope_cannot_reach_model_or_read_port(work, security_work, change):
+        owner, scope = start(work, security_work, "customer_request")
+        agree(work, scope, scope.data_categories)
+        client = Client(lambda _: pytest.fail("Changed private context must not reach a model"))
+        if change == "new_source":
+            _, source = uploaded(work, security_work)
+            response = post(
+                work,
+                request(
+                    work,
+                    "proposal.item.patch",
+                    {
+                        "proposal_id": str(scope.proposal_id),
+                        "ops": [
+                            {
+                                "kind": "section",
+                                "content": {
+                                    "key": "later_evidence",
+                                    "text": "New synthetic mounted source",
+                                },
+                                "source_refs": [
+                                    {
+                                        "type": "original",
+                                        "id": str(source),
+                                        "version": 1,
+                                        "line": 1,
+                                        "quote": QUOTE,
+                                    }
+                                ],
+                            }
+                        ],
+                    },
+                ),
+            )
+            assert response.status_code == 200, response.text
+>       with Session(work.admin) as session, session.begin():
+                                             ^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_proposal_context_pg.py:172:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+<sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit>:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1330: in commit
+    self._prepare_impl()
+<sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction._prepare_impl>:2: in _prepare_impl
+    return target(fn, self)
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1304: in _prepare_impl
+    self.session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+<sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush>:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:84: in _save_obj
+    _emit_update_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:916: in _emit_update_statements
+    c = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=64245 user=postgres database=pdos_test) at 0x13beea510>
+query = 'UPDATE proposals SET customer_identities=%(customer_identities)s::JSONB WHERE proposals.id = %(proposals_id)s::UUID'
+params = {'customer_identities': Jsonb(['Another synthetic customer']), 'proposals_id': UUID('6f4c6e6b-d4aa-45f6-bc85-d6e7db2cb1ca')}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -> Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+>           raise ex.with_traceback(None)
+E           sqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) read owner may only apply named share
+E           CONTEXT:  PL/pgSQL function m3_proposal_guard() line 31 at RAISE
+E           [SQL: UPDATE proposals SET customer_identities=%(customer_identities)s::JSONB WHERE proposals.id = %(proposals_id)s::UUID]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/gkpj)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: IntegrityError
+_ test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result _
+
+work = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...510>, parser=<function parse_original at 0x118344680>), client=<starlette.testclient.TestClient object at 0x13d6263f0>)
+
+    def test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result(
+        work, security_work
+    ):
+        owner, scope = start(work, security_work, "customer_request")
+        agree(work, scope, scope.data_categories)
+        seen = []
+
+        def response(kwargs):
+            context = json.loads(kwargs["messages"][0]["content"])["context"]
+            assert context["proposal"]["id"] == str(scope.proposal_id)
+            assert QUOTE in kwargs["messages"][0]["content"]
+            seen.append(kwargs["messages"])
+            if len(seen) == 1:
+                return ModelTurn(
+                    calls=(
+                        ToolCall(
+                            id="synthetic-private-read",
+                            name="proposal.items.read",
+                            arguments={"proposal_id": str(scope.proposal_id)},
+                        ),
+                    ),
+                    usage=ProviderUsage(2, 1),
+                )
+            assert any(message.get("role") == "tool" for message in kwargs["messages"])
+            return ModelTurn(
+                structured={
+                    "status": "completed",
+                    "summary": "Synthetic private gap check",
+                    "result_json": "{}",
+                    "questions": [],
+                    "unfinished": [],
+                },
+                usage=ProviderUsage(2, 1),
+            )
+
+        client = Client(response)
+        adapters = replace(
+            owner.adapters(),
+            route_for=lambda _: configured_route(),
+            provider_for=lambda *_: "synthetic-provider",
+            provider_client=client,
+            cost_required=False,
+        )
+        result = AgentKernel(BoundHost(owner.store, adapters), owner.registry).execute(
+            scope, goal="Synthetic private proposal gap check"
+        )
+>       assert result["output"]["status"] == "completed" and client.calls == 2
+E       AssertionError: assert ('partial' == 'completed'
+E
+E         - completed
+E         + partial)
+
+tests/agent_kernel/test_proposal_context_pg.py:249: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_context_pg.py: 10 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:698: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_pg.py: 66 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:583: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_proposal_context_pg.py::test_changed_source_scope_cannot_reach_model_or_read_port[new_source]
+FAILED tests/agent_kernel/test_proposal_context_pg.py::test_changed_source_scope_cannot_reach_model_or_read_port[identity]
+FAILED tests/agent_kernel/test_proposal_context_pg.py::test_registered_graph_reads_private_proposal_and_continues_with_actual_tool_result
+3 failed, 7 passed, 76 warnings in 41.40s

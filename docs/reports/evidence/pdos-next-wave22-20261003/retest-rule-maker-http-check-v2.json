@@ -1,0 +1,19 @@
+{
+  "status": "PASS_DENIAL",
+  "checked_at": "2026-10-04T02:40:04.147938+00:00",
+  "actual_http": 200,
+  "role": "maker",
+  "registered_history_rule": 1,
+  "current_rules_visible_for_this_operation": 0,
+  "observation_allowed": false,
+  "observation_missing_codes": [
+    "PROFESSIONAL_DUTY_REQUIRED",
+    "PROFESSIONAL_QUALIFICATION_REQUIRED",
+    "QUALIFICATION_REQUIRED"
+  ],
+  "raw_response_sha256": "078d89d8ef74d93ea0a2a0ddbf8a415123ee5349c0b867ab1f790d33ab3b73c6",
+  "prior_checker_expected_maker_current_rule_rejected": true,
+  "correct_consumer_role_to_verify": "observer",
+  "no_qualification_granted": true,
+  "business_writes": 0
+}

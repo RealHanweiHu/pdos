@@ -1,0 +1,12 @@
+{
+  "test_exit": 1,
+  "scope": "pure one-node caught exception diagnosis; not qualification or PG evidence",
+  "caught": [
+    {
+      "function": "inspect_retained_execution",
+      "line": 507,
+      "type": "TypeError",
+      "message": "work.<locals>.saved_effects() got an unexpected keyword argument 'fresh'"
+    }
+  ]
+}

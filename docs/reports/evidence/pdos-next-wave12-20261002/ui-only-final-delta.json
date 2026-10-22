@@ -1,0 +1,6 @@
+{
+  "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+  "before": "147e0cf3cd249f395d46b78666f5e851121f3bcc2761c9b2652ed43b6f79784c",
+  "after": "51190aa85be2ff4bd9afa322dd3b990c2267a1c0bc42d5acce35d8aea18cd4f4",
+  "scope": "Bounded60s forwarding budget accommodates current complete fact/preview/execute checks, after GET dedup and limit2. Read failures remain READ_UNAVAILABLE; mutation failures remain RESULT_UNKNOWN with original command recovery. No automatic retries. Backend/joint candidate unchanged."
+}

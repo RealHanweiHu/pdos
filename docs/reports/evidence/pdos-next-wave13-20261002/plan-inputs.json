@@ -1,0 +1,589 @@
+{
+  "operation": "test.run.plan",
+  "request_id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+  "run_id": "050b0f95-39b6-4c90-8131-04118dfa32e3",
+  "allowed": true,
+  "authority": {
+    "scope": {
+      "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+      "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+      "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+    },
+    "subject_id": "0a41538d-e721-4783-866a-39c35d382eef",
+    "operation": "test.run.plan",
+    "purpose": "Verify preparation",
+    "authorized": true,
+    "roles": [
+      "quality"
+    ],
+    "qualified": true,
+    "reason_codes": [],
+    "fact_refs": [
+      {
+        "id": "d6c6f198-b775-45f3-98e7-7b436671e5aa",
+        "revision": 1,
+        "epoch": 1,
+        "kind": "qualification",
+        "role": "quality",
+        "nature": "synthetic",
+        "issuer_key": "local-synthetic-authority",
+        "issuer_version": "v1"
+      },
+      {
+        "id": "78a79948-d9ed-4e41-b042-0125d8279bf6",
+        "revision": 1,
+        "epoch": 1,
+        "kind": "qualification",
+        "role": "engineering",
+        "nature": "synthetic",
+        "issuer_key": "local-synthetic-authority",
+        "issuer_version": "v1"
+      },
+      {
+        "id": "1bb03838-b1c4-4a16-a286-4a6408170eb4",
+        "revision": 1,
+        "epoch": 1,
+        "kind": "duty",
+        "role": "manufacturing",
+        "nature": "synthetic",
+        "issuer_key": "local-synthetic-authority",
+        "issuer_version": "v1"
+      },
+      {
+        "id": "176ff344-e6cc-421b-b865-8047c6272dec",
+        "revision": 1,
+        "epoch": 1,
+        "kind": "duty",
+        "role": "quality",
+        "nature": "synthetic",
+        "issuer_key": "local-synthetic-authority",
+        "issuer_version": "v1"
+      },
+      {
+        "id": "64319b11-c088-447a-9982-9797805ab30f",
+        "revision": 1,
+        "epoch": 1,
+        "kind": "qualification",
+        "role": "manufacturing",
+        "nature": "synthetic",
+        "issuer_key": "local-synthetic-authority",
+        "issuer_version": "v1"
+      },
+      {
+        "id": "0ab20aa2-3300-47b2-bff1-f74472561b0b",
+        "revision": 1,
+        "epoch": 1,
+        "kind": "duty",
+        "role": "manufacturing",
+        "nature": "synthetic",
+        "issuer_key": "local-synthetic-authority",
+        "issuer_version": "v1"
+      },
+      {
+        "id": "e6384e4f-34c5-4099-9cc3-a3e47b1a0156",
+        "revision": 1,
+        "epoch": 1,
+        "kind": "qualification",
+        "role": "quality",
+        "nature": "synthetic",
+        "issuer_key": "local-synthetic-authority",
+        "issuer_version": "v1"
+      },
+      {
+        "id": "97534059-131d-4937-8132-96e01c842fb6",
+        "revision": 1,
+        "epoch": 1,
+        "kind": "duty",
+        "role": "quality",
+        "nature": "synthetic",
+        "issuer_key": "local-synthetic-authority",
+        "issuer_version": "v1"
+      },
+      {
+        "id": "ae5af540-acf4-4e80-bf9a-e5fec750521c",
+        "revision": 1,
+        "epoch": 1,
+        "kind": "qualification",
+        "role": "manufacturing",
+        "nature": "synthetic",
+        "issuer_key": "local-synthetic-authority",
+        "issuer_version": "v1"
+      },
+      {
+        "id": "9e4cc0a9-492b-48b4-bee9-a80d3855f498",
+        "revision": 1,
+        "epoch": 1,
+        "kind": "duty",
+        "role": "engineering",
+        "nature": "synthetic",
+        "issuer_key": "local-synthetic-authority",
+        "issuer_version": "v1"
+      }
+    ],
+    "facts_revision": "d58f12a335868e6d19b1b9915ea2d5f7a748476d79d95d8ca669bdc83b01c712",
+    "valid_until": "2026-10-04T01:09:04.015463+00:00",
+    "synthetic": true,
+    "required_source_read_set": [
+      {
+        "artifact_id": "fa2ba9c7-63e5-40dd-b1d0-a84fd1e0d2c8",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+        "expected_revision": 1
+      },
+      {
+        "artifact_id": "fd89cebd-1b9a-49db-8e50-14e6c7d85dc3",
+        "expected_revision": 1
+      }
+    ]
+  },
+  "plan_binding": {
+    "run_id": "050b0f95-39b6-4c90-8131-04118dfa32e3",
+    "request_id": "8ab2f1ad-716d-404b-8a69-013c2a2015d7",
+    "accepted_request_id": "09959b27-d54a-405f-b2bb-309e366abb8d",
+    "accepted_request_revision": 5,
+    "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+    "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f",
+    "purpose": "Verify preparation",
+    "executor_id": "0a41538d-e721-4783-866a-39c35d382eef",
+    "window": {
+      "start": "2026-10-03T01:35:40.375459Z",
+      "finish": "2026-10-03T03:25:40.375459Z",
+      "original_timezone": "UTC"
+    },
+    "environment": "本地合成测试室",
+    "conditions": "固定合成20°C，结果与处置尚未接入",
+    "equipment": {
+      "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+      "expected_revision": 1,
+      "line": 1,
+      "quote": "SYN-W13-EQUIPMENT:固定合成设备，本次完整窗口可用，未授真实资格。"
+    },
+    "calibration": {
+      "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+      "expected_revision": 1,
+      "line": 2,
+      "quote": "SYN-W13-CALIBRATION:合成具名校准依据，不代表生产校准。"
+    },
+    "pairs": [
+      {
+        "sample": {
+          "id": "7c16ba29-4598-4240-941c-40ddc6b8348a",
+          "revision": 1,
+          "build_id": "c4bd36e6-b8e6-47cd-8497-2fd8d80aa577",
+          "actual_configuration": {
+            "id": "d75bc010-242d-4d65-9b62-2730725b9345",
+            "revision": 1
+          },
+          "cavity": "A"
+        },
+        "item_id": "dimension",
+        "method_id": "821c4f0c-d661-5da3-8081-48822334faab",
+        "method_revision": 1,
+        "method_sha256": "c6750fb0f322e6db986b4cc7797e77bb450f5f2ce97a6aba0be93e03958e2a70",
+        "destructive": false
+      }
+    ]
+  },
+  "resource_report": {
+    "status": "READY",
+    "capacity_status": "checked",
+    "checks": [
+      {
+        "resource": {
+          "id": "0a41538d-e721-4783-866a-39c35d382eef",
+          "revision": 1,
+          "kind": "person"
+        },
+        "code": "qualification_valid",
+        "status": "READY",
+        "detail": "Named fact covers full execution",
+        "source": {
+          "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+          "revision": 1,
+          "kind": "domain",
+          "position": "resource:0a41538d-e721-4783-866a-39c35d382eef:qualification"
+        }
+      },
+      {
+        "resource": {
+          "id": "0a41538d-e721-4783-866a-39c35d382eef",
+          "revision": 1,
+          "kind": "person"
+        },
+        "code": "capacity_available",
+        "status": "READY",
+        "detail": "Capacity checked; this is not a reservation",
+        "source": null
+      },
+      {
+        "resource": {
+          "id": "5f307ced-791c-4640-9c2c-60ea0aec19f5",
+          "revision": 1,
+          "kind": "equipment"
+        },
+        "code": "acceptance_valid",
+        "status": "READY",
+        "detail": "Named fact covers full execution",
+        "source": {
+          "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+          "revision": 1,
+          "kind": "domain",
+          "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5:acceptance"
+        }
+      },
+      {
+        "resource": {
+          "id": "5f307ced-791c-4640-9c2c-60ea0aec19f5",
+          "revision": 1,
+          "kind": "equipment"
+        },
+        "code": "calibration_valid",
+        "status": "READY",
+        "detail": "Named fact covers full execution",
+        "source": {
+          "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+          "revision": 1,
+          "kind": "domain",
+          "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5:calibration"
+        }
+      },
+      {
+        "resource": {
+          "id": "5f307ced-791c-4640-9c2c-60ea0aec19f5",
+          "revision": 1,
+          "kind": "equipment"
+        },
+        "code": "capacity_available",
+        "status": "READY",
+        "detail": "Capacity checked; this is not a reservation",
+        "source": null
+      }
+    ],
+    "fixed_resources": [
+      {
+        "ref": {
+          "id": "0a41538d-e721-4783-866a-39c35d382eef",
+          "revision": 1,
+          "kind": "person"
+        },
+        "scope": {
+          "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+        },
+        "source": {
+          "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+          "revision": 1,
+          "kind": "domain",
+          "position": "resource:0a41538d-e721-4783-866a-39c35d382eef"
+        },
+        "purposes": [
+          "Verify preparation"
+        ],
+        "operation_ids": [
+          "test.run.start"
+        ],
+        "lifecycle": "active",
+        "required_facts": [],
+        "facts": [
+          {
+            "kind": "qualification",
+            "source": {
+              "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+              "revision": 1,
+              "kind": "domain",
+              "position": "resource:0a41538d-e721-4783-866a-39c35d382eef:qualification"
+            },
+            "purpose": "Verify preparation",
+            "operation_id": "test.run.start",
+            "status": "accepted",
+            "valid_from": "2026-10-02T01:25:40.375459Z",
+            "valid_until": "2026-10-04T01:25:40.375459Z",
+            "conditions": [],
+            "named_decision_id": "98151fb3-54b0-48c3-b6a7-6e6b61918079",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+          }
+        ],
+        "maintenance": [],
+        "calendar": {
+          "calendar_id": "SYN-W13-UTC",
+          "version": "1",
+          "timezone": "UTC",
+          "weekly": [
+            {
+              "weekday": 0,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            },
+            {
+              "weekday": 1,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            },
+            {
+              "weekday": 2,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            },
+            {
+              "weekday": 3,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            },
+            {
+              "weekday": 4,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            },
+            {
+              "weekday": 5,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            },
+            {
+              "weekday": 6,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            }
+          ],
+          "exceptions": [],
+          "ambiguous_time": "reject",
+          "timezone_rules_sha256": "fddce1e648a1732ac29afd9a16151b2973cdf082e7ec0c690f7e42be6b598b93"
+        },
+        "calendar_source": {
+          "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+          "revision": 1,
+          "kind": "domain",
+          "position": "calendar:0a41538d-e721-4783-866a-39c35d382eef"
+        },
+        "capacity": "1",
+        "occupancy_revision": 1
+      },
+      {
+        "ref": {
+          "id": "5f307ced-791c-4640-9c2c-60ea0aec19f5",
+          "revision": 1,
+          "kind": "equipment"
+        },
+        "scope": {
+          "tenant_id": "1ad4cbb5-ddbb-4d6b-b2f7-0dd41c509f6b",
+          "product_id": "b1e23421-6c70-4fc5-a87f-96744baab2e8",
+          "project_id": "31c47f90-21b9-4b8d-a3c3-a011d881702f"
+        },
+        "source": {
+          "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+          "revision": 1,
+          "kind": "domain",
+          "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5"
+        },
+        "purposes": [
+          "Verify preparation"
+        ],
+        "operation_ids": [
+          "test.run.start"
+        ],
+        "lifecycle": "active",
+        "required_facts": [],
+        "facts": [
+          {
+            "kind": "acceptance",
+            "source": {
+              "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+              "revision": 1,
+              "kind": "domain",
+              "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5:acceptance"
+            },
+            "purpose": "Verify preparation",
+            "operation_id": "test.run.start",
+            "status": "accepted",
+            "valid_from": "2026-10-02T01:25:40.375459Z",
+            "valid_until": "2026-10-04T01:25:40.375459Z",
+            "conditions": [],
+            "named_decision_id": "19b8ae59-1e47-4734-b816-185e1c113bef",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+          },
+          {
+            "kind": "calibration",
+            "source": {
+              "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+              "revision": 1,
+              "kind": "domain",
+              "position": "resource:5f307ced-791c-4640-9c2c-60ea0aec19f5:calibration"
+            },
+            "purpose": "Verify preparation",
+            "operation_id": "test.run.start",
+            "status": "accepted",
+            "valid_from": "2026-10-02T01:25:40.375459Z",
+            "valid_until": "2026-10-04T01:25:40.375459Z",
+            "conditions": [],
+            "named_decision_id": "93d0fe1b-5d8d-4341-b754-037800219590",
+            "actor_id": "0a41538d-e721-4783-866a-39c35d382eef"
+          }
+        ],
+        "maintenance": [],
+        "calendar": {
+          "calendar_id": "SYN-W13-UTC",
+          "version": "1",
+          "timezone": "UTC",
+          "weekly": [
+            {
+              "weekday": 0,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            },
+            {
+              "weekday": 1,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            },
+            {
+              "weekday": 2,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            },
+            {
+              "weekday": 3,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            },
+            {
+              "weekday": 4,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            },
+            {
+              "weekday": 5,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            },
+            {
+              "weekday": 6,
+              "intervals": [
+                {
+                  "start_minute": 0,
+                  "end_minute": 1440
+                }
+              ]
+            }
+          ],
+          "exceptions": [],
+          "ambiguous_time": "reject",
+          "timezone_rules_sha256": "fddce1e648a1732ac29afd9a16151b2973cdf082e7ec0c690f7e42be6b598b93"
+        },
+        "calendar_source": {
+          "id": "c9aa5b8e-1835-405e-9df4-19b4fb6ca334",
+          "revision": 1,
+          "kind": "domain",
+          "position": "calendar:5f307ced-791c-4640-9c2c-60ea0aec19f5"
+        },
+        "capacity": "1",
+        "occupancy_revision": 1
+      }
+    ],
+    "input_digest": "1389a05cd83a7144bbb466f398e63f14cbab3ebd84eccc8dc42206d0078acc0a",
+    "checked_at": "2026-10-03T01:31:02.090790Z",
+    "conditions": []
+  },
+  "required_source_read_set": [
+    {
+      "artifact_id": "46e412b2-7e40-4ca0-a451-2b066cff620b",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "7e29ea9e-2686-452a-89bb-fe08bc199e45",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "85e07eaf-52b0-4567-a1f0-e379f688e883",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "9cebc9f0-03f4-4acf-8ca0-a6dda1facd07",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "a698da31-9abc-4544-ab3c-cee4a0e828b5",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "c598c044-b427-4052-85fe-c29f18e0ed96",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "e56f4e8f-031b-40f1-ae4d-e307e1b21708",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "f19fa4ea-1132-44b6-846f-b1dbc2dc4170",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "fa2ba9c7-63e5-40dd-b1d0-a84fd1e0d2c8",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "fa6fb437-f2dc-4960-98e9-87092dc5ff80",
+      "expected_revision": 1
+    },
+    {
+      "artifact_id": "fd89cebd-1b9a-49db-8e50-14e6c7d85dc3",
+      "expected_revision": 1
+    }
+  ],
+  "source_status": "current",
+  "blockers": []
+}

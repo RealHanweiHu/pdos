@@ -1,0 +1,15 @@
+{"method": "GET", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/agent-skill-qualification", "operation": null, "decision": null, "actual_status": 200, "duration_ms": 235.42}
+{"method": "GET", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/agent-skill-qualification", "operation": null, "decision": null, "actual_status": 200, "duration_ms": 213.76}
+{"method": "POST", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/commands/preview", "operation": "ai.skill.review.record", "decision": null, "actual_status": 200, "duration_ms": 212.11}
+{"method": "POST", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/commands", "operation": "ai.skill.review.record", "decision": null, "actual_status": 200, "duration_ms": 1826.21}
+{"method": "GET", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/agent-skill-qualification", "operation": null, "decision": null, "actual_status": 200, "duration_ms": 316.13}
+{"method": "GET", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/agent-skill-qualification", "operation": null, "decision": null, "actual_status": 200, "duration_ms": 222.46}
+{"method": "POST", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/commands/preview", "operation": "ai.skill.qualify", "decision": "\u6279\u51c6", "actual_status": 200, "duration_ms": 226.21}
+{"method": "POST", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/commands", "operation": "ai.skill.qualify", "decision": "\u6279\u51c6", "actual_status": 200, "duration_ms": 1415.94}
+{"method": "POST", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/agent-skill-qualification/recover", "operation": null, "decision": null, "actual_status": 200, "duration_ms": 75.45}
+{"method": "GET", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/agent-skill-qualification", "operation": null, "decision": null, "actual_status": 200, "duration_ms": 199.65}
+{"method": "GET", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/agent-skill-qualification", "operation": null, "decision": null, "actual_status": 200, "duration_ms": 380.77}
+{"method": "GET", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/agent-skill-qualification", "operation": null, "decision": null, "actual_status": 200, "duration_ms": 384.75}
+{"method": "POST", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/commands/preview", "operation": "ai.skill.qualify", "decision": "\u64a4\u9500", "actual_status": 200, "duration_ms": 74.75}
+{"method": "POST", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/commands", "operation": "ai.skill.qualify", "decision": "\u64a4\u9500", "actual_status": 200, "duration_ms": 960.11}
+{"method": "GET", "path": "/v1/categories/63317f8f-83ba-42cd-943a-7b33a4365261/agent-skill-qualification", "operation": null, "decision": null, "actual_status": 200, "duration_ms": 349.28}

@@ -1,0 +1,1299 @@
+{
+  "schema_version": "pdos-root-current-read-profile-v1",
+  "case_label": "wave27_real_flow",
+  "elapsed_ns": 375116761875,
+  "scope": {
+    "root_thread_only": true,
+    "same_actual_engine_only": true,
+    "source_bindings_captured_before_install": true,
+    "sections_are_explicit_labels_not_inferred_sleep": true,
+    "nested_inclusive_durations_overlap_do_not_sum": true,
+    "instrumentation_overhead_is_included": true,
+    "existing_local_aliases_may_bypass_wrapped_module_attributes": true,
+    "no_domain_clock_transaction_return_value_owner_read_set_changed": true,
+    "sql_params_text_rows_credentials_emitted": false
+  },
+  "source_bindings": {
+    "physical._basis": {
+      "module": "pdos_next.domain.verification_handoff.service",
+      "qualname": "_basis",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_handoff/service.py",
+      "file_sha256": "d1e222468c379366cd7eeacdeec110ea75dcd9720051990163111ea58592c424"
+    },
+    "physical._inspect": {
+      "module": "pdos_next.domain.verification_handoff.service",
+      "qualname": "_inspect",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_handoff/service.py",
+      "file_sha256": "d1e222468c379366cd7eeacdeec110ea75dcd9720051990163111ea58592c424"
+    },
+    "front._recheck": {
+      "module": "pdos_next.domain.verification_front.service",
+      "qualname": "_recheck",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/verification_front/service.py",
+      "file_sha256": "dcb1196a83cd28fbb3a41e53322c75a2ee9ecb83520ebbf6b5472d0dd491293c"
+    },
+    "resources._load": {
+      "module": "pdos_next.domain.test_resources.service",
+      "qualname": "_load",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/service.py",
+      "file_sha256": "1a21caa42b460b5ef4fed1ae2fc3e00a647100b6222ae7ace088a7cc1053e1b7"
+    },
+    "retained.inspect": {
+      "module": "pdos_next.domain.test_resources.retained",
+      "qualname": "inspect_retained_execution",
+      "source_file": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/test_resources/retained.py",
+      "file_sha256": "aa8179e86d2766daafa2910a9fb2e08c290d9a9e34f3fbe34d68b9c88d591716"
+    }
+  },
+  "profiler_sha256": "622c61bf08d41d5a89f06ccf1ffdabf2597fb4d2ca50dfe98fb364bba1ec8086",
+  "owners": {
+    "front._recheck": {
+      "calls": 6,
+      "failures": 0,
+      "inclusive_ns": 457730625,
+      "exclusive_ns": 457730625
+    },
+    "physical._basis": {
+      "calls": 6,
+      "failures": 0,
+      "inclusive_ns": 298319458,
+      "exclusive_ns": 298319458
+    },
+    "resources._load": {
+      "calls": 2,
+      "failures": 0,
+      "inclusive_ns": 4848455959,
+      "exclusive_ns": 4677590792
+    },
+    "retained.inspect": {
+      "calls": 2,
+      "failures": 0,
+      "inclusive_ns": 5774456626,
+      "exclusive_ns": 340815751
+    }
+  },
+  "sections": {
+    "actual_start": {
+      "calls": 1,
+      "inclusive_ns": 58948601666,
+      "exclusive_ns": 58948601666
+    },
+    "future_window_wait": {
+      "calls": 1,
+      "inclusive_ns": 218022166708,
+      "exclusive_ns": 218022166708
+    },
+    "plan_promise": {
+      "calls": 1,
+      "inclusive_ns": 80301290917,
+      "exclusive_ns": 80301290917
+    }
+  },
+  "query_count": 2295,
+  "queries": [
+    {
+      "statement_sha256": "00cae2066e01718411153ca36358a8dbe3bdbb1ceddeac66812197d2dbc0262a",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1989709
+    },
+    {
+      "statement_sha256": "0423a738c3f9fd8e3b5495d7feb2cf19bdb14dbc91f1a114688f4a2c60f675e5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 20867875
+    },
+    {
+      "statement_sha256": "04da8930b263d28f5bdfab090259785778d60ccf70196073ef090d5f81ddc4bc",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4845250
+    },
+    {
+      "statement_sha256": "0b6aadc5f991c8ac1910ab722ccc54a9e2b3b62fb85366126f3406f56dc4ee74",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 18221001
+    },
+    {
+      "statement_sha256": "0e7640fa555646964bef9fadc28aecdb4065608fc82eb161012de2713b7fe5be",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1902251
+    },
+    {
+      "statement_sha256": "0f1585c72de7ea507e3af553fc0dddd2848ef0a2ad13a8464a07016e18c54853",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 13111042
+    },
+    {
+      "statement_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 12041166
+    },
+    {
+      "statement_sha256": "106ef1b271b58002ccb630ed0d757be2f2ced9375ea431c2ad6389e521e69fe3",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 22,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 32558834
+    },
+    {
+      "statement_sha256": "12a5164247581f9a03993407627bfd3f88fc5e08c384975be86cdcb75d919180",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4464417
+    },
+    {
+      "statement_sha256": "13e6a15a4c3e7e01c2e3efde10d5419fb1de751ccf30ad7091cfafada037d0e1",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2711833
+    },
+    {
+      "statement_sha256": "14c4999733cbc5412499b7af96385f3b50855985a3aba43fd3a583e6b00dbebf",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6194999
+    },
+    {
+      "statement_sha256": "14c4999733cbc5412499b7af96385f3b50855985a3aba43fd3a583e6b00dbebf",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3817459
+    },
+    {
+      "statement_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6764750
+    },
+    {
+      "statement_sha256": "150010368545b87ed854d3d979fbeb0f1de9316a347e81a4210515a098f8fcb7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 22,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 36238791
+    },
+    {
+      "statement_sha256": "15e5bc2448cb14c7c853ce7f777a34771d7fc8e59d00a0c131a3844ff5250d76",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9963249
+    },
+    {
+      "statement_sha256": "1926fa570c264da9700bd40d6ac7b58616d677d5e68a48399d5d5ac6adb3acfd",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1972499
+    },
+    {
+      "statement_sha256": "1fc6949af440492b1591275979fed3fc1af1b7db7875b845ff5b1140f85ba05e",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11092707
+    },
+    {
+      "statement_sha256": "239e3366b64ed47cf62b8762fc6f7b0387e9602559ef79cdec66e8a066498f13",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1940000
+    },
+    {
+      "statement_sha256": "2606077ad99f4436815f22ce945aa87ed1ead9522f00cfd6de31c31211c2494a",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4607583
+    },
+    {
+      "statement_sha256": "27b3fc7b106465f15c3072225b2da1bc2cd5e4cea3399cb1603353e9e7d61c22",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "actual_start",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1252959
+    },
+    {
+      "statement_sha256": "27b3fc7b106465f15c3072225b2da1bc2cd5e4cea3399cb1603353e9e7d61c22",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3013625
+    },
+    {
+      "statement_sha256": "28f96931ad06ada4ecb5c4bda5657709248794ac522ee0573364b3bac604a53e",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2793167
+    },
+    {
+      "statement_sha256": "29b09de4e17a27c5005cd5840cf26508049359a36d795673976081353d35dd65",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1947000
+    },
+    {
+      "statement_sha256": "2b56b4bcf40d8ce19d7ba1d08d7eaccf340f0f400dc74a2a09bec2443345af5e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7083041
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 29531125
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "unsectioned",
+      "count": 46,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 70143831
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 238,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 333320205
+    },
+    {
+      "statement_sha256": "30aa05fc8faf13773a558ab1a128d5597236e8d43f5bd62783ef7e519f7e47eb",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 108,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 143742582
+    },
+    {
+      "statement_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 44872583
+    },
+    {
+      "statement_sha256": "332564af67db2be395390c1e600a11c9cb0d32b2d9afe85ae17ea3a661f168f7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 128,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 198415079
+    },
+    {
+      "statement_sha256": "375b4761b49678d09b1725fdd6efde55790a4461961352e3116a19e281959b0a",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4828292
+    },
+    {
+      "statement_sha256": "38154a718b34ee709720690321c62d6692ba6dee0b123b0998285077ff1505c7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2692584
+    },
+    {
+      "statement_sha256": "3b295db76c059a76f7dd63aa29b10c87948607a04c6f7aeae5f9d908df1bfbda",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 42957333
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 109668248
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 12840999
+    },
+    {
+      "statement_sha256": "3e84e7452e9f0c76eae3a393d6791a239d2379711b654210dc0ba55d293b8856",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 166,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 327336707
+    },
+    {
+      "statement_sha256": "40b00d432d94f65dd5b39916d4f086b2188b93cc60b56d98198b8a4b69952558",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3271042
+    },
+    {
+      "statement_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7613375
+    },
+    {
+      "statement_sha256": "47a99b8de380f0e9aa91675710820f2a7f1ad8f20e0539bddd42e9ca6303a494",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 22,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 25843749
+    },
+    {
+      "statement_sha256": "47de3f8f69286c96514a0ab105c6e1529902541a1576bf22965d386ba1c5628d",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9275292
+    },
+    {
+      "statement_sha256": "48c33a8b2000144623a93f3fc5fabfae6ff29c16c76f4b8c917950a81c88232e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2237584
+    },
+    {
+      "statement_sha256": "4965e70f732d99d946e2465d32a3eb3ebcd85f3141ddd3164867659e2701c2b5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4821250
+    },
+    {
+      "statement_sha256": "4efc6a81db3736872a4ae35f8d43648eaf9bfa24436b32d91cc308c059637eac",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9162875
+    },
+    {
+      "statement_sha256": "53625be3813d7eef62f0577d93f2291109516136623f9af48d66e08ee6c1e933",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2757084
+    },
+    {
+      "statement_sha256": "553a1578042dbfaec833969a4d215256c9fecfc55fba4008a072689a6ead24f3",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7772709
+    },
+    {
+      "statement_sha256": "5a59425c715de5a292f80ba4ffac5714e37ccc44b8226690089bd7aeb297be20",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 28999794
+    },
+    {
+      "statement_sha256": "5d71656ea7deb73e10ae726c322348006b5a0dde1c139905c3cee98a56932a73",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8212126
+    },
+    {
+      "statement_sha256": "5eae466019ff0d40771b6461d9e488c6eb26bb6cedae487613a42f5c19673ab5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3303584
+    },
+    {
+      "statement_sha256": "6171c48d4d925831371b2b0c15071daf4455afac4965d4db909f001697ba7306",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6809793
+    },
+    {
+      "statement_sha256": "6171c48d4d925831371b2b0c15071daf4455afac4965d4db909f001697ba7306",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "actual_start",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1467416
+    },
+    {
+      "statement_sha256": "6171c48d4d925831371b2b0c15071daf4455afac4965d4db909f001697ba7306",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4733042
+    },
+    {
+      "statement_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9585458
+    },
+    {
+      "statement_sha256": "643035f6518c4643bebd1811545f71cd87efc2275260848118eea5af1f49c674",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 22,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 28294625
+    },
+    {
+      "statement_sha256": "65219141cf09d12e0d1abb0d5ed169969fdfd482fb760e55fe655efb561808ee",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 15347832
+    },
+    {
+      "statement_sha256": "68593c58e646d3dd6aff948f73240250a3d7e5ae67ae8cc44c6ad374dfdd8210",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11681500
+    },
+    {
+      "statement_sha256": "6b5a4dbcdcd57936f9f5515e29b8988f9dd9295dabe3c1e4f099b27dee608a4c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "actual_start",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3950083
+    },
+    {
+      "statement_sha256": "6b5a4dbcdcd57936f9f5515e29b8988f9dd9295dabe3c1e4f099b27dee608a4c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10701750
+    },
+    {
+      "statement_sha256": "6b5a4dbcdcd57936f9f5515e29b8988f9dd9295dabe3c1e4f099b27dee608a4c",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3759250
+    },
+    {
+      "statement_sha256": "6c9749364385a0e3cbf6a37d0bc9b7f84f02dbd90120348b86e2595b2af55fde",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2618583
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 33294671
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "unsectioned",
+      "count": 46,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 63176958
+    },
+    {
+      "statement_sha256": "711538aad7d9be3c241b28f0e37242675db933771a4aae9a13760b3c1ef2b264",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 268,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 468077334
+    },
+    {
+      "statement_sha256": "765fd6853d96b6cfc7fc74792628a6c1b0858e59ad7efdf72e9594443e36fc06",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4296374
+    },
+    {
+      "statement_sha256": "78d36a184df1cec6c0750a35325a0381da079a4292fd014057c82e004f0b588d",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 26308166
+    },
+    {
+      "statement_sha256": "7aee3e3c964c7c32fba956d5b2035b3cd924c4b47f7f41c7cdebb67680d6f92e",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 19106875
+    },
+    {
+      "statement_sha256": "7b5cd34a89d10a6ff4d58121477d9c4eede3b0e2251c92a9b87859e2c802be97",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 12026959
+    },
+    {
+      "statement_sha256": "7c2900ee361e398e9b1d5cbdb0a470c3f66abdaa04a46a0d47d4fcc29c4eac07",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10406166
+    },
+    {
+      "statement_sha256": "7cdae899adb2f73d79f5e4513520026d1cad3b8297341baa7afae0d1b9bec6c2",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3813000
+    },
+    {
+      "statement_sha256": "7d37fa7075b5b3204d9818e8ff452744ba6434847c5658728d5d7e1843d23e09",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4226293
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 27854251
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "physical._basis",
+      "section": "unsectioned",
+      "count": 46,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 54741921
+    },
+    {
+      "statement_sha256": "8658453177f5e912eeb07b072b3284a231b96de81ba90a25db82b5a604aa3ae3",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 268,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 761082506
+    },
+    {
+      "statement_sha256": "8c25e33f794aaffc45a4747c8635ec6e59530b320fe43ba03ef81665a878e9fc",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2045958
+    },
+    {
+      "statement_sha256": "8cf0fef6f8de1559d6b0ae92a5493747a0b03481354e8e6a155213aa36f3f661",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 12921459
+    },
+    {
+      "statement_sha256": "8d8c1f046512036a7d28304d6d7cad17ea967771879a7cea9be55f5c16a0497f",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10732706
+    },
+    {
+      "statement_sha256": "92d94afddc518a0a41b6bc69df4424e09051be41c6dbbd2105022d840e028922",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5579209
+    },
+    {
+      "statement_sha256": "92d94afddc518a0a41b6bc69df4424e09051be41c6dbbd2105022d840e028922",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3713333
+    },
+    {
+      "statement_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 22869792
+    },
+    {
+      "statement_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "actual_start",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3029875
+    },
+    {
+      "statement_sha256": "943a799da98bb29ddf9fb97524135f6892bffe7cda46e58a264137abc3e8cb37",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 3017250
+    },
+    {
+      "statement_sha256": "94920245f2dacccbc673e376b416bcfe2efc88469e6aa23938af40ee7f248929",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5081917
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 12,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 15200249
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 80,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 193964495
+    },
+    {
+      "statement_sha256": "9617861395106058bff346175684e32e5de129a734c6f155de9dea0a6862bc1c",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1973667
+    },
+    {
+      "statement_sha256": "a071a11f1a571dfdb8f98b6d81eee9114ab74f0c45f3bf60509e50da661ff183",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 1861375
+    },
+    {
+      "statement_sha256": "a0fa63d5cbdd6908001e35eb5955423431ae0a466bfdae86e704ece076d6bfcc",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7626167
+    },
+    {
+      "statement_sha256": "a20df15a24715359b97786beb72790ff154d5fe9da0a77fb78010047bcc607a7",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7812125
+    },
+    {
+      "statement_sha256": "a34202ba7c1144fdb271e063dc1d0ef9794403d2e2ec851c5c4daa8766aec531",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 28,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 31466540
+    },
+    {
+      "statement_sha256": "a53699ce3388de53ab5eae324ff3f889a47753cb27b855d39b5c61faf1155d44",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10315208
+    },
+    {
+      "statement_sha256": "a7a67830babc4fcb3875adc7a37da88038ea09a8e4395b9f5bd85cc444f26943",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 19395251
+    },
+    {
+      "statement_sha256": "ab5f6539f1f52a13c5c1ece645269b9ecf6536a3a98757a228087f9bb148b052",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 6857749
+    },
+    {
+      "statement_sha256": "ac2a15de57e6c52e4aa7b56454df34ca6ad5dc014589109d980a150332631121",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2176918
+    },
+    {
+      "statement_sha256": "b01ff2bfecf68274e378dd06e603902b54ee5133fb8238ff0943d8091ff70670",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7543835
+    },
+    {
+      "statement_sha256": "b2458f9f20b86535182b4498ac9fa80bcf7f347ca0db0a1dfccbd1bf57c4cd78",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5342167
+    },
+    {
+      "statement_sha256": "b2458f9f20b86535182b4498ac9fa80bcf7f347ca0db0a1dfccbd1bf57c4cd78",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "actual_start",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11416250
+    },
+    {
+      "statement_sha256": "b2458f9f20b86535182b4498ac9fa80bcf7f347ca0db0a1dfccbd1bf57c4cd78",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "plan_promise",
+      "count": 1,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9006292
+    },
+    {
+      "statement_sha256": "b39ac80382671d0158b35c106c8d1728120bdc395edebafe7be0687df484f2ac",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 18714791
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9714791
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 66,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 90408079
+    },
+    {
+      "statement_sha256": "b3fad66e84e84dbceaec7456fb301bd2eb0cbc1a9ac0670c95147671adf1abd5",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2106834
+    },
+    {
+      "statement_sha256": "b8ef43bb7b849ef77c42751758988e8b33581cf2949bac682edac5acfd5be2d1",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 28049667
+    },
+    {
+      "statement_sha256": "ba995d2420df71b6a5d544f2cc743059e0f4568b1cfe1795cf4d4aef3cf19c58",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 28,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 31271709
+    },
+    {
+      "statement_sha256": "c94881258e3bfb11cf7d1efa1858609f03e30e21d5ae4dad73918e58ddacaf72",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10526333
+    },
+    {
+      "statement_sha256": "cec32835d9915b1ddd9417510fee0409f18dcd78875d0824507c841ac1463d40",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 13562168
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "front._recheck",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8759500
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 66,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 95448382
+    },
+    {
+      "statement_sha256": "d05b57f1bc3aeed7d0543b523dac5f712f798671858a93591c6e526f3bab277a",
+      "verb": "SELECT",
+      "owner": "retained.inspect",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2324000
+    },
+    {
+      "statement_sha256": "d4ee810a901221ed1005dd968febbf18d99a614da4161eb0249f78fe2fabb53f",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 14576375
+    },
+    {
+      "statement_sha256": "d9f46383c67a551ee6f50c478038aafa4b50b4760826d4ac771eb35c21ca660d",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 4689959
+    },
+    {
+      "statement_sha256": "ddd36b6742cd39f90c9bbf11629cd8f0922aca14e11bb6c303bd6f377bdd070e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 24,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 28781540
+    },
+    {
+      "statement_sha256": "eb54edf11be67b78d2e91759ea1162501c98db2f3a206cd7c0f9d19de32b27a4",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 7864460
+    },
+    {
+      "statement_sha256": "ed3ca107cb993b811c88c06544685288cf0b1fe626ba7616bdf54a73b584d0db",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 9334125
+    },
+    {
+      "statement_sha256": "edc1c3b8249863393f638fbfb9904e528591e0fc5657c6cf3cd10bd8ba9f76da",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 10796876
+    },
+    {
+      "statement_sha256": "ee8a720010e66187542ce236d7fcfb4062351153384b4eb049872402af4eaecb",
+      "verb": "SELECT",
+      "owner": "root",
+      "section": "unsectioned",
+      "count": 6,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 26740708
+    },
+    {
+      "statement_sha256": "f29d9c0d7c352d8640540701f72a3bf4f78fc201ec7c43d2029884ff3426f54e",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 5941583
+    },
+    {
+      "statement_sha256": "f2cd22ccd1bd0d18cb8b253c58eee1be75270e5d84003ea57661b14168cbcb2f",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 10,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 11963500
+    },
+    {
+      "statement_sha256": "f4c99c29a31cbe0bafff650fa175f1dcfa094f504340aec3880aec3aa7cb6c17",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 20,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 28644875
+    },
+    {
+      "statement_sha256": "f59befa131d327b7c23c55e9eb2258c3ea34f7c90fa076948f6768e97df4cbce",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 2,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 2672333
+    },
+    {
+      "statement_sha256": "f94ce510cc42218ad4f12e6571a71dbd63258a867869227c0dd3252380c70cbd",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 4,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 8239958
+    },
+    {
+      "statement_sha256": "ff62378ad1eb517867c3fcce2e0ae1194aabc85c53d13078fb292e40e5417a2b",
+      "verb": "SELECT",
+      "owner": "resources._load",
+      "section": "unsectioned",
+      "count": 8,
+      "failures": 0,
+      "executemany_calls": 0,
+      "elapsed_ns": 15334335
+    }
+  ],
+  "conditions": {
+    "unfinished_queries": 0
+  },
+  "measurement_is_not_qualification_or_execution_permission": true
+}

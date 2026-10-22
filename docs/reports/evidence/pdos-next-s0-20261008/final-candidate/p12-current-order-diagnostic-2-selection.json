@@ -1,0 +1,6 @@
+[
+  "tests/change_coverage_owner/test_lazy_registration.py",
+  "tests/change_coverage_owner/test_owner_boundary.py",
+  "tests/change_coverage_transactions/test_fences.py",
+  "tests/change_coverage_transactions/test_public_capture_minimal.py::test_actual_minimal_public_complete_capture_impact_and_original_command_recovery"
+]

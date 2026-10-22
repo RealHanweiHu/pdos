@@ -1,0 +1,33 @@
+{
+  "base_commit": "6e2120df151e14bd751328900a4835daf6ddfe13",
+  "source_sha256": {
+    "pdos-next/server/tests/agent_kernel/test_bound_read_host.py": "a939b367ee7f59dea467dcafb294981432156f12c07a666bc22fa7b223e9f13b",
+    "pdos-next/server/tests/agent_kernel/test_category_adoption.py": "3b716e1dd8b9bd6c96944167045a8f780175b8d7b7047b694f4cf599dc61df1c",
+    "pdos-next/server/tests/agent_kernel/test_category_research_refs.py": "878c4f702a960dc52fe60dc7c720986c68fb8c955f9c4c52e9ceb140ee7f6f7b",
+    "pdos-next/server/tests/agent_kernel/test_category_sources.py": "f0a36819fe9958464779f8b54eeed835c5b2e30483bb772ee80a3c5b9a798528",
+    "pdos-next/server/tests/agent_kernel/test_deterministic_proofs.py": "e665af32dfc6e47bf7b3571319f3d84050130a2d11ed4758e5fb03db02973f46",
+    "docs/runbooks/minimax-cn-m3-validation-draft.md": "69c1786ca09db8fca61c8b8664e595ec4f2bacefe463ff9cf267f1ccaf746b1e",
+    "tasks/ai-native-integrated-todo.md": "b20d4dcc9b704f7ff0a05ca0c0efd4d4d77be66b61133100c850748a6891ff56"
+  },
+  "evidence_sha256": {
+    "backend-full-initial": "76d5801fe1188d52b678328b1e0b25cf1287d8e6c34e2e9638ab2b947e8b0063",
+    "backend-full-initial-candidate.json": "fb4429f95304365d189cd8d3ce44e3d74547c5ef3e09243dce59098841d89844",
+    "backend-full-fixed": "e26d760fb48b4ced65a0b7df371edcd8bfafb547eed071f93ded3b09eca5c652",
+    "backend-full-fixed-candidate.json": "64c022b417fb60b225a5c6b44df2d2c8674d71912a87a51a7ee0909ed2f79f7e",
+    "functional-stop.json": "f2701eb568be520ccfedc5f681af83bbf0714bceeade34479fc2c4d31eef5b4d",
+    "fixture-repairs-pure": "6bf3bbbec48aa7b130e2aa8f4fa1f5d8d9b7e30173f91b4d55c701cc8f99377e",
+    "deterministic-fixture-repairs": "d05c328387f073befeac5b4e0cb4058a49b67630c0b151bd15a4e5f0905df8aa",
+    "scope-fixture-repairs": "86a1c0657cad24374d4a842d258431ac3fcbbab888b1b9e0039066ae8d1c3e7f",
+    "scope-fixture-repairs-candidate.json": "3b2a4186c59a38dd5fdca8bf489aa8b30f12650f8dcf2a15f73f10a5a4fb38da",
+    "fixture-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "fixture-ruff-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "minimax-public-price-reference.json": "4b4f5908bedb275033d2054f470b5478eaa440f2d27548eebe57602684f4f80e",
+    "repairs.md": "7f7de34daf37af45507a18ac4853a7e3c30dd2b54a23d3b44edb0b626819f667"
+  },
+  "partial_file_scope": {
+    "tasks/ai-native-integrated-todo.md": "M3 row only; independent UI design additions excluded"
+  },
+  "business_source_changed": false,
+  "performance": "deferred by user; no sampling",
+  "full_regression_passed": false
+}

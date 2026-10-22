@@ -1,0 +1,57 @@
+{
+  "fixture": {
+    "api_port": 64746,
+    "web_port": 64747,
+    "tenant_id": "6afff732-8612-4012-b74f-59ca3ed9ed17",
+    "category_id": "e1bca497-18fb-458d-bba0-7d25554185ee",
+    "proposal_id": "cf5249cc-a92d-4dbb-990f-9161f5f9c79d",
+    "reviewer_id": "180febf4-d4f2-4054-9163-14e59f195982",
+    "document_identity": {
+      "proposal_id": "cf5249cc-a92d-4dbb-990f-9161f5f9c79d",
+      "revision": 1,
+      "document_digest": "f02d1a6cbf4af34a3a39fd20f35d608f4f4cd3fc96970c27b1a8338638dcebab",
+      "submission_id": "848940e1-7765-49ea-98ff-eb854816033d",
+      "document_mode": "frozen"
+    },
+    "model_calls": 0,
+    "repeated_parameter_selector": "HTTP 200; de-duplicated"
+  },
+  "final_build": "build-3.txt",
+  "viewport_desktop": [
+    1200,
+    742
+  ],
+  "viewport_mobile": [
+    390,
+    844
+  ],
+  "views": [
+    "positioning",
+    "spec-benchmark",
+    "feature-config",
+    "definition-maturity"
+  ],
+  "mobile_themes": [
+    "light",
+    "dark"
+  ],
+  "mobile_scroll_width": 390,
+  "mobile_document_width": 390,
+  "unknowns_not_plotted": 2,
+  "target_zero_preserved": true,
+  "target_true_preserved": true,
+  "source_detail": {
+    "quote": "一米距离下噪声观察值为4dB",
+    "line": 2,
+    "version": 1,
+    "kind": "artifact",
+    "actual_point_opens_detail": true
+  },
+  "unsubmitted_decision_reason_retained_across_tabs_and_refresh": true,
+  "document_mode": "frozen",
+  "route_console_errors": 0,
+  "initial_signed_out_home_errors": "expected 401 before explicit local synthetic session",
+  "services": "temporary API 64746 and web 64747 stopped after verification",
+  "production_database_writes": false,
+  "evidence_note": "Synthetic fixture uses normal human domain create/submit; browser reads and edits unsent form only. No G0 approval."
+}

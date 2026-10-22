@@ -1,0 +1,48 @@
+{
+  "target": {
+    "host": "localhost",
+    "port": 57432,
+    "database": "pdos"
+  },
+  "before_head": "0423_xiaopai_conversation_search",
+  "after_head": "0424_product_proposals",
+  "protected_counts_before": {
+    "cehub_core.tenants": 1,
+    "cehub_core.users": 6,
+    "cehub_project.projects": 1,
+    "cehub_ai.agent_runs": 4,
+    "cehub_product.market_spaces": 1,
+    "cehub_product.product_nodes": 0,
+    "cehub_product.product_source_files": 0
+  },
+  "protected_counts_after": {
+    "cehub_core.tenants": 1,
+    "cehub_core.users": 6,
+    "cehub_project.projects": 1,
+    "cehub_ai.agent_runs": 6,
+    "cehub_product.market_spaces": 1,
+    "cehub_product.product_nodes": 0,
+    "cehub_product.product_source_files": 0
+  },
+  "new_tables": {
+    "product_proposals": 0,
+    "product_proposal_revisions": 0,
+    "product_proposal_decisions": 0
+  },
+  "concurrent_activity": {
+    "agent_runs_delta": 2,
+    "latest_run": [
+      {
+        "context_version": "xiaopai-conversation-v1",
+        "agent_key": "ai_chat",
+        "status": "succeeded",
+        "error_code": null,
+        "created_at": "2026-10-06 06:17:40.526048+00:00"
+      }
+    ]
+  },
+  "repository_tests_on_live": false,
+  "accounts_or_credentials_changed": false,
+  "model_calls_by_this_task": false,
+  "migration_completed": true
+}

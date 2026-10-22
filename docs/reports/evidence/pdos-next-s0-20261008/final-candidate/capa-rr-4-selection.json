@@ -1,0 +1,4 @@
+[
+  "tests/quality_followup_transactions/test_capa_fact_flow.py::test_candidate_snapshot_reads_once_preserves_deadlines_and_rechecks_next_request",
+  "tests/quality_followup_transactions/test_capa_fact_flow.py::test_actual_candidate_rule_and_observation_keep_complete_sources_current_and_receipt"
+]

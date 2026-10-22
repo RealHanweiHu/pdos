@@ -1,0 +1,36 @@
+{
+  "kind": "final-read-interface-summary",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/ui/button.tsx",
+      "sha256": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24"
+    },
+    {
+      "path": "pdos-next/web/src/lib/utils.ts",
+      "sha256": "64fc84c1be627f0d586fb4ba64d824a1604f44282381f5bae68cdf86e10bb6ec"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/contracts.ts",
+      "sha256": "33725420bdc10f8560366b7a879f25be1b2d96f43058398b4d3e3fa10816da3a"
+    },
+    {
+      "path": "pdos-next/web/src/components/verification/preview.tsx",
+      "sha256": "6b9ab998151c70d70e7c9454fe6fa9c06a68c5b97de57f01de60c3a998a706d6"
+    },
+    {
+      "path": "pdos-next/web/AGENTS.md",
+      "sha256": "63f2c50380ed6303237cce215ce27af1d620d094c215e28d1b1538a3c070e3bb"
+    },
+    {
+      "path": "pdos-next/web/node_modules/next/dist/docs/01-app/03-api-reference/01-directives/use-client.md",
+      "sha256": "b46c9669be66bf95c946bf47a9518b2fd755ae6303c977c364c5a632942d223e"
+    }
+  ],
+  "summary": {
+    "runtime_imports": [
+      "existing Button and lib/utils, React, Phosphor"
+    ],
+    "read_only_confirmation_interfaces": "verification callbacks prepare controlled preview/one confirm/receipt; host injects existing review through actionReview; no copied confirmation implementation",
+    "next_boundary": "Client component callbacks/ReactNode must be attached by parent client container; server passes serializable projection"
+  }
+}

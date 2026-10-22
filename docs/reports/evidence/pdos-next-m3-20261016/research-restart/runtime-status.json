@@ -1,0 +1,28 @@
+{
+  "namespace": "pdos-next-m3-worker-20261016-research-restart-first",
+  "workflows": [
+    {
+      "workflow_id": "pdos-next:xiaopai:300ae755-46e9-4563-9410-fb5feaddb0bd:550c2ea6-237a-4f47-b694-9f2f3fc16b51",
+      "run_id": "01a14638-bd37-7991-88ed-f8e3a4f3e10c",
+      "status": "COMPLETED"
+    },
+    {
+      "workflow_id": "pdos-next:xiaopai:63343634-fb35-4cc4-9b4f-d72039bb0bdc:0bb72508-78f9-4fff-aad5-00f50be0a06a",
+      "run_id": "01a14636-8a84-7edc-ae9f-ac6545735923",
+      "status": "COMPLETED"
+    },
+    {
+      "workflow_id": "pdos-next:xiaopai:bbe151ea-543f-4426-929b-a251e7ab7f49:ded3939f-8176-463d-9b72-8772d255e269",
+      "run_id": "01a14636-56a7-760e-bebf-5410120d4e14",
+      "status": "COMPLETED"
+    },
+    {
+      "workflow_id": "pdos-next:xiaopai:d141789d-6b13-4752-a920-f4158dee0281:9e0bb52c-9170-43ef-ac81-3272f8f5e319",
+      "run_id": "01a14633-294c-7249-94aa-d04202fb95df",
+      "status": "COMPLETED"
+    }
+  ],
+  "shared_temporal_retained": true,
+  "head": "s0_0762",
+  "external_calls": 0
+}

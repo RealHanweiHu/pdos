@@ -1,0 +1,430 @@
+F
+=================================== FAILURES ===================================
+_ test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact _
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': '1bf53aef-54d4-406b-8109-77f6aa6b1ea6', 'project': ...-9e1e-2d6ee2530c97', 'issue_revision': 4, 'capa_id': 'f019997a-7883-4ed6-b170-ec7033be7748', 'created_output': None}]})
+
+    def test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact(
+        quality_work,
+    ):
+        work = quality_work
+        # Declare all separate synthetic series before the Issue's signer snapshots
+        # as well as before capture; never update a saved professional basis in place.
+        for role, operations in (
+            (
+                "quality",
+                [
+                    "change.request.create",
+                    "change.impact.compute",
+                    "change.policy.import",
+                    "change.order.prepare",
+                ],
+            ),
+            ("engineering", ["change.selection.decide"]),
+            ("manufacturing", ["change.selection.decide"]),
+        ):
+            for kind in ("duty", "qualification"):
+                import_authority(
+                    work,
+                    role,
+                    kind,
+                    subject_id=str(work.quality.human),
+                    operations=operations,
+                    external_id=f"synthetic-shared-order-{work.build_id}-{role}-{kind}",
+                )
+        # The saved report capture inherits the real Run audience. Its exact source
+        # remains in the direct-source RLS read set; sharing never substitutes bytes.
+        with session(work) as stored:
+            run_pointer = stored.scalar(
+                select(VerificationRunCurrent).where(
+                    VerificationRunCurrent.tenant_id == work.setup.tenant,
+                    VerificationRunCurrent.product_id == work.setup.product,
+                    VerificationRunCurrent.run_id == work.failure_run.id,
+                )
+            )
+            assert run_pointer is not None
+            run_row = stored.get(VerificationRunVersion, run_pointer.run_version_id)
+            measurement = stored.get(MeasurementRecord, work.failure_run.measurements[0].id)
+            assert run_row is not None and measurement is not None
+            captured = stored.get(MeasurementImportCapture, measurement.capture_id)
+            assert captured is not None
+            assert captured.visibility == run_row.visibility == measurement.visibility == "category"
+            assert captured.owner_id == work.quality.human
+            assert captured.run_id == measurement.run_id == run_row.run_id == work.failure_run.id
+            assert {
+                "artifact_id": str(work.failure_report),
+                "expected_revision": 1,
+            } in captured.required_source_read_set
+            shared_ids = run_row.id, measurement.id, captured.id
+        with session(work, caller=work.engineer) as stored:
+            peer_run = stored.get(VerificationRunVersion, shared_ids[0])
+            peer_measurement = stored.get(MeasurementRecord, shared_ids[1])
+            peer_capture = stored.get(MeasurementImportCapture, shared_ids[2])
+            assert peer_run is not None and peer_measurement is not None and peer_capture is not None
+            assert peer_capture.run_id == peer_measurement.run_id == peer_run.run_id
+            assert peer_capture.visibility == peer_run.visibility == "category"
+            assert peer_capture.owner_id == work.quality.human != work.engineer.human
+        shared_capa(work)
+        with session(work) as stored:
+            basis = followup_owner.load_followup_basis(
+                stored, work.quality.ctx, work.setup.product, work.issue_id, work.issue_view["revision"]
+            )
+            project = stored.get(Project, UUID(work.config["project"]))
+            assert project.visibility == "category"
+            project_owner = project.owner_id
+        assert basis.root_cause_sha256 is None
+        assert all(action.completion_sha256 is None for action in basis.actions)
+        with session(work, caller=work.engineer) as stored:
+            peer_basis = followup_owner.load_followup_basis(
+                stored,
+                work.engineer.ctx,
+                work.setup.product,
+                work.issue_id,
+                work.issue_view["revision"],
+            )
+            assert peer_basis == basis
+            assert peer_basis.owner_id == work.quality.human != work.engineer.human
+        quality_results = results.listing(work)
+        peer_results = results.listing(work, caller=work.engineer)
+        assert str(shared_ids[2]) in {value["id"] for value in quality_results["captures"]}
+        assert str(shared_ids[2]) not in {value["id"] for value in peer_results["captures"]}
+        assert str(shared_ids[1]) in {value["id"] for value in peer_results["measurements"]}
+    
+        # The request itself is shared from creation; the old private fixture stays intact.
+        created_value, create_inputs = change.command(
+            work, "change.request.create", {**change.create_payload(work), "visibility": "category"}
+        )
+        created = post(work.quality, created_value)
+        assert created.status_code == 200, created.text
+        change_id = create_inputs["change_id"]
+        initial, _ = change.current(work, change_id)
+        assert initial["visibility"] == "category"
+        scope = Scope(
+            tenant_id=work.setup.tenant,
+            product_id=work.setup.product,
+            project_id=UUID(work.config["project"]),
+        )
+        at, until = now(), now() + timedelta(minutes=15)
+        policy_material = PolicyMaterial(
+            schema_version="pdos-controlled-change-policy-v1",
+            scope=scope,
+            purpose=basis.purpose,
+            owner_id=project_owner,
+            visibility="category",
+            publisher_id=work.quality.human,
+            required_disciplines=("engineering", "manufacturing"),
+            valid_from=at - timedelta(minutes=1),
+            valid_until=until,
+            nature="synthetic",
+        )
+        policy_source = native_original(work, policy_material, "Shared synthetic dual-lane policy")
+        policy_payload = PolicyImport(
+            project_id=scope.project_id,
+            purpose=basis.purpose,
+            source=policy_source,
+            reason="Synthetic scoped publisher fact; no approval or real qualification",
+        )
+        with session(work) as stored:
+            policy_receipt = controlled.import_policy(
+                stored,
+                work.quality.ctx,
+                work.setup.product,
+                policy_payload,
+                command_id=uuid4(),
+                request_key=str(uuid4()),
+            )
+        assert policy_receipt["subject_type"] == "change_policy_fact"
+    
+        items, selection_sources = [], []
+        for index, (discipline, kind, configuration, intent_kind) in enumerate(
+            (
+                (
+                    "engineering",
+                    "engineering_configuration",
+                    work.config["engineering"],
+                    "new_engineering_configuration",
+                ),
+                (
+                    "manufacturing",
+                    "manufacturing_configuration",
+                    work.config["process"],
+                    "new_manufacturing_configuration",
+                ),
+            )
+        ):
+            reference = Ref(kind=kind, id=UUID(configuration["subject_id"]), revision=1)
+            item = PlanItem(
+                id=uuid4(),
+                discipline=discipline,
+                selection=Selection(
+                    objects=(reference,),
+                    units=(f"object:{reference.identity}",),
+                    conditions=("Fixed shared configuration and the exact CAPA action only",),
+                    sources=(policy_source,),
+                ),
+                intent=ControlledIntent(
+                    id=uuid4(),
+                    kind=intent_kind,
+                    basis=(reference,),
+                    description=f"Plan new {discipline} configuration; execution pending",
+                ),
+                verification_requirement="New exact configuration/Run plus independent review",
+            )
+            action = basis.actions[index]
+            reason = f"Named synthetic {discipline} applicability of the fixed action and object"
+            material = SelectionMaterial(
+                schema_version="pdos-controlled-change-selection-v1",
+                scope=scope,
+                purpose=basis.purpose,
+                change_id=UUID(change_id),
+                item=item,
+                issue_id=work.issue_id,
+                capa_id=work.capa_id,
+                action_id=action.action_id,
+                action_sha256=action.action_sha256,
+                executor_id=action.executor_id,
+                decider_id=work.quality.human,
+                status="applicable",
+                valid_until=until,
+                reason=reason,
+                nature="synthetic",
+            )
+            items.append(item)
+            selection_sources.append(
+                (material, native_original(work, material, f"Shared {discipline} applicability"))
+            )
+    
+        # Sources are complete before the real dependency watermark is captured.
+        captured, _ = change.capture(work, change_id)
+        impact, _ = change.command(work, "change.impact.compute", captured["impact_payload"])
+        saved_impact = post(work.quality, impact)
+        assert saved_impact.status_code == 200, saved_impact.text
+        analysis, _ = change.current(work, change_id)
+        fixed_assessment = deepcopy(analysis["request_snapshot"]["assessments"][-1])
+        assessment = ImpactAssessment.model_validate(fixed_assessment)
+        assert assessment.unknown and analysis["request_snapshot"]["orders"] == []
+        known = {row.node.ref.identity for row in assessment.known}
+        assert all(item.selection.objects[0].identity in known for item in items)
+    
+>       empty_context = order_context(work, change_id)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/change_execution/test_order_preparation_chain.py:435: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/change_execution/test_order_preparation_chain.py:223: in order_context
+    response = work.quality.client.get(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx2/_client.py:1113: in get
+    return self.request(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/routing.py:1310: in handle
+    await super().handle(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/routing.py:282: in handle
+    await self.app(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+pdos_next/domain/change_execution/api.py:73: in change_order_context
+    return order_context(session, ctx, product_id, change_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/change_preparation_view.py:209: in order_context
+    row, request, purpose = _current(s, ctx, pid, change_id)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/change_preparation_view.py:43: in _current
+    controlled._source_guard(
+pdos_next/change_controlled_owner.py:160: in _source_guard
+    basis, private, _ = old._evidence(s, ctx, pid, reads, sources, io=io)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+s = <sqlalchemy.orm.session.Session object at 0x124e74530>
+ctx = Context(tenant_id=UUID('203a7dcb-b9b3-40df-9d4a-2494064b0488'), actor_id=UUID('95c586a0-f3d6-465f-a8ba-9beec818f1ff'),...ne, cancel_epoch=None, category_id=UUID('9efb9043-8e65-4d5f-9dc0-be3cc2d23f18'), agent_run_id=None, agent_call_id=None)
+pid = UUID('d529328f-07cf-4a98-8bd0-2c8799a183dc')
+reads = [{'artifact_id': '1bf53aef-54d4-406b-8109-77f6aa6b1ea6', 'expected_revision': 1}, {'artifact_id': '301f137f-cb32-4973-...d02bed', 'expected_revision': 1}, {'artifact_id': 'eb004c81-a36f-4b76-bdbe-d3c03e4777ec', 'expected_revision': 1}, ...]
+sources = [{'id': '301f137f-cb32-4973-a3ba-cd0d8685387b', 'kind': 'artifact', 'position': 'line:3;quote_sha256:c84d4c824c1cd4497...t', 'position': 'line:3;quote_sha256:c84d4c824c1cd449731d7ee3e72f45e9b06aff9deaa87be55f62623719f632d5', 'revision': 1}]
+io = True
+
+    def _evidence(s, ctx, pid, reads, sources=(), *, io=True):
+        from pdos_next.object_storage import StorageFailure
+        from pdos_next.original_security import require_safe
+        from pdos_next.originals import object_reference, read_registered_bytes, require_original
+        from pdos_next.service import digest as content_digest
+        from pdos_next.service import source_for
+    
+        basis, lines, private = {}, {}, False
+        store = getattr(s.get_bind(), "_pdos_change_store", None)
+        if store is None:
+            raise DomainError("INTEGRATION_REQUIRED", "变更原件安全读取端口未配置。", 503)
+        for read in reads:
+            source = source_for(s, ctx, pid, UUID(read["artifact_id"]), read["expected_revision"])
+            if source.content_hash != content_digest(source.content):
+                raise DomainError("INTEGRITY_MISMATCH", "来源派生文本摘要不一致。")
+            if source.original_id is None:
+                if len(source.content.encode("utf-8")) > MAX_ORIGINAL_BYTES:
+                    raise DomainError("SOURCE_UNAVAILABLE", "原生文本超过有界核验上限。")
+                provenance = _native_registration(s, ctx, pid, source)
+                private |= source.visibility == "private"
+                lines[str(source.id)] = source.content.splitlines()
+                basis[str(source.id)] = {
+                    "revision": source.revision,
+                    "sha256": source.content_hash,
+                    "owner_id": str(source.owner_id),
+                    "visibility": source.visibility,
+                    **provenance,
+                }
+                continue
+            writing = not s.info.get("read_snapshot")
+            original = require_original(s, ctx, pid, source.original_id, lock=writing)
+            epoch, _ = require_safe(s, ctx, original, lock=writing)
+            ref = object_reference(original)
+            if original.status != "parsed" or ref.size_bytes > MAX_ORIGINAL_BYTES:
+                raise DomainError("SOURCE_UNAVAILABLE", "原件不可定位或超过有界核验上限。")
+            if io:
+                try:
+                    content = read_registered_bytes(
+                        store, ref, ctx.tenant_id, original.product_id, ctx.category_id
+                    )
+                except StorageFailure:
+                    raise DomainError(
+                        "STORAGE_UNAVAILABLE", "变更原件读取失败，未保存业务变更。", 503
+                    ) from None
+                if (
+                    len(content) != ref.size_bytes
+                    or hashlib.sha256(content).hexdigest() != ref.content_sha256
+                ):
+                    raise DomainError("INTEGRITY_MISMATCH", "变更原件字节摘要不一致。")
+                latest, _ = require_safe(s, ctx, original, lock=writing)
+                if latest != epoch:
+                    raise DomainError("SOURCE_STALE", "原件读取期间安全epoch变化。")
+            private |= source.visibility == "private" or original.visibility == "private"
+            lines[str(source.id)] = source.content.splitlines()
+            basis[str(source.id)] = {
+                "source_origin": "uploaded_original",
+                "revision": source.revision,
+                "sha256": source.content_hash,
+                "owner_id": str(source.owner_id),
+                "visibility": source.visibility,
+                "original_id": str(original.id),
+                "original_sha256": original.content_hash,
+                "original_revision": original.revision,
+                "security_epoch": epoch,
+                "original_owner_id": str(original.owner_id),
+                "original_visibility": original.visibility,
+            }
+        verified = set()
+        for source in sources:
+>           if source.kind != "artifact":
+               ^^^^^^^^^^^
+E           AttributeError: 'dict' object has no attribute 'kind'
+
+pdos_next/domain/change_execution/service.py:419: AttributeError
+=============================== warnings summary ===============================
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-6zhae2id/pdos-next/server/pdos_next/domain/preproject/service.py:709: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-6zhae2id/pdos-next/server/pdos_next/domain/preproject/service.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-6zhae2id/pdos-next/server/pdos_next/domain/preproject/service.py:874: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-6zhae2id/pdos-next/server/pdos_next/domain/preproject/service.py:929: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-6zhae2id/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-6zhae2id/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-6zhae2id/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+  /private/tmp/pdos-s3-orders-6zhae2id/pdos-next/server/pdos_next/change_controlled_owner.py:768: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # BEFORE Current target guard, never a commit/second Receipt.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_order_preparation_chain.py::test_shared_capa_policy_two_selections_prepare_order_without_approving_unknown_impact
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 10 warnings in 91.31s (0:01:31)

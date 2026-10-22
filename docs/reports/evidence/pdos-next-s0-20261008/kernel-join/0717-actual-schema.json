@@ -1,0 +1,21 @@
+{
+  "head": "s0_0717",
+  "columns": [
+    {
+      "table_name": "confirmations",
+      "column_name": "expires_at",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "controlled_change_selection_facts",
+      "column_name": "proof_expires_at",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "change_approval_records",
+      "column_name": "proof_expires_at",
+      "is_nullable": "YES"
+    }
+  ],
+  "synthetic_only": true
+}

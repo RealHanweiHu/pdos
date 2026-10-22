@@ -1,0 +1,10 @@
+{
+  "pdos-next/server/pdos_next/domain/configurations/models.py": "7d366adab2fd2e9cf04a570f7b5821a1efe0a60ead9894954d11fb4c0d2606b4",
+  "pdos-next/server/pdos_next/domain/configurations/schemas.py": "b8b42023631664f401bfb6537f2cb98e80838bfe093eeda66ef69568f65bbdf8",
+  "pdos-next/server/pdos_next/domain/build_execution/models.py": "87560e4c5836f8f956249c6d2aad98fffb6659e97079365542ab5ddf9aeb4413",
+  "pdos-next/server/pdos_next/domain/build_execution/schemas.py": "6570827c0c286e57a3264cd190ce731ae0e1950daccbf6caf297073bdedd8b81",
+  "pdos-next/server/pdos_next/schemas/verification/contracts.py": "5262b95c950a20625da5abb54b4c47dc5e77bb790f97518ca21cd3c422039734",
+  "pdos-next/server/pdos_next/domain/verification/ports.py": "6661a1dd3f13ec071bc842781a48357ea8d4787cf5701f93245fbb13dd738c39",
+  "pdos-next/server/pdos_next/domain/supply_cost/ports.py": "6a418b8a0b71458eb1f315e874456f3b0c83f2c3462229d1cdf0321dcabb4d25",
+  "pdos-next/web/src/components/ui/button.tsx": "03418a34ed0a795828470556206c4d98658672d13a63c861340933fe6ec22a24"
+}

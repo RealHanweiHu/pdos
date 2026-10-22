@@ -1,0 +1,163 @@
+{
+  "version": "session-presentation-storage-guards/v1",
+  "database": {
+    "host": "127.0.0.1",
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0811"
+  },
+  "fixture": {
+    "tenant_id": "b24d1300-8fa8-4911-b503-f11d104c7c3d",
+    "owner_id": "bc8b2897-db56-454d-9ca4-a1d0edc9a71f",
+    "session_id": "6c806100-018c-4048-a8da-2dcaa2c48dee",
+    "id": "82eeab7b-318f-4081-8e19-f08e5aee55ee",
+    "revision": 6
+  },
+  "downgrade": {
+    "target": "s0_0810",
+    "refused_by": "RuntimeError",
+    "message": "Session presentation history exists; downgrade would discard it",
+    "no_upgrade_or_migration_cycle": true
+  },
+  "cases": [
+    {
+      "case": "pdos_next_owner_update",
+      "role": "pdos_next_owner",
+      "sqlstate": "23514",
+      "message": "Session presentation history is append only",
+      "savepoint_rolled_back": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "pdos_next_owner_delete",
+      "role": "pdos_next_owner",
+      "sqlstate": "23514",
+      "message": "Session presentation history is append only",
+      "savepoint_rolled_back": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "pdos_next_app_update",
+      "role": "pdos_next_app",
+      "sqlstate": "42501",
+      "message": "permission denied for table agent_session_presentations",
+      "savepoint_rolled_back": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "pdos_next_app_delete",
+      "role": "pdos_next_app",
+      "sqlstate": "42501",
+      "message": "permission denied for table agent_session_presentations",
+      "savepoint_rolled_back": true,
+      "outer_transaction_rolled_back": true
+    },
+    {
+      "case": "invalid_pin_state_append",
+      "role": "pdos_next_app",
+      "sqlstate": "23514",
+      "message": "Presentation action changed unrelated display state",
+      "savepoint_rolled_back": true,
+      "outer_transaction_rolled_back": true
+    }
+  ],
+  "before": {
+    "head": "s0_0811",
+    "count": 24,
+    "row_sha256": {
+      "1e697013-d688-4bce-abf0-d9a2e50673c1": "e265856b581de087291ef74c29bb087c41efad21b8e89b596b5f69d0902992af",
+      "1f3e21c4-f615-4381-8080-93ade0841488": "480495850ba52b1d97bd55ba01dd729ffc48a2ea0c70a9c8b272d2008b477ee1",
+      "4d351c33-1186-494c-bd79-74f61b8a992e": "914eec81c15c925bb6db2b9c47f124d428e021ce0d6cd885ad7780672606445f",
+      "5b7d2875-a3f4-47b1-9387-f18d5c6049bb": "103c7ce05284e49e206ff86a109ecf3c18ad71d279dae60c8c623169416c7b3d",
+      "82eeab7b-318f-4081-8e19-f08e5aee55ee": "d17310c218b2963ff9b4e01a526fce1fd4159d143aa7d990548eb2b2bdf02e77",
+      "938483cd-f8bc-402a-b08e-305bc9d7b9c7": "3a814df5bf5edd9a978bfe0587ee383e114ece9c2457a954c18840c60ff4635b",
+      "c66956f5-febf-41f9-9f5a-f012858e4515": "f992734868b14a139224d5f9e238c47e6a4ff891f7dc0a74d6404402c0c994d0",
+      "f7d57af9-24e7-44bd-b899-a147d5dab500": "f41d53c099460f24e92737f454794bee48e8667149ac099282016e61539f0dd4",
+      "10878d88-45db-4078-99b5-8c2064a675f0": "68ce17886db3d80ef84c4176976e2a29ed0197bd9ed3a6ea81c58e591ae2bc6b",
+      "5f23ffa4-2a1e-4622-b8e0-21678f666543": "877e10e54a1a622db29dad1a3d3875a7778cfdbbb4300a9bc6b8c1b8ddf9a4af",
+      "67e9bf59-33c1-4fe8-a170-773cd70a73cd": "df4f5e02acae8d61e091ff3b640977757aee241d45ffc3917a82098109fc53bb",
+      "8084bedd-33e2-44f5-99f7-ee5f2f7e04f5": "6cb2ef2a9c960660d0ddb6ac3ef4f3fb043d7bfe9d9c563dd7d8c28ffa9d620e",
+      "80c2977a-da3f-45d2-b063-cce519491731": "a5b46bdf7881833670e243eac160bc6339a1cdb9fc67f67156115eab6e670f9c",
+      "a9542651-caaa-4df6-b81b-cd1257b8bc93": "b7eb8d5b4929ada469e5439fd1cbfad701643a363ce8e929709389c8b51b490b",
+      "b03c7710-f39e-49ba-b315-d72fc315c7d8": "4fea66f74537a8863090fcc8c86baf8b6de865949f84662df45ede62d773d1d3",
+      "d5acfebb-9580-475b-bcd5-c03d226bf7b5": "e66a07bf0fd46ce18bd40cb1fa19ab05cef731f9689e8758c3b07baace98b52b",
+      "1e931aec-e5f2-4fd9-b73b-56763c8d69c1": "fcf3f282eed69f57e41596320267c5cb57bfd2e092aa6222fa68802c688df4cd",
+      "3433063d-ae44-4c5a-a3f6-d861043942b0": "e7a56448bc03004393210fa71f0a42ed5c8073c37ad2084c19efc5731b17741c",
+      "57328af0-10ea-476f-a38f-f72fa1896817": "bcbc0852d90ff330f89e60fe5348ffce9c1eee8697ade31f705b9141570cef61",
+      "77bbcea0-d344-46a7-8be3-c16ea84ef6f1": "be2b5b40614f0eb933bfc60671691ced4acfc4ca2f18b89329fa5fec1bcefe54",
+      "a9cef561-c681-42dc-af27-0ca92e84b43c": "33634b0106e3c207797dcfd6a418b7a73c63bd96370fde187f9b9c0414094ffd",
+      "b0e1ec60-791c-4ab2-a56d-f53ee81c88b6": "4c06bfb2b0c271010bcf9ac47677236df229163797e06866ebe956a504be57b1",
+      "b15c563b-243e-42e7-9e2f-85e066ea425b": "d5285871f6c3e64c5a5afe61a17f4f40fbcc34014d3addd26033ce5b0f17f257",
+      "f435a6d8-77d9-47c3-9ff7-17aeddd547d9": "7ba0e8cc04aeedcf7649a38da32aa4d495c5794391af912e5e84e6b25cf530a4"
+    },
+    "sha256": "6ea6cb49844c48bb64f6c4ba515eb8cbb884934791871ffaedccd2e7001b4a7c"
+  },
+  "after_downgrade_refusal": {
+    "head": "s0_0811",
+    "count": 24,
+    "row_sha256": {
+      "1e697013-d688-4bce-abf0-d9a2e50673c1": "e265856b581de087291ef74c29bb087c41efad21b8e89b596b5f69d0902992af",
+      "1f3e21c4-f615-4381-8080-93ade0841488": "480495850ba52b1d97bd55ba01dd729ffc48a2ea0c70a9c8b272d2008b477ee1",
+      "4d351c33-1186-494c-bd79-74f61b8a992e": "914eec81c15c925bb6db2b9c47f124d428e021ce0d6cd885ad7780672606445f",
+      "5b7d2875-a3f4-47b1-9387-f18d5c6049bb": "103c7ce05284e49e206ff86a109ecf3c18ad71d279dae60c8c623169416c7b3d",
+      "82eeab7b-318f-4081-8e19-f08e5aee55ee": "d17310c218b2963ff9b4e01a526fce1fd4159d143aa7d990548eb2b2bdf02e77",
+      "938483cd-f8bc-402a-b08e-305bc9d7b9c7": "3a814df5bf5edd9a978bfe0587ee383e114ece9c2457a954c18840c60ff4635b",
+      "c66956f5-febf-41f9-9f5a-f012858e4515": "f992734868b14a139224d5f9e238c47e6a4ff891f7dc0a74d6404402c0c994d0",
+      "f7d57af9-24e7-44bd-b899-a147d5dab500": "f41d53c099460f24e92737f454794bee48e8667149ac099282016e61539f0dd4",
+      "10878d88-45db-4078-99b5-8c2064a675f0": "68ce17886db3d80ef84c4176976e2a29ed0197bd9ed3a6ea81c58e591ae2bc6b",
+      "5f23ffa4-2a1e-4622-b8e0-21678f666543": "877e10e54a1a622db29dad1a3d3875a7778cfdbbb4300a9bc6b8c1b8ddf9a4af",
+      "67e9bf59-33c1-4fe8-a170-773cd70a73cd": "df4f5e02acae8d61e091ff3b640977757aee241d45ffc3917a82098109fc53bb",
+      "8084bedd-33e2-44f5-99f7-ee5f2f7e04f5": "6cb2ef2a9c960660d0ddb6ac3ef4f3fb043d7bfe9d9c563dd7d8c28ffa9d620e",
+      "80c2977a-da3f-45d2-b063-cce519491731": "a5b46bdf7881833670e243eac160bc6339a1cdb9fc67f67156115eab6e670f9c",
+      "a9542651-caaa-4df6-b81b-cd1257b8bc93": "b7eb8d5b4929ada469e5439fd1cbfad701643a363ce8e929709389c8b51b490b",
+      "b03c7710-f39e-49ba-b315-d72fc315c7d8": "4fea66f74537a8863090fcc8c86baf8b6de865949f84662df45ede62d773d1d3",
+      "d5acfebb-9580-475b-bcd5-c03d226bf7b5": "e66a07bf0fd46ce18bd40cb1fa19ab05cef731f9689e8758c3b07baace98b52b",
+      "1e931aec-e5f2-4fd9-b73b-56763c8d69c1": "fcf3f282eed69f57e41596320267c5cb57bfd2e092aa6222fa68802c688df4cd",
+      "3433063d-ae44-4c5a-a3f6-d861043942b0": "e7a56448bc03004393210fa71f0a42ed5c8073c37ad2084c19efc5731b17741c",
+      "57328af0-10ea-476f-a38f-f72fa1896817": "bcbc0852d90ff330f89e60fe5348ffce9c1eee8697ade31f705b9141570cef61",
+      "77bbcea0-d344-46a7-8be3-c16ea84ef6f1": "be2b5b40614f0eb933bfc60671691ced4acfc4ca2f18b89329fa5fec1bcefe54",
+      "a9cef561-c681-42dc-af27-0ca92e84b43c": "33634b0106e3c207797dcfd6a418b7a73c63bd96370fde187f9b9c0414094ffd",
+      "b0e1ec60-791c-4ab2-a56d-f53ee81c88b6": "4c06bfb2b0c271010bcf9ac47677236df229163797e06866ebe956a504be57b1",
+      "b15c563b-243e-42e7-9e2f-85e066ea425b": "d5285871f6c3e64c5a5afe61a17f4f40fbcc34014d3addd26033ce5b0f17f257",
+      "f435a6d8-77d9-47c3-9ff7-17aeddd547d9": "7ba0e8cc04aeedcf7649a38da32aa4d495c5794391af912e5e84e6b25cf530a4"
+    },
+    "sha256": "6ea6cb49844c48bb64f6c4ba515eb8cbb884934791871ffaedccd2e7001b4a7c"
+  },
+  "after_all_negatives": {
+    "head": "s0_0811",
+    "count": 24,
+    "row_sha256": {
+      "1e697013-d688-4bce-abf0-d9a2e50673c1": "e265856b581de087291ef74c29bb087c41efad21b8e89b596b5f69d0902992af",
+      "1f3e21c4-f615-4381-8080-93ade0841488": "480495850ba52b1d97bd55ba01dd729ffc48a2ea0c70a9c8b272d2008b477ee1",
+      "4d351c33-1186-494c-bd79-74f61b8a992e": "914eec81c15c925bb6db2b9c47f124d428e021ce0d6cd885ad7780672606445f",
+      "5b7d2875-a3f4-47b1-9387-f18d5c6049bb": "103c7ce05284e49e206ff86a109ecf3c18ad71d279dae60c8c623169416c7b3d",
+      "82eeab7b-318f-4081-8e19-f08e5aee55ee": "d17310c218b2963ff9b4e01a526fce1fd4159d143aa7d990548eb2b2bdf02e77",
+      "938483cd-f8bc-402a-b08e-305bc9d7b9c7": "3a814df5bf5edd9a978bfe0587ee383e114ece9c2457a954c18840c60ff4635b",
+      "c66956f5-febf-41f9-9f5a-f012858e4515": "f992734868b14a139224d5f9e238c47e6a4ff891f7dc0a74d6404402c0c994d0",
+      "f7d57af9-24e7-44bd-b899-a147d5dab500": "f41d53c099460f24e92737f454794bee48e8667149ac099282016e61539f0dd4",
+      "10878d88-45db-4078-99b5-8c2064a675f0": "68ce17886db3d80ef84c4176976e2a29ed0197bd9ed3a6ea81c58e591ae2bc6b",
+      "5f23ffa4-2a1e-4622-b8e0-21678f666543": "877e10e54a1a622db29dad1a3d3875a7778cfdbbb4300a9bc6b8c1b8ddf9a4af",
+      "67e9bf59-33c1-4fe8-a170-773cd70a73cd": "df4f5e02acae8d61e091ff3b640977757aee241d45ffc3917a82098109fc53bb",
+      "8084bedd-33e2-44f5-99f7-ee5f2f7e04f5": "6cb2ef2a9c960660d0ddb6ac3ef4f3fb043d7bfe9d9c563dd7d8c28ffa9d620e",
+      "80c2977a-da3f-45d2-b063-cce519491731": "a5b46bdf7881833670e243eac160bc6339a1cdb9fc67f67156115eab6e670f9c",
+      "a9542651-caaa-4df6-b81b-cd1257b8bc93": "b7eb8d5b4929ada469e5439fd1cbfad701643a363ce8e929709389c8b51b490b",
+      "b03c7710-f39e-49ba-b315-d72fc315c7d8": "4fea66f74537a8863090fcc8c86baf8b6de865949f84662df45ede62d773d1d3",
+      "d5acfebb-9580-475b-bcd5-c03d226bf7b5": "e66a07bf0fd46ce18bd40cb1fa19ab05cef731f9689e8758c3b07baace98b52b",
+      "1e931aec-e5f2-4fd9-b73b-56763c8d69c1": "fcf3f282eed69f57e41596320267c5cb57bfd2e092aa6222fa68802c688df4cd",
+      "3433063d-ae44-4c5a-a3f6-d861043942b0": "e7a56448bc03004393210fa71f0a42ed5c8073c37ad2084c19efc5731b17741c",
+      "57328af0-10ea-476f-a38f-f72fa1896817": "bcbc0852d90ff330f89e60fe5348ffce9c1eee8697ade31f705b9141570cef61",
+      "77bbcea0-d344-46a7-8be3-c16ea84ef6f1": "be2b5b40614f0eb933bfc60671691ced4acfc4ca2f18b89329fa5fec1bcefe54",
+      "a9cef561-c681-42dc-af27-0ca92e84b43c": "33634b0106e3c207797dcfd6a418b7a73c63bd96370fde187f9b9c0414094ffd",
+      "b0e1ec60-791c-4ab2-a56d-f53ee81c88b6": "4c06bfb2b0c271010bcf9ac47677236df229163797e06866ebe956a504be57b1",
+      "b15c563b-243e-42e7-9e2f-85e066ea425b": "d5285871f6c3e64c5a5afe61a17f4f40fbcc34014d3addd26033ce5b0f17f257",
+      "f435a6d8-77d9-47c3-9ff7-17aeddd547d9": "7ba0e8cc04aeedcf7649a38da32aa4d495c5794391af912e5e84e6b25cf530a4"
+    },
+    "sha256": "6ea6cb49844c48bb64f6c4ba515eb8cbb884934791871ffaedccd2e7001b4a7c"
+  },
+  "history_unchanged": true,
+  "new_business_fixtures": 0,
+  "committed_writes": 0,
+  "agent_privileges_repeated": false,
+  "model_calls": 0
+}

@@ -1,0 +1,12 @@
+### Result
+{"result":{"status":202,"runId":"ad25c084-445c-49b6-b6c0-48c6f05bebf1","proposalId":"c5ca98f7-9378-482c-9807-0d85ae68600f","idempotencyKey":"5cf0fa23-4ebb-4edf-a651-70a9d35cc780","execution":"durable_runtime_unavailable"},"journalCount":1}
+### Ran Playwright code
+```js
+await (async (page) => { let result; await page.route("**/api/v1/categories/*/agent-runs",async route=>{if(route.request().method()!=="POST")return route.continue(); const original=route.request().postDataJSON(); const response=await route.fetch(); const data=await response.json(); result={status:response.status(),runId:data.run_id,proposalId:original.proposal_id,idempotencyKey:original.idempotency_key,execution:data.execution_state}; await route.abort("failed");},{times:1}); await page.getByRole("region",{name:"当前提案的小Pai"}).getByRole("button",{name:"保存并开始",exact:true}).click(); await page.getByRole("button",{name:"重试原请求",exact:true,disabled:false}).waitFor(); await page.screenshot({path:"docs/reports/evidence/pdos-next-m3-20261016/proposal-pai/browser/start-response-lost-desktop-light.png"}); return {result,journalCount:await page.evaluate(()=>Object.keys(localStorage).filter(k=>k.startsWith("pdos-next:run-start:")).length)}; })(page);
+```
+### Page
+- Page URL: http://127.0.0.1:3036/categories/63851664-f5ab-4f27-ab68-d137b5f2d135/proposals/c5ca98f7-9378-482c-9807-0d85ae68600f
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Events
+- New console entries: .playwright-cli/console-2026-10-16T14-33-50-586Z.log#L5

@@ -1,0 +1,12 @@
+{
+  "candidate_sha256": "401df6b5bcbb5e9e731fd5f85ad72ac3ab3ac43410dd19f69bb959ee901fd3f6",
+  "actual_sha256": "6605d180d6cfba69ec23c58b200b6c4ecd353eef620ff4a10eebfa2fc9460e99",
+  "import_only_changed_from_candidate": true,
+  "non_import_ast_exact": true,
+  "source_evidence_ast_unchanged": true,
+  "source_metadata_bulk_adopted": false,
+  "common_group_bulk_adopted": false,
+  "performance_verified": false,
+  "real_pg_verified": false,
+  "stage_manifest_sha256": "1eb706e6a68834f0e846accb9359fd9633635d82f3e2ed1a8c20e6bb9596a9e1"
+}

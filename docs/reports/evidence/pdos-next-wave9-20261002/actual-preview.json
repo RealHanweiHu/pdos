@@ -1,0 +1,93 @@
+{
+  "scope": "actual local synthetic API + worker + retained bytes; no production qualification",
+  "head": "next_0012",
+  "business_tables": 60,
+  "agent_business_writes": 0,
+  "model_calls": 0,
+  "model_call_scope": "actual preview tenant; unrelated isolated test fixtures excluded",
+  "lifecycle": {
+    "id": "c415fecf-7bb3-48ca-be17-7ab9190f4d89",
+    "title": "第九波中断上传演练",
+    "filename": "wave9-interrupted.txt",
+    "revision": 12,
+    "registered": false,
+    "upload_state": "abandoned",
+    "parse_state": "not_requested",
+    "retention_until": "2026-10-02T14:00:00+00:00",
+    "manual_hold": false,
+    "disposition": "active",
+    "pending_intent_id": null,
+    "reference_count": 0,
+    "formal_history": false,
+    "coverage_complete": true,
+    "registration_state": "aborted",
+    "byte_status": "intact",
+    "reasons": [],
+    "can_quarantine": true,
+    "can_restore": false,
+    "can_record_protection": true,
+    "can_abandon_upload": false,
+    "upload_attempt_id": "c415fecf-7bb3-48ca-be17-7ab9190f4d89",
+    "upload_attempt_revision": 2,
+    "policy_version": "local-synthetic-retention-v1",
+    "intents": [
+      {
+        "id": "23768106-ac77-4633-bd13-6a0a2cc2a9bd",
+        "revision": 2,
+        "action": "quarantine",
+        "state": "cancelled",
+        "created_at": "2026-10-02T15:40:35.189975+00:00",
+        "updated_at": "2026-10-02T15:43:02.671421+00:00",
+        "reason": "验证本地合成孤立原件的可逆访问隔离，所有字节与历史保留。",
+        "recovery_required": false,
+        "can_cancel": false,
+        "can_reconcile": false
+      },
+      {
+        "id": "744e83ed-b7a8-4bc4-9656-9e0970f2cdfe",
+        "revision": 3,
+        "action": "quarantine",
+        "state": "applied",
+        "created_at": "2026-10-02T15:44:15.390910+00:00",
+        "updated_at": "2026-10-02T15:44:18.344906+00:00",
+        "reason": "按当前完整引用事实执行本地合成可逆隔离，字节和历史继续保留。",
+        "recovery_required": false,
+        "can_cancel": false,
+        "can_reconcile": false
+      },
+      {
+        "id": "c098da18-cf43-448e-b91e-cba84fe48cc8",
+        "revision": 3,
+        "action": "restore",
+        "state": "applied",
+        "created_at": "2026-10-02T15:45:19.141370+00:00",
+        "updated_at": "2026-10-02T15:45:21.595917+00:00",
+        "reason": "恢复本地合成原件访问，核对原始字节摘要；扫描、来源状态与权限各自保持校验。",
+        "recovery_required": false,
+        "can_cancel": false,
+        "can_reconcile": false
+      }
+    ]
+  },
+  "receipt_ids": [
+    "40c1402b-0674-4130-a077-65361e592500",
+    "61e4b4ae-4c6a-4d14-a35e-a82163c008e7",
+    "fbd03659-cf10-4d35-a17c-18b4144c50f7",
+    "d44af9aa-773f-436d-ab31-c4740b9cb410",
+    "86bea141-c07d-4d44-85d6-3476c06c5fc0",
+    "dae4b903-53fe-4f7f-93db-7e61c8c57c52",
+    "23f2e326-deb2-4f29-8f14-aded2a7ebcd1",
+    "bf7c61a8-0c70-4784-9b13-dbea8a165739",
+    "4b0fc1ee-0766-4ce4-a272-2d3123ee2920",
+    "2a287e74-7ee3-414b-b6a7-5842a123d2b8"
+  ],
+  "registered_original_downloads": {
+    "browser-synthetic.txt": "exact original hash",
+    "browser-synthetic.pdf": "exact original hash",
+    "browser-synthetic.xlsx": "exact original hash"
+  },
+  "wave8_withdrawn_infected_still_blocked": true,
+  "build_and_verification_unchanged": true,
+  "exact_bytes_retained": true,
+  "no_physical_move_or_purge": true
+}

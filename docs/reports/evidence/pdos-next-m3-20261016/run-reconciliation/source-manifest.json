@@ -1,0 +1,24 @@
+{
+  "base_commit": "507fe8e1f6f90773f3e6a04b59df1465668a09f1",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/agent_kernel/activities.py": "4f1fd17b317248a6de31adf171b40e873a34ad60cb21308b636593a4635ea411",
+    "pdos-next/server/pdos_next/agent_kernel/api.py": "b69e572809b942ad0857ff1cf8b61e4c58f2a395b75362385c37fa41e151c1ed",
+    "pdos-next/server/pdos_next/agent_kernel/persistence.py": "522e1caf73686d2fc6f9291d0d58a53c8a67564a93e336f6b0e28e7f74e44154",
+    "pdos-next/server/pdos_next/agent_kernel/run_reconciliation.py": "83e0b6f0a0c5bf17cc676694ccaaea1f8a67387bde2779b95938af2df508d6a5",
+    "pdos-next/server/pdos_next/workflows/worker.py": "1b69ff73de3c418d1ef74c2d3b11b823dc6ce62294066d4f39279d08816a906b",
+    "pdos-next/server/pdos_next/workflows/xiaopai.py": "b91f79036cfad95185967931aa2f9f8ff10087153c1681b6dfcdfab769e51f66",
+    "pdos-next/server/migrations/versions/s0_0771_reconciliation_receipt_scope.py": "1240095302475e1b7589b0848856c7c2ef52e3588ab33f3ab4595b757eaeb9ee",
+    "pdos-next/server/tests/agent_kernel/test_run_reconciliation.py": "d8ab741b35c431afe2d3fec4163698be2ba8e1894d91a8b9d453acdd9b737051",
+    "pdos-next/server/tests/agent_kernel/test_run_reconciliation_temporal.py": "6649cd307f6bbdd0376e7ff8ae75ec6beedae04b81c181863eaeea2e44637c7d",
+    "pdos-next/server/tests/workflows/test_xiaopai_reconciliation.py": "68ead49acac5707ee7c1ca2d08be491c65b5eafb27987df48d9b2af90037cae0",
+    "pdos-next/web/src/app/api/[...path]/route.ts": "f666909f606cd61fb3e4f9c03adca36249cd826c4bb880a3d35671eb25274c29",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "12f0b2394c4dfb626836cd3c4a0037799384aff8670943f1bb2885bd7d0ec750",
+    "pdos-next/web/src/components/xiaopai.tsx": "9bbc58db10195b08c232ef1a9c33cc87c6ebf32e6470985b373affa288cb195e",
+    "pdos-next/web/src/components/category-create/personal-xiaopai.tsx": "6003643d75c20793156e5aed065933fda950d49bb12eb65b977588a57a38b4fe",
+    "pdos-next/web/src/components/pai/run-reconciliation.tsx": "32b7e67a3bfc039effeed43f2992fb558ec6e0d40b91e85cf18db4514b4e7688",
+    "pdos-next/web/src/lib/run-reconciliation.ts": "2d9c5916e448827ff639ba7aca7b0a9deb4bdc0eb58b78cd8ada33204fac10af",
+    "pdos-next/web/src/lib/run-reconciliation.test.ts": "da43d37830bfd4f850626d0157a078b4e13489e457eb733fc785d67b60aee283",
+    "docs/runbooks/pdos-next-run-reconciliation.md": "65822e58d8b34b4d9b327fd4412d631141815f7f9790373fd039646dc762e0b3"
+  },
+  "includes_uncommitted_owned_candidate": true
+}

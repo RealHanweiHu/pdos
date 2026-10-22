@@ -1,0 +1,4 @@
+[
+  "tests/quality_execution/test_pure.py",
+  "tests/quality_execution/test_capa_draft_revision.py"
+]

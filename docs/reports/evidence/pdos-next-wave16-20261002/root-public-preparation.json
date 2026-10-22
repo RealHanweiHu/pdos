@@ -1,0 +1,11 @@
+{
+  "applied": false,
+  "base_files_matched": 10,
+  "patch_checked": true,
+  "public_routes_registered": false,
+  "new_files": {
+    "pdos-next/server/pdos_next/quality_followup_api.py": "7beecc6c44b19dafbf1a3f29887af2eb9d9f835acfb68f69ea2fe7ecdbf2a502",
+    "pdos-next/server/pdos_next/quality_followup_integration.py": "7aafcdd287143f43ba22fe46a85d6ab9163210ff2af9f153e940f3f2997cea35"
+  },
+  "scope": "Root new unregistered API/host composition plus hash-bound unapplied 10-path public patch; no migration, DB, public HTTP, or business command execution."
+}

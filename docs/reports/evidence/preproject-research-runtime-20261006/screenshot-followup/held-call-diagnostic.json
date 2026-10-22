@@ -1,0 +1,168 @@
+{
+  "read_only": true,
+  "held": [
+    {
+      "attempt_id": "4b287791-394c-5da2-8ab5-995b275f5867",
+      "run_id": "a9be12fe-2347-5873-8928-fc67a7e35a38",
+      "revision": 3,
+      "call_kind": "model",
+      "reservation_status": "unknown",
+      "reserved_tokens": 7494,
+      "held_tokens": 7494,
+      "charged_tokens": null,
+      "dispatched_at": "2026-10-07 03:08:13.216106+00:00",
+      "created_at": "2026-10-07 03:08:35.814769+00:00",
+      "provider_request_id": null,
+      "model_call_id": "0fbf037b-109d-56a5-8e72-1b444a11af87"
+    },
+    {
+      "attempt_id": "c60188f5-75b0-5919-940f-dee632889a1b",
+      "run_id": "6d270973-ed12-52b4-a6a0-edba15cc668f",
+      "revision": 3,
+      "call_kind": "model",
+      "reservation_status": "unknown",
+      "reserved_tokens": 8507,
+      "held_tokens": 8507,
+      "charged_tokens": null,
+      "dispatched_at": "2026-10-07 03:27:40.142107+00:00",
+      "created_at": "2026-10-07 03:28:10.256761+00:00",
+      "provider_request_id": null,
+      "model_call_id": "4c9cd6e5-ef4f-54ee-afd9-1bbef3136a5f"
+    }
+  ],
+  "calls": [
+    {
+      "id": "0199c260-cbb2-459c-9bde-0c8d8167bf70",
+      "run_id": "9fe06d33-c223-5f0b-9f0e-df9e4be991a1",
+      "budget_call_id": "d659512e-8cf0-53a4-8eee-1d0e484e099d",
+      "status": "budget_exceeded",
+      "usage_status": "not_invoked",
+      "error_code": "BUDGET_TENANT_CALL_BUSY",
+      "structured_attempts": 0,
+      "created_at": "2026-10-07 05:16:44.946126+00:00",
+      "latency_ms": 208
+    },
+    {
+      "id": "ac4d08ab-558f-4ab9-8822-39d38670f082",
+      "run_id": "c9f95f9b-bb32-54c6-8636-224be8e63df9",
+      "budget_call_id": "4d5d7400-028e-51a6-ba9e-2c4837280fc9",
+      "status": "budget_exceeded",
+      "usage_status": "not_invoked",
+      "error_code": "BUDGET_TENANT_CALL_BUSY",
+      "structured_attempts": 0,
+      "created_at": "2026-10-07 05:16:28.552635+00:00",
+      "latency_ms": 270
+    },
+    {
+      "id": "b54cf28d-7d40-4948-8b79-b2ae93af1b74",
+      "run_id": "6d270973-ed12-52b4-a6a0-edba15cc668f",
+      "budget_call_id": "4c9cd6e5-ef4f-54ee-afd9-1bbef3136a5f",
+      "status": "provider_error",
+      "usage_status": "partial",
+      "error_code": "PROVIDER_TRANSPORT_ERROR",
+      "structured_attempts": 2,
+      "created_at": "2026-10-07 03:28:10.267262+00:00",
+      "latency_ms": 85100
+    },
+    {
+      "id": "accb27e8-1798-4455-a3aa-53ae4b19d86b",
+      "run_id": "6d270973-ed12-52b4-a6a0-edba15cc668f",
+      "budget_call_id": "b982b2f2-a3d6-5b28-b019-118bebff708b",
+      "status": "succeeded",
+      "usage_status": "known",
+      "error_code": null,
+      "structured_attempts": 1,
+      "created_at": "2026-10-07 03:26:17.964360+00:00",
+      "latency_ms": 21181
+    },
+    {
+      "id": "ed20d992-1b8a-4a8a-b096-ccec25c76b38",
+      "run_id": "4657efb5-c88c-5c8f-b439-976cd7e4a493",
+      "budget_call_id": "128e4181-4c6c-5f48-ab71-2d4ad5aacec9",
+      "status": "succeeded",
+      "usage_status": "known",
+      "error_code": null,
+      "structured_attempts": 1,
+      "created_at": "2026-10-07 03:22:35.557251+00:00",
+      "latency_ms": 26572
+    },
+    {
+      "id": "eca6e3e2-a4ed-41cd-8701-b13ce9631410",
+      "run_id": "4657efb5-c88c-5c8f-b439-976cd7e4a493",
+      "budget_call_id": "c57b5ffa-65fd-5bf6-ad88-f34129625e60",
+      "status": "succeeded",
+      "usage_status": "known",
+      "error_code": null,
+      "structured_attempts": 1,
+      "created_at": "2026-10-07 03:21:36.353105+00:00",
+      "latency_ms": 7615
+    },
+    {
+      "id": "72b1bf3d-bb2b-45cd-866c-3ccf676f756f",
+      "run_id": "7156b23b-c2d0-5d6e-8272-01b6452ce049",
+      "budget_call_id": "36f2d1f1-99c2-5698-9603-c03af8ee2c53",
+      "status": "succeeded",
+      "usage_status": "known",
+      "error_code": null,
+      "structured_attempts": 1,
+      "created_at": "2026-10-07 03:09:59.655289+00:00",
+      "latency_ms": 20337
+    },
+    {
+      "id": "dbb72922-cfa6-4760-9502-7a1b5b9e99e8",
+      "run_id": "7156b23b-c2d0-5d6e-8272-01b6452ce049",
+      "budget_call_id": "822901a5-18ab-5c90-873b-17bb98c2854b",
+      "status": "succeeded",
+      "usage_status": "known",
+      "error_code": null,
+      "structured_attempts": 1,
+      "created_at": "2026-10-07 03:08:55.572911+00:00",
+      "latency_ms": 8704
+    },
+    {
+      "id": "c43120a4-5b2f-40ae-8e23-26369c907a56",
+      "run_id": "a9be12fe-2347-5873-8928-fc67a7e35a38",
+      "budget_call_id": "0fbf037b-109d-56a5-8e72-1b444a11af87",
+      "status": "provider_error",
+      "usage_status": "unknown",
+      "error_code": "PROVIDER_INVALID_RESPONSE",
+      "structured_attempts": 1,
+      "created_at": "2026-10-07 03:08:35.819515+00:00",
+      "latency_ms": 23221
+    },
+    {
+      "id": "a1aaae86-3cb2-458c-bec2-245a9547d154",
+      "run_id": "4e81984f-64fb-55b0-8168-458299235b9d",
+      "budget_call_id": "058fe46c-8f40-57e4-930b-b8bd7f6247a9",
+      "status": "succeeded",
+      "usage_status": "known",
+      "error_code": null,
+      "structured_attempts": 1,
+      "created_at": "2026-10-07 03:06:17.080059+00:00",
+      "latency_ms": 85892
+    },
+    {
+      "id": "f61a577f-0a6f-4012-803c-d1e8749d4550",
+      "run_id": "4e81984f-64fb-55b0-8168-458299235b9d",
+      "budget_call_id": "7db8c23b-8995-5700-83bf-42f40c6cf907",
+      "status": "succeeded",
+      "usage_status": "known",
+      "error_code": null,
+      "structured_attempts": 1,
+      "created_at": "2026-10-07 03:04:13.683020+00:00",
+      "latency_ms": 28077
+    },
+    {
+      "id": "f4877c94-a218-4ba1-87c4-c89ccfb238f7",
+      "run_id": "622e3e57-9216-5193-ac3a-bb030969ad0a",
+      "budget_call_id": "ad1c04df-f1b2-5fac-bc0e-445ef00b3960",
+      "status": "succeeded",
+      "usage_status": "known",
+      "error_code": null,
+      "structured_attempts": 1,
+      "created_at": "2026-10-07 02:57:58.601143+00:00",
+      "latency_ms": 28969
+    }
+  ],
+  "states_for_held_calls": []
+}

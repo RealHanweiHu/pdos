@@ -1,0 +1,128 @@
+{
+  "target": {
+    "host": "localhost",
+    "port": 57432,
+    "database": "pdos"
+  },
+  "before_head": "0427_category_reference_aliases",
+  "backup": {
+    "path": "/Users/huhanwei/pdos-preview-backups/20261006-preproject-dialogue-113415/pdos-before-0428.dump",
+    "sha256": "4acd213a7e4e31db5b7146e9b559357b8918cc4805cbd47d23e6ec9a13a2b38f",
+    "bytes": 4334758,
+    "mode": "0o600",
+    "archive_list_verified": true,
+    "restored": false
+  },
+  "before": {
+    "cehub_product.product_nodes": {
+      "count": 2,
+      "sha256": "b6a44ece11555bbc30217331e7554f38fcc65574827f055461e2176fccb0e35c"
+    },
+    "cehub_product.product_line_members": {
+      "count": 2,
+      "sha256": "25350a88ba79f8af71798a1ceb0d98db10896d148c4f61ae8423be0160391818"
+    },
+    "cehub_core.tenants": {
+      "count": 1,
+      "sha256": "f66a1bfd7299511eae0309384ad1351daca15b27d2390faa75bc5aff2642c59c"
+    },
+    "cehub_core.users": {
+      "count": 6,
+      "sha256": "839b6e8df456e5c991571955c7d105a3e1d93e2d8a2f6558904e49eed3c4af4a"
+    },
+    "cehub_project.projects": {
+      "count": 1,
+      "sha256": "533b7e43777e201f110908c2f12e0db2f6559523ece01d3652d53e58af076620"
+    },
+    "cehub_ai.agent_runs": {
+      "count": 16,
+      "sha256": "3503c9530a49ec38cfbc9e6904a03aca3e84e609e3fec7404a03fe7846842bcf"
+    },
+    "cehub_product.market_spaces": {
+      "count": 2,
+      "sha256": "8e596c44b8ad6d8fc9b47ac9d2645e067e57af2772e535db2fce0724d8fd9f4b"
+    },
+    "cehub_product.market_space_members": {
+      "count": 2,
+      "sha256": "47cbd39c1a1367b04f381b51a4c5b9a2a75462606d97b94bf428f1058fcea1c9"
+    },
+    "cehub_product.product_source_files": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cehub_product.product_proposals": {
+      "count": 1,
+      "sha256": "6310230f1e83f5a726b1b888c11f9a0940d67923abd49cbb9eead5f453edb7f8"
+    },
+    "cehub_product.product_proposal_revisions": {
+      "count": 1,
+      "sha256": "73819a414a66ad250bbc1a875fbd274599510ca41c725d4e60638ebdacb1a9d9"
+    },
+    "cehub_product.product_proposal_decisions": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cehub_ai.conversations": {
+      "count": 8,
+      "sha256": "21609d66ebf372e74b0e3ca315c5086ddc5a3dd5d27681dc1923b6ec371650a7"
+    }
+  },
+  "after_head": "0428_preproject_dialogue",
+  "after": {
+    "cehub_product.product_nodes": {
+      "count": 2,
+      "sha256": "b6a44ece11555bbc30217331e7554f38fcc65574827f055461e2176fccb0e35c"
+    },
+    "cehub_product.product_line_members": {
+      "count": 2,
+      "sha256": "25350a88ba79f8af71798a1ceb0d98db10896d148c4f61ae8423be0160391818"
+    },
+    "cehub_core.tenants": {
+      "count": 1,
+      "sha256": "f66a1bfd7299511eae0309384ad1351daca15b27d2390faa75bc5aff2642c59c"
+    },
+    "cehub_core.users": {
+      "count": 6,
+      "sha256": "839b6e8df456e5c991571955c7d105a3e1d93e2d8a2f6558904e49eed3c4af4a"
+    },
+    "cehub_project.projects": {
+      "count": 1,
+      "sha256": "533b7e43777e201f110908c2f12e0db2f6559523ece01d3652d53e58af076620"
+    },
+    "cehub_ai.agent_runs": {
+      "count": 16,
+      "sha256": "3503c9530a49ec38cfbc9e6904a03aca3e84e609e3fec7404a03fe7846842bcf"
+    },
+    "cehub_product.market_spaces": {
+      "count": 2,
+      "sha256": "8e596c44b8ad6d8fc9b47ac9d2645e067e57af2772e535db2fce0724d8fd9f4b"
+    },
+    "cehub_product.market_space_members": {
+      "count": 2,
+      "sha256": "47cbd39c1a1367b04f381b51a4c5b9a2a75462606d97b94bf428f1058fcea1c9"
+    },
+    "cehub_product.product_source_files": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cehub_product.product_proposals": {
+      "count": 1,
+      "sha256": "6310230f1e83f5a726b1b888c11f9a0940d67923abd49cbb9eead5f453edb7f8"
+    },
+    "cehub_product.product_proposal_revisions": {
+      "count": 1,
+      "sha256": "73819a414a66ad250bbc1a875fbd274599510ca41c725d4e60638ebdacb1a9d9"
+    },
+    "cehub_product.product_proposal_decisions": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cehub_ai.conversations": {
+      "count": 8,
+      "sha256": "21609d66ebf372e74b0e3ca315c5086ddc5a3dd5d27681dc1923b6ec371650a7"
+    }
+  },
+  "original_rows_unchanged": true,
+  "compatibility_categories": 2,
+  "compatibility_members": 2
+}

@@ -1,0 +1,29 @@
+{
+  "observed_at": "2026-10-03T11:05:08.952242+00:00",
+  "public_backend_files": 484,
+  "public_backend_v4_unchanged": true,
+  "public_candidate_sha256": "6b42e8ec60ca78077a24c2dcfe93b151cf6d78aff5cd3ebd5bf4dd3be4facc75",
+  "owned_sha256": {
+    "pdos-next/staging/wave17/fact_atom_storage.py": "b3794750da19f6394dc12cce062489e1aad7022619f4aac7dccb7e7246b9e604",
+    "pdos-next/staging/wave17/test_fact_atom_storage.py": "3161020f64902b0d54f2606a458a079bb0f3381e38ec161af0719c06df8b29d4",
+    "pdos-next/staging/wave17/fact-atom-storage-contract.md": "2c1c2dbffebbe6ace8092642f571ba2e3b3ba01723b4d21db41ce7ac2136f1bb"
+  },
+  "dependencies_observed_sha256": {
+    "pdos-next/staging/wave17/fact_storage_models.py": "c5e19ebd676ebca70421897a2ada1e3214d6fd1d6e7905bdb9a57d7be39f9a56",
+    "pdos-next/staging/wave17/fact_storage_codec.py": "962a7ad94babe6a5a4552d85dffa993cf0d8271e9ae49d4338f6ebf05fa835cf",
+    "pdos-next/staging/wave17/facts.py": "a9c06b974300729fe8953f1c7b85ec5a5c3ceb57416bc4d81c0c79f708083f50",
+    "pdos-next/staging/wave17/paired.py": "3cff4b1534533b2797f201faceede7e2a9514d84240ca06c6953b1de20dce750"
+  },
+  "pure_final_log": "fact-atom-pure-v5.log",
+  "pure_count": 20,
+  "pure_scope": "Explicit bounded SELECT substitutes, real Session/UOW structure; no DB enforcement/current source or qualification/same-UOW consumed attest",
+  "staged_unmounted": true,
+  "earlier_collection_error": "Missing server/tests helpers path; no fixture loaded; corrected explicit PYTHONPATH",
+  "v1_result": "16 passed, 2 failed: frozen Context fixture and expected safe UOW error code; fixed test only",
+  "format_only_binding": "fact-atom-format-only-binding-v5.json",
+  "supersedes_current": "root-fact-atom-storage-result-v3.json",
+  "actual_fixes": [
+    "ACL uses fresh server clock after the final SQL read",
+    "Receipt JSON result revision requires exact int; true is not v1"
+  ]
+}

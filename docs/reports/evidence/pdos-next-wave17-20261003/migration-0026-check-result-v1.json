@@ -1,0 +1,79 @@
+{
+  "status": "STATIC_PASS_UNINSTALLED",
+  "captured_at": "2026-10-03T12:26:11.593715+00:00",
+  "revision": "next_0026",
+  "down_revision": "next_0025",
+  "scope": "two new owned staging files only; static compile is not PostgreSQL parse/execution or installed guards",
+  "sources": [
+    {
+      "path": "pdos-next/staging/wave17/migration_0026.py",
+      "sha256": "2229809083a26528a9122e596c69a31c615218a0c44ced7cfd39fdb64b05c053"
+    },
+    {
+      "path": "pdos-next/staging/wave17/migration-0026-contract.md",
+      "sha256": "ef9f3adebf76cdff9936b90837bb15f455b87f6672dcd787812e0b18e5048f6c"
+    }
+  ],
+  "plan_source_sha256": "a5c1426f3d136d2fcd122d0cfed529dee3babeb120b0be5633a706ae4f680f80",
+  "model_source_sha256": "a7b5f65137f5456f72aa32e9b50d8749ea7a62003f699dedf596495b0a174162",
+  "generator_source_sha256": "2f625ce1f8ee4df701a7c900b4becaf72db6310fc2836e735148d477cd799bf7",
+  "embedded_sql_sha256": "bc51f22f4e730cd1f3b45f4df67f1be9cd252f481adc607335bb1581cbf6d656",
+  "statement_group_counts": {
+    "parent_unique_and_tables": 6,
+    "model_indexes_after_tables": 5,
+    "guard_preflight_after_tables": 3,
+    "replace_functions": 4,
+    "new_functions": 6,
+    "new_triggers": 15,
+    "permissions": 41,
+    "rollback_preflight_before_any_changes": 2,
+    "rollback_guards": 23,
+    "restore_actual_old_functions": 4
+  },
+  "compiled_statements": 109,
+  "exact_sql_comparison": true,
+  "old_actual_functions_sha256": {
+    "assert_quality_followup_proof(uuid,uuid,uuid,text,jsonb,timestamptz)": "3804a6762816a5a4bbb92c4055637f682dddc6fb9c42cb7489d8ca44ae047fe0",
+    "protect_quality_followup_confirmation()": "50041550ae20c84c36b09df868373ca4b100e7a02af6fbd892448b3a8aca89bb",
+    "require_quality_followup_consumption_atom()": "958a891cdf688705c27b501d81df876aa392d5f473a79c30d0821a6513f09ee6",
+    "assert_quality_change_receipt(uuid,uuid,uuid,integer,text,text,uuid,text)": "664ed1b5bc62c9558dfe2b1b6d60e92ae91a399a7c1922fef174e9521caa0685",
+    "assert_quality_followup_receipt(uuid,uuid,uuid,integer,text,text,uuid,text,text)": "7dcf70ba1b333572e7d4afc08c0eae123310ba6e4f639c81d116178f1218aa3b",
+    "require_quality_followup_atom()": "af47a61163221c81b2c7f40745cc08163cdd70a4d26cced24d1c17f03bc9cb2c"
+  },
+  "checks": [
+    {
+      "name": "ruff",
+      "command": [
+        "pdos-next/server/.venv/bin/ruff",
+        "check",
+        "pdos-next/staging/wave17/migration_0026.py"
+      ],
+      "exit_code": 0,
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/migration-0026-ruff-final-v1.log",
+      "log_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "name": "format",
+      "command": [
+        "pdos-next/server/.venv/bin/ruff",
+        "format",
+        "--check",
+        "pdos-next/staging/wave17/migration_0026.py"
+      ],
+      "exit_code": 0,
+      "log_file": "docs/reports/evidence/pdos-next-wave17-20261003/migration-0026-format-final-v1.log",
+      "log_sha256": "fd2299c9f1c6dc869070883e281051bfe93aacf66c1a3b0069f45b4aa410ca50"
+    }
+  ],
+  "ast_import_static_exit_code": 0,
+  "static_log_file": "docs/reports/evidence/pdos-next-wave17-20261003/migration-0026-static-final-v1.log",
+  "static_log_sha256": "bdac08d2d084a978b1f2e00535c41ce8c422a951f9ca6543b9199b82306bf75b",
+  "database_connections": 0,
+  "sql_executions": 0,
+  "public_registration": false,
+  "remaining": [
+    "Root actual migration/roundtrip/schema/role verification",
+    "Root actual four valid/invalid publication atoms",
+    "Root public owner/consumer/professional integration; no effective/close support"
+  ]
+}

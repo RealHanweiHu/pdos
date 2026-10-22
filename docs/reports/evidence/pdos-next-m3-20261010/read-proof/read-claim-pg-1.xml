@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="23" time="19.877" timestamp="2026-10-11T00:14:16.808157-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_real_compute_call_retains_complete_digest_and_exact_replay" time="1.655" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[writer_id-ab24bde6-b304-468a-83a8-0297ba1c0843]" time="0.662" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[category_id-ab95a6ba-99ea-416c-8f95-d5092d42f2c7]" time="0.593" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[cancel_epoch-1]" time="0.742" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[isolation-research]" time="0.593" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[private_context-True]" time="0.654" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[model_call_id-aa630a62-b1f7-4136-9e30-a7aefb2191a1]" time="0.559" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_sql_cannot_accept_forged_read_binding[tool_definitions_digest-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]" time="0.627" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_real_read_proof_content_mismatch_and_cancelled_replay_refused" time="0.908" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_real_completed_read_result_and_binding_cannot_be_rewritten" time="0.758" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_original_agent_authority_is_rechecked_when_human_consumes_compute_proof" time="0.849" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_actual_domain_computed_claim_uses_complete_server_result" time="1.037"><failure message="pdos_next.errors.DomainError: 计算事实须绑定可信确定性计算回执；当前登记入口尚未接入该证明。">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_actual_domain_computed_claim_uses_complete_server_result(setup):
+        f = computed_candidate(setup)
+&gt;       saved = f.adapter.execute(
+            f.scope, f.spec.name, f.arguments, f.write_key, source=f.source,
+        )
+
+tests/agent_kernel/test_read_proof_transactions.py:182: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/domain_adapter.py:272: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:81: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:261: in write
+    result = execute(session, replace(ctx, agent_call_id=call.id), command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/service.py:941: in execute
+    validated_write = module.validate(s, ctx, command, product, payload)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/claim_candidate.py:304: in validate
+    prepared(session, ctx, command, scope, payload)
+pdos_next/request_proof.py:295: in bound
+    proof.read_rows[key] = function(
+pdos_next/agent_kernel/claim_candidate.py:286: in prepared
+    _nature(payload, run)
+pdos_next/agent_kernel/claim_candidate.py:231: in _nature
+    fail(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+code = 'SOURCE_UNAVAILABLE', reason = 'deterministic_proof_required'
+message = '计算事实须绑定可信确定性计算回执；当前登记入口尚未接入该证明。', status = 409, detail = {}
+
+    def fail(code, reason, message, status=409, **detail):
+        error = DomainError(code, message, status, detail=detail)
+        error.detail["reason"] = reason
+&gt;       raise error
+E       pdos_next.errors.DomainError: 计算事实须绑定可信确定性计算回执；当前登记入口尚未接入该证明。
+
+pdos_next/domain/preproject/access.py:11: DomainError</failure></testcase><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_actual_computed_candidate_can_be_adopted_once_without_t0_qualification" time="1.107"><failure message="AssertionError: {&quot;code&quot;:&quot;SOURCE_UNAVAILABLE&quot;,&quot;message&quot;:&quot;计算事实须绑定可信确定性计算回执；当前登记入口尚未接入该证明。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;deterministic_proof_required&quot;}}&#10;assert 409 == 200&#10; +  where 409 = &lt;Response [409 Conflict]&gt;.status_code">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_actual_computed_candidate_can_be_adopted_once_without_t0_qualification(setup):
+        f = computed_candidate(setup)
+        from pdos_next.agent_kernel.bootstrap import Bootstrap
+        from pdos_next.agent_kernel.models import TenantSkillEnablement
+        from pdos_next.models import Claim, Receipt
+    
+        with Session(setup.admin) as session, session.begin():
+            session.get(TenantSkillEnablement, f.qualification.id).qualification_revoked = True
+        bootstrap = Bootstrap(setup.engine)
+        bootstrap.route = lambda *_: f.route
+        prepared = bootstrap.prepare_candidate(f.scope, f.spec, f.arguments, f.write_key)
+        path = f"/v1/categories/{setup.category}/commands"
+        preview = setup.client.post(path + "/preview", headers=setup.headers, json=prepared["command"])
+&gt;       assert preview.status_code == 200, preview.text
+E       AssertionError: {"code":"SOURCE_UNAVAILABLE","message":"计算事实须绑定可信确定性计算回执；当前登记入口尚未接入该证明。","detail":{"reason":"deterministic_proof_required"}}
+E       assert 409 == 200
+E        +  where 409 = &lt;Response [409 Conflict]&gt;.status_code
+
+tests/agent_kernel/test_read_proof_transactions.py:212: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_actual_postgres_canonical_json_matches_server_digest[value0]" time="0.201" /><testcase classname="tests.agent_kernel.test_read_proof_transactions" name="test_actual_postgres_canonical_json_matches_server_digest[value1]" time="0.242" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_actual_common_claim_and_completed_recovery_need_only_current_read_access" time="1.092" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_actual_common_domain_failure_rolls_back_call_fact_and_receipt_group" time="1.003" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_actual_model_arguments_and_current_route_cannot_be_substituted" time="0.742" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_cross_run_existing_result_keeps_original_ownership_and_has_no_new_call" time="1.068" /><testcase classname="tests.agent_kernel.test_domain_adapter_transactions" name="test_actual_read_tools_keep_root_metadata_and_exact_isolated_source_scope" time="0.577" /><testcase classname="tests.agent_kernel.test_claim_candidate_transactions" name="test_claim_candidate_cannot_be_changed_or_confirmed_after_cancel" time="0.993" /><testcase classname="tests.agent_kernel.test_claim_candidate_transactions" name="test_claim_candidate_t1_preserves_writer_and_all_or_none_run_revert" time="1.589" /><testcase classname="tests.agent_kernel.test_claim_candidate_transactions" name="test_claim_adoption_terminal_failure_keeps_proof_and_no_partial_result" time="1.080" /></testsuite></testsuites>

@@ -1,0 +1,13 @@
+{
+  "server/app/domain/xiaopai.py": "32646b54352731644148b95810a8c42508aa84f8386405c1e6d3f76f61c1422c",
+  "server/app/domain/xiaopai_memory.py": "c7ce0efeaa15e3f665267e64e0975b7f4a14292bc65bdb6cbc4b299637c3a6d0",
+  "server/app/domain/xiaopai_reminders.py": "67853ca974f11e6376e347dbd22462192fd629e3bae38564ad5382e9bca72b87",
+  "server/app/db/xiaopai_schema.py": "cbf9887eda177486257f7a953b7903e556b93b7f4d85644e1d5637bedb64984c",
+  "server/app/api/xiaopai.py": "24d899e1efb51736ee6787edc79a1b0f5843451587fcbe744cb2444508c68062",
+  "server/migrations/versions/0395_xiaopai_delegations.py": "36269d7c4ea4deb4e2da4aaa3bbdbf70bdc9e2c3516cb6b2c1aa03a96ef6fb10",
+  "web/src/components/ai/xiaopai-provider.tsx": "a696c3522bc7f3d4c4d08358780b8c2ba40b25d914445e9d52d1eb5c63034dd2",
+  "web/src/components/ai/xiaopai-followup.tsx": "e18915af77a671e2898341aeafb265bcf805e6f01702d7c07550ceffb2a518bc",
+  "web/src/components/ai/project-conversation.tsx": "d2e8956004725181ac821bde51a025d4940b6ae6a44cbd539985309152b56411",
+  "web/src/components/ai/conversation-files.tsx": "8d395e0c8b10cb170eed85fdb15b0555f32947fdb4a2f7eb502731c51d1f18f5",
+  "web/src/components/projects/schedule-forecast-panel.tsx": "b4305bb7856b39fc1032a3daad5706dfcb53175a9682d65496a833c284cd3487"
+}

@@ -1,0 +1,411 @@
+{
+  "version": "1.0.0",
+  "status": "frozen-not-runtime-wired",
+  "existing_objects": "implementation-inventory.json#/tables",
+  "common_rule": "tenant UUID non-null; unique tenant/id; tenant-bound composite FKs; positive versions; immutable released body with separate validity/control; business writes+Event+Audit same transaction",
+  "objects": [
+    {
+      "model": "ProductNode",
+      "namespace": "cehub_product",
+      "sor": "PDOS",
+      "owner": "product_manager",
+      "work_items": [
+        "N1-01",
+        "N6-04"
+      ],
+      "reuse": "existing Project links retained; product identity does not require Project",
+      "keys": "unique(tenant,code); typed parent FK; parent level and loop validation"
+    },
+    {
+      "model": "MarketSpace",
+      "namespace": "cehub_product",
+      "sor": "PDOS",
+      "owner": "product_manager",
+      "work_items": [
+        "N1-01"
+      ],
+      "reuse": "research_sources/evidence_snapshots reused",
+      "keys": "unique(tenant,code); tenant scope registry"
+    },
+    {
+      "model": "ResearchTask",
+      "namespace": "cehub_product",
+      "sor": "PDOS",
+      "owner": "research_owner",
+      "work_items": [
+        "N1-02"
+      ],
+      "reuse": "Evidence Snapshot and authorized research sources",
+      "keys": "tenant+typed scope+version; sources retain current ACL"
+    },
+    {
+      "model": "DesiredOutcome",
+      "namespace": "cehub_product",
+      "sor": "PDOS",
+      "owner": "product_manager",
+      "work_items": [
+        "N1-04"
+      ],
+      "reuse": "Requirement links retained",
+      "keys": "opportunity tree has one outcome; tenant-bound FK"
+    },
+    {
+      "model": "Opportunity",
+      "namespace": "cehub_product",
+      "sor": "PDOS",
+      "owner": "product_manager",
+      "work_items": [
+        "N1-04"
+      ],
+      "reuse": "Requirement many-to-many links alongside old primary source",
+      "keys": "tenant-bound outcome/parent/solution FKs; acyclic parent graph; unique relation links"
+    },
+    {
+      "model": "SolutionCandidate",
+      "namespace": "cehub_product",
+      "sor": "PDOS",
+      "owner": "product_manager",
+      "work_items": [
+        "N1-04"
+      ],
+      "reuse": "proposal body stays Finding until human application",
+      "keys": "owned by Opportunity; unique(tenant,opportunity,id); selected solution FK includes parent"
+    },
+    {
+      "model": "Experiment",
+      "namespace": "cehub_product",
+      "sor": "PDOS",
+      "owner": "experiment_owner",
+      "work_items": [
+        "N1-04"
+      ],
+      "reuse": "ScopedWorkItem for professional preparation; evidence snapshots for results",
+      "keys": "tenant/opportunity/solution composite FK; published protocol and result separate versions"
+    },
+    {
+      "model": "ProductStrategy",
+      "namespace": "cehub_product",
+      "sor": "PDOS",
+      "owner": "product_manager",
+      "work_items": [
+        "N1-05"
+      ],
+      "reuse": "Finding double action then human publish",
+      "keys": "unique(tenant,logical_id,version); frozen nine-area canvas; separate withdrawal/supersession metadata"
+    },
+    {
+      "model": "ProductDefinition",
+      "namespace": "cehub_product",
+      "sor": "PDOS",
+      "owner": "product_manager",
+      "work_items": [
+        "N1-06"
+      ],
+      "reuse": "existing Requirement and Specification targets",
+      "keys": "tenant/product/version; immutable published body; stable item keys; strategy version FK"
+    },
+    {
+      "model": "SpecificationItem",
+      "namespace": "cehub_product",
+      "sor": "PDOS",
+      "owner": "professional_item_owner",
+      "work_items": [
+        "N1-06",
+        "N1-07",
+        "N4-02"
+      ],
+      "reuse": "stable mapping to existing Requirement/Specification/Test Case",
+      "keys": "unique(definition_version,item_key); lineage preserves key across revisions; mapping composite tenant FKs"
+    },
+    {
+      "model": "ScopedWorkItem",
+      "namespace": "cehub_project",
+      "sor": "PDOS",
+      "owner": "action_owner_and_receiver",
+      "work_items": [
+        "N1-01",
+        "N3-04"
+      ],
+      "reuse": "project action remains Task",
+      "keys": "typed scope+tenant; transfer mapping unique source item; conditional independent acceptance"
+    },
+    {
+      "model": "ReviewRecord",
+      "namespace": "cehub_project",
+      "sor": "PDOS",
+      "owner": "dcp_or_technical_review_approver",
+      "work_items": [
+        "N1-07",
+        "N4-06"
+      ],
+      "reuse": "existing Gate consumes current review result; Meeting is separate",
+      "keys": "tenant/subject/kind/round; immutable finalized result; invalidation separate"
+    },
+    {
+      "model": "CaseProjectConversion",
+      "namespace": "cehub_project",
+      "sor": "PDOS",
+      "owner": "project_creator",
+      "work_items": [
+        "N1-07",
+        "N2-04"
+      ],
+      "reuse": "existing approved Case to draft Project atomic conversion",
+      "keys": "unique(tenant,case_id); unique(tenant,project_id); no retarget of historical Finding scope"
+    },
+    {
+      "model": "InitialPlanApplication",
+      "namespace": "cehub_project",
+      "sor": "PDOS",
+      "owner": "project_execution_approver_and_applier",
+      "work_items": [
+        "N2-04"
+      ],
+      "reuse": "Task/dependencies/Baseline/OperationReceipt; no duplicate action table",
+      "keys": "conversion+candidate_digest+approval; unique operation; complete node mapping and single active transferred work"
+    },
+    {
+      "model": "ProjectContractAdoption",
+      "namespace": "cehub_project",
+      "sor": "PDOS",
+      "owner": "project_manager",
+      "work_items": [
+        "N2-04"
+      ],
+      "reuse": "existing project seven states and existing approvals",
+      "keys": "unique(tenant,project,contract_version); historical snapshot; remediation receipt; no retrospective approved baseline"
+    },
+    {
+      "model": "ScheduleNode",
+      "namespace": "cehub_project",
+      "sor": "PDOS",
+      "owner": "project_manager",
+      "work_items": [
+        "N2-01"
+      ],
+      "reuse": "Task/Gate/Build/TestRun/Certification typed references",
+      "keys": "explicit tenant/project/source composite FK with exactly one source; independent milestone exception"
+    },
+    {
+      "model": "TimeRecord",
+      "namespace": "cehub_project",
+      "sor": "PDOS",
+      "owner": "baseline_or_commitment_approver; forecast_engine; actual_recorder",
+      "work_items": [
+        "N2-01",
+        "N2-06",
+        "N2-07"
+      ],
+      "reuse": "old Task dates remain legacy; independent four-time snapshots",
+      "keys": "unique(tenant,project,time_kind,version); current pointer separate from frozen body; node-time rows bound to snapshot"
+    },
+    {
+      "model": "WorkCalendar",
+      "namespace": "cehub_project",
+      "sor": "PDOS",
+      "owner": "resource_calendar_owner",
+      "work_items": [
+        "N2-02"
+      ],
+      "reuse": "site/timezone compatibility; no per-project copy of shared calendar",
+      "keys": "unique(tenant,logical_calendar,version); in-flight references keep old version"
+    },
+    {
+      "model": "ResourceIdentity",
+      "namespace": "cehub_project",
+      "sor": "PDOS development resources only",
+      "owner": "resource_owner",
+      "work_items": [
+        "N2-02",
+        "N6-01"
+      ],
+      "reuse": "legacy project.resources rows mapped without treating allocation_percent as capacity",
+      "keys": "unique(tenant,code); unique legacy mapping; calendar version FK"
+    },
+    {
+      "model": "ResourceCapacity",
+      "namespace": "cehub_project",
+      "sor": "PDOS development capacity",
+      "owner": "resource_owner",
+      "work_items": [
+        "N2-02",
+        "N6-01"
+      ],
+      "reuse": "source calendar/version and declared window",
+      "keys": "resource/version/window/unit; current capacity locked at reserve; same-unit deterministic check"
+    },
+    {
+      "model": "ResourceReservation",
+      "namespace": "cehub_project",
+      "sor": "PDOS development reservations",
+      "owner": "resource_owner_and_project_requester",
+      "work_items": [
+        "N2-02",
+        "N6-01"
+      ],
+      "reuse": "proposal does not consume capacity; preserve reserved/release receipts",
+      "keys": "tenant/project/node/resource FKs; unique operation; serialized capacity admission; no overbooking on concurrent reservations"
+    },
+    {
+      "model": "SupplySnapshot",
+      "namespace": "cehub_supplier",
+      "sor": "ERP supply facts; PDOS snapshot",
+      "owner": "authorized_supply_importer",
+      "work_items": [
+        "N5-01",
+        "N5-02"
+      ],
+      "reuse": "ERP external IDs; internal snapshot only; zero ERP writes",
+      "keys": "tenant/source_system/external_item/as_of/digest; Build allocations separately prevent double counting"
+    },
+    {
+      "model": "MetricsDocument",
+      "namespace": "cehub_quality",
+      "sor": "PDOS confirmed test evidence",
+      "owner": "test_operator_and_quality_reviewer",
+      "work_items": [
+        "N4-01"
+      ],
+      "reuse": "test_runs.metrics JSONB array kept; schema_version separate column",
+      "keys": "metric_key within run/schema version; original/normalized/unit/conditions/criteria/source; legacy raw payload preserved"
+    },
+    {
+      "model": "SampleConfigurationRevision",
+      "namespace": "cehub_product",
+      "sor": "PDOS development configuration; external design versions by reference",
+      "owner": "sample_configuration_recorder",
+      "work_items": [
+        "N4-01"
+      ],
+      "reuse": "sample_build_configurations compatibility/current pointer",
+      "keys": "unique(tenant,sample,revision_no); immutable six-field snapshot; TestRun composite FK; unknown historical configuration not copied from today"
+    },
+    {
+      "model": "AuthorizationEnvelope",
+      "namespace": "cehub_ai",
+      "sor": "trusted authorization service",
+      "owner": "runtime_authorization_service",
+      "work_items": [
+        "N0-02",
+        "N0-03"
+      ],
+      "reuse": "old FrozenRunContext v2 read adapter; no forged permission renewal",
+      "keys": "tenant/run/lineage/policy; immutable authorization ceiling; revocation control separate"
+    },
+    {
+      "model": "ContextManifest",
+      "namespace": "cehub_ai",
+      "sor": "trusted context service",
+      "owner": "context_builder",
+      "work_items": [
+        "N0-03"
+      ],
+      "reuse": "agent_runs/model_invocations lineage and release bundle",
+      "keys": "unique(run,revision_no); same key/digest reuse, different digest conflict; invocation binds actual revision"
+    },
+    {
+      "model": "Observation",
+      "namespace": "cehub_ai",
+      "sor": "trusted tool observation",
+      "owner": "tool_proxy",
+      "work_items": [
+        "N0-03"
+      ],
+      "reuse": "evidence snapshots retained with ACL dependencies",
+      "keys": "unique(run,sequence); append-only; source ACL and locator; lease generation fence on publication"
+    },
+    {
+      "model": "CompactionRecord",
+      "namespace": "cehub_ai",
+      "sor": "trusted runtime derived summary",
+      "owner": "context_compactor",
+      "work_items": [
+        "N0-03"
+      ],
+      "reuse": "original manifest and observations remain readable subject to ACL",
+      "keys": "immutable source/summary digest; preserve reference-protected lineage; recheck derived source ACL on egress"
+    },
+    {
+      "model": "RunControl",
+      "namespace": "cehub_ai",
+      "sor": "trusted worker control",
+      "owner": "worker_control_service",
+      "work_items": [
+        "N0-03"
+      ],
+      "reuse": "existing agent run storage adapted; no overwrite of frozen context",
+      "keys": "run/generation/attempt; compare-and-set lease; shared lineage budget ledger; persistent waiting"
+    },
+    {
+      "model": "OperationReceipt",
+      "namespace": "cehub_project",
+      "sor": "PDOS domain operation; AI holds reference only",
+      "owner": "human_domain_action_service",
+      "work_items": [
+        "N0-03",
+        "N2-04"
+      ],
+      "reuse": "existing Event/Audit and reviewed Finding; actual business execution separate",
+      "keys": "unique(tenant,operation,idempotency_key); same digest returns same mapping; different digest 409; transaction atomicity"
+    },
+    {
+      "model": "PlanCandidate",
+      "namespace": "cehub_ai",
+      "sor": "model proposal only; formal plan belongs to PDOS project domain",
+      "owner": "plan_preparer_and_reviewer",
+      "work_items": [
+        "N2-03",
+        "N2-04"
+      ],
+      "reuse": "stored in typed Finding payload; accepted payload immutable; no duplicate proposal truth",
+      "keys": "stable node key; source/template versions and candidate digest; domain Task/Baseline created only by independent apply"
+    },
+    {
+      "model": "ProjectRoleAssignment",
+      "namespace": "cehub_project",
+      "sor": "PDOS authorization policy, distinct from professional responsibility",
+      "owner": "project_membership_administrator",
+      "work_items": [
+        "N0-02"
+      ],
+      "reuse": "existing Role enum; project_role null preserves current tenant-role plus membership behavior",
+      "keys": "tenant/project/user composite FK; nullable existing Role values; role intersection and effective delegation applied server-side; discipline never grants permissions"
+    },
+    {
+      "model": "VersionValidity",
+      "namespace": "cehub_product",
+      "sor": "PDOS published-version validity, first consumer product domain",
+      "owner": "domain_authorized_publisher_or_invalidation_service",
+      "work_items": [
+        "N0-03",
+        "N1-06",
+        "N2-04"
+      ],
+      "reuse": "same contract shape in each owning domain; keep original published body and old controls",
+      "keys": "tenant/subject/version FK; monotonic control revision; replacement same logical lineage with higher version; current pointer separate"
+    },
+    {
+      "model": "RuntimeReleaseBundle",
+      "namespace": "cehub_ai",
+      "sor": "trusted runtime release registry",
+      "owner": "runtime_release_publisher",
+      "work_items": [
+        "N0-03",
+        "N7-02"
+      ],
+      "reuse": "existing qualified model/golden and prompt/tool contracts; no automated trusted-root write",
+      "keys": "immutable exact code/migration/components digests; run fixed bundle; qualifications rechecked at runtime"
+    },
+    {
+      "model": "LegacyContextCompatibility",
+      "namespace": "cehub_ai",
+      "sor": "read adapter of old runtime record",
+      "owner": "context_compatibility_service",
+      "work_items": [
+        "N0-03"
+      ],
+      "reuse": "original FrozenRunContext v2 retained read-only; no second business object",
+      "keys": "original run/digest; legacy_unknown nonresumable; new execution needs new authorized run with lineage budget"
+    }
+  ]
+}

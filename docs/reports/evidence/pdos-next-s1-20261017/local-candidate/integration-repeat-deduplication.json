@@ -1,0 +1,8 @@
+{
+  "requested_repetitions": 5,
+  "requested_distinct_cases": 3,
+  "actual_passed_observation_lines": 3,
+  "actual_pytest_summary": "3 passed, 26 warnings in 28.18s",
+  "repetition_proven": false,
+  "next_action": "Use separate verified subprocesses, at most five, stop after first failure"
+}

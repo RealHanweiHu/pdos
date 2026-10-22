@@ -1,0 +1,122 @@
+{
+  "observed_at": "2026-10-03T06:52:49.612616+00:00",
+  "marker": "916f950f-2d2b-405d-b809-c15db75dc20c",
+  "issue_id": "16ff0607-08f8-5e3c-9b74-b48999791b00",
+  "current_revision": 4,
+  "versions": [
+    {
+      "id": "5c398f44-ec63-48e3-aba2-e0b9b0ccea0d",
+      "revision": 1,
+      "operation": "quality.issue.create",
+      "status": "open",
+      "snapshot_sha256": "23213ee595c4179def1e66af6249f5fb9598413ef0bff42dd81e013d9eea4eeb"
+    },
+    {
+      "id": "362d451a-1c72-47ec-b766-e9d4a10b7374",
+      "revision": 2,
+      "operation": "quality.issue.triage",
+      "status": "triaged",
+      "snapshot_sha256": "e9fcf46ef6ab174e4a07cefb7ef1fba9d748593d2df04fcc1a79f1dc9729b536"
+    },
+    {
+      "id": "c928e2f3-52f3-4156-bf61-03cfbe4abe84",
+      "revision": 3,
+      "operation": "quality.issue.containment.record",
+      "status": "actioning",
+      "snapshot_sha256": "ee072906e1dcc776a5697cf9ae1c0aa4ac5faf8f005af68f2e4afa9598ca368d"
+    },
+    {
+      "id": "8d8901e6-c051-406e-9db4-8e6c99e4d8e4",
+      "revision": 4,
+      "operation": "quality.capa.draft",
+      "status": "actioning",
+      "snapshot_sha256": "e64aff5a9aac2b88c042a6a3ce4a02fff8e0a2cd6a105901e41d50e2edf0303f"
+    }
+  ],
+  "capa_id": "3352bbb0-fd50-4b5b-b1ef-2dd87ef79405",
+  "actions": [
+    {
+      "id": "d6437922-f362-4c7a-9827-a17a7ea70dc7",
+      "kind": "corrective",
+      "text": "\u8c03\u67e5\u56fa\u5b9a\u5de5\u51b5\u4e0b\u7684\u5c3a\u5bf8\u504f\u5dee\uff0c\u8865\u9f50\u65b9\u6cd5\u4e0e\u6837\u4ef6\u4f9d\u636e\uff1b\u5c1a\u672a\u6267\u884c\u6b63\u5f0f\u914d\u7f6e\u5207\u6362\u3002",
+      "completion": null,
+      "executor_id": "77465957-a05e-4663-85bf-34cd39ac43dd"
+    }
+  ],
+  "requirement": {
+    "method": "\u7531\u72ec\u7acb\u5177\u540d\u4eba\u5458\u5f62\u6210\u65b0\u8bf7\u6c42\u4e0e\u65b0\u8fd0\u884c\uff0c\u6838\u5bf9\u914d\u7f6e\u3001\u65b9\u6cd5\u3001\u5de5\u51b5\u548c\u539f\u62a5\u544a\u540e\u590d\u9a8c\u3002",
+    "acceptance": "\u5c3a\u5bf8\u57289.5\u81f310.5 mm\u8303\u56f4\u5185\uff0c\u5de5\u51b523 C\u3001dry\uff1b\u8986\u76d6\u56fa\u5b9a\u539f\u5931\u8d25\u53ca\u72ec\u7acb\u89c2\u5bdf\u8981\u6c42\u3002",
+    "observation_until": "2026-10-04T06:00:00Z",
+    "required_failure_ids": [
+      "e218c8dc607a59699e0e024c43409bdbb238821bd9a2df45c48d1a8cb2757730"
+    ]
+  },
+  "containment": [
+    {
+      "at": {
+        "source": {
+          "id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:0ccc5f872405fcb0cf0cd2afaa97d4d45435f4be264530db26cd500dc5871aa5",
+          "revision": 1
+        },
+        "occurred_at": "2026-10-03T06:25:03.160086Z",
+        "effective_at": null,
+        "original_timezone": "UTC"
+      },
+      "id": "97ac84cf-7881-4321-93d9-54c0b66fe979",
+      "text": "\u72ec\u7acb\u5408\u6210\u6837\u4ef6\u4ec5\u4fdd\u7559\u5185\u90e8\u8c03\u67e5\uff0c\u975e\u91ca\u653e/\u5173\u95ed",
+      "evidence": [
+        {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "kind": "artifact",
+          "position": "line:4;quote_sha256:283bb339f09b9cf202fd45a1c9c78c6ffe8e32527bd31870b94121579aebe155",
+          "revision": 1
+        },
+        {
+          "id": "4b60b262-2c3f-4f48-ab9e-ad7a775fe1b3",
+          "kind": "artifact",
+          "position": "line:5;quote_sha256:40926e24fe2710bf2600e889e00a3952ad876dc77ef71634b751a8425d812c97",
+          "revision": 1
+        },
+        {
+          "id": "72d6af9c-e1c0-48a8-8220-f4e3a024569d",
+          "kind": "artifact",
+          "position": "line:1;quote_sha256:0ccc5f872405fcb0cf0cd2afaa97d4d45435f4be264530db26cd500dc5871aa5",
+          "revision": 1
+        }
+      ],
+      "executor_id": "77465957-a05e-4663-85bf-34cd39ac43dd"
+    }
+  ],
+  "root_cause": null,
+  "effectiveness": null,
+  "receipt_count": 4,
+  "receipt_operations": [
+    "quality.capa.draft",
+    "quality.issue.containment.record",
+    "quality.issue.create",
+    "quality.issue.triage"
+  ],
+  "confirmation_states": [
+    {
+      "id": "bfe047bf-ce6d-498e-8ac8-c045dfa84d84",
+      "operation": "quality.issue.triage",
+      "consumed": true,
+      "expires_at": "2026-10-03T06:31:28.748847+00:00"
+    },
+    {
+      "id": "74878b28-95aa-4034-a96a-37e5fc2601e0",
+      "operation": "quality.issue.containment.record",
+      "consumed": false,
+      "expires_at": "2026-10-03T06:40:55.992127+00:00"
+    },
+    {
+      "id": "a9d7053e-537a-451d-8b2f-4a049792fe70",
+      "operation": "quality.issue.containment.record",
+      "consumed": true,
+      "expires_at": "2026-10-03T06:53:49.466239+00:00"
+    }
+  ],
+  "observation_recovery": "First readonly query verified but metadata extraction outside Session failed; this extraction occurs inside Session, no business retry/write"
+}

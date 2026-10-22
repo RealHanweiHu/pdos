@@ -1,0 +1,172 @@
+--- a/pdos-next/server/pdos_next/domain/quality_execution/service.py
++++ b/pdos-next/server/pdos_next/domain/quality_execution/service.py
+@@ -725,7 +725,7 @@
+     }
+ 
+ 
+-def _view(s, ctx, pid, row, *, current):
++def _view(s, ctx, pid, row, *, current, assess_capabilities=True):
+     issue = _snapshot(row)
+     reads = merge_reads(row.required_source_read_set)
+     source_current = True
+@@ -784,39 +784,40 @@
+             try:
+                 published = policy.assess(s, ctx, pid, row.project_id, row.purpose)
+                 reads = merge_reads(reads, published["required_source_read_set"])
+-                for op in PAYLOADS:
+-                    if op == "quality.issue.create":
+-                        continue
+-                    authority = professional.assess(
+-                        s, ctx, pid, row.project_id, op, row.purpose, now()
+-                    )
+-                    authorities[op] = authority
+-                    legal = (
+-                        (
+-                            op in {"quality.issue.triage", "quality.issue.merge"}
+-                            and issue.status == "open"
++                if assess_capabilities:
++                    for op in PAYLOADS:
++                        if op == "quality.issue.create":
++                            continue
++                        authority = professional.assess(
++                            s, ctx, pid, row.project_id, op, row.purpose, now()
+                         )
+-                        or (
+-                            op == "quality.issue.merge"
+-                            and issue.status == "triaged"
+-                            and not issue.capa
++                        authorities[op] = authority
++                        legal = (
++                            (
++                                op in {"quality.issue.triage", "quality.issue.merge"}
++                                and issue.status == "open"
++                            )
++                            or (
++                                op == "quality.issue.merge"
++                                and issue.status == "triaged"
++                                and not issue.capa
++                            )
++                            or (
++                                op == "quality.issue.containment.record"
++                                and issue.status in {"triaged", "actioning"}
++                            )
++                            or (
++                                op == "quality.capa.draft"
++                                and issue.status in {"triaged", "actioning"}
++                                and issue.capa is None
++                            )
+                         )
+-                        or (
+-                            op == "quality.issue.containment.record"
+-                            and issue.status in {"triaged", "actioning"}
++                        capabilities[op] = bool(
++                            legal
++                            and authority.get("authorized") is True
++                            and authority.get("qualified") is True
+                         )
+-                        or (
+-                            op == "quality.capa.draft"
+-                            and issue.status in {"triaged", "actioning"}
+-                            and issue.capa is None
+-                        )
+-                    )
+-                    capabilities[op] = bool(
+-                        legal
+-                        and authority.get("authorized") is True
+-                        and authority.get("qualified") is True
+-                    )
+-                    reads = merge_reads(reads, authority.get("required_source_read_set", []))
++                        reads = merge_reads(reads, authority.get("required_source_read_set", []))
+             except DomainError as exc:
+                 if exc.status == 403:
+                     raise
+@@ -870,6 +871,31 @@
+     )
+ 
+ 
++def get_issue_for_change(s, ctx, pid, issue_id, revision=None, *, write=False):
++    """Fixed Issue proof without unrelated quality write-capability assessment.
++
++    Current/source ACL, actual failure bridge and current risk policy remain
++    independently checked on every call. No proof is shared across phases.
++    """
++    _human(s, ctx, pid, write=write)
++    row = _row(s, ctx, pid, issue_id, revision)
++    pointer = s.scalar(
++        select(QualityIssueCurrent).where(
++            QualityIssueCurrent.tenant_id == ctx.tenant_id,
++            QualityIssueCurrent.product_id == pid,
++            QualityIssueCurrent.issue_id == issue_id,
++        )
++    )
++    return row, _view(
++        s,
++        ctx,
++        pid,
++        row,
++        current=bool(pointer and pointer.issue_version_id == row.id),
++        assess_capabilities=False,
++    )
++
++
+ def list_quality(s, ctx, pid, *, issue_id=None, run_id=None, build_id=None):
+     _human(s, ctx, pid)
+     # Explicit selection bounds current proofs; empty selection reads no full history.
+--- a/pdos-next/server/pdos_next/domain/change_execution/service.py
++++ b/pdos-next/server/pdos_next/domain/change_execution/service.py
+@@ -57,12 +57,12 @@
+     if installed is not None:
+         return installed
+     try:
+-        from pdos_next.domain.quality_execution.service import get_issue
++        from pdos_next.domain.quality_execution.service import get_issue_for_change
+     except ImportError:
+         raise DomainError(
+             "INTEGRATION_REQUIRED", "固定Issue/CAPA所有者读取端口尚未接入。", 503
+         ) from None
+-    return get_issue
++    return get_issue_for_change
+ 
+ 
+ def _human(s, ctx, pid, *, write=False):
+@@ -165,11 +165,14 @@
+ 
+ def _seed(s, ctx, pid, refs):
+     loader = _issue_loader(s)
+-    values = []
++    values, wrappers = [], {}
+     for ref in refs:
+         if ref.kind not in {"issue", "capa"}:
+             continue
+-        row, typed = loader(s, ctx, pid, ref.id, ref.revision)
++        identity = (ref.id, ref.revision)
++        if identity not in wrappers:
++            wrappers[identity] = loader(s, ctx, pid, ref.id, ref.revision)
++        row, typed = wrappers[identity]
+         view = typed.model_dump(mode="json") if hasattr(typed, "model_dump") else typed
+         if (
+             str(view["issue_id"]) != str(ref.id)
+--- a/pdos-next/server/pdos_next/domain/change_execution/graph.py
++++ b/pdos-next/server/pdos_next/domain/change_execution/graph.py
+@@ -93,6 +93,7 @@
+         self.s, self.ctx, self.pid = s, ctx, pid
+         self.scope, self.target, self.issue_loader = scope, target, issue_loader
+         self.objects = {}
++        self.issue_wrappers = {}
+ 
+     def resolve(self, ref):
+         if ref.identity in self.objects:
+@@ -127,7 +128,12 @@
+         s, ctx, pid = self.s, self.ctx, self.pid
+         basis = {}
+         if ref.kind in {"issue", "capa"}:
+-            row, typed = self.issue_loader(s, ctx, pid, ref.id, ref.revision)
++            identity = (ref.id, ref.revision)
++            if identity not in self.issue_wrappers:
++                self.issue_wrappers[identity] = self.issue_loader(
++                    s, ctx, pid, ref.id, ref.revision
++                )
++            row, typed = self.issue_wrappers[identity]
+             wrapper = _raw(typed)
+             view = wrapper["issue"]
+             if ref.kind == "capa":

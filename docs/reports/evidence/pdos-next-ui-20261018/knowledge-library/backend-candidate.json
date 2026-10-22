@@ -1,0 +1,27 @@
+{
+  "evidence_status": "RECOVERY_NOTE_NOT_ORIGINAL_FULL_MANIFEST",
+  "original_full_manifest_recovered": false,
+  "recorded_original_summary": {
+    "database": {
+      "host": "127.0.0.1",
+      "port": 64245,
+      "database": "pdos_test",
+      "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+      "head": "s0_0809"
+    },
+    "changes_during_check": [],
+    "runtime_changes_during_check": [],
+    "exit_code": 0,
+    "guard_connections_disposed_before_pytest": true,
+    "migrations_executed": false,
+    "models_called": false,
+    "browser_used": false,
+    "domain": "new isolated synthetic fixture for actual category/model knowledge library original reads; bounded synthetic authority and negative source fixture, no new real qualification; no existing tenant or permissions altered"
+  },
+  "retained_original_final_audit": "final-audit.json",
+  "retained_initial_candidate": "initial-peer-usability-expectation/backend-candidate.json",
+  "retained_actual_dtos": "pg-http-responses.json",
+  "recovered_stdout_source": "recovered-process-evidence.json",
+  "no_test_rerun": true,
+  "limitation": "The original full final backend-candidate.json was overwritten by a misdirected P20 report. Its full runtime hash map is not reconstructed or claimed recovered; the immutable original final-audit, raw DTO, initial-failure candidate and frontend candidate remain."
+}

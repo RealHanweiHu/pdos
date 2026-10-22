@@ -1,0 +1,41 @@
+### Result
+{"real_api_authorization_and_run_history":true,"trigger_forms":["manual","schedule","domain_event","relative_milestone"],"event_catalog_count":122,"unknown_clocks_and_source_ids_empty":true,"automatic_manual_button_count":0,"mobile":{"viewport":320,"width":320,"dark":true},"non_get_requests":[],"page_errors":[]}
+### Ran Playwright code
+```js
+await (async page => {
+ const writes=[], failures=[];
+ const record = request => { if (!["GET","HEAD"].includes(request.method())) writes.push({method:request.method(),url:new URL(request.url()).pathname}); };
+ page.on("request",record); page.on("pageerror", error => failures.push(error.name));
+ const selected=page.locator('section[aria-label="所选固定规则"]');
+ await page.setViewportSize({width:1440,height:1000});
+ await page.getByRole("button",{name:"亮色",exact:true}).click();
+ await selected.scrollIntoViewIfNeeded();
+ const actual=await selected.innerText();
+ if (!actual.includes("实际服务授权 · 已暂停") || !actual.includes("触发方式：定时") || !actual.includes("已受理") || !actual.includes("queued")) throw new Error("Actual saved authorization/history missing");
+ if (await page.getByRole("button",{name:"本人手动触发（可能产生模型费用）",exact:true}).count()) throw new Error("Automatic rule exposes manual admission");
+ await page.screenshot({path:"/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s5-20261018/service-automation/desktop-light.png"});
+ const form=page.getByRole("combobox",{name:"触发方式",exact:true});
+ await form.selectOption("schedule");
+ if (await page.getByLabel("首次计划时点（含时区 ISO）",{exact:true}).inputValue() !== "") throw new Error("Unknown clock was invented");
+ await form.selectOption("domain_event");
+ const catalog=page.getByRole("group",{name:"实际领域事件目录",exact:true});
+ const eventCount=await catalog.getByRole("checkbox").count();
+ if (!eventCount) throw new Error("Real event catalog missing");
+ await form.selectOption("relative_milestone");
+ await page.getByRole("combobox",{name:"里程碑来源",exact:true}).selectOption("commitment");
+ for (const name of ["实际承诺人 UUID","该承诺接收者 UUID","实际项目 UUID","实际任务 UUID"]) {
+   if (!(await page.getByLabel(name,{exact:true}).isVisible()) || (await page.getByLabel(name,{exact:true}).inputValue()) !== "") throw new Error("A relative source was fabricated or hidden");
+ }
+ await form.selectOption("manual");
+ await form.selectOption("schedule");
+ await page.setViewportSize({width:320,height:800});
+ await page.getByRole("button",{name:"暗色",exact:true}).click();
+ await selected.scrollIntoViewIfNeeded();
+ const mobile=await page.evaluate(()=>({viewport:document.documentElement.clientWidth,width:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains("dark")}));
+ if (mobile.width>mobile.viewport || !mobile.dark) throw new Error("Mobile layout/theme mismatch");
+ await page.screenshot({path:"/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-s5-20261018/service-automation/mobile-dark.png"});
+ page.off("request",record);
+ if (writes.length || failures.length) throw new Error("Readonly inspection produced an unexpected mutation or page failure");
+ return {real_api_authorization_and_run_history:true,trigger_forms:["manual","schedule","domain_event","relative_milestone"],event_catalog_count:eventCount,unknown_clocks_and_source_ids_empty:true,automatic_manual_button_count:0,mobile,non_get_requests:writes,page_errors:failures};
+})(page);
+```

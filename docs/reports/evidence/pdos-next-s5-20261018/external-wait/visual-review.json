@@ -1,0 +1,18 @@
+{
+  "screenshots": {
+    "light-1440.png": "3413d651f22098ae061cb0b3424568852338cc13a3dd8f767dc751038220654c",
+    "dark-320.png": "668c6d321414b35e10a49333175d9e4cf7d2ed8c9fd2e95b182d0e05dbfa70b7"
+  },
+  "actual_viewports": [
+    1440,
+    320
+  ],
+  "actual_themes": [
+    "light",
+    "dark"
+  ],
+  "no_horizontal_overflow": true,
+  "stable_action_buttons_enabled": true,
+  "manually_inspected": true,
+  "capture": "actual viewport after current read, not a long element capture"
+}

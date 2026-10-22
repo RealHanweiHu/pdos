@@ -1,0 +1,8 @@
+{
+  "server/app/ai/product_evaluation.py": "6b40ce715eb1ead18c362006eaa66b94e93f3a4fda2271fc35a6e0671907790a",
+  "server/scripts/evaluate_product.py": "ef9056a18f0f33cb00ebe57f7bdd2711950cc9025c0bc68dbbffa95a4271d671",
+  "server/tests/test_product_evaluation.py": "d49c5e4419aa16e0d3498ea9176b5489437984f5dbfa34e1ea9c55f810a0593f",
+  "server/app/ai/product_work_context.py": "0ed273856c328af27a1eaa912ee11ca2f827a765960dcbdc0927354f3a566449",
+  "server/app/ai/application_domain_context.py": "f4f4b21dae67404da7938f844cdb05b8686f7c85efea1253aa8296139591daf0",
+  "docs/reports/evidence/pm-loop-20260929/capability-evaluation.md": "3d7aa64354b3fb5933f676fe86a0e24650946cb067db88b1f0a1fcb2e0c510c2"
+}

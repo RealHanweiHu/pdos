@@ -1,0 +1,9 @@
+{
+  "status": "CURRENT_DIAGNOSTIC_INTERPRETATION_CORRECTED_WITH_ORIGINALS_PRESERVED",
+  "previous_paragraph_sha256": "435a5450406fd842fcdd9f64e3b916cc6d34e0176003ab33c9fc46380dae53a0",
+  "current_paragraph_sha256": "6efaa9dd489e18b1b564c70cdba984577441245c3eb4e0ebfe9a98efe81f8579",
+  "previous_paragraph_retained": "pdos-next/.local/wave25-current-queue-fragment-v1.md",
+  "authoritative_diagnostic": "actual-retained-diagnostic-v3.json",
+  "all_other_queue_content_preserved": true,
+  "runtime_source_changed": false
+}

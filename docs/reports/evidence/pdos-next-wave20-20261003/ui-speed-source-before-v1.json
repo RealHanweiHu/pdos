@@ -1,0 +1,19 @@
+{
+  "scope": "Wave20 minimal indexed selection optimization; before edits",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+      "sha256": "20a1a0e685e4a060e490fbe76e28f92ea8d47a4ddd723147abe04fe83fdebe56"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-loop-view.ts",
+      "sha256": "398c3f8e21603257a69ea8fbbdfe9645ec4b2f45e05f503d0ff9a2717fd3af9e"
+    },
+    {
+      "path": "pdos-next/web/src/lib/build-quality-loop-view.test.ts",
+      "sha256": "b92e3faf3f48c4d9395ee83c26699c15b155bbe71e6fdeee13bbcd0ba7eaf1f2"
+    }
+  ],
+  "existing_helper_test_declarations": 37,
+  "verification": "read only; no new checks yet"
+}

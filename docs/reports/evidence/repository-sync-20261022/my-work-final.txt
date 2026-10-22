@@ -1,0 +1,29 @@
+✔ typed parsing preserves nullable facts and rejects a foreign identity even for empty reads (1.6825ms)
+✔ navigation uses only the actual original project or proposal, never a details-supplied href (0.333708ms)
+✔ first failure stays unknown; retry can establish a truly empty queue (9.327417ms)
+✔ subsequent page errors preserve records and exact cursor for retry (5.035083ms)
+✔ duplicate records and cursor loops do not append or discard current records (5.414542ms)
+✔ queue and identity changes hide old records synchronously and ignore late responses (3.187708ms)
+✔ transport and reload isolate their reads; unmount does not retain a late response (3.534541ms)
+✔ 403 on a later page clears earlier private items and requires a new initial read (3.363875ms)
+✔ four groups retain per-card blocking, real source facts and actual external stages (4.343417ms)
+(node:79659) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ task periods keep overdue visible, use calendar weeks, and never invent a due date (0.926166ms)
+✔ paused runs retain their own navigation and task clicks retain exact scope (36.694209ms)
+✔ period filtering and collapsing only change the local view of authorized tasks (4.410625ms)
+✔ answer and risk filters preserve run and project navigation without classifying runs as decisions (3.009916ms)
+✔ recent project history is per person and filtered against the current authorized read set (4.735208ms)
+✔ failed and partial reads keep unknown totals and retry instead of claiming empty queues (17.416708ms)
+✔ the shared attention queues stay separate from paused runs and do not issue an obsolete standalone G0 read (4.053667ms)
+✔ principal changes synchronously hide every previous private project, run and promise before effects run (8.984292ms)
+✔ test-start promise records stay outside triage counts and retain explicit receiver and coverage gaps (4.830375ms)
+✔ test-start promise read failure leaves tasks and run activity intact (5.497042ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 609.622375

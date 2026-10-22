@@ -1,0 +1,76 @@
+{
+  "schema_version": "staged-candidate-form-delta.v3",
+  "manifest": "candidate-form-source-manifest-v3.json",
+  "previous_error_evidence": "root-candidate-form-lint-v2.json",
+  "typecheck": {
+    "command": [
+      "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/node_modules/.bin/tsc",
+      "--project",
+      "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-candidate-form-v3-mwc4nbk4/tsconfig.json"
+    ],
+    "working_directory": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+    "exit_code": 0,
+    "elapsed_seconds": 1.595378,
+    "stdout": "",
+    "stderr": "",
+    "config": "/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave17-candidate-form-v3-mwc4nbk4/tsconfig.json",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noEmit": true,
+    "scope": "Only candidate-form.tsx and candidate-form-contract.ts plus required transitive types"
+  },
+  "lint": {
+    "scope": "Actual public ESLint configuration, two staged source strings in memory; no public files or build",
+    "working_directory": "/Users/huhanwei/Documents/ai-native-R&D-platform",
+    "config": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/eslint.config.mjs",
+    "elapsed_seconds": 1.551421,
+    "error_count": 0,
+    "warning_count": 0,
+    "exit_code": 0,
+    "outcomes": [
+      {
+        "name": "candidate-form.tsx",
+        "source_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/candidate-form.tsx",
+        "virtual_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/quality/staged-candidate-form.tsx",
+        "source_sha256": "e642bc01e749da135327cb64fad2314e01db1bb024d3ffbb72edb3a1d1fb25ee",
+        "error_count": 0,
+        "warning_count": 0,
+        "messages": []
+      },
+      {
+        "name": "candidate-form-contract.ts",
+        "source_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/staging/wave17/candidate-form-contract.ts",
+        "virtual_path": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web/src/components/quality/staged-candidate-form-contract.ts",
+        "source_sha256": "f17424c9edebfab91b385491e60dd00219c45c8c5e39e6bb98942b1b6ae817af",
+        "error_count": 0,
+        "warning_count": 0,
+        "messages": []
+      }
+    ],
+    "tool_combined_output_notice": "Warning: React version was set to \"detect\" in eslint-plugin-react settings, but the \"react\" package is not installed. Assuming latest React version for linting.",
+    "notice_is_lint_rule_message": false
+  },
+  "v1_v2_evidence_preserved": true,
+  "frozen_ui_files_unchanged": true,
+  "changes": [
+    "Move live ref initialization/update into unconditional layout effect: update committed basis/unlocked before notifying onChange(null)",
+    "Effect cleanup closes event gate only; no draft/command cancellation or transport",
+    "Destructure callbacks and precise effect dependencies; no ESLint suppression",
+    "Invalid scope/choices still notify current draft null and deny prior render callbacks after commit; child notification remains removed"
+  ],
+  "boundaries": [
+    "Current editable draft null only; prepared command/key/fullpayload/readset/UNKNOWN and saved receipt remain parent-owned",
+    "Gate represents committed React props, not professional authority or database Current proof",
+    "Actual lint rule counts zero; process React auto-detection notice retained separately",
+    "No runtime component/graphical acceptance claimed"
+  ],
+  "checks_not_run": [
+    "mirror component tests",
+    "public lint/type/build",
+    "browser",
+    "HTTP",
+    "database"
+  ],
+  "business_actions_performed": false
+}

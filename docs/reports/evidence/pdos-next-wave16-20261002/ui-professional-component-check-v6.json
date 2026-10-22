@@ -1,0 +1,88 @@
+{
+  "candidate": "Wave16 owned UI v6 professional reported/disposed read compatibility",
+  "recorded_at": "2026-10-03T09:28:50.243109+00:00",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/product/verification-professional.tsx",
+      "sha256": "76ea370bf3a6607a62db54385fe0b197ab563d50224a3ae9eb6dedfcd98a3c30"
+    },
+    {
+      "path": "pdos-next/web/src/lib/verification-professional.ts",
+      "sha256": "e9e4572da9ed10ff29658c6aaed0d85fe8cab91d46f40e4fd21b173f2b71837b"
+    },
+    {
+      "path": "pdos-next/web/src/lib/verification-professional.test.ts",
+      "sha256": "481635405b5cdbf2806223e0d9d113fb9b80919de63251d48b4b8c3f8c26b9f4"
+    }
+  ],
+  "baseline": [
+    {
+      "path": "pdos-next/web/src/components/product/verification-professional.tsx",
+      "sha256": "b97d80847b1ac1865a2b08acbe0c0b057511d98aa8b4ed304d959b274eaec02f",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-professional-before-v6-source/verification-professional.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/lib/verification-professional.ts",
+      "sha256": "d864458c26151c97af9a2e2669a0cdff6757267e5065d4441d69a611f585c24c",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-professional-before-v6-source/verification-professional.ts"
+    },
+    {
+      "path": "pdos-next/web/src/lib/verification-professional.test.ts",
+      "sha256": "d42f998d93898d93924c8f54410cf0f37085713d7a5a8b7493aa9897db9e406a",
+      "archive": "docs/reports/evidence/pdos-next-wave16-20261002/ui-professional-before-v6-source/verification-professional.test.ts"
+    }
+  ],
+  "delta_file": "ui-professional-before-to-v6.diff",
+  "public_paths_changed": false,
+  "backend_paths_changed": false,
+  "observed_failure": "GET200 with reported Current and legacy zero_occupancy=true while fixed actual_start remains; old closed front status validator discarded the entire requests+preparations list. Root supplied actual observation; no HTTP was run by C.",
+  "root_observation": "professional-read-compatibility-observation.json",
+  "changes": [
+    "Preserve all seven exact fixed Request states and original zero_occupancy booleans; no historical row is filtered.",
+    "Only reported/disposed tolerate legacy boolean true/false. For these phases occupancy display requires complete fixed actual_start occurred/received clocks, timezone, actor and source identity; missing/malformed evidence remains explicitly unknown.",
+    "Descriptions state retained saved historical use; final result/disposition is not occupancy release or present resource availability.",
+    "The other five state/zero-occupancy strict checks are unchanged. Unknown statuses and nonboolean flags still reject the malformed envelope.",
+    "Final phases do not reopen professional preparation method/window actions, even if a malformed capability map says true. New fixed Preparation creation remains its own server capability.",
+    "Original T1 prepared preview, named professional server facts, actor-private restore and original-command retry were not redesigned."
+  ],
+  "helper_checks": {
+    "tests": 20,
+    "passed": 20,
+    "failed": 0,
+    "exit_code": 0,
+    "raw_output": "ui-professional-helper-v6-checks.log",
+    "prepare_command": "node /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-professional-v6-6s2aez6y/prepare-tests.cjs",
+    "command": "node --test /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-professional-v6-6s2aez6y/verification-professional.test.js",
+    "runner_source": "ui-professional-v6-test-runner.cjs",
+    "transpilation": "Bundled TypeScript.transpileModule ES2022/CommonJS/esModuleInterop; only helper/test generated into tmp, no src.js"
+  },
+  "typecheck": {
+    "command": "node_modules/.bin/tsc --project /var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pdos-wave16-ui-professional-v6-6s2aez6y/tsconfig.json",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+    "exit_code": 0,
+    "raw_output": "ui-professional-type-v6-check.log",
+    "configuration": "ui-professional-local-v6-type-config.json"
+  },
+  "lint": {
+    "command": "node_modules/.bin/eslint src/components/product/verification-professional.tsx src/lib/verification-professional.ts src/lib/verification-professional.test.ts --format json --output-file /Users/huhanwei/Documents/ai-native-R&D-platform/docs/reports/evidence/pdos-next-wave16-20261002/ui-professional-lint-v6-result.json",
+    "cwd": "/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/web",
+    "exit_code": 0,
+    "errors": 0,
+    "warnings": 0,
+    "raw_output": "ui-professional-lint-v6-result.json"
+  },
+  "preserved_evidence": [
+    "ui-component-check-v5.json",
+    "ui-source-v5-manifest.json",
+    "ui-professional-before-v6-source-manifest.json",
+    "ui-professional-before-v6-source/*"
+  ],
+  "boundaries": {
+    "db_http_browser_public_build_run": false,
+    "backend_migration_or_api_modified": false,
+    "shared_bff_workspace_modified": false,
+    "business_actual_start_or_new_formal_claimed": false,
+    "root_public_build_browser_verification_pending": true
+  },
+  "backend_followup": "Root will separately change verification_front._view zero_occupancy from status-based projection to request.timeline.actual_start is None after its frozen PG candidate finishes. This UI is compatible with legacy true and future false, preserves the raw field, and does not claim the server read model was repaired."
+}

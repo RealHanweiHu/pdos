@@ -1,0 +1,1068 @@
+{
+  "FACT_ACTUAL_NAMED_CALLER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_KIND_NOT_SUPPORTED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_ACTUAL_PRODUCT_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_TYPED_FULL_REF_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_REGISTRY_LIMIT_EXCEEDED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_EXACT_REGISTRY_ROW_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_PROJECT_STATE_INVALID": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_ANCHOR_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_ANCHOR_SCOPE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_ORIGIN_ROW_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_ORIGIN_PREVIOUS_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_ANCHOR_MATERIAL_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_SOURCE_MIRROR_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_SERIES_SCOPE_OR_ANCHOR_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_CURRENT_VERSION_OR_EPOCH_INVALID": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_CURRENT_SERIES_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_SELECTED_VERSION_NOT_IN_CURRENT_SERIES": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_CANDIDATE_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_CANDIDATE_RAW_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_TYPED_CANDIDATE_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_CANDIDATE_OWNER_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_PROJECT_CHANGED_DURING_READ": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_ORIGIN_CHANGED_DURING_READ": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_FULL_REF_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_SERIES_PREVIOUS_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_ISSUER_MIRROR_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_RULE_FIXED_MATERIAL_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_CURRENT_CHANGED_DURING_READ": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_CURRENT_ISSUER_SERIES_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_PREVIOUS_SERIES_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_PREVIOUS_CYCLE": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_OBSERVATION_MIRROR_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_REVIEW_MIRROR_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_RULE_EXTERNAL_SERIES_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_OBSERVATION_SERIES_REBOUND": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_DUPLICATE_OBSERVATION_REF": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "FACT_REVIEW_OBSERVATION_RULE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_registry_storage.py"
+  ],
+  "CANDIDATE_COMMON_PHASE_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/service.py"
+  ],
+  "CANDIDATE_ACTUAL_MODULE_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/service.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/service.py"
+  ],
+  "CANDIDATE_ACTUAL_PRODUCT_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/service.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py"
+  ],
+  "CANDIDATE_LOADED_PRODUCT_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/service.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py"
+  ],
+  "CANDIDATE_COMMON_PHASE_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/service.py"
+  ],
+  "FACT_PROVENANCE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py"
+  ],
+  "FACT_FIXED_MATERIAL_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py"
+  ],
+  "FACT_REFERENCE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py"
+  ],
+  "FACT_FAILURE_COVERAGE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py"
+  ],
+  "FACT_ACTION_COVERAGE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py"
+  ],
+  "FACT_PAIR_MAPPING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py"
+  ],
+  "FACT_OWNER_PROOF_UNBOUND": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py"
+  ],
+  "FACT_OWNER_PROOF_EXPIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py"
+  ],
+  "FACT_SCOPE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_OPERATION_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py"
+  ],
+  "ORIGINAL_FAILURE_RUN_FORBIDDEN": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/facts.py"
+  ],
+  "CANDIDATE_LINEAGE_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "CANDIDATE_PERSISTED_PROOF_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "CANDIDATE_PROOF_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "CANDIDATE_REVIEW_MATERIAL_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "CANDIDATE_ANCHOR_RESTORE_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "CANDIDATE_PREPARED_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py"
+  ],
+  "CANDIDATE_PREPARED_BINDING_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_prepare.py"
+  ],
+  "FACT_REVIEW_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/capa_review_context.py"
+  ],
+  "FACT_REVIEW_PAIR_COVERAGE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py"
+  ],
+  "FACT_REVIEW_ACTION_COVERAGE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "FACT_REVIEW_FAILURE_COVERAGE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/capa_review_context.py"
+  ],
+  "INDEPENDENT_REVIEWER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_TYPED_SOURCE_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py"
+  ],
+  "CANDIDATE_SEMANTIC_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "LIVE_PAIRED_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "FACT_REVIEW_PAIR_SCOPE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "FACT_REVIEW_PAIRED_MATERIAL_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py"
+  ],
+  "FACT_REVIEW_PAIR_NOT_PERFORMED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py"
+  ],
+  "LIVE_PAIRED_EXPIRY_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py"
+  ],
+  "FACT_APPLICABILITY_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_fact_owner.py"
+  ],
+  "FACT_APPLICABILITY_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py"
+  ],
+  "FACT_REVIEW_PAIR_CURRENT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py"
+  ],
+  "CURRENT_POLICY_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "FACT_REVIEW_PAIR_MEASUREMENT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py"
+  ],
+  "FACT_REVIEW_PAIR_PROJECTION_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/named_review_owner.py"
+  ],
+  "CANDIDATE_WRITE_BINDING_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py"
+  ],
+  "CANDIDATE_ACTUAL_SEMANTIC_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py"
+  ],
+  "CANDIDATE_COMMAND_MATERIAL_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py"
+  ],
+  "CANDIDATE_ORIGIN_MATERIAL_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py"
+  ],
+  "CANDIDATE_SOURCE_AUDIENCE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py"
+  ],
+  "CANDIDATE_INSPECTION_MATERIAL_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py"
+  ],
+  "FACT_ACTUAL_CONSUMPTION_HOST_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py"
+  ],
+  "FACT_CONSUMPTION_MATERIAL_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py"
+  ],
+  "CANDIDATE_WRITE_MATERIAL_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py"
+  ],
+  "FACT_ACTUAL_FALSE_TRUE_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py"
+  ],
+  "FACT_CONSUMPTION_CLOCK_INVALID": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py"
+  ],
+  "FACT_WRITE_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_ACTUAL_CLOCK_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_EXACT_CURRENT_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/capa_fact_owner.py"
+  ],
+  "FACT_CURRENT_SERIES_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_SERIES_CONFLICT": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_AUDIENCE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_OPAQUE_PHASE_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_PHASE_MATERIAL_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_COMMAND_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_NEW_WRITE_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_ACTUAL_SEMANTIC_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_REVIEW_MATERIAL_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_LIVE_CONSUMPTION_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py"
+  ],
+  "FACT_COMMON_INTENT_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_REVIEW_SERIES_FORBIDDEN": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_FIRST_SERIES_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_RULE_SERIES_ID_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_RULE_MATERIAL_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_ISSUER_NATURE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_RUNTIME_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_PHASE_KIND_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_OBSERVATION_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_OBSERVATION_TARGET_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/capa_fact_owner.py"
+  ],
+  "FACT_OBSERVATION_RECORD_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_REVIEW_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "FACT_REVIEW_ACTION_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_write.py"
+  ],
+  "CANDIDATE_STORED_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_SEMANTIC_HAS_TOKEN": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_ACTUAL_SEMANTIC_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_RESULT_NOT_UNKNOWN": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_SOURCE_BASIS_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_NEW_WRAPPER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_ACTUAL_ORIGIN_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_FIXED_BASIS_SCOPE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_BASIS_SHA_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_BINDING_INSPECTION_SHA_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_COMPLETE_SOURCE_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_NAMED_WRITER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_RECEIPT_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_ORIGINAL_REQUEST_KEY_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_SAVED_COMMON_GROUP_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_SAVED_CLOCK_INVALID": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_EXACT_ID_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_CLOCK_INVALID": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_ACTUAL_COLUMN_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_FULL_REF_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_POST_IO_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_PROJECT_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "CANDIDATE_FUTURE_STORED_CLOCK": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_storage.py"
+  ],
+  "FACT_PERSISTENT_CONFIRMATION_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py"
+  ],
+  "FACT_LOADED_CONFIRMATION_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "FACT_COMMAND_PAYLOAD_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "FACT_DOMAIN_SEMANTIC_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py"
+  ],
+  "FACT_PUBLIC_PROOF_TOKEN_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "FACT_HOST_REGISTRY_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py"
+  ],
+  "FACT_HOST_REGISTRY_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py"
+  ],
+  "FACT_UNCONSUMED_MATERIAL_BINDING_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py"
+  ],
+  "FACT_EXACT_CONFIRMATION_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py"
+  ],
+  "FACT_COMMAND_ALREADY_CONSUMED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py"
+  ],
+  "FACT_PROOF_ALREADY_BOUND": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_consumption.py"
+  ],
+  "FACT_TRANSACTION_ROOT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_EXACT_GROUP_ROW_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "FACT_SAVED_PROOF_INCOMPLETE": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_SAVED_PROOF_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_REVISION_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_EXACT_VERSION_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_SAVED_WRITER_OR_OPERATION_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_STORED_BODY_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_SAVED_NAMED_WRITER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_RECEIPT_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_ORIGINAL_RECEIPT_CLOCK_OR_DIGEST_INVALID": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_ORIGINAL_REQUEST_KEY_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_AUDIT_OUTBOX_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_ACTIVE_TRANSACTION_CHAIN_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "FACT_IMPORT_HAS_PUBLIC_PROOF": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_atom_storage.py"
+  ],
+  "PARTICIPANT_OWNER_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_OWNER_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_CALLER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_ANCHOR_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_SCOPE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_IDENTITY_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_OWNER_SOURCE_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_WRITER_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_RECEIPT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_REQUEST_ASSOCIATION_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_ATOMIC_GROUP_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "REPORT_ARTIFACT_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_SOURCE_STALE": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "REPORT_REGISTRATION_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_RUN_HASH_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_RUN_SCOPE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_ORIGIN_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_CURRENT_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_SOURCE_EXPIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "REPORT_ORIGINAL_SCOPE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "REPORT_DERIVATION_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_CURRENT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_RUN_CHAIN_INVALID": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_RUN_IDENTITY_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_RUN_FACT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_MEASUREMENT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_CAPTURE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_ROOT_ACTOR_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_CONTAINMENT_ACTOR_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_COMPLETION_ACTOR_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_FAILURE_SCOPE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_OBSERVATION_CURRENT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "PARTICIPANT_OBSERVATION_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/participants_owner.py"
+  ],
+  "CANDIDATE_UNCONSUMED_CLEAN_PROOF_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "CANDIDATE_PROOF_CLOCK_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "CANDIDATE_AUDIENCE_OR_ORIGIN_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "CANDIDATE_ACTUAL_SEMANTIC_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "CANDIDATE_RESTORED_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "CANDIDATE_RESTORED_BINDING_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "CANDIDATE_PROOF_EXPIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/candidate_anchor_restore.py"
+  ],
+  "PAIR_EVENT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_FIXED_SCOPE_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_EXECUTION_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_RAW_VALUE_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_TIME_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_TRANSITION_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_PREDECESSOR_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_ORIGIN_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_DOMAIN_INTENT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_COMMON_MATERIAL_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_COMMON_INTENT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_RECEIPT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_ATOM_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_ATOM_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_SNAPSHOT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_PROJECTION_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_PARTIAL_HISTORY_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "PAIR_EXECUTION_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/paired.py"
+  ],
+  "ORIGIN_PROJECT_SCOPE_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_SNAPSHOT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_CLOCK_INVALID": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_REF_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_PREDECESSOR_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_PREDECESSOR_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_NOT_COMPLETED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_SEMANTIC_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_COMPLETION_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_HISTORY_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_NATURE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_WRITER_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_INTENT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_RECEIPT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_REQUEST_KEY_MISSING": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_GROUP_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_PROOF_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "ORIGIN_CURRENT_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/anchor_storage.py"
+  ],
+  "SOURCE_FACT_NATURE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py"
+  ],
+  "SOURCE_FACT_MATERIAL_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py"
+  ],
+  "CURRENT_AUTHORITY_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py",
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py"
+  ],
+  "SOURCE_FACT_STORAGE_MISMATCH": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py"
+  ],
+  "SOURCE_FACT_STORAGE_CHANGED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py"
+  ],
+  "SOURCE_LIMIT_EXCEEDED": [
+    "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_sources_owner.py"
+  ],
+  "FACT_REVIEW_OBSERVATION_REQUIRED": [
+    "pdos-next/server/pdos_next/capa_review_context.py"
+  ],
+  "ACTION_COMPLETION_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "ACTION_FULFILLMENT_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "ACTION_FULFILLMENT_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "ACTUAL_METHOD_BATCH_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "ACTUAL_METHOD_REFERENCE_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "RULE_METHOD_CRITERION_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "ACTUAL_METHOD_CONCLUSION_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "ACTUAL_METHOD_SOURCE_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "FACT_APPLICABILITY_SCOPE_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "FACT_LINEAGE_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_fact_owner.py"
+  ],
+  "ACTION_ORIGIN_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "ACTION_COMPLETION_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py",
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "ACTION_COMPLETION_OBSERVATION_MISSING": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "ACTION_CLASSIFICATION_AMBIGUOUS": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "ACTION_SOURCE_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "FACT_APPLICABILITY_CONCLUSION_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "ACTION_CLASSIFICATION_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_applicability_owner.py"
+  ],
+  "FACT_ISSUER_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/capa_fact_owner.py",
+    "pdos-next/server/pdos_next/capa_fact_owner.py"
+  ],
+  "RULE_NOT_CURRENT": [
+    "pdos-next/server/pdos_next/capa_fact_owner.py",
+    "pdos-next/server/pdos_next/capa_rule_publisher.py",
+    "pdos-next/server/pdos_next/capa_rule_publisher.py"
+  ],
+  "FACT_OBSERVATION_ORIGINAL_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_fact_owner.py"
+  ],
+  "FACT_OBSERVATION_SOURCE_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/capa_fact_owner.py",
+    "pdos-next/server/pdos_next/capa_fact_owner.py"
+  ],
+  "FACT_OBSERVATION_EVENT_SOURCE_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_fact_owner.py"
+  ],
+  "FACT_POLICY_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_fact_owner.py"
+  ],
+  "FACT_ISSUER_REVOKED": [
+    "pdos-next/server/pdos_next/capa_rule_publisher.py",
+    "pdos-next/server/pdos_next/capa_rule_publisher.py"
+  ],
+  "FACT_FIXED_ANCHOR_REQUIRED": [
+    "pdos-next/server/pdos_next/capa_rule_publisher.py"
+  ],
+  "FACT_RULE_ORIGINAL_MISMATCH": [
+    "pdos-next/server/pdos_next/capa_rule_publisher.py"
+  ],
+  "FACT_RULE_PROFILE_CHANGED": [
+    "pdos-next/server/pdos_next/capa_rule_publisher.py"
+  ],
+  "FACT_RULE_PROFILE_SCOPE_UNAVAILABLE": [
+    "pdos-next/server/pdos_next/capa_rule_publisher.py"
+  ],
+  "FACT_RULE_SOURCE_REQUIRED": [
+    "pdos-next/server/pdos_next/capa_rule_publisher.py"
+  ],
+  "FACT_RULE_ORIGINAL_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/capa_rule_publisher.py"
+  ],
+  "PAIR_FIXED_ROW_MISSING": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ],
+  "PAIR_PROFESSIONAL_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py",
+    "pdos-next/server/pdos_next/paired_output_bridge.py",
+    "pdos-next/server/pdos_next/paired_output_bridge.py",
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ],
+  "PAIR_SOURCE_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ],
+  "PAIR_PLAN_RESOURCES_NOT_READY": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ],
+  "PAIR_MEASUREMENT_OWNER_REQUIRED": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ],
+  "PAIR_NUMERICAL_BASIS_MISMATCH": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ],
+  "PAIR_PROFESSIONAL_BINDING_MISMATCH": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py",
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ],
+  "PAIR_PROFESSIONAL_STALE": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py",
+    "pdos-next/server/pdos_next/paired_output_bridge.py",
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ],
+  "PAIR_RETAINED_EXECUTION_STALE": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ],
+  "CALLER_UOW_REQUIRED": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ],
+  "PAIR_HOST_READ_UNBOUND": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py",
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ],
+  "PAIR_STRUCTURE_UNBOUND": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ],
+  "PAIR_LIVE_PROOF_EXPIRED": [
+    "pdos-next/server/pdos_next/paired_output_bridge.py"
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "imports": [
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/__init__.py",
+      "module": "handlers",
+      "relative_level": 1
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/__init__.py",
+      "module": "ports",
+      "relative_level": 1
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/handlers.py",
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/handlers.py",
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/handlers.py",
+      "module": "pdos_next.schemas.resource_readiness.contracts",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/handlers.py",
+      "module": "ports",
+      "relative_level": 1
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/handlers.py",
+      "module": "rules",
+      "relative_level": 1
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/ports.py",
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/ports.py",
+      "module": "uuid",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/ports.py",
+      "module": "pdos_next.schemas.resource_readiness.contracts",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/ports.py",
+      "module": "pdos_next.schemas.verification.contracts",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/rules.py",
+      "module": "hashlib"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/rules.py",
+      "module": "json"
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/rules.py",
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/rules.py",
+      "module": "decimal",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/rules.py",
+      "module": "pdos_next.engines.planning.calendar",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/domain/resource_readiness/rules.py",
+      "module": "pdos_next.schemas.resource_readiness.contracts",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/resource_readiness/contracts.py",
+      "module": "datetime",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/resource_readiness/contracts.py",
+      "module": "decimal",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/resource_readiness/contracts.py",
+      "module": "typing",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/resource_readiness/contracts.py",
+      "module": "uuid",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/resource_readiness/contracts.py",
+      "module": "zoneinfo",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/resource_readiness/contracts.py",
+      "module": "pydantic",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/resource_readiness/contracts.py",
+      "module": "pdos_next.engines.planning.dto",
+      "relative_level": 0
+    },
+    {
+      "file": "pdos-next/server/pdos_next/schemas/resource_readiness/contracts.py",
+      "module": "pdos_next.schemas.verification.contracts",
+      "relative_level": 0
+    }
+  ],
+  "connection_or_transaction_owner_calls": [],
+  "forbidden_business_imports": []
+}

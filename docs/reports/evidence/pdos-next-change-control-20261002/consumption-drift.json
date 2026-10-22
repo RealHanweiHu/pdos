@@ -1,0 +1,8 @@
+{
+  "drift": {
+    "pdos-next/server/pdos_next/contracts.py": {
+      "initial": "29c903fec3e8924b0ed53b04791dab1dc39a9b583dac40b6483ba74033d06d20",
+      "final": "711334e08663d8f09157605c9a651a6487755d23127fd7e8b0374e1411a63282"
+    }
+  }
+}

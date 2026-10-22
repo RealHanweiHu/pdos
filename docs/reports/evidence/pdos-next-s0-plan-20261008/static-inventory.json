@@ -1,0 +1,905 @@
+{
+  "date": "2026-10-08",
+  "purpose": "M1/S0 planning only; no runtime benchmark or migration executed",
+  "source_commit": "11b0d4b27aa14970d9988c616df6a9bd6da0b193",
+  "counts": {
+    "pdos_next": {
+      "python_files": 355,
+      "physical_lines": 99186
+    },
+    "migrations": {
+      "python_files": 49,
+      "physical_lines": 8520
+    },
+    "tests": {
+      "python_files": 275,
+      "physical_lines": 80295
+    }
+  },
+  "product_id_business_files": 163,
+  "category_id_business_files": 0,
+  "explicit_orm_table_count": 124,
+  "literal_domain_error_code_count": 322,
+  "migration_heads_static": [
+    "next_0032"
+  ],
+  "module_physical_lines": {
+    "domain/capa_effectiveness": 13408,
+    "domain/test_resources": 3421,
+    "engines": 3416,
+    "schemas": 2838,
+    "domain/manufacturing_baseline": 2646,
+    "lifecycle_catalog.py": 2615,
+    "domain/quality_execution": 2561,
+    "domain/capa_verification": 2406,
+    "domain/change_execution": 2365,
+    "domain/verification_handoff": 2203,
+    "domain/verification_results": 2105,
+    "domain/build_start": 2098,
+    "domain/build_operational_facts": 2028,
+    "domain/verification_launch": 2005,
+    "domain/verification_front": 1683,
+    "domain/change_coverage_owner": 1582,
+    "original_lifecycle": 1536,
+    "domain/change_control": 1452,
+    "domain/sample_handoff": 1365,
+    "domain/quality_followup": 1327,
+    "domain/build_execution": 1231,
+    "domain/professional_authority": 1222,
+    "domain/verification": 1155,
+    "domain/manufacturing_trials": 1153,
+    "domain/builds": 1149,
+    "domain/cost_execution": 1142,
+    "domain/supply_cost": 1132,
+    "domain/supply_execution": 1104,
+    "capa_applicability_owner.py": 1073,
+    "domain/quality_issues": 1058,
+    "change_controlled_owner.py": 1044,
+    "domain/original_lifecycle_execution": 1025,
+    "change_order_service.py": 1015,
+    "api.py": 1012,
+    "object_lifecycle_runtime": 1010,
+    "domain/products": 1001,
+    "domain/verification_execution": 924,
+    "change_implementation_owner.py": 888,
+    "service.py": 884,
+    "domain/configurations": 818,
+    "object_journal": 812,
+    "domain/resource_readiness": 806,
+    "domain/manufacturing_resource_owner": 798,
+    "model_gateway": 795,
+    "models.py": 790,
+    "evidence_security": 735,
+    "domain/measurement_evidence": 715,
+    "model_configuration": 696,
+    "domain/projects": 663,
+    "domain/discovery": 661,
+    "capa_fact_owner.py": 613,
+    "change_selection_service.py": 610,
+    "quality_followup_views.py": 607,
+    "security_runtime": 603,
+    "paired_output_bridge.py": 586,
+    "capa_fact_api.py": 582,
+    "evidence_processing": 580,
+    "quality_followup_host.py": 526,
+    "lifecycle_access.py": 498,
+    "original_security.py": 483,
+    "paired_followup_adapter.py": 480,
+    "change_graph_closure.py": 453,
+    "workflows": 414,
+    "contracts.py": 407,
+    "providers": 375,
+    "capa_rule_publisher.py": 342,
+    "runtime.py": 341,
+    "quality_followup_bootstrap.py": 340,
+    "originals.py": 338,
+    "change_completion_adapter.py": 319,
+    "quality_result_bridge.py": 314,
+    "change_order_consumption.py": 312,
+    "change_selection_consumption.py": 306,
+    "change_publication_finalization.py": 296,
+    "quality_followup_integration.py": 293,
+    "capa_candidate_api.py": 282,
+    "object_storage": 264,
+    "domain/planning": 263,
+    "change_controlled_store.py": 255,
+    "command_handlers.py": 255,
+    "operational_bootstrap.py": 248,
+    "test_resource_bootstrap.py": 223,
+    "change_order_store.py": 206,
+    "capa_review_context.py": 201,
+    "lifecycle_worker.py": 197,
+    "upload_lifecycle.py": 197,
+    "change_order_integration.py": 148,
+    "quality_bootstrap.py": 141,
+    "change_controlled_schemas.py": 139,
+    "capa_rule_import.py": 132,
+    "agent_execution.py": 132,
+    "dispatch": 123,
+    "launch_plan_preview.py": 122,
+    "quality_policy_import.py": 110,
+    "test_resource_import.py": 101,
+    "operational_import.py": 100,
+    "professional_import.py": 98,
+    "change_command_schemas.py": 97,
+    "security_bootstrap.py": 95,
+    "change_coverage_binding.py": 86,
+    "original_actions.py": 72,
+    "change_selection_integration.py": 57,
+    "quality_followup_api.py": 54,
+    "asgi.py": 49,
+    "original_store.py": 35,
+    "safety.py": 32,
+    "change_public_integration.py": 30,
+    "database.py": 26,
+    "change_dependency_clock.py": 19,
+    "errors.py": 7,
+    "__init__.py": 1
+  },
+  "reviewed_source_sha256": {
+    "pdos-next/server/pdos_next/service.py": "dffe0a7a39d57bbdbbd1b1cbddaf7e1ece167b91411dc487d0932519993e93c6",
+    "pdos-next/server/pdos_next/contracts.py": "28800ac505dad83c05fc77ec6c3b9435d7ea8c51817984f861a4f7a668819df4",
+    "pdos-next/server/pdos_next/errors.py": "b1fc79f99e469a9fb8a59c03f602b64e9ade50dfbf35ae23468a97905bf20d5f",
+    "pdos-next/server/pdos_next/api.py": "22e354ed732d2d757b78f406c8829fd850cf0f64f905262e25307fb60e8326d0",
+    "pdos-next/server/pdos_next/models.py": "a4abed80c0ffae0e6f8527b52822f6550703ee24bf0464f7f9818420182ceedb",
+    "pdos-next/server/pdos_next/domain/products/variants.py": "dd2830e18d01e7de1303f4a264954b0a8a90fb9487ca5056d6554ce78f7ef19e",
+    "pdos-next/server/pdos_next/change_graph_closure.py": "bdfd6cf4225e17b182873ac8aad1cf1cacf1202d4f1fae99b2e58d8c750ed366",
+    "pdos-next/tools/current_read_profiler.py": "7342f055e7bff7ae6be0d5c96d3e231c67d16140d33095db3ab70c1f4dc0a4cd",
+    "pdos-next/tools/local_environment.py": "0d4b99fe7e14ce6d41dcfaa08b6bde6228a413b4a18bf773445b64f3d84fd8f7",
+    "pdos-next/server/pdos_next/safety.py": "f51ba8cca61f3e20bb4b089f07cf272650aa5f0adf7d02bd6206c889ef38a8d2"
+  },
+  "limitations": [
+    "Physical line counts include comments and blanks.",
+    "Table count is static __tablename__ declarations, not actual database schema.",
+    "Error count includes only literal first arguments of DomainError calls.",
+    "No category_id literal appears in business Python; this is not a whole-system schema proof.",
+    "Existing synthetic pdos-next database is absent; new baseline deferred to B0 after plan approval.",
+    "Historical measurements are not current candidate measurements."
+  ],
+  "model_table_inventory": [
+    {
+      "table": "action_receipts",
+      "class": "Receipt",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "actual_configurations",
+      "class": "ActualConfiguration",
+      "source": "pdos-next/server/pdos_next/domain/build_execution/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "artifact_versions",
+      "class": "Artifact",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "audit_entries",
+      "class": "Audit",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "bom_lines",
+      "class": "BomLine",
+      "source": "pdos-next/server/pdos_next/domain/configurations/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "bom_revisions",
+      "class": "BomRevision",
+      "source": "pdos-next/server/pdos_next/domain/configurations/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "build_authorization_decisions",
+      "class": "BuildAuthorizationDecision",
+      "source": "pdos-next/server/pdos_next/domain/build_start/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "build_current_authorizations",
+      "class": "BuildAuthorizationCurrent",
+      "source": "pdos-next/server/pdos_next/domain/build_start/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "build_current_execution_assessments",
+      "class": "BuildAssessmentCurrent",
+      "source": "pdos-next/server/pdos_next/domain/build_start/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "build_execution_assessments",
+      "class": "BuildExecutionAssessment",
+      "source": "pdos-next/server/pdos_next/domain/build_start/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "build_lots",
+      "class": "BuildLot",
+      "source": "pdos-next/server/pdos_next/domain/build_execution/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "build_operational_current",
+      "class": "BuildOperationalCurrent",
+      "source": "pdos-next/server/pdos_next/domain/build_operational_facts/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "build_operational_facts",
+      "class": "BuildOperationalFact",
+      "source": "pdos-next/server/pdos_next/domain/build_operational_facts/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "build_readiness",
+      "class": "BuildReadiness",
+      "source": "pdos-next/server/pdos_next/domain/builds/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "build_starts",
+      "class": "BuildStart",
+      "source": "pdos-next/server/pdos_next/domain/build_start/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "builds",
+      "class": "Build",
+      "source": "pdos-next/server/pdos_next/domain/builds/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "capa_current_observations",
+      "class": "ObservationCurrent",
+      "source": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_storage_models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "capa_current_verification_rules",
+      "class": "RuleCurrent",
+      "source": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_storage_models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "capa_named_verification_reviews",
+      "class": "NamedReviewRecord",
+      "source": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_storage_models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "capa_observation_facts",
+      "class": "ObservationFact",
+      "source": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_storage_models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "capa_remediation_links",
+      "class": "RemediationLinkRecord",
+      "source": "pdos-next/server/pdos_next/domain/capa_verification/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "capa_verification_evidence",
+      "class": "CapaVerificationEvidence",
+      "source": "pdos-next/server/pdos_next/domain/capa_verification/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "capa_verification_rule_facts",
+      "class": "RuleFact",
+      "source": "pdos-next/server/pdos_next/domain/capa_effectiveness/fact_storage_models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "change_approval_records",
+      "class": "ChangeApprovalRecord",
+      "source": "pdos-next/server/pdos_next/change_order_store.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "change_dependency_clocks",
+      "class": "ChangeDependencyClock",
+      "source": "pdos-next/server/pdos_next/change_dependency_clock.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "change_graph_captures",
+      "class": "ChangeGraphCapture",
+      "source": "pdos-next/server/pdos_next/domain/change_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "change_implementation_captures",
+      "class": "ImplementationCapture",
+      "source": "pdos-next/server/pdos_next/change_order_store.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "change_implementation_records",
+      "class": "ChangeImplementationRecord",
+      "source": "pdos-next/server/pdos_next/change_order_store.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "change_order_records",
+      "class": "ChangeOrderRecord",
+      "source": "pdos-next/server/pdos_next/change_order_store.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "change_request_currents",
+      "class": "ChangeCurrent",
+      "source": "pdos-next/server/pdos_next/domain/change_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "change_request_versions",
+      "class": "ChangeRequestVersion",
+      "source": "pdos-next/server/pdos_next/domain/change_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "claim_consumptions",
+      "class": "Consumption",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "claims",
+      "class": "Claim",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "confirmations",
+      "class": "Confirmation",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "controlled_change_coverage_currents",
+      "class": "ChangeCoverageCurrent",
+      "source": "pdos-next/server/pdos_next/domain/change_coverage_owner/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "controlled_change_coverage_facts",
+      "class": "ChangeCoverageFact",
+      "source": "pdos-next/server/pdos_next/domain/change_coverage_owner/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "controlled_change_policy_currents",
+      "class": "ChangePolicyCurrent",
+      "source": "pdos-next/server/pdos_next/change_controlled_store.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "controlled_change_policy_facts",
+      "class": "ChangePolicyFact",
+      "source": "pdos-next/server/pdos_next/change_controlled_store.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "controlled_change_selection_currents",
+      "class": "ChangeSelectionCurrent",
+      "source": "pdos-next/server/pdos_next/change_controlled_store.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "controlled_change_selection_facts",
+      "class": "ChangeSelectionFact",
+      "source": "pdos-next/server/pdos_next/change_controlled_store.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "cost_current_inputs",
+      "class": "CostCurrent",
+      "source": "pdos-next/server/pdos_next/domain/cost_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "cost_estimates",
+      "class": "CostEstimate",
+      "source": "pdos-next/server/pdos_next/domain/cost_execution/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "cost_input_snapshots",
+      "class": "CostInputSnapshot",
+      "source": "pdos-next/server/pdos_next/domain/cost_execution/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "cost_source_captures",
+      "class": "CostCapture",
+      "source": "pdos-next/server/pdos_next/domain/cost_execution/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "definition_revisions",
+      "class": "DefinitionRevision",
+      "source": "pdos-next/server/pdos_next/domain/products/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "definition_sources",
+      "class": "DefinitionSource",
+      "source": "pdos-next/server/pdos_next/domain/products/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "definition_specs",
+      "class": "DefinitionSpecRow",
+      "source": "pdos-next/server/pdos_next/domain/products/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "engineering_configurations",
+      "class": "EngineeringConfiguration",
+      "source": "pdos-next/server/pdos_next/domain/configurations/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "grants",
+      "class": "Grant",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "inbox_deliveries",
+      "class": "Inbox",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "lifecycle_candidates",
+      "class": "LifecycleCandidate",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "lifecycle_intents",
+      "class": "LifecycleIntentRecord",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "lifecycle_objects",
+      "class": "LifecycleObject",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "lifecycle_requests",
+      "class": "LifecycleRequest",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "login_sessions",
+      "class": "LoginSession",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "measurement_import_captures",
+      "class": "MeasurementImportCapture",
+      "source": "pdos-next/server/pdos_next/domain/verification_results/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "model_budget_reservations",
+      "class": "BudgetReservation",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "model_configuration_heads",
+      "class": "ModelConfigurationHead",
+      "source": "pdos-next/server/pdos_next/model_configuration/persistence.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "model_configuration_versions",
+      "class": "ModelConfigurationVersion",
+      "source": "pdos-next/server/pdos_next/model_configuration/persistence.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "model_invocations",
+      "class": "Invocation",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "operational_asset_sentinels",
+      "class": "OperationalAsset",
+      "source": "pdos-next/server/pdos_next/domain/build_operational_facts/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "operational_material_holds",
+      "class": "MaterialHold",
+      "source": "pdos-next/server/pdos_next/domain/build_operational_facts/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "operational_resource_occupancies",
+      "class": "ResourceOccupancy",
+      "source": "pdos-next/server/pdos_next/domain/build_operational_facts/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "original_scan_requests",
+      "class": "OriginalScanRequest",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "original_scan_results",
+      "class": "OriginalScanResult",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "original_security",
+      "class": "OriginalSecurity",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "outbox_events",
+      "class": "Outbox",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "parts",
+      "class": "PartIdentity",
+      "source": "pdos-next/server/pdos_next/domain/configurations/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "plan_proposals",
+      "class": "PlanProposal",
+      "source": "pdos-next/server/pdos_next/domain/projects/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "plan_revisions",
+      "class": "PlanRevision",
+      "source": "pdos-next/server/pdos_next/domain/projects/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "principals",
+      "class": "Principal",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "process_revisions",
+      "class": "ProcessRevision",
+      "source": "pdos-next/server/pdos_next/domain/configurations/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "product_variants",
+      "class": "Variant",
+      "source": "pdos-next/server/pdos_next/domain/products/variant_models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "products",
+      "class": "Product",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "professional_authority_current",
+      "class": "ProfessionalCurrent",
+      "source": "pdos-next/server/pdos_next/domain/professional_authority/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "professional_authority_facts",
+      "class": "ProfessionalFact",
+      "source": "pdos-next/server/pdos_next/domain/professional_authority/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "project_product_links",
+      "class": "ProjectProductLink",
+      "source": "pdos-next/server/pdos_next/domain/projects/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "project_tasks",
+      "class": "ProjectTask",
+      "source": "pdos-next/server/pdos_next/domain/projects/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "project_work_packages",
+      "class": "ProjectWorkPackage",
+      "source": "pdos-next/server/pdos_next/domain/projects/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "projects",
+      "class": "Project",
+      "source": "pdos-next/server/pdos_next/domain/projects/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "qualifications",
+      "class": "Qualification",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "quality_current_issues",
+      "class": "QualityIssueCurrent",
+      "source": "pdos-next/server/pdos_next/domain/quality_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "quality_current_policies",
+      "class": "QualityPolicyCurrent",
+      "source": "pdos-next/server/pdos_next/domain/quality_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "quality_event_failure_links",
+      "class": "QualityEventFailureLink",
+      "source": "pdos-next/server/pdos_next/domain/quality_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "quality_failure_maps",
+      "class": "QualityFailureMap",
+      "source": "pdos-next/server/pdos_next/domain/quality_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "quality_issue_versions",
+      "class": "QualityIssueVersion",
+      "source": "pdos-next/server/pdos_next/domain/quality_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "quality_policy_facts",
+      "class": "QualityPolicyFact",
+      "source": "pdos-next/server/pdos_next/domain/quality_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "request_keys",
+      "class": "RequestKey",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "runs",
+      "class": "Run",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "sample_allocations",
+      "class": "SampleAllocation",
+      "source": "pdos-next/server/pdos_next/domain/build_execution/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "sample_current_readiness",
+      "class": "SampleReadinessCurrent",
+      "source": "pdos-next/server/pdos_next/domain/sample_handoff/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "sample_readiness_facts",
+      "class": "SampleReadinessFact",
+      "source": "pdos-next/server/pdos_next/domain/sample_handoff/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "sample_run_usages",
+      "class": "SampleRunUsage",
+      "source": "pdos-next/server/pdos_next/domain/test_resources/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "sample_units",
+      "class": "SampleUnit",
+      "source": "pdos-next/server/pdos_next/domain/build_execution/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "sample_usage_sentinels",
+      "class": "SampleUsageSentinel",
+      "source": "pdos-next/server/pdos_next/domain/test_resources/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "supply_current_snapshots",
+      "class": "SupplyCurrent",
+      "source": "pdos-next/server/pdos_next/domain/supply_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "supply_kit_projections",
+      "class": "KitProjection",
+      "source": "pdos-next/server/pdos_next/domain/supply_execution/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "supply_snapshots",
+      "class": "SupplySnapshot",
+      "source": "pdos-next/server/pdos_next/domain/supply_execution/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "supply_source_captures",
+      "class": "SupplyCapture",
+      "source": "pdos-next/server/pdos_next/domain/supply_execution/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "task_dependencies",
+      "class": "TaskDependency",
+      "source": "pdos-next/server/pdos_next/domain/projects/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "test_measurements",
+      "class": "MeasurementRecord",
+      "source": "pdos-next/server/pdos_next/domain/verification_results/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "test_resource_current",
+      "class": "TestResourceCurrent",
+      "source": "pdos-next/server/pdos_next/domain/test_resources/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "test_resource_facts",
+      "class": "TestResourceFact",
+      "source": "pdos-next/server/pdos_next/domain/test_resources/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "test_resource_reservations",
+      "class": "TestResourceReservation",
+      "source": "pdos-next/server/pdos_next/domain/test_resources/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "test_result_actions",
+      "class": "TestResultActionFact",
+      "source": "pdos-next/server/pdos_next/domain/verification_results/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "test_result_projections",
+      "class": "TestResultProjection",
+      "source": "pdos-next/server/pdos_next/domain/verification_results/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "upload_attempts",
+      "class": "UploadAttempt",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "uploaded_originals",
+      "class": "UploadedOriginal",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "variant_revisions",
+      "class": "VariantRevision",
+      "source": "pdos-next/server/pdos_next/domain/products/variant_models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "verification_actual_method_applicabilities",
+      "class": "ActualMethodApplicability",
+      "source": "pdos-next/server/pdos_next/domain/verification_handoff/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "verification_actual_method_batches",
+      "class": "ActualMethodBatch",
+      "source": "pdos-next/server/pdos_next/domain/verification_handoff/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "verification_current_actual_methods",
+      "class": "ActualMethodCurrent",
+      "source": "pdos-next/server/pdos_next/domain/verification_handoff/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "verification_current_formal_requests",
+      "class": "FormalVerificationCurrent",
+      "source": "pdos-next/server/pdos_next/domain/verification_front/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "verification_current_preparations",
+      "class": "VerificationCurrent",
+      "source": "pdos-next/server/pdos_next/domain/verification_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "verification_current_runs",
+      "class": "VerificationRunCurrent",
+      "source": "pdos-next/server/pdos_next/domain/verification_launch/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "verification_formal_requests",
+      "class": "FormalVerificationRequest",
+      "source": "pdos-next/server/pdos_next/domain/verification_front/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "verification_handoff_facts",
+      "class": "VerificationHandoffFact",
+      "source": "pdos-next/server/pdos_next/domain/verification_handoff/models.py",
+      "declares_product_id": false
+    },
+    {
+      "table": "verification_launch_facts",
+      "class": "VerificationLaunchFact",
+      "source": "pdos-next/server/pdos_next/domain/verification_launch/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "verification_method_applicabilities",
+      "class": "MethodApplicability",
+      "source": "pdos-next/server/pdos_next/domain/verification_front/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "verification_preparations",
+      "class": "VerificationPreparation",
+      "source": "pdos-next/server/pdos_next/domain/verification_execution/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "verification_run_identities",
+      "class": "VerificationRunIdentity",
+      "source": "pdos-next/server/pdos_next/domain/verification_launch/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "verification_run_versions",
+      "class": "VerificationRunVersion",
+      "source": "pdos-next/server/pdos_next/domain/verification_launch/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "verification_window_proposals",
+      "class": "VerificationWindowProposal",
+      "source": "pdos-next/server/pdos_next/domain/verification_front/models.py",
+      "declares_product_id": true
+    },
+    {
+      "table": "work_requests",
+      "class": "WorkRequest",
+      "source": "pdos-next/server/pdos_next/models.py",
+      "declares_product_id": true
+    }
+  ]
+}

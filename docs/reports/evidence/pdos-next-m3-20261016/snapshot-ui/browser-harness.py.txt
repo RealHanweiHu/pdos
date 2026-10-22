@@ -1,0 +1,73 @@
+from pathlib import Path
+from datetime import timedelta
+from uuid import UUID
+import sys,os,json,re,secrets
+root=Path(__file__).resolve().parents[2]
+sys.path[:0]=[str(root/'pdos-next/tools'),str(root/'pdos-next/server')]
+import m3_environment as m
+m.local.STATE=m.local.ROOT/'.local/candidate-runtime-20261016.json'
+st=m.state();assert st['port']==64245 and st['marker']=='f9048729-3f2a-4494-af75-56e1db7d743d'
+private=root/'pdos-next/.local/snapshot-ui-preview-20261016.json'
+hostfile=root/'pdos-next/.local/snapshot-ui-host-20261016.json'
+env=m.local.environment(st)
+if sys.argv[1]=='seed':
+ assert not private.exists() and not hostfile.exists()
+ from sqlalchemy import text
+ from sqlalchemy.orm import Session
+ from pdos_next.database import engine_for
+ from pdos_next.models import LoginSession,now
+ from pdos_next.agent_kernel.models import AgentRun
+ from pdos_next.model_configuration.host import HostConfiguration
+ from pdos_next.service import digest
+ log=(root/'docs/reports/evidence/pdos-next-m3-20261016/snapshot-ui/checks/pg-first.log').read_text()
+ entries=[json.loads(value) for value in re.findall(r'\{[^\n]+\}',log) if '"pending_snapshot": true' in value]
+ assert {value['confirmation'] for value in entries}=={'browser_success','browser_recovery'}
+ cases={};docs=[]
+ with Session(engine_for(st['admin_url'])) as session,session.begin():
+  assert session.scalar(text('SELECT version_num FROM alembic_version'))=='s0_0762'
+  for value in entries:
+   row=session.get(AgentRun,UUID(value['run_id']));assert row.state=='completed'
+   path=Path(value['host_config']).resolve();assert path.is_relative_to(root/'pdos-next/.local/snapshot-ui-first-20261016')
+   docs.append(json.loads(path.read_text()))
+   token=secrets.token_urlsafe(32)
+   session.add(LoginSession(tenant_id=row.tenant_id,principal_id=row.requester_id,token_hash=digest(token),expires_at=now()+timedelta(hours=2)))
+   cases[value['confirmation']]={**value,'token':token,'tenant_id':str(row.tenant_id),'actor_id':str(row.requester_id),'category_id':str(row.category_id)}
+ assert docs[0]['research']==docs[1]['research'] and docs[0]['kms']==docs[1]['kms']
+ merged={**docs[0],'secrets':[item for doc in docs for item in doc['secrets']],'models':[item for doc in docs for item in doc['models']]}
+ HostConfiguration.model_validate_json(json.dumps(merged))
+ for path,value in [(hostfile,merged),(private,{'marker':st['marker'],'cases':cases,'api_port':8044,'web_ports':[3044,3045]})]:
+  fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+  with os.fdopen(fd,'w') as stream:json.dump(value,stream)
+ print('Prepared two actual pending research runs and isolated test logins; all transports remain synthetic.')
+else:
+ assert private.stat().st_mode&0o777==0o600
+ seed=json.loads(private.read_text());assert seed['marker']==st['marker']
+ env.update(PYTHONPATH=str(root/'pdos-next/server')+':'+str(root/'packages/pdos-agent-runtime/src'),PDOS_WORKFLOWS_ENABLED='0',PDOS_TENANT_RUNTIME_CONFIG=str(hostfile))
+ if sys.argv[1]=='api':
+  os.environ.update(env);os.chdir(root/'pdos-next/server')
+  from pdos_next.model_configuration.kms import AliyunKms
+  from tests.model_configuration.test_host_runtime import KmsSdk
+  AliyunKms.sdk=lambda _self:KmsSdk()
+  from pdos_next.asgi import app
+  from starlette.responses import JSONResponse
+  recovery=seed['cases']['browser_recovery']; fault=root/'pdos-next/.local/snapshot-ui-response-loss-20261016.json'
+  @app.middleware('http')
+  async def drop_one_success(request,call_next):
+   targeted=False
+   if request.method=='POST' and request.url.path==f"/v1/categories/{recovery['category_id']}/commands":
+    body=await request.json()
+    targeted=body.get('operation')=='research.snapshot.register' and body.get('payload',{}).get('prepared_event_id')==recovery['event_id']
+   response=await call_next(request)
+   if targeted and response.status_code==200 and not fault.exists():
+    async for _chunk in response.body_iterator:pass
+    fault.write_text(json.dumps({'event_id':recovery['event_id'],'one_success_replaced_with_503':True,'command_id':body['command_id'],'idempotency_key':body['idempotency_key']}))
+    print('Synthetic snapshot success response replaced with 503 after actual commit.',flush=True)
+    return JSONResponse({'message':'合成检查：保存结果暂未返回，请核对原请求。'},status_code=503)
+   return response
+  import uvicorn
+  uvicorn.run(app,host='127.0.0.1',port=8044)
+ else:
+  key='browser_success' if sys.argv[1]=='web-success' else 'browser_recovery'
+  port='3044' if key=='browser_success' else '3045'
+  os.chdir(root/'pdos-next/web');env.update(PDOS_NEXT_API_URL='http://127.0.0.1:8044',PDOS_NEXT_LOCAL_SESSION=seed['cases'][key]['token'])
+  os.execvpe('pnpm',['pnpm','start','--hostname','127.0.0.1','--port',port],env)

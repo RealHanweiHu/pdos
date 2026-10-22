@@ -1,0 +1,29 @@
+{
+  "observed_at": "2026-10-03T10:51:38.004938+00:00",
+  "actual_link_saved": true,
+  "saved_at": "2026-10-03T10:44:21.008764+00:00",
+  "receipt_at": "2026-10-03T10:44:21.055588+00:00",
+  "same_original_execute_restored": true,
+  "new_command_or_token_created": false,
+  "actual_proof_consumed_once": true,
+  "older_expired_proofs_consumed": false,
+  "issue_current_revision": 6,
+  "new_formal_revision": 1,
+  "new_formal_status": "draft",
+  "output_meaning": "planned",
+  "effectiveness_or_closure_saved": false,
+  "readonly_checks": 12,
+  "pg_replacement_status": "running_not_claimed_pass",
+  "evidence_sha256": {
+    "browser-link-review-v4.txt": "53a71553373bc01b007482243aae0675ef32df68746b1f5a38eb21f03e33db3a",
+    "browser-link-review-v4.png": "29bc9b7eea0b8a084ad42176df5873014abedac9e408a7ceb6683ae38d84844e",
+    "browser-link-saved-v4.txt": "bc8afdb54d47a530e23bc461f4d7015ac9d626da65ed50dcd2b8a30716aeef58",
+    "browser-link-saved-v4.png": "89eed8003aff9375b68f06d4c7ef0e91fab4d93ca1d834034f80eaa7f4d8678a",
+    "link-save-asof-v4-first.json": "fab9063ffe407bd07b2c8b20d519674fedb69966dea518af1445e37280d30c69",
+    "link-save-asof-v4-second.json": "8e58b99a35e03b7fa401e39d894ccfba42ac437d41498d8e7cecc04a3485e4bb",
+    "actual-closeout-v4.json": "1655c9a67501786b457195c3d0c8a78656b5bd90c24a66720dbca5a5fe059b8a",
+    "actual-closeout-v4-diagnosis.json": "ba0ad2f35bba4034d482990b680e18bee5abb3ebc76091989bb4e74504a7c3c5",
+    "closeout-seed-codec-v3.json": "53f19b535ba674a5d933994a78ed15647984507b047c087b7ab6c83060457883",
+    "actual-closeout-v4-seed-codec.json": "83fa95e81b47c4743764539bf63a7e5110797d026b752c4bf20fe9b47de2d675"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "recorded_at": "2026-09-30T16:22:47.021664+00:00",
+  "head": "9fab424c4a3dfc4909499aea11862b3cb0bc50ba",
+  "no_db_access": true,
+  "files": [
+    {
+      "path": "server/app/domain/material_exceptions.py",
+      "sha256": "2f5a858040005ce98c7b1deb1a1a62fc6fbcf3616dec2413d3030c59a796529e"
+    },
+    {
+      "path": "server/app/domain/material_movements.py",
+      "sha256": "76706d0ea18b7fb8aec2f86dc204e228321d0fefbfcb6ff45783508b361d583c"
+    },
+    {
+      "path": "server/app/domain/material_allocations.py",
+      "sha256": "2c67610c02938500cda6d86ed36a837728d5876785802d6aa5900a2d31a95de1"
+    },
+    {
+      "path": "server/app/domain/material_supply_pools.py",
+      "sha256": "af8b1fa5b3f02d6af4cc3b0779435fbdeb116648579d71bec2cb690c40f1ca93"
+    },
+    {
+      "path": "server/app/domain/supply_sharing.py",
+      "sha256": "dd74c3c40e29d5e0ffc011b1b25007a7a7447787e00e2cac990cece79ce1ecbb"
+    },
+    {
+      "path": "server/app/domain/supply_imports.py",
+      "sha256": "49c107029d95164b31ca6e26f2c953b58dbcb50bb33f51dd1c311c35b1883021"
+    },
+    {
+      "path": "server/app/domain/material_coverage.py",
+      "sha256": "c264df235feaf3e461dbe60bf65e74a9dfc2b2f2d1108ee695fc795188ed5dcf"
+    },
+    {
+      "path": "server/app/api/npi_execution.py",
+      "sha256": "bf17ba40606403c6882e93217b7e7aff449bb1631c42281c61f15d9576e60ddf"
+    },
+    {
+      "path": "web/src/components/projects/material-exceptions.tsx",
+      "sha256": "dfef3ff3a68a31adbab5ec58d25bfdd40848ad43d91cd652d6a59e062b89fbb5"
+    },
+    {
+      "path": "web/src/components/projects/material-movements.tsx",
+      "sha256": "c7d93081c92235de7a5c4e35d6b69c6d2ca58c26b83baeab5c8f9efaec61c49f"
+    },
+    {
+      "path": "web/src/components/projects/supply-sharing.tsx",
+      "sha256": "5b669a1d43919f1ae92657a2d1e629b403eec807ab6e391b56e5115a7bee734f"
+    },
+    {
+      "path": "web/src/components/projects/supply-imports.tsx",
+      "sha256": "18a7c7a8cc1fa4ae02880c8c0d24603c84f0d2ef68fbcefe886209e96dd79118"
+    },
+    {
+      "path": "web/src/components/projects/build-material-coverage.tsx",
+      "sha256": "29d52a827e44857424a85150557c461c4da7416566eb448de9ff159a2178dae7"
+    },
+    {
+      "path": "web/src/components/projects/build-supply-allocation.tsx",
+      "sha256": "f9a476a356757cab3db506462391475f919f2947eaa090a0341db901efae69b4"
+    },
+    {
+      "path": "web/src/components/projects/material-exposure.tsx",
+      "sha256": "5eac1f572887bc759a16c6b07ba6be93eecef00616071a8d5b7fb161640946b0"
+    },
+    {
+      "path": "server/tests/test_material_allocations.py",
+      "sha256": "61bf90dea3517f20a1c52718d542f5bfd6cd04118d406ef75c99fe9d4a192cef"
+    },
+    {
+      "path": "server/tests/test_material_coverage.py",
+      "sha256": "08c939c9bf485ed6f83304ebcfeb32ae96ee4693b8e41d233c1d4ab89bf847ba"
+    },
+    {
+      "path": "server/tests/test_parallel_supply_postgres.py",
+      "sha256": "5cefa1545b0c68ec563254db2340fbed280d394e9d3815b2a5af532fbf5e419c"
+    },
+    {
+      "path": "server/tests/test_supplier_replies_postgres.py",
+      "sha256": "30a6553017b1b71ceb181d75edf416b1361badc3848b68b6850f699393aeb225"
+    },
+    {
+      "path": "web/package.json",
+      "sha256": "0990b6e0586ea78457b9b9b344814fdba78b0167af0cdc5ab7cf66946e093f58"
+    },
+    {
+      "path": "server/pyproject.toml",
+      "sha256": "15a4ad5bc831f6bdab999574cf91acd6e7eb43d1f80628283d9b649b4c625e0a"
+    }
+  ]
+}

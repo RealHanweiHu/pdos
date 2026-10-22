@@ -1,0 +1,97 @@
+diff --git a/pdos-next/server/pdos_next/change_controlled_store.py b/pdos-next/server/pdos_next/change_controlled_store.py
+index 474dff4..3e4a0a3 100644
+--- a/pdos-next/server/pdos_next/change_controlled_store.py
++++ b/pdos-next/server/pdos_next/change_controlled_store.py
+@@ -10,6 +10,7 @@ from sqlalchemy import (
+     Integer,
+     String,
+     UniqueConstraint,
++    text,
+ )
+ from sqlalchemy.dialects.postgresql import JSONB
+ from sqlalchemy.orm import Mapped, mapped_column
+@@ -113,18 +114,26 @@ class ChangePolicyFact(_Fact, Base):
+ 
+ class ChangeSelectionFact(_Fact, Base):
+     __tablename__ = "controlled_change_selection_facts"
++    basis_kind: Mapped[str] = mapped_column(
++        String(24), default="capa_action", server_default=text("'capa_action'")
++    )
+     change_id: Mapped[UUID]
+     change_version_id: Mapped[UUID]
+     change_revision: Mapped[int] = mapped_column(Integer)
+     item_id: Mapped[UUID]
+     item_sha256: Mapped[str] = mapped_column(String(64))
+     intent_id: Mapped[UUID]
+-    issue_id: Mapped[UUID]
+-    issue_version_id: Mapped[UUID]
+-    issue_revision: Mapped[int] = mapped_column(Integer)
+-    capa_id: Mapped[UUID]
+-    action_id: Mapped[UUID]
+-    action_sha256: Mapped[str] = mapped_column(String(64))
++    issue_id: Mapped[UUID | None]
++    issue_version_id: Mapped[UUID | None]
++    issue_revision: Mapped[int | None] = mapped_column(Integer)
++    capa_id: Mapped[UUID | None]
++    action_id: Mapped[UUID | None]
++    action_sha256: Mapped[str | None] = mapped_column(String(64))
++    feedback_id: Mapped[UUID | None]
++    feedback_version_id: Mapped[UUID | None]
++    feedback_revision: Mapped[int | None] = mapped_column(Integer)
++    feedback_sha256: Mapped[str | None] = mapped_column(String(64))
++    executor_id: Mapped[UUID | None]
+     policy_id: Mapped[UUID]
+     policy_revision: Mapped[int] = mapped_column(Integer)
+     policy_snapshot: Mapped[dict] = mapped_column(JSONB)
+@@ -182,6 +191,22 @@ class ChangeSelectionFact(_Fact, Base):
+                 "quality_issue_versions.revision",
+             ],
+         ),
++        ForeignKeyConstraint(
++            ["tenant_id", "executor_id"],
++            ["principals.tenant_id", "principals.id"],
++            name="controlled_selection_executor_fk",
++        ),
++        ForeignKeyConstraint(
++            ["tenant_id", "category_id", "feedback_id", "feedback_version_id", "feedback_revision"],
++            [
++                "field_feedback_versions.tenant_id",
++                "field_feedback_versions.category_id",
++                "field_feedback_versions.feedback_id",
++                "field_feedback_versions.id",
++                "field_feedback_versions.revision",
++            ],
++            name="controlled_selection_field_feedback_fk",
++        ),
+         ForeignKeyConstraint(
+             ["tenant_id", "product_id", "project_id", "policy_id", "policy_revision"],
+             [
+@@ -200,7 +225,27 @@ class ChangeSelectionFact(_Fact, Base):
+         ),
+         CheckConstraint(
+             "operation='change.selection.decide' AND status IN "
+-            "('applicable','not_applicable','unknown') AND change_revision>0 AND issue_revision>0"
++            "('applicable','not_applicable','unknown') AND change_revision>0",
++            name="controlled_selection_operation",
++        ),
++        CheckConstraint(
++            "basis_kind IN ('capa_action','field_intent')",
++            name="controlled_selection_basis_kind",
++        ),
++        CheckConstraint(
++            "(basis_kind='capa_action' AND issue_id IS NOT NULL AND issue_version_id IS NOT NULL "
++            "AND issue_revision IS NOT NULL AND issue_revision>0 AND capa_id IS NOT NULL "
++            "AND action_id IS NOT NULL AND action_sha256 IS NOT NULL "
++            "AND action_sha256 ~ '^[a-f0-9]{64}$' AND feedback_id IS NULL "
++            "AND feedback_version_id IS NULL AND feedback_revision IS NULL "
++            "AND feedback_sha256 IS NULL AND executor_id IS NULL) OR "
++            "(basis_kind='field_intent' AND category_id IS NOT NULL AND feedback_id IS NOT NULL "
++            "AND feedback_version_id IS NOT NULL AND feedback_revision IS NOT NULL "
++            "AND feedback_revision>0 AND feedback_sha256 IS NOT NULL "
++            "AND feedback_sha256 ~ '^[a-f0-9]{64}$' AND executor_id IS NOT NULL "
++            "AND issue_id IS NULL AND issue_version_id IS NULL AND issue_revision IS NULL "
++            "AND capa_id IS NULL AND action_id IS NULL AND action_sha256 IS NULL)",
++            name="controlled_selection_origin_binding",
+         ),
+         CheckConstraint(
+             "proof_consumed_at<=created_at AND "

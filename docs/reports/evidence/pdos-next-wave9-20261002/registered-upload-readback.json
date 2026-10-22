@@ -1,0 +1,118 @@
+{
+  "source": "actual local API + container scanner + bounded parser + HTTP download",
+  "original": {
+    "id": "527d03a5-7bb0-4e4e-a69b-516e6bd06454",
+    "title": "wave9-registered.txt",
+    "filename": "wave9-registered.txt",
+    "source_label": "第九波本地合成登记、真实扫描与解析兼容检查",
+    "media_type": "text/plain",
+    "byte_count": 117,
+    "content_hash": "ba4bf402524cf22f4f1eb15a164ae05711571b086c2352e1f638ed237ea9cd6b",
+    "status": "parsed",
+    "parse_code": null,
+    "scan_status": "clean",
+    "revision": 2,
+    "visibility": "private",
+    "artifact_id": "3d2a5594-45b2-41ef-8c8d-0dd00c00a407",
+    "locator_map": [
+      {
+        "location": {
+          "row": null,
+          "cell": null,
+          "kind": "line",
+          "line": 1,
+          "page": null,
+          "sheet": null,
+          "column": null
+        },
+        "value_kind": "text",
+        "derived_line_end": 1,
+        "derived_line_start": 1
+      },
+      {
+        "location": {
+          "row": null,
+          "cell": null,
+          "kind": "line",
+          "line": 2,
+          "page": null,
+          "sheet": null,
+          "column": null
+        },
+        "value_kind": "text",
+        "derived_line_end": 2,
+        "derived_line_start": 2
+      }
+    ],
+    "security": {
+      "state": "clean",
+      "reasons": [],
+      "epoch": 2,
+      "source_state": "active",
+      "scan": {
+        "id": "e5b45a81-bb39-4941-9162-8f746c41659b",
+        "status": "clean",
+        "scanner": "clamav-container:sha256:388419d4ffc5caaa9c1557b81adf4608462d739560506a1288311e762978549e",
+        "engine_version": "1.5.4",
+        "rules_version": "28123/Mon Sep 14 06:24:19 2026",
+        "policy_version": "pdos-local-synthetic-file-policy-v1",
+        "requested_at": "2026-10-02T15:53:25.553812+00:00",
+        "completed_at": "2026-10-02T15:53:35.736199+00:00",
+        "error_code": null
+      },
+      "capabilities": {
+        "scan": true,
+        "download": true,
+        "withdraw": true
+      },
+      "lifecycle": {
+        "disposition": "active",
+        "registered": true,
+        "protection_reasons": [
+          "REGISTERED_ORIGINAL",
+          "REFERENCE_COVERAGE_UNPROVEN"
+        ],
+        "journal_state": "registered",
+        "physical_actions_available": false
+      }
+    }
+  },
+  "lifecycle": {
+    "id": "527d03a5-7bb0-4e4e-a69b-516e6bd06454",
+    "title": "wave9-registered.txt",
+    "filename": "wave9-registered.txt",
+    "revision": 1,
+    "registered": true,
+    "upload_state": "succeeded",
+    "parse_state": "parsed",
+    "retention_until": null,
+    "manual_hold": null,
+    "disposition": "active",
+    "pending_intent_id": null,
+    "reference_count": 19,
+    "formal_history": true,
+    "coverage_complete": true,
+    "registration_state": "registered",
+    "byte_status": "intact",
+    "reasons": [
+      "referenced",
+      "formal_history",
+      "hold_unknown",
+      "registered_original",
+      "upload_not_terminal",
+      "derivation_present",
+      "retention_unknown"
+    ],
+    "can_quarantine": false,
+    "can_restore": false,
+    "can_record_protection": true,
+    "can_abandon_upload": false,
+    "upload_attempt_id": "527d03a5-7bb0-4e4e-a69b-516e6bd06454",
+    "upload_attempt_revision": 2,
+    "policy_version": "local-synthetic-retention-v1",
+    "intents": []
+  },
+  "upload_attempt_state": "committed",
+  "download_hash_matches": true,
+  "browser_filechooser": "Supplemental new upload picker unavailable; lifecycle UI sequence already completed and screenshot evidence retained."
+}

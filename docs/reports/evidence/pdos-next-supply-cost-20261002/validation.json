@@ -1,0 +1,16 @@
+{
+  "candidate_sha256": "c6ff76d5d5aa51cd79d11666ee9b67b16697dcb35d4555c7376add53471a421c",
+  "candidate_files": 13,
+  "candidate_unchanged_after_final_checks": true,
+  "synthetic_examples": 6,
+  "example_assertions": "passed",
+  "schema_numeric_boundary": "passed",
+  "pytest": {
+    "passed": 75,
+    "database_fixtures": false,
+    "extra_seeded_conservation_cases": 50
+  },
+  "ruff": "passed",
+  "format": "passed",
+  "scope": "isolated supply_cost engine and tests plus evidence generator; no shared tree validation"
+}

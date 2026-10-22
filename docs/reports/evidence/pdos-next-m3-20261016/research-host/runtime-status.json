@@ -1,0 +1,56 @@
+{
+  "shared_temporal_retained": true,
+  "independent_postgres_port": 64245,
+  "head": "s0_0762",
+  "namespaces": [
+    {
+      "namespace": "pdos-next-m3-worker-20261016-research-first",
+      "marker_checked": true,
+      "workflows": []
+    },
+    {
+      "namespace": "pdos-next-m3-worker-20261016-research-checked",
+      "marker_checked": true,
+      "workflows": [
+        {
+          "workflow_id": "pdos-next:xiaopai:86940841-0abf-46f9-afde-78e4dfae513d:2dcc3669-9de3-4cdb-ac19-8d504b2f1994",
+          "run_id": "01a14609-06c5-7923-9784-c5fbfd502ec9",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "namespace": "pdos-next-m3-worker-20261016-research-final",
+      "marker_checked": true,
+      "workflows": [
+        {
+          "workflow_id": "pdos-next:xiaopai:a17f3f55-9807-4c98-a6f7-5ac02b9ebe76:07618994-c999-4dde-8b14-255dfe80fb77",
+          "run_id": "01a14608-58de-7795-9137-523a9d3d8d0d",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "namespace": "pdos-next-m3-worker-20261016-research-regression",
+      "marker_checked": true,
+      "workflows": [
+        {
+          "workflow_id": "pdos-next:xiaopai:3517565d-bdb0-453c-b90f-322a69931877:0796a24c-a68c-4830-b76f-f011ead04cf5",
+          "run_id": "01a1460a-2191-7a7b-83c3-e711c0910473",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "namespace": "pdos-next-m3-worker-20261016-research-process",
+      "marker_checked": true,
+      "workflows": [
+        {
+          "workflow_id": "pdos-next:xiaopai:ec41fc4c-b581-438c-b446-318da11a73f3:49502d51-03a6-4f07-9686-33daa9969484",
+          "run_id": "01a14607-d0c8-7700-ae41-5bb1ee0c08e6",
+          "status": "COMPLETED"
+        }
+      ]
+    }
+  ]
+}

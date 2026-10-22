@@ -1,0 +1,9 @@
+{
+  "node": "tests/quality_followup_transactions/test_transactions.py::test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_and_history[completion_original]",
+  "exit_code": 0,
+  "seconds": 1679.53,
+  "source_stable": true,
+  "candidate_sha256": "0955ec34c4b336026b67370f40b3c5a80f741e70aac220dd40143fede37e6eb5",
+  "log_file": "pg-v3-12.log",
+  "log_sha256": "84db35ca080385d0a2b9ee0ca22511595c3c37bdbaf9294f6b15deeb507c86dc"
+}

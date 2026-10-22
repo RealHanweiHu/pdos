@@ -1,0 +1,22 @@
+### Result
+{"reloadPosts":0,"result":"立项结果与项目承接\n\n客户变体：合成客户专属变体\n\n所属型号：Synthetic product\n\n立项定义 v1 · 已封存立项副本\n\n立项保留未知与草稿状态，后续规格冻结在项目内办理。\n\n项目：合成客户变体项目\n\n负责人：Synthetic owner\n\n进入项目驾驶舱\n带入项目的任务与风险 · 8 项\n\n任务 · parent_enum\n\nSynthetic owner · 2026-10-30 · assigned\n\n任务 · 噪声\n\nSynthetic owner · 2026-10-30 · assigned\n\n任务 · parent_range\n\nSynthetic owner · 2026-10-30 · assigned\n\n风险 · parent_boolean\n\nSynthetic owner · 2026-10-30 · 待办理\n\n任务 · 噪声条件待确定\n\nSynthetic owner · 2026-10-30 · assigned\n\n任务 · parent_number\n\nSynthetic owner · 2026-10-30 · assigned\n\n任务 · parent_unknown\n\nSynthetic owner · 2026-10-30 · assigned\n\n任务 · parent_text\n\nSynthetic owner · 2026-10-30 · assigned\n\n具名决定与回执","href":"/?area=cockpit&category=acfb7c01-e339-4030-a780-0e4caf6c96aa&project=69b70d95-4041-43d3-8b24-b476e8c162e9","cockpit":"合成客户变体项目\n\n汽车充气泵 · Synthetic product · 项目驾驶舱\n\n经营总览\n进入项目工作台\n基础信息\n用途\n合成新品评审\n工作范围\n合成新品评审\n可见性\n私有\n负责人\nc2da0c15-8732-4494-b8ab-15043dfee911\n建立时间\n10/16/2026, 8:14:51 AM\n立项定义\n合成客户专属变体 · 固定 v1\n未决事项\n8 项\n\nparent_boolean\n\n风险 · 他人负责\n\n2026-10-30\n\nparent_enum\n\n任务 · 他人负责\n\n2026-10-30\n\nparent_number\n\n任务 · 他人负责\n\n2026-10-30\n\nparent_range\n\n任务 · 他人负责\n\n2026-10-30\n\nparent_text\n\n任务 · 他人负责\n\n2026-10-30\n\nparent_unknown\n\n任务 · 他人负责\n\n2026-10-30\n\n噪声\n\n任务 · 他人负责\n\n2026-10-30\n\n噪声条件待确定\n\n任务 · 他人负责\n\n2026-10-30\n计划与时间线\n\n尚无已应用计划。首版计划在工作与计划区起草并经一次确认应用。\n\n批准基线、个人承诺与实绩时间线尚未记录；此处不填零，取得后分列显示。\n\n工作包与任务\n工作包\n尚无\n任务\n0 项\n在工作台办理计划与执行"}
+### Ran Playwright code
+```js
+await (async(page)=>{
+ const handoff=page.getByRole("region",{name:"G0立项结果",exact:true});
+ await handoff.getByRole("link").waitFor({timeout:15000});
+ let reloadPosts=0;
+ const listener=r=>{if(r.method()==="POST")reloadPosts++;};
+ page.on("request",listener);await page.reload();
+ const result=page.getByRole("region",{name:"G0立项结果",exact:true});
+ await result.getByRole("link").waitFor({timeout:15000});page.off("request",listener);
+ const body=await result.innerText(),href=await result.getByRole("link").getAttribute("href");
+ await result.getByRole("link").click();
+ await page.getByRole("heading",{name:"合成客户变体项目",exact:true}).waitFor({timeout:15000});
+ await page.screenshot({path:"docs/reports/evidence/pdos-next-m3-20261016/g0-handoff/browser/variant-cockpit-desktop-light.png"});
+ return {reloadPosts,result:body,href,cockpit:await page.locator("main").innerText()};
+})(page);
+```
+### Page
+- Page URL: http://127.0.0.1:3036/?area=cockpit&category=acfb7c01-e339-4030-a780-0e4caf6c96aa&project=69b70d95-4041-43d3-8b24-b476e8c162e9
+- Page Title: PDOS · 研发工作区

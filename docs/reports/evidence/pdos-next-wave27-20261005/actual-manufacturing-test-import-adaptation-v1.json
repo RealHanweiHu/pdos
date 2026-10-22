@@ -1,0 +1,22 @@
+{
+  "server/tests/manufacturing_preparation_transactions/conftest.py": {
+    "staged_sha256": "c8043f33c4379c0848c7a8c6de29915f79cdca0baad0611c03f3419d6bc68068",
+    "actual_sha256": "c8043f33c4379c0848c7a8c6de29915f79cdca0baad0611c03f3419d6bc68068",
+    "non_import_AST_identical": true
+  },
+  "server/tests/manufacturing_preparation_transactions/__init__.py": {
+    "staged_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "actual_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "non_import_AST_identical": true
+  },
+  "server/tests/manufacturing_preparation_transactions/test_transactions.py": {
+    "staged_sha256": "18fe0045b6aa5fcd3a12ebefa7d4f06806a5c45dc1eddeb7096295b3280ae4ca",
+    "actual_sha256": "153054bc4ac7aa5e6d6811f2b9e9bf52343531a900eb06f2026999bc314de894",
+    "non_import_AST_identical": true
+  },
+  "server/tests/manufacturing_preparation_transactions/fixtures.py": {
+    "staged_sha256": "92f2bae9991809117016869338ef67cc2f5ffc5eab2508f1466e2fd68ece9a6b",
+    "actual_sha256": "eaf2f70948c1185d5623845a838b50de84cf96c4def9496405d62f9f870a959a",
+    "non_import_AST_identical": true
+  }
+}

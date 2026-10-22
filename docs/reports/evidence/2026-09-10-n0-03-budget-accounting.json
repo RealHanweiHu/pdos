@@ -1,0 +1,65 @@
+{
+  "date": "2026-09-10",
+  "scope": "N0-03 normalized usage provenance, versioned legacy reconciliation, merged ledger admission; default factories not adopted",
+  "tests": {
+    "initial_passed": 91,
+    "related_regression_passed": 134,
+    "final_budget_passed": 60,
+    "final_budget_new_tests": 2,
+    "contracts_calendar_passed": 160,
+    "distinct_total": 296
+  },
+  "checks": {
+    "ruff_files": 11,
+    "format_files": 11,
+    "mypy_files": 4,
+    "schema_comparison": "all four budget tables compared; checks/triggers/FKs separately exercised",
+    "exports": "both passed"
+  },
+  "test_database": {
+    "host": "127.0.0.1",
+    "port": 57432,
+    "database": "pdos_test",
+    "migration": "0063_legacy_usage_accounting"
+  },
+  "contracts": {
+    "pdos-v1": {
+      "current_manifest_sha256": "890b770ea2cd7512dfb4f27d5045790cf30b04447859f95206c35b4d367f3297",
+      "sources_verified": 177,
+      "artifacts_verified": 3,
+      "approved_manifest_sha256": "9ae54f1385ab835336f75017411d3e3e6a1fec98fd7e63c0876fb13995a232b0",
+      "approved_artifacts_unchanged": true
+    },
+    "pdos-runtime-v1": {
+      "current_manifest_sha256": "35e7c2521ad54cd12bf3c26fcf4273857ddd301a342a12d7e5be6ca0f7800fd9",
+      "sources_verified": 54,
+      "artifacts_verified": 4,
+      "approved_manifest_sha256": "3acef5382f0a8041a6777e9ea82a72628166ac80782c58211f2a196ab9ddec6d",
+      "approved_artifacts_unchanged": true
+    }
+  },
+  "sources": {
+    "server/app/ai/budget_accounting.py": "a103990c4254e78a5b86242095009c33d22f7e3765e7546a47ccaeede7582aff",
+    "server/app/ai/budget_ledger.py": "ff5aca84d02d6c9026bbb45af8e1729cb496c4f1223a31e6fe269a65f25fc2db",
+    "server/app/ai/gateway.py": "a9c99cf4843cdff048a6dfac1a8fb31cd06c31b0f966dd981b6cb1c4160656b9",
+    "server/app/db/schema.py": "10e375b13808e96a42ea300b34e76a44a44f399a3d7bb0baf5e562850511a77e",
+    "server/migrations/versions/0063_legacy_usage_accounting.py": "39d9ec535e6a5b21cae7eb60dc4edf7777447c33978b694bb7f4c4c10e5e6d80",
+    "server/tests/test_budget_accounting.py": "3d1aeb8dfc06682db3ba2e9659da870875b327fe7d9d17054ed67ab9a231b07e",
+    "server/tests/test_budget_ledger.py": "dcf9f4edfb4ecb5ee8af00040ff5ea55316da4696e9b6f2528505a62b03dde12",
+    "server/tests/test_model_gateway.py": "db206058a7d271ab4386ecee5d05eedf3e7862c8bb30a2e2d91615b91449e6fb",
+    "server/tests/test_model_gateway_schema.py": "ffbad643cc1a806102b596a9c82f04931f46643b27dee5bb7a576424a457ae31",
+    "server/tests/test_model_budget_controller.py": "fedba96a7a52c9583fb5a975bf8f6d2708ab9a0928c17f488d1c0d7e023e8a20",
+    "server/tests/test_migrations.py": "f1e77d8eaafd789dbf4962ce38c5ac5adc1053f8eb5cffa27e4d0030e8fd1bd9",
+    "docs/reports/2026-09-10-n0-03-budget-accounting-validation.md": "bf1a508f6a6f697abaa6ce84b4106d3b8f9c52c3da79196e08123d5ee0dde0de"
+  },
+  "remaining": [
+    "coordinated adoption fence and in-flight legacy calls",
+    "real qualified input metering and model capability loading",
+    "default factory adoption and stable business run/call identity",
+    "restricted role budget service interface",
+    "active leases and checkpoint/resume",
+    "operator source verification and reconciliation workflow",
+    "unified user-visible budget accounting",
+    "tool budget/loop and persistent rollout/bundle/current source ACL"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "source_count": 16,
+  "payload_exact_adopted_material": true,
+  "aware_clocks_normalized_equivalently": true,
+  "prior_checker_iso_representation_assumption_rejected": true,
+  "origin": {
+    "id": "3483e3c5-08e0-4156-a293-31f3b1217d9e",
+    "revision": 6,
+    "snapshot_sha256": "ab4cbc354b83f823425ac29a2daed0fb3ba3f492bd76301ca615db86053ad7ed"
+  },
+  "rule_material_sha256": "865d5587eed83434efd3c1df50b15f4e8a22427ad6aa2cce4ea510244c3355c5",
+  "command_identity_preserved": true,
+  "no_business_eligibility_conclusion": true
+}

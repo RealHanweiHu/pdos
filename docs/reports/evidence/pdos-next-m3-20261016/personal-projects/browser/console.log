@@ -1,0 +1,2 @@
+[     121ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://127.0.0.1:3037/api/v1/session:0
+[  245661ms] [ERROR] Failed to load resource: the server responded with a status of 503 (Service Unavailable) @ http://127.0.0.1:3037/api/v1/personal/projects?page_size=100:0

@@ -1,0 +1,48 @@
+....F..                                                                  [100%]
+=================================== FAILURES ===================================
+____ test_private_variant_link_hidden_but_shared_platform_metadata_readable ____
+
+setup = <isolated synthetic test scope>
+
+    def test_private_variant_link_hidden_but_shared_platform_metadata_readable(setup):
+        from tests.products.test_variants_transactions import definition, derive, source
+    
+        artifact = source(setup)
+        parent = definition(setup, artifact)
+        variant = derive(setup, parent, artifact, kind="customer", visibility="private")
+        saved, _ = confirmed(
+            setup,
+            request(
+                setup,
+>               variant_id=variant["id"],
+                           ^^^^^^^^^^^^^
+                compatibility="合成客户专属配置",
+                platform_version="C1",
+            ),
+        )
+E       TypeError: tuple indices must be integers or slices, not str
+
+tests/products/test_platform_links_pg.py:205: TypeError
+=============================== warnings summary ===============================
+tests/products/test_platform_links_pg.py::test_t1_preview_no_business_write_atomic_create_and_exact_replay
+tests/products/test_platform_links_pg.py::test_append_detach_reattach_stale_versions_and_baseline
+tests/products/test_platform_links_pg.py::test_permission_tenant_duplicate_code_and_preview_drift
+tests/products/test_platform_links_pg.py::test_failure_after_new_platform_rolls_back_every_business_member
+tests/products/test_platform_links_pg.py::test_failure_after_new_platform_rolls_back_every_business_member
+tests/products/test_platform_links_pg.py::test_agent_candidate_confirmation_preserves_writer_and_cancel_guard
+tests/products/test_platform_links_pg.py::test_database_rejects_unreceipted_platform_and_current_tamper
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:175: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/products/test_platform_links_pg.py: 10 warnings
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:192: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+tests/products/test_platform_links_pg.py::test_private_variant_link_hidden_but_shared_platform_metadata_readable
+  /Users/huhanwei/.codex/worktrees/pdos-m3-after-b8/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/products/test_platform_links_pg.py::test_private_variant_link_hidden_but_shared_platform_metadata_readable
+1 failed, 6 passed, 18 warnings in 9.53s
