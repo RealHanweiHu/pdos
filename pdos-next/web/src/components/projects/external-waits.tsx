@@ -89,7 +89,7 @@ function ScopedExternalWaits({ api, scope, readVersion = 0, onRefresh }: Props) 
   function choose(action: ExternalWaitAction, wait?: ExternalWaitSnapshot, replacement = false) { if (!editable) return; const draft = blankDraft(wait); if (replacement && wait) draft.replaces = pretty({ id: wait.id, revision: wait.revision }); saveEvent({ ...localRef.current, action, selectedId: action === "create" ? "" : wait?.id ?? "", draft, pending: null, receipt: null, completed: null }); setError(""); }
   const d = local.draft, scheduled = ["create", "details"].includes(local.action), timed = ["create", "details", "initiate", "delivery", "commitment", "reply"].includes(local.action);
   const calendarIsAvailable = !d.calendar || data?.available_calendars.some(calendar => { try { const ref = JSON.parse(d.calendar); return isExternalCalendarRef(ref) && sameCalendar(calendar.ref, ref); } catch { return false; } });
-  return <section className={styles.root} aria-label="外部等待与跟进">
+  return <section className={`${styles.root} project-canvas`} aria-label="外部等待与跟进">
     <header className={styles.heading}><div><p className={styles.eyebrow}>原请求、送达与回复分别留痕</p><h3>外部等待与跟进</h3></div><Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => setAttempt(value => value + 1)}><ArrowClockwise aria-hidden="true"/>刷新外部等待</Button></header>
     <p className={styles.note}>这里保存内部跟进记录。对方声明的时间与回复、实际送达、正式业务接收分别核对。</p>
     {notice && <p className={styles.notice} role="status">{notice}</p>}{error && <p className={styles.error} role="alert">{error}</p>}

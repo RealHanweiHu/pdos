@@ -1,9 +1,9 @@
-.summary { min-width: 0; display: grid; gap: 8px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--background); font-size: 13px; }
+.summary { min-width: 0; display: grid; gap: 8px; padding: 12px 0 0; border: 0; background: transparent; font-size: 13px; line-height: 1.5; }
 .body { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-.meta { display: flex; flex-wrap: wrap; gap: 4px 10px; margin: 0; color: var(--muted-foreground); font-size: 11px; overflow-wrap: anywhere; }
-.empty { margin: 0; color: var(--muted-foreground); font-size: 12px; }
+.meta { display: flex; flex-wrap: wrap; gap: 4px 10px; margin: 0; color: var(--muted-foreground); font-size: 12px; overflow-wrap: anywhere; }
+.empty { margin: 0; color: var(--muted-foreground); font-size: 13px; line-height: 1.45; }
 .summary details { min-width: 0; }
-.summary summary { cursor: pointer; color: var(--primary); font-size: 12px; }
+.summary summary { cursor: pointer; color: var(--workspace-link); font-size: 13px; }
 .summary details > :not(summary) { margin-top: 8px; }
-.summary ul { margin: 0; padding-left: 18px; font-size: 11px; overflow-wrap: anywhere; }
+.summary ul { margin: 0; padding-left: 18px; font-size: 12px; overflow-wrap: anywhere; }
 .summary summary:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; border-radius: 4px; }

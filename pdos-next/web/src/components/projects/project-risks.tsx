@@ -61,7 +61,7 @@ function ScopedProjectRisks({ api, scope, onRefresh, readVersion = 0 }: Props) {
   function choose(row: ProjectRisk) { if (!editable) return; try { const next = { ...localRef.current, draft: riskDraft(row, scope), receipt: null, completed: null }; if (saveEvent(next)) { setError(""); setNotice(""); } } catch (failure) { setError((failure as Error).message); } }
   function start() { if (!editable || !current || !draft || !selected || !data) return; try { const command = newRiskCommand(scope, data.product_revision, draft, selected), pending: RiskPending = { stage: "inputs", command }; if (saveEvent({ ...localRef.current, pending, receipt: null, completed: null })) void run(pending); } catch (failure) { setError((failure as Error).message); } }
   function confirm() { if (!prepared || busy || !preparedCurrent) return; if (!riskPreviewCurrent(prepared)) { setError("本次确认已过期，请重新核对原请求。"); return; } const pending: RiskPending = { stage: "execute", command: prepared.command }; if (saveEvent({ ...localRef.current, pending, receipt: null, completed: null })) { setPrepared(null); void run(pending); } }
-  return <section className={styles.root} aria-label="风险独立跟进">
+  return <section className={`${styles.root} project-canvas`} aria-label="风险独立跟进">
     <header className={styles.heading}><div><p className={styles.eyebrow}>G0 风险 · 原具名跟进人登记</p><h2>风险跟进</h2></div><Button variant="outline" size="sm" disabled={busy} onClick={() => setAttempt(value => value + 1)}><ArrowClockwise aria-hidden="true"/>刷新风险跟进</Button></header>
     <p className={styles.note}>内部跟进关闭与重开由原具名跟进人登记，不代表专业风险接受或放行。关联任务的成果验收不会自动关闭风险；原跟进期限也不是个人承诺。</p>
     {notice && <p className={styles.notice} role="status">{notice}</p>}{error && <p className={styles.error} role="alert">{error}</p>}

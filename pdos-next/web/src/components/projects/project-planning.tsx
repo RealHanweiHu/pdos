@@ -161,8 +161,8 @@ function ProjectPanel({ product, categoryId = "", projectId = "", principalId, a
   }
 
   const showEditor = !!pending || (editorOpen ?? (!loading && !error && (projectId ? !!project && !project.plan : projects.length === 0)));
-  return <section className="min-w-0 space-y-5" aria-label="项目与首版计划">
-    <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">固定型号定义，组织真实研发工作</p><h2 className="mt-1 text-lg font-semibold">项目与首版计划</h2></div><div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy || !!pending || !!preview} aria-expanded={showEditor} aria-controls={`project-editor-pane-${product.id}`} onClick={() => setEditorOpen(!showEditor)}><CalendarBlank/>{showEditor ? "收起编排" : "编排首版计划"}</Button><Button variant="outline" disabled={busy || !!preview} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新项目</Button></div></header>
+  return <section className="project-canvas min-w-0 space-y-6" aria-label="项目与首版计划">
+    <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">固定型号定义，组织真实研发工作</p><h2 className="mt-1 font-semibold">项目与首版计划</h2></div><div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy || !!pending || !!preview} aria-expanded={showEditor} aria-controls={`project-editor-pane-${product.id}`} onClick={() => setEditorOpen(!showEditor)}><CalendarBlank/>{showEditor ? "收起编排" : "编排首版计划"}</Button><Button variant="outline" disabled={busy || !!preview} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新项目</Button></div></header>
     <p className="subtle">项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。{projectId && "当前只办理所选项目。"}</p>
     {projectId && categoryId && <Button asChild variant="outline"><a href={globalHref({ area: "cockpit", categoryId, projectId })}>返回项目驾驶舱</a></Button>}
     {error && <p role="alert" className="break-words rounded-lg border border-destructive p-3 text-destructive">{error}</p>}

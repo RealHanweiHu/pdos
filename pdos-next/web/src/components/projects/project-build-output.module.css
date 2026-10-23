@@ -1,3 +1,22 @@
 .panel{min-width:0;max-width:100%;border-top:1px solid var(--border);background:var(--surface);overflow:hidden}.heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:9px 12px;border-bottom:1px solid var(--border)}.heading h3{margin:0;font-size:12px;font-weight:600}.notice,.note,.empty,.foot{font-size:10.5px;line-height:1.7;color:var(--text-subtle);margin:0;padding:9px 12px;overflow-wrap:anywhere}.notice{font-size:11px}.notice p{margin:0 0 8px}.section{min-width:0;border-top:1px solid var(--border)}.section>h4{margin:0;padding:8px 12px;font-size:11px;font-weight:600}.configs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:0 12px 10px}.config,.lot{min-width:0;border:1px solid var(--border);border-radius:7px;padding:9px 10px;font-size:10.5px;line-height:1.6;overflow-wrap:anywhere}.recordTitle{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px 12px;font-size:11px;font-weight:600;margin:0 0 8px}.recordTitle>span{color:var(--text-subtle);font-size:10px;font-weight:400}.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px 12px;margin:0}.facts>div,.identities>div{min-width:0}.facts dt,.identities dt{color:var(--text-subtle);font-size:10px}.facts dd,.identities dd{margin:2px 0 0;overflow-wrap:anywhere}.facts small,.allocations small,.table small{display:block;color:var(--text-subtle);font-size:10px;line-height:1.6;overflow-wrap:anywhere}.meta{margin:7px 0 0;font-size:10px;color:var(--text-subtle);overflow-wrap:anywhere}.meta>span{display:block;margin-top:2px}.details{min-width:0;margin-top:7px;font-size:10px;line-height:1.7;color:var(--text-subtle);overflow-wrap:anywhere}.details summary{cursor:pointer}.details[open]>.facts{margin-top:8px}.details dd{color:var(--foreground)}.lots{display:grid;gap:8px;padding:0 12px 10px}.allocations>div{border-top:1px solid var(--border);margin-top:9px;padding-top:6px}.allocations p{margin:3px 0}.allocations ul{margin:5px 0 0;padding-left:16px}.context{margin:7px 0 0}.scroll{min-width:0;max-width:100%;overflow-x:auto}.table{width:100%;min-width:680px;border-collapse:collapse;font-size:10.5px;line-height:1.6;text-align:left}.table th{padding:7px 12px;color:var(--text-subtle);font-size:10px;font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap}.table td{padding:8px 12px;vertical-align:top;border-bottom:1px solid var(--border);overflow-wrap:anywhere}.table th:first-child,.table td:first-child{width:25%}.table td{max-width:260px}.table strong{font-weight:600}.identities{display:grid;gap:6px;margin:7px 0 0}.foot{font-size:10px;border-top:1px solid var(--border)}
 @media(max-width:700px){.configs{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:480px){.heading,.section>h4,.notice,.note,.empty,.foot{padding-left:10px;padding-right:10px}.configs,.lots{padding-left:10px;padding-right:10px}.facts{grid-template-columns:minmax(0,1fr)}}
+
+
+.panel, .content, .reading, .root { min-width: 0; max-width: 100%; }
+.panel { border-radius: 16px; border-color: color-mix(in srgb, var(--foreground) 8%, var(--border)); box-shadow: 0 1px 1px rgb(0 0 0 / .03); }
+.heading { padding: 14px 16px; }
+.heading h2, .heading h3 { font-size: 15px; font-weight: 650; letter-spacing: -.015em; }
+.notice, .note, .empty, .foot, .summary, .context { font-size: 13px; line-height: 1.55; }
+.row, .card, .formPanel { font-size: 13px; }
+.table { font-size: 13px; }
+.table th { font-size: 12px; font-weight: 600; position: sticky; top: 0; background: var(--surface); }
+.scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+.name, .link { color: var(--workspace-link); }
+.notice[role="alert"], .error { color: var(--destructive); }
+.card, .formPanel, .result, .config, .lot { border-radius: 14px; }
+.form input:focus-visible, .form select:focus-visible, .form textarea:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.preview { border-color: color-mix(in srgb, var(--workspace-link) 45%, var(--border)); }
+.transfer { border-left-color: var(--workspace-link); }
+.transfer svg { color: var(--workspace-link); }
+.badge { border-radius: 999px; }

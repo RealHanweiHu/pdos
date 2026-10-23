@@ -59,7 +59,8 @@ export function ProjectList({ api, principalId = "", onOpenProject, onOpenWorkbe
   const actions = { onOpenProject, onOpenWorkbench };
   const filtered = !!query.trim() || !!categoryId || mine;
 
-  return <>
+  return <div className="project-canvas">
+    <div className="workspace-page-heading"><div className="min-w-0"><h1>项目</h1><p>本人权限内的研发项目。打开一行进入项目工作区；阶段、健康度与门禁只按已接入的记录显示。</p></div></div>
     <div className={styles.toolbar}>
       <div className={styles.views} role="group" aria-label="项目视图">{([{ id: "list", label: "列表", Icon: ListBullets }, { id: "board", label: "看板", Icon: Kanban }, { id: "timeline", label: "时间轴", Icon: CalendarBlank }] as const).map(item => <button type="button" key={item.id} aria-pressed={view === item.id} onClick={() => setView(item.id)}><item.Icon size={14} aria-hidden="true"/>{item.label}</button>)}</div>
       {view === "list" && <label className={styles.select}>分组<select aria-label="项目分组" value={grouping} onChange={event => setGrouping(event.target.value as ProjectGrouping)}><option value="stage">阶段</option><option value="owner">负责人</option><option value="category">品类</option></select></label>}
@@ -82,5 +83,5 @@ export function ProjectList({ api, principalId = "", onOpenProject, onOpenWorkbe
     {view === "timeline" && entries.length > 0 && <><p className={styles.note}>当前显示计划的完成时间预测范围；阶段区间、门禁与冻结点待对应事实接入。基线、预测、承诺和实际分别呈现。</p><div className={styles.scroll}><div className={styles.timeline}><div className={styles.axis}><span>{axis ? formatProjectDate(new Date(axis.start).toISOString()) : "暂无可读日期"}</span><span>{axis ? formatProjectDate(new Date(axis.end).toISOString()) : ""}</span></div>{entries.map(entry => { const position = axis ? forecastPosition(entry, axis) : null; const forecast = projectForecast(entry); return <section className={styles.timeProject} key={entry.project.id} aria-label={`${entry.project.name}四时间`}><div><Name entry={entry} {...actions}/><Actions entry={entry} {...actions}/></div><div className={styles.timeRows}>{["基线", "预测", "承诺", "实际"].map(label => <div className={styles.timeRow} key={label}><span className={styles.timeLabel}>{label}</span><div className={styles.track}>{label === "预测" && position && <i className={styles.bound} style={{ left: `${position.left}%`, width: `${position.width}%` }}/>}<span className={styles.boundText}>{label === "预测" ? `${formatProjectDate(forecast.earliest)} — ${formatProjectDate(forecast.latest)}` : "未知"}</span></div></div>)}</div></section>; })}</div></div></>}
     {portfolio && entries.length > 0 && view === "list" && <p className={styles.note}><Info size={14} aria-hidden="true"/>阶段、健康度、下一门禁与冻结点待对应记录接入；具名更新按原记录展示，不由计划推断。</p>}
     {portfolio?.asOf && <p className={styles.readTime}>读取于 <time dateTime={portfolio.asOf}>{new Date(portfolio.asOf).toLocaleString()}</time></p>}
-  </>;
+  </div>;
 }

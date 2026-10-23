@@ -61,7 +61,7 @@ function ScopedCommitmentFulfillment({ api, scope, onRefresh, readVersion = 0 }:
   function start() { if (!editable || !current || !draft || !selected || !data) return; try { const command = newFulfillmentCommand(scope, data.product_revision, draft, selected), pending: FulfillmentPending = { stage: "inputs", command }; if (saveEvent({ ...localRef.current, pending, receipt: null, completed: null })) void run(pending); } catch (failure) { setError((failure as Error).message); } }
   function confirm() { if (!prepared || busy) return; if (!fulfillmentPreviewCurrent(prepared)) { setError("本次确认已过期，请重新核对原请求。"); return; } const pending: FulfillmentPending = { stage: "execute", command: prepared.command }; if (saveEvent({ ...localRef.current, pending, receipt: null, completed: null })) void run(pending); }
   const allPresent = !!selected && selected.outcome_keys.every(key => selected.submission?.results.find(row => row.key === key)?.status === "present");
-  return <section className={styles.root} aria-label="承诺履行核对">
+  return <section className={`${styles.root} project-canvas`} aria-label="承诺履行核对">
     <header className={styles.heading}><div><p className={styles.eyebrow}>个人承诺 · 接收者逐条核对</p><h2>承诺履行</h2></div><Button variant="outline" size="sm" disabled={busy} onClick={() => setAttempt(value => value + 1)}><ArrowClockwise aria-hidden="true"/>刷新履行记录</Button></header>
     <p className={styles.note}>任务验收与承诺履行分开。每位承诺接收者核对自己的成果范围；任务已验收或日期已过都不代表承诺已履行。</p>
     {notice && <p className={styles.notice} role="status">{notice}</p>}{error && <p className={styles.error} role="alert">{error}</p>}

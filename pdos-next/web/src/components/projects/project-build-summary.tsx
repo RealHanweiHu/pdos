@@ -37,7 +37,7 @@ function ScopedBuildSummary({ api, categoryId, productId, projectId }: Props) {
       .catch(failure => { if (active) setReading({ api, attempt, data: null, error: (failure as Error).message }); });
     return () => { active = false; };
   }, [api, categoryId, productId, projectId, attempt]);
-  return <div className={styles.content}>
+  return <div className={`${styles.content} project-canvas`}>
     <section className={styles.panel} aria-label="本项目 Builds">
       <header className={styles.heading}><h2>本项目 Builds</h2><Button type="button" variant="outline" size="xs" onClick={() => setAttempt(value => value + 1)}>刷新本项目轮次</Button></header>
       {error ? <div className={styles.notice} role="alert"><p>项目轮次暂不可读：{error}</p><Button type="button" variant="outline" size="xs" onClick={() => setAttempt(value => value + 1)}>重新读取项目轮次</Button></div> : !data ? <p className={styles.notice} role="status">正在读取本项目轮次…</p> : <>

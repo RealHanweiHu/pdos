@@ -23,7 +23,7 @@ function Overview({ portfolio, today, onOpenProject }: {
   const conflictCount = portfolio.projects.reduce((count, entry) => { const { overdue, soon } = openTasks(entry, today); return count + overdue.length + soon.length; }, 0);
   const partial = portfolio.readErrors.length > 0;
   const incompleteItems = partial || portfolio.projects.some(entry => !!entry.openItemsError);
-  return <>
+  return <div className="project-canvas">
     <div className="workspace-page-heading flex-col sm:flex-row"><div className="min-w-0"><h1>项目驾驶舱</h1><p>本人权限内项目的经营总览：开放风险与到期冲突逐项目列出。资源与供应冲突读集尚未接入；基线、承诺与实绩时间线尚未记录时不填零。</p></div></div>
     <div className="workspace-object-counts">
       <div><dt><FolderSimple size={16} aria-hidden="true"/>可见项目</dt><dd>{partial ? "未完整读取" : portfolio.projects.length}</dd></div>
@@ -54,7 +54,7 @@ function Overview({ portfolio, today, onOpenProject }: {
         <div className="mt-5"><Button size="sm" variant="outline" onClick={() => onOpenProject(entry.category.id, entry.project.id)}>进入项目驾驶舱<ArrowRight size={14}/></Button></div>
       </section>;
     })}</div>
-  </>;
+  </div>;
 }
 
 
@@ -85,17 +85,17 @@ export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOv
   }, [api, location.projectId, scope]);
 
   const refresh = <Button variant="outline" className="mb-4" onClick={() => setReload(value => value + 1)}><ArrowClockwise/>刷新</Button>;
-  if (error) return <><div className="workspace-page-heading flex-col sm:flex-row"><div className="min-w-0"><h1>项目驾驶舱</h1><p>读取失败。</p></div></div><p role="alert" className="workspace-read-error">{error}</p>{refresh}</>;
-  if (!portfolio) return <p role="status" className="subtle">正在读取项目经营总览…</p>;
-  if (location.projectId && !entry) return <>
+  if (error) return <div className="project-canvas"><div className="workspace-page-heading flex-col sm:flex-row"><div className="min-w-0"><h1>项目驾驶舱</h1><p>读取失败。</p></div></div><p role="alert" className="workspace-read-error">{error}</p>{refresh}</div>;
+  if (!portfolio) return <div className="project-canvas"><p role="status" className="subtle">正在读取项目经营总览…</p></div>;
+  if (location.projectId && !entry) return <div className="project-canvas">
     <div className="workspace-page-heading flex-col sm:flex-row"><div className="min-w-0"><h1>项目驾驶舱</h1><p>此项目当前不可见或已移除；仅显示本人权限内项目。</p></div></div>
     <Button variant="outline" onClick={onOpenOverview}><ArrowLeft/>返回经营总览</Button>
-  </>;
+  </div>;
   const readTime = portfolio.asOf && <p className="subtle mb-4">项目资料读取于 <time dateTime={portfolio.asOf}>{new Date(portfolio.asOf).toLocaleString()}</time></p>;
   if (entry) return <ProjectWorkspace entry={entry} api={api} session={session} today={today} onBack={onOpenOverview} onOpenWorkbench={onOpenWorkbench} readAt={portfolio.asOf} readVersion={reload} onRefresh={() => setReload(value => value + 1)} />;
-  return <>
+  return <div className="project-canvas">
     {refresh}{readTime}
     {portfolio.readErrors.map(item => <p key={item.path} role="status" className="subtle">部分范围暂不可读：{item.message}</p>)}
     <Overview portfolio={portfolio} today={today} onOpenProject={onOpenProject} />
-  </>;
+  </div>;
 }

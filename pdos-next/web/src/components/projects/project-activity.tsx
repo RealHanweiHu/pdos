@@ -7,7 +7,11 @@ import type { ProjectWorkApi, WorkScope } from "@/lib/project-work";
 import styles from "./project-activity.module.css";
 
 const person = (value: { id: string; name: string | null }) => value.name ? `${value.name} · ${value.id}` : value.id;
-function Moment({ value }: { value: string }) { return <time dateTime={value}>{value}</time>; }
+function Moment({ value }: { value: string }) {
+  const parsed = Date.parse(value);
+  const spoken = Number.isNaN(parsed) ? "" : new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(parsed));
+  return <time dateTime={value}>{spoken ? <span className={styles.spoken}>{spoken}</span> : null}<span className={styles.stamp}>{value}</span></time>;
+}
 function Activity({ item, scope, onOpenRun }: { item: ProjectActivityItem; scope: WorkScope; onOpenRun?: (id: string) => void }) {
   const runEvent = item.record_kind === "run_event";
   return <li className={styles.item}>
@@ -30,7 +34,7 @@ function Activity({ item, scope, onOpenRun }: { item: ProjectActivityItem; scope
 }
 export function ProjectActivity({ api, scope, readVersion = 0, onOpenRun }: { api: ProjectWorkApi; scope: WorkScope; readVersion?: number; onOpenRun?: (id: string) => void }) {
   const state = useProjectActivity(api, scope, readVersion);
-  return <section className={styles.root} aria-label="项目动态" aria-busy={state.status === "loading" || state.loadingMore}>
+  return <section className={`${styles.root} project-canvas`} aria-label="项目动态" aria-busy={state.status === "loading" || state.loadingMore}>
     <header className={styles.heading}><div><h2>项目动态</h2><p>本项目的实际业务记录、具名回执，以及本人绑定本项目的小Pai运行。</p></div><Button variant="outline" onClick={state.refresh}><ArrowClockwise size={14} aria-hidden="true"/>刷新动态</Button></header>
     {state.status === "loading" && <p className={styles.notice} role="status">正在读取项目动态…</p>}
     {state.status === "error" && <p className={styles.error} role="alert">项目动态读取失败：{state.error}</p>}

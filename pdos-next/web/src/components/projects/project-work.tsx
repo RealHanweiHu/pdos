@@ -93,7 +93,7 @@ function ScopedProjectWork({ api, categoryId, productId, projectId, principalId,
   const updateResult = (index: number, changes: Partial<WorkResult>) => change("results", json(resultRows.map((row, i) => i === index ? { ...row, ...changes } : row)));
   const updateCheck = (index: number, changes: Partial<WorkCheck>) => change("checks", json(checkRows.map((row, i) => i === index ? { ...row, ...changes } : row)));
 
-  return <div className={styles.root}>
+  return <div className={`${styles.root} project-canvas`}>
     <header className={styles.heading}><div><p className={styles.eyebrow}>本项目的执行与交付</p><h2>任务、个人承诺与成果</h2></div><Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => setAttempt(v => v + 1)}><ArrowClockwise aria-hidden="true"/>刷新任务</Button></header>
     {notice && <p className={styles.notice} role="status">{notice}</p>}{error && <p className={styles.error} role="alert">{error}</p>}
     {!storageOk && hydrated && <Button type="button" variant="outline" onClick={() => saveEvent(localRef.current)}>重试本机保存</Button>}

@@ -29,3 +29,25 @@
 .error { color: var(--destructive); font-size: .875rem; overflow-wrap: anywhere; }
 .success { font-size: .875rem; }
 @media (max-width: 540px) { .card, .panel, .notice, .pending, .preview { padding: .8rem; } .facts { grid-template-columns: 1fr; gap: .2rem; } .facts dd { margin-bottom: .4rem; } .heading { align-items: flex-start; } }
+
+
+.panel, .content, .reading, .root { min-width: 0; max-width: 100%; }
+.panel { border-radius: 16px; border-color: color-mix(in srgb, var(--foreground) 8%, var(--border)); box-shadow: 0 1px 1px rgb(0 0 0 / .03); }
+.heading { padding: 14px 16px; }
+.heading h2, .heading h3 { font-size: 15px; font-weight: 650; letter-spacing: -.015em; }
+.notice, .note, .empty, .foot, .summary, .context { font-size: 13px; line-height: 1.55; }
+.row, .card, .formPanel { font-size: 13px; }
+.table { font-size: 13px; }
+.table th { font-size: 12px; font-weight: 600; position: sticky; top: 0; background: var(--surface); }
+.scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; }
+.name, .link { color: var(--workspace-link); }
+.notice[role="alert"], .error { color: var(--destructive); }
+.card, .formPanel, .result, .config, .lot { border-radius: 14px; }
+.form input:focus-visible, .form select:focus-visible, .form textarea:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.preview { border-color: color-mix(in srgb, var(--workspace-link) 45%, var(--border)); }
+.transfer { border-left-color: var(--workspace-link); }
+.transfer svg { color: var(--workspace-link); }
+.badge { border-radius: 999px; }
+.root > .heading { padding: 0; align-items: flex-end; }
+.root > .heading h2 { font-size: 28px; font-weight: 680; letter-spacing: -.03em; line-height: 1.15; }
+@media (max-width: 640px) { .root > .heading h2 { font-size: 22px; } }
