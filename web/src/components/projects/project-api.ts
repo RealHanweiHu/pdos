@@ -12,7 +12,10 @@ function isProjectStage(value: unknown): value is ProjectStage {
     typeof value.code === "string" &&
     typeof value.name === "string" &&
     (typeof value.description === "string" || value.description === null) &&
-    typeof value.sequence === "number"
+    typeof value.sequence === "number" &&
+    ["planned_start_date", "planned_end_date", "entered_at", "exited_at"].every(
+      (key) => value[key] === undefined || value[key] === null || typeof value[key] === "string",
+    )
   );
 }
 
@@ -42,7 +45,7 @@ export function isProject(value: unknown): value is Project {
     typeof value.code === "string" &&
     typeof value.name === "string" &&
     (typeof value.description === "string" || value.description === null) &&
-    ["draft", "proposed", "approved", "active", "on_hold", "completed", "archived"].includes(
+    ["draft", "proposed", "approved", "active", "on_hold", "completed", "cancelled", "archived"].includes(
       String(value.status),
     ) &&
     (typeof value.start_date === "string" || value.start_date === null) &&

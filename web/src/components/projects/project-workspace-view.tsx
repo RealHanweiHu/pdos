@@ -25,6 +25,7 @@ import { ProjectList, projectStatusLabels } from "./project-list";
 import { ProjectOverview } from "./project-overview";
 import { ProjectTimeline } from "./project-timeline";
 import type { Project } from "./project-types";
+import type { StagePlanInput } from "./use-project-actions";
 import type { ProjectActivity } from "./project-activity";
 import { ProjectDocumentPanel } from "./project-document-panel";
 import { ProjectGatePanel } from "./project-gate-panel";
@@ -125,6 +126,7 @@ export function ProjectWorkspaceView({
   onTransitionRisk,
   onTransitionTask,
   onUpdate,
+  onUpdateStagePlan,
   onUpdateTask,
   projects,
   productEngineering,
@@ -158,12 +160,13 @@ export function ProjectWorkspaceView({
   onRetryWorkItems: () => void;
   onSelect: (project: Project) => void;
   onStageTransition: (project: Project, stageId: string) => void;
-  onStatusTransition: (project: Project, status: Project["status"]) => void;
+  onStatusTransition: (project: Project, status: Project["status"], reason?: string) => void;
   onTabChange: (tab: ProjectWorkspaceTab) => void;
   onTransitionIssue: (issue: ProjectIssue, toStatus: IssueStatus) => Promise<boolean>;
   onTransitionRisk: (risk: ProjectRisk, toStatus: RiskStatus) => Promise<boolean>;
   onTransitionTask: (task: ProjectTask, input: TaskTransitionInput) => Promise<boolean>;
   onUpdate: (project: Project, values: ProjectFormValues) => Promise<ProjectSubmissionResult>;
+  onUpdateStagePlan: (project: Project, stages: StagePlanInput[]) => Promise<boolean>;
   onUpdateTask: (task: ProjectTask, input: TaskUpdateInput) => Promise<boolean>;
   projects: Project[];
   productEngineering: ProductEngineeringWorkspaceProps;
@@ -276,14 +279,25 @@ export function ProjectWorkspaceView({
                 onCancelEdit={onCancelEdit}
                 onMembersChange={onMembersChange}
                 onStageTransition={(stageId) => onStageTransition(selectedProject, stageId)}
-                onStatusTransition={(status) => onStatusTransition(selectedProject, status)}
+                onStatusTransition={(status, reason) => onStatusTransition(selectedProject, status, reason)}
                 onUpdate={(values) => onUpdate(selectedProject, values)}
                 project={selectedProject}
                 saving={saving}
                 workItems={workItems}
               />
             ) : null}
-            {activeTab === "timeline" ? <ProjectTimeline activities={activities} activityError={activityError} highlightedEntityId={highlightedEntityId} highlightedEventId={highlightedEventId} project={selectedProject} /> : null}
+            {activeTab === "timeline" ? (
+              <ProjectTimeline
+                activities={activities}
+                activityError={activityError}
+                canEditPlan={canEdit}
+                highlightedEntityId={highlightedEntityId}
+                highlightedEventId={highlightedEventId}
+                onSavePlan={(stages) => onUpdateStagePlan(selectedProject, stages)}
+                project={selectedProject}
+                saving={saving}
+              />
+            ) : null}
             {activeTab === "tasks" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
             {activeTab === "tasks" && workItems ? (
               <TaskPanel

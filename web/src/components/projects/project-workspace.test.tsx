@@ -885,6 +885,74 @@ describe("ProjectWorkspace", () => {
     expect(within(card).getByText("4 人")).toBeInTheDocument();
   });
 
+  it("edits the stage plan, flags a late stage, and cancels only with a reason", async () => {
+    const user = userEvent.setup();
+    const plannedStages = stages.map((stage, index) =>
+      index === 0
+        ? { ...stage, planned_start_date: "2000-01-01", planned_end_date: "2000-01-10", entered_at: "2000-01-01T08:00:00Z", exited_at: null }
+        : { ...stage, planned_start_date: null, planned_end_date: null, entered_at: null, exited_at: null },
+    );
+    const activeProject = {
+      ...project,
+      status: "active",
+      workflow: { ...project.workflow, stages: plannedStages },
+      current_stage: plannedStages[0],
+    };
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [activeProject] });
+      if (path === "/api/projects/project-1/stage-plan" && init?.method === "PUT") {
+        const body = JSON.parse(String(init.body)) as { stages: { stage_id: string; planned_start_date: string | null; planned_end_date: string | null }[] };
+        const updatedStages = plannedStages.map((stage, index) => ({ ...stage, ...body.stages[index] }));
+        return jsonResponse({ ...activeProject, workflow: { ...activeProject.workflow, stages: updatedStages }, current_stage: updatedStages[0] });
+      }
+      if (path === "/api/projects/project-1/transitions" && init?.method === "POST") {
+        return jsonResponse({ ...activeProject, status: "cancelled" });
+      }
+      const response = workItemResponse(path);
+      if (response) return response;
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    expect(await screen.findByText(/阶段逾期 \d+ 天/, { selector: "[data-metric='stage-schedule']" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("tab", { name: "时间线" }));
+    expect(screen.getByTestId("stage-dates-concept")).toHaveTextContent("计划01-01 → 01-10");
+    expect(screen.getByTestId("stage-schedule-concept")).toHaveTextContent(/阶段逾期 \d+ 天/);
+    expect(screen.getByTestId("stage-schedule-planning")).toHaveTextContent("未设计划");
+    await user.click(screen.getByRole("button", { name: "编辑阶段计划" }));
+    const planForm = screen.getByRole("form", { name: "编辑阶段计划" });
+    fireEvent.change(within(planForm).getByLabelText("规划阶段计划开始"), { target: { value: "2999-02-01" } });
+    fireEvent.change(within(planForm).getByLabelText("规划阶段计划结束"), { target: { value: "2999-01-01" } });
+    await user.click(within(planForm).getByRole("button", { name: "保存阶段计划" }));
+    expect(within(planForm).getByRole("alert")).toHaveTextContent("规划阶段的结束日期早于开始日期。");
+    fireEvent.change(within(planForm).getByLabelText("规划阶段计划结束"), { target: { value: "2999-03-01" } });
+    await user.click(within(planForm).getByRole("button", { name: "保存阶段计划" }));
+    const planCall = fetchMock.mock.calls.find(([input, init]) => String(input).endsWith("/stage-plan") && init?.method === "PUT");
+    const sentStages = (JSON.parse(String(planCall?.[1]?.body)) as { stages: unknown[] }).stages;
+    expect(sentStages).toHaveLength(7);
+    expect(sentStages[1]).toEqual({ stage_id: "stage-2", planned_start_date: "2999-02-01", planned_end_date: "2999-03-01" });
+    expect(await screen.findByTestId("stage-schedule-planning")).toHaveTextContent("计划 2999-02-01 开始");
+    expect(screen.queryByRole("form", { name: "编辑阶段计划" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("tab", { name: "概览" }));
+    await user.click(screen.getByRole("button", { name: "取消项目" }));
+    const cancelForm = screen.getByRole("form", { name: "取消项目" });
+    expect(within(cancelForm).getByRole("button", { name: "确认取消项目" })).toBeDisabled();
+    await user.type(within(cancelForm).getByLabelText("取消原因"), "客户撤回需求");
+    await user.click(within(cancelForm).getByRole("button", { name: "确认取消项目" }));
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/projects/project-1/transitions",
+      expect.objectContaining({ method: "POST", body: JSON.stringify({ to_status: "cancelled", reason: "客户撤回需求" }) }),
+    );
+    expect(await screen.findByText("项目已取消，阶段计划已锁定；可归档留存。")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "归档项目" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "取消项目" })).not.toBeInTheDocument();
+  });
+
   it("does not expose or request work items for external project members", async () => {
     const user = userEvent.setup();
     fetchMock.mockImplementation(async (input) => {

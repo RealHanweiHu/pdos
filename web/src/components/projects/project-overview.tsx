@@ -2,7 +2,7 @@ import { ProjectForm, type ProjectFormValues, type ProjectSubmissionResult } fro
 import { ProjectStatusActions } from "./project-status-actions";
 import { projectStatusLabels } from "./project-list";
 import { ProjectMembersCard } from "./project-members-card";
-import { isTaskOpen, isTaskOverdue, localIsoDate } from "./project-task-planning";
+import { isTaskOpen, isTaskOverdue, localIsoDate, stageSchedule } from "./project-task-planning";
 import type { Project } from "./project-types";
 import type { ProjectMember, ProjectWorkItems } from "./project-work-item-types";
 
@@ -27,13 +27,14 @@ export function ProjectOverview({
   onCancelEdit: () => void;
   onMembersChange: (members: ProjectMember[]) => void;
   onStageTransition: (stageId: string) => void;
-  onStatusTransition: (status: Project["status"]) => void;
+  onStatusTransition: (status: Project["status"], reason?: string) => void;
   onUpdate: (values: ProjectFormValues) => Promise<ProjectSubmissionResult>;
   project: Project;
   saving: boolean;
   workItems: ProjectWorkItems | null;
 }) {
   const today = localIsoDate();
+  const currentSchedule = stageSchedule(project.current_stage, project.current_stage.sequence, today);
   const openTasks = workItems?.tasks.filter(isTaskOpen).length;
   const overdueTasks = workItems?.tasks.filter((task) => isTaskOverdue(task, today)).length ?? 0;
   const openIssues = workItems?.issues.filter((issue) => issue.status !== "closed").length;
@@ -49,7 +50,11 @@ export function ProjectOverview({
           <span className="rounded-full border bg-muted px-2 py-1 text-[11px] font-medium text-muted-foreground">{projectStatusLabels[project.status]}</span>
         </div>
         <dl className="grid gap-4 py-4 text-xs sm:grid-cols-3">
-          <div><dt className="text-muted-foreground">当前阶段</dt><dd className="mt-1 font-medium">{project.current_stage.name}</dd></div>
+          <div>
+            <dt className="text-muted-foreground">当前阶段</dt>
+            <dd className="mt-1 font-medium">{project.current_stage.name}</dd>
+            {currentSchedule.tone === "late" ? <dd className="mt-1 text-[11px] font-medium text-destructive" data-metric="stage-schedule">{currentSchedule.label}</dd> : null}
+          </div>
           <div><dt className="text-muted-foreground">开始日期</dt><dd className="mt-1 font-mono">{project.start_date ?? "未设置"}</dd></div>
           <div><dt className="text-muted-foreground">目标日期</dt><dd className="mt-1 font-mono">{project.target_date ?? "未设置"}</dd></div>
         </dl>

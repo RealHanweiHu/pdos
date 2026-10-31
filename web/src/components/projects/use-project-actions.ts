@@ -6,6 +6,12 @@ import { readProject } from "./project-api";
 import type { ProjectFormValues } from "./project-form";
 import type { Project } from "./project-types";
 
+export type StagePlanInput = {
+  stage_id: string;
+  planned_start_date: string | null;
+  planned_end_date: string | null;
+};
+
 export function useProjectActions({ replace }: { replace: (href: string) => void }) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -22,9 +28,9 @@ export function useProjectActions({ replace }: { replace: (href: string) => void
     );
   }
 
-  async function authenticatedProjectRequest(path: string, body: object) {
+  async function authenticatedProjectRequest(path: string, body: object, method: "POST" | "PUT" = "POST") {
     const response = await fetch(path, {
-      method: "POST",
+      method,
       credentials: "same-origin",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -72,14 +78,14 @@ export function useProjectActions({ replace }: { replace: (href: string) => void
     }
   }
 
-  async function transitionStatus(project: Project, toStatus: Project["status"]) {
+  async function transitionStatus(project: Project, toStatus: Project["status"], reason?: string) {
     setSaving(true);
     setStatusMessage(null);
     setErrorMessage(null);
     try {
       const response = await authenticatedProjectRequest(
         `/api/projects/${project.id}/transitions`,
-        { to_status: toStatus },
+        reason === undefined ? { to_status: toStatus } : { to_status: toStatus, reason },
       );
       if (response === null) return;
       if (!response.ok) {
@@ -120,6 +126,30 @@ export function useProjectActions({ replace }: { replace: (href: string) => void
     }
   }
 
+  async function updateStagePlan(project: Project, stages: StagePlanInput[]) {
+    setSaving(true);
+    setStatusMessage(null);
+    setErrorMessage(null);
+    try {
+      const response = await authenticatedProjectRequest(`/api/projects/${project.id}/stage-plan`, { stages }, "PUT");
+      if (response === null) return false;
+      if (!response.ok) {
+        setErrorMessage(
+          response.status === 409 ? "已取消或已归档的项目不能修改阶段计划。" : "阶段计划未保存；请确认每个阶段的结束日期不早于开始日期。",
+        );
+        return false;
+      }
+      applyProject(await readProject(response));
+      setStatusMessage("阶段计划已保存");
+      return true;
+    } catch {
+      setErrorMessage("阶段计划保存失败，请稍后重试。");
+      return false;
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return {
     clearSelection: () => setSelectedId(null),
     errorMessage,
@@ -133,6 +163,7 @@ export function useProjectActions({ replace }: { replace: (href: string) => void
     transitionStage,
     transitionStatus,
     updateProject,
+    updateStagePlan,
   };
 }
 
@@ -144,6 +175,7 @@ function projectStatusLabel(status: Project["status"]) {
     active: "进行中",
     on_hold: "已暂停",
     completed: "已完成",
+    cancelled: "已取消",
     archived: "已归档",
   }[status];
 }

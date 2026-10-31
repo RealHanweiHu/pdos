@@ -9,6 +9,7 @@ import {
   localIsoDate,
   memberLabel,
   overdueDays,
+  stageSchedule,
   taskFormValues,
 } from "./project-task-planning";
 import type { ProjectMember, ProjectTask } from "./project-work-item-types";
@@ -165,5 +166,19 @@ describe("task planning helpers", () => {
       due_date: "2026-11-20",
       dependency_task_ids: ["task-a"],
     });
+  });
+
+  it("compares each stage's plan with its actual dates", () => {
+    const stage = { id: "s", code: "evt", name: "EVT", description: null };
+    // Exit timestamps are compared as viewer-local calendar dates.
+    const exitedOn = (day: string) => new Date(`${day}T12:00:00`).toISOString();
+    expect(stageSchedule({ ...stage, sequence: 1, planned_end_date: "2026-09-30", exited_at: exitedOn("2026-10-05") }, 2, today)).toEqual({ tone: "late", label: "延期 5 天完成" });
+    expect(stageSchedule({ ...stage, sequence: 1, planned_end_date: "2026-09-30", exited_at: exitedOn("2026-09-28") }, 2, today)).toEqual({ tone: "ok", label: "按期完成" });
+    expect(stageSchedule({ ...stage, sequence: 1 }, 2, today)).toEqual({ tone: "none", label: "已完成" });
+    expect(stageSchedule({ ...stage, sequence: 2, planned_end_date: "2026-10-28" }, 2, today)).toEqual({ tone: "late", label: "阶段逾期 3 天" });
+    expect(stageSchedule({ ...stage, sequence: 2, planned_end_date: today }, 2, today)).toEqual({ tone: "pending", label: "今天计划结束" });
+    expect(stageSchedule({ ...stage, sequence: 2, planned_end_date: "2026-11-10" }, 2, today)).toEqual({ tone: "pending", label: "剩余 10 天" });
+    expect(stageSchedule({ ...stage, sequence: 2 }, 2, today)).toEqual({ tone: "none", label: "未设计划" });
+    expect(stageSchedule({ ...stage, sequence: 3, planned_start_date: "2026-12-01" }, 2, today)).toEqual({ tone: "pending", label: "计划 2026-12-01 开始" });
   });
 });

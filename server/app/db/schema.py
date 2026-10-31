@@ -455,6 +455,10 @@ stages = Table(
     Column("name", String(256), nullable=False),
     Column("description", Text),
     Column("sequence", Integer, nullable=False),
+    Column("planned_start_date", Date),
+    Column("planned_end_date", Date),
+    Column("entered_at", DateTime(timezone=True)),
+    Column("exited_at", DateTime(timezone=True)),
     Column(
         "created_at",
         DateTime(timezone=True),
@@ -468,6 +472,11 @@ stages = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint("sequence > 0", name="positive_sequence"),
+    CheckConstraint(
+        "planned_end_date IS NULL OR planned_start_date IS NULL "
+        "OR planned_end_date >= planned_start_date",
+        name="planned_date_order",
+    ),
     CheckConstraint("btrim(code) <> ''", name="code_nonblank"),
     CheckConstraint("btrim(name) <> ''", name="name_nonblank"),
     ForeignKeyConstraint(
@@ -522,7 +531,8 @@ projects = Table(
         server_default=text("CURRENT_TIMESTAMP"),
     ),
     CheckConstraint(
-        "status IN ('draft', 'proposed', 'approved', 'active', 'on_hold', 'completed', 'archived')",
+        "status IN ('draft', 'proposed', 'approved', 'active', 'on_hold', 'completed', "
+        "'cancelled', 'archived')",
         name="status_allowed",
     ),
     CheckConstraint(

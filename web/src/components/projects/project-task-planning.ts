@@ -1,3 +1,4 @@
+import type { ProjectStage } from "./project-types";
 import type {
   ProjectMember,
   ProjectTask,
@@ -150,4 +151,30 @@ export function buildTaskUpdate(task: ProjectTask, values: TaskFormValues): Task
     update.dependency_task_ids = values.dependency_task_ids;
   }
   return update;
+}
+
+export type StageSchedule = { tone: "ok" | "late" | "pending" | "none"; label: string };
+
+/**
+ * Plan-vs-actual status of one stage. Finished stages compare their exit date with the
+ * planned end; the current stage compares today; later stages show their planned start.
+ */
+export function stageSchedule(stage: ProjectStage, currentSequence: number, today: string): StageSchedule {
+  const plannedEnd = stage.planned_end_date ?? null;
+  if (stage.sequence < currentSequence) {
+    const exited = stage.exited_at ? localIsoDate(new Date(stage.exited_at)) : null;
+    if (!plannedEnd || !exited) return { tone: "none", label: "已完成" };
+    const late = overdueDays(plannedEnd, exited);
+    return late > 0 ? { tone: "late", label: `延期 ${late} 天完成` } : { tone: "ok", label: "按期完成" };
+  }
+  if (stage.sequence === currentSequence) {
+    if (!plannedEnd) return { tone: "none", label: "未设计划" };
+    const late = overdueDays(plannedEnd, today);
+    return late > 0
+      ? { tone: "late", label: `阶段逾期 ${late} 天` }
+      : { tone: "pending", label: late === 0 ? "今天计划结束" : `剩余 ${-late} 天` };
+  }
+  return stage.planned_start_date
+    ? { tone: "pending", label: `计划 ${stage.planned_start_date} 开始` }
+    : { tone: "none", label: "未设计划" };
 }

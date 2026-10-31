@@ -629,12 +629,13 @@ export function ProjectWorkspace() {
       onRetryWorkItems={() => { if (actions.selectedProject) void loadWorkItems(actions.selectedProject.id); }}
       onSelect={selectProject}
       onStageTransition={(project, stageId) => void actions.transitionStage(project, stageId)}
-      onStatusTransition={(project, status) => void actions.transitionStatus(project, status)}
+      onStatusTransition={(project, status, reason) => void actions.transitionStatus(project, status, reason)}
       onTabChange={changeTab}
       onTransitionIssue={moveIssue}
       onTransitionRisk={moveRisk}
       onTransitionTask={moveTask}
       onUpdate={actions.updateProject}
+      onUpdateStagePlan={actions.updateStagePlan}
       onUpdateTask={editTask}
       projects={actions.projects}
       productEngineering={{

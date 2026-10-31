@@ -35,8 +35,10 @@ from app.domain.projects import (
     ProjectRecord,
     ProjectService,
     ProjectStageInvalidTransitionError,
+    ProjectStagePlanError,
     ProjectTerminalError,
     ProjectUpdate,
+    StagePlan,
     StageRecord,
     WorkflowRecord,
 )
@@ -53,6 +55,10 @@ class StageResponse(BaseModel):
     name: str
     description: str | None
     sequence: int
+    planned_start_date: date | None
+    planned_end_date: date | None
+    entered_at: datetime | None
+    exited_at: datetime | None
 
 
 class WorkflowResponse(BaseModel):
@@ -162,7 +168,39 @@ class ProjectUpdateRequest(BaseModel):
 class ProjectTransitionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    to_status: str = Field(pattern=r"^(proposed|approved|active|on_hold|completed|archived)$")
+    to_status: str = Field(
+        pattern=r"^(proposed|approved|active|on_hold|completed|cancelled|archived)$"
+    )
+    reason: str | None = Field(default=None, max_length=2_000)
+
+    @field_validator("reason", mode="before")
+    @classmethod
+    def normalize_reason(cls, value: object) -> object:
+        if isinstance(value, str):
+            return value.strip() or None
+        return value
+
+    @model_validator(mode="after")
+    def require_reason_only_for_cancellation(self) -> Self:
+        if self.to_status == "cancelled" and self.reason is None:
+            raise ValueError("reason is required to cancel a project")
+        if self.to_status != "cancelled" and self.reason is not None:
+            raise ValueError("reason is only accepted when cancelling")
+        return self
+
+
+class StagePlanItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    stage_id: UUID
+    planned_start_date: date | None = None
+    planned_end_date: date | None = None
+
+
+class ProjectStagePlanRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    stages: list[StagePlanItem] = Field(min_length=1, max_length=50)
 
 
 class ProjectStageTransitionRequest(BaseModel):
@@ -202,6 +240,10 @@ def stage_response(record: StageRecord) -> StageResponse:
         name=record.name,
         description=record.description,
         sequence=record.sequence,
+        planned_start_date=record.planned_start_date,
+        planned_end_date=record.planned_end_date,
+        entered_at=record.entered_at,
+        exited_at=record.exited_at,
     )
 
 
@@ -471,6 +513,7 @@ def transition_project(
             actor_user_id=context.user.id,
             project_id=project_id,
             to_status=payload.to_status,
+            reason=payload.reason,
         )
     except ProjectNotFoundError as error:
         raise permission_denied() from error
@@ -528,6 +571,56 @@ def transition_project_stage(
             detail={
                 "code": "PROJECT_STAGE_INVALID_TRANSITION",
                 "message": "Stage transition must target the adjacent Workflow Stage",
+            },
+        ) from error
+    no_store(response)
+    return project_response(record)
+
+
+@router.put("/{project_id}/stage-plan", response_model=ProjectResponse)
+def update_stage_plan(
+    project_id: UUID,
+    payload: ProjectStagePlanRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> ProjectResponse:
+    require_project_action(
+        project_id=project_id,
+        context=context,
+        engine=engine,
+        action=Action.PROJECT_EDIT,
+    )
+    try:
+        record = ProjectService(engine).update_stage_plan(
+            tenant_id=context.tenant.id,
+            actor_user_id=context.user.id,
+            project_id=project_id,
+            plans=tuple(
+                StagePlan(
+                    stage_id=item.stage_id,
+                    planned_start_date=item.planned_start_date,
+                    planned_end_date=item.planned_end_date,
+                )
+                for item in payload.stages
+            ),
+        )
+    except ProjectNotFoundError as error:
+        raise permission_denied() from error
+    except ProjectTerminalError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "PROJECT_PLAN_LOCKED",
+                "message": "Cancelled or archived project plans are locked",
+            },
+        ) from error
+    except ProjectStagePlanError as error:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail={
+                "code": "PROJECT_STAGE_PLAN_INVALID",
+                "message": "Each stage must belong to the project and end on or after it starts",
             },
         ) from error
     no_store(response)
