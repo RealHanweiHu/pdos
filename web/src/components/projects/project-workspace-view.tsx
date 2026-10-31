@@ -34,6 +34,7 @@ import type {
   IssueCreateInput,
   IssueStatus,
   ProjectIssue,
+  ProjectMember,
   ProjectRisk,
   ProjectTask,
   ProjectWorkItems,
@@ -114,6 +115,7 @@ export function ProjectWorkspaceView({
   onCreateRisk,
   onCreateTask,
   onLogout,
+  onMembersChange,
   onRetryWorkItems,
   onSelect,
   onStageTransition,
@@ -152,6 +154,7 @@ export function ProjectWorkspaceView({
   onCreateRisk: (input: RiskCreateInput) => Promise<boolean>;
   onCreateTask: (input: TaskCreateInput) => Promise<boolean>;
   onLogout: () => void;
+  onMembersChange: (members: ProjectMember[]) => void;
   onRetryWorkItems: () => void;
   onSelect: (project: Project) => void;
   onStageTransition: (project: Project, stageId: string) => void;
@@ -267,8 +270,11 @@ export function ProjectWorkspaceView({
             {activeTab === "overview" ? (
               <ProjectOverview
                 canEdit={canEdit}
+                canManageMembers={canEdit}
                 canViewWorkItems={canViewWorkItems}
+                currentUserId={identity.user.id}
                 onCancelEdit={onCancelEdit}
+                onMembersChange={onMembersChange}
                 onStageTransition={(stageId) => onStageTransition(selectedProject, stageId)}
                 onStatusTransition={(status) => onStatusTransition(selectedProject, status)}
                 onUpdate={(values) => onUpdate(selectedProject, values)}

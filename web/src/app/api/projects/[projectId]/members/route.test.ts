@@ -6,7 +6,9 @@ vi.mock("next/headers", () => ({
   cookies: async () => ({ get: getCookie }),
 }));
 
-import { GET } from "./route";
+import { DELETE } from "./[userId]/route";
+import { GET as CANDIDATES } from "./candidates/route";
+import { GET, POST } from "./route";
 
 const context = { params: Promise.resolve({ projectId: "project/id with spaces" }) };
 
@@ -32,6 +34,39 @@ describe("Project members BFF route", () => {
         headers: expect.objectContaining({ Authorization: "Bearer signed.jwt.value" }),
       }),
     );
+  });
+
+  it("forwards candidates, add, and remove with encoded ids", async () => {
+    fetchMock
+      .mockResolvedValueOnce(Response.json({ items: [] }))
+      .mockResolvedValueOnce(Response.json({ items: [] }, { status: 201 }))
+      .mockResolvedValueOnce(Response.json({ items: [] }));
+
+    await CANDIDATES(new Request("http://localhost"), context);
+    const added = await POST(
+      new Request("http://localhost", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: "user-2" }),
+      }),
+      context,
+    );
+    await DELETE(new Request("http://localhost", { method: "DELETE" }), {
+      params: Promise.resolve({ projectId: "project-1", userId: "user/2" }),
+    });
+
+    expect(added.status).toBe(201);
+    expect(fetchMock.mock.calls.map((call) => [String(call[0]), call[1]?.method, call[1]?.body])).toEqual([
+      ["http://127.0.0.1:8000/api/projects/project%2Fid%20with%20spaces/members/candidates", "GET", undefined],
+      ["http://127.0.0.1:8000/api/projects/project%2Fid%20with%20spaces/members", "POST", JSON.stringify({ user_id: "user-2" })],
+      ["http://127.0.0.1:8000/api/projects/project-1/members/user%2F2", "DELETE", undefined],
+    ]);
+  });
+
+  it("rejects a non-JSON add body without calling the API", async () => {
+    const response = await POST(new Request("http://localhost", { method: "POST", body: "user" }), context);
+    expect(response.status).toBe(400);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("rejects requests without a session before calling the API", async () => {

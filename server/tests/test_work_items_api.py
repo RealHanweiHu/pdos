@@ -883,3 +883,118 @@ def test_my_tasks_lists_only_my_unfinished_tasks_in_visible_projects(
     ]
     owner_items = client.get("/api/portfolio/my-tasks", headers=owner_headers).json()["items"]
     assert [item["title"] for item in owner_items] == ["Owner work"]
+
+
+def test_project_members_are_managed_with_guards_events_and_audit(
+    client: TestClient,
+    isolated_work_item_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    scope = seed_project(isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id)
+    project_id = scope["project_id"]
+    other = seed_project(
+        isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id, label="OTHER"
+    )
+    manager_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="manager",
+        role=Role.PROJECT_MANAGER,
+    )
+    engineer_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=other["project_id"],
+        added_by_user_id=owner_id,
+        username="engineer",
+        role=Role.ENGINEER,
+    )
+    manager_headers = bearer_headers(client, username="manager")
+    engineer_headers = bearer_headers(client, username="engineer")
+    members_url = f"/api/projects/{project_id}/members"
+
+    candidates = client.get(f"{members_url}/candidates", headers=manager_headers)
+    assert candidates.status_code == 200
+    assert [item["user_id"] for item in candidates.json()["items"]] == [str(engineer_id)]
+    assert set(candidates.json()["items"][0]) == {"user_id", "display_name", "role"}
+
+    # Engineers can see work but cannot manage membership, even in their own project.
+    assert (
+        client.get(
+            f"/api/projects/{other['project_id']}/members/candidates", headers=engineer_headers
+        ).status_code
+        == 403
+    )
+    assert client.get(members_url, headers=engineer_headers).status_code == 403
+
+    added = client.post(members_url, headers=manager_headers, json={"user_id": str(engineer_id)})
+    assert added.status_code == 201
+    assert str(engineer_id) in {item["user_id"] for item in added.json()["items"]}
+    assert client.get(members_url, headers=engineer_headers).status_code == 200
+    duplicate = client.post(
+        members_url, headers=manager_headers, json={"user_id": str(engineer_id)}
+    )
+    assert duplicate.status_code == 409
+    assert duplicate.json()["detail"]["code"] == "PROJECT_MEMBER_EXISTS"
+    unknown = client.post(members_url, headers=manager_headers, json={"user_id": str(uuid4())})
+    assert unknown.status_code == 404
+
+    task = post_task(
+        client,
+        manager_headers,
+        project_id,
+        {"title": "Engineer work", "assignee_user_id": str(engineer_id)},
+    ).json()
+    blocked = client.delete(f"{members_url}/{engineer_id}", headers=manager_headers)
+    assert blocked.status_code == 409
+    assert blocked.json()["detail"]["code"] == "PROJECT_MEMBER_HAS_OPEN_WORK"
+    assert blocked.json()["detail"]["open_work"] == {"tasks": 1}
+
+    owner_removal = client.delete(f"{members_url}/{owner_id}", headers=manager_headers)
+    assert owner_removal.status_code == 409
+    assert owner_removal.json()["detail"]["code"] == "PROJECT_OWNER_MEMBERSHIP_REQUIRED"
+
+    assert (
+        client.patch(
+            f"/api/projects/{project_id}/tasks/{task['id']}",
+            headers=manager_headers,
+            json={"assignee_user_id": str(manager_id)},
+        ).status_code
+        == 200
+    )
+    removed = client.delete(f"{members_url}/{engineer_id}", headers=manager_headers)
+    assert removed.status_code == 200
+    assert str(engineer_id) not in {item["user_id"] for item in removed.json()["items"]}
+    assert client.get(members_url, headers=engineer_headers).status_code == 403
+    assert client.delete(f"{members_url}/{engineer_id}", headers=manager_headers).status_code == 404
+
+    engine = create_engine(psycopg_database_url(isolated_work_item_database))
+    try:
+        with engine.connect() as connection:
+            events = connection.execute(
+                select(tables.events.c.event_type, tables.events.c.payload)
+                .where(
+                    tables.events.c.project_id == project_id,
+                    tables.events.c.event_type.like("PROJECT_MEMBER_%"),
+                )
+                .order_by(tables.events.c.id)
+            ).all()
+            audits = connection.execute(
+                select(tables.audit_log.c.action)
+                .where(
+                    tables.audit_log.c.project_id == project_id,
+                    tables.audit_log.c.action.like("project.member.%"),
+                )
+                .order_by(tables.audit_log.c.id)
+            ).scalars()
+            assert [(row[0], row[1]["user_id"]) for row in events] == [
+                ("PROJECT_MEMBER_ADDED", str(engineer_id)),
+                ("PROJECT_MEMBER_REMOVED", str(engineer_id)),
+            ]
+            assert list(audits) == ["project.member.add", "project.member.remove"]
+    finally:
+        engine.dispose()

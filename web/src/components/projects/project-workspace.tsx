@@ -625,6 +625,7 @@ export function ProjectWorkspace() {
       onCreateRisk={addRisk}
       onCreateTask={addTask}
       onLogout={() => void logout()}
+      onMembersChange={(members) => setWorkItems((current) => current === null ? current : { ...current, members })}
       onRetryWorkItems={() => { if (actions.selectedProject) void loadWorkItems(actions.selectedProject.id); }}
       onSelect={selectProject}
       onStageTransition={(project, stageId) => void actions.transitionStage(project, stageId)}

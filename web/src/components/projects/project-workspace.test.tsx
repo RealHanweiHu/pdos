@@ -837,6 +837,54 @@ describe("ProjectWorkspace", () => {
     expect(within(taskSection).queryByText(/逾期 \d+ 天/)).not.toBeInTheDocument();
   });
 
+  it("manages project members with confirmation and explains blocked removals", async () => {
+    const user = userEvent.setup();
+    let currentMembers = members;
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path === "/api/projects/project-1/members/candidates") {
+        return jsonResponse({ items: [{ user_id: "user-4", display_name: "Quinn Quality", role: "quality" }] });
+      }
+      if (path === "/api/projects/project-1/members" && init?.method === "POST") {
+        currentMembers = [...currentMembers, { user_id: "user-4", display_name: "Quinn Quality", role: "quality", is_active: true, assignable: true }];
+        return jsonResponse({ items: currentMembers }, 201);
+      }
+      if (path === "/api/projects/project-1/members/user-2" && init?.method === "DELETE") {
+        return jsonResponse({ detail: { code: "PROJECT_MEMBER_HAS_OPEN_WORK", message: "x", open_work: { tasks: 2, risks: 1 } } }, 409);
+      }
+      if (path.endsWith("/members")) return jsonResponse({ items: currentMembers });
+      const response = workItemResponse(path);
+      if (response) return response;
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    const card = await screen.findByRole("region", { name: "项目成员" });
+    expect(within(card).getByText("3 人")).toBeInTheDocument();
+    expect(within(card).getByText("项目负责人")).toBeInTheDocument();
+    expect(within(card).queryByRole("button", { name: "移除成员 Initial Owner" })).not.toBeInTheDocument();
+
+    const picker = within(card).getByLabelText("添加成员");
+    await waitFor(() => expect(within(picker).getByRole("option", { name: "Quinn Quality · 质量" })).toBeInTheDocument());
+    await user.selectOptions(picker, "user-4");
+    await user.click(within(card).getByRole("button", { name: "添加" }));
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/projects/project-1/members",
+      expect.objectContaining({ method: "POST", body: JSON.stringify({ user_id: "user-4" }) }),
+    );
+    expect(await within(card).findByText("4 人")).toBeInTheDocument();
+    expect(within(card).getByRole("status")).toHaveTextContent("成员已添加");
+
+    await user.click(within(card).getByRole("button", { name: "移除成员 Erin Engineer" }));
+    expect(fetchMock).not.toHaveBeenCalledWith("/api/projects/project-1/members/user-2", expect.anything());
+    await user.click(within(card).getByRole("button", { name: "确认移除" }));
+    expect(await within(card).findByRole("alert")).toHaveTextContent("该成员仍负责未完成的工作（任务 2、风险 1），请先转交后再移除。");
+    expect(within(card).getByText("4 人")).toBeInTheDocument();
+  });
+
   it("does not expose or request work items for external project members", async () => {
     const user = userEvent.setup();
     fetchMock.mockImplementation(async (input) => {

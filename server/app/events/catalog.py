@@ -69,6 +69,22 @@ _DEFINITIONS = (
         payload_schema=_payload_schema(from_status="string", to_status="string"),
     ),
     EventDefinition(
+        event_type="PROJECT_MEMBER_ADDED",
+        version=1,
+        entity="project",
+        producer="project_member_service",
+        consumers=("timeline_projection",),
+        payload_schema=_payload_schema(user_id="string", role="string"),
+    ),
+    EventDefinition(
+        event_type="PROJECT_MEMBER_REMOVED",
+        version=1,
+        entity="project",
+        producer="project_member_service",
+        consumers=("timeline_projection",),
+        payload_schema=_payload_schema(user_id="string", role="string"),
+    ),
+    EventDefinition(
         event_type="SPECIFICATION_CREATED",
         version=1,
         entity="specification",

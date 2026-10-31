@@ -1,14 +1,18 @@
 import { ProjectForm, type ProjectFormValues, type ProjectSubmissionResult } from "./project-form";
 import { ProjectStatusActions } from "./project-status-actions";
 import { projectStatusLabels } from "./project-list";
+import { ProjectMembersCard } from "./project-members-card";
 import { isTaskOpen, isTaskOverdue, localIsoDate } from "./project-task-planning";
 import type { Project } from "./project-types";
-import type { ProjectWorkItems } from "./project-work-item-types";
+import type { ProjectMember, ProjectWorkItems } from "./project-work-item-types";
 
 export function ProjectOverview({
   canEdit,
+  canManageMembers,
   canViewWorkItems,
+  currentUserId,
   onCancelEdit,
+  onMembersChange,
   onStageTransition,
   onStatusTransition,
   onUpdate,
@@ -17,8 +21,11 @@ export function ProjectOverview({
   workItems,
 }: {
   canEdit: boolean;
+  canManageMembers: boolean;
   canViewWorkItems: boolean;
+  currentUserId: string;
   onCancelEdit: () => void;
+  onMembersChange: (members: ProjectMember[]) => void;
   onStageTransition: (stageId: string) => void;
   onStatusTransition: (status: Project["status"]) => void;
   onUpdate: (values: ProjectFormValues) => Promise<ProjectSubmissionResult>;
@@ -68,12 +75,23 @@ export function ProjectOverview({
               </p>
             ) : null}
           </section>
-        ) : (
+        ) : null}
+        {canViewWorkItems && workItems ? (
+          <ProjectMembersCard
+            canManage={canManageMembers}
+            currentUserId={currentUserId}
+            members={workItems.members}
+            onMembersChange={onMembersChange}
+            ownerUserId={project.owner_user_id}
+            projectId={project.id}
+          />
+        ) : null}
+        {!canViewWorkItems ? (
           <section className="rounded-lg border bg-card p-4">
             <h3 className="font-semibold">成员视图</h3>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">外部成员仅可查看已授权的项目概览与阶段时间线。</p>
           </section>
-        )}
+        ) : null}
         <section className="rounded-lg border bg-card p-4">
           <h3 className="font-semibold">Workflow</h3>
           <dl className="mt-3 space-y-3 text-xs">

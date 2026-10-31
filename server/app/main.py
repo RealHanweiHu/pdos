@@ -11,10 +11,10 @@ from app.api.findings import router as findings_router
 from app.api.gates import router as gates_router
 from app.api.health import router as health_router
 from app.api.issue_risks import router as issue_risks_router
-from app.api.portfolio import router as portfolio_router
 from app.api.memories import router as memories_router
 from app.api.model_governance import router as model_governance_router
 from app.api.npi_execution import router as npi_execution_router
+from app.api.portfolio import router as portfolio_router
 from app.api.product_engineering import router as product_engineering_router
 from app.api.projects import router as projects_router
 from app.api.quality_capa import router as quality_capa_router
