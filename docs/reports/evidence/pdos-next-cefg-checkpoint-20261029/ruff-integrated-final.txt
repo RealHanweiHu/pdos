@@ -1,0 +1,59 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py:10:1
+   |
+ 8 |   # ruff: noqa: F401, F811 -- pytest needs the existing native fixture tree
+ 9 |
+10 | / import json
+11 | | from copy import deepcopy
+12 | | from hashlib import sha256
+13 | | from types import SimpleNamespace
+14 | | from uuid import UUID
+15 | |
+16 | | import pytest
+17 | | from g0_fixture import create_g0_project
+18 | | from sqlalchemy import select, text
+19 | | from sqlalchemy.exc import DBAPIError
+20 | | from sqlalchemy.orm import Session
+21 | | from test_original_security import parsed, uploaded
+22 | |
+23 | | from pdos_next.agent_kernel.bootstrap import Bootstrap
+24 | | from pdos_next.agent_kernel.conversation import memory
+25 | | from pdos_next.agent_kernel.host import BoundHost
+26 | | from pdos_next.agent_kernel.models import AgentRun
+27 | | from pdos_next.agent_kernel.project_current_context import KEY
+28 | | from pdos_next.database import tenant_session
+29 | | from pdos_next.domain.projects.models import Project
+30 | | from pdos_next.domain.work_management.constants import STATUS
+31 | | from pdos_next.errors import DomainError
+32 | | from pdos_next.models import Artifact, Category, ObjectAudience, Product, UploadedOriginal
+33 | | from pdos_next.service import Context, source_for
+34 | | from tests.agent_kernel.test_project_current_context_pg import (
+35 | |     original_security_work,
+36 | |     prepare,
+37 | |     project_work,
+38 | |     start,
+39 | | )
+40 | | from tests.agent_kernel.test_run_continuation import scope as api_scope
+41 | | from tests.agent_kernel.test_run_continuation import start as api_start
+42 | | from tests.work_management_pg import test_workflow as flow
+   | |__________________________________________________________^
+help: Organize imports
+   |
+17 | from g0_fixture import create_g0_project
+   - from sqlalchemy import select, text
+   - from sqlalchemy.exc import DBAPIError
+   - from sqlalchemy.orm import Session
+   - from test_original_security import parsed, uploaded
+   -
+18 | from pdos_next.agent_kernel.bootstrap import Bootstrap
+--------------------------------------------------------------------------------
+28 | from pdos_next.service import Context, source_for
+29 + from sqlalchemy import select, text
+30 + from sqlalchemy.exc import DBAPIError
+31 + from sqlalchemy.orm import Session
+32 + from test_original_security import parsed, uploaded
+33 | from tests.agent_kernel.test_project_current_context_pg import (
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

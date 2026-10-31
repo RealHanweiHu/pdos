@@ -1,0 +1,7 @@
+{
+  "exit": 0,
+  "seconds": 19.74,
+  "final_source_bytes_unchanged": true,
+  "reason": "final owner API candidate is new since cache/count run2; no repeat of unchanged history group",
+  "real_provider_calls": 0
+}

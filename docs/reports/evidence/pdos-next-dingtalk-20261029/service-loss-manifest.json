@@ -1,0 +1,39 @@
+{
+  "stage": "G exact native fence SQL42501 service-loss convergence",
+  "base": "current integrated live post0845; no SQL/ACL/migration change",
+  "shared": [
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/workflow.py",
+      "base_sha256": "ed46e180dea403cc4d7934d2936edea38d83e46e96071382aab2dfef25c51d68",
+      "candidate_sha256": "44b6a104de4456fdd5d1bf51edbe57668993f8b7e97fe38b4a34521444cbe2d7"
+    }
+  ],
+  "new": [
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_service_loss.py",
+      "sha256": "d556a027908bd438e5f2e90286bef5436c3c0e7188f5a410af7116a231e458e6"
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_service_loss_pg.py",
+      "sha256": "a5b4d9d756a72ad90b58b2d396f0607bf07e9072f95097f19e16ae583a060553"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "README.md",
+      "sha256": "c17daaa2ecd0352ffd4ae17c4df40aada3d18f7f842a237b199a276c06403ab1"
+    },
+    {
+      "path": "shared.patch",
+      "sha256": "74f073408bced349c3b7eae593ad0f6b8abbd2012cbcd8b80e2b7680d626292a"
+    }
+  ],
+  "validation": {
+    "pure": "67 passed (9 new+58 existing) in 0.63s; candidate workflow module, DB/Temporal/checkpoint env removed",
+    "ruff": "PASS explicit --config pdos-next/ruff.toml on 3 files",
+    "native_pg": "1 case collect-only passed; not executed"
+  },
+  "no_live_modification": true,
+  "no_db_or_service": true,
+  "no_migration": true
+}

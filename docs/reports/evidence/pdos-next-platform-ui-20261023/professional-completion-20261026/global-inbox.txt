@@ -1,0 +1,100 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 我的工作
+    - link "收件箱" [active]:
+      - /url: "?area=inbox&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 知识
+    - paragraph: 产品管理
+    - link "品类":
+      - /url: "?area=category"
+      - generic: 品类
+    - link "立项提案":
+      - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&focus=proposals"
+      - generic: 立项提案
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - generic: 收件箱
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - heading "收件箱" [level=1]
+  - paragraph: 接收工作消息，与同事保持沟通。
+  - button "刷新收件箱":
+  - button "发起聊天":
+    - text: 发起聊天
+  - navigation "收件箱视图":
+    - button "通知" [pressed]
+    - button "聊天"
+    - button "关注动态"
+  - searchbox "搜索通知"
+  - combobox "筛选收件箱":
+    - option "收件箱" [selected]
+    - option "未读"
+    - option "已归档"
+  - button "全部已读":
+    - text: 全部已读
+  - list:
+    - button "小Pai执行未完成 帮我梳理一个想法 个人 · 10/26 02:19":
+      - strong: 小Pai执行未完成
+      - generic: 帮我梳理一个想法
+      - text: 个人 ·
+      - time: 10/26 02:19
+    - button "小Pai执行未完成 帮我梳理当前资料 汽车充气泵 · 10/25 07:30":
+      - strong: 小Pai执行未完成
+      - generic: 帮我梳理当前资料
+      - text: 汽车充气泵 ·
+      - time: 10/25 07:30
+    - button "小Pai执行未完成 你好 汽车充气泵 · 10/25 07:24":
+      - strong: 小Pai执行未完成
+      - generic: 你好
+      - text: 汽车充气泵 ·
+      - time: 10/25 07:24
+    - button "小Pai执行未完成 你好 汽车充气泵 · 10/25 06:26":
+      - strong: 小Pai执行未完成
+      - generic: 你好
+      - text: 汽车充气泵 ·
+      - time: 10/25 06:26
+    - button "小Pai执行未完成 请起草一份新产品立项提案，标题「便携充气泵 · 体验验证」，主要场景为日常通勤时应急补气，面向中国市场的家用车主。这是本地合成测试，暂无竞品、价格和规格证据，未知项留空。先给我可查看与编辑的草稿，不送审、不批准。 汽车充气泵 · 10/25 06:15":
+      - strong: 小Pai执行未完成
+      - generic: 请起草一份新产品立项提案，标题「便携充气泵 · 体验验证」，主要场景为日常通勤时应急补气，面向中国市场的家用车主。这是本地合成测试，暂无竞品、价格和规格证据，未知项留空。先给我可查看与编辑的草稿，不送审、不批准。
+      - text: 汽车充气泵 ·
+      - time: 10/25 06:15
+  - paragraph: 需要处理的小Pai请求与近期异常
+  - region "通知内容":
+    - paragraph: 选择一条通知，查看上下文。
+- button "打开小Pai工作栏":

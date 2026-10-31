@@ -1,0 +1,11 @@
+{
+  "logging_collector": "off",
+  "log_destination": "stderr",
+  "log_line_prefix": "%m [%p] ",
+  "auto_explain.log_min_duration": "-1",
+  "auto_explain.log_parameter_max_length": "-1",
+  "auto_explain.log_analyze": "off",
+  "session_preload_libraries": "",
+  "app_has_duration_set": false,
+  "app_role_settings": null
+}

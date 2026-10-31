@@ -1,0 +1,95 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 4 items
+
+tests/enterprise_search/test_original_scan_targets_pg.py::test_scan_target_cache_falls_back_and_never_grants_original_readability FAILED [ 25%]
+
+=================================== FAILURES ===================================
+___ test_scan_target_cache_falls_back_and_never_grants_original_readability ____
+
+setup = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...b70>, parser=<function parse_original at 0x115762de0>), client=<starlette.testclient.TestClient object at 0x130bb2570>)
+
+    def test_scan_target_cache_falls_back_and_never_grants_original_readability(setup, security_work):
+        first = uploaded(security_work, visibility="private", content=b"Original cachemarker evidence")
+        identity = parsed(security_work, first)
+        other = uploaded(security_work, visibility="category", content=b"Unrelated public original")
+        other_identity = parsed(security_work, other)
+        index(setup, identity)
+        index(setup, other_identity)
+    
+        def hint(value):
+            with Session(setup.admin) as session, session.begin():
+                row = session.scalar(select(SearchSource).where(
+                    SearchSource.tenant_id == setup.tenant,
+                    SearchSource.source_type == "artifact", SearchSource.source_id == identity,
+                ))
+                assert row is not None
+                row.original_ids = value
+    
+        def read(person):
+            statements = []
+    
+            def track(*args):
+                statements.append(args[2])
+    
+            event.listen(setup.engine, "before_cursor_execute", track)
+            try:
+                with tenant_session(setup.engine, setup.tenant, actor_id=person,
+                                    requester_id=person, read_snapshot=True) as session:
+                    value = search(session, replace(setup.ctx, actor_id=person,
+                                   requester_id=person, category_id=None),
+                                   SearchInput(query="cachemarker", source_types=["artifact"]))
+            finally:
+                event.remove(setup.engine, "before_cursor_execute", track)
+            return value, len(statements)
+    
+        with Session(setup.admin) as session:
+            assert session.scalar(select(SearchSource.original_ids).where(
+                SearchSource.source_id == identity, SearchSource.tenant_id == setup.tenant,
+            )) == [first]
+        cached, cached_sql = read(setup.human)
+        assert cached["coverage"]["status"] == "current"
+        assert str(identity) in {row["source_id"] for row in cached["items"]}
+        hint(None)
+        legacy, legacy_sql = read(setup.human)
+        assert legacy["items"] == cached["items"]
+        assert legacy_sql == cached_sql + 1
+        # A clean but unrelated hint cannot substitute the real private root.
+        hint([other])
+        wrong, _ = read(setup.human)
+        assert str(identity) not in {row["source_id"] for row in wrong["items"]}
+        peer, _ = read(setup.peer)
+        assert str(identity) not in {row["source_id"] for row in peer["items"]}
+        hint([first])
+        before_scan = security_work.scanner.calls
+>       scan(security_work, first, expected_epoch=1)
+
+tests/enterprise_search/test_original_scan_targets_pg.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...b70>, parser=<function parse_original at 0x115762de0>), client=<starlette.testclient.TestClient object at 0x130bb2570>)
+original_id = UUID('edb509f7-20c7-46b5-9c53-f0a63bfb2696'), expected_epoch = 1
+key = None, headers = None
+
+    def scan(work, original_id, *, expected_epoch=1, key=None, headers=None):
+        response = work.client.post(
+            f"/v1/categories/{work.setup.category}/products/{work.setup.product}/originals/{original_id}/scan",
+            headers=headers or work.setup.headers,
+            json={"expected_epoch": expected_epoch, "idempotency_key": key or str(uuid4())},
+        )
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VERSION_CONFLICT","message":"原件安全状态已变化，请刷新后重试。","detail":{"reason":"VERSION_CONFLICT"}}
+E       assert 409 == 200
+E        +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/test_original_security.py:85: AssertionError
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-search-scan-targets-20261029/pg-cache-run2.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_original_scan_targets_pg.py::test_scan_target_cache_falls_back_and_never_grants_original_readability
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+============================== 1 failed in 9.88s ===============================

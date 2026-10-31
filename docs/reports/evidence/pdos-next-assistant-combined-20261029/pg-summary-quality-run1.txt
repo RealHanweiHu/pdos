@@ -1,0 +1,75 @@
+......                                                                   [100%]
+=============================== warnings summary ===============================
+tests/automations_pg/test_personal_summary_quality_pg.py: 2 warnings
+tests/automations_pg/test_personal_summary_pg.py: 6 warnings
+tests/automations_pg/test_personal_summary_temporal_pg.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/automations_pg/test_personal_summary_quality_pg.py: 6 warnings
+tests/automations_pg/test_personal_summary_pg.py: 18 warnings
+tests/automations_pg/test_personal_summary_temporal_pg.py: 6 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/automations_pg/test_personal_summary_quality_pg.py: 2 warnings
+tests/automations_pg/test_personal_summary_pg.py: 6 warnings
+tests/automations_pg/test_personal_summary_temporal_pg.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/automations_pg/test_personal_summary_quality_pg.py: 2 warnings
+tests/automations_pg/test_personal_summary_pg.py: 6 warnings
+tests/automations_pg/test_personal_summary_temporal_pg.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/automations_pg/test_personal_summary_quality_pg.py: 2 warnings
+tests/automations_pg/test_personal_summary_pg.py: 6 warnings
+tests/automations_pg/test_personal_summary_temporal_pg.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/automations_pg/test_personal_summary_quality_pg.py: 2 warnings
+tests/automations_pg/test_personal_summary_pg.py: 6 warnings
+tests/automations_pg/test_personal_summary_temporal_pg.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/automations_pg/test_personal_summary_quality_pg.py: 2 warnings
+tests/automations_pg/test_personal_summary_pg.py: 6 warnings
+tests/automations_pg/test_personal_summary_temporal_pg.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service.py:242: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:176: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([chain])
+
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:201: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([attempt])
+
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/inbox/service.py:243: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(InboxState.kind, InboxState.target_id)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+6 passed, 107 warnings in 212.99s (0:03:32)

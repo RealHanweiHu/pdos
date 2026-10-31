@@ -1,0 +1,16 @@
+{
+  "backend_changes_after_test": [
+    "pdos_next/agent_kernel/persistence.py"
+  ],
+  "backend_format_only_proof": "format-only-followup.json",
+  "owned_frontend_changes": [],
+  "shared_frontend_changes_after_compile": [
+    "design-qa.md"
+  ],
+  "shared_runtime_input_changes": [],
+  "tests": {
+    "frontend_and_bff": 320,
+    "backend": 210
+  },
+  "stage_acceptance": false
+}

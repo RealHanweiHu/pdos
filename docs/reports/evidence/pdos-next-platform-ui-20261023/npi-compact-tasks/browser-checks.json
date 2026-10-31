@@ -1,0 +1,78 @@
+[
+  {
+    "check": "当前EVT显示7项NPI模板任务与2项额外任务，行高40px",
+    "pass": true
+  },
+  {
+    "check": "只看NPI任务不包含额外复测事项",
+    "pass": true
+  },
+  {
+    "check": "NPI详情显示源任务描述和交付物、要求，模板阶段不可随意更改",
+    "pass": true
+  },
+  {
+    "check": "切换阶段展示对应NPI任务：PVT试产规划、SOP/WI、治具、品质标准",
+    "pass": true
+  },
+  {
+    "check": "额外任务独立筛选保留两项项目补充工作",
+    "pass": true
+  },
+  {
+    "check": "新建任务明确为额外来源，记录阶段、负责人和日期",
+    "pass": true,
+    "row": "P1-X201\n补充运输振动验证\n\t额外\tEVT 工程验证\t待开始\t周宁\t11月3日"
+  },
+  {
+    "check": "NPI任务与额外任务同步我的工作",
+    "pass": true
+  },
+  {
+    "check": "额外任务完成后进入个人已完成，未改NPI模板",
+    "pass": true
+  },
+  {
+    "check": "S2使用派生设计阶段NPI任务，不显示P1的EVT任务",
+    "pass": true
+  },
+  {
+    "check": "D3默认试产阶段，显示PVT对应8项NPI任务",
+    "pass": true
+  },
+  {
+    "check": "看板沿用相同NPI/额外任务和阶段范围",
+    "pass": true
+  },
+  {
+    "check": "390px保持44px可触行，无整页横向溢出",
+    "pass": true,
+    "metrics": {
+      "rowHeights": [
+        44,
+        44,
+        44,
+        44,
+        44,
+        44,
+        44,
+        44,
+        44
+      ],
+      "scrollWidth": 390,
+      "width": 390
+    }
+  },
+  {
+    "check": "来源和搜索组合无匹配时可清除筛选恢复",
+    "pass": true
+  },
+  {
+    "check": "离线仍禁用额外任务创建",
+    "pass": true
+  },
+  {
+    "check": "项目保存提示不跨项目显示",
+    "pass": true
+  }
+]

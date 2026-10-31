@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="20.110" timestamp="2026-10-29T05:53:19.150361-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_field_feedback_sources_pg" name="test_native_unlocated_intake_outbox_and_isolated_raw_text_keep_unknown_identity[False]" time="18.959"><failure message="pdos_next.errors.DomainError: 原模型调用需对账。&#10;During task with name 'model' and id '90795d80-e5ed-55dc-0cd8-23bc7d22cb1d'">knowledge_work = namespace(setup=&lt;isolated synthetic test scope&gt;, config={'source': 'fff7f714-912f-4679-8776-bc2b76a4fe48', 'definition...24a1d037993d327c34aa47'}, issuer=&lt;pdos_next.domain.professional_authority.service.IssuerContext object at 0x11ed77b80&gt;)
+restricted = False
+
+    @pytest.mark.parametrize("restricted", [False, True])
+    def test_native_unlocated_intake_outbox_and_isolated_raw_text_keep_unknown_identity(
+        knowledge_work, restricted,
+    ):
+        work, person = knowledge_work, knowledge_work.setup
+        saved = create_feedback(person, work.config, located=False, response=False)
+        assert apply_event(person, saved.intake["id"])["processed"] == 1
+        assert apply_event(person, saved.intake["id"])["changed"] == 0
+        row = next(row for row in records(person)
+                   if str(row["source_id"]) == saved.intake["subject_id"])
+        assert row["product_id"] is row["project_id"] is None and row["is_current"]
+        assert row["nature"] == "untrusted" and row["private"]
+        assert not row["original_ids"] and row["customer_original"]
+        assert categories(row) == {"internal", "customer_original"}
+        assert row["structured"]["facts"]["location_status"] == "unknown"
+        if restricted:
+            with Session(person.admin) as session, session.begin():
+                session.add(TenantAdministrator(tenant_id=person.tenant, principal_id=person.human))
+            with tenant_session(person.engine, person.tenant, actor_id=person.human,
+                                requester_id=person.human, category_id=person.category) as session:
+                register_agreement(session, person.ctx, AgreementInput(
+                    provider="synthetic-assistant-no-egress", expected_revision=0,
+                    data_categories=["internal"], signed_on=now() - timedelta(minutes=1),
+                    expires_at=now() + timedelta(hours=1), retention_terms="synthetic only",
+                    training_terms="synthetic only", decision="批准", idempotency_key=str(uuid4()),
+                ))
+            provider = FieldClient(str(row["source_id"]), ["field_feedback"])
+            owner, scope, host, _adapter = fixture(person, provider)
+            with pytest.raises(DomainError) as blocked:
+                execute(owner, scope, host)
+            assert blocked.value.detail["reason_key"] == "provider_agreement_category"
+            assert provider.calls == 1 and provider.child.child_calls == 0
+            return
+&gt;       source, client, owner, scope, _adapter = answer(person, row)
+                                                 ^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_field_feedback_sources_pg.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/enterprise_search/test_field_feedback_sources_pg.py:64: in answer
+    output = execute(owner, scope, host)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_assistant_pg.py:182: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:833: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:325: in model
+    response = (model_step if callable(model_step) else ports.model)(
+pdos_next/agent_kernel/host.py:155: in model_step
+    turn = self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;pdos_next.agent_kernel.gateway.AgentGateway object at 0x12ba2abd0&gt;
+scope = RunScope(tenant_id=UUID('72bbb075-9209-4d20-a79d-f0d6a38b5130'), requester_id=UUID('8c3b0b12-7e72-4a9d-a862-9d0d33e4f0...rnal'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+system = 'You are 小Pai, the single PDOS assistant.\nConverse naturally in the user\'s language. For greetings or general discus..."work_management", "purpose": "按真实项目和原件起草任务、计划、阶段办理与外部等待，协助本人分派/承接/提交/验收与逐接收者承诺履行，起草具名状态摘要及风险跟进；不代替实际人员承接、承诺、验收或批准。"}]'
+messages = [{'role': 'user', 'content': '{"goal": "以前漏气怎么处理？", "context": {"goal": "以前漏气怎么处理？", "sources": [], "work_state": {"ve... "partial": false, "execution_ref": {"call_id": "8f1d6c8e-e9c1-40fc-a74c-2903ac30064a", "read_kind": "ordinary/v1"}}'}]
+tools = [{'name': 'ai.skill.qualify', 'description': '记录 T0 资格依据。产生 ai.skill_qualified。只能准备具名决定材料，不取得执行身份。', 'parameters': {'$....}], 'default': None, 'title': 'Product Id'}, ...}, 'required': ['query'], 'title': 'AssistantSearchInput', ...}}, ...]
+output_schema = {'$defs': {'ClarifyOption': {'additionalProperties': False, 'properties': {'value': {'title': 'Value', 'type': 'string...estions': {'items': {'$ref': '#/$defs/WireQuestion'}, 'maxItems': 3, 'title': 'Questions', 'type': 'array'}, ...}, ...}
+emit = &lt;function BoundHost.model_step.&lt;locals&gt;.&lt;lambda&gt; at 0x12c2337e0&gt;
+loaded_skills = ()
+
+    def turn(self, scope, *, system, messages, tools, output_schema, emit=None, loaded_skills=()):
+        if not in_registered_agent_graph():
+            raise DomainError("FORBIDDEN_SCOPE", "模型只能由登记的小Pai执行图调用。")
+        from pdos_next.domain.automations.runtime import guard_tool
+    
+        guard_tool(self.store, scope, "model")
+        self.store.current(scope)
+        from .proposal_context import check
+    
+        check(self.store, scope)
+        if self.context_guard is not None:
+            self.context_guard(scope)
+        source_categories = self.data_categories_for(scope) if self.data_categories_for else None
+        route = self.route_for(scope)
+        if route is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前模型未配置，AI 暂不可用。")
+        provider_key = self.provider_for(scope, route)
+        if not isinstance(provider_key, str) or not provider_key:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前服务商身份未登记。")
+        if not isinstance(system, str) or any(
+            not isinstance(message, dict) or not isinstance(message.get("content", ""), str)
+            for message in messages
+        ):
+            raise DomainError("VALIDATION_FAILED", "当前费用资格只覆盖纯文本模型请求。")
+        from pdos_next.service import digest
+    
+        from .context_budget import fit_messages
+    
+        calibration = self.context_baseline(
+            scope, route, digest([
+                system, messages, tools, output_schema, route.digest, scope.isolation,
+            ]),
+        )
+    
+        try:
+            if self.context_admitter is not None:
+                messages, context_budget = self.context_admitter(
+                    scope, route=route, system=system, tools=tools, messages=messages,
+                    output_schema=output_schema, loaded_skills=loaded_skills,
+                    calibration=calibration,
+                )
+            else:
+                messages, context_budget = fit_messages(
+                    route, system, tools, messages, output_schema,
+                    calibration=calibration,
+                )
+        except DomainError as error:
+            if error.reason == "CONTEXT_INCOMPLETE":
+                self.store.emit(scope, {"type": "context_incomplete", **error.detail})
+            raise
+        request = {
+            "system": system,
+            "messages": messages,
+            "tools": tools,
+            "output_schema": output_schema,
+            "route": route.digest,
+            "provider_key": provider_key,
+        }
+        with self.store.transaction(scope, lock=True) as (session, run):
+            for binding in loaded_skills:
+                validate_skill_load(session, scope, binding)
+            prior_model = run.versions.get("model_version")
+            prior_route = run.versions.get("model_route_digest")
+            prior_provider = run.versions.get("provider_key")
+            if (
+                prior_model is not None
+                and prior_model != route.version
+                or prior_route is not None
+                and prior_route != route.digest
+                or prior_provider is not None
+                and prior_provider != provider_key
+            ):
+                raise DomainError("VERSION_CONFLICT", "原运行的模型版本不能静默替换。")
+            from pdos_next.service import digest
+    
+            tool_digests = run.versions.get("tool_definitions", {})
+            prompt_digests = run.versions.get("prompt_prefixes", {})
+            if prompt_digests.get(scope.isolation, digest(system)) != digest(system):
+                raise DomainError("VERSION_CONFLICT", "原运行的提示前缀不能静默替换。")
+            # The disclosure may grow when a skill loads, and only that way: the
+            # chain keeps every earlier, narrower list verifiable (see .disclosure).
+            chain = record_disclosure(
+                run.versions,
+                scope.isolation,
+                [item["name"] for item in tools],
+                digest(tools),
+            )
+            run.versions = {
+                **run.versions,
+                "model_version": route.version,
+                "model_route_digest": route.digest,
+                "provider_key": provider_key,
+                "tool_definitions": {**tool_digests, scope.isolation: digest(tools)},
+                "prompt_prefixes": {**prompt_digests, scope.isolation: digest(system)},
+                CHAIN_KEY: chain,
+                **({"budget_policy": route.budget_policy}
+                   if route.budget_policy != "enforced" else {}),
+            }
+            binding = ModelBinding(
+                model_version=route.version, model_route_digest=route.digest,
+                tool_definitions_digest=digest(tools), prompt_digest=digest(system),
+                isolation=scope.isolation, cancel_epoch=scope.cancel_epoch,
+                loaded_skills=tuple(loaded_skills),
+            ).model_dump(mode="json")
+            request["execution_binding"] = binding
+            decision = egress(session, scope, provider_key, data_categories=source_categories)
+        from pdos_next.service import digest
+    
+        call_key = "model:" + digest(request)
+        import json
+    
+        wire = request_body(route, system, messages, tools, output_schema, bool(emit))
+        wire_bytes = len(json.dumps(wire, ensure_ascii=False).encode())
+        input_upper = wire_bytes + 4096  # Explicitly unmetered synthetic transport fixtures only.
+        pricing = self.rate_card_for(scope, route) if self.rate_card_for else None
+        if self.cost_required and pricing is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "模型费用尚无当前价格卡与验证预算。")
+        cost_lease = None
+        if pricing:
+            pricing.validate(provider_key, route)
+            input_upper = pricing.input_upper_bound(wire_bytes)
+            cost_lease = (
+                pricing.reserve(input_upper, route.max_output_tokens),
+                input_upper,
+                route.max_output_tokens,
+                pricing.snapshot(),
+            )
+        reserve = input_upper + route.max_output_tokens
+        call_id, saved = self.store.claim(
+            scope, call_key, "model", request, reservation=reserve, cost_lease=cost_lease,
+            execution_binding=binding,
+            **({"budget_policy": route.budget_policy} if route.budget_policy != "enforced" else {}),
+        )
+        if saved is not None:
+            from .types import ModelTurn, ToolCall
+    
+            if saved.get("context_budget"):
+                self.observe_context(
+                    scope, route, saved["context_budget"], ProviderUsage(**saved["usage"]),
+                    only_if_missing=True,
+                )
+            return ModelTurn(
+                saved["text"],
+                tuple(ToolCall.model_validate(c) for c in saved["calls"]),
+                usage=ProviderUsage(**saved["usage"]),
+                request_id=saved["request_id"],
+                structured=saved["structured"],
+                ledger_call_id=call_id,
+                continuation=saved.get("continuation"),
+            )
+        dispatch_started = False
+        try:
+            self.store.emit(
+                scope,
+                {
+                    "type": "egress_checked",
+                    **{
+                        k: v.isoformat() if hasattr(v, "isoformat") else v
+                        for k, v in asdict(decision).items()
+                    },
+                },
+            )
+            # Revocation/rotation after reservation still prevents sending the old scope.
+            self.store.current(scope)
+            latest = self.route_for(scope)
+            if (
+                latest is None
+                or latest.digest != route.digest
+                or self.provider_for(scope, latest) != provider_key
+            ):
+                raise DomainError("VERSION_CONFLICT", "模型配置已变化。")
+            check(self.store, scope)
+            if self.context_guard is not None:
+                self.context_guard(scope)
+            checked_categories = (
+                self.data_categories_for(scope) if self.data_categories_for else None
+            )
+            with self.store.transaction(scope) as (session, _):
+                checked = egress(session, scope, provider_key, data_categories=checked_categories)
+                if checked.data_categories != decision.data_categories:
+                    raise DomainError("SOURCE_STALE", "本次发送的资料类别已变化，请重新核对。")
+            if pricing:
+                latest_price = self.rate_card_for(scope, latest)
+                if latest_price is None or latest_price.snapshot() != pricing.snapshot():
+                    raise DomainError("VERSION_CONFLICT", "价格卡已变化。")
+                latest_price.validate(provider_key, latest)
+            dispatch_started = True
+            result = self.client.turn(
+                route,
+                system=system,
+                messages=messages,
+                tools=tools,
+                output_schema=output_schema,
+                emit=emit,
+                cancelled=lambda: self._cancelled(scope),
+            )
+        except ProviderError as error:
+            usage = error.usage
+            unknown = error.unknown or bool(
+                usage
+                and (
+                    usage.input_tokens &gt; input_upper
+                    or usage.output_tokens &gt; route.max_output_tokens
+                )
+            )
+            charged = usage.input_tokens + usage.output_tokens if usage else 0
+            cancellation_code = None
+            if error.code == "MODEL_CANCELLED":
+                # The native transport also closes on revoked ACL/budget. Only the
+                # actual persisted cancel epoch/state can call this a cancelled Run.
+                try:
+                    self.store.current(scope)
+                except DomainError as current_error:
+                    cancellation_code = current_error.code
+                else:
+                    cancellation_code = (
+                        "EXTERNAL_OUTCOME_UNKNOWN" if unknown else "SOURCE_UNAVAILABLE"
+                    )
+            code = (
+                cancellation_code
+                if error.code == "MODEL_CANCELLED"
+                else (
+                    "EXTERNAL_OUTCOME_UNKNOWN"
+                    if unknown
+                    else "RATE_LIMITED"
+                    if error.code == "PROVIDER_RATE_LIMITED"
+                    else "SOURCE_UNAVAILABLE"
+                )
+            )
+            self.store.release_call(
+                scope,
+                call_id,
+                usage=0 if unknown else charged,
+                unknown=unknown,
+                error=code,
+                request_id=error.request_id,
+                cost_usage=CostUsage(usage.input_tokens, usage.output_tokens, pricing.actual(usage))
+                if pricing and usage and not unknown
+                else CostUsage(0, 0, pricing.actual(ProviderUsage(0, 0)))
+                if pricing and not unknown
+                else None,
+            )
+            raise DomainError(
+                code,
+                "模型调用未形成可用结果，请查看原调用回执。",
+                detail={"provider_reason": error.code, "call_id": str(call_id)},
+            ) from None
+        except DomainError as error:
+            self.store.release_call(
+                scope,
+                call_id,
+                usage=0,
+                unknown=dispatch_started,
+                error=error.code,
+                request_id=error.detail.get("provider_request_id"),
+            )
+            raise
+        except Exception:
+            self.store.release_call(scope, call_id, unknown=True, error="EXTERNAL_OUTCOME_UNKNOWN")
+&gt;           raise DomainError(
+                "EXTERNAL_OUTCOME_UNKNOWN", "原模型调用需对账。", detail={"call_id": str(call_id)}
+            ) from None
+E           pdos_next.errors.DomainError: 原模型调用需对账。
+E           During task with name 'model' and id '90795d80-e5ed-55dc-0cd8-23bc7d22cb1d'
+
+pdos_next/agent_kernel/gateway.py:336: DomainError</failure></testcase></testsuite></testsuites>

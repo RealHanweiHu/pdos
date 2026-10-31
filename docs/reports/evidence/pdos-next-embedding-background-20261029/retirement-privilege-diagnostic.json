@@ -1,0 +1,22 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "head": "s0_0836",
+  "function": [
+    {
+      "owner": "pdos_enterprise_index_maintainer",
+      "prosecdef": true,
+      "acl": "{pdos_enterprise_index_maintainer=X/pdos_enterprise_index_maintainer}"
+    }
+  ],
+  "execute": {
+    "pdos_next_owner": false,
+    "pdos_next_app": false,
+    "pdos_agent": false,
+    "pdos_next_auth": false,
+    "pdos_next_dispatch": false
+  },
+  "counts": {
+    "enterprise_embedding_profiles": 7,
+    "enterprise_embedding_calls": 8
+  }
+}

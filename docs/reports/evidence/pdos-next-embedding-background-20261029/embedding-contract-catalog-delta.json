@@ -1,0 +1,20 @@
+[
+  {
+    "path": "pdos-next/contracts/auxiliary-operations.json",
+    "before_sha256": "abdeaf52bdf9fbdcc0611f4275c238185027bbbd5588ebe45a6b376ed681be64",
+    "after_sha256": "f33bf502845b310ffbf346990f5c60c83f73fbe9671dbc61fa0e1fde1db1ab7b",
+    "added": [
+      "embedding.profile.save",
+      "embedding.call.reconcile"
+    ]
+  },
+  {
+    "path": "pdos-next/contracts/events.json",
+    "before_sha256": "d00993684c48183471001a1040fe7be5087e5fdfffb5da2d7560504296be9b58",
+    "after_sha256": "6bc01278cbcd469fef18abe05366ccbef681b0bb4f009beae8ac80b1d5c41733",
+    "added": [
+      "embedding.profile_saved",
+      "embedding.call_reconciled"
+    ]
+  }
+]

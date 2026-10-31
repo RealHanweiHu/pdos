@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-26",
+  "backend_pure_tests": 180,
+  "postgres_api_tests": 13,
+  "frontend_render_tests": 8,
+  "bff_tests": 87,
+  "total_tests": 288,
+  "ruff_exit_code": 0,
+  "eslint_exit_code": 0,
+  "affected_typecheck_exit_code": 0,
+  "final_full_source_typecheck_exit_code": 0,
+  "full_source_typecheck_config": {
+    "extends": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+    "compilerOptions": {
+      "incremental": false
+    },
+    "exclude": [
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/.next/types/* 2.ts"
+    ]
+  },
+  "affected_typecheck_config": {
+    "extends": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+    "compilerOptions": {
+      "incremental": false
+    },
+    "include": [
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/next-env.d.ts",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/model_configuration/connection-editor.tsx",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/model_configuration/connected-settings.tsx",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/model_configuration/settings.tsx",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/model_configuration/contracts.ts",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/app/api/[...path]/route.ts",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/app/api/[...path]/route.test.ts"
+    ],
+    "exclude": [
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules"
+    ]
+  },
+  "native_keychain_real_roundtrip": "passed, synthetic items removed",
+  "browser": "real localhost UI, synthetic key only",
+  "browser_checks": [
+    "add provider and password masking",
+    "confirm switch",
+    "refresh current selection",
+    "confirm restore MiniMax",
+    "390px list and dark editor",
+    "restore theme, viewport and work rail",
+    "close only agent-created tab"
+  ],
+  "database_migrations": 0,
+  "new_model_calls": 0,
+  "real_cloud_kms_create_validated": false,
+  "new_third_party_llm_calls_validated": false,
+  "source_files_fingerprinted": 32,
+  "full_build_run": false,
+  "scoped_diff_check_exit_code": 0
+}

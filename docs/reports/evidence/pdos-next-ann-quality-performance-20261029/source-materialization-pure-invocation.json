@@ -1,0 +1,25 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/enterprise_search/test_embedding_source_materialization.py",
+    "tests/enterprise_search/test_embedding_hybrid.py",
+    "tests/enterprise_search/test_embedding_query.py",
+    "tests/enterprise_search/test_embedding_schema_columns.py",
+    "tests/enterprise_search/test_embedding_ann_sql.py",
+    "tests/enterprise_search/test_embedding_ann_auto_plan.py",
+    "tests/enterprise_search/test_embedding_ann_replay_option.py",
+    "tests/enterprise_search/test_embedding_ann_authority_pg.py",
+    "tests/test_database_semantic_custom_plan.py",
+    "--deselect=tests/enterprise_search/test_embedding_ann_authority_pg.py::test_natural_ann_same_authority_exact_private_revoke_and_source_dedup_pg",
+    "-p",
+    "no:cacheprovider",
+    "--junitxml=../../docs/reports/evidence/pdos-next-ann-quality-performance-20261029/source-materialization-pure.xml"
+  ],
+  "returncode": 0,
+  "database_executed": false,
+  "model_calls": 0,
+  "embedding_calls": 0
+}

@@ -1,0 +1,280 @@
+{
+  "objective": "完成这两个设计",
+  "goal_status": "blocked",
+  "audited_at_utc": "2026-10-30T10:16:25.922461+00:00",
+  "previous_goal_turn": "no_progress: same genuine formal evidence/authorization blocker revalidated",
+  "this_goal_turn": "no_progress: third consecutive revalidation; same evidence SHA, no human review/real role evidence or changed no-real-model instruction; no independent required implementation work available",
+  "consecutive_blocked_goal_turns_since_local_completion": 3,
+  "current_user_constraint": "暂时不调用真实模型；真实embedding和渠道调用保持关闭",
+  "requirements": [
+    {
+      "source": "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md:810",
+      "requirement": "Human-maintained and reviewed question set v0 with expected source/object per question",
+      "state": "Candidate v0 authored and offline keyword baseline completed; human review not recorded",
+      "blocks": "Formal human-reviewed qualification only; candidate model-free recall already executed",
+      "safe_next_action": "No new path request: user delegated authoring, candidate already delivered; keep model-free coverage and actual review status distinct"
+    },
+    {
+      "source": "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md:857",
+      "requirement": "30–50 real role questions with expected sources and human review; role evidence and correction cost",
+      "state": "awaiting human materials and review"
+    },
+    {
+      "source": "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md:849",
+      "requirement": "Same-set genuine recall and answer-quality benefit before default hybrid enablement",
+      "state": "awaiting reviewed suite and resumption of real model/embedding calls"
+    },
+    {
+      "source": "docs/design/2026-10-28-xiaopai-context-design.md:258",
+      "requirement": "Human-maintained context evaluation covering replay, distractors, identifiers and cross-turn constraints; compare correctness under two F budgets",
+      "state": "Original 24 observations retained. Project followup: CTX04 both bound and CTX11 low-budget stop/high bound; fixture followup: CTX09 both partial, CTX12 F48 actual stop and F64 bound. Additional recovery/skill controls locally verified; human review and genuine two-F answer correctness remain unscored.",
+      "evidence": "docs/reports/evidence/pdos-next-context-native-v0-20261029/result.md"
+    },
+    {
+      "source": "docs/design/2026-10-28-xiaopai-context-design.md:208",
+      "requirement": "Actual cache usage/hit measurements for OpenAI-compatible route",
+      "state": "deferred by current no-real-model instruction"
+    },
+    {
+      "source": "docs/design/2026-10-28-xiaopai-context-design.md:119-126",
+      "requirement": "Frozen history dependency batch ACL/current access recheck without replaying full historical reads",
+      "state": "implemented_and_locally_verified",
+      "evidence": "docs/reports/evidence/pdos-next-context-contract-completion-20261029/result.md"
+    },
+    {
+      "source": "docs/design/2026-10-28-xiaopai-context-design.md:165",
+      "requirement": "Near-window Anthropic count_tokens preflight under registered graph and current egress",
+      "state": "implemented_and_mock_native_verified_no_real_provider",
+      "evidence": "docs/reports/evidence/pdos-next-context-contract-completion-20261029/pg-cache-count-run3.xml"
+    },
+    {
+      "source": "docs/design/2026-10-28-xiaopai-context-design.md:210",
+      "requirement": "Explicit registered retention policy can disable controllable prompt caching",
+      "state": "implemented_and_native_ui_verified_s0_0853",
+      "evidence": "docs/reports/evidence/pdos-next-context-contract-completion-20261029/cache-policy/browser-result.json"
+    },
+    {
+      "source": "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md:408,846",
+      "requirement": "Natural pgvector iterative ANN plan and same-filtered exact source agreement with authority/private/revoked scopes",
+      "state": "locally_measured_and_verified_authority_source_pool_and_actual_plan_comparison; mixed final plans; ANN quality/speed benefit not passed",
+      "evidence": "docs/reports/evidence/pdos-next-ann-authority-20261029/result.md"
+    }
+  ],
+  "available_candidate_evidence": {
+    "path": "docs/pilots/measurement-v1/golden-candidates.json",
+    "sha256": "08cf60d6dfbb787b1a4bbf4d92443228ffc16a156ee12ce2b044289614deb4f5",
+    "version": "1.0.0-draft.1",
+    "status": "candidate_index_not_trusted_suite",
+    "not_substituted_for_required_suite": true
+  },
+  "source_sha256": {
+    "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md": "10d6d43aef243e4d7c84a5178d4b92cac4d3f402d1d52f8e2b1a67a9d9b6a330",
+    "docs/design/2026-10-28-xiaopai-context-design.md": "df9c0948e04556a6da84a4c3c7dafae7422236960479d283aef4a131fa93a28e"
+  },
+  "question": {
+    "pending": "Resolved: user delegated authoring and candidate set delivered",
+    "asked_once_during_this_turn": true,
+    "repeated": false
+  },
+  "actions_this_turn": "Implemented actual task/current project context and frozen history closure with 0854; fixed v1-only API source guard/frontend basis parser. ANN matrix exposed fixed-pool source shortfall and prepared generic-plan authority degeneration; repaired bounded pool and query-local prepare=False, verified full32k same-SELECT authority matrix. Low synthetic ANN recall and slower iterative medians are preserved, not passed as quality/speed benefit. Completed source authority MAT on the same 32768-vector fixture (64 actual captures), query-only grammar with unchanged original 28 HTTP questions, four focused CTX fixture controls, and trusted budget recovery/removable fixed continued skills (60 distinct native checks).",
+  "resumption": "Candidate authoring is delivered, including a concrete CTX09 revision draft. Do not request another local question path or rerun unchanged native/build/ANN checks. No additional product feature follows from CTX09 per-item pagination assumptions. Human review/real role evidence and lifting the current real-model/embedding/channel restriction are the remaining formal conditions; keep goal scope and original partial/failed observations intact.",
+  "latest_revalidation_utc": "2026-10-30T10:16:25.922461+00:00",
+  "blocked_threshold_met": true,
+  "fresh_blocked_audit_required_on_user_resume": true,
+  "prior_blocked_cycle": {
+    "consecutive_turns": 3,
+    "blocked_at_utc": "2026-10-29T17:40:43.363319+00:00",
+    "condition": "No reviewed question set provided; real calls disabled"
+  },
+  "current_user_authorization": "你帮我制作就好了",
+  "resumed_at_utc": "2026-10-29T18:26:55.104773+00:00",
+  "candidate_question_set": "docs/evaluations/xiaopai-v0/README.md",
+  "remaining_conditions": "Formal human review of the delivered candidate suite (including CTX09 revision decision), real role/pilot evidence, and authorized genuine model/embedding quality/cache/cost/latency remain. Existing CTX09 original scenario stays partial; its literal 3/6 fragment assumption is not a missing product requirement. ANN benefit did not pass; keyword default remains.",
+  "native_context_checkpoint": {
+    "path": "docs/reports/evidence/pdos-next-context-native-v0-20261029/final-checkpoint.json",
+    "observations": 24,
+    "bound": 18,
+    "partial": 5,
+    "not_executable": 1,
+    "pure_passed": 174,
+    "native_distinct_passed": 41,
+    "real_model_calls": 0,
+    "quality": "not_scored"
+  },
+  "project_context_followup": {
+    "evidence": "docs/reports/evidence/pdos-next-project-tasks-context-20261029/result.md",
+    "pure_passed": 230,
+    "native_passed": 41,
+    "frontend_passed": 6,
+    "schema_head": "s0_0854",
+    "focused_controls": "4 controls passed; CTX04 bound both, CTX11 F48 budget stop/F64 bound",
+    "real_business_model_calls": 0,
+    "project_inputs_unchanged": 120,
+    "completed": true
+  },
+  "ann_followup": {
+    "evidence": "docs/reports/evidence/pdos-next-ann-authority-20261029/result.md",
+    "checkpoint": "docs/reports/evidence/pdos-next-ann-authority-20261029/native-custom32768/checkpoint.json",
+    "pure_passed": 101,
+    "native_distinct_tests": 1,
+    "native_controls": 12,
+    "captures_matched": 24,
+    "final_hnsw_queries": 8,
+    "controls": 12,
+    "final_hnsw_mean_recall_at_5": 0.25,
+    "final_hnsw_mean_recall_at_10": 0.15,
+    "quality_or_speed_benefit_passed": false,
+    "default": "keyword",
+    "frozen_inputs": 92,
+    "observer_restored": true,
+    "profile_vectors_remaining": 0,
+    "real_model_calls": 0,
+    "real_embedding_calls": 0
+  },
+  "ann_quality_performance_followup": {
+    "evidence": "docs/reports/evidence/pdos-next-ann-quality-performance-20261029/result.md",
+    "checkpoint": "docs/reports/evidence/pdos-next-ann-quality-performance-20261029/final-checkpoint.json",
+    "captures_matched": 64,
+    "frozen_inputs_unchanged_at_that_completion": 95,
+    "exact_same_results": true,
+    "ann_quality_or_speed_benefit_passed": false,
+    "production_ef_or_mode_changed": false,
+    "default": "keyword"
+  },
+  "keyword_query_followup": {
+    "evidence": "docs/reports/evidence/pdos-next-keyword-query-grammar-20261029/result.md",
+    "pure_passed": 22,
+    "native_http_questions": 28,
+    "frozen_inputs": 101,
+    "macro_recall_at_5": 0.9791666666666666,
+    "macro_recall_at_10": 1.0,
+    "forbidden_passed": 4,
+    "identifier_passed": 4,
+    "questions_and_corpus_unchanged": true,
+    "real_model_calls": 0
+  },
+  "local_requirements_completed": [
+    {
+      "source": "docs/design/2026-10-28-xiaopai-context-design.md:177,267",
+      "requirement": "Explicit overflow recovery opens a new session while preserving trusted work state and clearing old history",
+      "state": "implemented_and_locally_verified",
+      "boundary": "ordinary new conversation remains empty; state comes only from server-owned source run with current permissions and version proof",
+      "evidence": "docs/reports/evidence/pdos-next-context-recovery-skills-20261030/result.md"
+    },
+    {
+      "source": "docs/design/2026-10-28-xiaopai-context-design.md:151",
+      "requirement": "User can remove automatically continued skills; original loaded version/digest and enablement changes are rejected visibly",
+      "state": "implemented_and_locally_verified",
+      "boundary": "recent two actual loaded receipts; do not silently substitute latest version or refill a removed third skill",
+      "evidence": "docs/reports/evidence/pdos-next-context-recovery-skills-20261030/result.md"
+    }
+  ],
+  "local_requirements_remaining": [],
+  "local_evaluation_limitations": [
+    "CTX-09 original same-binding 3-to-6/9 remains partial; candidate is needs_case_revision because current natural 9-item result is below single-result cap. This is not an additional product DoD or a demonstrated production defect.",
+    "CTX-12 F48 stops at actual admission 48379>48000 after source coverage; final answer not completed",
+    "No genuine model answer correctness or semantic improvement scored"
+  ],
+  "recovery_skills_followup": {
+    "completed_at_utc": "2026-10-30T10:07:04.092615+00:00",
+    "scope": "Two local implementation gaps: trusted fresh-session budget recovery and removable fixed-version continued skills",
+    "local_implementation_verified": true,
+    "formal_design_acceptance_complete": false,
+    "pure_passed": 168,
+    "additional_offline_fixture_type_check": 1,
+    "native_distinct_passed": 60,
+    "native_runs": {
+      "native-run2": {
+        "cases": 5,
+        "passed": 4
+      },
+      "native-run4": {
+        "cases": 56,
+        "passed": 56
+      }
+    },
+    "frontend_interaction_helper_passed": 40,
+    "bff_passed": 88,
+    "native_inputs": 153,
+    "native_inputs_unchanged": true,
+    "production_build_inputs": 758,
+    "build_inputs_unchanged": true,
+    "schema_head": "s0_0854",
+    "real_model_calls": 0,
+    "real_embedding_calls": 0,
+    "real_channel_calls": 0,
+    "migration_added": false,
+    "default_retrieval": "keyword",
+    "answer_quality_scored": false,
+    "native_scope_note": "4 unchanged recovery cases from run2 plus final targeted/regression run4; production inputs unchanged, failed fifth fixture replaced only by its passing observation",
+    "result": "result.md",
+    "independent_summary": "independent-summary.json",
+    "evidence": "docs/reports/evidence/pdos-next-context-recovery-skills-20261030/result.md"
+  },
+  "native_context_fixture_followup": {
+    "evidence": "docs/reports/evidence/pdos-next-context-fixture-completion-20261029/result.md",
+    "native_passed": 4,
+    "inputs_unchanged_at_completion": 127,
+    "CTX09": "both partial, separate controls not combined",
+    "CTX12": "F48 actual budget stop; F64 bound; no answer-quality score"
+  },
+  "ctx09_binding_audit": {
+    "evidence": "docs/reports/evidence/pdos-next-ctx09-binding-audit-20261030/result.md",
+    "revision_candidate": "docs/reports/evidence/pdos-next-ctx09-binding-audit-20261030/ctx09-revision-draft.md",
+    "characters": 9325,
+    "estimated_tokens": 2451,
+    "production_cap": 4000,
+    "original_question_changed": false,
+    "original_partial_retained": true,
+    "candidate_status": "draft_for_human_review",
+    "source_sha_verified": 14,
+    "real_model_calls": 0,
+    "database_calls": 0
+  },
+  "no_unchanged_native_reruns": true,
+  "blocking_condition_id": "formal-human-evidence-and-real-model-restriction",
+  "blocking_evidence_sha256": {
+    "docs/evaluations/xiaopai-v0/questions.json": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685",
+    "docs/evaluations/xiaopai-v0/context-questions.json": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+    "docs/evaluations/xiaopai-v0/question-review.md": "a9fd06a8d678a6a7789de8cb2b1fae91114e31a166f03878c8f57559e4785089",
+    "docs/pilots/measurement-v1/pilot-register.json": "732c2bf842570d84bfff6885a4357e87666a1864ba001b7f3db0ec4a2a50405f",
+    "docs/evaluations/xiaopai-v0/rubric.md": "2fb0c99abc53c63b927de89a17d8922aeb63ce29682af0fa9bf6afeaab172c14"
+  },
+  "blocked_audit_turns": [
+    {
+      "at_utc": "2026-10-30T10:15:27.202685+00:00",
+      "classification": "no_progress",
+      "consecutive_turn": 1,
+      "condition_id": "formal-human-evidence-and-real-model-restriction",
+      "evidence": "current question metadata: draft/not_run; review sheet: synthetic/not reviewed; pilot register: design_not_pilot_acceptance; current user instruction: no real model calls",
+      "new_permission_or_material_received": false,
+      "verified_live_wait": false
+    },
+    {
+      "at_utc": "2026-10-30T10:15:55.173365+00:00",
+      "classification": "no_progress",
+      "consecutive_turn": 2,
+      "condition_id": "formal-human-evidence-and-real-model-restriction",
+      "evidence_sha_changed": [],
+      "human_review": "not_run",
+      "real_model_evaluation": "not_run",
+      "pilot_status": "design_not_pilot_acceptance",
+      "new_permission_or_material_received": false,
+      "verified_live_wait": false
+    },
+    {
+      "at_utc": "2026-10-30T10:16:25.922461+00:00",
+      "classification": "no_progress",
+      "consecutive_turn": 3,
+      "condition_id": "formal-human-evidence-and-real-model-restriction",
+      "evidence_sha_changed": [],
+      "human_review": "not_run",
+      "real_model_evaluation": "not_run",
+      "pilot_status": "design_not_pilot_acceptance",
+      "new_permission_or_material_received": false,
+      "verified_live_wait": false
+    }
+  ],
+  "blocked_status_update_pending": false,
+  "blocked_at_utc": "2026-10-30T10:16:26.032470+00:00"
+}

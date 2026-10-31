@@ -1,0 +1,98 @@
+{
+  "base_commit": "28bacbb7d8be01b50296004a66891ab9892d30f4",
+  "shared_files": [
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary.py",
+      "base_sha256": "5b0fab390489d0af0f602e5c0258ac01f3b126ab7dcecad4a8a33c4372fb98da",
+      "candidate_sha256": "bd6c5e5d75c662daf362ef2beaf9fd8e2941bbfdfdc9893d80b55629803d5209",
+      "live_still_matches_base": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary_runtime.py",
+      "base_sha256": "80bd3bea8f00e43ca0113c49a51da26077852dc7c9ed17779949adbed2cd8600",
+      "candidate_sha256": "f545a6ea6d0896c74501c2c378eae6a7474663767f5c1801ba5eefc10954dc05",
+      "live_still_matches_base": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary_templates.py",
+      "base_sha256": "9877ec5c55472357d4e4d95f65e81a95e78fa80d3f2b1a6789f6f4387c275755",
+      "candidate_sha256": "83c2709b77fb19309a9cbff4edcb24d602e75bc15768b017578be27690acfa6e",
+      "live_still_matches_base": true
+    },
+    {
+      "path": "pdos-next/server/tests/test_personal_summary.py",
+      "base_sha256": "5fc764d073a0949f631277b5bc5de2e93becb4d7600914a849215f2708a9714a",
+      "candidate_sha256": "8fddc51339b35a2c9223919a300d7c809212e1de61d16e9b6b8871096a904e3d",
+      "live_still_matches_base": true
+    },
+    {
+      "path": "pdos-next/web/src/lib/personal-summary.ts",
+      "base_sha256": "0167b10c67a616cfc020ee3cf3680f8d7274bc83944ca458cb9d404f4d3464be",
+      "candidate_sha256": "9520ebd7ba95f34c728b841d9dbc33e53083d0c0af1f4b371d5d2befe66a4c95",
+      "live_still_matches_base": true
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/personal-summary-result.tsx",
+      "base_sha256": "30da975ea815adf84604b7d5ca28ec3b1c2f944007cc2cef6e460c8709242ebc",
+      "candidate_sha256": "ee30e5f8bda711af22c87886430face4cf1cbb9777c7dab4ec43fd97e983dfa0",
+      "live_still_matches_base": true
+    },
+    {
+      "path": "pdos-next/web/src/components/personal-summary.test.mjs",
+      "base_sha256": "103e95362696e9661d10c54a46a958750574b77adcca3e42e87234f36533503a",
+      "candidate_sha256": "61e0e86d605c28c86df9dd3302dc4b617127c3cda1f1a96ebdd493b9ba316189",
+      "live_still_matches_base": true
+    }
+  ],
+  "new_files": [
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary_gates.py",
+      "sha256": "06ef19388637d1635da0369084cc1d06df9a37efc10f3ae106397c5a7ab116eb",
+      "bytes": 6933
+    },
+    {
+      "path": "pdos-next/server/tests/test_personal_summary_gates.py",
+      "sha256": "b94bb250473504bd50f053ed5df0d194a6b83e58913e2d299011ae188b4a070b",
+      "bytes": 11303
+    },
+    {
+      "path": "pdos-next/server/tests/automations_pg/test_personal_summary_gates_pg.py",
+      "sha256": "20e99a00bcd78c6dafec2a4ee6486e9f75da09e4167efea007f79a4e4294af59",
+      "bytes": 9676
+    }
+  ],
+  "patch": "shared.patch",
+  "validation": {
+    "backend_pure": {
+      "passed": 110,
+      "new_gate_tests": 26,
+      "seconds": 2.77,
+      "database": false
+    },
+    "frontend_targeted": {
+      "passed": 17,
+      "seconds": 0.370733583
+    },
+    "ruff": {
+      "config": "pdos-next/ruff.toml",
+      "files": 7,
+      "passed": true
+    },
+    "postgres": {
+      "collected": 5,
+      "collection_seconds": 1.95,
+      "executed": false
+    },
+    "build": {
+      "executed": false,
+      "owner": "main agent final integrated candidate"
+    }
+  },
+  "scope": {
+    "no_live_edits": true,
+    "no_database_connections": true,
+    "no_real_model_or_embedding_or_outbound": true,
+    "no_migration": true,
+    "no_commit_or_push": true
+  }
+}

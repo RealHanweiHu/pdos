@@ -1,0 +1,11 @@
+{
+  "frontend_manifest_files": 661,
+  "compared_source_files": 660,
+  "excluded_generated": [
+    "next-env.d.ts"
+  ],
+  "changed": {
+    "workspace": [],
+    "built_snapshot": []
+  }
+}

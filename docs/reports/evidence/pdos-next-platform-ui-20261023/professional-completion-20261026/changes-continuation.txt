@@ -1,0 +1,126 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 知识
+    - paragraph: 产品管理
+    - link "品类":
+      - /url: "?area=category"
+      - generic: 品类
+    - link "立项提案":
+      - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&focus=proposals"
+      - generic: 立项提案
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - link "项目":
+    - /url: "?area=projects"
+  - generic: Approved revision fixture
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - button "返回项目列表": Ap
+  - heading "Approved revision fixture" [level=1]
+  - button "设计":
+    - text: 设计
+  - generic: 负责人 Synthetic owner（本人）
+  - tablist "项目工作区视图":
+    - tab "概览"
+    - tab "任务"
+    - tab "计划"
+    - tab "文件"
+  - generic "更多项目视图":
+    - text: 更多
+  - tabpanel "更多项目视图":
+    - region "问题与变更":
+      - heading "问题与变更" [level=2]
+      - paragraph: 从现象和原始依据出发，追踪原因、措施、专业决定与复验。
+      - navigation "问题与变更视图":
+        - button "问题与分诊"
+        - button "原因与措施"
+        - button "变更与实施" [pressed]
+      - region "专业记录":
+        - text: 查找记录
+        - searchbox "查找专业记录"
+        - checkbox "包含历史版本"
+        - text: 包含历史版本
+        - button "刷新专业记录":
+        - table:
+          - rowgroup:
+            - row "记录 类型 状态 版本与依据 保存时间":
+              - columnheader "记录"
+              - columnheader "类型"
+              - columnheader "状态"
+              - columnheader "版本与依据"
+              - columnheader "保存时间"
+          - rowgroup:
+            - row "Synthetic actual Field corrective configuration change 变更 已关闭 v12 · 依据需重核 2026/10/22 11:11:51":
+              - cell "Synthetic actual Field corrective configuration change":
+                - button "Synthetic actual Field corrective configuration change" [expanded]:
+                  - text: Synthetic actual Field corrective configuration change
+              - cell "变更"
+              - cell "已关闭"
+              - cell "v12 · 依据需重核"
+              - cell "2026/10/22 11:11:51"
+        - region "专业记录详情":
+          - heading "Synthetic actual Field corrective configuration change · 变更" [level=3]
+          - button "收起详情"
+          - paragraph: 已关闭 · 依据需重核
+          - term: 办理说明
+          - definition: Explicit user future plan from actual customer report
+          - term: 标题
+          - definition: Synthetic actual Field corrective configuration change
+          - button "继续专业办理" [active]:
+            - text: 继续专业办理
+          - paragraph: 进入后按当前事实核对，原有确认、具名决定及历史记录保留。
+      - button "维护记录与专业办理" [expanded]:
+        - text: 维护记录与专业办理
+      - region "变更适用性与正式计划准备":
+        - paragraph: 固定影响 · 真实适用性 · 明确生效范围
+        - heading "变更适用性与变更令准备" [level=2]:
+          - text: 变更适用性与变更令准备
+        - button "刷新当前正式依据":
+          - text: 刷新当前正式依据
+        - paragraph: 具名决定逐项适用性，再固定真实计划项与逐对象处置。未知范围继续保留；准备计划不表示已批准、实际实施或生效。
+        - alert:
+          - text: 当前项目变更、政策或真实适用性材料读取失败，请刷新核对；本次读取未保存或批准。
+        - text: 明确选择本项目变更
+        - combobox "明确选择本项目变更" [disabled]:
+          - option "选择固定变更，不默认首条" [selected]
+  - generic "项目资料与更多操作"
+- button "打开小Pai工作栏":

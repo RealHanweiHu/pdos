@@ -1,0 +1,15 @@
+{
+  "functional_pg_candidate": "pg-completion.json",
+  "changed_since_start": [
+    "pdos-next/server/pdos_next/agent_kernel/activities.py",
+    "pdos-next/server/pdos_next/agent_kernel/api.py",
+    "pdos-next/server/tests/change_execution/test_completion_fixture_window.py",
+    "pdos-next/server/tests/change_execution/test_native_field_completion_chain.py"
+  ],
+  "during_check_test_delta": [
+    "pdos-next/server/tests/change_execution/test_completion_fixture_window.py",
+    "pdos-next/server/tests/change_execution/test_native_field_completion_chain.py"
+  ],
+  "m9_domain_changed": false,
+  "scope": "Final UI delta checked separately by web-build.json and browser-closed.json; unrelated concurrent source changes are not an integrated candidate claim"
+}

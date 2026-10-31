@@ -1,0 +1,11 @@
+{
+  "status": 200,
+  "revision": 1,
+  "enabled": true,
+  "model": "MiniMax-M3",
+  "credential_status": "bound",
+  "openai_response_mode": "auto",
+  "streaming": true,
+  "api_and_worker_alive": true,
+  "read_only": true
+}

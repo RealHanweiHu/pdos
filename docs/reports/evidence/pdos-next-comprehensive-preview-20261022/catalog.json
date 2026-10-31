@@ -1,0 +1,628 @@
+{
+  "version": 1,
+  "created_at": "2026-10-22T18:32:04.416936+00:00",
+  "expires_at": "2026-10-29T18:32:04.416953+00:00",
+  "cases": [
+    {
+      "id": "s1",
+      "title": "01 · 品类提案与小Pai",
+      "summary": "回看本人已确认的真实模型草稿、G0 决定与项目承接。",
+      "limit": "原 S1 数据的隔离副本；新模型调用未启用。",
+      "categoryId": "b24a8a71-981e-49cc-a32c-496641be611d",
+      "productId": "6a921dbe-5876-4aef-a878-313d16407478",
+      "projectId": "f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d",
+      "projectName": "便携充气泵 · S1 演示项目",
+      "roleIds": [
+        "s1-1"
+      ],
+      "entries": [
+        {
+          "id": "proposals",
+          "label": "提案与 G0",
+          "href": "/?area=category&category=b24a8a71-981e-49cc-a32c-496641be611d&focus=proposals"
+        },
+        {
+          "id": "cockpit",
+          "label": "项目驾驶舱",
+          "href": "/?area=cockpit&category=b24a8a71-981e-49cc-a32c-496641be611d&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d"
+        },
+        {
+          "id": "plan",
+          "label": "工作与计划",
+          "href": "/?area=category&category=b24a8a71-981e-49cc-a32c-496641be611d&product=6a921dbe-5876-4aef-a878-313d16407478&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d&bench=projects&view=plan"
+        },
+        {
+          "id": "models",
+          "label": "小Pai 与费用记录",
+          "href": "/?area=category&category=b24a8a71-981e-49cc-a32c-496641be611d&product=6a921dbe-5876-4aef-a878-313d16407478&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d&bench=settings&view=models"
+        }
+      ],
+      "counts": []
+    },
+    {
+      "id": "work",
+      "title": "02 · 工作、承诺与计划",
+      "summary": "体验任务分派、接受、提交、评审，以及项目计划与工作动态。",
+      "limit": "专业签核仍按当前实际授权办理。",
+      "categoryId": "90b120b8-1fb8-4829-8c61-f6f0afa520eb",
+      "productId": "d1c4191c-bf83-4f86-b2d0-8116f66f4324",
+      "projectId": "4e543670-a105-4cfd-bff9-1fc5ac4464cd",
+      "projectName": "Synthetic named work loop",
+      "roleIds": [
+        "work-1",
+        "work-2"
+      ],
+      "entries": [
+        {
+          "id": "work",
+          "label": "我的工作",
+          "href": "/?area=work"
+        },
+        {
+          "id": "plan",
+          "label": "工作与计划",
+          "href": "/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=plan"
+        },
+        {
+          "id": "cockpit",
+          "label": "项目驾驶舱",
+          "href": "/?area=cockpit&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd"
+        }
+      ],
+      "counts": [
+        {
+          "label": "工作任务",
+          "value": 1
+        },
+        {
+          "label": "计划任务",
+          "value": 2
+        },
+        {
+          "label": "外部等待",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "trial",
+      "title": "03 · 双批次试制与验证",
+      "summary": "两个实际产出批次、两个样件和两轮测试，可逐段回看交样、开测、结果与处置。",
+      "limit": "历史专业依据可能已过期；保留原始判定和回执。 查看结果时，先选择试制轮次，再选择固定测试运行。",
+      "categoryId": "7fcc114e-186a-4372-8f51-c6e5d37b2085",
+      "productId": "a6498265-4437-4e97-811e-6bec2f33c824",
+      "projectId": "8f8b24bb-fffd-488e-8cf4-c64042253960",
+      "projectName": "Shared synthetic project",
+      "roleIds": [
+        "trial-1",
+        "trial-2",
+        "trial-3"
+      ],
+      "entries": [
+        {
+          "id": "prepare",
+          "label": "配置、制造与发布",
+          "href": "/?area=category&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&product=a6498265-4437-4e97-811e-6bec2f33c824&project=8f8b24bb-fffd-488e-8cf4-c64042253960&bench=projects&view=builds&task=prepare"
+        },
+        {
+          "id": "supply",
+          "label": "物料齐套",
+          "href": "/?area=category&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&product=a6498265-4437-4e97-811e-6bec2f33c824&project=8f8b24bb-fffd-488e-8cf4-c64042253960&bench=projects&view=builds&task=supply"
+        },
+        {
+          "id": "cost",
+          "label": "成本",
+          "href": "/?area=category&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&product=a6498265-4437-4e97-811e-6bec2f33c824&project=8f8b24bb-fffd-488e-8cf4-c64042253960&bench=projects&view=builds&task=cost"
+        },
+        {
+          "id": "start",
+          "label": "开工条件",
+          "href": "/?area=category&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&product=a6498265-4437-4e97-811e-6bec2f33c824&project=8f8b24bb-fffd-488e-8cf4-c64042253960&bench=projects&view=builds&task=start"
+        },
+        {
+          "id": "execution",
+          "label": "实际产出",
+          "href": "/?area=category&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&product=a6498265-4437-4e97-811e-6bec2f33c824&project=8f8b24bb-fffd-488e-8cf4-c64042253960&bench=projects&view=builds&task=execution"
+        },
+        {
+          "id": "handoff",
+          "label": "交样与接收",
+          "href": "/?area=category&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&product=a6498265-4437-4e97-811e-6bec2f33c824&project=8f8b24bb-fffd-488e-8cf4-c64042253960&bench=projects&view=verification&task=handoff"
+        },
+        {
+          "id": "launch",
+          "label": "承诺与开测",
+          "href": "/?area=category&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&product=a6498265-4437-4e97-811e-6bec2f33c824&project=8f8b24bb-fffd-488e-8cf4-c64042253960&bench=projects&view=verification&task=launch"
+        },
+        {
+          "id": "results",
+          "label": "结果与处置",
+          "href": "/?area=category&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&product=a6498265-4437-4e97-811e-6bec2f33c824&project=8f8b24bb-fffd-488e-8cf4-c64042253960&bench=projects&view=verification&task=results"
+        }
+      ],
+      "counts": [
+        {
+          "label": "试制轮次",
+          "value": 1
+        },
+        {
+          "label": "产出批次",
+          "value": 2
+        },
+        {
+          "label": "样件",
+          "value": 2
+        },
+        {
+          "label": "测试运行",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "id": "quality",
+      "title": "04 · 问题与整改",
+      "summary": "查看已有质量问题、失败范围和问题版本；整改证据读取仍有当前限制。",
+      "limit": "先选择轮次和问题。本案例的整改原件目前被安全状态守卫拦截，后续证据需重新核对；不把无法读取当成已通过。专业资格原期限保留。",
+      "categoryId": "378f7546-7b12-4da4-925e-b1679389d5d9",
+      "productId": "4ea8a2e1-82d6-4b9a-bb18-db94d76c1514",
+      "projectId": "9c36b6fc-1206-4ad1-8aab-5175fd35e5af",
+      "projectName": "Shared synthetic project",
+      "roleIds": [
+        "quality-1",
+        "quality-2",
+        "quality-3"
+      ],
+      "entries": [
+        {
+          "id": "issues",
+          "label": "问题与变更",
+          "href": "/?area=category&category=378f7546-7b12-4da4-925e-b1679389d5d9&product=4ea8a2e1-82d6-4b9a-bb18-db94d76c1514&project=9c36b6fc-1206-4ad1-8aab-5175fd35e5af&bench=projects&view=issues"
+        },
+        {
+          "id": "results",
+          "label": "结果与处置",
+          "href": "/?area=category&category=378f7546-7b12-4da4-925e-b1679389d5d9&product=4ea8a2e1-82d6-4b9a-bb18-db94d76c1514&project=9c36b6fc-1206-4ad1-8aab-5175fd35e5af&bench=projects&view=verification&task=results"
+        },
+        {
+          "id": "prepare",
+          "label": "配置、制造与发布",
+          "href": "/?area=category&category=378f7546-7b12-4da4-925e-b1679389d5d9&product=4ea8a2e1-82d6-4b9a-bb18-db94d76c1514&project=9c36b6fc-1206-4ad1-8aab-5175fd35e5af&bench=projects&view=builds&task=prepare"
+        }
+      ],
+      "counts": [
+        {
+          "label": "试制轮次",
+          "value": 1
+        },
+        {
+          "label": "产出批次",
+          "value": 2
+        },
+        {
+          "label": "样件",
+          "value": 2
+        },
+        {
+          "label": "测试运行",
+          "value": 2
+        },
+        {
+          "label": "问题",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "manufacturing",
+      "title": "05 · 制造准备与试产",
+      "summary": "查看制造基线、作业指导书、控制计划、发布版本与试产观察。",
+      "limit": "试产记录不等于制造放行。 进入后向下查看制造准备、正式发布与试产记录。",
+      "categoryId": "0b1261de-e54b-4520-bd59-45764f4c56f3",
+      "productId": "ac902601-dffe-47a6-a875-5572675c31de",
+      "projectId": "096c8f49-5136-47fc-8d60-a773c70ad9f4",
+      "projectName": "Shared synthetic project",
+      "roleIds": [
+        "manufacturing-1",
+        "manufacturing-2",
+        "manufacturing-3"
+      ],
+      "entries": [
+        {
+          "id": "prepare",
+          "label": "配置、制造与发布",
+          "href": "/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&product=ac902601-dffe-47a6-a875-5572675c31de&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=builds&task=prepare"
+        },
+        {
+          "id": "cockpit",
+          "label": "项目驾驶舱",
+          "href": "/?area=cockpit&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4"
+        }
+      ],
+      "counts": [
+        {
+          "label": "试制轮次",
+          "value": 2
+        },
+        {
+          "label": "产出批次",
+          "value": 2
+        },
+        {
+          "label": "样件",
+          "value": 4
+        },
+        {
+          "label": "测试运行",
+          "value": 1
+        },
+        {
+          "label": "问题",
+          "value": 1
+        },
+        {
+          "label": "制造文件",
+          "value": 3
+        },
+        {
+          "label": "试产",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": "release",
+      "title": "06 · 发布与外部交接",
+      "summary": "查看固定发布包、专业决定，以及发送、接收和生效的不同记录。",
+      "limit": "全部为本地合成回执；此预览不连接 ERP 或真实外发。 进入后向下查看固定发布包和外部移交。",
+      "categoryId": "6fa24f56-6650-4e57-9610-9a875785cb32",
+      "productId": "f45ccec6-58a5-4331-8ce6-cc70b72931ed",
+      "projectId": "2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+      "projectName": "Approved revision fixture",
+      "roleIds": [
+        "release-1",
+        "release-2"
+      ],
+      "entries": [
+        {
+          "id": "prepare",
+          "label": "配置、制造与发布",
+          "href": "/?area=category&category=6fa24f56-6650-4e57-9610-9a875785cb32&product=f45ccec6-58a5-4331-8ce6-cc70b72931ed&project=2053d8e3-3f53-4355-8638-ebe4ce65d0bd&bench=projects&view=builds&task=prepare"
+        },
+        {
+          "id": "cockpit",
+          "label": "项目驾驶舱",
+          "href": "/?area=cockpit&category=6fa24f56-6650-4e57-9610-9a875785cb32&project=2053d8e3-3f53-4355-8638-ebe4ce65d0bd"
+        }
+      ],
+      "counts": [
+        {
+          "label": "制造文件",
+          "value": 3
+        },
+        {
+          "label": "发布包",
+          "value": 1
+        },
+        {
+          "label": "外部回执",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "id": "exceptions",
+      "title": "07 · 限定放行与例外",
+      "summary": "回看带范围、期限和撤销记录的发布例外。",
+      "limit": "历史例外不自动延长，也不授予新的放行。 进入后向下查看发布包及限定例外。",
+      "categoryId": "8f1d2f8c-2087-489c-b0b4-f510f4e4d4d1",
+      "productId": "332526d1-148b-469f-91c8-ad3fea3688f4",
+      "projectId": "70300502-3f96-4481-8048-9f7e6649640f",
+      "projectName": "Approved revision fixture",
+      "roleIds": [
+        "exceptions-1",
+        "exceptions-2"
+      ],
+      "entries": [
+        {
+          "id": "prepare",
+          "label": "配置、制造与发布",
+          "href": "/?area=category&category=8f1d2f8c-2087-489c-b0b4-f510f4e4d4d1&product=332526d1-148b-469f-91c8-ad3fea3688f4&project=70300502-3f96-4481-8048-9f7e6649640f&bench=projects&view=builds&task=prepare"
+        }
+      ],
+      "counts": [
+        {
+          "label": "制造文件",
+          "value": 3
+        },
+        {
+          "label": "发布包",
+          "value": 1
+        },
+        {
+          "label": "例外决定",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "id": "field",
+      "title": "08 · 现场反馈与变更",
+      "summary": "沿现场反馈查看工程/制造变更、继任配置、复验和具名关闭。",
+      "limit": "这是独立合成案例，不代表原 S1 项目已完成后续阶段。 反馈在“现场反馈”中，正式变更在“问题与变更”中。",
+      "categoryId": "efcc7f95-0a5b-4c58-a1e3-67764de167eb",
+      "productId": "815224c5-3d8a-4bce-853e-0c5ba4df7a49",
+      "projectId": "92024f6a-febd-4f3b-869b-82b15639a70e",
+      "projectName": "Approved revision fixture",
+      "roleIds": [
+        "field-1",
+        "field-2",
+        "field-3",
+        "field-4",
+        "field-5"
+      ],
+      "entries": [
+        {
+          "id": "field",
+          "label": "现场反馈",
+          "href": "/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=field"
+        },
+        {
+          "id": "issues",
+          "label": "变更、验证与关闭",
+          "href": "/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=issues"
+        },
+        {
+          "id": "prepare",
+          "label": "配置、制造与发布",
+          "href": "/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=builds&task=prepare"
+        },
+        {
+          "id": "execution",
+          "label": "实际产出",
+          "href": "/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=builds&task=execution"
+        },
+        {
+          "id": "results",
+          "label": "结果与处置",
+          "href": "/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=verification&task=results"
+        }
+      ],
+      "counts": [
+        {
+          "label": "试制轮次",
+          "value": 2
+        },
+        {
+          "label": "产出批次",
+          "value": 2
+        },
+        {
+          "label": "样件",
+          "value": 4
+        },
+        {
+          "label": "测试运行",
+          "value": 2
+        },
+        {
+          "label": "现场反馈",
+          "value": 1
+        },
+        {
+          "label": "变更完成记录",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "title": "09 · 经验与知识复用",
+      "summary": "查看经验候选、适用性、已发布规则及历史版本。",
+      "limit": "AI 总结不能自动变成已发布规则。 页面显示已有候选、规则及历史；可填写新的合成经验候选。",
+      "categoryId": "07af3ded-0804-4264-9cea-b5fec9d2932f",
+      "productId": "3e960e40-918f-4650-81d1-b7658a7ea9f3",
+      "projectId": "93900873-e806-4c7c-9987-d3643129953f",
+      "projectName": "Approved revision fixture",
+      "roleIds": [
+        "knowledge-1"
+      ],
+      "entries": [
+        {
+          "id": "knowledge",
+          "label": "经验与规则",
+          "href": "/?area=knowledge&category=07af3ded-0804-4264-9cea-b5fec9d2932f&product=3e960e40-918f-4650-81d1-b7658a7ea9f3&project=93900873-e806-4c7c-9987-d3643129953f&bench=knowledge&view=sources"
+        },
+        {
+          "id": "issues",
+          "label": "问题与变更",
+          "href": "/?area=category&category=07af3ded-0804-4264-9cea-b5fec9d2932f&product=3e960e40-918f-4650-81d1-b7658a7ea9f3&project=93900873-e806-4c7c-9987-d3643129953f&bench=projects&view=issues"
+        }
+      ],
+      "counts": [
+        {
+          "label": "知识规则",
+          "value": 1
+        }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "id": "s1-1",
+      "caseId": "s1",
+      "label": "项目负责人",
+      "name": "胡汉伟 · 本地演示",
+      "principalId": "69f1c732-2201-4c0f-a064-41bc207f8363",
+      "tenantId": "4046073e-d405-42f1-8f3e-a742e6e47164"
+    },
+    {
+      "id": "trial-1",
+      "caseId": "trial",
+      "label": "项目负责人",
+      "name": "Synthetic owner",
+      "principalId": "a26b4e54-3aea-4d56-b175-34504ddfe78d",
+      "tenantId": "f8a0e955-8ecb-43fb-9585-d386d070275c"
+    },
+    {
+      "id": "trial-2",
+      "caseId": "trial",
+      "label": "品质",
+      "name": "Synthetic qualified quality",
+      "principalId": "6e96bac0-085a-49ab-a270-c323202b049f",
+      "tenantId": "f8a0e955-8ecb-43fb-9585-d386d070275c"
+    },
+    {
+      "id": "trial-3",
+      "caseId": "trial",
+      "label": "工程",
+      "name": "Synthetic peer",
+      "principalId": "6f9247b6-1aa7-4add-a67e-8e1db42c815b",
+      "tenantId": "f8a0e955-8ecb-43fb-9585-d386d070275c"
+    },
+    {
+      "id": "quality-1",
+      "caseId": "quality",
+      "label": "项目负责人",
+      "name": "Synthetic owner",
+      "principalId": "48ea8d23-ab12-4377-8c84-5c13f0224059",
+      "tenantId": "bf356a52-8e9a-4ede-b47a-874f662a17d0"
+    },
+    {
+      "id": "quality-2",
+      "caseId": "quality",
+      "label": "品质",
+      "name": "Synthetic qualified quality",
+      "principalId": "acd64ec0-b309-498e-b47a-defee50215ec",
+      "tenantId": "bf356a52-8e9a-4ede-b47a-874f662a17d0"
+    },
+    {
+      "id": "quality-3",
+      "caseId": "quality",
+      "label": "工程",
+      "name": "Synthetic peer",
+      "principalId": "c7e919c5-316e-4bf0-8107-4a68757a4de3",
+      "tenantId": "bf356a52-8e9a-4ede-b47a-874f662a17d0"
+    },
+    {
+      "id": "manufacturing-1",
+      "caseId": "manufacturing",
+      "label": "项目负责人",
+      "name": "Synthetic owner",
+      "principalId": "5376bfdb-3f8d-4d9e-9134-0df2980d6c41",
+      "tenantId": "3b767995-8879-483a-b55b-befbdcfe324c"
+    },
+    {
+      "id": "manufacturing-2",
+      "caseId": "manufacturing",
+      "label": "品质",
+      "name": "Synthetic qualified quality",
+      "principalId": "2df069e8-7a96-4b5a-a0db-7aa05230bdce",
+      "tenantId": "3b767995-8879-483a-b55b-befbdcfe324c"
+    },
+    {
+      "id": "manufacturing-3",
+      "caseId": "manufacturing",
+      "label": "工程",
+      "name": "Synthetic peer",
+      "principalId": "662d1ca9-9272-4f9e-a715-ea19b8cd82ff",
+      "tenantId": "3b767995-8879-483a-b55b-befbdcfe324c"
+    },
+    {
+      "id": "release-1",
+      "caseId": "release",
+      "label": "项目负责人",
+      "name": "Synthetic owner",
+      "principalId": "373f89cd-cf7c-46fa-ad84-39bf1f4ef4f6",
+      "tenantId": "708b59ee-ba61-448f-a7a3-d75275f23bbc"
+    },
+    {
+      "id": "release-2",
+      "caseId": "release",
+      "label": "制造",
+      "name": "Synthetic peer",
+      "principalId": "9db67951-ee0b-45ad-bd53-ee5102dd7a80",
+      "tenantId": "708b59ee-ba61-448f-a7a3-d75275f23bbc"
+    },
+    {
+      "id": "exceptions-1",
+      "caseId": "exceptions",
+      "label": "项目负责人",
+      "name": "Synthetic owner",
+      "principalId": "56d8ba33-72ac-434b-ad02-bf08446406a4",
+      "tenantId": "a327743a-d35a-4c48-9750-260c7af97525"
+    },
+    {
+      "id": "exceptions-2",
+      "caseId": "exceptions",
+      "label": "制造",
+      "name": "Synthetic peer",
+      "principalId": "4a567f41-cdcf-458a-bb14-3d2211f5bb6e",
+      "tenantId": "a327743a-d35a-4c48-9750-260c7af97525"
+    },
+    {
+      "id": "field-1",
+      "caseId": "field",
+      "label": "项目负责人",
+      "name": "Synthetic owner",
+      "principalId": "78dbc83d-75d2-4513-bc4d-a5d3d5081f6c",
+      "tenantId": "78340ac0-57c2-4235-87c6-a468dd3d8173"
+    },
+    {
+      "id": "field-2",
+      "caseId": "field",
+      "label": "工程",
+      "name": "Synthetic peer",
+      "principalId": "133bffc4-fb03-4822-a283-42b328ecfc49",
+      "tenantId": "78340ac0-57c2-4235-87c6-a468dd3d8173"
+    },
+    {
+      "id": "field-3",
+      "caseId": "field",
+      "label": "品质",
+      "name": "Synthetic separate test executor",
+      "principalId": "56371287-f47c-48cc-9b0f-a32b59adf9c9",
+      "tenantId": "78340ac0-57c2-4235-87c6-a468dd3d8173"
+    },
+    {
+      "id": "field-4",
+      "caseId": "field",
+      "label": "工程",
+      "name": "Synthetic qualified quality",
+      "principalId": "56e0c8e2-51b3-4087-80de-b2b2debd1f4f",
+      "tenantId": "78340ac0-57c2-4235-87c6-a468dd3d8173"
+    },
+    {
+      "id": "field-5",
+      "caseId": "field",
+      "label": "品质",
+      "name": "Synthetic independent future reviewer",
+      "principalId": "c79abac4-cf36-4496-a388-2a84331060dd",
+      "tenantId": "78340ac0-57c2-4235-87c6-a468dd3d8173"
+    },
+    {
+      "id": "knowledge-1",
+      "caseId": "knowledge",
+      "label": "项目负责人",
+      "name": "Synthetic owner",
+      "principalId": "bea7f147-5b0d-4a98-83ca-38e2f953fc76",
+      "tenantId": "9319e9bb-d7a7-4cfc-9d98-26197478a645"
+    },
+    {
+      "id": "work-1",
+      "caseId": "work",
+      "label": "项目负责人",
+      "name": "Synthetic owner",
+      "principalId": "2595294c-18f5-4c8f-b541-68117bbe7ee2",
+      "tenantId": "6fa3838d-32cc-4236-8265-8b08c0954d53"
+    },
+    {
+      "id": "work-2",
+      "caseId": "work",
+      "label": "协作成员",
+      "name": "Synthetic peer",
+      "principalId": "cd6c0544-f7ae-44f0-81e5-3f5cfe10a692",
+      "tenantId": "6fa3838d-32cc-4236-8265-8b08c0954d53"
+    }
+  ]
+}

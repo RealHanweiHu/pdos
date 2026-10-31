@@ -1,0 +1,19 @@
+{
+  "backend_pure_unique": 89,
+  "backend_g_pure_unique": 74,
+  "backend_existing_graph_pure": 15,
+  "frontend_unique": 298,
+  "frontend_g_unique": 19,
+  "frontend_existing_affected_unique": 279,
+  "python_delivery_ast_ruff": 36,
+  "frontend_eslint_delivery_files": 10,
+  "typescript_noemit_exit_code": 0,
+  "pg_temporal_collect_only": 13,
+  "database_accessed": false,
+  "temporal_executed": false,
+  "real_model_or_embedding": false,
+  "egress_executed": false,
+  "build_executed": false,
+  "live_modified": false,
+  "formal_migration_number": null
+}

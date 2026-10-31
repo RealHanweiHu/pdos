@@ -1,0 +1,80 @@
+{
+  "kind": "bounded static coverage observations, not new acceptance",
+  "source_types": [
+    "artifact",
+    "knowledge",
+    "issue",
+    "capa",
+    "change",
+    "external_wait",
+    "supply",
+    "build",
+    "test_run",
+    "field_feedback"
+  ],
+  "main_read_names": [
+    "assistant.citations.read",
+    "assistant.compare",
+    "assistant.extract",
+    "assistant.materials.read",
+    "assistant.search",
+    "build.lot.read",
+    "build.read",
+    "build.sample.read",
+    "category.competitors.list",
+    "category.knowledge.list",
+    "category.list",
+    "category.parameters.list",
+    "category.read",
+    "conversation.history",
+    "evidence.extract",
+    "evidence.search",
+    "mcp.read",
+    "mcp.tools.list",
+    "platform.read",
+    "product.baseline.read",
+    "proposal.items.read",
+    "proposal.read",
+    "quality.issue.read",
+    "result.read",
+    "skill.load",
+    "test.run.read"
+  ],
+  "actual_catalog_sql_contains_tables": {
+    "project_status_updates": false,
+    "manufacturing_preparation_versions": false,
+    "field_feedback_versions": true,
+    "verification_run_versions": true
+  },
+  "native_commands": {
+    "work.task.create": {
+      "kind": "write",
+      "tier": "T0"
+    },
+    "work.task.assign": {
+      "kind": "write",
+      "tier": "T1"
+    },
+    "work.status_update.create": {
+      "kind": "write",
+      "tier": "T1"
+    }
+  },
+  "input_sha256": {
+    "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md": "10d6d43aef243e4d7c84a5178d4b92cac4d3f402d1d52f8e2b1a67a9d9b6a330",
+    "docs/design/2026-10-28-xiaopai-context-design.md": "df9c0948e04556a6da84a4c3c7dafae7422236960479d283aef4a131fa93a28e",
+    "docs/reports/evidence/pdos-next-two-designs-20261028/task_plan.md": "2117b017e9274ed516107a9731238b77659b0d13d2ccd37be0648c4df14fa4c9",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "b9f2a892f713c5b9c00e5708480fe0a0bdc33311abebcb1e4355e1dbe9938c5e",
+    "pdos-next/server/pdos_next/agent_kernel/project_object_reads.py": "6fa372108705d38be2af09ae91c070ba84ff2581539c7604c58e05080a5f98e1",
+    "pdos-next/server/pdos_next/enterprise_search/schemas.py": "3c06c1077a364a2f4fe275cea34f13277b62d006fa22603d8699794bf08b0da1",
+    "pdos-next/server/pdos_next/enterprise_search/business_events.py": "201ee1d69ceb863793e4349561047d17c1251c28b7a20a50a34dc06c951f3ecb",
+    "pdos-next/server/pdos_next/enterprise_search/presence.py": "85b1a0b0fda9a3ebebe873f69a0ef52accbee0666459ca83e092d1d7d09caeae",
+    "pdos-next/server/pdos_next/enterprise_search/field_feedback_sources.py": "101262980f06d2ce00590dbb62044384b67f011fddfdfbabd2e51fbea7be0fb4",
+    "pdos-next/server/pdos_next/domain/work_management/models.py": "cf396ad30d8897e2b6219a5aa9d0bf7eaa62ed94a353e2ae5d070a5f53a61069",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/models.py": "8081bf54481125d9a3f048695d28e97e1106a31c0c8773c2a519b42659dd3c4e",
+    "pdos-next/web/src/components/xiaopai.tsx": "e2ba8382db68c048359da8e3ac99d4133876ebda3eed78e1f7cad691af196d72",
+    "pdos-next/web/src/components/pai/answer-followup-actions.tsx": "1a257c78f3a966882b7fc41e1fd0c0513985f93a6148984a3170d69fc49147e5"
+  },
+  "db_model_provider_access": false,
+  "live_mutation": false
+}

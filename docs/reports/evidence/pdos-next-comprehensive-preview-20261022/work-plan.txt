@@ -1,0 +1,277 @@
+Browser tab: 4, Title: "PDOS · 研发工作区", URL: "http://localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=plan".
+1 AXWebArea PDOS · 研发工作区, URL: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=plan
+	2 container
+		3 container
+			4 pop up button (collapsed) Description: Open Next.js Dev Tools, ID: next-logo, Secondary Actions: Expand
+				5 image
+			6 button Open issues overlay
+				7 text 4
+				8 text Issue
+			9 button Collapse issues badge
+				10 image
+		11 link Description: 跳到工作内容, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=plan#workspace-content
+		12 text PDOS
+		13 button 收起侧栏
+			14 image
+		15 button (collapsed) Description: 新建：选择办理入口, Help: 新建, Secondary Actions: Expand
+			16 text 新建
+		17 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			18 text ⌘K
+		19 container 工作区导航
+			20 text 日常
+			21 link Description: 我的工作, Value: localhost:57859/?area=work&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb
+			22 link Description: 项目, Value: localhost:57859/?area=projects&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb
+			23 container 最近的在办项目
+				24 link Description: Another actual project 阶段尚未提供, Help: Another actual project · 阶段尚未提供, Value: localhost:57859/?area=cockpit&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=2eb6145b-9e54-495f-b4bc-b3017b5b2340
+				25 link Description: Synthetic named work loop 阶段尚未提供, Help: Synthetic named work loop · 阶段尚未提供, Value: localhost:57859/?area=cockpit&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd
+			26 link Description: 组合与资源, Value: localhost:57859/?area=programs&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb
+			27 link Description: 知识, Value: localhost:57859/?area=knowledge&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb
+		28 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: localhost:57859/plan
+		29 link Description: 设置, Value: localhost:57859/?area=settings&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb
+		30 button 切换明暗主题
+		31 text Synthetic owner
+		32 text 本地合成环境
+		33 link Description: 项目, Value: localhost:57859/?area=projects
+		34 text Synthetic named work loop
+		35 link Description: 综合预览 · 换场景 / 身份, Value: localhost:57859/preview
+		36 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			37 image
+		38 container workspace-content
+			39 container 品类工作台区
+				40 link Description: 型号, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=products&view=overview&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324
+				41 link Description: 项目, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=overview&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324
+				42 link Description: 知识, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=knowledge&view=sources&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324
+				43 link Description: 设置, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=settings&view=preferences&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324
+				44 button Description: 快速查找入口或型号, Help: 当前品类快速查找 · ⌘ / Ctrl Shift K
+				45 pop up button (collapsed, settable) Description: 当前型号, Value: Synthetic named work loop, Secondary Actions: Expand
+					46 menu
+						47 Synthetic product
+						48 (selected) Synthetic named work loop
+						49 Another actual project
+			50 container 项目视图
+				51 link Description: 现在, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=overview&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324
+				52 link Description: 工作与计划, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=plan&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324
+				53 link Description: 试制, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=builds&task=prepare&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324
+				54 link Description: 测试与交接, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=verification&task=prepare&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324
+				55 link Description: 问题与变更, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=issues&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324
+				56 link Description: 现场与客户反馈, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=field&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324
+				57 link Description: 评审与交付 尚未接入, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=reviews&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324
+				58 link Description: 资料, Value: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=files&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324
+			59 container
+				60 heading 工作与计划, Value: 1
+					61 text 工作与计划
+				62 text 当前范围：Synthetic named work loop
+				63 container 项目与首版计划
+					64 container
+						65 text 固定型号定义，组织真实研发工作
+						66 heading 项目与首版计划, Value: 2
+							67 text 项目与首版计划
+						68 button (collapsed) 编排首版计划, Secondary Actions: Expand
+							69 image
+							70 text 编排首版计划
+						71 button 刷新项目
+							72 image
+							73 text 刷新项目
+					74 container
+						75 text 项目由立项提案的 G0 决定生成；在此查看项目并编排首版计划。 当前只办理所选项目。
+					76 link Description: 返回项目驾驶舱, Value: localhost:57859/?area=cockpit&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd
+					77 container 已保存项目与计划
+						78 heading 已保存项目, Value: 3
+							79 text 已保存项目
+						80 container
+							81 heading Synthetic named work loop, Value: 4
+								82 text Synthetic named work loop
+							83 text 本人负责  ·  品类授权成员 Actual work acceptance with bounded independent commitments 固定定义 v 1  ·  Synthetic named work loop  · 尚未正式发布
+							84 button (collapsed) 查看固定研发范围, Secondary Actions: Expand
+								85 text 查看固定研发范围
+							86 definition list
+								87 container 批准基线
+									88 text 批准基线
+								89 text 尚未批准
+								90 container 个人承诺
+									91 text 个人承诺
+								92 text 尚未记录
+								93 container 实绩
+									94 text 实绩
+								95 text 尚未记录
+							96 image
+							97 text 首版计划 v 1  已应用
+							98 container
+								99 text 已建立工程与 NPI 工作包及  2  个任务。后续修订入口暂未开放。
+							100 text 全部任务预测完成区间
+							101 container
+								102 text 未知 / 暂不可预测  ～  未知 / 暂不可预测
+							103 container
+								104 text 工作日历： Asia/Shanghai  ·  synthetic-workday@1 。区间上界来自最高工时估计，不代表承诺日期；未考虑资源预约。
+							105 container
+								106 text Engineering verification 工程  ·  60 ～ 120 分钟
+								107 definition list
+									108 container 最低估时下的开始 / 完成
+										109 text 最低估时下的开始 / 完成
+									110 container
+										111 text 2026-10-02 01:00 UTC  /  2026-10-02 02:00 UTC
+									112 container 最高估时下的开始 / 完成
+										113 text 最高估时下的开始 / 完成
+									114 container
+										115 text 2026-10-02 01:00 UTC  /  2026-10-02 03:00 UTC
+									116 container 估计依据
+										117 text 估计依据
+									118 text Synthetic owner estimate for trial
+									119 container 前置任务
+										120 text 前置任务
+									121 text 无
+							122 container
+								123 text NPI preparation NPI / 制造导入  ·  未知 ～ 未知 分钟
+								124 definition list
+									125 container 最低估时下的开始 / 完成
+										126 text 最低估时下的开始 / 完成
+									127 container
+										128 text 2026-10-02 02:00 UTC  /  未知 / 暂不可预测
+									129 container 最高估时下的开始 / 完成
+										130 text 最高估时下的开始 / 完成
+									131 container
+										132 text 2026-10-02 03:00 UTC  /  未知 / 暂不可预测
+									133 container 估计依据
+										134 text 估计依据
+									135 text 尚未记录
+									136 container 前置任务
+										137 text 前置任务
+									138 text Engineering verification
+								139 text 暂不可精确预测： 最低工时未知；最高工时未知
+				140 text 本项目的执行与交付
+				141 heading 任务、个人承诺与成果, Value: 2
+					142 text 任务、个人承诺与成果
+				143 button 刷新任务
+				144 text Synthetic named work loop
+				145 text  · 项目 v
+				146 text 2
+				147 text  · 读取时点 
+				148 text 2026-10-22T18:48:03.280010+00:00
+				149 text 。本人承接只确认责任，不形成日期承诺。
+				150 container G0 决定留下的事项
+					151 heading G0 决定留下的事项, Value: 3
+						152 text G0 决定留下的事项
+					153 text 原安排期限是 G0 决定中的日期；个人承诺需要另行具名办理。接续只建立任务草稿，成果定义须本人填写。
+					154 text 当前项目没有可读的 G0 待办或风险。
+				155 container 当前项目任务
+					156 heading 当前任务, Value: 3
+						157 text 当前任务
+					158 button 新建任务
+					159 button 写具名周报
+					160 container
+						161 heading Named activity task, Value: 4
+							162 text Named activity task
+						163 text 已承接  · v 3 Retain actual actors and history 负责人  Synthetic owner  · 执行人  Synthetic peer  · 成果接收人  Synthetic owner
+						164 content list
+							165 container
+								166 AXListMarker • 
+								167 text Drawing （必需）
+						168 definition list
+							169 container 批准基线
+								170 text 批准基线
+							171 text 本视图未提供
+							172 container 预测
+								173 text 预测
+							174 text 未知，未由承诺推算
+							175 container 实际开始
+								176 text 实际开始
+							177 text 尚未登记
+							178 container 关联计划任务
+								179 text 关联计划任务
+							180 text 尚未关联
+						181 button (collapsed) 固定任务身份与办理历史, Secondary Actions: Expand
+							182 text 固定任务身份与办理历史
+				183 container 任务办理表单
+					184 heading 新建人工任务, Value: 3
+						185 text 新建人工任务
+					186 container
+						187 text 任务标题
+						188 text field (settable) 任务标题
+						189 text 任务目标
+						190 text entry area (settable) 任务目标
+						191 heading 成果定义, Value: 4
+							192 text 成果定义
+						193 text field (settable) Description: 成果 1 标识, Value: outcome-1
+						194 text field (settable) 成果 1 说明
+						195 checkbox (settable, integer) Description: 必需, Value: 1
+						196 button 添加成果定义
+						197 button (collapsed) 高级：成果定义与计划任务引用, Secondary Actions: Expand
+							198 text 高级：成果定义与计划任务引用
+						199 text 办理理由
+						200 text entry area (settable) 办理理由
+						201 button (collapsed) 实际来源引用（高级 JSON，必填）, Secondary Actions: Expand
+							202 text 实际来源引用（高级 JSON，
+							203 text 必填
+							204 text ）
+						205 button 保存人工任务草稿
+				206 container 外部等待与跟进
+					207 container
+						208 text 原请求、送达与回复分别留痕
+						209 heading 外部等待与跟进, Value: 3
+							210 text 外部等待与跟进
+						211 button 刷新外部等待
+					212 text 这里保存内部跟进记录。对方声明的时间与回复、实际送达、正式业务接收分别核对。
+					213 container
+						214 text Synthetic named work loop  · 已读  0  条 · 时点  2026-10-22T18:48:03.719778+00:00
+					215 button 新建外部等待
+					216 text 当前可读范围内尚无外部等待。
+					217 container 外部等待登记表单
+						218 heading 新建外部等待, Value: 4
+							219 text 新建外部等待
+						220 container
+							221 text 等待对象
+							222 text entry area (settable) 等待对象
+							223 text 原请求内容
+							224 text entry area (settable) 原请求内容
+							225 button (collapsed) 固定业务锚点（可空）, Secondary Actions: Expand
+								226 text 固定业务锚点（可空）
+							227 text 等待标题
+							228 text field (settable) 等待标题
+							229 text 内部关闭条件
+							230 text entry area (settable) 内部关闭条件
+							231 checkbox (settable, integer) Description: 此等待阻塞关键进展, Value: 0
+							232 text 下次内部检查时间（未知留空，含时区）
+							233 text field (settable) 下次内部检查时间（未知留空，含时区）
+							234 text 明确采用的实际工作日历
+							235 pop up button (collapsed, settable) 明确采用的实际工作日历 只采用本项目实际计划或资源中的日历；这不代表对方已认可同一日历。, Value: 未知，暂不采用日历, Secondary Actions: Expand
+								236 menu
+									237 (selected) 未知，暂不采用日历
+									238 采用的项目工作日历 · default/synthetic-workday@1 · Asia/Shanghai
+							239 text 只采用本项目实际计划或资源中的日历；这不代表对方已认可同一日历。
+							240 text 原时区（IANA）
+							241 text field (settable) 原时区（IANA）, Value: America/Los_Angeles
+							242 text 本次登记理由
+							243 text entry area (settable) 本次登记理由
+							244 button (collapsed) 实际原件来源（高级 JSON，必填）, Secondary Actions: Expand
+								245 text 实际原件来源（高级 JSON，必填）
+							246 button 保存本次等待登记
+				247 container 风险独立跟进
+					248 container
+						249 text G0 风险 · 原具名跟进人登记
+						250 heading 风险跟进, Value: 2
+							251 text 风险跟进
+						252 button 刷新风险跟进
+					253 text 内部跟进关闭与重开由原具名跟进人登记，不代表专业风险接受或放行。关联任务的成果验收不会自动关闭风险；原跟进期限也不是个人承诺。
+					254 container
+						255 text Synthetic named work loop  · 读取于  2026-10-22T18:48:04.265424+00:00
+					256 text 尚无可读 G0 风险。
+				257 container 承诺履行核对
+					258 container
+						259 text 个人承诺 · 接收者逐条核对
+						260 heading 承诺履行, Value: 2
+							261 text 承诺履行
+						262 button 刷新履行记录
+					263 text 任务验收与承诺履行分开。每位承诺接收者核对自己的成果范围；任务已验收或日期已过都不代表承诺已履行。
+					264 container
+						265 text Synthetic named work loop  · 读取于  2026-10-22T18:48:04.704511+00:00
+					266 text 尚无可读承诺记录。
+				267 container 具名周报历史
+					268 heading 已保存的具名周报, Value: 3
+						269 text 已保存的具名周报
+					270 container
+						271 text Synthetic owner  ·  2026-10-18T18:45:47.215584+00:00 A later fixed update 下一步： Continue actual work 固定任务引用： Named activity task v3  · 回执  4b413b43-2129-4716-aeb5-91f34091d13b
+					272 container
+						273 text Synthetic owner  ·  2026-10-18T18:45:11.096277+00:00 Named factual update; acceptance is recorded 下一步： The drawing still needs to be submitted 固定任务引用： Named activity task v3  · 回执  d31933ec-8265-4425-b5ad-6e1d0a517d8e
+		274 button Description: 打开小Pai工作栏, Help: 在当前范围打开小Pai
+
+The focused UI element is 1 AXWebArea PDOS · 研发工作区, URL: localhost:57859/?area=category&category=90b120b8-1fb8-4829-8c61-f6f0afa520eb&product=d1c4191c-bf83-4f86-b2d0-8116f66f4324&project=4e543670-a105-4cfd-bff9-1fc5ac4464cd&bench=projects&view=plan

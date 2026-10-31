@@ -1,0 +1,114 @@
+{
+  "run_id": "76b65cf6-28fb-4e18-917d-69623f296209",
+  "events": [
+    {
+      "sequence": 1,
+      "body": {
+        "type": "accepted",
+        "status": "queued"
+      }
+    },
+    {
+      "sequence": 2,
+      "body": {
+        "key": "proposal_drafting",
+        "type": "skill_loaded",
+        "digest": "45b328e4204b4c19b99d15ea461d7899ac59274cff6080520e78061bf71aea49",
+        "version": "0.2.3-draft",
+        "isolation": "main"
+      }
+    },
+    {
+      "sequence": 3,
+      "body": {
+        "key": "gap_check",
+        "type": "skill_loaded",
+        "digest": "2071cd492f74daa1e8d17d718e6253879503b079586160460e8ff52b9961421f",
+        "version": "0.2.1-draft",
+        "isolation": "main"
+      }
+    },
+    {
+      "sequence": 4,
+      "body": {
+        "type": "context_projected",
+        "fields": [
+          "category",
+          "goal",
+          "proposal",
+          "sources"
+        ],
+        "issues": [],
+        "skills": [
+          {
+            "key": "proposal_drafting",
+            "digest": "45b328e4204b4c19b99d15ea461d7899ac59274cff6080520e78061bf71aea49",
+            "version": "0.2.3-draft",
+            "load_event_id": "d4733073-dd93-4ff2-aecc-0bbf3096ba25"
+          },
+          {
+            "key": "gap_check",
+            "digest": "2071cd492f74daa1e8d17d718e6253879503b079586160460e8ff52b9961421f",
+            "version": "0.2.1-draft",
+            "load_event_id": "064bfdaa-7519-4eae-9e97-d537c008cc2c"
+          }
+        ],
+        "status": "projected",
+        "omitted": [],
+        "schema_digest": "3b42c22b1e5eb3b8465e370e0aaffa761125106d070bedec1adf1b73c081b469",
+        "content_digest": "3a0c6e467546b58dc99eefd67bf491c689c8349c631de14d6b86aebb292228db"
+      }
+    },
+    {
+      "sequence": 5,
+      "body": {
+        "turn": 1,
+        "type": "model_started"
+      }
+    },
+    {
+      "sequence": 6,
+      "body": {
+        "type": "egress_checked",
+        "provider": "minimax",
+        "checked_at": "2026-10-22T12:18:10.424869+00:00",
+        "agreement_id": null,
+        "data_categories": [
+          "internal"
+        ],
+        "agreement_revision": null
+      }
+    },
+    {
+      "sequence": 7,
+      "body": {
+        "type": "run_state",
+        "status": "waiting_input",
+        "error_code": "EXTERNAL_OUTCOME_UNKNOWN"
+      }
+    },
+    {
+      "sequence": 8,
+      "body": {
+        "type": "reconciliation_required",
+        "cancel_epoch": 0,
+        "automatic_after_seconds": 300
+      }
+    }
+  ],
+  "calls": [
+    {
+      "id": "420785be-842d-442a-9f55-64dd4d74a924",
+      "tool": "model",
+      "state": "unknown",
+      "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+      "provider_request_id": null,
+      "cost_state": "estimated_unknown",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 49012,
+      "actual_input_tokens": 148007,
+      "actual_output_tokens": 2048,
+      "result": null
+    }
+  ]
+}

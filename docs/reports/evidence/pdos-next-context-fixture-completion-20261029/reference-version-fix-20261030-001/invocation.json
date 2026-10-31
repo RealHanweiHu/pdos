@@ -1,0 +1,21 @@
+{
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+  "command": [
+    "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/agent_kernel/test_eval_v0_handle_candidate_pg.py::test_model_observations_keeps_three_main_two_extract_dispatches_and_budgets",
+    "tests/agent_kernel/test_eval_v0_handle_candidate_pg.py::test_ctx09_code_sources_follow_real_shared_material_reference_contract",
+    "tests/agent_kernel/test_eval_v0_handle_candidate_pg.py::test_ctx09_complete_objects_are_decoded_from_actual_prefix_not_fragment_count",
+    "tests/agent_kernel/test_eval_v0_handle_candidate_pg.py::test_ctx09_cursor_controller_follows_real_cursor_fields_and_preserves_failure",
+    "-q",
+    "--tb=short",
+    "--junitxml=/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-context-fixture-completion-20261029/reference-version-fix-20261030-001/pure-tests.xml"
+  ],
+  "database_env_removed": true,
+  "db_operations": 0,
+  "model_calls": 0,
+  "embedding_calls": 0,
+  "exit_code": 0,
+  "recorded_at_utc": "2026-10-30T09:19:02.639498+00:00"
+}

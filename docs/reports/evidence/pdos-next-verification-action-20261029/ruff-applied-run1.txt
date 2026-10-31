@@ -1,0 +1,65 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos-next/server/tests/enterprise_search/test_verification_action_temporal_pg.py:5:1
+   |
+ 3 |   # ruff: noqa: F401, F811 -- imported fixtures retain the actual native dependency tree
+ 4 |
+ 5 | / import asyncio
+ 6 | | import os
+ 7 | | from copy import deepcopy
+ 8 | | from uuid import UUID, uuid4
+ 9 | |
+10 | | import httpx
+11 | | import pytest
+12 | | from build_operational_facts.fixtures import configuration, definition, operational_work, project
+13 | | from build_start.test_transactions import ready_work
+14 | | from sqlalchemy import func, select
+15 | | from sqlalchemy.orm import Session
+16 | | from tests.enterprise_search.verification_action_harness import (
+17 | |     PREPARATION,
+18 | |     REQUEST,
+19 | |     VerificationClient,
+20 | |     actual_runtime,
+21 | |     bound_target,
+22 | |     candidate,
+23 | |     question_ready,
+24 | |     start,
+25 | | )
+26 | | from verification_handoff.fixtures import artifact, handoff_work, known_configuration
+27 | |
+28 | | from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall, TenantSkillEnablement
+29 | | from pdos_next.database import tenant_session
+30 | | from pdos_next.domain.verification_execution.models import VerificationPreparation
+31 | | from pdos_next.domain.verification_front.models import FormalVerificationRequest
+32 | | from pdos_next.models import Artifact, Receipt
+33 | | from tests.enterprise_search.test_retrieval_pg import index
+   | |___________________________________________________________^
+34 |
+35 |   pytestmark = pytest.mark.skipif(
+   |
+help: Organize imports
+   |
+15 | from sqlalchemy.orm import Session
+16 + from verification_handoff.fixtures import artifact, handoff_work, known_configuration
+17 +
+18 + from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall, TenantSkillEnablement
+19 + from pdos_next.database import tenant_session
+20 + from pdos_next.domain.verification_execution.models import VerificationPreparation
+21 + from pdos_next.domain.verification_front.models import FormalVerificationRequest
+22 + from pdos_next.models import Artifact, Receipt
+23 + from tests.enterprise_search.test_retrieval_pg import index
+24 | from tests.enterprise_search.verification_action_harness import (
+--------------------------------------------------------------------------------
+33 | )
+   - from verification_handoff.fixtures import artifact, handoff_work, known_configuration
+   -
+   - from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall, TenantSkillEnablement
+   - from pdos_next.database import tenant_session
+   - from pdos_next.domain.verification_execution.models import VerificationPreparation
+   - from pdos_next.domain.verification_front.models import FormalVerificationRequest
+   - from pdos_next.models import Artifact, Receipt
+   - from tests.enterprise_search.test_retrieval_pg import index
+34 |
+   |
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.

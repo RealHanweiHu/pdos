@@ -1,0 +1,38 @@
+{
+  "checked_at": "2026-10-29T22:53:50.405273+00:00",
+  "frozen_input_manifest": "frozen-inputs.json",
+  "scope": "five owned source files; read-only verification; source unchanged",
+  "all_match": true,
+  "files": [
+    {
+      "path": "docs/evaluations/xiaopai-v0/context-questions.json",
+      "actual_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "frozen_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/tools/tests/test_xiaopai_context_admission.py",
+      "actual_sha256": "9141e4264b85576431ab5120b26dcd033f9fa086f161d03f72159dcb155f8426",
+      "frozen_sha256": "9141e4264b85576431ab5120b26dcd033f9fa086f161d03f72159dcb155f8426",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_eval_v0_handle_candidate_pg.py",
+      "actual_sha256": "caaddfebefd98f84a841f655d250605672fc8a1bc80fca5b80b0ee24768d5f2e",
+      "frozen_sha256": "caaddfebefd98f84a841f655d250605672fc8a1bc80fca5b80b0ee24768d5f2e",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/eval_v0_ctx09_directory_support.py",
+      "actual_sha256": "c09b088b3394d2b5e24f1ee372f59e087cd3e4cbdf53fdf2b1fc8ddbf1b1abfd",
+      "frozen_sha256": "c09b088b3394d2b5e24f1ee372f59e087cd3e4cbdf53fdf2b1fc8ddbf1b1abfd",
+      "matches": true
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py",
+      "actual_sha256": "429efb3325c97b840b564e1b3283644459d42299a9069c9663a2e12820b488ee",
+      "frozen_sha256": "429efb3325c97b840b564e1b3283644459d42299a9069c9663a2e12820b488ee",
+      "matches": true
+    }
+  ]
+}

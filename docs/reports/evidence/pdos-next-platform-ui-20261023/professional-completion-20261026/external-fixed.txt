@@ -1,0 +1,221 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 知识
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=6fa24f56-6650-4e57-9610-9a875785cb32&project=2053d8e3-3f53-4355-8638-ebe4ce65d0bd"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - link "项目":
+    - /url: "?area=projects"
+  - generic: Approved revision fixture
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - button "返回项目列表": Ap
+  - heading "Approved revision fixture" [level=1]
+  - button "阶段待确认":
+    - text: 阶段待确认
+  - generic: 负责人 Synthetic owner（本人）
+  - tablist "项目工作区视图":
+    - tab "概览"
+    - tab "任务"
+    - tab "计划"
+    - tab "文件"
+  - generic "更多项目视图":
+    - text: 更多
+  - tabpanel "更多项目视图":
+    - region "评审与交付":
+      - heading "评审与交付" [level=2]
+      - paragraph: 核对固定版本、用途、例外与专业结论，完成具名办理。
+      - navigation "评审与交付视图":
+        - button "发布与交付包"
+        - button "例外与专业决定"
+        - button "外部移交" [pressed]
+      - region "本项目外部交接与原回执":
+        - heading "外部交接与原回执" [level=2]
+        - button "刷新本页外部交接"
+        - paragraph: 本页 1 条可读交接，非项目总数。明确选择后读取固定授权和原发送意图。
+        - region "本页可选外部交接":
+          - table:
+            - rowgroup:
+              - row "用途 / 固定包 服务器状态 原回执水位 查看":
+                - columnheader "用途 / 固定包"
+                - columnheader "服务器状态"
+                - columnheader "原回执水位"
+                - columnheader "查看"
+            - rowgroup:
+              - row "Verify preparation 固定包 f3880b4e-e87e-4b31-9c11-b795176bb29e · v1 已记录接收 6 条 · epoch 7 读取外部交接 91668fab-1122-4fc9-b6ca-64717f92e857":
+                - cell "Verify preparation 固定包 f3880b4e-e87e-4b31-9c11-b795176bb29e · v1":
+                  - strong: Verify preparation
+                  - generic: 固定包 f3880b4e-e87e-4b31-9c11-b795176bb29e · v1
+                - cell "已记录接收"
+                - cell "6 条 · epoch 7"
+                - cell "读取外部交接 91668fab-1122-4fc9-b6ca-64717f92e857":
+                  - button "读取外部交接 91668fab-1122-4fc9-b6ca-64717f92e857" [active] [pressed]: 读取固定交接
+        - button "回首页" [disabled]
+        - button "下一页外部交接" [disabled]
+        - generic: 本页未提供下一页位置。
+        - region "已选外部交接详情":
+          - heading "固定授权、原意图与阶段事实" [level=3]
+          - button "刷新已选外部交接"
+          - paragraph: Verify preparation · 已记录接收
+          - paragraph: 适用依据需重核，历史授权与回执保留
+          - term: 固定发布包
+          - definition: f3880b4e-e87e-4b31-9c11-b795176bb29e · v1
+          - term: 固定工程决定
+          - definition: adda12c5-1269-4797-bf1c-266f4a4ba57b · v1
+          - term: 固定制造决定
+          - definition: a6ceda7a-51c4-48cf-9a84-b474ca29acdc · v1
+          - term: 固定产品定义
+          - definition: c7b666d0-fea5-4741-b7ec-a4c3dc761f77 · v1
+          - term: 固定工程配置
+          - definition: febaeab9-d98c-49cb-aa9a-190fc89435c8 · v1
+          - term: 固定制造配置
+          - definition: d85fa672-d748-4b28-ae28-e6e3f915ff4a · v1
+          - term: 目标外部系统
+          - definition: synthetic-local-erp
+          - term: 固定收件方标识
+          - definition: synthetic-receiver-2053d8e3-3f53-4355-8638-ebe4ce65d0bd
+          - term: 固定外部编号
+          - definition: synthetic-handoff-7c41d413-6867-4190-aec8-d05592008dbc
+          - term: 数量原值
+          - definition: 未知 / 未覆盖
+          - term: 单位
+          - definition: 未知 / 未覆盖
+          - term: 场地
+          - definition: SYN-INTERNAL-LAB
+          - term: 批次
+          - definition: 明确为空，不代表全部
+          - term: 产线
+          - definition: 明确为空，不代表全部
+          - term: 地区
+          - definition:
+            - list:
+              - listitem: CN
+              - listitem: DE
+          - generic "固定文件清单（1 项）"
+          - generic "固定编号与版本映射（1 项）"
+          - generic "授权、原意图与固定指纹"
+          - region "发送服务器阶段":
+            - heading "发送" [level=4]
+            - paragraph: 本范围记录成功
+            - heading "服务器已覆盖范围" [level=5]
+            - term: 数量原值
+            - definition: 未知 / 未覆盖
+            - term: 单位
+            - definition: 未知 / 未覆盖
+            - term: 场地
+            - definition: SYN-INTERNAL-LAB
+            - term: 批次
+            - definition: 明确为空，不代表全部
+            - term: 产线
+            - definition: 明确为空，不代表全部
+            - term: 地区
+            - definition:
+              - list:
+                - listitem: CN
+                - listitem: DE
+            - generic "本阶段当前原回执引用"
+          - region "接收服务器阶段":
+            - heading "接收" [level=4]
+            - paragraph: 本范围记录成功
+            - heading "服务器已覆盖范围" [level=5]
+            - term: 数量原值
+            - definition: 未知 / 未覆盖
+            - term: 单位
+            - definition: 未知 / 未覆盖
+            - term: 场地
+            - definition: SYN-INTERNAL-LAB
+            - term: 批次
+            - definition: 明确为空，不代表全部
+            - term: 产线
+            - definition: 明确为空，不代表全部
+            - term: 地区
+            - definition:
+              - list:
+                - listitem: CN
+            - term: 数量原值
+            - definition: 未知 / 未覆盖
+            - term: 单位
+            - definition: 未知 / 未覆盖
+            - term: 场地
+            - definition: SYN-INTERNAL-LAB
+            - term: 批次
+            - definition: 明确为空，不代表全部
+            - term: 产线
+            - definition: 明确为空，不代表全部
+            - term: 地区
+            - definition:
+              - list:
+                - listitem: CN
+                - listitem: DE
+            - generic "本阶段当前原回执引用"
+          - region "实际生效服务器阶段":
+            - heading "实际生效" [level=4]
+            - paragraph: 事实冲突
+            - heading "服务器已覆盖范围" [level=5]
+            - term: 数量原值
+            - definition: 未知 / 未覆盖
+            - term: 单位
+            - definition: 未知 / 未覆盖
+            - term: 场地
+            - definition: SYN-INTERNAL-LAB
+            - term: 批次
+            - definition: 明确为空，不代表全部
+            - term: 产线
+            - definition: 明确为空，不代表全部
+            - term: 地区
+            - definition:
+              - list:
+                - listitem: CN
+                - listitem: DE
+            - generic "本阶段当前原回执引用"
+            - list:
+              - text: 回执文件指纹与授权不一致
+              - generic: MANIFEST_MISMATCH
+          - paragraph: 服务器记录阶段事实冲突，不能据此认定完整交付。
+          - region "原回执历史":
+            - heading "原回执历史" [level=4]
+            - paragraph: 本水位服务器已登记 6 条；原回执按各自发生、收到、范围及对账关系保留。
+            - button "展开原回执历史"
+        - paragraph: 授权和原意图不表示已发送、已接收或已生效。三个阶段按服务器原投影分别展示；此面板仅供读取，不进行网络发送或资格判定。
+      - button "维护记录与专业办理":
+        - text: 维护记录与专业办理
+  - generic "项目资料与更多操作"
+- button "打开小Pai工作栏":

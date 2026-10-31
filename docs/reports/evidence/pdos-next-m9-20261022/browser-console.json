@@ -1,0 +1,10 @@
+{
+  "initial_console_errors": [
+    {
+      "path": "/favicon.ico",
+      "status": 404
+    }
+  ],
+  "business_runtime_errors": 0,
+  "scope": "Dedicated local preview; initial favicon 404 retained in browser-cli.txt; no domain/browser runtime error reported"
+}

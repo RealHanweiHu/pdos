@@ -1,0 +1,70 @@
+......................F..................................F.............. [ 90%]
+........                                                                 [100%]
+=================================== FAILURES ===================================
+____ test_frozen_catalog_matches_actual_columns_without_consuming_transport ____
+
+    def test_frozen_catalog_matches_actual_columns_without_consuming_transport():
+>       assert set(COVERED_COLUMNS) == set(models.Base.metadata.tables)
+E       AssertionError: assert {'action_rece...indings', ...} == {'action_rece...indings', ...}
+E         
+E         Extra items in the right set:
+E         'inbox_states'
+E         'project_governance_events'
+E         'project_set_links'
+E         'inbox_conversations'
+E         'project_set_versions'
+E         'inbox_messages'
+E         Use -v to get more diff
+
+tests/preproject/test_m3_lifecycle_catalog.py:24: AssertionError
+_____ test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute ______
+
+setup = <isolated synthetic test scope>
+
+    def test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute(setup):
+        with scoped(setup) as session:
+>           assert schema_covered(session)
+E           assert False
+E            +  where False = schema_covered(<sqlalchemy.orm.session.Session object at 0x169c5db20>)
+
+tests/preproject/test_m3_lifecycle_catalog.py:128: AssertionError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+  tests/enterprise_search/test_retrieval_pg.py:195: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_fixed_knowledge_claim_and_definition_edges_retain_actual_original
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_evidence_link_target_closure_retains_original_after_withdrawal[knowledge_entry]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_original_roots_fence_and_advance_both_scopes[False-False]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_original_roots_fence_and_advance_both_scopes[False-True]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_original_roots_fence_and_advance_both_scopes[True-False]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_original_roots_fence_and_advance_both_scopes[True-True]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_public_m3_source_adoption_is_counted
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/preproject/test_m3_lifecycle_catalog.py: 30 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_fixed_knowledge_claim_and_definition_edges_retain_actual_original
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_evidence_link_target_closure_retains_original_after_withdrawal[definition_spec]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_parameter_reference_resolves_fixed_version_not_current_head
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_parameter_reference_resolves_fixed_version_not_current_head
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:535: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/preproject/test_m3_lifecycle_catalog.py::test_frozen_catalog_matches_actual_columns_without_consuming_transport
+FAILED tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute
+2 failed, 78 passed, 45 warnings in 63.45s (0:01:03)

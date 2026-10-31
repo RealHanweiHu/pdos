@@ -1,0 +1,133 @@
+{
+  "kind": "formal_component_ssr_synthetic_fixture",
+  "authenticated_application_browser_flow": false,
+  "backend_http_temporal_covered_separately": true,
+  "metrics": [
+    {
+      "width": 1280,
+      "documentWidth": 1280,
+      "dark": false,
+      "font": "Geist, \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "regions": [
+        {
+          "width": 1090,
+          "scrollWidth": 1090,
+          "tabIndex": 0,
+          "border": "rgb(230, 230, 233)"
+        },
+        {
+          "width": 1090,
+          "scrollWidth": 1090,
+          "tabIndex": 0,
+          "border": "rgb(230, 230, 233)"
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "dark": true,
+      "regions": [
+        {
+          "width": 356,
+          "scrollWidth": 640,
+          "scrollLeft": 0,
+          "tabIndex": 0,
+          "border": "rgb(43, 45, 52)"
+        },
+        {
+          "width": 356,
+          "scrollWidth": 640,
+          "scrollLeft": 0,
+          "tabIndex": 0,
+          "border": "rgb(43, 45, 52)"
+        }
+      ],
+      "focused": null
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "dark": false,
+      "regions": [
+        {
+          "width": 356,
+          "scrollWidth": 640,
+          "scrollLeft": 0,
+          "tabIndex": 0,
+          "border": "rgb(230, 230, 233)"
+        },
+        {
+          "width": 356,
+          "scrollWidth": 640,
+          "scrollLeft": 0,
+          "tabIndex": 0,
+          "border": "rgb(230, 230, 233)"
+        }
+      ],
+      "focused": null
+    },
+    {
+      "width": 320,
+      "documentWidth": 320,
+      "dark": true,
+      "regions": [
+        {
+          "width": 286,
+          "scrollWidth": 640,
+          "scrollLeft": 80,
+          "tabIndex": 0,
+          "border": "rgb(43, 45, 52)"
+        },
+        {
+          "width": 286,
+          "scrollWidth": 640,
+          "scrollLeft": 0,
+          "tabIndex": 0,
+          "border": "rgb(43, 45, 52)"
+        }
+      ],
+      "focused": "差异表，可横向滚动"
+    },
+    {
+      "width": 1280,
+      "documentWidth": 1280,
+      "dark": true,
+      "regions": [
+        {
+          "width": 1090,
+          "scrollWidth": 1090,
+          "scrollLeft": 0,
+          "tabIndex": 0,
+          "border": "rgb(43, 45, 52)"
+        },
+        {
+          "width": 1090,
+          "scrollWidth": 1090,
+          "scrollLeft": 0,
+          "tabIndex": 0,
+          "border": "rgb(43, 45, 52)"
+        }
+      ],
+      "focused": "差异表，可横向滚动"
+    }
+  ],
+  "screenshots": {
+    "desktop-light.png": "7e2ed80b394f7ee1a33e6bb4b9c15a73cad9acc1ee994f4b6c66ec7c9101970d",
+    "desktop-dark.png": "88ff07cd9ced5511bc193cefa4754f871856632043c7681ececebc0c56b66993",
+    "mobile-light.png": "c1f2569e3197c4057ad8c75f31edb0cacd5581f57903cd0007f832a9cccb2639",
+    "mobile-dark.png": "d6eedf7d30e29e55d3b2d169be5951b9078055014cf74504d39a2e7dedea72ff",
+    "narrow-dark.png": "757f4c7664b0025cf24fe27ef779a7aa655a54e32f2f7629cbb72ea594b45c16"
+  },
+  "visually_inspected": [
+    "desktop-dark.png",
+    "mobile-light.png",
+    "narrow-dark.png"
+  ],
+  "component_sha256": "e024cf425c777c0d1c4e58b6bd7cd6fa48c9c6db4b806cf1733132c4095f7d4f",
+  "fixture_sha256": "b728fc1f40ba7f80fe99b4197247160cc26498fe2d0c024bddb77b216b38a948",
+  "final_console_errors": 0,
+  "final_console_warnings": 0,
+  "initial_favicon_404_retained_in_first_log": true,
+  "real_models": false
+}

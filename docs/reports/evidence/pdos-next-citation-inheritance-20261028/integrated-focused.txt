@@ -1,0 +1,19 @@
+............F............                                                [100%]
+=================================== FAILURES ===================================
+_ test_saved_answer_and_carried_history_recheck_sources_without_inference[updated] _
+tests/enterprise_search/test_assistant_pg.py:400: in test_saved_answer_and_carried_history_recheck_sources_without_inference
+    assert child_adapter.guard(child) == frozenset({"internal"})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_adapter.py:311: in guard
+    raise DomainError("SOURCE_UNAVAILABLE", "运行携带的企业引用已失效，请重新查询。")
+E   pdos_next.errors.DomainError: 运行携带的企业引用已失效，请重新查询。
+=============================== warnings summary ===============================
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_assistant_pg.py::test_saved_answer_and_carried_history_recheck_sources_without_inference[updated]
+1 failed, 24 passed, 2 warnings in 199.11s (0:03:19)

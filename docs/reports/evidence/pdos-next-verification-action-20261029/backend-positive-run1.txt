@@ -1,0 +1,69 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 1 item
+
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model FAILED [100%]
+
+=================================== FAILURES ===================================
+_ test_actual_verification_chain_recovers_lost_responses_without_second_model __
+tests/enterprise_search/test_verification_action_temporal_pg.py:237: in test_actual_verification_chain_recovers_lost_responses_without_second_model
+    asyncio.run(actual())
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:208: in actual
+    parent, answer = await discussion(runtime, selection)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:50: in discussion
+    identity, handle = await start(runtime, {
+tests/enterprise_search/verification_action_harness.py:266: in start
+    assert result["status"] == "completed", result
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: {'run_id': 'f9a37e1a-74e2-4281-8a6b-1e01083d5e51', 'status': 'partial'}
+=============================== warnings summary ===============================
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-verification-action-20261029/backend-positive-run1.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+======================== 1 failed, 9 warnings in 56.55s ========================

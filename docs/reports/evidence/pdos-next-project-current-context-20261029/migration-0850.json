@@ -1,0 +1,52 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0850",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/project-native-footprint-53502-before-0850.dump",
+  "backup_bytes": 104933055,
+  "backup_sha256": "396767ce94d5faff7dab55d471b91b9a919aa7333a7257298662469659969648",
+  "operations": [
+    {
+      "direction": "upgrade",
+      "head": "s0_0850",
+      "functions_exact": true,
+      "acl_unchanged": true,
+      "history_counts_unchanged": true,
+      "function_owners_and_flags_unchanged": true,
+      "one_policy_expression_only": true
+    },
+    {
+      "direction": "downgrade",
+      "head": "s0_0849",
+      "functions_exact": true,
+      "acl_unchanged": true,
+      "history_counts_unchanged": true,
+      "function_owners_and_flags_unchanged": true,
+      "one_policy_expression_only": true
+    },
+    {
+      "direction": "upgrade",
+      "head": "s0_0850",
+      "functions_exact": true,
+      "acl_unchanged": true,
+      "history_counts_unchanged": true,
+      "function_owners_and_flags_unchanged": true,
+      "one_policy_expression_only": true
+    }
+  ],
+  "counts": {
+    "agent_runs": 5185,
+    "agent_tool_calls": 9815,
+    "action_receipts": 49891,
+    "category_knowledge_entries": 496,
+    "knowledge_candidate_versions": 63,
+    "knowledge_rule_versions": 32,
+    "knowledge_answer_reviews": 46,
+    "knowledge_gap_submissions": 12,
+    "automation_rule_versions": 96,
+    "field_feedback_versions": 59,
+    "field_response_records": 55,
+    "dingtalk_deliveries": 26
+  },
+  "real_provider_accessed": false
+}

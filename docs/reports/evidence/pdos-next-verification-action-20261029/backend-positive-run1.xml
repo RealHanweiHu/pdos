@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="56.524" timestamp="2026-10-29T00:38:28.604057-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_verification_action_temporal_pg" name="test_actual_verification_chain_recovers_lost_responses_without_second_model" time="55.680"><failure message="AssertionError: {'run_id': 'f9a37e1a-74e2-4281-8a6b-1e01083d5e51', 'status': 'partial'}">tests/enterprise_search/test_verification_action_temporal_pg.py:237: in test_actual_verification_chain_recovers_lost_responses_without_second_model
+    asyncio.run(actual())
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:208: in actual
+    parent, answer = await discussion(runtime, selection)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:50: in discussion
+    identity, handle = await start(runtime, {
+tests/enterprise_search/verification_action_harness.py:266: in start
+    assert result["status"] == "completed", result
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: {'run_id': 'f9a37e1a-74e2-4281-8a6b-1e01083d5e51', 'status': 'partial'}</failure></testcase></testsuite></testsuites>

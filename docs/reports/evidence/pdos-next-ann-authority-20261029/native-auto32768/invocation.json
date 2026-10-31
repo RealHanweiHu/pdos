@@ -1,0 +1,15 @@
+{
+  "test": "tests/enterprise_search/test_embedding_ann_authority_pg.py",
+  "port": 53502,
+  "database": "pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "vector_count": 32768,
+  "dimensions": 384,
+  "chunks_per_source": 64,
+  "query_count": 4,
+  "permission_phases": 3,
+  "same_select_auto_plan": true,
+  "independent_explain_replay": false,
+  "real_model_calls": 0,
+  "real_embedding_calls": 0
+}

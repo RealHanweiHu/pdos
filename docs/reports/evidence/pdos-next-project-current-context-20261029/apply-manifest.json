@@ -1,0 +1,123 @@
+{
+  "format_version": 1,
+  "frozen": true,
+  "scope": "B current project native context + honest basis/history",
+  "live_root": "/Users/huhanwei/Desktop/ai-native-R&D-platform",
+  "stage_root": "/tmp/pdos-project-current-context-stage-20261029",
+  "apply_only_listed_files": true,
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/project_current_context.py",
+      "operation": "new",
+      "old_sha256": null,
+      "new_sha256": "666719317124b47804d1f64f9193a14fd34cb53b8322a57d63c05d67ab3dd0e4",
+      "staged_path": "/tmp/pdos-project-current-context-stage-20261029/pdos-next/server/pdos_next/agent_kernel/project_current_context.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/bootstrap.py",
+      "operation": "modified",
+      "old_sha256": "b9f2a892f713c5b9c00e5708480fe0a0bdc33311abebcb1e4355e1dbe9938c5e",
+      "new_sha256": "9e1c8bcfcc33e2141a62c72e0a7c04fddb1c4667f762a9cadd39d33e9f132b48",
+      "staged_path": "/tmp/pdos-project-current-context-stage-20261029/pdos-next/server/pdos_next/agent_kernel/bootstrap.py",
+      "base_path": "/tmp/pdos-project-current-context-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/bootstrap.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/persistence.py",
+      "operation": "modified",
+      "old_sha256": "e0d0a9ab74111848cc48118b74e3c5680a6b4722a82d7d2e794ddff91f69b5a9",
+      "new_sha256": "d262bfc4f298c31808267b5576c6121e1238cae52f46f16dd9bd16b5b7236ce1",
+      "staged_path": "/tmp/pdos-project-current-context-stage-20261029/pdos-next/server/pdos_next/agent_kernel/persistence.py",
+      "base_path": "/tmp/pdos-project-current-context-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/persistence.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/skill_packages/context-schemas.json",
+      "operation": "modified",
+      "old_sha256": "b9561b97a8070cded80f5400da1132c068e84c94347d82f652e4dd979450201b",
+      "new_sha256": "7942207451eba74bb9103caa0fe0b78cecb92ab7946f25c643549a53da856e65",
+      "staged_path": "/tmp/pdos-project-current-context-stage-20261029/pdos-next/server/pdos_next/skill_packages/context-schemas.json",
+      "base_path": "/tmp/pdos-project-current-context-stage-20261029/base/pdos-next/server/pdos_next/skill_packages/context-schemas.json"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_project_current_context.py",
+      "operation": "new",
+      "old_sha256": null,
+      "new_sha256": "b05bef2865ef4504cdc006864ee40035d92b7e1989d4457028394f387312825c",
+      "staged_path": "/tmp/pdos-project-current-context-stage-20261029/pdos-next/server/tests/agent_kernel/test_project_current_context.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_project_current_context_pg.py",
+      "operation": "new",
+      "old_sha256": null,
+      "new_sha256": "9a3544b32d0d333816ce93d7e0e4ac86c91aa7c3d7a751d9d172ec99ab28d1a0",
+      "staged_path": "/tmp/pdos-project-current-context-stage-20261029/pdos-next/server/tests/agent_kernel/test_project_current_context_pg.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_project_current_context_temporal_pg.py",
+      "operation": "new",
+      "old_sha256": null,
+      "new_sha256": "ebb466db95f86e55494ccc898c4ef270523c830151e6a926092733dd2512a992",
+      "staged_path": "/tmp/pdos-project-current-context-stage-20261029/pdos-next/server/tests/agent_kernel/test_project_current_context_temporal_pg.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/answer-sources.tsx",
+      "operation": "modified",
+      "old_sha256": "87eb26a91b0e23f134f9a94ac675e75a2fe26a9875b3fa062b14a468d57b50a2",
+      "new_sha256": "96854f566f554f1f365798914a642d9636798a4b8fded91623d55630dc0e2aca",
+      "staged_path": "/tmp/pdos-project-current-context-stage-20261029/pdos-next/web/src/components/pai/answer-sources.tsx",
+      "base_path": "/tmp/pdos-project-current-context-stage-20261029/base/pdos-next/web/src/components/pai/answer-sources.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/project-current-basis.tsx",
+      "operation": "new",
+      "old_sha256": null,
+      "new_sha256": "683804d9d39975b385bf8ebf10c2b63faf7b08808d58a844f56e094267fe054b",
+      "staged_path": "/tmp/pdos-project-current-context-stage-20261029/pdos-next/web/src/components/pai/project-current-basis.tsx",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/project-current-basis.test.mjs",
+      "operation": "new",
+      "old_sha256": null,
+      "new_sha256": "120c44caa911585047ffe81b18c25604f951d4941edf1b37c65375e9f66993c4",
+      "staged_path": "/tmp/pdos-project-current-context-stage-20261029/pdos-next/web/src/components/pai/project-current-basis.test.mjs",
+      "base_path": null
+    }
+  ],
+  "core_patch": {
+    "path": "/tmp/pdos-project-current-context-stage-20261029/project-current-context.patch",
+    "sha256": "a963dcfcec20257b7c6ac484cbdeb90689bc279c76c47dae9e18477fda6b7cbd"
+  },
+  "public_hooks": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/api.py",
+      "operation": "patch_only",
+      "old_sha256": "7d119d96bf074c1cf7f0c469bbb5d882b3b1040af04503fac4d5f45515ce2666",
+      "new_sha256": "b95ee84d87dacb6021d75d7cbed145fd9dee5b008775bfbb8c867c987a0a28e7",
+      "base_path": "/tmp/pdos-project-current-context-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/api.py",
+      "validation_only_full_staged_path": "/tmp/pdos-project-current-context-stage-20261029/pdos-next/server/pdos_next/agent_kernel/api.py",
+      "patch_path": "/tmp/pdos-project-current-context-stage-20261029/api-project-history-hook.patch",
+      "patch_sha256": "e2e93a78c7dbe2e011995d43a477984d3862b2bb61fc1c65a5bb7c1c982a0d51",
+      "location": "read: after personal_summary checked_result / stored_answer, before AgentSession lookup"
+    }
+  ],
+  "frontend_local_patch": {
+    "path": "/tmp/pdos-project-current-context-stage-20261029/answer-sources-native-basis.patch",
+    "sha256": "dab44601386e43d38c5c5aa6ab6e72156d7fd427841eb7f2c2b1894f603fb5e6",
+    "note": "If D sourceObjectHref patch applied first, apply only these import/type/render hunks; preserve D mapping."
+  },
+  "no_migration": true,
+  "no_new_tool": true,
+  "no_source_type_change": true,
+  "validation": {
+    "pure": "89 initial + 22 affected final, 90 unique segmented; see evidence",
+    "frontend": "4/4 node tests; tsc --noEmit; target ESLint",
+    "ruff": "7 Python files passed",
+    "actual_pg_temporal": "3 nodeids collected only, not executed",
+    "live_db_network_build_git": "not performed"
+  },
+  "additional_layers": "summary_gate prepare_candidate/context_projection/API action hooks apply after this manifest; not included"
+}

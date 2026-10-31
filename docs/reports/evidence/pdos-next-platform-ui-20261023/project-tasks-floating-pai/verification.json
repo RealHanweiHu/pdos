@@ -1,0 +1,25 @@
+{
+  "candidate": "project-tasks-floating-pai-20261023",
+  "url": "http://localhost:57859/ui-lab/platform?view=tasks",
+  "eslintExit": 0,
+  "tscExit": 0,
+  "browserChecksPassed": 27,
+  "browserChecksRawEntries": 28,
+  "recheckedPageStateMismatch": 1,
+  "browserWarningsErrors": 0,
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "scope": "Synthetic UI only. No backend, database, model or external communication.",
+  "repairs": [
+    "Task filter select auto width",
+    "Native date input event persistence",
+    "Stable owner permissions while editing assignee"
+  ],
+  "limitations": [
+    "Tasks and conversations reset on refresh",
+    "Production queries and permissions remain unconnected",
+    "No full build or backend suite; change is local UI prototype"
+  ]
+}

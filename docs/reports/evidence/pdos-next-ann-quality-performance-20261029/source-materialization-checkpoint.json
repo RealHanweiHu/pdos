@@ -1,0 +1,24 @@
+{
+  "version": "embedding-source-materialization-local/v1",
+  "status": "pure_checks_passed_native_pending",
+  "production_scope": [
+    "pdos-next/server/pdos_next/enterprise_search/embedding_sources.py",
+    "pdos-next/server/pdos_next/enterprise_search/embedding_hybrid.py"
+  ],
+  "new_pure_test": "pdos-next/server/tests/enterprise_search/test_embedding_source_materialization.py",
+  "pure_passed": 136,
+  "native_deselected": 1,
+  "focused_new_cases": 5,
+  "focused_cases_are_included_in_total": true,
+  "ruff_files": 3,
+  "syntax_files": 3,
+  "static_type_checker": "not_configured",
+  "database_executed": false,
+  "model_calls": 0,
+  "embedding_calls": 0,
+  "source_sha256": {
+    "pdos-next/server/pdos_next/enterprise_search/embedding_sources.py": "86e11353c711fd6481060b680a2a1a99d8975a2df5a7e73c59627558fd25466a",
+    "pdos-next/server/pdos_next/enterprise_search/embedding_hybrid.py": "d4120079c82aecb2c60f2497bda68c5efdd11886b859cb0a6982760f507173bb",
+    "pdos-next/server/tests/enterprise_search/test_embedding_source_materialization.py": "80c476705c1ac190ebb92f8bfa56ab3a35a475981e7b98d64e5f5d3b18c502e7"
+  }
+}

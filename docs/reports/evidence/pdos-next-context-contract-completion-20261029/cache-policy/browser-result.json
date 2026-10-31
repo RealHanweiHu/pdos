@@ -1,0 +1,119 @@
+{
+  "synthetic": true,
+  "native_ui_checks_passed": true,
+  "versions": [
+    {
+      "id": "e9ab953d-647b-4013-80bf-3b14123a12de",
+      "revision": 1,
+      "prompt_cache_allowed": true,
+      "receipt_id": "8b38b09a-aff1-48a5-bb6b-427f30645f12",
+      "tier": "T2"
+    },
+    {
+      "id": "99c82a11-ff01-42ea-a8c9-aaf1ef5d4572",
+      "revision": 2,
+      "prompt_cache_allowed": false,
+      "receipt_id": "fe177c55-d907-43a3-af95-297ef76bcb31",
+      "tier": "T2"
+    }
+  ],
+  "preview_checkpoint": {
+    "agreement_count": 0,
+    "native_register_posts": 0,
+    "protected_state_unchanged": true,
+    "checked_at": "2026-10-29T19:11:42.610765+00:00"
+  },
+  "protected_state_unchanged": true,
+  "before": {
+    "artifact_versions": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_sessions": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_runs": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_tool_calls": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "model_invocations": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "model_budget_reservations": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "enterprise_embedding_calls": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_validation_budgets": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  },
+  "after": {
+    "artifact_versions": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_sessions": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_runs": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_tool_calls": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "model_invocations": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "model_budget_reservations": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "enterprise_embedding_calls": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_validation_budgets": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  },
+  "allowed_http": {
+    "GET /v1/session": 5,
+    "GET /v1/categories": 3,
+    "GET /v1/personal/projects": 3,
+    "GET /v1/personal/preferences": 3,
+    "GET /v1/personal/dingtalk/settings": 3,
+    "GET /v1/categories/87d36a35-1bb9-4d60-9002-f070dd68b898/agent-conversations": 3,
+    "GET /v1/personal/preferences/options": 6,
+    "GET /v1/categories/87d36a35-1bb9-4d60-9002-f070dd68b898/agent-mcp": 3,
+    "GET /v1/categories/87d36a35-1bb9-4d60-9002-f070dd68b898/provider-agreements": 8,
+    "POST /v1/categories/87d36a35-1bb9-4d60-9002-f070dd68b898/provider-agreements": 2
+  },
+  "denied_http": {
+    "POST /v1/personal/agent-runs": 1
+  },
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "real_outbound_calls": 0,
+  "web": {
+    "api_base": "http://127.0.0.1:59605",
+    "web_base": "http://127.0.0.1:59588",
+    "principal_id": "ca2eb0ad-22f8-4a06-aeee-d38d33153fa4",
+    "verified_at": "2026-10-29T19:09:08.029963+00:00"
+  }
+}

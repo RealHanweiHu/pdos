@@ -1,0 +1,76 @@
+--- a/pdos-next/web/src/components/pai/run-continuation.tsx
++++ b/pdos-next/web/src/components/pai/run-continuation.tsx
+@@ -269,7 +269,7 @@
+       {pending && !busy && !reading?.existing && <div className={styles.composerRecovery}><p>发送结果待核对，原消息已保留。</p><Button size="sm" variant="outline" disabled={disabled} onClick={() => void send()}>核对并重试原请求</Button></div>}
+       {reading?.existing ? <div className={styles.composerRecovery}><p>这段对话已有后续消息。</p><Button size="sm" variant="outline" disabled={busy || disabled} onClick={() => void onOpen(reading.existing!.run_id).catch(failure => setError(failure.message))}>打开已保存的后续工作</Button></div> :
+         <PaiComposer value={goal} onChange={setGoal} onSubmit={() => void send()}
+-          background={<WorkStateCarry background onChange={setCorrectionState} refreshVersion={carryRefresh} contextControl={contextControl} api={api} root={root} sessionId={run.session_id} disabled={disabled || busy || !terminal} onUnavailable={onUnavailable}/>}
++          background={<WorkStateCarry background onChange={setCorrectionState} refreshVersion={`${run.run_id}:${terminal ? run.status : "pending"}:${carryRefresh}`} contextControl={contextControl} api={api} root={root} sessionId={run.session_id} disabled={disabled || busy || !terminal} onUnavailable={onUnavailable}/>}
+           disabled={disabled} busy={busy} inputDisabled={!!pending || !canSend} sendDisabled={!!pending || !canSend}
+           onStop={canStop ? () => onStop?.() : undefined}
+           placeholder={run.reverted ? "此对话已撤回，请新建对话" : !terminal ? run.status === "waiting_input" ? "请先回答上方的问题…" : "小Pai正在处理…" : busy ? "正在读取对话…" : reading && !canSend ? "当前对话暂不能继续，请刷新状态或新建对话" : "发消息给小Pai…"}
+--- a/pdos-next/web/src/components/pai/work-state-carry.tsx
++++ b/pdos-next/web/src/components/pai/work-state-carry.tsx
+@@ -27,7 +27,7 @@
+ /** Opening/refreshing reads only; an explicit delete creates a new server version. */
+ export function WorkStateCarry({ api, root, sessionId, disabled = false, onUnavailable, background = false, contextControl, onChange, refreshVersion = 0 }: {
+   api: Api; root: string; sessionId: string; disabled?: boolean; onUnavailable?: () => void;
+-  background?: boolean; contextControl?: ReactNode; onChange?: (value: State) => void; refreshVersion?: number;
++  background?: boolean; contextControl?: ReactNode; onChange?: (value: State) => void; refreshVersion?: number | string;
+ }) {
+   const resource = `${root.replace(/agent-runs$/, "agent-sessions")}/${sessionId}/work-state`;
+   const [reading, setReading] = useState<{ resource: string; value?: State; error?: string }>({ resource });
+--- a/pdos-next/web/src/components/pai/run-continuation.test.mjs
++++ b/pdos-next/web/src/components/pai/run-continuation.test.mjs
+@@ -26,7 +26,7 @@
+ const words=tree=>typeof tree==="string"?tree:Array.isArray(tree)?tree.map(words).join(""):tree&&typeof tree==="object"?words(tree.props?.children):"";
+ const tick=()=>new Promise(resolve=>setImmediate(resolve));
+ function environment(t, overrides = {}){const before=globalThis.localStorage,store=new Map();globalThis.localStorage={getItem:key=>store.get(key)??null,setItem:(key,value)=>store.set(key,value),removeItem:key=>store.delete(key)};const calls=[],api=(route,body)=>new Promise((resolve,reject)=>calls.push({route,body,resolve,reject,done:false}));const state={slots:[],index:0,effects:[],dirty:false,disposed:false};let tree,unavailable=0;const props={api,root:"v1/agent-runs",run,principalId:id(2),contextText:"PRIVATE_PAGE_DRAFT",onUnavailable:()=>unavailable++,onOpen:async()=>{},...overrides};
+-function render(){state.index=0;state.effects=[];state.dirty=false;hooks=state;try{tree=RunContinuation(props)}finally{hooks=null}state.effects.forEach(effect=>effect())}render();if(overrides.strictMount)state.effects.forEach(effect=>effect());t.after(()=>{state.slots.forEach(slot=>slot?.cleanup?.());state.disposed=true;globalThis.localStorage=before});return {tree:()=>tree,html:()=>renderToStaticMarkup(tree),store,calls,unavailable:()=>unavailable,pending:()=>calls.find(call=>!call.done),respond(call,value){assert.ok(call);call.done=true;call.resolve(value)},reject(call,error){assert.ok(call);call.done=true;call.reject(error)},async flush(){for(let n=0;n<8;n++){await tick();if(state.dirty&&!state.disposed)render()}}};}
++function render(){state.index=0;state.effects=[];state.dirty=false;hooks=state;try{tree=RunContinuation(props)}finally{hooks=null}state.effects.forEach(effect=>effect())}render();if(overrides.strictMount)state.effects.forEach(effect=>effect());t.after(()=>{state.slots.forEach(slot=>slot?.cleanup?.());state.disposed=true;globalThis.localStorage=before});return {update(patch){Object.assign(props,patch);render()},tree:()=>tree,html:()=>renderToStaticMarkup(tree),store,calls,unavailable:()=>unavailable,pending:()=>calls.find(call=>!call.done),respond(call,value){assert.ok(call);call.done=true;call.resolve(value)},reject(call,error){assert.ok(call);call.done=true;call.reject(error)},async flush(){for(let n=0;n<8;n++){await tick();if(state.dirty&&!state.disposed)render()}}};}
+ async function click(env,label){const node=nodes(env.tree(),node=>words(node.props?.children)===label&&typeof node.props?.onClick==="function")[0];assert.ok(node,label);node.props.onClick();await env.flush()}
+ async function prepare(env){await click(env,"读取后续记录");env.respond(env.pending(),reading);await env.flush();nodes(env.tree(),node=>node.type==="textarea")[0].props.onChange({target:{value:"继续完善"}});await env.flush();nodes(env.tree(),node=>node.type==="form")[0].props.onSubmit({preventDefault(){}});await env.flush();env.respond(env.pending(),reading);await env.flush();return env.pending()}
+ for(const status of [401,403]) test(`continuation ${status} clears page draft, original request and storage`,async t=>{const env=environment(t);const write=await prepare(env);assert.match(write.body.goal,/PRIVATE_PAGE_DRAFT/);assert.equal(env.store.size,1);env.reject(write,Object.assign(new Error("当前不可读"),{status}));await env.flush();assert.equal(env.store.size,0);assert.equal(env.unavailable(),1);assert.doesNotMatch(env.html(),/PRIVATE_PAGE_DRAFT|继续完善|核对并重试原请求|原目标/)});
+@@ -81,3 +81,16 @@
+  assert.equal(nodes(env.tree(),n=>n.props?.["aria-label"]==="停止回复").length,0);
+  assert.equal(nodes(env.tree(),n=>n.props?.["aria-label"]==="发送消息").length,1);
+ });
++
++
++test("a terminal transition refreshes carried state without posting another continuation", async t => {
++ const env=environment(t,{presentation:"composer",run:{...run,status:"running"}});await env.flush();
++ const token=()=>nodes(env.tree(),n=>n.type?.name==="WorkStateCarry")[0].props.refreshVersion;
++ const pending=token();
++ env.update({run:{...run,status:"completed"}});await env.flush();
++ assert.notEqual(token(),pending);
++ assert.equal(env.calls.length,1);assert.equal(env.calls[0].body,undefined);assert.match(env.calls[0].route,/\/continuation$/);
++ env.respond(env.pending(),reading);await env.flush();
++ const completed=token();env.update({run:{...run,status:"completed",goal:"同一已完成运行的新可读展示"}});await env.flush();
++ assert.equal(token(),completed);assert.equal(env.calls.length,1);
++});
+--- a/pdos-next/web/src/components/pai/work-state-carry.test.mjs
++++ b/pdos-next/web/src/components/pai/work-state-carry.test.mjs
+@@ -80,3 +80,23 @@
+   assert.equal(writes[0].action, "set_search_scope"); assert.equal("item_id" in writes[0], false);
+   assert.deepEqual(writes[0].search_preferences, { scope: "current", include_customer_private: false });
+ });
++
++test("completion rereads the same session and a late startup read cannot restore the old goal", async () => {
++  const calls = [];
++  const c = session((path, body) => new Promise(resolve => calls.push({ path, body, resolve })));
++  c.props.refreshVersion = "run:pending";
++  c.render();
++  assert.equal(calls.length, 1);
++  c.props.refreshVersion = "run:completed";
++  c.render();
++  assert.equal(calls.length, 2);
++  assert.equal(calls[0].path, calls[1].path);
++  calls[1].resolve({ ...initial, revision: 3, current_goal: { text: "按新资料继续核对" } });
++  await c.settle();
++  calls[0].resolve(initial);
++  await c.settle();
++  assert.match(text(c.render()), /第 3 版/);
++  assert.match(text(c.render()), /当前目标：按新资料继续核对/);
++  assert.doesNotMatch(text(c.render()), /当前目标：继续核对/);
++  assert.ok(calls.every(call => call.body === undefined));
++});

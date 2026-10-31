@@ -1,0 +1,23 @@
+{
+  "candidate": "same-lineage-citation-reissue-and-versioned-exclusion",
+  "status": "functionality_verified_latency_variation_retained_full_goal_incomplete",
+  "process_session": null,
+  "test_files": 42,
+  "expected_tests": 365,
+  "log": "database-final.txt",
+  "junit": "/tmp/pdos-inheritance-final-20261028.xml",
+  "source_manifest": "source-manifest.json",
+  "target": "127.0.0.1:53502/pdos_test",
+  "head": "s0_0829",
+  "real_models": false,
+  "embedding": false,
+  "updated_at_utc": "2026-10-28T23:02:51.064876+00:00",
+  "pending": "No running process. Do not claim single full-run green. Continue interruption-alias recovery, full design work and performance variance analysis from the sole queue.",
+  "observed": {
+    "passed": 364,
+    "failed": 1,
+    "keyword_p95_seconds": 1.0233219302841463,
+    "queries": 3
+  },
+  "result": "verification-result.json"
+}

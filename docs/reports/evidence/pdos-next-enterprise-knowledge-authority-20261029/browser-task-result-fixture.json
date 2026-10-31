@@ -1,0 +1,12 @@
+{
+  "tenant": "5cb32a49-b635-4c11-93c3-0df19ae9e62a",
+  "human": "74237860-2adc-4fda-928e-3182689b0ae9",
+  "agent": "4945fec7-003d-4d8e-836c-b94f0d176e88",
+  "category": "eefdf456-0dac-42f1-b00f-91ffde5a30d8",
+  "run_id": "0207b037-83f0-4646-8536-7d135e961685",
+  "session_id": "5c7fd578-1a42-4783-9d56-db450360c1eb",
+  "baseline_models": 5,
+  "baseline_receipts": 1,
+  "synthetic": true,
+  "credentials": "private temporary files only"
+}

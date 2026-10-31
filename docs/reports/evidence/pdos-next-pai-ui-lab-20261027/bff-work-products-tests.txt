@@ -1,0 +1,12 @@
+✔ work-product list and detail reads preserve the exact session and method (133.284084ms)
+✔ from-run and revisions use POST without a query and preserve the body (52.755792ms)
+✔ invalid queries and methods fail before any upstream call (73.946709ms)
+✔ missing identity or configuration fails closed (65.793334ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 330.529583

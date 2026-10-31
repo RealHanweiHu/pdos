@@ -1,0 +1,31 @@
+....F                                                                    [100%]
+=================================== FAILURES ===================================
+______ test_source_exclusion_and_revoke_hide_state_and_stop_frozen_egress ______
+
+setup = <isolated synthetic test scope>
+
+    state = read(setup, original["session_id"])
+    
+    def submit(item):
+        return setup.client.post(
+            path(setup, original["session_id"]),
+            headers=setup.headers,
+            json={
+                "request_key": str(uuid4()),
+                "expected_revision": 1,
+                "action": "remove_constraint",
+                "item_id": item["id"],
+            },
+        )
+    
+    with ThreadPoolExecutor(2) as pool:
+>       responses = list(pool.map(submit, state["constraints"]))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"code":"FORBIDDEN_SCOPE","message":"该命令未在当前可执行能力中开放。","detail":{"reason":"FORBIDDEN_SCOPE"}}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/agent_kernel/test_work_state_pg.py:153: AssertionError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_work_state_pg.py::test_source_exclusion_and_revoke_hide_state_and_stop_frozen_egress
+1 failed, 4 passed in 19.29s

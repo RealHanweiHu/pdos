@@ -1,0 +1,164 @@
+- generic [active] [ref=f1e1]:
+  - alert [ref=f1e4]
+  - generic [ref=f1e5]:
+    - link "跳到工作内容" [ref=f1e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f1e7]:
+      - generic [ref=f1e8]:
+        - generic [aria-hidden] [ref=f1e9]: P
+        - generic [ref=f1e10]: PDOS
+        - button "收起侧栏" [ref=f1e11]
+      - button "搜索或跳转" [ref=f1e12] [cursor=pointer]:
+        - generic [ref=f1e16]: ⌘ K
+      - navigation "工作区导航" [ref=f1e17]:
+        - link "我的工作" [ref=f1e19] [cursor=pointer]:
+          - /url: "?area=work"
+        - link "收件箱" [ref=f1e24] [cursor=pointer]:
+          - /url: "?area=inbox"
+        - link "小Pai" [ref=f1e29] [cursor=pointer]:
+          - /url: "?area=pai"
+        - link "项目" [ref=f1e34] [cursor=pointer]:
+          - /url: "?area=projects"
+        - link "项目集" [ref=f1e39] [cursor=pointer]:
+          - /url: "?area=programs"
+        - link "知识" [ref=f1e44] [cursor=pointer]:
+          - /url: "?area=knowledge"
+        - generic "最近的在办项目" [ref=f1e48]:
+          - paragraph [ref=f1e49]: 常用项目
+          - link "浏览器本人摘要项目" [ref=f1e50] [cursor=pointer]:
+            - /url: "?area=cockpit&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6&project=f6a3778e-633a-40fb-9618-795303070b97"
+            - generic [aria-hidden] [ref=f1e51]: 浏览
+      - generic [ref=f1e53]:
+        - link "设置" [ref=f1e54] [cursor=pointer]:
+          - /url: "?area=settings"
+        - generic [ref=f1e58]:
+          - generic [aria-hidden] [ref=f1e59]: S
+          - generic [ref=f1e60]:
+            - paragraph [ref=f1e61]: Synthetic owner
+            - paragraph [ref=f1e62]: 本地合成环境
+    - generic [ref=f1e63]:
+      - banner [ref=f1e64]:
+        - generic [ref=f1e65]:
+          - generic [ref=f1e66]: 工作空间
+          - generic [ref=f1e69]: 小Pai
+        - generic [ref=f1e70]:
+          - button "切换明暗主题" [ref=f1e71]
+          - button "搜索对象" [ref=f1e73]
+      - main
+    - complementary "小Pai 工作栏" [ref=f1e296]:
+      - region "小Pai工作区" [ref=f1e298]:
+        - generic [ref=f1e299]:
+          - complementary "小Pai会话列表" [ref=f1e300]:
+            - strong [ref=f1e302]: 会话
+            - button "新对话" [ref=f1e303]
+            - generic "持久会话记录" [ref=f1e304]:
+              - generic [ref=f1e305]:
+                - generic [ref=f1e308]: 搜索会话名称、原目标或完整标识
+                - searchbox "搜索会话名称、原目标或完整标识" [ref=f1e309]
+              - group "会话视图" [ref=f1e310]:
+                - button "最近" [pressed] [ref=f1e311]
+                - button "已归档" [ref=f1e312]
+              - button "刷新会话" [ref=f1e314]
+              - generic [ref=f1e315]:
+                - button [pressed] [ref=f1e316] [cursor=pointer]:
+                  - strong [ref=f1e317]: 以前漏气怎么处理？
+                - group [ref=f1e318]:
+                  - generic "管理会话：以前漏气怎么处理？" [ref=f1e319] [cursor=pointer]: ···
+              - group "所选会话的工作" [ref=f1e373]:
+                - generic "会话记录" [ref=f1e374]
+            - paragraph [ref=f1e320]: 私人会话 · 仅你可见
+          - generic [ref=f1e321]:
+            - generic [ref=f1e322]:
+              - button "返回对话" [expanded] [ref=f1e323]
+              - generic "以前漏气怎么处理？" [ref=f1e375]
+              - button "新建对话" [ref=f1e325]
+              - group [ref=f1e326]:
+                - generic "会话信息" [ref=f1e327] [cursor=pointer]
+              - button "关闭小Pai 工作栏" [ref=f1e330]
+            - generic [ref=f1e331]:
+              - generic "通用对话" [ref=f1e334]
+              - group [ref=f1e335]:
+                - generic "修改对象" [ref=f1e336] [cursor=pointer]
+              - generic [ref=f1e340]: 仅你可见
+            - generic "小Pai 对话线程" [ref=f1e341]:
+              - article "你委派的目标" [ref=f1e376]:
+                - paragraph [ref=f1e378]: 以前漏气怎么处理？
+              - article "小Pai 的实际结果" [ref=f1e379]:
+                - paragraph [ref=f1e380]:
+                  - generic [ref=f1e381]: 小Pai
+                - generic [ref=f1e384]:
+                  - group "小Pai处理进展" [ref=f1e385]:
+                    - generic "处理过程 6 秒" [ref=f1e386] [cursor=pointer]:
+                      - generic [ref=f1e389]: 处理过程
+                      - generic [ref=f1e390]: 6 秒
+                  - paragraph [ref=f1e393]: 参考固定记录：更换密封圈。
+                  - group [ref=f1e395]:
+                    - generic "来源 · 1" [ref=f1e396] [cursor=pointer]
+                    - list [ref=f1e432]:
+                      - listitem [ref=f1e433]:
+                        - paragraph [ref=f1e434]:
+                          - strong [ref=f1e435]: 浏览器核实：漏气处理记录
+                          - generic [ref=f1e436]: v1 · line:1
+                        - blockquote [ref=f1e437]: 更换密封圈
+                        - button "查看资料段落" [ref=f1e439]
+                  - generic "打开回复成果" [ref=f1e397]:
+                    - button "保存为文档" [ref=f1e398]
+                  - group [ref=f1e399]:
+                    - generic "对话详情" [ref=f1e400] [cursor=pointer]
+            - generic [ref=f1e404]:
+              - region "知识沉淀与补充" [ref=f1e405]:
+                - generic [ref=f1e406]:
+                  - generic [ref=f1e407]:
+                    - text: 目标品类
+                    - combobox "知识目标品类" [ref=f1e408]:
+                      - option "请选择要整理到的品类"
+                      - option "汽车充气泵" [selected]
+                  - paragraph [ref=f1e409]: 先明确选择目标品类。只能整理该品类的实际来源；跨品类回答请在对应品类重新查询后整理。
+                - generic [ref=f1e410]:
+                  - button "存为公司知识" [ref=f1e440]
+                  - button "存为经验候选" [ref=f1e441]
+                  - button "请补充资料" [ref=f1e442]
+                  - button "分享本次反馈" [ref=f1e443]
+                - generic "整理知识" [ref=f1e444]:
+                  - heading "整理核实答案 · AI 草稿" [level=3] [ref=f1e445]
+                  - generic [ref=f1e446]:
+                    - text: 标题
+                    - textbox "标题" [disabled] [ref=f1e447]: 核实答案
+                  - paragraph [ref=f1e448]: 以前漏气怎么处理？
+                  - generic [ref=f1e449]:
+                    - text: 内容
+                    - textbox "内容" [disabled] [ref=f1e450]: 参考固定记录：更换密封圈。
+                  - generic [ref=f1e451]:
+                    - generic [ref=f1e452]:
+                      - text: 负责人
+                      - combobox "负责人" [disabled] [ref=f1e453]:
+                        - option "Synthetic owner" [selected]
+                        - option "Synthetic peer"
+                    - generic [ref=f1e454]:
+                      - text: 复核日期
+                      - textbox "复核日期" [disabled] [ref=f1e455]: 2026-11-05
+                  - generic [ref=f1e456]:
+                    - text: 适用范围
+                    - textbox "适用范围" [disabled] [ref=f1e457]: 仅用于本地合成漏气案例讨论
+                  - paragraph [ref=f1e458]: 1 项已核来源
+                  - button "关闭" [ref=f1e461]
+                  - status [ref=f1e462]: 知识已保存。可从知识页重新打开。
+                  - link "打开知识" [ref=f1e463] [cursor=pointer]:
+                    - /url: /?area=knowledge
+              - group [ref=f1e411]:
+                - generic "继续查与纠正" [ref=f1e412] [cursor=pointer]
+                - option "浏览器核实：漏气处理记录 · v1" [selected]
+              - group [ref=f1e413]:
+                - generic "本次携带" [ref=f1e414] [cursor=pointer]
+              - generic [ref=f1e418]:
+                - generic [ref=f1e419]:
+                  - generic [ref=f1e420]:
+                    - textbox "发消息给小Pai" [ref=f1e421]:
+                      - /placeholder: 发消息给小Pai…
+                    - button "发送消息" [disabled]
+                  - generic [ref=f1e422]:
+                    - group [ref=f1e423]:
+                      - generic "查看会话上下文" [ref=f1e424] [cursor=pointer]
+                    - generic "由小Pai根据这条消息自动匹配能力" [ref=f1e427]: 自动选择技能
+                    - button "读取后续记录" [ref=f1e430]
+                - generic [ref=f1e431]: Enter 发送 · Shift Enter 换行

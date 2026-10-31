@@ -1,0 +1,140 @@
+{
+  "checks": [
+    {
+      "check": "项目集列表保留两行信息并收紧",
+      "result": {
+        "overflow": false,
+        "rows": [
+          71,
+          71,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "check": "项目列表紧凑行高",
+      "result": {
+        "overflow": false,
+        "rows": [
+          44,
+          44,
+          44,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "check": "保存提案后保留编辑区与小Pai",
+      "result": {
+        "chatInput": true,
+        "editor": true,
+        "overflow": false,
+        "saved": true
+      }
+    },
+    {
+      "check": "900px保存后继续对话",
+      "result": {
+        "inputVisible": true,
+        "returnVisible": true
+      }
+    },
+    {
+      "check": "390px暗色已保存编辑区",
+      "result": {
+        "editor": true,
+        "overflow": false
+      }
+    },
+    {
+      "check": "390px收件箱搜索空态",
+      "result": {
+        "empty": true,
+        "overflow": false
+      }
+    },
+    {
+      "check": "手机通知详情保留完整标题、正文及返回",
+      "result": {
+        "heading": true,
+        "back": true
+      }
+    },
+    {
+      "check": "手机导航待办/未读计数恢复",
+      "result": {
+        "work": true,
+        "inbox": true
+      }
+    },
+    {
+      "check": "手机NPI任务密度与横向滚动边界",
+      "result": {
+        "outerOverflow": false,
+        "rows": [
+          44,
+          44,
+          44,
+          44,
+          44,
+          44,
+          44,
+          44,
+          44,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "check": "桌面侧栏无需滚动且顶部完整",
+      "result": {
+        "overflow": false,
+        "sidebar": [
+          {
+            "content": 676,
+            "height": 676,
+            "scroll": 0
+          }
+        ],
+        "viewport": [
+          1280,
+          720
+        ]
+      }
+    }
+  ],
+  "console": []
+}

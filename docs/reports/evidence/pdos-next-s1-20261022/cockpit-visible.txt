@@ -1,0 +1,152 @@
+Browser tab: 1, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:59650/?area=cockpit&category=b24a8a71-981e-49cc-a32c-496641be611d&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:59650/?area=cockpit&category=b24a8a71-981e-49cc-a32c-496641be611d&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d
+	2 container
+		3 pop up button (collapsed) Description: Open Next.js Dev Tools, ID: next-logo, Secondary Actions: Expand
+			4 image
+		5 link Description: 跳到工作内容, Value: 127.0.0.1:59650/?area=cockpit&category=b24a8a71-981e-49cc-a32c-496641be611d&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d#workspace-content
+		6 button 打开导航
+			7 image
+		8 link Description: 项目, Value: 127.0.0.1:59650/?area=projects
+		9 text 便携充气泵 · S1 演示项目
+		10 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			11 image
+		12 container workspace-content
+			13 button 返回项目
+				14 image
+			15 heading 便携充气泵 · S1 演示项目, Value: 1
+				16 text 便携充气泵 · S1 演示项目
+			17 text 待建计划
+			18 text 健康度未知
+			19 button 刷新项目资料
+				20 image
+			21 button 写状态更新
+				22 image
+				23 text 写状态更新
+			24 definition list
+				25 container 型号
+					26 text 型号
+				27 text 便携充气泵 · S1 演示型号
+				28 container 品类
+					29 text 品类
+				30 text 汽车充气泵
+				31 container 项目负责人
+					32 text 项目负责人
+				33 text 胡汉伟 · 本地演示（本人）
+				34 container 下一门禁
+					35 text 下一门禁
+				36 text 承诺 / 预测待提供
+			37 button 阶段记录待接入 阶段模板与门禁规则结果尚未提供
+				38 image
+				39 text 阶段记录待接入
+				40 text 阶段模板与门禁规则结果尚未提供
+				41 image
+			42 tab group 项目工作区视图
+				43 tab (selected, settable, boolean) 现在, Value: 1, ID: project-tab-now
+				44 tab (selectable, settable, boolean) 阶段与门禁, Value: 0, ID: project-tab-gates
+				45 tab (selectable, settable, boolean) 工作与计划, Value: 0, ID: project-tab-plan
+				46 tab (selectable, settable, boolean) Builds, Value: 0, ID: project-tab-builds
+				47 tab (selectable, settable, boolean) 工程与制造准备, Value: 0, ID: project-tab-prep
+				48 tab (selectable, settable, boolean) 问题与变更, Value: 0, ID: project-tab-issues
+				49 tab (selectable, settable, boolean) 评审与交接, Value: 0, ID: project-tab-review
+				50 tab (selectable, settable, boolean) 资料, Value: 0, ID: project-tab-docs
+			51 container Description: 现在, ID: project-panel-now
+				52 container 下一 Build
+					53 heading 下一 Build, Value: 2
+						54 image
+						55 text 下一 Build
+					56 text 总览尚未提供项目轮次的执行优先级。
+					57 definition list
+						58 container 产品定义
+							59 text 产品定义
+						60 container
+							61 text 便携充气泵 · S1 演示型号  · 固定 v 1
+						62 container 制造配置
+							63 text 制造配置
+						64 text 待选择本项目 Build 后核对
+						65 container 数量与样件
+							66 text 数量与样件
+						67 text 待读取 Build 记录
+						68 container 验证范围
+							69 text 验证范围
+						70 text 待读取轮次验证准备
+					71 link Description: 查看本项目 Builds, Value: 127.0.0.1:59650/?area=category&category=b24a8a71-981e-49cc-a32c-496641be611d&bench=projects&view=builds&product=6a921dbe-5876-4aef-a878-313d16407478&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d&task=prepare
+					72 link Description: 交样与接收, Value: 127.0.0.1:59650/?area=category&category=b24a8a71-981e-49cc-a32c-496641be611d&bench=projects&view=verification&product=6a921dbe-5876-4aef-a878-313d16407478&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d&task=handoff
+				73 container 需要办理
+					74 heading 需要办理 2 项任务 / 风险, Value: 2
+						75 image
+						76 text 需要办理 2 项任务 / 风险
+					77 text 噪声
+					78 container
+						79 text 任务  ·  本人负责
+					80 text 2026-11-20
+					81 button 办理
+						82 text 办理
+						83 image
+					84 text 噪声条件待确定
+					85 container
+						86 text 任务  ·  本人负责
+					87 text 2026-11-20
+					88 button 办理
+						89 text 办理
+						90 image
+					91 text 接收、验证与待决定事项尚未汇入本总览。
+				92 container 项目关键承诺
+					93 container
+						94 heading 关键承诺, Value: 2
+							95 text 关键承诺
+						96 button 刷新承诺
+					97 container
+						98 text 已读取当前版本人工任务承诺  0  条。接收人不同的记录分别保留。
+					99 text 当前可读范围内尚无当前版本人工任务承诺。
+					100 text 履行只按本条固定承诺的具名核对记录展示；任务完成状态不替代履行结论。尚未具名核对不代表事实未完成。测试开测、供应与外部等其他承诺尚未汇入此面板。
+					101 button (collapsed) 本次读取时点, Secondary Actions: Expand
+						102 text 本次读取时点
+				103 text 胡
+				104 button 写具名状态更新
+				105 container 项目动态
+					106 container
+						107 heading 项目动态, Value: 2
+							108 text 项目动态
+						109 text 本项目的实际业务记录、具名回执，以及本人绑定本项目的小Pai运行。
+						110 button 刷新动态
+					111 container
+						112 text 读取时点  2026-10-22T12:55:47.552052+00:00  ·  便携充气泵 · S1 演示项目  v 1
+					113 content list
+						114 container
+							115 text 具名操作 记录于 2026-10-22T12:54:56.231520+00:00
+							116 heading 项目建立决定已保存, Value: 3
+								117 text 项目建立决定已保存
+							118 text 便携充气泵 · S1 演示项目
+							119 definition list
+								120 container 执行人
+									121 text 执行人
+								122 text 胡汉伟 · 本地演示 · 69f1c732-2201-4c0f-a064-41bc207f8363
+								123 container 请求人
+									124 text 请求人
+								125 text 胡汉伟 · 本地演示 · 69f1c732-2201-4c0f-a064-41bc207f8363
+								126 container 固定对象
+									127 text 固定对象
+								128 container
+									129 text proposal  ·  3c1cd7aa-a6a4-4fe9-b432-021f491d7a2d  ·  v4
+								130 container 实际发生
+									131 text 实际发生
+								132 text 未登记发生时间
+							133 button (collapsed) 回执、事件与固定引用, Secondary Actions: Expand
+								134 text 回执、事件与固定引用
+							135 link Description: 打开工作与计划, Value: 127.0.0.1:59650/?area=category&category=b24a8a71-981e-49cc-a32c-496641be611d&bench=projects&view=plan&product=6a921dbe-5876-4aef-a878-313d16407478&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d
+				136 container 计划与四时间
+					137 heading 计划与四时间 尚无计划, Value: 2
+						138 image
+						139 text 计划与四时间 尚无计划
+					140 text 基线 未知 预测 未知 — 未知 承诺 未知 实际 未知
+					141 text 预测为计划完成范围，不代表门禁日期。
+					142 button 进入工作与计划
+						143 text 进入工作与计划
+						144 image
+			145 image
+			146 text 项目阶段、健康度和具名更新只按对应记录展示。
+			147 container
+				148 text 读取于  10/22/2026, 5:55:47 AM
+		149 button Description: 打开小Pai工作栏, Help: 在当前范围打开小Pai
+
+The focused UI element is 1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:59650/?area=cockpit&category=b24a8a71-981e-49cc-a32c-496641be611d&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d

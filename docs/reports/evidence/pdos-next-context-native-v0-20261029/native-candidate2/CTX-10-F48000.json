@@ -1,0 +1,89 @@
+{
+  "version": "context-native-observation/v1",
+  "case_id": "CTX-10",
+  "f_budget_tokens": 48000,
+  "native_binding_status": "bound",
+  "status": "native_control_checks_passed",
+  "scripted_provider": true,
+  "real_model_calls": 0,
+  "provider_dispatches": 0,
+  "context_budget": [
+    {
+      "stage": "registered_graph_required_work_state",
+      "context_incomplete": true,
+      "missing": [
+        {
+          "field": "work_state.root_goal",
+          "estimated_tokens": 2320
+        },
+        {
+          "field": "work_state.current_goal",
+          "estimated_tokens": 56
+        },
+        {
+          "field": "work_state.constraints",
+          "estimated_tokens": 2898
+        },
+        {
+          "field": "work_state.focus_objects",
+          "estimated_tokens": 33
+        }
+      ],
+      "state_estimated_tokens": 5505,
+      "state_limit_tokens": 1500,
+      "state_constraint_count": 24,
+      "output": {
+        "status": "partial",
+        "summary": "context_incomplete：必需工作状态未完整载入，请核对本次携带后继续。",
+        "result": {
+          "context_incomplete": true,
+          "missing": [
+            {
+              "field": "work_state.root_goal",
+              "estimated_tokens": 2320
+            },
+            {
+              "field": "work_state.current_goal",
+              "estimated_tokens": 56
+            },
+            {
+              "field": "work_state.constraints",
+              "estimated_tokens": 2898
+            },
+            {
+              "field": "work_state.focus_objects",
+              "estimated_tokens": 33
+            }
+          ],
+          "actions": []
+        },
+        "questions": [],
+        "unfinished": [
+          "work_state.root_goal",
+          "work_state.current_goal",
+          "work_state.constraints",
+          "work_state.focus_objects"
+        ]
+      },
+      "window": 54048
+    }
+  ],
+  "bindings": {
+    "session_id": "7f3b8b0b-97f9-491a-ab88-f262ceb690a3",
+    "constraint_origin_run_id": "098b0b70-32ef-43fd-9387-73f7677cdadf",
+    "constraint_count": 24,
+    "first_registered_state_revision": 1,
+    "work_state_revision": 2,
+    "final_run_id": "945265df-85b7-49ea-939a-9965af8ac732",
+    "preflight_stage": "registered_graph_required_work_state",
+    "model_ledger_count": 0
+  },
+  "model_quality_score": null,
+  "not_scored": [
+    "answer_correctness",
+    "citation_semantics",
+    "real_usage_latency_cost"
+  ],
+  "binding_limitations": [],
+  "usage_basis": "unmeasured_scripted_zero_only"
+}

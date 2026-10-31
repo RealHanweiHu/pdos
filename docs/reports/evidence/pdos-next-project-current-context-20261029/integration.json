@@ -1,0 +1,9 @@
+{
+  "B_core_files": 10,
+  "B_api_hook": 1,
+  "D_new_files": 11,
+  "D_exact_patches": 14,
+  "answer_sources_composition": "B import/type/render plus independent D href/relation hunks; both retained",
+  "final_answer_sources_sha256": "ece6ed9dabc2c14d81d52c8e0f8cb6e12bee4403b7a9b30c7c728917a83f394d",
+  "other_outputs_match_stage_hashes": true
+}

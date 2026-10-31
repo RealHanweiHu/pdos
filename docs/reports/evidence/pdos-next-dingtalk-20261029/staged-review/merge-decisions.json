@@ -1,0 +1,43 @@
+{
+  "shared_current_bases_preserved": true,
+  "current_source_head_reported_by_root": "s0_0842",
+  "conflicts_resolved": [
+    "models.py tail import: retain C/F and append G",
+    "worker.main signature: keep embedding_ports and append dingtalk_runtime"
+  ],
+  "rebased_by_exact_unique_anchors": [
+    "pdos_next/api.py",
+    "pdos_next/models.py",
+    "pdos_next/workflows/worker.py",
+    "web/components/platform-settings.tsx",
+    "web/app/api/[...path]/route.ts"
+  ],
+  "intermediate_diff3_output_discarded": true,
+  "additional_changes": [
+    "BFF local dynamic module dispatch, closed adapter policy unchanged",
+    "ASCII literal formatting of lifecycle constants, strings exactly preserved",
+    "new complete base candidate SQL constants and ownership/empty-history groups",
+    "column privilege revokes before DROP maintenance role",
+    "Ruff import-only sort in four G tests",
+    "3 migration static pure tests",
+    "2 actual shared BFF integration tests"
+  ],
+  "source_layers": [
+    {
+      "manifest": "/tmp/pdos-dingtalk-stage-20261029/manifest.json",
+      "sha256": "31d4e410e8e0b3d274ef1a6f99eedc5c2d3c7636e8ad87657660e8e4b5a37c41"
+    },
+    {
+      "manifest": "/tmp/pdos-dingtalk-delta-stage-20261029/manifest.json",
+      "sha256": "abc9d9ee88419f216409e012ad3f5b45977eadb23f4aa193c2601eda56a9e4e3"
+    },
+    {
+      "manifest": "/tmp/pdos-dingtalk-protocol-ui-stage-20261029/manifest.json",
+      "sha256": "0160dae49e49ddf9c65e4ec0d449e0b0f8dde875f7b2a7ac7625f2405882b700"
+    },
+    {
+      "manifest": "/tmp/pdos-dingtalk-lifecycle-stage-20261029/manifest.json",
+      "sha256": "8f678136bafbe0f4406a5c33644016e42bf8d1f916e1b0a20da27260bb643403"
+    }
+  ]
+}

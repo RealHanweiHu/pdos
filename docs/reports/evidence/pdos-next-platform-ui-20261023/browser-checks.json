@@ -1,0 +1,895 @@
+{
+  "desktop": {
+    "width": 1280,
+    "height": 720,
+    "theme": "light",
+    "pages": [
+      {
+        "screen": "我的工作",
+        "subviews": [
+          "待我处理",
+          "我的承诺",
+          "动态"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "我的工作"
+          },
+          {
+            "overflow": false,
+            "title": "我的工作"
+          },
+          {
+            "overflow": false,
+            "title": "我的工作"
+          }
+        ]
+      },
+      {
+        "screen": "项目",
+        "subviews": [
+          "列表",
+          "看板",
+          "时间轴"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "项目"
+          },
+          {
+            "overflow": false,
+            "title": "项目"
+          },
+          {
+            "overflow": false,
+            "title": "项目"
+          }
+        ]
+      },
+      {
+        "screen": "组合与资源",
+        "subviews": [],
+        "states": [
+          {
+            "overflow": false,
+            "title": "组合与资源"
+          }
+        ]
+      },
+      {
+        "screen": "知识",
+        "subviews": [
+          "已发布",
+          "候选",
+          "已失效"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "知识"
+          },
+          {
+            "overflow": false,
+            "title": "知识"
+          },
+          {
+            "overflow": false,
+            "title": "知识"
+          }
+        ]
+      },
+      {
+        "screen": "品类",
+        "subviews": [
+          "型号与提案",
+          "场景与证据",
+          "规格字典",
+          "客户输入与匹配"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "汽车充气泵"
+          },
+          {
+            "overflow": false,
+            "title": "汽车充气泵"
+          },
+          {
+            "overflow": false,
+            "title": "汽车充气泵"
+          },
+          {
+            "overflow": false,
+            "title": "汽车充气泵"
+          }
+        ]
+      },
+      {
+        "screen": "立项提案",
+        "subviews": [
+          "提案",
+          "规格对标",
+          "功能配置",
+          "定义成熟度",
+          "证据与决定"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "型号与定义",
+        "subviews": [],
+        "states": [
+          {
+            "overflow": false,
+            "title": "P1 · 型号与定义"
+          }
+        ]
+      },
+      {
+        "screen": "现在",
+        "subviews": [],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "工作与计划",
+        "subviews": [
+          "工作清单",
+          "四时间",
+          "承诺与外部等待"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "产品与工程",
+        "subviews": [
+          "产品定义",
+          "工程配置",
+          "制品与 BOM",
+          "平台与差异"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "试制与验证",
+        "subviews": [
+          "批次与样件",
+          "交接与测试",
+          "制造准备",
+          "试产"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "问题与变更",
+        "subviews": [
+          "问题",
+          "变更与双线影响",
+          "措施与验证"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "评审与交付",
+        "subviews": [
+          "评审与固定包",
+          "专业放行",
+          "外部交接"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "阶段与门禁",
+        "subviews": [],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "现场反馈",
+        "subviews": [],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "项目资料",
+        "subviews": [],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "设置",
+        "subviews": [
+          "个人偏好",
+          "成员与范围",
+          "小Pai与模型",
+          "集成与治理"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "设置"
+          },
+          {
+            "overflow": false,
+            "title": "设置"
+          },
+          {
+            "overflow": false,
+            "title": "设置"
+          },
+          {
+            "overflow": false,
+            "title": "设置"
+          }
+        ]
+      }
+    ]
+  },
+  "mobile": {
+    "width": 390,
+    "height": 844,
+    "theme": "dark",
+    "pages": [
+      {
+        "screen": "我的工作",
+        "subviews": [
+          "待我处理",
+          "我的承诺",
+          "动态"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "我的工作"
+          },
+          {
+            "overflow": false,
+            "title": "我的工作"
+          },
+          {
+            "overflow": false,
+            "title": "我的工作"
+          }
+        ]
+      },
+      {
+        "screen": "项目",
+        "subviews": [
+          "列表",
+          "看板",
+          "时间轴"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "项目"
+          },
+          {
+            "overflow": false,
+            "title": "项目"
+          },
+          {
+            "overflow": false,
+            "title": "项目"
+          }
+        ]
+      },
+      {
+        "screen": "组合与资源",
+        "subviews": [],
+        "states": [
+          {
+            "overflow": false,
+            "title": "组合与资源"
+          }
+        ]
+      },
+      {
+        "screen": "知识",
+        "subviews": [
+          "已发布",
+          "候选",
+          "已失效"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "知识"
+          },
+          {
+            "overflow": false,
+            "title": "知识"
+          },
+          {
+            "overflow": false,
+            "title": "知识"
+          }
+        ]
+      },
+      {
+        "screen": "品类",
+        "subviews": [
+          "型号与提案",
+          "场景与证据",
+          "规格字典",
+          "客户输入与匹配"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "汽车充气泵"
+          },
+          {
+            "overflow": false,
+            "title": "汽车充气泵"
+          },
+          {
+            "overflow": false,
+            "title": "汽车充气泵"
+          },
+          {
+            "overflow": false,
+            "title": "汽车充气泵"
+          }
+        ]
+      },
+      {
+        "screen": "立项提案",
+        "subviews": [
+          "提案",
+          "规格对标",
+          "功能配置",
+          "定义成熟度",
+          "证据与决定"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "型号与定义",
+        "subviews": [],
+        "states": [
+          {
+            "overflow": false,
+            "title": "P1 · 型号与定义"
+          }
+        ]
+      },
+      {
+        "screen": "现在",
+        "subviews": [],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "工作与计划",
+        "subviews": [
+          "工作清单",
+          "四时间",
+          "承诺与外部等待"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "产品与工程",
+        "subviews": [
+          "产品定义",
+          "工程配置",
+          "制品与 BOM",
+          "平台与差异"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "试制与验证",
+        "subviews": [
+          "批次与样件",
+          "交接与测试",
+          "制造准备",
+          "试产"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "问题与变更",
+        "subviews": [
+          "问题",
+          "变更与双线影响",
+          "措施与验证"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "评审与交付",
+        "subviews": [
+          "评审与固定包",
+          "专业放行",
+          "外部交接"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          },
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "阶段与门禁",
+        "subviews": [],
+        "states": [
+          {
+            "title": "便携充气泵 P1",
+            "overflow": false
+          }
+        ]
+      },
+      {
+        "screen": "现场反馈",
+        "subviews": [],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "项目资料",
+        "subviews": [],
+        "states": [
+          {
+            "overflow": false,
+            "title": "便携充气泵 P1"
+          }
+        ]
+      },
+      {
+        "screen": "设置",
+        "subviews": [
+          "个人偏好",
+          "成员与范围",
+          "小Pai与模型",
+          "集成与治理"
+        ],
+        "states": [
+          {
+            "overflow": false,
+            "title": "设置"
+          },
+          {
+            "overflow": false,
+            "title": "设置"
+          },
+          {
+            "overflow": false,
+            "title": "设置"
+          },
+          {
+            "overflow": false,
+            "title": "设置"
+          }
+        ]
+      }
+    ]
+  },
+  "roles": [
+    {
+      "role": "product",
+      "title": "我的工作",
+      "items": [
+        "待我处理",
+        "我的承诺",
+        "动态",
+        "PD-041确认便携款的噪声目标与工况便携充气泵 P1林悦今天",
+        "PD-042审阅桨板泵派生提案桨板泵 S2 派生林悦10月26日",
+        "全部项目",
+        "便携充气泵 P1工程验证",
+        "桨板泵 S2 派生定义"
+      ]
+    },
+    {
+      "role": "lead",
+      "title": "我的工作",
+      "items": [
+        "待我处理",
+        "我的承诺",
+        "动态",
+        "PM-016确认噪声复测的计划调整便携充气泵 P1周宁今天",
+        "PM-017等供应商确认第二批电机到样便携充气泵 P1周宁10月26日",
+        "全部项目",
+        "便携充气泵 P1工程验证",
+        "桨板泵 S2 派生定义"
+      ]
+    },
+    {
+      "role": "engineering",
+      "title": "我的工作",
+      "items": [
+        "待我处理",
+        "我的承诺",
+        "动态",
+        "EN-032核对减振支架变更的工程影响便携充气泵 P1陈舟今天",
+        "EN-033补齐本轮样机的装配制品便携充气泵 P1陈舟10月24日",
+        "全部项目",
+        "便携充气泵 P1工程验证",
+        "桨板泵 S2 派生定义"
+      ]
+    },
+    {
+      "role": "quality",
+      "title": "我的工作",
+      "items": [
+        "待我处理",
+        "我的承诺",
+        "动态",
+        "QA-018接收 B-03 的首批 4 件样机便携充气泵 P1许澄今天",
+        "QA-019独立验证 I-09 的低温启机整改便携充气泵 P1许澄10月27日",
+        "全部项目",
+        "便携充气泵 P1工程验证",
+        "桨板泵 S2 派生定义"
+      ]
+    },
+    {
+      "role": "manufacturing",
+      "title": "我的工作",
+      "items": [
+        "待我处理",
+        "我的承诺",
+        "动态",
+        "MF-011决定新支架方案的制造接收便携充气泵 P1高远今天",
+        "MF-013补齐 P1 的制造准备记录便携充气泵 P1高远10月26日",
+        "MF-012核对 D3 试产的工装与检验准备微型隔膜泵 D3高远10月28日",
+        "全部项目",
+        "便携充气泵 P1工程验证",
+        "桨板泵 S2 派生定义"
+      ]
+    },
+    {
+      "role": "production",
+      "title": "我的工作",
+      "items": [
+        "待我处理",
+        "我的承诺",
+        "动态",
+        "PR-004记录 B-03 第二批的实制与交样便携充气泵 P1吴敏今天",
+        "全部项目",
+        "便携充气泵 P1工程验证",
+        "桨板泵 S2 派生定义"
+      ]
+    },
+    {
+      "role": "supply",
+      "title": "我的工作",
+      "items": [
+        "待我处理",
+        "我的承诺",
+        "动态",
+        "SU-007核对供应商电机承诺与实到便携充气泵 P1沈禾今天",
+        "PM-017等供应商确认第二批电机到样便携充气泵 P1周宁10月26日",
+        "全部项目",
+        "便携充气泵 P1工程验证",
+        "桨板泵 S2 派生定义"
+      ]
+    },
+    {
+      "role": "management",
+      "title": "我的工作",
+      "items": [
+        "待我处理",
+        "我的承诺",
+        "动态",
+        "MG-003决定两项目共享测试资源的取舍便携充气泵 P1郑言今天",
+        "全部项目",
+        "便携充气泵 P1工程验证",
+        "桨板泵 S2 派生定义",
+        "微型隔膜泵 D3试产"
+      ]
+    },
+    {
+      "role": "external",
+      "title": "我的工作",
+      "items": [
+        "待我处理",
+        "我的承诺",
+        "动态",
+        "EX-002回应收到的样品交付包便携充气泵 P1协作方 A10月28日"
+      ]
+    }
+  ],
+  "interactions": [
+    {
+      "check": "T1 plan confirmation",
+      "result": true
+    },
+    {
+      "check": "partial receipt",
+      "result": true
+    },
+    {
+      "check": "independent engineering/manufacturing signed states",
+      "result": true
+    },
+    {
+      "check": "external navigation excludes internal projects",
+      "result": true
+    },
+    {
+      "check": "external activity scoped",
+      "result": true
+    },
+    {
+      "check": "offline confirmation disabled",
+      "result": true
+    },
+    {
+      "check": "draft survives reconnect and version comparison",
+      "result": true
+    },
+    {
+      "check": "read error explicit",
+      "result": true
+    },
+    {
+      "check": "scope invalidation hides main objects",
+      "result": true
+    },
+    {
+      "check": "running Pai scope remains original after navigating",
+      "result": true
+    },
+    {
+      "check": "Pai background resume",
+      "result": true
+    },
+    {
+      "check": "final confirmation repeats exact lot/count/configuration",
+      "result": true
+    },
+    {
+      "check": "Escape closes and restores focus to original task",
+      "result": true
+    },
+    {
+      "check": "Ctrl+K opens command search",
+      "result": true
+    }
+  ],
+  "targetedAfterFix": [
+    {
+      "check": "噪声复测",
+      "correctObject": true
+    },
+    {
+      "check": "完成噪声复测",
+      "correctObject": true
+    },
+    {
+      "check": "E-06",
+      "correctObject": true
+    },
+    {
+      "check": "Pilot P-01 · 历史探索批",
+      "correctObject": true
+    }
+  ],
+  "finalMobile": [
+    {
+      "screen": "现在",
+      "overflow": false
+    },
+    {
+      "screen": "阶段与门禁",
+      "overflow": false
+    },
+    {
+      "screen": "问题与变更",
+      "overflow": false
+    }
+  ],
+  "console": []
+}

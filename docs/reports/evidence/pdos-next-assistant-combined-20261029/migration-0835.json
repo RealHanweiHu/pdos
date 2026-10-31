@@ -1,0 +1,49 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0835",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/retrieval-feedback-53502-before-0835.dump",
+  "backup_bytes": 96940744,
+  "operations": [
+    {
+      "operation": "upgrade",
+      "target": "s0_0835",
+      "exit": 0,
+      "existing_counts_unchanged": true
+    },
+    {
+      "operation": "downgrade",
+      "target": "s0_0834",
+      "exit": 0,
+      "existing_counts_unchanged": true
+    },
+    {
+      "operation": "upgrade",
+      "target": "s0_0835",
+      "exit": 0,
+      "existing_counts_unchanged": true
+    }
+  ],
+  "compared_tables": [
+    "action_receipts",
+    "agent_runs",
+    "agent_run_events",
+    "agent_work_states",
+    "artifact_versions",
+    "category_knowledge_entries",
+    "enterprise_search_chunks",
+    "enterprise_search_corpus",
+    "enterprise_search_terms",
+    "personal_preferences",
+    "similar_history_feedback"
+  ],
+  "trigger": "CREATE TRIGGER kernel_retrieval_feedback_human BEFORE INSERT ON public.agent_run_events FOR EACH ROW WHEN (((new.body ->> 'type'::text) = 'retrieval_feedback'::text)) EXECUTE FUNCTION require_retrieval_feedback_human()",
+  "execute": {
+    "pdos_next_app": true,
+    "pdos_agent": false,
+    "pdos_next_auth": false,
+    "pdos_next_dispatch": false
+  },
+  "env_fallback": false,
+  "new_database": false
+}

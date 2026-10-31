@@ -1,0 +1,36 @@
+{
+  "bodyWidth": 1177,
+  "picker": {
+    "height": 32,
+    "options": [
+      {
+        "disabled": false,
+        "text": "从规格字典选择参数",
+        "value": ""
+      },
+      {
+        "disabled": true,
+        "text": "最大压力 · kPa · PAR-02 v3 · 已添加",
+        "value": "PAR-02"
+      },
+      {
+        "disabled": false,
+        "text": "噪声 · dB(A) · PAR-08 v2",
+        "value": "PAR-08"
+      },
+      {
+        "disabled": true,
+        "text": "充气速度 · L/min · PAR-04 v2 · 已添加",
+        "value": "PAR-04"
+      }
+    ]
+  },
+  "rows": [
+    46,
+    46
+  ],
+  "viewport": [
+    1177,
+    853
+  ]
+}

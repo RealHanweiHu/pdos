@@ -1,0 +1,23 @@
+{
+  "candidate": "web-build.json",
+  "light": {
+    "width": 1440,
+    "theme": "light"
+  },
+  "mobile": {
+    "width": 320,
+    "theme": "dark"
+  },
+  "checks": [
+    "actual v12 closed state",
+    "visible closed explanation",
+    "obsolete prerequisites absent",
+    "saved closure retained",
+    "controls disabled",
+    "no horizontal overflow"
+  ],
+  "screenshots": {
+    "closed-light.png": "a04f3b3c0e474e72248c95271ed343a5390785a50a2dec6ebff4e73a9fff8089",
+    "closed-dark-mobile.png": "ff70f162e2502b5edf7ed050793105eb4d4a4a2eea9d55742623c3f25ec04038"
+  }
+}

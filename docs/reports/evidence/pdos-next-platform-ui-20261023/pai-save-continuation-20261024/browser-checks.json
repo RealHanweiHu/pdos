@@ -1,0 +1,46 @@
+[
+  {
+    "check": "Proposal save retains editor, original conversation and enabled composer",
+    "pass": true
+  },
+  {
+    "check": "Continue editing saves v2 of same proposal and preserves manual fields",
+    "pass": true
+  },
+  {
+    "check": "Natural-language follow-up after save revises v2 to v3 in the original conversation",
+    "pass": true
+  },
+  {
+    "check": "Opening proposal page keeps same conversation docked and saved proposal ID PA-005 at v3",
+    "pass": true
+  },
+  {
+    "check": "Catalog save retains saved document, chat and its category context",
+    "pass": true
+  },
+  {
+    "check": "Unchanged catalog revision cannot be saved",
+    "pass": true
+  },
+  {
+    "check": "Catalog follow-up uses just-saved v2 and editor immediately displays saved v3",
+    "pass": true
+  },
+  {
+    "check": "390px saved view toggles to same chat and back without overflow or version loss",
+    "pass": true
+  },
+  {
+    "check": "Conflict state keeps revision but disables save",
+    "pass": true
+  },
+  {
+    "check": "Catalog remains a single record, opening category keeps same conversation docked",
+    "pass": true
+  },
+  {
+    "check": "Final proposal preview immediately shows saved v2 after conversation follow-up, with editor and chat retained",
+    "pass": true
+  }
+]

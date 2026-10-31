@@ -1,0 +1,54 @@
+[
+  {
+    "check": "全部已添加时提示原因并禁止重复选择",
+    "passed": true
+  },
+  {
+    "check": "删除单行保留其他规格并将焦点交给邻行",
+    "passed": true
+  },
+  {
+    "check": "选择后携带单位与版本引用并聚焦目标值",
+    "passed": true
+  },
+  {
+    "check": "候选生成后新增的品类参数可立即选择，原有值和引用不变",
+    "passed": true
+  },
+  {
+    "check": "保存保留新增规格值、来源版本和原对话",
+    "passed": true
+  },
+  {
+    "check": "继续编辑回填完整规格及引用",
+    "passed": true
+  },
+  {
+    "check": "删除全部规格后显示空态并聚焦添加入口",
+    "passed": true
+  },
+  {
+    "check": "离线时禁用参数选择及新增入口",
+    "passed": true
+  },
+  {
+    "check": "Escape取消选择且不产生空规格",
+    "passed": true
+  },
+  {
+    "check": "390px暗色参数选择器完整可见且不撑宽页面",
+    "passed": true
+  },
+  {
+    "check": "新增与删除结果可保存为新修订",
+    "passed": true
+  },
+  {
+    "check": "无字典参数时显示维护提示且不混入其他品类参数",
+    "passed": true
+  },
+  {
+    "check": "普通对话完善不会自动加回已删除的规格",
+    "passed": true
+  }
+]

@@ -1,0 +1,93 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 知识
+    - paragraph: 产品管理
+    - link "品类":
+      - /url: "?area=category"
+      - generic: 品类
+    - link "立项提案":
+      - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&focus=proposals"
+      - generic: 立项提案
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - generic: 我的工作
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - heading "我的工作" [level=1]
+  - paragraph: 处理产品取舍，继续提案，跟进定义与项目。
+  - button "刷新我的工作":
+  - navigation "我的工作视图":
+    - button "待我处理" [pressed]
+    - button "承诺"
+    - button "已完成"
+  - region "责任与期限清单":
+    - generic: 0 项需要关注
+    - generic: 按责任与期限排列
+    - generic "搜索与筛选我的工作":
+    - option "全部类型" [selected]
+    - option "全部期限" [selected]
+    - option "今日与逾期"
+    - option "本周剩余"
+    - option "稍后与未定"
+    - status: 当前没有符合条件的工作。
+  - region "继续完善提案":
+    - heading "继续提案" [level=2]
+    - link "全部提案":
+      - /url: /?area=category&focus=proposals
+      - text: 全部提案
+    - link "便携充气泵 · 旁聊验证 汽车充气泵 草稿":
+      - /url: /categories/efcc7f95-0a5b-4c58-a1e3-67764de167eb/proposals/7ae29f9d-f839-407e-baee-58bf4ab4aa12
+      - strong: 便携充气泵 · 旁聊验证
+      - generic: 汽车充气泵
+      - generic: 草稿
+  - region "继续项目":
+    - heading "继续项目" [level=2]
+    - link "全部项目":
+      - /url: /?area=projects
+      - text: 全部项目
+    - button "Approved revision fixture 汽车充气泵":
+      - strong: Approved revision fixture
+      - generic: 汽车充气泵
+  - paragraph:
+    - text: 资料读取于
+    - time: 10/26/2026, 2:39:55 AM
+- button "打开小Pai工作栏":

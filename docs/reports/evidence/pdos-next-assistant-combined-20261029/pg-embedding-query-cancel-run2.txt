@@ -1,0 +1,61 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_inflight_query_never_releases_vector_or_double_charges_after_authority_loss[cancel] _
+
+setup = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11f3d2e40>
+boundary = 'cancel'
+
+    @pytest.mark.parametrize("boundary", ["cancel", "revoke"])
+    def test_inflight_query_never_releases_vector_or_double_charges_after_authority_loss(
+        setup,
+        monkeypatch,
+        boundary,
+    ):
+        f, runtime, provider, budget_id, parent_id = actual_query(setup, monkeypatch)
+        original = provider.embed
+    
+        def reply_after_loss(*args, **kwargs):
+            response = original(*args, **kwargs)
+            if boundary == "cancel":
+                with human_session(setup) as session:
+                    cancel_run(session, setup.ctx, f.scope.run_id)
+            else:
+                with Session(setup.admin) as session, session.begin():
+                    session.execute(
+                        delete(Grant).where(
+                            Grant.tenant_id == setup.tenant,
+                            Grant.category_id == setup.category,
+                            Grant.principal_id == setup.human,
+                        )
+                    )
+            return response
+    
+        monkeypatch.setattr(provider, "embed", reply_after_loss)
+        with registered_graph_context("xiaopai"), pytest.raises(DomainError) as error:
+            runtime.prepare(f.scope, parent_id, f.read_arguments)
+        assert error.value.code == ("CANCELLED_RUN" if boundary == "cancel" else "FORBIDDEN_SCOPE")
+        assert len(provider.calls) == 1
+        with Session(setup.admin) as session:
+            call = session.scalar(
+                select(AgentToolCall).where(
+                    AgentToolCall.run_id == f.scope.run_id,
+                    AgentToolCall.tool == TOOL,
+                )
+            )
+            assert call.state in {"failed", "unknown"} and call.result is None
+            budget = session.get(ValidationBudget, budget_id)
+            assert budget.calls == 1 and budget.held_micro_usd == 0 and budget.spent_micro_usd > 0
+            before = (budget.calls, budget.spent_micro_usd, call.cost_charged_micro_usd)
+            call_id = call.id
+            if boundary == "cancel":
+                assert call.cost_state == "estimated_unknown"
+>               assert call.cost_charged_micro_usd == call.cost_reserved_micro_usd
+E               assert 16808 == 0
+E                +  where 16808 = <pdos_next.agent_kernel.models.AgentToolCall object at 0x13e0574a0>.cost_charged_micro_usd
+E                +  and   0 = <pdos_next.agent_kernel.models.AgentToolCall object at 0x13e0574a0>.cost_reserved_micro_usd
+
+tests/enterprise_search/test_embedding_query_boundaries_pg.py:67: AssertionError
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_embedding_query_boundaries_pg.py::test_inflight_query_never_releases_vector_or_double_charges_after_authority_loss[cancel]
+1 failed in 7.45s

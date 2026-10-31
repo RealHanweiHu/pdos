@@ -1,0 +1,35 @@
+{
+  "head": "s0_0813",
+  "installed_deadline_exemptions": [
+    "ai.skill.qualify",
+    "build.engineering.authorize",
+    "build.manufacturing.authorize",
+    "change.close",
+    "change.order.approve",
+    "change.selection.decide",
+    "change.verification.record",
+    "integration.handoff.authorize",
+    "knowledge.rule.publish",
+    "mcp.connector.allow",
+    "npi.manufacturing_baseline.publish",
+    "proposal.g0.decide",
+    "quality.capa.verification.review",
+    "quality.issue.root_cause.decide",
+    "release.engineering.approve",
+    "release.exception.decide",
+    "release.exception.withdraw",
+    "release.manufacturing.approve",
+    "test.disposition.decide",
+    "test.run.review"
+  ],
+  "matches_orm_t2_operations": true,
+  "only_added": [
+    "change.close",
+    "change.verification.record"
+  ],
+  "completion_table_owner": "pdos_next_owner",
+  "rls": true,
+  "forced_rls": true,
+  "agent_direct_business_dml": false,
+  "new_named_proofs": 2
+}

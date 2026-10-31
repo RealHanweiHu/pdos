@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-29",
+  "backend_pure": {"passed": 22, "failed": 0, "xml": "pure-run1.xml"},
+  "frontend_library": {"command": "node pdos-next/tools/s0_web_checkpoint.cjs provider-agreements", "passed": 5, "failed": 0, "exit_code": 0},
+  "typescript": {"command": "node node_modules/typescript/bin/tsc --noEmit --incremental false --pretty false", "cwd": "pdos-next/web", "exit_code": 0},
+  "eslint": {"files": ["src/lib/provider-agreements.ts", "src/lib/provider-agreements.test.ts", "src/components/model_configuration/provider-agreements.tsx"], "cwd": "pdos-next/web", "exit_code": 0},
+  "ruff": {"python_files": 9, "exit_code": 0},
+  "pg": "not_run_by_subagent",
+  "migrations": "not_run_by_subagent",
+  "browser": "not_run_by_subagent",
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "real_outbound_calls": 0,
+  "quality_evaluation": "not_run"
+}

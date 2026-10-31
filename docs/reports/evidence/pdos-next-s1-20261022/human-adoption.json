@@ -1,0 +1,24 @@
+{
+  "proposal_id": "3c1cd7aa-a6a4-4fe9-b432-021f491d7a2d",
+  "revision": 2,
+  "status": "draft",
+  "ai_items": [
+    {
+      "id": "f92b19f5-b6cc-46e8-ab39-663c1d4493fa",
+      "item_id": "3de39ed4-2af1-4603-9f3c-4159d6b9a60f",
+      "version": 1,
+      "kind": "section",
+      "content": {
+        "key": "target_customer_market_channel",
+        "text": "目标用户为家庭车主，使用场景集中在日常停车与短途出行前后。车主在小区或路边停好车后会顺手查看轮胎状态，察觉胎压偏低时就在车旁用便携充气泵应急补气；短途出行前也常重复这一检查。压力显示已选定，可作为是否需要补气的直接依据。噪声条件与测试工况仍未知，本节不含实测或研究结论。"
+      },
+      "origin": "ai_draft",
+      "writer_id": "664f59df-be6a-4393-b3c3-342c145e031d",
+      "run_id": "a2067183-bd63-4981-ac30-aecd91269ece",
+      "confirmed_by": "69f1c732-2201-4c0f-a064-41bc207f8363",
+      "receipt_id": "ed39ee43-9e64-46b3-a5a6-907d993dcc65",
+      "prepared_candidate_id": "2fd77ad0-6e82-4197-8899-5c7c15541ca2"
+    }
+  ],
+  "submissions": []
+}

@@ -1,0 +1,125 @@
+..............FFFFFFFF                                                   [100%]
+=================================== FAILURES ===================================
+_ test_four_tables_replay_actual_citations_and_save_the_same_private_cells[blockers-next_step] _
+tests/enterprise_search/test_task_result_pg.py:70: in test_four_tables_replay_actual_citations_and_save_the_same_private_cells
+    assert output["status"] == "completed", output
+E   AssertionError: {'status': 'partial', 'summary': 'context_incomplete：必需上下文超过当前模型预算，请缩小范围、清理本次携带或开新会话。', 'result': {'context_incomplete...indow': 32000, 'window_configured': False, 'reserve': 6048, 'focus': 25952, ...}, 'actions': []}, 'questions': [], ...}
+E   assert 'partial' == 'completed'
+E     
+E     - completed
+E     + partial
+_ test_four_tables_replay_actual_citations_and_save_the_same_private_cells[cases-measures] _
+tests/enterprise_search/test_task_result_pg.py:70: in test_four_tables_replay_actual_citations_and_save_the_same_private_cells
+    assert output["status"] == "completed", output
+E   AssertionError: {'status': 'partial', 'summary': 'context_incomplete：必需上下文超过当前模型预算，请缩小范围、清理本次携带或开新会话。', 'result': {'context_incomplete...indow': 32000, 'window_configured': False, 'reserve': 6048, 'focus': 25952, ...}, 'actions': []}, 'questions': [], ...}
+E   assert 'partial' == 'completed'
+E     
+E     - completed
+E     + partial
+_ test_four_tables_replay_actual_citations_and_save_the_same_private_cells[review-key_changes] _
+tests/enterprise_search/test_task_result_pg.py:70: in test_four_tables_replay_actual_citations_and_save_the_same_private_cells
+    assert output["status"] == "completed", output
+E   AssertionError: {'status': 'partial', 'summary': 'context_incomplete：必需上下文超过当前模型预算，请缩小范围、清理本次携带或开新会话。', 'result': {'context_incomplete...indow': 32000, 'window_configured': False, 'reserve': 6048, 'focus': 25952, ...}, 'actions': []}, 'questions': [], ...}
+E   assert 'partial' == 'completed'
+E     
+E     - completed
+E     + partial
+_ test_four_tables_replay_actual_citations_and_save_the_same_private_cells[commitments-follow_up] _
+tests/enterprise_search/test_task_result_pg.py:70: in test_four_tables_replay_actual_citations_and_save_the_same_private_cells
+    assert output["status"] == "completed", output
+E   AssertionError: {'status': 'partial', 'summary': 'context_incomplete：必需上下文超过当前模型预算，请缩小范围、清理本次携带或开新会话。', 'result': {'context_incomplete...indow': 32000, 'window_configured': False, 'reserve': 6048, 'focus': 25952, ...}, 'actions': []}, 'questions': [], ...}
+E   assert 'partial' == 'completed'
+E     
+E     - completed
+E     + partial
+_____ test_forged_cell_reference_is_partial_and_cannot_be_saved_as_a_fact ______
+tests/enterprise_search/test_task_result_pg.py:94: in test_forged_cell_reference_is_partial_and_cannot_be_saved_as_a_fact
+    answer = output["result"]["assistant"]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'assistant'
+_____ test_withdrawn_table_sources_remove_the_table_and_dependent_analysis _____
+tests/enterprise_search/test_task_result_pg.py:112: in test_withdrawn_table_sources_remove_the_table_and_dependent_analysis
+    assert output["status"] == "partial" and "task_result" not in output["result"]["assistant"]
+                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'assistant'
+_ test_real_wait_responsibility_state_and_date_come_only_from_registered_fields _
+tests/enterprise_search/test_task_result_pg.py:154: in test_real_wait_responsibility_state_and_date_come_only_from_registered_fields
+    assert output["status"] == "completed", output
+E   AssertionError: {'status': 'partial', 'summary': 'context_incomplete：必需上下文超过当前模型预算，请缩小范围、清理本次携带或开新会话。', 'result': {'context_incomplete...indow': 32000, 'window_configured': False, 'reserve': 6048, 'focus': 25952, ...}, 'actions': []}, 'questions': [], ...}
+E   assert 'partial' == 'completed'
+E     
+E     - completed
+E     + partial
+____ test_fixed_structured_record_can_be_paged_to_the_last_registered_field ____
+tests/enterprise_search/test_structured_passage_pg.py:21: in test_fixed_structured_record_can_be_paged_to_the_last_registered_field
+    assert output["status"] == "completed", output
+E   AssertionError: {'status': 'partial', 'summary': 'context_incomplete：必需上下文超过当前模型预算，请缩小范围、清理本次携带或开新会话。', 'result': {'context_incomplete...indow': 32000, 'window_configured': False, 'reserve': 6048, 'focus': 25952, ...}, 'actions': []}, 'questions': [], ...}
+E   assert 'partial' == 'completed'
+E     
+E     - completed
+E     + partial
+=============================== warnings summary ===============================
+tests/test_personal_preferences_pg.py::test_actual_navigation_options_favorites_and_revoked_authorization
+tests/enterprise_search/test_task_result_pg.py::test_real_wait_responsibility_state_and_date_come_only_from_registered_fields
+tests/enterprise_search/test_structured_passage_pg.py::test_fixed_structured_record_can_be_paged_to_the_last_registered_field
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/test_personal_preferences_pg.py::test_actual_navigation_options_favorites_and_revoked_authorization
+tests/test_personal_preferences_pg.py::test_actual_navigation_options_favorites_and_revoked_authorization
+tests/test_personal_preferences_pg.py::test_actual_navigation_options_favorites_and_revoked_authorization
+tests/enterprise_search/test_task_result_pg.py::test_real_wait_responsibility_state_and_date_come_only_from_registered_fields
+tests/enterprise_search/test_task_result_pg.py::test_real_wait_responsibility_state_and_date_come_only_from_registered_fields
+tests/enterprise_search/test_task_result_pg.py::test_real_wait_responsibility_state_and_date_come_only_from_registered_fields
+tests/enterprise_search/test_structured_passage_pg.py::test_fixed_structured_record_can_be_paged_to_the_last_registered_field
+tests/enterprise_search/test_structured_passage_pg.py::test_fixed_structured_record_can_be_paged_to_the_last_registered_field
+tests/enterprise_search/test_structured_passage_pg.py::test_fixed_structured_record_can_be_paged_to_the_last_registered_field
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/test_personal_preferences_pg.py::test_actual_navigation_options_favorites_and_revoked_authorization
+tests/enterprise_search/test_task_result_pg.py::test_real_wait_responsibility_state_and_date_come_only_from_registered_fields
+tests/enterprise_search/test_structured_passage_pg.py::test_fixed_structured_record_can_be_paged_to_the_last_registered_field
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/test_personal_preferences_pg.py::test_actual_navigation_options_favorites_and_revoked_authorization
+tests/enterprise_search/test_task_result_pg.py::test_real_wait_responsibility_state_and_date_come_only_from_registered_fields
+tests/enterprise_search/test_structured_passage_pg.py::test_fixed_structured_record_can_be_paged_to_the_last_registered_field
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/test_personal_preferences_pg.py::test_actual_navigation_options_favorites_and_revoked_authorization
+tests/enterprise_search/test_task_result_pg.py::test_real_wait_responsibility_state_and_date_come_only_from_registered_fields
+tests/enterprise_search/test_structured_passage_pg.py::test_fixed_structured_record_can_be_paged_to_the_last_registered_field
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/test_personal_preferences_pg.py::test_actual_navigation_options_favorites_and_revoked_authorization
+tests/enterprise_search/test_task_result_pg.py::test_real_wait_responsibility_state_and_date_come_only_from_registered_fields
+tests/enterprise_search/test_structured_passage_pg.py::test_fixed_structured_record_can_be_paged_to_the_last_registered_field
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/test_personal_preferences_pg.py::test_actual_navigation_options_favorites_and_revoked_authorization
+tests/enterprise_search/test_task_result_pg.py::test_real_wait_responsibility_state_and_date_come_only_from_registered_fields
+tests/enterprise_search/test_structured_passage_pg.py::test_fixed_structured_record_can_be_paged_to_the_last_registered_field
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_task_result_pg.py::test_real_wait_responsibility_state_and_date_come_only_from_registered_fields
+tests/enterprise_search/test_structured_passage_pg.py::test_fixed_structured_record_can_be_paged_to_the_last_registered_field
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_task_result_pg.py::test_four_tables_replay_actual_citations_and_save_the_same_private_cells[blockers-next_step]
+FAILED tests/enterprise_search/test_task_result_pg.py::test_four_tables_replay_actual_citations_and_save_the_same_private_cells[cases-measures]
+FAILED tests/enterprise_search/test_task_result_pg.py::test_four_tables_replay_actual_citations_and_save_the_same_private_cells[review-key_changes]
+FAILED tests/enterprise_search/test_task_result_pg.py::test_four_tables_replay_actual_citations_and_save_the_same_private_cells[commitments-follow_up]
+FAILED tests/enterprise_search/test_task_result_pg.py::test_forged_cell_reference_is_partial_and_cannot_be_saved_as_a_fact
+FAILED tests/enterprise_search/test_task_result_pg.py::test_withdrawn_table_sources_remove_the_table_and_dependent_analysis
+FAILED tests/enterprise_search/test_task_result_pg.py::test_real_wait_responsibility_state_and_date_come_only_from_registered_fields
+FAILED tests/enterprise_search/test_structured_passage_pg.py::test_fixed_structured_record_can_be_paged_to_the_last_registered_field
+8 failed, 14 passed, 29 warnings in 49.73s

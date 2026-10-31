@@ -1,0 +1,48 @@
+--- a/pdos-next/server/tests/automations_pg/test_personal_summary_pg.py
++++ b/pdos-next/server/tests/automations_pg/test_personal_summary_pg.py
+@@ -25,6 +25,7 @@
+ from pdos_next.domain.automations.service_models import AutomationServiceAttempt
+ from pdos_next.domain.projects.models import Project
+ from pdos_next.domain.work_management.constants import STATUS
++from pdos_next.errors import DomainError
+ from pdos_next.models import Grant, now
+ from pdos_next.service import digest
+ from tests.automations_pg.test_service_automation_pg import _activate, _ready, _spec
+@@ -109,6 +110,10 @@
+                         requester_id=setup.human, category_id=setup.category,
+                         read_snapshot=True) as session:
+         run = session.get(AgentRun, UUID(envelope["subject_id"]))
++        # Match the public endpoint's visible_run precondition: revoked category
++        # READ can hide the Run itself before any stored-result hook is entered.
++        if run is None or run.requester_id != setup.ctx.requester_id:
++            raise DomainError("FORBIDDEN_SCOPE", "运行不在当前可读范围。", 403)
+         return personal_summary_runtime.checked_result(session, setup.ctx, run)
+ 
+ 
+@@ -152,9 +157,16 @@
+     setup, work = summary_work.setup, summary_work.work
+     _rule, envelope = admit(summary_work)
+     before = flow.snapshots(work)
+-    # This proof is intentionally made under the existing writer/requester scope.
++    # Native private audience is requester-bound; the admitted writer/owner pair
++    # can read what that owner can read while both category grants remain live.
+     with tenant_session(setup.engine, setup.tenant, actor_id=setup.agent,
+                         requester_id=setup.human, category_id=setup.category) as session:
++        assert session.scalar(select(Project.id).where(
++            Project.id == work.project_id,
++        )) == work.project_id
++    # The same background identity alone has no private-owner audience.
++    with tenant_session(setup.engine, setup.tenant, actor_id=setup.agent,
++                        requester_id=setup.agent, category_id=setup.category) as session:
+         assert session.scalar(select(Project.id).where(Project.id == work.project_id)) is None
+     worker = kernel(summary_work, monkeypatch)
+     monkeypatch.setattr("pdos_next.agent_kernel.activities.activity.heartbeat", lambda *_a: None)
+@@ -199,8 +211,6 @@
+ 
+ 
+ def test_actual_owner_revocation_hides_persisted_summary(summary_work, monkeypatch):
+-    from pdos_next.errors import DomainError
+-
+     _rule, envelope = admit(summary_work)
+     worker = kernel(summary_work, monkeypatch)
+     monkeypatch.setattr("pdos_next.agent_kernel.activities.activity.heartbeat", lambda *_a: None)

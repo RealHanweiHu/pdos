@@ -1,0 +1,118 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 1 item
+
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke FAILED [100%]
+
+=================================== FAILURES ===================================
+_ test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke _
+
+project_work = namespace(setup=<isolated synthetic test scope>, project_id=UUID('b69d0709-29f9-44d9-bacc-7f836203f28b'), original_id=...unction parse_original at 0x10f1eaa20>), client=<starlette.testclient.TestClient object at 0x11e19f3b0>), task_id=None)
+
+    def test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke(
+        project_work,
+    ):
+        """Same category/project remain readable; only the source recipient is revoked."""
+        setup = project_work.setup
+        private = create_g0_project(setup, visibility="private", name="Native footprint privacy",
+                                    purpose="Actual same-category source-only permission boundary")
+        content = "Synthetic native source: named project condition remains individually traceable."
+        response = post(setup, request(setup, "evidence.artifact.register", {
+            "title": "Private native status basis", "visibility": "private", "content": content,
+            "source_label": "Synthetic recipient ACL; no owner or visibility rewriting",
+        }), actor=setup.peer)
+        assert response.status_code == 200, response.text
+        source_id = UUID(response.json()["subject_id"])
+        with Session(setup.admin) as session, session.begin():
+            source = session.get(Artifact, source_id)
+            assert source.owner_id == setup.peer and source.visibility == "private"
+            audience = ObjectAudience(
+                tenant_id=setup.tenant, category_id=setup.category, object_type="artifact_versions",
+                subject_id=source.id, owner_id=source.owner_id, principal_id=setup.human,
+            )
+            session.add(audience)
+            session.flush()
+            audience_id = audience.id
+        work = SimpleNamespace(**{**vars(project_work), "project_id": UUID(private.project_id),
+                                  "source": {"kind": "artifact", "id": str(source_id),
+                                             "revision": 1, "position": "line:1;quote_sha256:" +
+                                             sha256(content.encode()).hexdigest()}})
+>       flow.execute(work, STATUS, flow.payload(
+            work, fact_summary="SYNTHETIC_NATIVE_PRIVATE_STATUS", next_steps="保留具名状态原版本。",
+            task_refs=[],
+        ))
+
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/work_management_pg/test_workflow.py:204: in execute
+    command, _ = inputs(work, operation, value, actor=actor)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = namespace(setup=<isolated synthetic test scope>, project_id=UUID('52c3adb0-57f6-488b-a39d-4367244e6021'), original_id=...unction parse_original at 0x10f1eaa20>), client=<starlette.testclient.TestClient object at 0x11e19f3b0>), task_id=None)
+operation = 'work.status_update.create'
+value = {'project_id': '52c3adb0-57f6-488b-a39d-4367244e6021', 'sources': [{'kind': 'artifact', 'id': '8ac1b5f9-d1af-4ce1-8b50... isolated synthetic work command with exact original evidence', 'fact_summary': 'SYNTHETIC_NATIVE_PRIVATE_STATUS', ...}
+actor = None
+
+    def inputs(work, operation, value, *, actor=None):
+        before = snapshots(work)
+        command = cmd(work.setup, operation, deepcopy(value))
+        response = work.setup.client.post(
+            root(work) + "/project-work/inputs", headers=headers(work, actor), json=command
+        )
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"SOURCE_UNAVAILABLE","message":"原生文本缺少精确登记来源证明。","detail":{"reason":"SOURCE_UNAVAILABLE"}}
+E       assert 409 == 200
+E        +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/work_management_pg/test_workflow.py:180: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-project-current-context-20261029/pg-native-revoke-run2.xml -
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py::test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+======================= 1 failed, 18 warnings in 12.86s ========================

@@ -1,0 +1,8 @@
+[
+  {
+    "level": "error",
+    "message": "The final argument passed to %s changed size between renders. The order and size of this array must remain constant.\n\nPrevious: %s\nIncoming: %s useEffect [category, P1, product] [category, P1, product, auto, ]",
+    "timestamp": "2026-10-23T19:56:52.180Z",
+    "url": "http://localhost:57859/_next/static/chunks/0t_4_next_dist_0h8fv2z._.js"
+  }
+]

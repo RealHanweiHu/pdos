@@ -1,0 +1,18 @@
+{
+  "argv": [
+    "node",
+    "--test",
+    "src/components/pai/run-continuation.test.mjs",
+    "src/components/pai/context-restart.test.mjs",
+    "src/components/pai/answer-followup-actions.test.mjs",
+    "src/lib/run-continuation.test.mjs",
+    "src/lib/run-start-intent.test.mjs"
+  ],
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web",
+  "started_at": "2026-10-30T09:41:48.641040+00:00",
+  "finished_at": "2026-10-30T09:41:49.536401+00:00",
+  "exit_code": 0,
+  "stdout_log": "restart-ui-run3.log",
+  "stdout_sha256": "c1895d4b34354c70ad8be26fdbe418716d06d4021d5f5ba066317e5f2c97aec9",
+  "scope": "pure/static only; no DB/provider/browser"
+}

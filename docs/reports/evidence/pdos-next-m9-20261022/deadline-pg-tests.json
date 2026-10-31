@@ -1,0 +1,12 @@
+{
+  "args": [
+    "-m",
+    "pytest",
+    "-q",
+    "tests/change_execution/test_completion_deadline_pg.py"
+  ],
+  "exit": 0,
+  "output": "......                                                                   [100%]\n6 passed in 0.32s\n",
+  "head": "s0_0813",
+  "target": "127.0.0.1:64245/pdos_test"
+}

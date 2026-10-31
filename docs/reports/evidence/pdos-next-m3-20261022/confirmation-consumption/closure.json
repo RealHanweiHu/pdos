@@ -1,0 +1,20 @@
+{
+  "status": "original_three_test_obligations_closed",
+  "source_files": 8,
+  "source_manifest_verified": true,
+  "pure_passed": 164,
+  "group_pg_passed": 34,
+  "group_pg_failed": 0,
+  "group_pg_deselected": 0,
+  "database": {
+    "port": 64245,
+    "database": "pdos_test",
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0812"
+  },
+  "schema_changes": false,
+  "confirmation_ttl_changed": false,
+  "real_model_calls": 0,
+  "phase_acceptance": false,
+  "git_push": false
+}

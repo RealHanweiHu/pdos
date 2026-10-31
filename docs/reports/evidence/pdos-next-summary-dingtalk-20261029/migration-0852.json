@@ -1,0 +1,62 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0852",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/summary-dingtalk-53502-before-0852.dump",
+  "backup_bytes": 108339042,
+  "backup_sha256": "ad1da520d478d7fe21a3ccb66df257dc7d53cc56ed763eaf1f69f880bec6bbf4",
+  "operations": [
+    {
+      "direction": "upgrade",
+      "head": "s0_0852",
+      "history_counts_unchanged": true,
+      "eight_existing_table_owners_acl_and_rls_unchanged": true,
+      "all_old_policies_unchanged": true,
+      "two_canonical_function_bodies_only": true,
+      "all_old_function_owners_flags_acl_preserved": true,
+      "orm_columns_nullable_match": true,
+      "agent_has_no_new_table_or_helper_privileges": true,
+      "exact_predecessor_restoration": false
+    },
+    {
+      "direction": "downgrade",
+      "head": "s0_0851",
+      "history_counts_unchanged": true,
+      "eight_existing_table_owners_acl_and_rls_unchanged": true,
+      "all_old_policies_unchanged": true,
+      "two_canonical_function_bodies_only": false,
+      "all_old_function_owners_flags_acl_preserved": true,
+      "orm_columns_nullable_match": false,
+      "agent_has_no_new_table_or_helper_privileges": false,
+      "exact_predecessor_restoration": true
+    },
+    {
+      "direction": "upgrade",
+      "head": "s0_0852",
+      "history_counts_unchanged": true,
+      "eight_existing_table_owners_acl_and_rls_unchanged": true,
+      "all_old_policies_unchanged": true,
+      "two_canonical_function_bodies_only": true,
+      "all_old_function_owners_flags_acl_preserved": true,
+      "orm_columns_nullable_match": true,
+      "agent_has_no_new_table_or_helper_privileges": true,
+      "exact_predecessor_restoration": false
+    }
+  ],
+  "history_counts": {
+    "agent_runs": 5231,
+    "agent_tool_calls": 9926,
+    "action_receipts": 51394,
+    "similar_history_feedback": 10,
+    "category_knowledge_entries": 511,
+    "knowledge_answer_reviews": 46,
+    "knowledge_gap_submissions": 12,
+    "automation_rule_versions": 96,
+    "automation_service_grants": 48,
+    "automation_service_attempts": 46,
+    "dingtalk_deliveries": 26,
+    "dingtalk_account_bindings": 24,
+    "dingtalk_applications": 23
+  },
+  "real_provider_accessed": false
+}

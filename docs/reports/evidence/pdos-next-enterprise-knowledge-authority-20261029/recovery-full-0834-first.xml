@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="81.494" timestamp="2026-10-28T22:06:32.624983-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_recovery_pg" name="test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]" time="80.414"><error message="failed on setup with &quot;AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code&quot;">tests/enterprise_search/test_recovery_pg.py:102: in all_sources
+    supply()
+tests/enterprise_search/test_recovery_pg.py:100: in supply
+    return recorded(owner, demand, payload=payload)[1]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_supply_execution.py:128: in recorded
+    capture = captured(setup, work, payload=payload)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_supply_execution.py:117: in captured
+    assert response.status_code == 200, response.text
+E   AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E   assert 422 == 200
+E    +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code</error></testcase></testsuite></testsuites>

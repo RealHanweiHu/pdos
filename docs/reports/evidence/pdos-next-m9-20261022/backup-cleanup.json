@@ -1,0 +1,19 @@
+{
+  "target": "127.0.0.1:64245/pdos_test",
+  "head": "s0_0813",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "dump_path": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/post-m9-completion-20261022-s0_0813.dump",
+  "size": 88001222,
+  "sha256": "ef6b185e29b94a63910bd8b7a7315411491af83b820b39588eebe96814502e37",
+  "originals_path": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/m9-completion-originals-20261022",
+  "original_files": {
+    "originals/c22911ac462f4da6a8d7d8b776e44e31/v1/a4baaf218e01b466da2a3a0934d42f93edff17414d43dbe1f05406d96af1fbb9": "a4baaf218e01b466da2a3a0934d42f93edff17414d43dbe1f05406d96af1fbb9",
+    "originals/9eb5f38d009946e397e552f6c1269524/v1/f653b74c970ff1944b95eb120ce58258ffc295603249010afbf14c52850a90ad": "f653b74c970ff1944b95eb120ce58258ffc295603249010afbf14c52850a90ad",
+    "originals/35f7a67dba0543479dd4bfb2c6bbd8a5/v1/c0e49843f8640050c9d453505c913ce6d8ec9fe4c21c86c0bb1594504b5f45aa": "c0e49843f8640050c9d453505c913ce6d8ec9fe4c21c86c0bb1594504b5f45aa"
+  },
+  "own_short_login_removed": 1,
+  "own_preview_ports_closed": true,
+  "shared_services_retained": true,
+  "prior_backups_preserved": true,
+  "business_rows_deleted": 0
+}

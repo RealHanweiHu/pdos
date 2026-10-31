@@ -1,0 +1,116 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 8 items
+
+tests/enterprise_search/test_scope_policy.py::test_threshold_follows_source_recheck_and_never_changes_model_selectors[3-False-same_category-1] PASSED [ 12%]
+tests/enterprise_search/test_scope_policy.py::test_threshold_follows_source_recheck_and_never_changes_model_selectors[3-True-same_category-2] PASSED [ 25%]
+tests/enterprise_search/test_scope_policy.py::test_threshold_follows_source_recheck_and_never_changes_model_selectors[2-False-current-1] PASSED [ 37%]
+tests/enterprise_search/test_scope_policy.py::test_threshold_follows_source_recheck_and_never_changes_model_selectors[0-False-same_category-2] PASSED [ 50%]
+tests/enterprise_search/test_scope_policy.py::test_lookup_choices_are_strict_human_fields_and_not_model_tool_arguments PASSED [ 62%]
+tests/agent_kernel/test_search_preferences_pg.py::test_scope_choice_freezes_and_human_edits_win_over_finish_and_model_proposals PASSED [ 75%]
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice FAILED [ 87%]
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation FAILED [100%]
+
+=================================== FAILURES ===================================
+_ test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice _
+tests/enterprise_search/test_scope_pg.py:47: in test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+    output = execute(owner, scope, host)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_assistant_pg.py:179: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:729: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:235: in prepare
+    context = project_context(scope, state["goal"], bindings=tuple(
+pdos_next/agent_kernel/host.py:80: in skill_context
+    reference = snapshot(self.store, scope, value=value, schema=schema, bindings=bindings,
+pdos_next/agent_kernel/context_projection.py:150: in snapshot
+    raise DomainError("VALIDATION_FAILED", "当前方法的资料合同不匹配，已保留字段核对原因。",
+E   pdos_next.errors.DomainError: 当前方法的资料合同不匹配，已保留字段核对原因。
+E   During task with name 'prepare_context' and id 'b1778d1d-fd05-543a-4abd-4ac5de07f437'
+_____ test_server_category_fallback_and_group_survive_durable_continuation _____
+tests/enterprise_search/test_scope_temporal_pg.py:21: in test_server_category_fallback_and_group_survive_durable_continuation
+    run_http_case(setup, monkeypatch, ContinuingClient(), category_scoped=True,
+tests/enterprise_search/test_assistant_temporal_pg.py:209: in run_http_case
+    asyncio.run(actual())
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_assistant_temporal_pg.py:121: in actual
+    assert outcome["status"] == "completed", outcome
+E   AssertionError: {'error_code': 'VALIDATION_FAILED', 'run_id': '177e89aa-86fd-4965-930d-3dfa59184ada', 'status': 'failed'}
+E   assert 'failed' == 'completed'
+E     
+E     - completed
+E     + failed
+=============================== warnings summary ===============================
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+FAILED tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+================== 2 failed, 6 passed, 18 warnings in 20.77s ===================

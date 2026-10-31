@@ -1,0 +1,127 @@
+Browser tab: 4, Title: "PDOS · 研发工作区", URL: "http://localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=field".
+1 AXWebArea PDOS · 研发工作区, URL: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=field
+	2 container
+		3 container
+			4 pop up button (collapsed) Description: Open Next.js Dev Tools, ID: next-logo, Secondary Actions: Expand
+				5 image
+			6 button Open issues overlay
+				7 text 4
+				8 text Issue
+			9 button Collapse issues badge
+				10 image
+		11 link Description: 跳到工作内容, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=field#workspace-content
+		12 text PDOS
+		13 button 收起侧栏
+			14 image
+		15 button (collapsed) Description: 新建：选择办理入口, Help: 新建, Secondary Actions: Expand
+			16 text 新建
+		17 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			18 text ⌘K
+		19 container 工作区导航
+			20 text 日常
+			21 link Description: 我的工作, Value: localhost:57859/?area=work&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb
+			22 link Description: 项目, Value: localhost:57859/?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb
+			23 container 最近的在办项目
+				24 link Description: Approved revision fixture 阶段尚未提供, Help: Approved revision fixture · 阶段尚未提供, Value: localhost:57859/?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e
+			25 link Description: 组合与资源, Value: localhost:57859/?area=programs&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb
+			26 link Description: 知识, Value: localhost:57859/?area=knowledge&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb
+		27 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: localhost:57859/plan
+		28 link Description: 设置, Value: localhost:57859/?area=settings&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb
+		29 button 切换明暗主题
+		30 text Synthetic owner
+		31 text 本地合成环境
+		32 link Description: 项目, Value: localhost:57859/?area=projects
+		33 text Approved revision fixture
+		34 link Description: 综合预览 · 换场景 / 身份, Value: localhost:57859/preview
+		35 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			36 image
+		37 container workspace-content
+			38 container 品类工作台区
+				39 link Description: 型号, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=products&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49
+				40 link Description: 项目, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49
+				41 link Description: 知识, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=knowledge&view=sources&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49
+				42 link Description: 设置, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=settings&view=preferences&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49
+				43 button Description: 快速查找入口或型号, Help: 当前品类快速查找 · ⌘ / Ctrl Shift K
+				44 pop up button (collapsed, settable) Description: 当前型号, Value: Approved revision fixture, Secondary Actions: Expand
+					45 menu
+						46 Synthetic product
+						47 (selected) Approved revision fixture
+			48 container 项目视图
+				49 link Description: 现在, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49
+				50 link Description: 工作与计划, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=plan&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49
+				51 link Description: 试制, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=builds&task=prepare&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49
+				52 link Description: 测试与交接, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=verification&task=prepare&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49
+				53 link Description: 问题与变更, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49
+				54 link Description: 现场与客户反馈, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=field&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49
+				55 link Description: 评审与交付 尚未接入, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=reviews&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49
+				56 link Description: 资料, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=files&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49
+			57 container
+				58 heading 现场与客户反馈, Value: 1
+					59 text 现场与客户反馈
+				60 text 当前范围：Approved revision fixture
+				61 container 现场与客户反馈
+					62 container
+						63 text 反馈来源 → 实际定位 → 遏制 / 改善 → 变更与复验
+						64 heading 现场与客户反馈, Value: 2
+							65 text 现场与客户反馈
+						66 button 刷新反馈记录
+						67 button 登记反馈
+					68 text 先保留收到的原话和来源。产品、批次或配置无法定位时保持未知；报告标签不作为实际配置。客户意见、变更要求与承认声明分别记录，承认声明不授予工程或制造放行。
+					69 container 反馈列表
+						70 heading 收到的反馈, Value: 3
+							71 text 收到的反馈
+						72 container
+							73 heading Synthetic customer vibration feedback, Value: 4
+								74 text Synthetic customer vibration feedback
+							75 text 已有配置定位  · v 2 Actual synthetic report; no failure event or CAPA is inferred
+							76 definition list
+								77 container 来源类型
+									78 text 来源类型
+								79 container
+									80 text 客户  ·  客户变更要求
+								81 container 接收时间
+									82 text 接收时间
+								83 text 2026-10-22T17:57:44.739140Z
+								84 container 用途
+									85 text 用途
+								86 text Verify preparation
+								87 container 报告中的标签
+									88 text 报告中的标签
+								89 container
+									90 text 产品： Synthetic motor ；批次： 未知 ；配置： 未知
+								91 container 实际项目
+									92 text 实际项目
+								93 text Approved revision fixture
+								94 container 实际工程配置
+									95 text 实际工程配置
+								96 text Synthetic original engineering configuration · v1
+								97 container 实际制造配置
+									98 text 实际制造配置
+								99 text Synthetic original motor assembly process · v1
+								100 container 实际批次
+									101 text 实际批次
+								102 text 未知，待调查
+								103 container 受众与来源
+									104 text 受众与来源
+								105 container
+									106 text 品类授权成员  ·  当前来源已核对
+							107 button (collapsed) 固定来源 · 2 条, Secondary Actions: Expand
+								108 text 固定来源 · 
+								109 text 2
+								110 text  条
+							111 button 重新核对定位
+							112 button 登记遏制 / 改善
+							113 button 链接后续结果
+							114 button 查看变更接续
+							115 container Synthetic customer vibration feedback的处置与后续结果
+								116 heading 处置与后续结果, Value: 5
+									117 text 处置与后续结果
+								118 text 尚无可读处置记录；不能据此推定问题已解决。
+							119 button (collapsed) 反馈版本历史 · 2 条, Secondary Actions: Expand
+								120 text 反馈版本历史 · 
+								121 text 2
+								122 text  条
+					123 text 实际复验与处置结果可继续形成经验候选。前往本型号“知识 → 来源与事实”记录候选，并保留上述固定来源及实际结果回执；适用性审核与正式规则发布另行办理。
+		124 button Description: 打开小Pai工作栏, Help: 在当前范围打开小Pai
+
+The focused UI element is 1 AXWebArea PDOS · 研发工作区, URL: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=field

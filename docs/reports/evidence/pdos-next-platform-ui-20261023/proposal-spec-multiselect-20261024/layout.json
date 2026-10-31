@@ -1,0 +1,97 @@
+{
+  "desktop": {
+    "documentWidth": 1280,
+    "listHeight": 180,
+    "options": 9,
+    "panelHeight": 258,
+    "scrollHeight": 312,
+    "viewport": 1280
+  },
+  "mobile": {
+    "documentWidth": 390,
+    "listHeight": 180,
+    "panel": {
+      "bottom": 669.3125,
+      "height": 258,
+      "left": 20,
+      "right": 370,
+      "top": 411.3125,
+      "width": 350,
+      "x": 20,
+      "y": 411.3125
+    },
+    "scrollHeight": 312,
+    "viewport": 390
+  },
+  "final": {
+    "before": {
+      "rows": [
+        {
+          "text": "最大压力\t\t\nPAR-02 v3\nAI起草 / 未知\n\t",
+          "value": "目标待确认 · kPa"
+        },
+        {
+          "text": "充气速度\t\t\nPAR-04 v2\nAI起草 / 未知\n\t",
+          "value": "目标待确认 · L/min"
+        },
+        {
+          "text": "噪声\t\t\nPAR-08 v2\n手动添加 / 待确认\n\t",
+          "value": "目标待确认 · dB(A)"
+        }
+      ],
+      "scroll": 0
+    },
+    "after": {
+      "options": [
+        {
+          "checked": true,
+          "disabled": false,
+          "name": "选择参数 整机重量"
+        },
+        {
+          "checked": true,
+          "disabled": false,
+          "name": "选择参数 电池容量"
+        },
+        {
+          "checked": true,
+          "disabled": true,
+          "name": "选择参数 最大压力"
+        },
+        {
+          "checked": true,
+          "disabled": true,
+          "name": "选择参数 噪声"
+        },
+        {
+          "checked": true,
+          "disabled": true,
+          "name": "选择参数 充气速度"
+        }
+      ],
+      "rows": [
+        {
+          "text": "最大压力\t\t\nPAR-02 v3\nAI起草 / 未知\n\t",
+          "value": "目标待确认 · kPa"
+        },
+        {
+          "text": "充气速度\t\t\nPAR-04 v2\nAI起草 / 未知\n\t",
+          "value": "目标待确认 · L/min"
+        },
+        {
+          "text": "噪声\t\t\nPAR-08 v2\n手动添加 / 待确认\n\t",
+          "value": "目标待确认 · dB(A)"
+        }
+      ],
+      "scroll": 0
+    }
+  },
+  "noResults": {
+    "empty": "没有匹配的参数清除搜索",
+    "selection": [
+      "未保存",
+      "没有匹配的参数清除搜索",
+      "已选 3 项"
+    ]
+  }
+}

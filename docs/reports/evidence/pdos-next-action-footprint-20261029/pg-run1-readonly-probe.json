@@ -1,0 +1,248 @@
+[
+  {
+    "run_id": "33aaf165-0d1f-4a9a-823f-19bc4a6ac21d",
+    "probes": [
+      {
+        "step": "check_action",
+        "proof": {
+          "version": 1,
+          "run_id": "42351e04-9734-4543-8c5b-bb0047e921ab",
+          "target": {
+            "tenant_id": "481c6c24-57fe-437b-9577-ca81cb3453a0",
+            "category_id": "29733670-80a7-4349-a91d-fd5190fbb34c",
+            "product_id": "dbf57a74-96fc-468d-beca-92746bb66369",
+            "project_id": "7b0c70ae-1d39-477f-9c6b-4659dd09f824",
+            "build_id": "c28ecb0c-ae1e-4b8f-95fb-989ac51f0196",
+            "build_revision": 1,
+            "owner_id": "02b6cfe5-bd12-48a1-ba38-b18b735dc00d",
+            "visibility": "category",
+            "preparation_id": null,
+            "preparation_revision": null,
+            "preparation_sha256": null
+          },
+          "discussion_sources": [
+            {
+              "citation_id": "3c6b6f12-66f7-5b18-8e5e-1ba670bb30b9",
+              "purpose": "historical_discussion",
+              "source_type": "artifact",
+              "source_id": "09946fd3-5d6b-41d7-982c-1cac3f1a8153",
+              "source_revision": 1,
+              "content_hash": "4f0277a2e134960b5ee465e4f0f96f748bea1f8b4b1acb2c8c6974c899f2dc03",
+              "locator": {
+                "native": [
+                  "line:1"
+                ],
+                "char_end": 30,
+                "line_end": 1,
+                "char_start": 0,
+                "line_start": 1
+              },
+              "origin_run_id": "42351e04-9734-4543-8c5b-bb0047e921ab",
+              "origin_citation_id": "3c6b6f12-66f7-5b18-8e5e-1ba670bb30b9",
+              "read_proof": {
+                "call_id": "aa294668-f624-48cd-91d4-bfe4822e0be2",
+                "tool": "assistant.search",
+                "result_digest": "5ae14c5dbe03a03f941fdf8fc41fc2e8015d120691fc5003ef1231dd414f454b",
+                "citation_digest": "1b948f65de24717c41f8b41a030c0a7bf61b12a3a728f17ddd56b4b3a431095a"
+              }
+            }
+          ],
+          "execution_references": [],
+          "execution_sources": [],
+          "read_set": [
+            {
+              "artifact_id": "0b3317ec-dbab-49ae-9c4e-19e5b9ad077a",
+              "expected_revision": 1
+            }
+          ],
+          "applicability_status": "not_assessed",
+          "digest": "22dc2e0a449f4fc81751b95d7fc6b5812c2a8347c07818493c070594ca8ac9cb"
+        },
+        "ok": true
+      },
+      {
+        "step": "current_footprint",
+        "carried": {
+          "7abb0dc6-1885-591a-ba33-3576eec5b923": {
+            "title": "Synthetic current execution definition",
+            "nature": "untrusted",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 49,
+              "line_end": 1,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "object_id": "32e83518-25ba-4e36-bab9-a0d6f194834c",
+            "source_id": "32e83518-25ba-4e36-bab9-a0d6f194834c",
+            "tenant_id": "481c6c24-57fe-437b-9577-ca81cb3453a0",
+            "is_current": true,
+            "product_id": "dbf57a74-96fc-468d-beca-92746bb66369",
+            "project_id": null,
+            "category_id": "29733670-80a7-4349-a91d-fd5190fbb34c",
+            "citation_id": "7abb0dc6-1885-591a-ba33-3576eec5b923",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "8e9cfe9c6d010cc495965e41d665f9a675bf5d802239ae391aaa1856daaf85fc",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          }
+        },
+        "historical": [],
+        "missing": {},
+        "current": {
+          "7abb0dc6-1885-591a-ba33-3576eec5b923": {
+            "source_type": "artifact",
+            "source_id": "32e83518-25ba-4e36-bab9-a0d6f194834c",
+            "source_revision": 1,
+            "private": false,
+            "customer_original": false,
+            "is_current": true
+          }
+        },
+        "ok": true
+      },
+      {
+        "step": "capture_child",
+        "ok": false,
+        "exception": "DomainError",
+        "error": {
+          "code": "FORBIDDEN_SCOPE",
+          "message": "所选来源不能带入当前复验准备。",
+          "detail": {
+            "reason_key": "assistant_action_citation_not_carried",
+            "reason": "FORBIDDEN_SCOPE"
+          }
+        },
+        "trace": "Traceback (most recent call last):\n  File \"/tmp/pdos-action-diagnostic-stage-20261029/readonly_diagnostic.py\", line 103, in main\n    result[\"proof\"] = capture(\n                      ^^^^^^^^\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/action_sources.py\", line 350, in capture\n    _deny(\"citation_not_carried\")\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/action_sources.py\", line 43, in _deny\n    raise DomainError(\npdos_next.errors.DomainError: 所选来源不能带入当前复验准备。\n"
+      }
+    ]
+  },
+  {
+    "run_id": "a34a47f3-e9b8-403a-ae1b-6dbf4dc09f57",
+    "probes": [
+      {
+        "step": "check_action",
+        "proof": {
+          "version": 1,
+          "run_id": "92866a3b-186c-4ace-81d6-72d52fa61020",
+          "target": {
+            "tenant_id": "859e4788-9c92-42ca-9a98-bcb90ed38d59",
+            "category_id": "e111d99d-ce9b-43b8-8103-d02bb94b2043",
+            "product_id": "0a4965f5-5521-40bb-9743-7c3a88d5ba30",
+            "project_id": "fc01efb9-d48b-44e3-ac9f-39018e78f06e",
+            "build_id": "4b79c59c-b5ac-4d7d-bbf8-ac6a69e63630",
+            "build_revision": 1,
+            "owner_id": "a9fa199e-5b90-4461-972e-3725855f039a",
+            "visibility": "private",
+            "preparation_id": null,
+            "preparation_revision": null,
+            "preparation_sha256": null
+          },
+          "discussion_sources": [
+            {
+              "citation_id": "c2e2b631-6e8c-5ee3-8111-d08f8410cbea",
+              "purpose": "historical_discussion",
+              "source_type": "artifact",
+              "source_id": "bd0cccc5-3886-44ef-b1b9-5018b928622c",
+              "source_revision": 1,
+              "content_hash": "c1da3089246a3f27d159bd60cad8fc8aa91e8ef6ff969407b72a7f7f01b14c92",
+              "locator": {
+                "native": [
+                  "line:1"
+                ],
+                "char_end": 30,
+                "line_end": 1,
+                "char_start": 0,
+                "line_start": 1
+              },
+              "origin_run_id": "92866a3b-186c-4ace-81d6-72d52fa61020",
+              "origin_citation_id": "c2e2b631-6e8c-5ee3-8111-d08f8410cbea",
+              "read_proof": {
+                "call_id": "05aa29a7-2461-49c1-be56-f3f7e31751bc",
+                "tool": "assistant.search",
+                "result_digest": "7cd9598942c072e2b16dbfced1aa94d815a2f4be023fac21a9368cfbd72df452",
+                "citation_digest": "66ee6f4569da4d20ef353d358ecfe56252ea4825a8c391154832ad0ccaae99e5"
+              }
+            }
+          ],
+          "execution_references": [],
+          "execution_sources": [],
+          "read_set": [
+            {
+              "artifact_id": "a8fa94ae-be10-453e-8597-a52ca5cdbfe9",
+              "expected_revision": 1
+            }
+          ],
+          "applicability_status": "not_assessed",
+          "digest": "b291cba51ced517dba00727e99572f485ecfb61e01e1bfe295f490a9d3734936"
+        },
+        "ok": true
+      },
+      {
+        "step": "current_footprint",
+        "carried": {
+          "bdd4878a-91d2-5b57-98de-bd2021f3dc37": {
+            "title": "I14 current execution",
+            "nature": "untrusted",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 36,
+              "line_end": 1,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "object_id": "8a8c24ad-0da8-4dd1-b828-b6dea20d568a",
+            "source_id": "8a8c24ad-0da8-4dd1-b828-b6dea20d568a",
+            "tenant_id": "859e4788-9c92-42ca-9a98-bcb90ed38d59",
+            "is_current": true,
+            "product_id": "0a4965f5-5521-40bb-9743-7c3a88d5ba30",
+            "project_id": null,
+            "category_id": "e111d99d-ce9b-43b8-8103-d02bb94b2043",
+            "citation_id": "bdd4878a-91d2-5b57-98de-bd2021f3dc37",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "52c058756f61eeb180042e7251dd7e5ef81a3e73b3c25e9b22aa2ddd744874eb",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          }
+        },
+        "historical": [],
+        "missing": {},
+        "current": {
+          "bdd4878a-91d2-5b57-98de-bd2021f3dc37": {
+            "source_type": "artifact",
+            "source_id": "8a8c24ad-0da8-4dd1-b828-b6dea20d568a",
+            "source_revision": 1,
+            "private": false,
+            "customer_original": false,
+            "is_current": true
+          }
+        },
+        "ok": true
+      },
+      {
+        "step": "capture_child",
+        "ok": false,
+        "exception": "DomainError",
+        "error": {
+          "code": "FORBIDDEN_SCOPE",
+          "message": "所选来源不能带入当前复验准备。",
+          "detail": {
+            "reason_key": "assistant_action_citation_not_carried",
+            "reason": "FORBIDDEN_SCOPE"
+          }
+        },
+        "trace": "Traceback (most recent call last):\n  File \"/tmp/pdos-action-diagnostic-stage-20261029/readonly_diagnostic.py\", line 103, in main\n    result[\"proof\"] = capture(\n                      ^^^^^^^^\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/action_sources.py\", line 350, in capture\n    _deny(\"citation_not_carried\")\n  File \"/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/action_sources.py\", line 43, in _deny\n    raise DomainError(\npdos_next.errors.DomainError: 所选来源不能带入当前复验准备。\n"
+      }
+    ]
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "src/components/pai-conversation.tsx": "5177dca0305c5e5ce925747e6ad0043be11584878e56afe40fd12111f009777d",
+  "src/components/pai-conversation.module.css": "94ab08492758f603092f445a6efac1d229b220d25e106cf7c7a008528054fdf2",
+  "src/components/pai-rail.tsx": "70f0b51dcbc3b5a029d6609a67fbbf87f30e44a7f1049eb74bd6ecd5ace119cc",
+  "src/components/pai/context-picker.tsx": "17ae2cd14acc4de78368b84106419de13d47bd264c3c1d5aa63f6586de1d2bd2",
+  "src/components/pai/context-picker.module.css": "593d51c7f3896354719674d787dc9ee90ccdb2b844b6720c0860899132108b3a",
+  "src/components/pai/skill-picker.tsx": "a0c2034a5b7efb6386b5fba533abc3d156ef5013052624404dff5b9e4b43632b",
+  "src/components/pai/run-continuation.tsx": "c3d2a7349f651ae4ffb0103563081241de10c998a82cc7d84fc53a956e94cb80",
+  "src/components/pai/run-continuation.test.mjs": "23c468cf48a441118defd80114bac872a0ca53a84aa83264ce2e5b3531dd4c07",
+  "src/components/xiaopai.tsx": "4b7622ae2be8ff88925b50fba4ccf1068e150f9a92767634939c15628acdc6f6",
+  "src/components/xiaopai.test.mjs": "85334734018dea4de723553915f789373bde3102d7be4b8808e4bead0da060e0",
+  "src/components/category-create/personal-xiaopai.tsx": "c6daf7b2abcf8151c33c99b9f123997c5723d4354fc497bd02a034d0617beb96",
+  "src/components/category-create/components.test.mjs": "550c6ef83ec92ae8c65f0d48258d129607442147ea8c4d1ee3d5eba411c2fa63",
+  "src/components/category-home.module.css": "74c3c61e03604a4f44c34b01c6047f9d01cd95f541df3ed8cba34340ac55ee24"
+}

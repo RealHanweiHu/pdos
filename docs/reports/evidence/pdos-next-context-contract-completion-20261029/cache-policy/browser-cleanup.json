@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "session_owner": "ca2eb0ad-22f8-4a06-aeee-d38d33153fa4",
+  "expired_login_sessions": 1,
+  "removed_private_files": [
+    "storage.json",
+    "state.json"
+  ],
+  "browser_cookies_cleared": true,
+  "browser_closed": true,
+  "web_and_api_stopped": true,
+  "test_database_and_temporal_retained": true
+}

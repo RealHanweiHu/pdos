@@ -1,0 +1,21 @@
+{
+  "stage": "/tmp/pdos-d-b-final-coverage-map-20261029",
+  "kind": "read-only bounded B/D coverage mapping",
+  "files": {
+    "map.md": "1507544704c3811dab3e073b792fb4b45a575018cb1a0a4881046a7c23356251",
+    "observations.json": "a43c88c7c15b97d65949bb7971006e2d8123565f88cbedb14df6af7f80dd2876"
+  },
+  "checks": {
+    "local_links": 46,
+    "all_exist": true,
+    "real_registry_and_catalog_compiled": true
+  },
+  "concrete_gaps": [
+    "B-PROJECT -> structured_answers",
+    "B-FOLLOWUP -> mapped only, out of current increment",
+    "D-STATUS",
+    "D-NATIVE-DOC"
+  ],
+  "live_mutation": false,
+  "db_model_or_provider_access": false
+}

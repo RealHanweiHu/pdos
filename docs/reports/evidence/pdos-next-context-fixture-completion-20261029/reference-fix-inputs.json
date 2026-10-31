@@ -1,0 +1,19 @@
+{
+  "checked_at": "2026-10-29T23:05:37.406452+00:00",
+  "changed_files": [
+    "pdos-next/server/tests/agent_kernel/eval_v0_ctx09_directory_support.py",
+    "pdos-next/server/tests/agent_kernel/test_eval_v0_handle_candidate_pg.py"
+  ],
+  "unchanged_files_from_original_freeze": [
+    "docs/evaluations/xiaopai-v0/context-questions.json",
+    "pdos-next/tools/tests/test_xiaopai_context_admission.py",
+    "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py"
+  ],
+  "source_sha256": {
+    "pdos-next/server/tests/agent_kernel/eval_v0_ctx09_directory_support.py": "828e50ed414987116addba31844b80a4953065a9e926347fd1c8f6dc84b29a36",
+    "pdos-next/server/tests/agent_kernel/test_eval_v0_handle_candidate_pg.py": "a297036b16c49dc6e73c67a662aef627b7d1d37837feb448c78da2b768339717",
+    "docs/evaluations/xiaopai-v0/context-questions.json": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+    "pdos-next/tools/tests/test_xiaopai_context_admission.py": "9141e4264b85576431ab5120b26dcd033f9fa086f161d03f72159dcb155f8426",
+    "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py": "429efb3325c97b840b564e1b3283644459d42299a9069c9663a2e12820b488ee"
+  }
+}

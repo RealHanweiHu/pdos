@@ -1,0 +1,24 @@
+{
+  "container": "pdos-next-test-20261002-f117bb5b",
+  "port": 53502,
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "database": "pdos_test",
+  "admin": {
+    "database": "pdos_test",
+    "role": "postgres"
+  },
+  "head": "s0_0824",
+  "app": {
+    "database": "pdos_test",
+    "role": "pdos_next_app"
+  },
+  "auth": {
+    "database": "pdos_test",
+    "role": "pdos_next_auth"
+  },
+  "dispatch": {
+    "database": "pdos_test",
+    "role": "pdos_next_dispatch"
+  },
+  "auth_guard": "Auth role intentionally cannot SELECT environment_guard; same verified endpoint and database checked, matching test fixture policy"
+}

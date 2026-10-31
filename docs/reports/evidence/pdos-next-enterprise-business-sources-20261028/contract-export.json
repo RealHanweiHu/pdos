@@ -1,0 +1,28 @@
+{
+  "offline_exit": 0,
+  "changed_schema": [
+    "SearchInput"
+  ],
+  "paths_unchanged": true,
+  "payloads_operations_acceptance_unchanged": true,
+  "source_types": {
+    "items": {
+      "type": "string",
+      "enum": [
+        "artifact",
+        "knowledge",
+        "issue",
+        "capa",
+        "change",
+        "external_wait",
+        "supply",
+        "build",
+        "test_run"
+      ]
+    },
+    "type": "array",
+    "maxItems": 9,
+    "minItems": 1,
+    "title": "Source Types"
+  }
+}

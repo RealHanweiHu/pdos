@@ -1,0 +1,46 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0846",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/field-index-recovery-53502-before-0846.dump",
+  "backup_bytes": 101591143,
+  "backup_sha256": "0a241bc51df080474bfd04d4a84503bcbe909050328bc8a120475cb4e51a32cd",
+  "operations": [
+    {
+      "direction": "upgrade",
+      "head": "s0_0846",
+      "functions_exact": true,
+      "acl_unchanged": true,
+      "history_counts_unchanged": true
+    },
+    {
+      "direction": "downgrade",
+      "head": "s0_0845",
+      "functions_exact": true,
+      "acl_unchanged": true,
+      "history_counts_unchanged": true
+    },
+    {
+      "direction": "upgrade",
+      "head": "s0_0846",
+      "functions_exact": true,
+      "acl_unchanged": true,
+      "history_counts_unchanged": true
+    }
+  ],
+  "counts": {
+    "agent_runs": 5122,
+    "agent_tool_calls": 9547,
+    "action_receipts": 48453,
+    "category_knowledge_entries": 476,
+    "knowledge_candidate_versions": 63,
+    "knowledge_rule_versions": 32,
+    "knowledge_answer_reviews": 44,
+    "knowledge_gap_submissions": 11,
+    "automation_rule_versions": 94,
+    "field_feedback_versions": 40,
+    "field_response_records": 46,
+    "dingtalk_deliveries": 1
+  },
+  "real_provider_accessed": false
+}

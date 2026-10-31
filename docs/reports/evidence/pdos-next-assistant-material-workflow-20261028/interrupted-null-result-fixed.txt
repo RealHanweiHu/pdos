@@ -1,0 +1,57 @@
+.F.                                                                      [100%]
+=================================== FAILURES ===================================
+_ test_metadata_outside_preview_survives_interruption_without_reviving_old_run[cancelled] _
+tests/enterprise_search/test_interrupted_citations_pg.py:86: in test_metadata_outside_preview_survives_interruption_without_reviving_old_run
+    output = execute(child_owner, child, host)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_assistant_pg.py:162: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:725: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:287: in model
+    turn = ports.model(
+pdos_next/agent_kernel/host.py:119: in model
+    return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/gateway.py:51: in turn
+    source_categories = self.data_categories_for(scope) if self.data_categories_for else None
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_adapter.py:307: in guard
+    selected, historical = self._carried(scope)
+                           ^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_adapter.py:118: in _carried
+    return ledger.carried(session, scope)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_ledger.py:153: in carried
+    historical.update(issued(session, scope_for_run(origin), archive=True))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_ledger.py:90: in issued
+    for call, _args in completed(session, scope, {"assistant.citations.read"}, archive=archive):
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_ledger.py:50: in completed
+    _run, actual, binding, arguments = _historical_read(
+pdos_next/agent_kernel/deterministic_proofs.py:80: in _historical_read
+    check_run_binding(run, scope, for_write=False)
+pdos_next/agent_kernel/execution.py:178: in check_run_binding
+    raise DomainError("CANCELLED_RUN", "原运行已取消或撤回。")
+E   pdos_next.errors.DomainError: 原运行已取消或撤回。
+E   During task with name 'model' and id 'cccc2659-6c24-fda7-48d4-fad7759bc23c'
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_interrupted_citations_pg.py::test_metadata_outside_preview_survives_interruption_without_reviving_old_run[cancelled]
+1 failed, 2 passed in 52.32s

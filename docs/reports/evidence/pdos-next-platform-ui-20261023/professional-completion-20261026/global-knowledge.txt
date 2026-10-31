@@ -1,0 +1,76 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs"
+      - generic: 项目集
+    - link "知识" [active]:
+      - /url: "?area=knowledge"
+      - generic: 知识
+    - paragraph: 产品管理
+    - link "品类":
+      - /url: "?area=category"
+      - generic: 品类
+    - link "立项提案":
+      - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&focus=proposals"
+      - generic: 立项提案
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - generic: 知识
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - region "知识":
+    - heading "知识" [level=1]
+    - paragraph: 团队积累的经验、规则与适用边界。
+    - button "刷新知识":
+    - navigation "知识状态":
+      - button "已发布" [pressed]
+      - button "候选"
+      - button "已失效"
+    - combobox "筛选知识品类":
+      - option "所有品类" [selected]
+      - option "汽车充气泵"
+    - searchbox "搜索知识"
+    - table:
+      - rowgroup:
+        - row "知识 状态 适用范围 来源":
+          - columnheader "知识"
+          - columnheader "状态"
+          - columnheader "适用范围"
+          - columnheader "来源"
+      - rowgroup
+    - generic: 暂无已发布知识。
+- button "打开小Pai工作栏":

@@ -1,0 +1,93 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 11 items
+
+tests/agent_kernel/test_proposal_link_projection_pg.py::test_native_locator_link_admits_only_its_current_authorized_original[none] PASSED [  9%]
+tests/agent_kernel/test_proposal_link_projection_pg.py::test_native_locator_link_admits_only_its_current_authorized_original[new_scan] PASSED [ 18%]
+tests/agent_kernel/test_proposal_link_projection_pg.py::test_native_locator_link_admits_only_its_current_authorized_original[withdraw_original] PASSED [ 27%]
+tests/agent_kernel/test_proposal_link_projection_pg.py::test_native_locator_link_admits_only_its_current_authorized_original[expire_writer] PASSED [ 36%]
+tests/agent_kernel/test_proposal_context_pg.py::test_three_private_entries_have_actual_bound_context_and_readable_items[customer_request] PASSED [ 45%]
+tests/agent_kernel/test_proposal_context_pg.py::test_three_private_entries_have_actual_bound_context_and_readable_items[new_product] PASSED [ 54%]
+tests/agent_kernel/test_proposal_context_pg.py::test_three_private_entries_have_actual_bound_context_and_readable_items[derivative] PASSED [ 63%]
+tests/agent_kernel/test_work_state_candidates_pg.py::test_domain_current_receipt_changes_readonly_projection_not_run_frozen_snapshot PASSED [ 72%]
+tests/agent_kernel/test_work_state_candidates_pg.py::test_snapshot_receipt_is_projected_from_native_ledger_after_work_volume_loss PASSED [ 81%]
+tests/agent_kernel/test_work_state_candidates_pg.py::test_personal_category_requires_actual_receipt_and_current_created_category_grant PASSED [ 90%]
+tests/agent_kernel/test_work_state_candidates_temporal_pg.py::test_actual_main_graph_verification_candidate_is_carried_without_a_second_model PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/agent_kernel/test_proposal_link_projection_pg.py::test_native_locator_link_admits_only_its_current_authorized_original[none]
+tests/agent_kernel/test_proposal_link_projection_pg.py::test_native_locator_link_admits_only_its_current_authorized_original[new_scan]
+tests/agent_kernel/test_proposal_link_projection_pg.py::test_native_locator_link_admits_only_its_current_authorized_original[withdraw_original]
+tests/agent_kernel/test_proposal_link_projection_pg.py::test_native_locator_link_admits_only_its_current_authorized_original[expire_writer]
+tests/agent_kernel/test_proposal_context_pg.py::test_three_private_entries_have_actual_bound_context_and_readable_items[customer_request]
+tests/agent_kernel/test_proposal_context_pg.py::test_three_private_entries_have_actual_bound_context_and_readable_items[new_product]
+tests/agent_kernel/test_proposal_context_pg.py::test_three_private_entries_have_actual_bound_context_and_readable_items[derivative]
+tests/agent_kernel/test_work_state_candidates_temporal_pg.py::test_actual_main_graph_verification_candidate_is_carried_without_a_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_link_projection_pg.py: 24 warnings
+tests/agent_kernel/test_proposal_context_pg.py: 24 warnings
+tests/agent_kernel/test_work_state_candidates_temporal_pg.py: 3 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_work_state_candidates_pg.py::test_domain_current_receipt_changes_readonly_projection_not_run_frozen_snapshot
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:183: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/agent_kernel/test_work_state_candidates_pg.py::test_domain_current_receipt_changes_readonly_projection_not_run_frozen_snapshot
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:200: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+tests/agent_kernel/test_work_state_candidates_pg.py::test_personal_category_requires_actual_receipt_and_current_created_category_grant
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:534: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([category])
+
+tests/agent_kernel/test_work_state_candidates_pg.py::test_personal_category_requires_actual_receipt_and_current_created_category_grant
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:543: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([grant])
+
+tests/agent_kernel/test_work_state_candidates_pg.py::test_personal_category_requires_actual_receipt_and_current_created_category_grant
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:571: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([snapshot])
+
+tests/agent_kernel/test_work_state_candidates_pg.py::test_personal_category_requires_actual_receipt_and_current_created_category_grant
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:594: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_work_state_candidates_pg.py::test_personal_category_requires_actual_receipt_and_current_created_category_grant
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:621: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_work_state_candidates_pg.py::test_personal_category_requires_actual_receipt_and_current_created_category_grant
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:686: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([receipt])
+
+tests/agent_kernel/test_work_state_candidates_temporal_pg.py::test_actual_main_graph_verification_candidate_is_carried_without_a_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/agent_kernel/test_work_state_candidates_temporal_pg.py::test_actual_main_graph_verification_candidate_is_carried_without_a_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/agent_kernel/test_work_state_candidates_temporal_pg.py::test_actual_main_graph_verification_candidate_is_carried_without_a_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/agent_kernel/test_work_state_candidates_temporal_pg.py::test_actual_main_graph_verification_candidate_is_carried_without_a_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_work_state_candidates_temporal_pg.py::test_actual_main_graph_verification_candidate_is_carried_without_a_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-x2-candidate-state-20261029/pg-evidence-x2-run1.xml -
+================= 11 passed, 72 warnings in 160.16s (0:02:40) ==================

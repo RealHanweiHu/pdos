@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-10-23T18:07:22.893651+00:00",
+  "files": {
+    "pdos-next/web/src/app/ui-lab/platform/pai-preview-state.ts": "1e213bfb43ea05f8d176171fad1c7f097ee98004bf4b9597d175710137fbe73c",
+    "pdos-next/web/src/app/ui-lab/platform/pai-preview.tsx": "fff2fdc46974b9c8d4ad58b86ccf013e4f8a894240fc0a46d1972ed24dd1591e",
+    "pdos-next/web/src/app/ui-lab/platform/pai-preview.module.css": "d02b1241a3429ecde557d5f57fd214d7e427f42f178ae1fb63ef73a759dff32e",
+    "pdos-next/web/src/app/ui-lab/platform/platform-preview.tsx": "e112e860d335ca6ae7ef8e584e762e2cd9df36bf46d1423715247aaa909f37a5",
+    "pdos-next/web/src/app/ui-lab/platform/platform.module.css": "0404bcab7a76bd23503fc1072d4d0feaad5e5c7a8a0540546ea4f05653b577ea",
+    "pdos-next/web/src/app/ui-lab/platform/design-data.ts": "1e8df20f0b5eda9495d61fdbde7c3e0b40ed838f2ca45bca0359be0c92a3c42a",
+    "pdos-next/web/src/app/ui-lab/platform/page.tsx": "34b855f0ec3e736cd8cd60a776abe2249e7cb0cb4c8e51758a9b1fda998571b9"
+  },
+  "eslint_exit_code": 0,
+  "tsc_noemit_incremental_false_exit_code": 0,
+  "production_build": "not rerun; browser used existing development server",
+  "database_or_model_calls": 0
+}

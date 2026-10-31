@@ -1,0 +1,21 @@
+--- a/pdos-next/server/pdos_next/enterprise_search/tokenizer.py
++++ b/pdos-next/server/pdos_next/enterprise_search/tokenizer.py
+@@ -12,13 +12,16 @@
+ import jieba
+ 
+ ROOT = Path(__file__).parent
+-CODE_RULE = "enterprise-codes/v1"
++CODE_RULE = "enterprise-codes/v2"
+ CHUNKER = "located-lines/v1"
+ RANKING = "bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3"
+ CODE = re.compile(
+     r"(?<![A-Z0-9])(?:"
+     r"(?:GB/T|GB|IEC|ISO|EN|ASTM)\s*\d{2,8}(?:\.\d+)*(?:[-/]\d+)?"
+-    r"|[A-Z]{1,12}\d+[A-Z0-9]*(?:[-/.][A-Z0-9]+)*)(?![A-Z0-9])"
++    # Separated letter prefixes are identifiers too (FA-2026-029, TR-A7-006).
++    # Require a digit so ordinary hyphenated words do not become codes.
++    r"|[A-Z]{1,12}(?=[A-Z0-9./-]*\d)"
++    r"(?:\d+[A-Z0-9]*|[-/.][A-Z0-9]+)(?:[-/.][A-Z0-9]+)*)(?![A-Z0-9])"
+ )
+ DASHES = str.maketrans({c: "-" for c in "‐‑‒–—−﹣"})
+ 

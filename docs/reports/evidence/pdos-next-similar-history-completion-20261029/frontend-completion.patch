@@ -1,0 +1,568 @@
+--- /dev/null
++++ b/pdos-next/web/src/app/api/v1/categories/[categoryId]/products/[productId]/change-execution/[changeId]/similar-history/feedback/route.ts
+@@ -0,0 +1,6 @@
++import type { NextRequest } from "next/server";
++import { similarHistoryProxy } from "@/lib/similar-history-proxy";
++
++export async function POST(request: NextRequest, context: { params: Promise<{ categoryId: string; productId: string; changeId: string }> }) {
++  return similarHistoryProxy(request, context.params, true, "change");
++}
+--- /dev/null
++++ b/pdos-next/web/src/app/api/v1/categories/[categoryId]/products/[productId]/change-execution/[changeId]/similar-history/route.ts
+@@ -0,0 +1,6 @@
++import type { NextRequest } from "next/server";
++import { similarHistoryProxy } from "@/lib/similar-history-proxy";
++
++export async function GET(request: NextRequest, context: { params: Promise<{ categoryId: string; productId: string; changeId: string }> }) {
++  return similarHistoryProxy(request, context.params, false, "change");
++}
+--- /dev/null
++++ b/pdos-next/web/src/app/api/v1/categories/[categoryId]/products/[productId]/similar-history/route.ts
+@@ -0,0 +1,6 @@
++import type { NextRequest } from "next/server";
++import { similarHistorySuggestionsProxy } from "@/lib/similar-history-proxy";
++
++export async function GET(request: NextRequest, context: { params: Promise<{ categoryId: string; productId: string }> }) {
++  return similarHistorySuggestionsProxy(request, context.params);
++}
+--- a/pdos-next/web/src/components/builds/build-quality-loop.tsx
++++ b/pdos-next/web/src/components/builds/build-quality-loop.tsx
+@@ -8,6 +8,7 @@
+ import { ChangeControlReading } from "@/components/change_control/reading";
+ import { CapaDraftTextRevision } from "./capa-draft-text-revision";
+ import { SimilarHistory, SimilarHistoryLayout } from "@/components/similar-history";
++import { SimilarHistoryTitle } from "@/components/similar-history-title";
+ import { ChangeCoverageReading } from "./change-coverage-reading";
+ import { capaDraftTextPayload, type CapaTextDraft } from "@/lib/capa-draft-text-view";
+ import { sourceLines, type DefinitionSource } from "@/lib/product-view";
+@@ -164,7 +165,7 @@
+     {loading && <p role="status" className="subtle">正在读取当前选择的固定范围与专业事实…</p>}
+     {!local.selectedBuildId && <p className="subtle">先明确选择轮次，再读取本轮请求和结果；空选择不扫描全型号历史。</p>}
+     {run && <div className="space-y-3 rounded-lg border border-border p-4"><h3 className="font-medium">固定原运行与判定</h3><p className="text-sm">{selectedBuild?.name} · Run v{run.revision}。结果与原值由原报告、结果入口读取；本入口不会覆盖原测量、配置、实际开测或样件消费。</p>{runProjection && <Detail value={runProjection} field="result" sources={sources} names={names}/>}<details><summary className="cursor-pointer text-sm font-medium">原运行保留的开测、占用与消费来源</summary><div className="mt-3"><Detail value={{ actual_start: run.run_snapshot.actual_start, occupancy: run.occupancy, sample_usage: run.sample_usage }} sources={sources} names={names}/></div></details>{!quality.failures.length && <p className="rounded-lg border border-primary p-3 text-sm">当前没有服务器核验且可办理的确定失败。不确定、未知、无效或通过结果仅供缺项调查；不能建立失败问题。请回到原报告、判据、元数据或专业复核入口核对。</p>}</div>}
+-    {!!quality.failures.length && <div className="space-y-4 rounded-lg border border-border p-4"><h3 className="font-medium">1 · 从确定失败建立问题</h3><label className="space-y-2 text-sm"><span>精确测量 / 样件 / 测试项</span><select disabled={!unlocked} value={local.selectedFailureId} onChange={event => chooseIndexed({ selectedFailureId: event.target.value })}><option value="">请选择服务器核验的固定失败</option>{quality.failures.map((row, index) => <option key={row.failure.identity} value={row.failure.identity}>固定失败 {index + 1} · {names.get(row.failure.coverage.sample_id) ?? "固定样件"} · {names.get(row.failure.coverage.item_id) ?? "固定测试项"}{row.available !== true ? " · 当前不可核对" : ""}</option>)}</select></label>{failureReading ? <FailureReading failure={failureReading}/> : failure && <Detail value={failure} names={names} sources={sources}/>}{failure && <><Authority value={qualityRecord(failure.authority) ? failure.authority["quality.issue.create"] ?? failure.authority : failure.authority}/><fieldset disabled={!can("quality.issue.create")} className="grid gap-3 sm:grid-cols-2"><label className="space-y-2 text-sm"><span>固定结果事件</span><select value={work.eventId} onChange={event => edit({ eventId: event.target.value })}><option value="">明确选择已验证的结果事件</option>{failure.event_ids.map((id, index) => <option key={id} value={id}>服务器验证的结果事件 {index + 1}</option>)}</select></label><label className="space-y-2 text-sm"><span>可见范围（不能扩大私人依据）</span><select value={work.visibility} onChange={event => edit({ visibility: event.target.value as QualityWork["visibility"] })}><option value="private">仅本人</option><option value="category">品类内当前授权人员</option></select></label><label className="space-y-2 text-sm sm:col-span-2"><span>问题标题</span><input maxLength={2000} value={work.title} onChange={event => edit({ title: event.target.value })}/></label></fieldset><Button disabled={!can("quality.issue.create")} onClick={event => void action("quality.issue.create", event.currentTarget)}><Plus/>核对固定失败并建立问题</Button></>}</div>}
++    {!!quality.failures.length && <div className="space-y-4 rounded-lg border border-border p-4"><h3 className="font-medium">1 · 从确定失败建立问题</h3><label className="space-y-2 text-sm"><span>精确测量 / 样件 / 测试项</span><select disabled={!unlocked} value={local.selectedFailureId} onChange={event => chooseIndexed({ selectedFailureId: event.target.value })}><option value="">请选择服务器核验的固定失败</option>{quality.failures.map((row, index) => <option key={row.failure.identity} value={row.failure.identity}>固定失败 {index + 1} · {names.get(row.failure.coverage.sample_id) ?? "固定样件"} · {names.get(row.failure.coverage.item_id) ?? "固定测试项"}{row.available !== true ? " · 当前不可核对" : ""}</option>)}</select></label>{failureReading ? <FailureReading failure={failureReading}/> : failure && <Detail value={failure} names={names} sources={sources}/>}{failure && <><Authority value={qualityRecord(failure.authority) ? failure.authority["quality.issue.create"] ?? failure.authority : failure.authority}/><fieldset disabled={!can("quality.issue.create")} className="grid gap-3 sm:grid-cols-2"><label className="space-y-2 text-sm"><span>固定结果事件</span><select value={work.eventId} onChange={event => edit({ eventId: event.target.value })}><option value="">明确选择已验证的结果事件</option>{failure.event_ids.map((id, index) => <option key={id} value={id}>服务器验证的结果事件 {index + 1}</option>)}</select></label><label className="space-y-2 text-sm"><span>可见范围（不能扩大私人依据）</span><select value={work.visibility} onChange={event => edit({ visibility: event.target.value as QualityWork["visibility"] })}><option value="private">仅本人</option><option value="category">品类内当前授权人员</option></select></label><label className="space-y-2 text-sm sm:col-span-2"><span>问题标题</span><input maxLength={2000} value={work.title} onChange={event => edit({ title: event.target.value })}/></label></fieldset><SimilarHistoryTitle api={api} productId={product.id} projectId={projectId || selectedBuild?.project_id} kind="issue" title={work.title}/><Button disabled={!can("quality.issue.create")} onClick={event => void action("quality.issue.create", event.currentTarget)}><Plus/>核对固定失败并建立问题</Button></>}</div>}
+     <div className="space-y-4 rounded-lg border border-border p-4"><h3 className="font-medium">2 · 当前问题与独立历史</h3><div className="grid gap-3 sm:grid-cols-2"><label className="space-y-2 text-sm"><span>真实问题</span><select disabled={!unlocked || !local.selectedRunId} value={local.selectedIssueId} onChange={event => choose({ selectedIssueId: event.target.value, selectedIssueVersionId: "", selectedChangeId: "", selectedChangeVersionId: "" })}><option value="">请选择已有问题</option>{uniqueIssues.map(id => { const row = quality.issues.find(row => row.id === quality.current_by_issue[id]?.issue_version_id) ?? quality.issues.find(row => row.issue_id === id); return <option key={id} value={id}>{row?.issue.title} · 当前 v{quality.current_by_issue[id]?.revision ?? "待核对"}</option>; })}</select></label><label className="space-y-2 text-sm"><span>问题版本</span><select disabled={!unlocked || !local.selectedIssueId} value={issue?.id ?? ""} onChange={event => chooseIndexed({ selectedIssueVersionId: event.target.value })}>{issueRows.map(row => <option key={row.id} value={row.id}>v{row.revision} · {states[row.issue.status] ?? "固定记录"} · {row.is_current ? "当前" : "历史只读"}</option>)}</select></label></div>
+       {issue && <>{!issue.is_current && <p className="rounded-lg border border-primary p-3 text-sm">历史固定版本，当前资格未评估，仅供读取。</p>}<SimilarHistoryLayout history={<SimilarHistory api={api} productId={product.id} issueId={issue.issue_id} versionId={issue.id} mergeAvailable={card => can("quality.issue.merge") && quality.issues.some(row => row.id === card.source_id && row.revision === card.source_revision && row.is_current && row.source_status === "current")} onMerge={(card, element) => action("quality.issue.merge", element, undefined, card.object_id)}/>}>{issueReading ? <QualityIssueReading issue={issueReading}/> : <Detail value={issue.issue} names={names} sources={sources}/>}</SimilarHistoryLayout><div className="rounded-lg border border-border p-3"><p className="font-medium">当前风险与独立验证政策</p><Detail value={{ risk: issue.issue.risk, current_policy: issue.policy ?? quality.policy ?? null }} names={names} sources={sources}/><p className="subtle mt-2">风险与独立性要求取当前服务器政策，不由本页选低风险或免除验证。</p></div>
+       <details className="space-y-4"><summary className="cursor-pointer font-medium">具名分诊与问题归并</summary><Authority value={issue.authority?.["quality.issue.triage"]}/><label className="mt-3 block space-y-2 text-sm"><span>分诊 / 归并原因</span><textarea disabled={!issueEditing} maxLength={2000} value={work.reason} onChange={event => edit({ reason: event.target.value })}/></label><Button disabled={!can("quality.issue.triage")} onClick={event => void action("quality.issue.triage", event.currentTarget)}>核对分诊，一次确认</Button><fieldset disabled={!can("quality.issue.merge")} className="space-y-2"><legend className="font-medium">归并来源（仍保留每个原失败）</legend>{quality.issues.filter(row => row.is_current && row.issue_id !== issue.issue_id && ["open", "triaged"].includes(row.issue.status) && !row.issue.capa && !row.issue.root_cause).map(row => <label key={row.id} className="flex items-start gap-2 text-sm"><input type="checkbox" checked={work.mergeIds.includes(row.issue_id)} onChange={event => edit({ mergeIds: event.target.checked ? [...work.mergeIds, row.issue_id] : work.mergeIds.filter(id => id !== row.issue_id) })}/>{row.issue.title} · v{row.revision}</label>)}</fieldset><Button disabled={!can("quality.issue.merge")} onClick={event => void action("quality.issue.merge", event.currentTarget)}>核对实际归并范围，一次确认</Button></details>
+@@ -172,8 +173,8 @@
+       {issue.issue.capa ? <CapaDraftTextRevision key={`${principalId}:${issue.id}`} issue={issue} disabled={!can("quality.capa.draft")} names={names} onSave={(draft, element) => void action("quality.capa.draft", element, draft)}/> : <details className="space-y-4"><summary className="cursor-pointer font-medium">纠正与预防措施草稿</summary><Authority value={issue.authority?.["quality.capa.draft"]}/><fieldset disabled={!can("quality.capa.draft")} className="space-y-4">{work.hypotheses.map((row, index) => <div key={index} className="space-y-3 rounded-lg border border-border p-3"><label className="space-y-2 text-sm"><span>根因假设 {index + 1}（不是具名根因结论）</span><textarea maxLength={2000} value={row.text} onChange={event => edit({ hypotheses: work.hypotheses.map((value, i) => i === index ? { ...value, text: event.target.value } : value) })}/></label><RefChoices refs={work.sources} sources={sources} value={row.sources} disabled={!can("quality.capa.draft")} onChange={refs => edit({ hypotheses: work.hypotheses.map((value, i) => i === index ? { ...value, sources: refs } : value) })}/><Button variant="outline" onClick={() => edit({ hypotheses: work.hypotheses.filter((_value, i) => i !== index) })}><X/>移除此假设</Button></div>)}<Button variant="outline" onClick={() => edit({ capaId: work.capaId || crypto.randomUUID(), hypotheses: [...work.hypotheses, { text: "", sources: [] }] })}><Plus/>增加有来源的假设</Button>{work.actions.map((row, index) => <div key={row.id} className="grid gap-3 rounded-lg border border-border p-3 sm:grid-cols-2"><label className="space-y-2 text-sm"><span>措施类型</span><select value={row.kind} onChange={event => edit({ actions: work.actions.map((value, i) => i === index ? { ...value, kind: event.target.value as "corrective" | "preventive" } : value) })}><option value="corrective">纠正</option><option value="preventive">预防</option></select></label><label className="space-y-2 text-sm"><span>具名责任人（不授专业资格）</span><select value={row.executorId} onChange={event => edit({ actions: work.actions.map((value, i) => i === index ? { ...value, executorId: event.target.value } : value) })}><option value="">明确选择责任人</option>{owners.map(owner => <option key={owner.id} value={owner.id}>{owner.label}</option>)}</select></label><label className="space-y-2 text-sm sm:col-span-2"><span>计划措施内容，尚未执行</span><textarea maxLength={2000} value={row.text} onChange={event => edit({ actions: work.actions.map((value, i) => i === index ? { ...value, text: event.target.value } : value) })}/></label><Button variant="outline" onClick={() => edit({ actions: work.actions.filter((_value, i) => i !== index) })}><X/>移除此措施</Button></div>)}<Button variant="outline" onClick={() => edit({ capaId: work.capaId || crypto.randomUUID(), actions: [...work.actions, { id: crypto.randomUUID(), kind: "corrective", text: "", executorId: "" }] })}><Plus/>增加具名措施草稿</Button><label className="block space-y-2 text-sm"><span>后续有效性验证方法</span><textarea maxLength={2000} value={work.method} onChange={event => edit({ method: event.target.value })}/></label><label className="block space-y-2 text-sm"><span>有效性验收要求</span><textarea maxLength={2000} value={work.acceptance} onChange={event => edit({ acceptance: event.target.value })}/></label><label className="block space-y-2 text-sm"><span>独立观察截止时间，带 UTC 偏移</span><input placeholder="2026-10-16T17:00:00-07:00" value={work.observationUntil} onChange={event => edit({ observationUntil: event.target.value })}/></label><p className="subtle">保存时必须覆盖本问题全部固定失败；不会宣称措施完成、独立有效性、根因决定或问题关闭。</p></fieldset><Button disabled={!can("quality.capa.draft")} onClick={event => void action("quality.capa.draft", event.currentTarget)}><ClipboardText/>核对并保存 CAPA 草稿</Button></details>}</>}
+       {!issue && <p className="subtle">选择真实问题后可读取固定失败、原政策、措施与历史；未创建的对象不生成占位身份。</p>}
+     </div>
+-    {issue && <div className="space-y-4 rounded-lg border border-border p-4"><h3 className="font-medium">3 · 工程与制造双线提案</h3><Authority value={qualityRecord(changes.authority) ? changes.authority["change.request.create"] ?? changes.authority : changes.authority}/><fieldset disabled={!can("change.request.create")} className="space-y-3"><label className="block space-y-2 text-sm"><span>变更提案标题</span><input maxLength={2000} value={work.changeTitle} onChange={event => edit({ changeTitle: event.target.value })}/></label><label className="block space-y-2 text-sm"><span>提案原因（两条线分别核对，不是批准或生效）</span><textarea maxLength={2000} value={work.changeReason} onChange={event => edit({ changeReason: event.target.value })}/></label><label className="block space-y-2 text-sm"><span>提案可见范围</span><select value={work.visibility} onChange={event => edit({ visibility: event.target.value as QualityWork["visibility"] })}><option value="private">仅本人</option><option value="category">品类内当前授权人员</option></select></label><p className="font-medium text-sm">选择真实影响根与引用</p>{referenceOptions.map(row => { const key = changeRefKey(row.ref); return <div key={key} className="space-y-2 rounded-lg border border-border p-3 text-sm"><p>{row.label}</p><div className="flex flex-wrap gap-4"><label className="flex gap-2"><input type="checkbox" checked={work.rootKeys.includes(key)} onChange={event => edit({ rootKeys: event.target.checked ? [...work.rootKeys, key] : work.rootKeys.filter(value => value !== key) })}/>作为影响根</label><label className="flex gap-2"><input type="checkbox" checked={work.referenceKeys.includes(key)} onChange={event => edit({ referenceKeys: event.target.checked ? [...work.referenceKeys, key] : work.referenceKeys.filter(value => value !== key) })}/>作为固定引用</label></div></div>; })}<p className="subtle">至少固定本问题或其 CAPA。只能选择可读真实对象；图谱、工装、在制品、切换或培训缺失保持未知。</p></fieldset><Button disabled={!can("change.request.create")} onClick={event => void action("change.request.create", event.currentTarget)}><Plus/>核对来源并建立变更提案</Button><div className="grid gap-3 sm:grid-cols-2"><label className="space-y-2 text-sm"><span>真实变更提案</span><select disabled={!unlocked} value={local.selectedChangeId} onChange={event => chooseIndexed({ selectedChangeId: event.target.value, selectedChangeVersionId: "" })}><option value="">请选择已有变更</option>{uniqueChanges.map(id => { const row = changes.changes.find(row => row.id === changes.current_by_change[id]?.version_id) ?? changes.changes.find(row => row.change_id === id); return <option key={id} value={id}>{row?.request.title} · 当前 v{changes.current_by_change[id]?.revision ?? "待核对"}</option>; })}</select></label><label className="space-y-2 text-sm"><span>变更版本</span><select disabled={!unlocked || !local.selectedChangeId} value={changeRow?.id ?? ""} onChange={event => chooseIndexed({ selectedChangeVersionId: event.target.value })}>{changeRows.map(row => <option key={row.id} value={row.id}>v{row.revision} · {row.current ? "当前" : "历史只读"}</option>)}</select></label></div>
+-    {changeRow && <>{changeReading ? <ChangeControlReading request={changeReading}/> : <Detail value={changeRow.request} names={names} sources={sources}/>}<Authority value={qualityRecord(changeRow.authority) ? changeRow.authority["change.impact.compute"] ?? changeRow.authority : changeRow.authority}/><label className="block space-y-2 text-sm"><span>固定图捕获原因</span><textarea disabled={!changeEditing} maxLength={2000} value={work.graphReason} onChange={event => edit({ graphReason: event.target.value })}/></label><Button variant="outline" disabled={!changeEditing || !qualityCapability(changeRow.capabilities, "impact_compute")} onClick={event => { try { void perform({ stage: "capture", request: graphCaptureRequest(changeRow, work.graphReason, crypto.randomUUID()) }, event.currentTarget); } catch (failure) { setError(failure instanceof Error ? failure.message : "请核对固定图输入。"); } }}>从真实权威对象捕获固定图</Button><label className="block space-y-2 text-sm"><span>明确选择已保存图快照</span><select disabled={!changeEditing} value={work.captureId} onChange={event => edit({ captureId: event.target.value })}><option value="">请选择固定快照</option>{changes.captures.filter(row => row.change_id === changeRow.change_id).map((row, index) => <option key={row.id} value={row.id}>固定图 {index + 1} · v{row.revision} · {row.current ? "当前候选" : "需重核"} · {row.expires_at ? `有效至 ${row.expires_at}` : "按当前版本与来源水位核对"}</option>)}</select></label>{capture && <ChangeCoverageReading capture={capture} expectedScope={changeRow.request.scope} expectedProductId={product.id} expectedChangeId={changeRow.change_id} expectedAudience={changeRow.request.audience} assessments={changeRow.request.assessments}/>}{capture && <details><summary className="cursor-pointer font-medium">所选固定图的已知对象、依赖与未知范围</summary><div className="mt-3"><Detail value={capture.graph} names={names} sources={sources}/></div></details>}{work.impactHypotheses.map((row, index) => <div key={index} className="space-y-3 rounded-lg border border-border p-3"><label className="space-y-2 text-sm"><span>影响假设 {index + 1}（不能替代有来源依赖）</span><textarea disabled={!changeEditing} maxLength={2000} value={row.text} onChange={event => edit({ impactHypotheses: work.impactHypotheses.map((value, i) => i === index ? { ...value, text: event.target.value } : value) })}/></label><RefChoices refs={work.sources} sources={sources} value={row.sources} disabled={!changeEditing} onChange={refs => edit({ impactHypotheses: work.impactHypotheses.map((value, i) => i === index ? { ...value, sources: refs } : value) })}/><Button variant="outline" disabled={!changeEditing} onClick={() => edit({ impactHypotheses: work.impactHypotheses.filter((_value, i) => i !== index) })}>移除此假设</Button></div>)}<Button variant="outline" disabled={!changeEditing} onClick={() => edit({ impactHypotheses: [...work.impactHypotheses, { text: "", sources: [] }] })}><Plus/>增加有来源的影响假设</Button><Button disabled={!can("change.impact.compute") || !capture} onClick={event => void action("change.impact.compute", event.currentTarget)}>核对工程 / 制造路径及未知</Button><p className="subtle">此处保存提案和固定影响核对。工程批准、制造切换、正式发布、措施有效性及关闭尚未开放；缺图不能自动放行。</p></>}
++    {issue && <div className="space-y-4 rounded-lg border border-border p-4"><h3 className="font-medium">3 · 工程与制造双线提案</h3><Authority value={qualityRecord(changes.authority) ? changes.authority["change.request.create"] ?? changes.authority : changes.authority}/><fieldset disabled={!can("change.request.create")} className="space-y-3"><label className="block space-y-2 text-sm"><span>变更提案标题</span><input maxLength={2000} value={work.changeTitle} onChange={event => edit({ changeTitle: event.target.value })}/></label><label className="block space-y-2 text-sm"><span>提案原因（两条线分别核对，不是批准或生效）</span><textarea maxLength={2000} value={work.changeReason} onChange={event => edit({ changeReason: event.target.value })}/></label><label className="block space-y-2 text-sm"><span>提案可见范围</span><select value={work.visibility} onChange={event => edit({ visibility: event.target.value as QualityWork["visibility"] })}><option value="private">仅本人</option><option value="category">品类内当前授权人员</option></select></label><p className="font-medium text-sm">选择真实影响根与引用</p>{referenceOptions.map(row => { const key = changeRefKey(row.ref); return <div key={key} className="space-y-2 rounded-lg border border-border p-3 text-sm"><p>{row.label}</p><div className="flex flex-wrap gap-4"><label className="flex gap-2"><input type="checkbox" checked={work.rootKeys.includes(key)} onChange={event => edit({ rootKeys: event.target.checked ? [...work.rootKeys, key] : work.rootKeys.filter(value => value !== key) })}/>作为影响根</label><label className="flex gap-2"><input type="checkbox" checked={work.referenceKeys.includes(key)} onChange={event => edit({ referenceKeys: event.target.checked ? [...work.referenceKeys, key] : work.referenceKeys.filter(value => value !== key) })}/>作为固定引用</label></div></div>; })}<p className="subtle">至少固定本问题或其 CAPA。只能选择可读真实对象；图谱、工装、在制品、切换或培训缺失保持未知。</p></fieldset><SimilarHistoryTitle api={api} productId={product.id} projectId={projectId || selectedBuild?.project_id} kind="change" title={work.changeTitle}/><Button disabled={!can("change.request.create")} onClick={event => void action("change.request.create", event.currentTarget)}><Plus/>核对来源并建立变更提案</Button><div className="grid gap-3 sm:grid-cols-2"><label className="space-y-2 text-sm"><span>真实变更提案</span><select disabled={!unlocked} value={local.selectedChangeId} onChange={event => chooseIndexed({ selectedChangeId: event.target.value, selectedChangeVersionId: "" })}><option value="">请选择已有变更</option>{uniqueChanges.map(id => { const row = changes.changes.find(row => row.id === changes.current_by_change[id]?.version_id) ?? changes.changes.find(row => row.change_id === id); return <option key={id} value={id}>{row?.request.title} · 当前 v{changes.current_by_change[id]?.revision ?? "待核对"}</option>; })}</select></label><label className="space-y-2 text-sm"><span>变更版本</span><select disabled={!unlocked || !local.selectedChangeId} value={changeRow?.id ?? ""} onChange={event => chooseIndexed({ selectedChangeVersionId: event.target.value })}>{changeRows.map(row => <option key={row.id} value={row.id}>v{row.revision} · {row.current ? "当前" : "历史只读"}</option>)}</select></label></div>
++    {changeRow && <><SimilarHistoryLayout history={<SimilarHistory api={api} productId={product.id} changeId={changeRow.change_id} versionId={changeRow.id}/>}>{changeReading ? <ChangeControlReading request={changeReading}/> : <Detail value={changeRow.request} names={names} sources={sources}/>}</SimilarHistoryLayout><Authority value={qualityRecord(changeRow.authority) ? changeRow.authority["change.impact.compute"] ?? changeRow.authority : changeRow.authority}/><label className="block space-y-2 text-sm"><span>固定图捕获原因</span><textarea disabled={!changeEditing} maxLength={2000} value={work.graphReason} onChange={event => edit({ graphReason: event.target.value })}/></label><Button variant="outline" disabled={!changeEditing || !qualityCapability(changeRow.capabilities, "impact_compute")} onClick={event => { try { void perform({ stage: "capture", request: graphCaptureRequest(changeRow, work.graphReason, crypto.randomUUID()) }, event.currentTarget); } catch (failure) { setError(failure instanceof Error ? failure.message : "请核对固定图输入。"); } }}>从真实权威对象捕获固定图</Button><label className="block space-y-2 text-sm"><span>明确选择已保存图快照</span><select disabled={!changeEditing} value={work.captureId} onChange={event => edit({ captureId: event.target.value })}><option value="">请选择固定快照</option>{changes.captures.filter(row => row.change_id === changeRow.change_id).map((row, index) => <option key={row.id} value={row.id}>固定图 {index + 1} · v{row.revision} · {row.current ? "当前候选" : "需重核"} · {row.expires_at ? `有效至 ${row.expires_at}` : "按当前版本与来源水位核对"}</option>)}</select></label>{capture && <ChangeCoverageReading capture={capture} expectedScope={changeRow.request.scope} expectedProductId={product.id} expectedChangeId={changeRow.change_id} expectedAudience={changeRow.request.audience} assessments={changeRow.request.assessments}/>}{capture && <details><summary className="cursor-pointer font-medium">所选固定图的已知对象、依赖与未知范围</summary><div className="mt-3"><Detail value={capture.graph} names={names} sources={sources}/></div></details>}{work.impactHypotheses.map((row, index) => <div key={index} className="space-y-3 rounded-lg border border-border p-3"><label className="space-y-2 text-sm"><span>影响假设 {index + 1}（不能替代有来源依赖）</span><textarea disabled={!changeEditing} maxLength={2000} value={row.text} onChange={event => edit({ impactHypotheses: work.impactHypotheses.map((value, i) => i === index ? { ...value, text: event.target.value } : value) })}/></label><RefChoices refs={work.sources} sources={sources} value={row.sources} disabled={!changeEditing} onChange={refs => edit({ impactHypotheses: work.impactHypotheses.map((value, i) => i === index ? { ...value, sources: refs } : value) })}/><Button variant="outline" disabled={!changeEditing} onClick={() => edit({ impactHypotheses: work.impactHypotheses.filter((_value, i) => i !== index) })}>移除此假设</Button></div>)}<Button variant="outline" disabled={!changeEditing} onClick={() => edit({ impactHypotheses: [...work.impactHypotheses, { text: "", sources: [] }] })}><Plus/>增加有来源的影响假设</Button><Button disabled={!can("change.impact.compute") || !capture} onClick={event => void action("change.impact.compute", event.currentTarget)}>核对工程 / 制造路径及未知</Button><p className="subtle">此处保存提案和固定影响核对。工程批准、制造切换、正式发布、措施有效性及关闭尚未开放；缺图不能自动放行。</p></>}
+     </div>}
+     {(local.selectedRunId || issue) && <div className="space-y-4 rounded-lg border border-border p-4"><h3 className="font-medium">本次人工内容的精确原文依据</h3><div className="grid gap-3 sm:grid-cols-2"><label className="space-y-2 text-sm"><span>当前可读原文</span><select disabled={!unlocked} value={sourceId} onChange={event => { setSourceId(event.target.value); setSourceLine(1); }}><option value="">请选择有效原文</option>{sources.filter(row => row.status === "active").map(row => <option key={row.id} value={row.id}>{row.title} · v{row.revision}</option>)}</select></label><label className="space-y-2 text-sm"><span>完整原文行</span><select disabled={!unlocked || !chosenSource} value={sourceLine} onChange={event => setSourceLine(Number(event.target.value))}>{chosenSource && sourceLines(chosenSource.content).map((text, index) => <option key={index} value={index + 1}>第 {index + 1} 行 · {text.slice(0, 100)}</option>)}</select></label></div>{chosenSource && <p className="whitespace-pre-wrap rounded-lg border border-border p-3 text-sm">{sourceLines(chosenSource.content)[sourceLine - 1]}</p>}<Button variant="outline" disabled={!unlocked || !chosenSource} onClick={() => void addSource()}><Plus/>加入完整行依据</Button>{changes.source_options.map((row, index) => <div key={qualitySourceKey(row.source)} className="rounded-lg border border-border p-3 text-sm"><p className="font-medium">{row.title} · v{row.source.revision}</p><p className="mt-1 whitespace-pre-wrap">{row.quote}</p><Button className="mt-2" variant="outline" disabled={!unlocked || work.sources.some(ref => qualitySourceKey(ref) === qualitySourceKey(row.source))} onClick={() => edit({ sources: [...work.sources, row.source] })}>加入服务器固定依据 {index + 1}</Button></div>)}<SourceReading refs={work.sources} sources={sources}/>{work.sources.map(ref => <Button key={qualitySourceKey(ref)} variant="outline" disabled={!unlocked} onClick={() => removeSource(ref)}><X/>移除 {names.get(ref.id) ?? "固定原文"} 第 {ref.position.split(";")[0].slice(5)} 行</Button>)}</div>}
+     {!!inputs && <details className="rounded-lg border border-border p-4"><summary className="cursor-pointer font-medium">最近一次服务器固定范围与政策核对</summary><div className="mt-3"><Detail value={inputs} names={names} sources={sources}/></div></details>}
+--- a/pdos-next/web/src/components/category-material-editor.tsx
++++ b/pdos-next/web/src/components/category-material-editor.tsx
+@@ -24,7 +24,7 @@
+ 
+ export type MaterialContext = {
+   request?: { id: string; prompt: string };
+-  kind: MaterialKind | "category" | "proposal" | "quality_issue";
++  kind: MaterialKind | "category" | "proposal" | "quality_issue" | "change_request";
+   title: string;
+   id?: string;
+   version?: number;
+--- a/pdos-next/web/src/components/projects/project-professional-records.test.mjs
++++ b/pdos-next/web/src/components/projects/project-professional-records.test.mjs
+@@ -64,3 +64,16 @@
+   assert.equal(layout.props.history.type,SimilarHistory);assert.equal(layout.props.history.props.issueId,"logical-issue");assert.equal(layout.props.history.props.versionId,"fixed-issue-version");assert.equal(layout.props.history.props.productId,"p");
+   assert.ok(env.calls.every(call=>call.body===undefined),"opening row detail never writes");
+ });
++
++test("change row detail mounts the selected historical version without merge or creation callbacks",async t=>{
++  const old=globalThis.requestAnimationFrame;globalThis.requestAnimationFrame=callback=>callback();t.after(()=>{if(old)globalThis.requestAnimationFrame=old;else delete globalThis.requestAnimationFrame;});
++  const env=environment(t,{panel:"changes"});await env.flush();
++  env.respond(env.pending("change-execution?project_id="),{changes:[{id:"fixed-change-version",change_id:"logical-change",project_id:"project",revision:2,source_status:"current",current:false,request:{title:"历史变更",status:"analysis"}}]});await env.flush();
++  const history=nodes(env.tree()).find(node=>node.type==="input"&&node.props.type==="checkbox");history.props.onChange({target:{checked:true}});await env.flush();
++  const trigger=nodes(env.tree()).find(node=>node.type==="button"&&node.props["aria-controls"]==="professional-record-detail-changes");assert.ok(trigger);trigger.props.onClick({currentTarget:{}});await env.flush();
++  const {SimilarHistory,SimilarHistoryLayout}=load(path.join(root,"src/components/similar-history.tsx"));
++  const layout=nodes(env.tree()).find(node=>node.type===SimilarHistoryLayout);assert.equal(layout.props.history.type,SimilarHistory);
++  assert.equal(layout.props.history.props.changeId,"logical-change");assert.equal(layout.props.history.props.versionId,"fixed-change-version");
++  assert.equal(layout.props.history.props.issueId,undefined);assert.equal(layout.props.history.props.onMerge,undefined);
++  assert.ok(env.calls.every(call=>call.body===undefined));
++});
+--- a/pdos-next/web/src/components/projects/project-professional-records.tsx
++++ b/pdos-next/web/src/components/projects/project-professional-records.tsx
+@@ -48,6 +48,6 @@
+       {reading.nextCursor&&<Button size="sm" variant="outline" disabled={paging} onClick={()=>{setHistory(true);void moreHistory();}}>{paging?"正在读取历史…":"读取更早记录"}</Button>}
+       {!rows.length&&<p className={styles.readNotice}>{query?"没有匹配的记录。":"当前范围尚无记录。可展开专业办理，创建或接续当前工作。"}</p>}
+     </>}
+-    {detail&&<section id={`professional-record-detail-${panel}`} className={styles.recordDetail} aria-label="专业记录详情"><SimilarHistoryLayout history={(panel === "quality" || panel === "followup") && detail.target.issue ? <SimilarHistory api={api} productId={productId} issueId={detail.target.issue} versionId={detail.id}/> : null}><header><h3 ref={detailHeading} tabIndex={-1}>{detail.title} · {detail.kind}</h3><Button size="sm" variant="ghost" onClick={()=>{setDetail(null);detailTrigger.current?.focus();}}>收起详情</Button></header><p>{detail.status} · {detail.source}{detail.historical?" · 历史固定版本":""}</p><dl>{detail.facts.map(([name,text])=><div key={name}><dt>{name}</dt><dd>{text}</dd></div>)}</dl><Button variant="outline" size="sm" onClick={()=>onEdit(detail.target)}>继续专业办理<ArrowRight size={12}/></Button><p className={styles.readNotice}>进入后按当前事实核对，原有确认、具名决定及历史记录保留。</p></SimilarHistoryLayout></section>}
++    {detail&&<section id={`professional-record-detail-${panel}`} className={styles.recordDetail} aria-label="专业记录详情"><SimilarHistoryLayout history={(panel === "quality" || panel === "followup") && detail.target.issue ? <SimilarHistory api={api} productId={productId} issueId={detail.target.issue} versionId={detail.id}/> : panel === "changes" && detail.target.change ? <SimilarHistory api={api} productId={productId} changeId={detail.target.change} versionId={detail.id}/> : null}><header><h3 ref={detailHeading} tabIndex={-1}>{detail.title} · {detail.kind}</h3><Button size="sm" variant="ghost" onClick={()=>{setDetail(null);detailTrigger.current?.focus();}}>收起详情</Button></header><p>{detail.status} · {detail.source}{detail.historical?" · 历史固定版本":""}</p><dl>{detail.facts.map(([name,text])=><div key={name}><dt>{name}</dt><dd>{text}</dd></div>)}</dl><Button variant="outline" size="sm" onClick={()=>onEdit(detail.target)}>继续专业办理<ArrowRight size={12}/></Button><p className={styles.readNotice}>进入后按当前事实核对，原有确认、具名决定及历史记录保留。</p></SimilarHistoryLayout></section>}
+   </section>;
+ }
+--- a/pdos-next/web/src/components/similar-history-pai.tsx
++++ b/pdos-next/web/src/components/similar-history-pai.tsx
+@@ -8,11 +8,13 @@
+ export const SimilarHistoryPaiContext = createContext<((selection: SimilarHistorySelection) => void) | null>(null);
+ export function similarHistoryMaterial(selection: SimilarHistorySelection, requestId: string): MaterialContext {
+   const { anchor, candidate } = selection;
++  const change = anchor.kind === "change";
++  const identity = change ? anchor.change_id : anchor.issue_id;
+   return {
+-    kind: "quality_issue", title: anchor.title, id: anchor.issue_id, version: anchor.revision,
++    kind: change ? "change_request" : "quality_issue", title: anchor.title, id: identity, version: anchor.revision,
+     request: { id: requestId, prompt: `请用案例表比较“${anchor.title}”（v${anchor.revision}）和“${candidate.title}”（v${candidate.source_revision}），列出相同点、差异、可参考措施和还缺少的信息。` },
+     draft: {
+-      selection_kind: "unverified_object_metadata", current: { kind: "issue", object_id: anchor.issue_id, version_id: anchor.version_id, revision: anchor.revision },
++      selection_kind: "unverified_object_metadata", current: { kind: change ? "change" : "issue", object_id: identity, version_id: anchor.version_id, revision: anchor.revision },
+       candidate: { kind: candidate.kind, object_id: candidate.object_id, version_id: candidate.source_id, revision: candidate.source_revision },
+     },
+   };
+--- /dev/null
++++ b/pdos-next/web/src/components/similar-history-title.test.mjs
+@@ -0,0 +1,104 @@
++import assert from "node:assert/strict";
++import { readFileSync } from "node:fs";
++import { createRequire } from "node:module";
++import path from "node:path";
++import test from "node:test";
++import { fileURLToPath } from "node:url";
++import { runInNewContext } from "node:vm";
++
++const directory = path.dirname(fileURLToPath(import.meta.url)), web = path.resolve(directory, "../..");
++const dependency = createRequire(path.join(web, "package.json")), ts = dependency("typescript"), React = dependency("react");
++let hooks, timerContext;
++const same = (a, b) => !!a && !!b && a.length === b.length && a.every((value, index) => Object.is(value, b[index]));
++const react = { ...React,
++  useState(initial) { const own = hooks, index = own.index++; if (!(index in own.slots)) own.slots[index] = initial; return [own.slots[index], value => { own.slots[index] = typeof value === "function" ? value(own.slots[index]) : value; own.dirty = true; }]; },
++  useEffect(effect, deps) { const own = hooks, index = own.index++, old = own.slots[index]; if (!same(old?.deps, deps)) { own.slots[index] = { deps }; own.effects.push(() => { old?.cleanup?.(); own.slots[index].cleanup = effect(); }); } },
++};
++const modules = new Map();
++function load(relative) {
++  if (modules.has(relative)) return modules.get(relative);
++  const mod = { exports: {} }, filename = path.join(web, "src", relative);
++  const require = name => name === "react" ? react : name === "./ui/button" ? { Button: "button" }
++    : name === "@phosphor-icons/react" ? { Sparkle: "i", ArrowSquareOut: "i" }
++      : name === "./similar-history-pai" ? { SimilarHistoryPaiContext: {} }
++        : name.endsWith(".css") ? { __esModule: true, default: {} }
++          : name.startsWith("@/") ? load(`${name.slice(2)}.ts`)
++            : name === "./similar-history" ? load("components/similar-history.tsx") : dependency(name);
++  runInNewContext(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText,
++    { module: mod, exports: mod.exports, require, URLSearchParams, Error,
++      setTimeout: (callback, delay) => { const id = ++timerContext.next; timerContext.timers.set(id, { callback, delay }); return id; },
++      clearTimeout: id => timerContext.timers.delete(id) });
++  modules.set(relative, mod.exports); return mod.exports;
++}
++const { SimilarHistoryTitle } = load("components/similar-history-title.tsx");
++const id = n => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
++const card = n => ({ kind: "issue", title: `可读历史${n}`, source_id: id(n + 20), object_id: id(n + 40), source_revision: 3, is_current: true, status: "open", category: "阀件", project: "历史项目", reason: "同失效词", root_cause: "未记录", containment: ["未记录"], capa_actions: ["未记录"], verification: "待复验", differences: [], can_prepare_merge: true, object_url: "/?area=cockpit&issue=actual", object_label: "打开原问题" });
++const view = (title, kind = "issue", project = id(3), count = 1) => ({ version: "similar-history/v1", as_of: "2026-10-29T00:00:00Z", anchor: { kind: `${kind}_draft`, title, category_id: id(1), product_id: id(2), project_id: project }, items: Array.from({ length: count }, (_, n) => card(n)), coverage: { status: "current", notice: null } });
++const text = tree => typeof tree === "string" || typeof tree === "number" ? String(tree) : Array.isArray(tree) ? tree.map(text).join("") : tree && typeof tree === "object" ? text(typeof tree.type === "function" ? tree.type(tree.props) : tree.props?.children) : "";
++const nodes = tree => !tree || typeof tree !== "object" ? [] : Array.isArray(tree) ? tree.flatMap(nodes) : typeof tree.type === "function" ? nodes(tree.type(tree.props)) : [tree, ...nodes(tree.props?.children)];
++const tick = () => new Promise(resolve => setImmediate(resolve));
++function environment(t, initial = {}) {
++  const calls = [], own = { slots: [], index: 0, effects: [], dirty: true }, timers = new Map();
++  timerContext = { timers, next: 0 };
++  let props = { productId: id(2), projectId: id(3), kind: "issue", title: "", api: (route, body) => new Promise((resolve, reject) => calls.push({ route, body, resolve, reject })), ...initial }, tree;
++  function render() { own.index = 0; own.effects = []; own.dirty = false; hooks = own; tree = SimilarHistoryTitle(props); hooks = null; own.effects.forEach(effect => effect()); }
++  render(); t.after(() => own.slots.forEach(slot => slot?.cleanup?.()));
++  return { calls, timers, tree: () => tree, text: () => text(tree), nodes: () => nodes(tree),
++    setProps(next) { props = { ...props, ...next }; render(); },
++    async flush() { for (let i = 0; i < 6; i++) { await tick(); if (own.dirty) render(); } },
++    async fire() { const queued = [...timers.values()]; timers.clear(); queued.forEach(timer => { assert.equal(timer.delay, 400); timer.callback(); }); await this.flush(); },
++    async respond(index, reading) { calls[index].resolve(reading); await this.flush(); },
++    async click(label) { const node = nodes(tree).find(node => node.type === "button" && text(node) === label); assert.ok(node, label); node.props.onClick(); await this.flush(); },
++  };
++}
++
++test("unsaved Issue and Change titles debounce GET only, with no guessed object or feedback", async t => {
++  const env = environment(t); assert.equal(env.tree(), null); assert.equal(env.timers.size, 0);
++  env.setProps({ title: "漏" }); env.setProps({ title: "  接口漏气  " }); assert.equal(env.timers.size, 1); assert.equal(env.calls.length, 0);
++  await env.fire(); assert.equal(env.calls.length, 1); assert.equal(env.calls[0].body, undefined);
++  const query = new URL(`https://local.invalid/${env.calls[0].route}`).searchParams;
++  assert.equal(query.get("title"), "接口漏气"); assert.equal(query.get("kind"), "issue"); assert.equal(query.get("project_id"), id(3));
++  assert.deepEqual([...query.keys()].sort(), ["kind", "project_id", "title"]);
++  await env.respond(0, view("接口漏气")); assert.ok(env.text().includes("可读历史0"));
++  env.setProps({ kind: "change", title: "更换接口" }); assert.ok(!env.text().includes("可读历史0"));
++  await env.fire(); await env.respond(1, view("更换接口", "change"));
++  assert.ok(env.calls[1].route.includes("kind=change")); assert.ok(env.calls.every(call => call.body === undefined));
++});
++
++test("draft suggestions reuse bounded cards and expose only actual object links", async t => {
++  const env = environment(t, { title: "漏气" }); await env.fire();
++  await env.respond(0, { ...view("漏气", "issue", id(3), 6), coverage: { status: "partial" } });
++  for (const value of ["未记录", "待复验", "部分可读资料", "找到 5 条", "相似不代表重复"]) assert.ok(env.text().includes(value), value);
++  assert.ok(!env.text().includes("可读历史5"));
++  for (const label of ["不相关", "标为重复", "让小Pai看看"]) assert.ok(!env.text().includes(label));
++  const links = env.nodes().filter(node => node.type === "a"); assert.equal(links.length, 5);
++  assert.ok(links.every(node => node.props.href === "/?area=cockpit&issue=actual" && !node.props.onClick));
++  assert.equal(env.calls.length, 1);
++});
++
++test("title changes hide old results immediately and late reads cannot replace the latest title", async t => {
++  const env = environment(t, { title: "旧标题" }); await env.fire();
++  env.setProps({ title: "新标题" }); await env.fire();
++  await env.respond(1, view("新标题")); assert.ok(env.text().includes("可读历史0"));
++  await env.respond(0, { ...view("旧标题"), items: [{ ...card(0), title: "迟到的旧结果" }] });
++  assert.ok(!env.text().includes("迟到的旧结果"));
++  env.setProps({ projectId: id(9) }); assert.ok(!env.text().includes("可读历史0"));
++  await env.fire(); assert.ok(env.calls[2].route.includes(`project_id=${id(9)}`));
++});
++
++test("revoked refresh and mismatched scope never leave stale cards visible", async t => {
++  const env = environment(t, { title: "漏气" }); await env.fire(); await env.respond(0, view("漏气"));
++  await env.click("重新查找标题"); assert.ok(!env.text().includes("可读历史0")); await env.fire();
++  env.calls[1].reject(Object.assign(Error("当前无权读取"), { status: 403 })); await env.flush();
++  assert.ok(env.text().includes("当前无权读取")); assert.ok(!env.text().includes("可读历史0"));
++  await env.click("重新查找标题"); await env.fire(); await env.respond(2, view("漏气", "issue", id(9)));
++  assert.ok(env.text().includes("标题或范围已变化")); assert.ok(!env.text().includes("可读历史0"));
++});
++
++test("empty and overlong titles make no lookup and are not silently truncated", async t => {
++  const env = environment(t, { title: "x".repeat(241) }); assert.equal(env.timers.size, 0); assert.ok(env.text().includes("缩短至240"));
++  env.setProps({ title: "🙂".repeat(240) }); await env.fire(); assert.equal(env.calls.length, 1);
++  assert.equal(new URL(`https://local.invalid/${env.calls[0].route}`).searchParams.get("title"), "🙂".repeat(240));
++  env.setProps({ title: "  " }); assert.equal(env.tree(), null); await env.respond(0, view("🙂".repeat(240)));
++  assert.equal(env.tree(), null); assert.ok(env.calls.every(call => call.body === undefined));
++});
+--- /dev/null
++++ b/pdos-next/web/src/components/similar-history-title.tsx
+@@ -0,0 +1,53 @@
++"use client";
++
++import { useEffect, useState } from "react";
++import { Button } from "./ui/button";
++import { SimilarHistoryCards } from "./similar-history";
++import { similarHistorySuggestionsPath, type SimilarHistorySuggestions } from "@/lib/similar-history";
++import styles from "./similar-history.module.css";
++
++type Props = {
++  api: <T>(path: string, body?: unknown) => Promise<T>;
++  productId: string; projectId?: string; kind: "issue" | "change"; title: string;
++};
++
++/** Unsaved titles are read-only search inputs, never feedback origins or business objects. */
++export function SimilarHistoryTitle({ api, productId, projectId, kind, title }: Props) {
++  const query = title.trim(), eligible = query.length > 0 && [...query].length <= 240;
++  const [attempt, setAttempt] = useState(0);
++  const key = JSON.stringify([productId, projectId ?? null, kind, query, attempt]);
++  const [response, setResponse] = useState<{ key: string; reading?: SimilarHistorySuggestions; error?: string } | null>(null);
++  const current = response?.key === key ? response : null;
++  useEffect(() => {
++    if (!eligible) return;
++    let active = true;
++    const timer = setTimeout(() => {
++      void api<SimilarHistorySuggestions>(similarHistorySuggestionsPath(productId, kind, query, projectId)).then(reading => {
++        if (!active) return;
++        if (reading.anchor.kind !== `${kind}_draft` || reading.anchor.title !== query
++          || reading.anchor.product_id !== productId || (projectId && reading.anchor.project_id !== projectId)) {
++          setResponse({ key, error: "标题或范围已变化，请重新查找。" });
++        } else setResponse({ key, reading });
++      }).catch(failure => {
++        if (active) setResponse({ key, error: failure instanceof Error ? failure.message : "相似历史暂不可读，请稍后重试。" });
++      });
++    }, 400);
++    return () => { active = false; clearTimeout(timer); };
++  }, [api, eligible, key, productId, projectId, kind, query]);
++
++  if (!query) return null;
++  return <aside className={styles.panel} aria-label="标题防重复提示">
++    <header><h3>建立前核对相似历史</h3>{eligible && <Button type="button" size="sm" variant="ghost" onClick={() => setAttempt(value => value + 1)}>重新查找标题</Button>}</header>
++    {!eligible ? <p className={styles.note}>相似历史按标题查找；请将标题缩短至240字符后再查找。</p>
++      : current?.error ? <p role="alert">{current.error}</p>
++        : !current?.reading ? <p role="status">正在按标题查找本人可读的历史…</p>
++          : <>
++            <p className={styles.note}>相似不代表重复或适用；可打开原记录核对，再决定是否建立。</p>
++            {current.reading.coverage.status === "partial" && <p role="status" className={styles.note}>部分可读资料尚未完成索引或依据复核，以下仅为当前找到的记录。</p>}
++            {current.reading.items.length ? <details><summary>找到 {Math.min(current.reading.items.length, 5)} 条可读相似历史</summary>
++              <SimilarHistoryCards items={current.reading.items} anchorLabel="当前标题"/>
++            </details> : <p className={styles.note}>当前标题没有找到可读的相似历史，不能据此判断没有重复记录。</p>}
++            <p className={styles.meta}>查找于 {new Date(current.reading.as_of).toLocaleString("zh-CN")}</p>
++          </>}
++  </aside>;
++}
+--- a/pdos-next/web/src/components/similar-history.test.mjs
++++ b/pdos-next/web/src/components/similar-history.test.mjs
+@@ -28,12 +28,12 @@
+ const anchor = { issue_id: id(3), version_id: id(4), revision: 1, title: "当前问题", category_id: id(1), product_id: id(2), project_id: id(8) };
+ const card = (n = 5) => ({ kind: "issue", title: `漏气案例 ${n}`, object_id: id(n + 20), source_id: id(n), source_revision: 3, is_current: true, status: "awaiting_verification", category: "阀件", project: "历史项目", reason: "同编号", root_cause: "未记录", containment: ["已隔离同批样件"], capa_actions: ["更换密封圈"], verification: "待复验：该固定记录未登记有效性决定", differences: [{ field: "型号", status: "different", current: "A", candidate: "B" }, { field: "阶段", status: "unknown", current: "未记录", candidate: "未记录" }], can_prepare_merge: true, object_url: "/?area=cockpit&issue=fixed", object_label: "打开原问题" });
+ const view = (...items) => ({ version: "similar-history/v1", as_of: "2026-10-29T00:00:00Z", ranking_version: "synthetic-ranking", anchor, items: items.length ? items : [card()], coverage: { status: "current", notice: null } });
+-const text = tree => typeof tree === "string" || typeof tree === "number" ? String(tree) : Array.isArray(tree) ? tree.map(text).join("") : tree && typeof tree === "object" ? text(tree.props?.children) : "";
+-const nodes = tree => !tree || typeof tree !== "object" ? [] : Array.isArray(tree) ? tree.flatMap(nodes) : [tree, ...nodes(tree.props?.children)];
++const text = tree => typeof tree === "string" || typeof tree === "number" ? String(tree) : Array.isArray(tree) ? tree.map(text).join("") : tree && typeof tree === "object" ? text(typeof tree.type === "function" ? tree.type(tree.props) : tree.props?.children) : "";
++const nodes = tree => !tree || typeof tree !== "object" ? [] : Array.isArray(tree) ? tree.flatMap(nodes) : typeof tree.type === "function" ? nodes(tree.type(tree.props)) : [tree, ...nodes(tree.props?.children)];
+ const tick = () => new Promise(resolve => setImmediate(resolve));
+-function environment(t, { reading = view(), write = async () => ({}), onMerge, mergeAvailable, openPai } = {}) {
++function environment(t, { reading = view(), write = async () => ({}), onMerge, mergeAvailable, openPai, changeId } = {}) {
+   const calls = [], own = { slots: [], index: 0, effects: [], dirty: true, openPai };
+-  const props = { productId: id(2), issueId: id(3), versionId: id(4), onMerge, mergeAvailable, api: async (route, body) => { calls.push({ route, body: body && structuredClone(body) }); return body ? write(route, body) : reading; } };
++  const props = { productId: id(2), ...(changeId ? { changeId } : { issueId: id(3) }), versionId: id(4), onMerge, mergeAvailable, api: async (route, body) => { calls.push({ route, body: body && structuredClone(body) }); return body ? write(route, body) : reading; } };
+   const component = SimilarHistory(props).type; let tree;
+   function render() { own.index = 0; own.effects = []; own.dirty = false; hooks = own; tree = component(props); hooks = null; own.effects.forEach(effect => effect()); }
+   render(); t.after(() => own.slots.forEach(slot => slot?.cleanup?.()));
+@@ -93,3 +93,18 @@
+   await env.flush(); assert.equal(selected.length, 0); await env.click("让小Pai看看");
+   assert.equal(selected.length, 1); assert.deepEqual(selected[0], { anchor, candidate: card() }); assert.equal(env.calls.length, 1);
+ });
++
++test("change detail keeps its fixed version, supports explicit feedback and never offers issue merging", async t => {
++  const selected = [], change = { ...anchor, kind: "change", change_id: id(3) };
++  delete change.issue_id;
++  const env = environment(t, { changeId: id(3), reading: { ...view(), anchor: change },
++    openPai: value => selected.push(value), onMerge: () => assert.fail("change cannot merge issues"), mergeAvailable: () => true });
++  await env.flush(); assert.equal(env.calls.length, 1);
++  assert.equal(env.calls[0].route, `v1/products/${id(2)}/change-execution/${id(3)}/similar-history?version_id=${id(4)}`);
++  assert.equal(env.node("标为重复，核对后确认"), undefined);
++  assert.ok(env.text().includes("与当前变更的结构化差异"));
++  await env.click("让小Pai看看"); assert.deepEqual(selected[0], { anchor: change, candidate: card() });
++  assert.equal(env.calls.length, 1, "opening Pai does not create a Run");
++  await env.click("不相关"); assert.equal(env.calls[1].route, `v1/products/${id(2)}/change-execution/${id(3)}/similar-history/feedback`);
++  assert.equal(env.calls[1].body.version_id, id(4)); assert.equal(env.calls[1].body.action, "not_relevant");
++});
+--- a/pdos-next/web/src/components/similar-history.tsx
++++ b/pdos-next/web/src/components/similar-history.tsx
+@@ -11,18 +11,21 @@
+ const kinds = { issue: "质量问题", capa: "CAPA", change: "变更" };
+ const statuses: Record<string, string> = { open: "待分诊", triaged: "已分诊", actioning: "措施办理中", awaiting_verification: "待有效性复核", closed: "已关闭", draft: "草稿", analysis: "影响核对中", implementing: "实施中", verifying: "待复验", completed: "已完成登记" };
+ 
+-export function SimilarHistory(props: { api: Api; productId: string; issueId: string; versionId: string; onMerge?: (card: SimilarHistoryCard, element: HTMLElement) => void | Promise<void>; mergeAvailable?: (card: SimilarHistoryCard) => boolean }) {
+-  return <SimilarHistoryReading key={`${props.productId}:${props.issueId}:${props.versionId}`} {...props}/>;
++type SimilarHistoryProps = { api: Api; productId: string; versionId: string; onMerge?: (card: SimilarHistoryCard, element: HTMLElement) => void | Promise<void>; mergeAvailable?: (card: SimilarHistoryCard) => boolean } & ({ issueId: string; changeId?: never } | { changeId: string; issueId?: never });
++
++export function SimilarHistory(props: SimilarHistoryProps) {
++  return <SimilarHistoryReading key={`${props.productId}:${props.changeId ? "change" : "issue"}:${props.changeId ?? props.issueId}:${props.versionId}`} {...props}/>;
+ }
+ export function SimilarHistoryLayout({ children, history }: { children: ReactNode; history: ReactNode }) {
+   if (!history) return <>{children}</>;
+   return <div className={styles.layout}><div className={styles.columns}><div className={styles.detail}>{children}</div>{history}</div></div>;
+ }
+-function SimilarHistoryReading({ api, productId, issueId, versionId, onMerge, mergeAvailable }: Parameters<typeof SimilarHistory>[0]) {
++function SimilarHistoryReading({ api, productId, issueId, changeId, versionId, onMerge, mergeAvailable }: SimilarHistoryProps) {
+   const [reading, setReading] = useState<SimilarHistoryView | null>(null), [error, setError] = useState(""), [attempt, setAttempt] = useState(0);
+   const [hidden, setHidden] = useState<string[]>([]), [notice, setNotice] = useState(""), [pending, setPending] = useState<SimilarHistoryFeedback | null>(null), [busy, setBusy] = useState(false);
+   const mounted = useRef(true), lock = useRef(false), openPai = useContext(SimilarHistoryPaiContext);
+-  const path = similarHistoryPath(productId, issueId);
++  const change = changeId !== undefined;
++  const path = similarHistoryPath(productId, (changeId ?? issueId)!, change ? "change" : "issue");
+   useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+   useEffect(() => {
+     let active = true;
+@@ -30,6 +33,7 @@
+     return () => { active = false; };
+   }, [api, path, versionId, attempt]);
+   async function record(card: SimilarHistoryCard, action: SimilarHistoryAction, original?: SimilarHistoryFeedback) {
++    if (change && action === "merge_prepared") return false;
+     if (lock.current || (pending && !original)) return false;
+     lock.current = true; setBusy(true); setNotice("");
+     const body: SimilarHistoryFeedback = original ?? { version_id: versionId, candidate_kind: card.kind, candidate_source_id: card.source_id, candidate_revision: card.source_revision, action, request_key: crypto.randomUUID() };
+@@ -57,19 +61,10 @@
+       {reading.coverage.status === "partial" && <p role="status" className={styles.note}>部分可读资料尚未完成索引或依据复核；以下只列当前已找到的记录。</p>}
+       {!reading.items.length && <p className={styles.note}>当前没有找到可读的相似历史。</p>}
+       {!!reading.items.length && reading.items.every(card => hidden.includes(`${card.kind}:${card.source_id}`)) && <p className={styles.note}>已收起本次标记为不相关的记录。</p>}
+-      {reading.items.filter(card => !hidden.includes(`${card.kind}:${card.source_id}`)).map(card => <article key={`${card.kind}:${card.source_id}`} className={styles.card}>
+-        <div className={styles.meta}>{kinds[card.kind]} · {statuses[card.status] ?? "状态待核对"}</div><h4>{card.title}</h4>
+-        <p className={styles.meta}>{card.category} / {card.project} · 固定 v{card.source_revision}{card.is_current ? "" : " · 历史版本"}</p>
+-        <p className={styles.reason}>{card.reason}</p>
+-        <dl><div><dt>根因</dt><dd>{card.root_cause}</dd></div><div><dt>临时措施</dt><dd>{card.containment.join("；")}</dd></div><div><dt>{card.kind === "change" ? "变更措施" : "CAPA措施"}</dt><dd>{card.capa_actions.join("；")}</dd></div><div><dt>复验/有效性</dt><dd>{card.verification}</dd></div></dl>
+-        <details><summary>与当前问题的结构化差异</summary><dl>{card.differences.map(row => <div key={row.field}><dt>{row.field}</dt><dd>{row.status === "same" ? `相同 · ${row.current}` : row.status === "different" ? `当前：${row.current}；历史：${row.candidate}` : "未记录，不能据此判断相同"}</dd></div>)}</dl><p className={styles.note}>工况等未结构化条件需要另行核对。</p></details>
+-        <div className={styles.actions}>
+-          {card.object_url && <a href={card.object_url} target="_blank" rel="noopener noreferrer" onClick={() => { void record(card, "opened"); }}>{card.object_label}<ArrowSquareOut size={12} aria-hidden="true"/></a>}
+-          <Button type="button" variant="ghost" size="sm" disabled={busy || !!pending} onClick={() => void record(card, "not_relevant")}>不相关</Button>
+-          {onMerge && card.kind === "issue" && card.can_prepare_merge && mergeAvailable?.(card) && <Button type="button" variant="outline" size="sm" disabled={busy || !!pending} onClick={event => { const element = event.currentTarget; void record(card, "merge_prepared").then(saved => { if (saved) void onMerge(card, element); }); }}>标为重复，核对后确认</Button>}
+-          {openPai && <Button type="button" variant="ghost" size="sm" disabled={busy} onClick={() => openPai({ anchor: reading.anchor, candidate: card })}><Sparkle size={13} aria-hidden="true"/>让小Pai看看</Button>}
+-        </div>
+-      </article>)}
++      <SimilarHistoryCards items={reading.items} hidden={hidden} busy={busy} pending={!!pending} anchorLabel={change ? "当前变更" : "当前问题"}
++        mergeAvailable={!change && onMerge ? mergeAvailable : undefined}
++        onAction={(card, action, element) => { void record(card, action).then(saved => { if (saved && action === "merge_prepared" && element) void onMerge?.(card, element); }); }}
++        onPai={openPai ? card => openPai({ anchor: reading.anchor, candidate: card }) : undefined}/>
+       <p className={styles.meta}>查找于 {new Date(reading.as_of).toLocaleString("zh-CN")}</p>
+     </>}
+     {notice && <p role="alert">{notice}{pending ? " 原反馈请求已保留，可重试。" : ""}</p>}
+@@ -80,3 +75,26 @@
+     }}>重试记录原反馈</Button>}
+   </aside>;
+ }
++
++/** Shared presentation of server-projected facts; callbacks exist only for saved objects. */
++export function SimilarHistoryCards({ items, hidden = [], busy, pending, anchorLabel, mergeAvailable, onAction, onPai }: {
++  items: SimilarHistoryCard[];
++  hidden?: string[]; busy?: boolean; pending?: boolean; anchorLabel: string;
++  mergeAvailable?: (card: SimilarHistoryCard) => boolean;
++  onAction?: (card: SimilarHistoryCard, action: SimilarHistoryAction, element?: HTMLElement) => void;
++  onPai?: (card: SimilarHistoryCard) => void;
++}) {
++  return items.slice(0, 5).filter(card => !hidden.includes(`${card.kind}:${card.source_id}`)).map(card => <article key={`${card.kind}:${card.source_id}`} className={styles.card}>
++    <div className={styles.meta}>{kinds[card.kind]} · {statuses[card.status] ?? "状态待核对"}</div><h4>{card.title}</h4>
++    <p className={styles.meta}>{card.category} / {card.project} · 固定 v{card.source_revision}{card.is_current ? "" : " · 历史版本"}</p>
++    <p className={styles.reason}>{card.reason}</p>
++    <dl><div><dt>根因</dt><dd>{card.root_cause}</dd></div><div><dt>临时措施</dt><dd>{card.containment.join("；")}</dd></div><div><dt>{card.kind === "change" ? "变更措施" : "CAPA措施"}</dt><dd>{card.capa_actions.join("；")}</dd></div><div><dt>复验/有效性</dt><dd>{card.verification}</dd></div></dl>
++    <details><summary>与{anchorLabel}的结构化差异</summary><dl>{card.differences.map(row => <div key={row.field}><dt>{row.field}</dt><dd>{row.status === "same" ? `相同 · ${row.current}` : row.status === "different" ? `当前：${row.current}；历史：${row.candidate}` : "未记录，不能据此判断相同"}</dd></div>)}</dl><p className={styles.note}>工况等未结构化条件需要另行核对。</p></details>
++    <div className={styles.actions}>
++      {card.object_url && <a href={card.object_url} target="_blank" rel="noopener noreferrer" onClick={onAction ? () => onAction(card, "opened") : undefined}>{card.object_label}<ArrowSquareOut size={12} aria-hidden="true"/></a>}
++      {onAction && <Button type="button" variant="ghost" size="sm" disabled={busy || pending} onClick={() => onAction(card, "not_relevant")}>不相关</Button>}
++      {onAction && card.kind === "issue" && card.can_prepare_merge && mergeAvailable?.(card) && <Button type="button" variant="outline" size="sm" disabled={busy || pending} onClick={event => onAction(card, "merge_prepared", event.currentTarget)}>标为重复，核对后确认</Button>}
++      {onPai && <Button type="button" variant="ghost" size="sm" disabled={busy} onClick={() => onPai(card)}><Sparkle size={13} aria-hidden="true"/>让小Pai看看</Button>}
++    </div>
++  </article>);
++}
+--- a/pdos-next/web/src/lib/similar-history-proxy.ts
++++ b/pdos-next/web/src/lib/similar-history-proxy.ts
+@@ -3,12 +3,13 @@
+ import { sameOrigin } from "./request-origin";
+ import { uuid, validSimilarFeedback } from "./similar-history";
+ 
+-type Scope = { categoryId: string; productId: string; issueId: string };
++type Scope = { categoryId: string; productId: string; issueId?: string; changeId?: string };
+ const headers = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" };
+ const error = (message: string, status: number, code = "VALIDATION_FAILED") => Response.json({ code, message }, { status, headers });
+-export async function similarHistoryProxy(request: NextRequest, params: Promise<Scope>, feedback = false) {
+-  const { categoryId, productId, issueId } = await params;
+-  if (![categoryId, productId, issueId].every(uuid)) return error("问题范围无效。", 422);
++export async function similarHistoryProxy(request: NextRequest, params: Promise<Scope>, feedback = false, kind: "issue" | "change" = "issue") {
++  const { categoryId, productId, issueId, changeId } = await params;
++  const objectId = kind === "change" ? changeId : issueId;
++  if (![categoryId, productId, objectId].every(uuid)) return error("记录范围无效。", 422);
+   let suffix = "", body: unknown;
+   if (feedback) {
+     if (!sameOrigin(request)) return error("请从当前站点记录反馈。", 403, "FORBIDDEN_SCOPE");
+@@ -16,18 +17,36 @@
+     if (request.nextUrl.searchParams.size) return error("反馈不接受其他身份或范围。", 422);
+     try { const raw = await request.text(); if (raw.length > 4096) return error("反馈过长。", 422); body = JSON.parse(raw); } catch { return error("反馈格式无效。", 422); }
+     if (!validSimilarFeedback(body)) return error("请只提交当前卡片的明确动作。", 422);
++    if (kind === "change" && body.action === "merge_prepared") return error("变更不支持问题归并。", 422);
+     suffix = "/feedback";
+   } else {
+     const query = request.nextUrl.searchParams;
+-    if ([...query.keys()].length !== 1 || !uuid(query.get("version_id"))) return error("请选择固定问题版本。", 422);
++    if ([...query.keys()].length !== 1 || !uuid(query.get("version_id"))) return error("请选择固定记录版本。", 422);
+     suffix = `?version_id=${encodeURIComponent(query.get("version_id")!)}`;
+   }
++  return forward(categoryId, productId, `${kind === "change" ? "change-execution" : "quality-issues"}/${objectId}/similar-history${suffix}`, feedback, body);
++}
++
++export async function similarHistorySuggestionsProxy(request: NextRequest, params: Promise<Pick<Scope, "categoryId" | "productId">>) {
++  const { categoryId, productId } = await params;
++  if (![categoryId, productId].every(uuid)) return error("查询范围无效。", 422);
++  const query = request.nextUrl.searchParams, keys = [...query.keys()];
++  const kind = query.get("kind"), title = query.get("title")?.trim(), project = query.get("project_id");
++  if (new Set(keys).size !== keys.length || keys.some(key => !["kind", "title", "project_id"].includes(key))
++    || !["issue", "change"].includes(kind ?? "") || !title || [...title].length > 240
++    || (query.has("project_id") && !uuid(project))) return error("请提供当前标题及有效项目范围，标题不超过240字符。", 422);
++  const bounded = new URLSearchParams({ kind: kind!, title });
++  if (project) bounded.set("project_id", project);
++  return forward(categoryId, productId, `similar-history?${bounded}`);
++}
++
++async function forward(categoryId: string, productId: string, path: string, feedback = false, body?: unknown) {
+   const token = (await cookies()).get("pdos-next-session")?.value;
+   if (!token) return error("请进入有效会话。", 401, "UNAUTHENTICATED");
+   const base = process.env.PDOS_NEXT_API_URL;
+   if (!base) return error("服务暂未配置。", 503, "SOURCE_UNAVAILABLE");
+   try {
+-    const response = await fetch(`${base}/v1/categories/${categoryId}/products/${productId}/quality-issues/${issueId}/similar-history${suffix}`, {
++    const response = await fetch(`${base}/v1/categories/${categoryId}/products/${productId}/${path}`, {
+       method: feedback ? "POST" : "GET", cache: "no-store", redirect: "error", signal: AbortSignal.timeout(60000),
+       headers: { Authorization: `Bearer ${token}`, ...(feedback ? { "Content-Type": "application/json" } : {}) },
+       body: feedback ? JSON.stringify(body) : undefined,
+--- a/pdos-next/web/src/lib/similar-history.test.mjs
++++ b/pdos-next/web/src/lib/similar-history.test.mjs
+@@ -11,7 +11,7 @@
+ function load(relative, require = dependency, extras = {}) {
+   const mod = { exports: {} };
+   runInNewContext(ts.transpileModule(readFileSync(path.join(web, "src", relative), "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX } }).outputText,
+-    { module: mod, exports: mod.exports, require, Response, URL, AbortSignal, ...extras });
++    { module: mod, exports: mod.exports, require, Response, URL, URLSearchParams, AbortSignal, ...extras });
+   return mod.exports;
+ }
+ const values = load("lib/similar-history.ts"), origin = load("lib/request-origin.ts");
+@@ -32,7 +32,8 @@
+     const writing = body !== undefined || raw !== undefined;
+     const request = new Request(`http://localhost:3000/api/v1/similar-history${query ? `?${query}` : ""}`, { method: writing ? "POST" : "GET", headers: { origin, host: "localhost:3000", "Content-Type": contentType, Authorization: "Bearer caller-forgery", "X-Principal-ID": "caller-forgery" }, body: writing ? raw ?? JSON.stringify(body) : undefined });
+     Object.defineProperty(request, "nextUrl", { value: new URL(request.url) });
+-    return proxy.similarHistoryProxy(request, Promise.resolve(params), writing);
++    return options.suggestions ? proxy.similarHistorySuggestionsProxy(request, Promise.resolve(params))
++      : proxy.similarHistoryProxy(request, Promise.resolve(params), writing, options.kind ?? "issue");
+   } };
+ }
+ 
+@@ -103,3 +104,51 @@
+   assert.deepEqual(JSON.parse(JSON.stringify(material.draft)), { selection_kind: "unverified_object_metadata", current: { kind: "issue", object_id: id(3), version_id: id(4), revision: 7 }, candidate: { kind: "change", object_id: id(9), version_id: id(10), revision: 3 } });
+   assert.equal(material.sources, undefined); assert.equal(material.run_id, undefined);
+ });
++
++test("change BFF uses fixed native identities, preserves explicit feedback and rejects merging", async () => {
++  const h = harness({ kind: "change" }), params = { categoryId: id(1), productId: id(2), changeId: id(3) };
++  assert.equal((await h.send({ params })).status, 200);
++  assert.equal(h.calls[0].url, `http://synthetic-api.invalid/v1/categories/${id(1)}/products/${id(2)}/change-execution/${id(3)}/similar-history?version_id=${id(4)}`);
++  assert.equal((await h.send({ params, query: "", body: feedback() })).status, 200);
++  assert.ok(h.calls[1].url.endsWith(`/change-execution/${id(3)}/similar-history/feedback`));
++  assert.equal((await h.send({ params, query: "", body: { ...feedback(), action: "merge_prepared" } })).status, 422);
++  assert.equal(h.calls.length, 2);
++});
++
++test("title BFF accepts only bounded title and real selectors; no alternate identity or body is forwarded", async () => {
++  const h = harness({ suggestions: true });
++  const query = new URLSearchParams({ kind: "change", title: "  接口漏气  ", project_id: id(8) }).toString();
++  assert.equal((await h.send({ query })).status, 200);
++  const request = h.calls[0], url = new URL(request.url);
++  assert.ok(url.pathname.endsWith(`/products/${id(2)}/similar-history`));
++  assert.equal(url.searchParams.get("title"), "接口漏气"); assert.equal(url.searchParams.get("project_id"), id(8));
++  assert.equal(request.init.method, "GET"); assert.equal(request.init.body, undefined);
++  assert.deepEqual(Object.keys(request.init.headers), ["Authorization"]);
++  for (const bad of ["", "kind=issue&title=", "kind=issue&title=%20", "kind=artifact&title=x", "kind=issue&title=x&title=y", "kind=issue&title=x&viewer_id=forged", "kind=issue&title=x&project_id=invalid", `kind=issue&title=${"x".repeat(241)}`, "kind=issue&title=x&version_id=latest"])
++    assert.equal((await h.send({ query: bad })).status, 422, bad);
++  assert.equal(h.calls.length, 1);
++  assert.equal((await h.send({ query: new URLSearchParams({ kind: "issue", title: "🙂".repeat(240) }).toString() })).status, 200);
++});
++
++test("completion routes expose saved Change feedback and title GET only", async () => {
++  const calls = [], params = Promise.resolve({ categoryId: id(1), productId: id(2), changeId: id(3) }), request = {};
++  const require = name => { assert.equal(name, "@/lib/similar-history-proxy"); return { similarHistoryProxy: (...args) => calls.push(args), similarHistorySuggestionsProxy: (...args) => calls.push(args) }; };
++  const base = "app/api/v1/categories/[categoryId]/products/[productId]";
++  const reading = load(`${base}/change-execution/[changeId]/similar-history/route.ts`, require);
++  const writing = load(`${base}/change-execution/[changeId]/similar-history/feedback/route.ts`, require);
++  const title = load(`${base}/similar-history/route.ts`, require);
++  assert.deepEqual(Object.keys(reading), ["GET"]); assert.deepEqual(Object.keys(writing), ["POST"]); assert.deepEqual(Object.keys(title), ["GET"]);
++  await reading.GET(request, { params }); await writing.POST(request, { params }); await title.GET(request, { params });
++  assert.deepEqual(calls.map(args => args.slice(2)), [[false, "change"], [true, "change"], []]);
++});
++
++test("Change Pai prefill preserves the actual selected pair without pretending it is a quality issue", () => {
++  const { similarHistoryMaterial } = load("components/similar-history-pai.tsx");
++  const anchor = { kind: "change", change_id: id(3), version_id: id(4), revision: 2, title: "当前变更", category_id: id(1), product_id: id(2), project_id: id(8) };
++  const candidate = { kind: "issue", object_id: id(9), source_id: id(10), source_revision: 3, title: "历史问题" };
++  const material = similarHistoryMaterial({ anchor, candidate }, id(11));
++  assert.equal(material.kind, "change_request"); assert.equal(material.id, anchor.change_id); assert.equal(material.version, 2);
++  assert.equal(material.draft.current.kind, "change"); assert.equal(material.draft.current.version_id, anchor.version_id);
++  assert.equal(material.draft.selection_kind, "unverified_object_metadata"); assert.equal(material.sources, undefined); assert.equal(material.run_id, undefined);
++  assert.ok(material.request.prompt.includes("案例表")); assert.ok(!material.request.prompt.includes(anchor.change_id));
++});
+--- a/pdos-next/web/src/lib/similar-history.ts
++++ b/pdos-next/web/src/lib/similar-history.ts
+@@ -4,15 +4,28 @@
+   differences: { field: string; status: "same" | "different" | "unknown"; current: string; candidate: string }[];
+   can_prepare_merge: boolean; object_url: string | null; object_label: string;
+ };
++type SimilarHistoryScope = { title: string; category_id: string; product_id: string; project_id: string };
++export type SimilarHistoryAnchor = SimilarHistoryScope & (
++  { issue_id: string; version_id: string; revision: number; kind?: "issue" }
++  | { kind: "change"; change_id: string; version_id: string; revision: number }
++);
+ export type SimilarHistoryView = {
+   version: "similar-history/v1"; as_of: string; ranking_version: string; notice: string;
+-  anchor: { issue_id: string; version_id: string; revision: number; title: string; category_id: string; product_id: string; project_id: string };
++  anchor: SimilarHistoryAnchor;
+   items: SimilarHistoryCard[]; coverage: { status: "current" | "partial"; notice: string | null };
++};
++export type SimilarHistorySuggestions = Omit<SimilarHistoryView, "anchor"> & {
++  anchor: Omit<SimilarHistoryScope, "project_id"> & { kind: "issue_draft" | "change_draft"; project_id: string | null };
+ };
+ export type SimilarHistoryAction = "opened" | "not_relevant" | "merge_prepared";
+ export type SimilarHistoryFeedback = { version_id: string; candidate_kind: SimilarHistoryCard["kind"]; candidate_source_id: string; candidate_revision: number; action: SimilarHistoryAction; request_key: string };
+ export const uuid = (value: unknown): value is string => typeof value === "string" && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(value);
+-export const similarHistoryPath = (productId: string, issueId: string) => `v1/products/${productId}/quality-issues/${issueId}/similar-history`;
++export const similarHistoryPath = (productId: string, objectId: string, kind: "issue" | "change" = "issue") => `v1/products/${productId}/${kind === "change" ? "change-execution" : "quality-issues"}/${objectId}/similar-history`;
++export function similarHistorySuggestionsPath(productId: string, kind: "issue" | "change", title: string, projectId?: string) {
++  const query = new URLSearchParams({ kind, title: title.trim() });
++  if (projectId) query.set("project_id", projectId);
++  return `v1/products/${productId}/similar-history?${query}`;
++}
+ export function validSimilarFeedback(value: unknown): value is SimilarHistoryFeedback {
+   if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+   const body = value as Record<string, unknown>;

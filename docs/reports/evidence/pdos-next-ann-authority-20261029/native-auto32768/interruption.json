@@ -1,0 +1,13 @@
+{
+  "status": "interrupted_known_prepared_plan_regression",
+  "full_matrix_completed": false,
+  "pytest_failure": "SIGINT while fourth owner query was executing; observer close then saw closed connection",
+  "sanitized_completed_nearest_plans": 14,
+  "actual_hnsw_plans_before_interruption": 8,
+  "row_attributed_ann_recall": "not_complete",
+  "cleanup": "native_t1_disabled",
+  "remaining_profile_vectors": 0,
+  "observer_restored": true,
+  "frozen_inputs_unchanged": true,
+  "next": "Per-query unprepared semantic execution; keep bindings/RLS/default planner costs"
+}

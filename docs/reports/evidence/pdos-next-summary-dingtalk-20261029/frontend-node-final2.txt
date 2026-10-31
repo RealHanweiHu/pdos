@@ -1,0 +1,43 @@
+✔ a failed list read is visible, distinct from empty, and actual refresh performs only GET (14.496792ms)
+✔ activation previews the actual common command and only explicit confirmation submits once (23.355917ms)
+✔ response loss restores the exact confirmed command and never automatically POSTs on remount (23.126584ms)
+✔ manual trigger recovery preserves the old admission key/version and opens the actual returned Run (24.623041ms)
+✔ pause and resume use their actual fixed published version and keep the T1 boundary (21.140541ms)
+✔ draft save uses its actual fixed catalog/budget and is persisted before the sole T0 command (10.624584ms)
+✔ storage failure is contained at preview and confirmation events and prevents unrecorded writes (22.627875ms)
+✔ scope switch ignores a late preview and cannot carry private rule content into the next category (8.784916ms)
+✔ 403 erases page/local private rule material and cannot claim the list is empty (12.044666ms)
+✔ no category displays the actual selection requirement without issuing a request (0.756708ms)
+✔ editing a fixed-product rule displays its immutable range and preserves the product on draft save (13.607834ms)
+✔ schedule form events keep explicit ISO/timezone and save one real draft without guessing a date (29.247875ms)
+✔ automatic rules show actual service identity and suppression source, with no manual admission button (6.76575ms)
+✔ automatic activation displays server-prepared service authorization but remains behind explicit T1 (3.677209ms)
+✔ summary choice saves an actual scheduled draft with owner scope and no automatic activation (6.538458ms)
+✔ summary draft response loss keeps original calendar and selection across remount (5.429792ms)
+✔ server quality default only filters native summary types and remains editable without a role payload (5.699833ms)
+✔ a denied own template read clears rule data and never submits a draft (2.367083ms)
+✔ summary setup needs no generic skill or wallet and previews the saved native version before one confirmation (5.631042ms)
+✔ saved custom summary frequency and legacy skill wallet are untouched until explicit conversion (3.769708ms)
+✔ real settings defaults to station only and does not read or write without an explicit event (6.043125ms)
+✔ an existing explicit binding is preserved until current metadata is deliberately reread (0.485041ms)
+✔ selection narrows supported fields without accepting an owner, role or scope proof (1.293083ms)
+✔ Monday default and weekdays are real local calendar instants across DST (14.688792ms)
+✔ missing calendar dates skip rather than shift and invalid clocks do not default (1.008417ms)
+✔ original run and actual owner are mandatory before showing a summary (1.803916ms)
+✔ unknown responsibility stays unknown; analysis cannot invent a health grade (0.209042ms)
+✔ missing groups/coverage and duplicate facts cannot appear as empty success (0.235792ms)
+✔ continued links stay local and bound to original object scope (0.229417ms)
+✔ feed verifies original owner, completed status and exact existing Inbox token (0.210083ms)
+✔ role options bind actual owner and category; unknown default stays unknown (0.365458ms)
+✔ quality preset uses original filters only and a user edit ceases to claim the preset (0.279208ms)
+✔ old choices omit the new default and explicit binding never adds identity fields (2.115625ms)
+✔ binding options are current own metadata GET and reject another principal (2.90925ms)
+✔ unknown receipt continuation sends only original receipt ID and empty lookup body (0.34175ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 627.936333

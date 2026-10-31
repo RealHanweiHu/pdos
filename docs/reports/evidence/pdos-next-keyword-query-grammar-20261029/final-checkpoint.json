@@ -1,0 +1,105 @@
+{
+  "version": "keyword-query-grammar-final-review/v1",
+  "recorded_at": "2026-10-30T09:20:19.824982+00:00",
+  "status": "review_passed_no_blocking_findings",
+  "scope": "query-only function-word minimal change; read-only source/evidence review with independent arithmetic and isolated restore-method checks",
+  "blocking_findings": [],
+  "current_candidate_sha256": {
+    "pdos-next/server/pdos_next/enterprise_search/tokenizer.py": "db7825d21cd8a614b8458920b38cb98b49610f15e4da943ead9ce4d206066036",
+    "pdos-next/server/pdos_next/enterprise_search/query.py": "f3b5408880946486289074024192d3a718e6a753089d11ef2078698f438b4e0c",
+    "pdos-next/server/tests/enterprise_search/test_query_grammar.py": "d2b6deb3a56347b8f74d93b74cf6a83f31b386cfb0cbc8f979126573353d5ea3"
+  },
+  "checks": {
+    "candidate_matches_implemented_manifest": true,
+    "minimal_reverse_reconstruction_matches_prechange_hashes": true,
+    "all_101_frozen_inputs_current_sha256_match": true,
+    "all_24_body_title_visibility_match_old_and_new": true,
+    "questions_and_corpus_sha256_match_original_baseline": true,
+    "source_analysis_and_index_versions_unchanged": true,
+    "raw_query_codes_uuid_tool_digest_embedding_binding_preserved": true,
+    "all_grammar_query_rejected_before_projection_after_scope_checks": true,
+    "query_policy_and_ranking_provenance_present": true,
+    "immutable_restore_old_metadata_and_current_authority_guards": "source reviewed and unmodified AST method executed with in-memory stubs; no PG recovery rerun"
+  },
+  "existing_validation_not_rerun": {
+    "pure_passed": 22,
+    "pure_log": "implemented-pure.log",
+    "pure_xml": "implemented-pure.xml",
+    "ruff": "implemented-ruff.log",
+    "native_pg_tests_passed": 1,
+    "native_http_measured_queries": 28,
+    "native_log": "native-live/native.log",
+    "native_xml": "native-live/tests.xml",
+    "native_warning": "record_property is incompatible with junit_family xunit2"
+  },
+  "independent_recomputed_metrics": {
+    "method": "direct original source_type/source_id identity intersection at original list positions; no scorer imported",
+    "positive_cases": 24,
+    "expected_sources": 28,
+    "http_observations": 28,
+    "recall": {
+      "5": {
+        "macro": 0.9791666666666666,
+        "micro": 0.9642857142857143,
+        "hits": 27
+      },
+      "10": {
+        "macro": 1.0,
+        "micro": 1.0,
+        "hits": 28
+      }
+    },
+    "negative_cases_passed": [
+      "ENG-07",
+      "QUA-07",
+      "PRD-07",
+      "PUR-07"
+    ],
+    "identifier_cases_passed": [
+      "ENG-03",
+      "QUA-03",
+      "PRD-03",
+      "PUR-03"
+    ],
+    "p50_ms": 69.7229165234603,
+    "p95_inclusive_ms": 93.34134766831994,
+    "protected_before_equals_after": true
+  },
+  "residual_gaps": [
+    "QUA-04 qua_lab_report is rank 10; recall@5 gap remains.",
+    "Old native evidence only establishes outside top10; prior rank14 is a pure simulation estimate.",
+    "料太湿 to 含水率 lexical/semantic mismatch remains.",
+    "Authored synthetic artifact dataset; no human golden qualification, answer quality or hybrid benefit established."
+  ],
+  "changes_by_reviewer": [
+    "review.md",
+    "result.md",
+    "final-checkpoint.json"
+  ],
+  "reviewer_database_connections": 0,
+  "reviewer_model_calls": 0,
+  "reviewer_embedding_calls": 0,
+  "reviewer_network_calls": 0,
+  "source_modified_by_reviewer": false,
+  "tasks_or_total_audit_modified_by_reviewer": false,
+  "prior_native_baseline_sha256": {
+    "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate2/baseline.json": "66512e55749c9f63bfd01a89d70e4b7849e5e9712a72b557629e248079aad3a8",
+    "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate2/bound-sources.json": "1d652c6caec3af84a147c2fb69a9dd3e3caa0ad30031525abcae645ca996489b",
+    "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate2/native.log": "90fbc6eaf655b08b63ac41eab4433f44703cade4779b47bb8e3af8dea19fdeb4",
+    "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate2/native.xml": "ea53d7beaa5f6af3725205b99f7d4e1d0465f526233ff01f82888c912c6b75c4",
+    "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate2/observations.json": "358de5381b838c9576688bf82b8e17f12846b2e84e4fdb1ba23494d810a3148f"
+  },
+  "evidence_sha256": {
+    "implemented-manifest.json": "38687af330788de6b804eb8a66fe02690c3ac1d89f04b9accd808763e9c4e25d",
+    "implemented-pure.log": "0adb909a55e3d6666caacf1ae6f426df7f1c70fd7a14cb94307ca110c18ee805",
+    "implemented-pure.xml": "471b8a2c2def294e488c903884b2816252a303efcff2aa73fb1f91195ff23a3a",
+    "implemented-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "native-live/baseline.json": "dce12655306565f2220a1ac87b0365f84faee2780352850752553bf49172c9e9",
+    "native-live/bound-sources.json": "b9507dfcca224c4e123d4f9f81e6163cc0eaf6de9f3e598005a817370cd40f59",
+    "native-live/observations.json": "1d96beafe7d1b4084602226e646bc0e486b24cdf9e3fc367d4128f7a6086b48a",
+    "native-live/native.log": "7171b764631a5b69b85f9a163d7e2bcf614e355fa9d47be1741acdb32ef7483a",
+    "native-live/tests.xml": "963ff5826e84ad2f906acb9a6613594ac901cdf08afc5e5d0d88a8c78bb2fe2e",
+    "independent-native-metrics.json": "9f416671ad4d6c4734809a6a31de725b74e0e7e5e80bf3b7fe46090750a35bb4",
+    "frozen-native-inputs.json": "4d944a693bb49b6b21bd3c3e3f82e69a3c3e72b30e9f27e60e0592bc3c6215bd"
+  }
+}

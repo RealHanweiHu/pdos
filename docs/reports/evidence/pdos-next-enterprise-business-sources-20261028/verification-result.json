@@ -1,0 +1,22 @@
+{
+  "candidate": "native-business-source-output-acl-project-proof-and-scoped-projection-final",
+  "verified_at_utc": "2026-10-28T21:42:12.827873+00:00",
+  "database_target": "127.0.0.1:53502/pdos_test",
+  "database_head": "s0_0829",
+  "test_files": 39,
+  "passed": 354,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "warnings": 224,
+  "duration_seconds": 696.349,
+  "log": "database-final-scope.txt",
+  "junit": "database-final-scope.junit.xml",
+  "source_manifest": "source-manifest-scope-final.json",
+  "changed_inputs": [],
+  "frontend_tests": 53,
+  "frontend_sources_compared": 660,
+  "real_models": false,
+  "complete_designs": false,
+  "affected_source_inputs": 205
+}

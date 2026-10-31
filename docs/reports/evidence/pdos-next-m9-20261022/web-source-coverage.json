@@ -1,0 +1,16 @@
+{
+  "built_snapshot": "/private/tmp/pdos-m9-web-953s2qd3/web",
+  "scope": "Final closed-state component included; M9 completion, Field and BFF source bytes match. Concurrent plan and Xiaopai entrance changes excluded.",
+  "concurrent_changes_excluded": [
+    "src/components/xiaopai.tsx",
+    "src/components/pai-rail.tsx",
+    "src/lib/run-start-intent.ts",
+    "src/lib/agent-skills.ts",
+    "src/lib/run-start-intent.test.mjs",
+    "src/app/plan/page.tsx"
+  ],
+  "completion_and_bff_changed": false,
+  "final_candidate_ui_delta": [
+    "src/components/builds/build-change-completion.tsx"
+  ]
+}

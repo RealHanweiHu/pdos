@@ -1,0 +1,80 @@
+{
+  "at_utc": "2026-10-29T20:48:19.777980+00:00",
+  "target": {
+    "port": 53502,
+    "database": "pdos_test",
+    "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+    "head": "s0_0853"
+  },
+  "pgvector": "0.8.6",
+  "indexes": [
+    {
+      "index_name": "enterprise_chunk_embeddings_pkey",
+      "indisvalid": true,
+      "indisready": true,
+      "bytes": 16384,
+      "definition": "CREATE UNIQUE INDEX enterprise_chunk_embeddings_pkey ON public.enterprise_chunk_embeddings USING btree (tenant_id, chunk_id, profile_version_id)"
+    },
+    {
+      "index_name": "ix_enterprise_embedding_hnsw_1024",
+      "indisvalid": true,
+      "indisready": true,
+      "bytes": 16384,
+      "definition": "CREATE INDEX ix_enterprise_embedding_hnsw_1024 ON public.enterprise_chunk_embeddings USING hnsw (((vector)::vector(1024)) vector_cosine_ops) WHERE (dimensions = 1024)"
+    },
+    {
+      "index_name": "ix_enterprise_embedding_hnsw_1536",
+      "indisvalid": true,
+      "indisready": true,
+      "bytes": 16384,
+      "definition": "CREATE INDEX ix_enterprise_embedding_hnsw_1536 ON public.enterprise_chunk_embeddings USING hnsw (((vector)::vector(1536)) vector_cosine_ops) WHERE (dimensions = 1536)"
+    },
+    {
+      "index_name": "ix_enterprise_embedding_hnsw_2",
+      "indisvalid": true,
+      "indisready": true,
+      "bytes": 16384,
+      "definition": "CREATE INDEX ix_enterprise_embedding_hnsw_2 ON public.enterprise_chunk_embeddings USING hnsw (((vector)::vector(2)) vector_cosine_ops) WHERE (dimensions = 2)"
+    },
+    {
+      "index_name": "ix_enterprise_embedding_hnsw_2000",
+      "indisvalid": true,
+      "indisready": true,
+      "bytes": 16384,
+      "definition": "CREATE INDEX ix_enterprise_embedding_hnsw_2000 ON public.enterprise_chunk_embeddings USING hnsw (((vector)::vector(2000)) vector_cosine_ops) WHERE (dimensions = 2000)"
+    },
+    {
+      "index_name": "ix_enterprise_embedding_hnsw_384",
+      "indisvalid": true,
+      "indisready": true,
+      "bytes": 16384,
+      "definition": "CREATE INDEX ix_enterprise_embedding_hnsw_384 ON public.enterprise_chunk_embeddings USING hnsw (((vector)::vector(384)) vector_cosine_ops) WHERE (dimensions = 384)"
+    },
+    {
+      "index_name": "ix_enterprise_embedding_hnsw_768",
+      "indisvalid": true,
+      "indisready": true,
+      "bytes": 16384,
+      "definition": "CREATE INDEX ix_enterprise_embedding_hnsw_768 ON public.enterprise_chunk_embeddings USING hnsw (((vector)::vector(768)) vector_cosine_ops) WHERE (dimensions = 768)"
+    }
+  ],
+  "embedding_counts": [
+    {
+      "dimensions": 2,
+      "rows": 25
+    },
+    {
+      "dimensions": 3,
+      "rows": 8
+    }
+  ],
+  "planner_settings": {
+    "enable_seqscan": "on",
+    "enable_indexscan": "on",
+    "enable_incremental_sort": "on",
+    "random_page_cost": "4",
+    "plan_cache_mode": "auto"
+  },
+  "real_provider_calls": 0,
+  "scope": "metadata preflight; not an ANN execution or recall result"
+}

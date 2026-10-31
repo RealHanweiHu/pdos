@@ -1,0 +1,59 @@
+{
+  "browser_origin": "http://localhost:59573",
+  "candidate": "HEAD 28bacbb7d8be01b50296004a66891ab9892d30f4 plus 19 owned frontend overlays",
+  "viewport": {
+    "width": 1280,
+    "height": 720,
+    "narrow_320": "not_verified"
+  },
+  "observed": {
+    "commitments": "Actual paired current promises, fulfilled and unreviewed separated; returned/fulfilled review history expanded; light/dark screenshots saved.",
+    "build_output": "Actual selected Build, 2 lots of 2 and 3 pieces, 2 registered sample IDs; unknown and hold retained; full ID details expanded; light/dark screenshots saved.",
+    "scope_and_skills": "Current live dev preview: explicitly switched personal and actual project, read enabled/disabled tenant skills; no Run submitted. Personal manual skill UI added later; covered by final pure/API/BFF/build checks, no new browser interaction.",
+    "upload": "Actual browser file chooser selected self-created 107-byte TXT, saved once and read original receipt; parsed by actual parser with injected synthetic scanner.",
+    "knowledge_category_form": "Pure command/component checks passed; actual page write not verified.",
+    "session_presentation": "No new actual browser management test completed."
+  },
+  "upload": {
+    "original_id": "f9e84210-91c7-4f9b-b3f9-01f8ffba97c9",
+    "receipt_id": "52236774-7bb2-479c-97c6-25875b7a31a7",
+    "parsed_original_revision": 2,
+    "artifact_id": "3ef628ca-6ee1-439a-829b-eff84d0004b7",
+    "artifact_revision": 1,
+    "scanner": "synthetic-test-port"
+  },
+  "stopped": {
+    "action": "refresh original upload receipt",
+    "reason": "browser reported user declined origin authority",
+    "no_retry": true,
+    "pending": [
+      "manual available-source selection to Run",
+      "category knowledge form save",
+      "session rename/pin/archive/restore",
+      "320px checks"
+    ]
+  },
+  "upload_boundary": {
+    "known_content_length": {
+      "status": 413,
+      "code": "FILE_TOO_LARGE"
+    },
+    "chunked": {
+      "status": 413,
+      "code": "FILE_TOO_LARGE"
+    },
+    "origin": "http://127.0.0.1:59650",
+    "synthetic_payload_only": true
+  },
+  "formal_stage_acceptance": false,
+  "browser_model_calls": 0,
+  "real_model_calls": 5,
+  "real_model_provider": "minimax",
+  "final_shared_candidate_browser_regression": false,
+  "real_model_evidence": [
+    "real-model-run.json",
+    "real-model-development-run.json",
+    "real-model-development2-run.json"
+  ],
+  "observed_panel_source_changes_since_browser": []
+}

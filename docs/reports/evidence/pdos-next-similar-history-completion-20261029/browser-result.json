@@ -1,0 +1,69 @@
+{
+  "synthetic": true,
+  "native_ui_checks_passed": true,
+  "before": {
+    "action_receipts": 74,
+    "agent_runs": 0,
+    "agent_tool_calls": 0
+  },
+  "after": {
+    "action_receipts": 74,
+    "agent_runs": 0,
+    "agent_tool_calls": 0
+  },
+  "new_receipts": 0,
+  "new_runs": 0,
+  "new_toolcalls": 0,
+  "feedback": [
+    {
+      "feedback_id": "13af0353-0e92-41c7-87c1-12130551a6b3",
+      "owner_id": "402abbc7-dd81-45cd-bf41-c38ad43d7625",
+      "change_id": "1e630027-e7bc-5f96-bd99-a7ba504b34ec",
+      "version_id": "1b1933b3-0946-406a-862e-9d52f42ddef8",
+      "revision": 1,
+      "action": "opened",
+      "candidate_kind": "change",
+      "candidate_source_id": "03a89d4d-330d-4cf2-9c55-cb95cf510db4",
+      "candidate_revision": 1,
+      "ranking_version": "bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1"
+    },
+    {
+      "feedback_id": "d5281aa5-9267-4edc-9d69-627bd2d7e40b",
+      "owner_id": "402abbc7-dd81-45cd-bf41-c38ad43d7625",
+      "change_id": "1e630027-e7bc-5f96-bd99-a7ba504b34ec",
+      "version_id": "1b1933b3-0946-406a-862e-9d52f42ddef8",
+      "revision": 1,
+      "action": "not_relevant",
+      "candidate_kind": "change",
+      "candidate_source_id": "03a89d4d-330d-4cf2-9c55-cb95cf510db4",
+      "candidate_revision": 1,
+      "ranking_version": "bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1"
+    }
+  ],
+  "allowed_http": {
+    "GET /v1/session": 12,
+    "GET /v1/categories": 5,
+    "GET /v1/personal/projects": 5,
+    "GET /v1/personal/projects/11a99ae3-e01b-4f55-a35d-73849bdfd6a9": 5,
+    "GET /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/products/a86c0e16-4541-438e-8f37-619508159d78/change-execution": 11,
+    "GET /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/agent-conversations": 6,
+    "GET /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/products": 5,
+    "GET /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/products/a86c0e16-4541-438e-8f37-619508159d78/workspace": 17,
+    "GET /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/products/a86c0e16-4541-438e-8f37-619508159d78/change-execution/order-context": 4,
+    "GET /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/products/a86c0e16-4541-438e-8f37-619508159d78/change-execution/completion-context": 2,
+    "GET /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/products/a86c0e16-4541-438e-8f37-619508159d78/change-execution/1e630027-e7bc-5f96-bd99-a7ba504b34ec/similar-history": 2,
+    "POST /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/products/a86c0e16-4541-438e-8f37-619508159d78/change-execution/1e630027-e7bc-5f96-bd99-a7ba504b34ec/similar-history/feedback": 2,
+    "GET /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/products/a86c0e16-4541-438e-8f37-619508159d78/builds": 9,
+    "GET /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/products/a86c0e16-4541-438e-8f37-619508159d78/quality-execution": 8,
+    "GET /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/products/a86c0e16-4541-438e-8f37-619508159d78/verification-results": 6,
+    "GET /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/products/a86c0e16-4541-438e-8f37-619508159d78/quality-issues/9892d125-a8ef-54c4-b182-d5d53c92b83b/similar-history": 3,
+    "GET /v1/categories/73711877-ef9b-42f7-99a8-902801b02e12/products/a86c0e16-4541-438e-8f37-619508159d78/similar-history": 2
+  },
+  "denied_http": {},
+  "web": {
+    "actual_web_base": "http://127.0.0.1:63199",
+    "actual_api_base": "http://127.0.0.1:63343",
+    "fresh_principal_id": "402abbc7-dd81-45cd-bf41-c38ad43d7625",
+    "verified_at": "2026-10-29T16:19:34.422638+00:00"
+  }
+}

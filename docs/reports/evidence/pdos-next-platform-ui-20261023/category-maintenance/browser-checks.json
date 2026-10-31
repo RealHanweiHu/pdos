@@ -1,0 +1,125 @@
+[
+  {
+    "name": "Blank category creation is disabled",
+    "pass": true
+  },
+  {
+    "check": "同名品类不能重复创建",
+    "pass": true
+  },
+  {
+    "check": "新建品类进入空的共享知识，不借用已有品类内容",
+    "pass": true
+  },
+  {
+    "check": "新品类不自动创建型号和项目",
+    "pass": true
+  },
+  {
+    "check": "竞品保存并显示币种与报价口径",
+    "pass": true
+  },
+  {
+    "check": "新增竞品同步到品类矩阵",
+    "pass": true
+  },
+  {
+    "check": "修订必须填写原因且日期保存后保留",
+    "pass": true
+  },
+  {
+    "check": "修订后原始版本仍保留旧品牌",
+    "pass": true
+  },
+  {
+    "check": "撤回要求原因",
+    "pass": true
+  },
+  {
+    "check": "撤回记录默认从当前列表移除",
+    "pass": true
+  },
+  {
+    "check": "撤回后详情只读，可恢复并修订",
+    "pass": true
+  },
+  {
+    "check": "恢复追加版本并回到活动列表",
+    "pass": true
+  },
+  {
+    "check": "新增用户声音保留摘要与样本量",
+    "pass": false
+  },
+  {
+    "check": "参数可保存，未提供方法条件不推断为已齐备",
+    "pass": true
+  },
+  {
+    "check": "参数稳定键修订时只读",
+    "pass": true
+  },
+  {
+    "check": "规格修订追加到 v2",
+    "pass": true
+  },
+  {
+    "check": "同品类重复稳定键被阻止",
+    "pass": true
+  },
+  {
+    "check": "新品类带入小Pai上下文",
+    "pass": false
+  },
+  {
+    "check": "新品类能用于新建私有提案",
+    "pass": false
+  },
+  {
+    "check": "品类资料相互隔离",
+    "pass": true
+  },
+  {
+    "check": "原有规格字典追加 v3",
+    "pass": true
+  },
+  {
+    "check": "字典新版本不自动改写已批准提案引用",
+    "pass": true
+  },
+  {
+    "check": "离线状态禁止新增参数",
+    "pass": true
+  },
+  {
+    "check": "离线状态可以查阅但禁止维护",
+    "pass": true
+  },
+  {
+    "check": "390px 页面无整体横向溢出",
+    "pass": true
+  },
+  {
+    "check": "390px 维护面板无横向溢出",
+    "pass": true
+  },
+  {
+    "check": "复核用户声音：列表显示已保存主题与 6 份样本",
+    "pass": true,
+    "supersedes": "新增用户声音保留摘要与样本量"
+  },
+  {
+    "check": "复核新品类的小Pai上下文",
+    "pass": true,
+    "supersedes": "新品类带入小Pai上下文"
+  },
+  {
+    "check": "复核新品类提案详情与私有属性",
+    "pass": true,
+    "supersedes": "新品类能用于新建私有提案"
+  },
+  {
+    "check": "修正名称后及时清除旧重名提示",
+    "pass": true
+  }
+]

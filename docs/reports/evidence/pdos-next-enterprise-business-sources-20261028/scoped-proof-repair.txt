@@ -1,0 +1,34 @@
+................                                                         [100%]
+=============================== warnings summary ===============================
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+16 passed, 9 warnings in 135.99s (0:02:15)

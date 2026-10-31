@@ -1,0 +1,35 @@
+........................................................................ [ 82%]
+...............                                                          [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_context_projection_pg.py::test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[development]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[test]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[production]
+tests/agent_kernel/test_context_projection_pg.py::test_registered_graph_progressively_adds_context_and_replay_never_calls_provider
+tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[customer_request]
+tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[new_product]
+tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[derivative]
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_context_projection_entries.py: 24 warnings
+tests/agent_kernel/test_snapshot_proof_transactions.py: 6 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service.py:242: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:174: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([chain])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:199: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([attempt])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+87 passed, 43 warnings in 184.36s (0:03:04)

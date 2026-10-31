@@ -1,0 +1,1190 @@
+[
+  {
+    "id": "33aaf165-0d1f-4a9a-823f-19bc4a6ac21d",
+    "state": "completed",
+    "error_code": null,
+    "result": {
+      "result": {
+        "assistant": {
+          "kind": "general",
+          "as_of": "2026-10-29T12:12:32.015999+00:00",
+          "lookup": "uncited",
+          "notice": "找到 1 条相关记录",
+          "sources": [],
+          "version": 1,
+          "coverage": {
+            "returned": 0,
+            "unavailable": []
+          },
+          "unknowns": [],
+          "scope_label": "当前项目的可读资料",
+          "citation_ids": [],
+          "matched_count": 1
+        }
+      },
+      "status": "completed",
+      "summary": "已保留固定准备候选。",
+      "questions": [],
+      "unfinished": []
+    },
+    "verification_action": {
+      "kind": "prepare_verification",
+      "version": 1,
+      "selection": {
+        "id": "c28ecb0c-ae1e-4b8f-95fb-989ac51f0196",
+        "revision": 1,
+        "product_id": "dbf57a74-96fc-468d-beca-92746bb66369",
+        "project_id": "7b0c70ae-1d39-477f-9c6b-4659dd09f824",
+        "engineering_configuration": {
+          "id": "66ddfec8-fb31-47ca-8cd4-347597eedad5",
+          "revision": 1
+        },
+        "manufacturing_configuration": {
+          "id": "177ac20a-5cd2-4c70-9fdf-7b4720b6eac3",
+          "revision": 1
+        }
+      },
+      "build_name": "Synthetic first prototype",
+      "request_id": "8845ff53-47c7-5b2b-b0ca-c9cb43722835",
+      "citation_ids": [
+        "3c6b6f12-66f7-5b18-8e5e-1ba670bb30b9"
+      ],
+      "source_proof": {
+        "digest": "22dc2e0a449f4fc81751b95d7fc6b5812c2a8347c07818493c070594ca8ac9cb",
+        "run_id": "42351e04-9734-4543-8c5b-bb0047e921ab",
+        "target": {
+          "build_id": "c28ecb0c-ae1e-4b8f-95fb-989ac51f0196",
+          "owner_id": "02b6cfe5-bd12-48a1-ba38-b18b735dc00d",
+          "tenant_id": "481c6c24-57fe-437b-9577-ca81cb3453a0",
+          "product_id": "dbf57a74-96fc-468d-beca-92746bb66369",
+          "project_id": "7b0c70ae-1d39-477f-9c6b-4659dd09f824",
+          "visibility": "category",
+          "category_id": "29733670-80a7-4349-a91d-fd5190fbb34c",
+          "build_revision": 1,
+          "preparation_id": null,
+          "preparation_sha256": null,
+          "preparation_revision": null
+        },
+        "version": 1,
+        "read_set": [
+          {
+            "artifact_id": "0b3317ec-dbab-49ae-9c4e-19e5b9ad077a",
+            "expected_revision": 1
+          }
+        ],
+        "execution_sources": [],
+        "discussion_sources": [
+          {
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 30,
+              "line_end": 1,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "purpose": "historical_discussion",
+            "source_id": "09946fd3-5d6b-41d7-982c-1cac3f1a8153",
+            "read_proof": {
+              "tool": "assistant.search",
+              "call_id": "aa294668-f624-48cd-91d4-bfe4822e0be2",
+              "result_digest": "5ae14c5dbe03a03f941fdf8fc41fc2e8015d120691fc5003ef1231dd414f454b",
+              "citation_digest": "1b948f65de24717c41f8b41a030c0a7bf61b12a3a728f17ddd56b4b3a431095a"
+            },
+            "citation_id": "3c6b6f12-66f7-5b18-8e5e-1ba670bb30b9",
+            "source_type": "artifact",
+            "content_hash": "4f0277a2e134960b5ee465e4f0f96f748bea1f8b4b1acb2c8c6974c899f2dc03",
+            "origin_run_id": "42351e04-9734-4543-8c5b-bb0047e921ab",
+            "source_revision": 1,
+            "origin_citation_id": "3c6b6f12-66f7-5b18-8e5e-1ba670bb30b9"
+          }
+        ],
+        "applicability_status": "not_assessed",
+        "execution_references": []
+      },
+      "source_run_id": "42351e04-9734-4543-8c5b-bb0047e921ab"
+    },
+    "calls": [
+      {
+        "tool": "model",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "",
+          "calls": [
+            {
+              "id": "synthetic-705a79d9-b129-4513-b920-f742556aefc1",
+              "name": "assistant.materials.read",
+              "arguments": {
+                "artifact_ids": [
+                  "32e83518-25ba-4e36-bab9-a0d6f194834c"
+                ]
+              }
+            }
+          ],
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "cache_read_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "request_id": null,
+          "structured": null,
+          "context_budget": {
+            "focus": 64000,
+            "window": 200000,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "reserve": 6048,
+            "segments": {
+              "loop": 0,
+              "tools": 36758,
+              "skills": 1803,
+              "system": 2850,
+              "history": 270,
+              "envelope": 1259
+            },
+            "over_focus": false,
+            "reductions": [],
+            "estimated_total": 42940,
+            "fixed_over_half": true,
+            "admission_tokens": 49381,
+            "estimation_basis": "first_call_estimate",
+            "estimation_margin": 0.15,
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 10,
+            "fixed_admission_tokens": 47623,
+            "input_estimate_error_ratio": 4293.0
+          }
+        }
+      },
+      {
+        "tool": "assistant.materials.read",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "as_of": "2026-10-29T12:12:32.015999+00:00",
+          "items": [
+            {
+              "title": "Synthetic current execution definition",
+              "nature": "untrusted",
+              "locator": {
+                "native": [
+                  "line:1"
+                ],
+                "char_end": 49,
+                "line_end": 1,
+                "char_start": 0,
+                "line_start": 1
+              },
+              "private": false,
+              "object_id": "32e83518-25ba-4e36-bab9-a0d6f194834c",
+              "source_id": "32e83518-25ba-4e36-bab9-a0d6f194834c",
+              "tenant_id": "481c6c24-57fe-437b-9577-ca81cb3453a0",
+              "is_current": true,
+              "product_id": "dbf57a74-96fc-468d-beca-92746bb66369",
+              "project_id": null,
+              "category_id": "29733670-80a7-4349-a91d-fd5190fbb34c",
+              "citation_id": "7abb0dc6-1885-591a-ba33-3576eec5b923",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "8e9cfe9c6d010cc495965e41d665f9a675bf5d802239ae391aaa1856daaf85fc",
+              "source_revision": 1,
+              "customer_original": false,
+              "read_basis_status": "current"
+            }
+          ],
+          "coverage": {
+            "status": "current"
+          },
+          "returned": 1
+        }
+      },
+      {
+        "tool": "model",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "",
+          "calls": [
+            {
+              "id": "synthetic-44ceeef6-ecb2-4f10-aa53-c718b6e6616d",
+              "name": "assistant.extract",
+              "arguments": {
+                "citation_ids": [
+                  "7abb0dc6-1885-591a-ba33-3576eec5b923"
+                ]
+              }
+            }
+          ],
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "cache_read_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "request_id": null,
+          "structured": null,
+          "context_budget": {
+            "focus": 64000,
+            "window": 200000,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "reserve": 6048,
+            "segments": {
+              "loop": 286,
+              "tools": 36758,
+              "skills": 1803,
+              "system": 2850,
+              "history": 270,
+              "envelope": 1259
+            },
+            "over_focus": false,
+            "reductions": [],
+            "estimated_total": 43226,
+            "fixed_over_half": true,
+            "admission_tokens": 49710,
+            "estimation_basis": "previous_actual_input",
+            "estimation_margin": 0.15,
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 10,
+            "fixed_admission_tokens": 47623,
+            "previous_estimated_tokens": 42940,
+            "input_estimate_error_ratio": 4321.6,
+            "previous_actual_input_tokens": 10
+          }
+        }
+      },
+      {
+        "tool": "assistant.extract",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "rows": [
+            {
+              "quote": "Synthetic drawing",
+              "locator": {
+                "native": [
+                  "line:1"
+                ],
+                "char_end": 17,
+                "line_end": 1,
+                "char_start": 0,
+                "line_start": 1
+              },
+              "statement": "Synthetic drawing",
+              "citation_id": "7abb0dc6-1885-591a-ba33-3576eec5b923",
+              "read_call_id": "27038d86-3a84-4c9b-a2a7-5d285a23ca7e"
+            }
+          ],
+          "partial": false,
+          "version": 1,
+          "coverage": [
+            {
+              "kind": "untrusted",
+              "complete": true,
+              "read_chars": 49,
+              "citation_id": "7abb0dc6-1885-591a-ba33-3576eec5b923",
+              "range_chars": 49
+            }
+          ],
+          "failures": [],
+          "rejected": [],
+          "row_count": 1
+        }
+      },
+      {
+        "tool": "model",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "",
+          "calls": [
+            {
+              "id": "synthetic-a3da464d-f4f1-4cec-b5cb-2fb477ad351e",
+              "name": "assistant.passage.read",
+              "arguments": {
+                "cursor": 0,
+                "page_chars": 2000,
+                "citation_id": "7abb0dc6-1885-591a-ba33-3576eec5b923"
+              }
+            }
+          ],
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "cache_read_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "request_id": null,
+          "structured": null,
+          "context_budget": {
+            "focus": 64000,
+            "window": 200000,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "reserve": 6048,
+            "segments": {
+              "loop": 0,
+              "tools": 823,
+              "skills": 0,
+              "system": 2850,
+              "history": 0,
+              "envelope": 181
+            },
+            "over_focus": false,
+            "reductions": [],
+            "estimated_total": 3854,
+            "fixed_over_half": false,
+            "admission_tokens": 4433,
+            "estimation_basis": "first_call_estimate",
+            "estimation_margin": 0.15,
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 10,
+            "fixed_admission_tokens": 4224,
+            "input_estimate_error_ratio": 384.4
+          }
+        }
+      },
+      {
+        "tool": "assistant.passage.read",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "Synthetic drawing\nVERIFICATION_EXECUTION_RAW_ONLY",
+          "locator": {
+            "native": [
+              "line:1"
+            ],
+            "char_end": 49,
+            "line_end": 2,
+            "char_start": 0,
+            "line_start": 1
+          },
+          "citation_id": "7abb0dc6-1885-591a-ba33-3576eec5b923",
+          "next_cursor": null,
+          "range_chars": 49,
+          "content_hash": "8e9cfe9c6d010cc495965e41d665f9a675bf5d802239ae391aaa1856daaf85fc",
+          "source_revision": 1,
+          "read_basis_status": "current"
+        }
+      },
+      {
+        "tool": "model",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "",
+          "calls": [],
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "cache_read_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "request_id": null,
+          "structured": {
+            "result": {
+              "rows": [
+                {
+                  "quote": "Synthetic drawing",
+                  "statement": "Synthetic drawing",
+                  "citation_id": "7abb0dc6-1885-591a-ba33-3576eec5b923"
+                }
+              ]
+            },
+            "status": "completed",
+            "summary": "已保留固定准备候选。",
+            "questions": [],
+            "unfinished": []
+          },
+          "context_budget": {
+            "focus": 64000,
+            "window": 200000,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "reserve": 6048,
+            "segments": {
+              "loop": 173,
+              "tools": 823,
+              "skills": 0,
+              "system": 2850,
+              "history": 0,
+              "envelope": 181
+            },
+            "over_focus": false,
+            "reductions": [],
+            "estimated_total": 4027,
+            "fixed_over_half": false,
+            "admission_tokens": 4632,
+            "estimation_basis": "previous_actual_input",
+            "estimation_margin": 0.15,
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 10,
+            "fixed_admission_tokens": 4224,
+            "previous_estimated_tokens": 3854,
+            "input_estimate_error_ratio": 401.7,
+            "previous_actual_input_tokens": 10
+          }
+        }
+      },
+      {
+        "tool": "model",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "",
+          "calls": [
+            {
+              "id": "synthetic-d0cc5ee7-eac3-4154-9052-ee512a592590",
+              "name": "verification.preparation.record",
+              "arguments": {
+                "items": [
+                  {
+                    "id": "dimension",
+                    "method": null,
+                    "drawing": {
+                      "line": 1,
+                      "quote": "Synthetic drawing",
+                      "artifact_id": "32e83518-25ba-4e36-bab9-a0d6f194834c",
+                      "expected_revision": 1
+                    },
+                    "feature": "Synthetic dimension",
+                    "cavities": [
+                      "A",
+                      "B"
+                    ],
+                    "criterion": null,
+                    "sample_count": 3
+                  }
+                ],
+                "title": "Synthetic assistant re-verification preparation",
+                "reason": "依据已核对的历史讨论准备复验",
+                "purpose": "Verify preparation",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic drawing",
+                    "artifact_id": "32e83518-25ba-4e36-bab9-a0d6f194834c",
+                    "expected_revision": 1
+                  }
+                ],
+                "build_id": "c28ecb0c-ae1e-4b8f-95fb-989ac51f0196",
+                "request_id": "8845ff53-47c7-5b2b-b0ca-c9cb43722835",
+                "return_form": "逐项原始读数与另行具名专业结论",
+                "expected_build_revision": 1,
+                "expected_request_revision": 0
+              }
+            }
+          ],
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "cache_read_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "request_id": null,
+          "structured": null,
+          "context_budget": {
+            "focus": 64000,
+            "window": 200000,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "reserve": 6048,
+            "segments": {
+              "loop": 479,
+              "tools": 36758,
+              "skills": 1803,
+              "system": 2850,
+              "history": 270,
+              "envelope": 1259
+            },
+            "over_focus": false,
+            "reductions": [],
+            "estimated_total": 43419,
+            "fixed_over_half": true,
+            "admission_tokens": 49932,
+            "estimation_basis": "previous_actual_input",
+            "estimation_margin": 0.15,
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 10,
+            "fixed_admission_tokens": 47623,
+            "previous_estimated_tokens": 43226,
+            "input_estimate_error_ratio": 4340.9,
+            "previous_actual_input_tokens": 10
+          }
+        }
+      },
+      {
+        "tool": "model",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "",
+          "calls": [],
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "cache_read_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "request_id": null,
+          "structured": {
+            "result": {},
+            "status": "completed",
+            "summary": "已保留固定准备候选。",
+            "questions": [],
+            "unfinished": []
+          },
+          "context_budget": {
+            "focus": 64000,
+            "window": 200000,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "reserve": 6048,
+            "segments": {
+              "loop": 767,
+              "tools": 36758,
+              "skills": 1803,
+              "system": 2850,
+              "history": 270,
+              "envelope": 1259
+            },
+            "over_focus": false,
+            "reductions": [],
+            "estimated_total": 43707,
+            "fixed_over_half": true,
+            "admission_tokens": 50264,
+            "estimation_basis": "previous_actual_input",
+            "estimation_margin": 0.15,
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 10,
+            "fixed_admission_tokens": 47623,
+            "previous_estimated_tokens": 43419,
+            "input_estimate_error_ratio": 4369.7,
+            "previous_actual_input_tokens": 10
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "a34a47f3-e9b8-403a-ae1b-6dbf4dc09f57",
+    "state": "completed",
+    "error_code": null,
+    "result": {
+      "result": {
+        "assistant": {
+          "kind": "general",
+          "as_of": "2026-10-29T12:11:15.622455+00:00",
+          "lookup": "uncited",
+          "notice": "找到 1 条相关记录",
+          "sources": [],
+          "version": 1,
+          "coverage": {
+            "returned": 0,
+            "unavailable": []
+          },
+          "unknowns": [],
+          "scope_label": "当前项目的可读资料",
+          "citation_ids": [],
+          "matched_count": 1
+        }
+      },
+      "status": "completed",
+      "summary": "已保留固定准备候选。",
+      "questions": [],
+      "unfinished": []
+    },
+    "verification_action": {
+      "kind": "prepare_verification",
+      "version": 1,
+      "selection": {
+        "id": "4b79c59c-b5ac-4d7d-bbf8-ac6a69e63630",
+        "revision": 1,
+        "product_id": "0a4965f5-5521-40bb-9743-7c3a88d5ba30",
+        "project_id": "fc01efb9-d48b-44e3-ac9f-39018e78f06e",
+        "engineering_configuration": {
+          "id": "4843ba4d-a4f7-428c-98f8-cb7ae6569704",
+          "revision": 1
+        },
+        "manufacturing_configuration": {
+          "id": "f0d99a03-f5a4-467f-8669-c73968b4d6e0",
+          "revision": 1
+        }
+      },
+      "build_name": "Private verification Build c1dc262e-9da2-49c9-964e-60293b8b5f7a",
+      "request_id": "b20375fe-9b84-58f1-af54-2ec6f794d01b",
+      "citation_ids": [
+        "c2e2b631-6e8c-5ee3-8111-d08f8410cbea"
+      ],
+      "source_proof": {
+        "digest": "b291cba51ced517dba00727e99572f485ecfb61e01e1bfe295f490a9d3734936",
+        "run_id": "92866a3b-186c-4ace-81d6-72d52fa61020",
+        "target": {
+          "build_id": "4b79c59c-b5ac-4d7d-bbf8-ac6a69e63630",
+          "owner_id": "a9fa199e-5b90-4461-972e-3725855f039a",
+          "tenant_id": "859e4788-9c92-42ca-9a98-bcb90ed38d59",
+          "product_id": "0a4965f5-5521-40bb-9743-7c3a88d5ba30",
+          "project_id": "fc01efb9-d48b-44e3-ac9f-39018e78f06e",
+          "visibility": "private",
+          "category_id": "e111d99d-ce9b-43b8-8103-d02bb94b2043",
+          "build_revision": 1,
+          "preparation_id": null,
+          "preparation_sha256": null,
+          "preparation_revision": null
+        },
+        "version": 1,
+        "read_set": [
+          {
+            "artifact_id": "a8fa94ae-be10-453e-8597-a52ca5cdbfe9",
+            "expected_revision": 1
+          }
+        ],
+        "execution_sources": [],
+        "discussion_sources": [
+          {
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 30,
+              "line_end": 1,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "purpose": "historical_discussion",
+            "source_id": "bd0cccc5-3886-44ef-b1b9-5018b928622c",
+            "read_proof": {
+              "tool": "assistant.search",
+              "call_id": "05aa29a7-2461-49c1-be56-f3f7e31751bc",
+              "result_digest": "7cd9598942c072e2b16dbfced1aa94d815a2f4be023fac21a9368cfbd72df452",
+              "citation_digest": "66ee6f4569da4d20ef353d358ecfe56252ea4825a8c391154832ad0ccaae99e5"
+            },
+            "citation_id": "c2e2b631-6e8c-5ee3-8111-d08f8410cbea",
+            "source_type": "artifact",
+            "content_hash": "c1da3089246a3f27d159bd60cad8fc8aa91e8ef6ff969407b72a7f7f01b14c92",
+            "origin_run_id": "92866a3b-186c-4ace-81d6-72d52fa61020",
+            "source_revision": 1,
+            "origin_citation_id": "c2e2b631-6e8c-5ee3-8111-d08f8410cbea"
+          }
+        ],
+        "applicability_status": "not_assessed",
+        "execution_references": []
+      },
+      "source_run_id": "92866a3b-186c-4ace-81d6-72d52fa61020"
+    },
+    "calls": [
+      {
+        "tool": "model",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "",
+          "calls": [
+            {
+              "id": "synthetic-3e0fa31b-b5ce-414b-9ed6-1a045d722293",
+              "name": "assistant.materials.read",
+              "arguments": {
+                "artifact_ids": [
+                  "8a8c24ad-0da8-4dd1-b828-b6dea20d568a"
+                ]
+              }
+            }
+          ],
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "cache_read_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "request_id": null,
+          "structured": null,
+          "context_budget": {
+            "focus": 64000,
+            "window": 200000,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "reserve": 6048,
+            "segments": {
+              "loop": 0,
+              "tools": 36758,
+              "skills": 1803,
+              "system": 2850,
+              "history": 287,
+              "envelope": 1270
+            },
+            "over_focus": false,
+            "reductions": [],
+            "estimated_total": 42968,
+            "fixed_over_half": true,
+            "admission_tokens": 49414,
+            "estimation_basis": "first_call_estimate",
+            "estimation_margin": 0.15,
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 10,
+            "fixed_admission_tokens": 47623,
+            "input_estimate_error_ratio": 4295.8
+          }
+        }
+      },
+      {
+        "tool": "assistant.materials.read",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "as_of": "2026-10-29T12:11:15.622455+00:00",
+          "items": [
+            {
+              "title": "I14 current execution",
+              "nature": "untrusted",
+              "locator": {
+                "native": [
+                  "line:1"
+                ],
+                "char_end": 36,
+                "line_end": 1,
+                "char_start": 0,
+                "line_start": 1
+              },
+              "private": false,
+              "object_id": "8a8c24ad-0da8-4dd1-b828-b6dea20d568a",
+              "source_id": "8a8c24ad-0da8-4dd1-b828-b6dea20d568a",
+              "tenant_id": "859e4788-9c92-42ca-9a98-bcb90ed38d59",
+              "is_current": true,
+              "product_id": "0a4965f5-5521-40bb-9743-7c3a88d5ba30",
+              "project_id": null,
+              "category_id": "e111d99d-ce9b-43b8-8103-d02bb94b2043",
+              "citation_id": "bdd4878a-91d2-5b57-98de-bd2021f3dc37",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "52c058756f61eeb180042e7251dd7e5ef81a3e73b3c25e9b22aa2ddd744874eb",
+              "source_revision": 1,
+              "customer_original": false,
+              "read_basis_status": "current"
+            }
+          ],
+          "coverage": {
+            "status": "current"
+          },
+          "returned": 1
+        }
+      },
+      {
+        "tool": "model",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "",
+          "calls": [
+            {
+              "id": "synthetic-1d19320e-8d34-4634-8307-bbdb937fba49",
+              "name": "assistant.extract",
+              "arguments": {
+                "citation_ids": [
+                  "bdd4878a-91d2-5b57-98de-bd2021f3dc37"
+                ]
+              }
+            }
+          ],
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "cache_read_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "request_id": null,
+          "structured": null,
+          "context_budget": {
+            "focus": 64000,
+            "window": 200000,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "reserve": 6048,
+            "segments": {
+              "loop": 282,
+              "tools": 36758,
+              "skills": 1803,
+              "system": 2850,
+              "history": 287,
+              "envelope": 1270
+            },
+            "over_focus": false,
+            "reductions": [],
+            "estimated_total": 43250,
+            "fixed_over_half": true,
+            "admission_tokens": 49738,
+            "estimation_basis": "previous_actual_input",
+            "estimation_margin": 0.15,
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 10,
+            "fixed_admission_tokens": 47623,
+            "previous_estimated_tokens": 42968,
+            "input_estimate_error_ratio": 4324.0,
+            "previous_actual_input_tokens": 10
+          }
+        }
+      },
+      {
+        "tool": "assistant.extract",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "rows": [
+            {
+              "quote": "Synthetic drawing",
+              "locator": {
+                "native": [
+                  "line:1"
+                ],
+                "char_end": 17,
+                "line_end": 1,
+                "char_start": 0,
+                "line_start": 1
+              },
+              "statement": "Synthetic drawing",
+              "citation_id": "bdd4878a-91d2-5b57-98de-bd2021f3dc37",
+              "read_call_id": "1e388ee7-0fd8-434a-b812-d97ce4da2acd"
+            }
+          ],
+          "partial": false,
+          "version": 1,
+          "coverage": [
+            {
+              "kind": "untrusted",
+              "complete": true,
+              "read_chars": 36,
+              "citation_id": "bdd4878a-91d2-5b57-98de-bd2021f3dc37",
+              "range_chars": 36
+            }
+          ],
+          "failures": [],
+          "rejected": [],
+          "row_count": 1
+        }
+      },
+      {
+        "tool": "model",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "",
+          "calls": [
+            {
+              "id": "synthetic-8c00f90b-344b-440a-bd09-956ed559c6e8",
+              "name": "assistant.passage.read",
+              "arguments": {
+                "cursor": 0,
+                "page_chars": 2000,
+                "citation_id": "bdd4878a-91d2-5b57-98de-bd2021f3dc37"
+              }
+            }
+          ],
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "cache_read_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "request_id": null,
+          "structured": null,
+          "context_budget": {
+            "focus": 64000,
+            "window": 200000,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "reserve": 6048,
+            "segments": {
+              "loop": 0,
+              "tools": 823,
+              "skills": 0,
+              "system": 2850,
+              "history": 0,
+              "envelope": 181
+            },
+            "over_focus": false,
+            "reductions": [],
+            "estimated_total": 3854,
+            "fixed_over_half": false,
+            "admission_tokens": 4433,
+            "estimation_basis": "first_call_estimate",
+            "estimation_margin": 0.15,
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 10,
+            "fixed_admission_tokens": 4224,
+            "input_estimate_error_ratio": 384.4
+          }
+        }
+      },
+      {
+        "tool": "assistant.passage.read",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "Synthetic drawing\nEXECUTION_RAW_ONLY",
+          "locator": {
+            "native": [
+              "line:1"
+            ],
+            "char_end": 36,
+            "line_end": 2,
+            "char_start": 0,
+            "line_start": 1
+          },
+          "citation_id": "bdd4878a-91d2-5b57-98de-bd2021f3dc37",
+          "next_cursor": null,
+          "range_chars": 36,
+          "content_hash": "52c058756f61eeb180042e7251dd7e5ef81a3e73b3c25e9b22aa2ddd744874eb",
+          "source_revision": 1,
+          "read_basis_status": "current"
+        }
+      },
+      {
+        "tool": "model",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "",
+          "calls": [],
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "cache_read_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "request_id": null,
+          "structured": {
+            "result": {
+              "rows": [
+                {
+                  "quote": "Synthetic drawing",
+                  "statement": "Synthetic drawing",
+                  "citation_id": "bdd4878a-91d2-5b57-98de-bd2021f3dc37"
+                }
+              ]
+            },
+            "status": "completed",
+            "summary": "已保留固定准备候选。",
+            "questions": [],
+            "unfinished": []
+          },
+          "context_budget": {
+            "focus": 64000,
+            "window": 200000,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "reserve": 6048,
+            "segments": {
+              "loop": 169,
+              "tools": 823,
+              "skills": 0,
+              "system": 2850,
+              "history": 0,
+              "envelope": 181
+            },
+            "over_focus": false,
+            "reductions": [],
+            "estimated_total": 4023,
+            "fixed_over_half": false,
+            "admission_tokens": 4627,
+            "estimation_basis": "previous_actual_input",
+            "estimation_margin": 0.15,
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 10,
+            "fixed_admission_tokens": 4224,
+            "previous_estimated_tokens": 3854,
+            "input_estimate_error_ratio": 401.3,
+            "previous_actual_input_tokens": 10
+          }
+        }
+      },
+      {
+        "tool": "model",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "",
+          "calls": [
+            {
+              "id": "synthetic-de9d09d6-7150-4482-80a6-7db6bd911624",
+              "name": "verification.preparation.record",
+              "arguments": {
+                "items": [
+                  {
+                    "id": "dimension",
+                    "method": null,
+                    "drawing": {
+                      "line": 1,
+                      "quote": "Synthetic drawing",
+                      "artifact_id": "8a8c24ad-0da8-4dd1-b828-b6dea20d568a",
+                      "expected_revision": 1
+                    },
+                    "feature": "Synthetic dimension",
+                    "cavities": [
+                      "A",
+                      "B"
+                    ],
+                    "criterion": null,
+                    "sample_count": 3
+                  }
+                ],
+                "title": "Synthetic assistant re-verification preparation",
+                "reason": "依据已核对的历史讨论准备复验",
+                "purpose": "Verify preparation",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "Synthetic drawing",
+                    "artifact_id": "8a8c24ad-0da8-4dd1-b828-b6dea20d568a",
+                    "expected_revision": 1
+                  }
+                ],
+                "build_id": "4b79c59c-b5ac-4d7d-bbf8-ac6a69e63630",
+                "request_id": "b20375fe-9b84-58f1-af54-2ec6f794d01b",
+                "return_form": "逐项原始读数与另行具名专业结论",
+                "expected_build_revision": 1,
+                "expected_request_revision": 0
+              }
+            }
+          ],
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "cache_read_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "request_id": null,
+          "structured": null,
+          "context_budget": {
+            "focus": 64000,
+            "window": 200000,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "reserve": 6048,
+            "segments": {
+              "loop": 475,
+              "tools": 36758,
+              "skills": 1803,
+              "system": 2850,
+              "history": 287,
+              "envelope": 1270
+            },
+            "over_focus": false,
+            "reductions": [],
+            "estimated_total": 43443,
+            "fixed_over_half": true,
+            "admission_tokens": 49960,
+            "estimation_basis": "previous_actual_input",
+            "estimation_margin": 0.15,
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 10,
+            "fixed_admission_tokens": 47623,
+            "previous_estimated_tokens": 43250,
+            "input_estimate_error_ratio": 4343.3,
+            "previous_actual_input_tokens": 10
+          }
+        }
+      },
+      {
+        "tool": "model",
+        "state": "completed",
+        "error_code": null,
+        "result": {
+          "text": "",
+          "calls": [],
+          "usage": {
+            "input_tokens": 10,
+            "output_tokens": 2,
+            "cache_read_tokens": 0,
+            "cache_creation_tokens": 0
+          },
+          "request_id": null,
+          "structured": {
+            "result": {},
+            "status": "completed",
+            "summary": "已保留固定准备候选。",
+            "questions": [],
+            "unfinished": []
+          },
+          "context_budget": {
+            "focus": 64000,
+            "window": 200000,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "reserve": 6048,
+            "segments": {
+              "loop": 763,
+              "tools": 36758,
+              "skills": 1803,
+              "system": 2850,
+              "history": 287,
+              "envelope": 1270
+            },
+            "over_focus": false,
+            "reductions": [],
+            "estimated_total": 43731,
+            "fixed_over_half": true,
+            "admission_tokens": 50291,
+            "estimation_basis": "previous_actual_input",
+            "estimation_margin": 0.15,
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 10,
+            "fixed_admission_tokens": 47623,
+            "previous_estimated_tokens": 43443,
+            "input_estimate_error_ratio": 4372.1,
+            "previous_actual_input_tokens": 10
+          }
+        }
+      }
+    ]
+  }
+]

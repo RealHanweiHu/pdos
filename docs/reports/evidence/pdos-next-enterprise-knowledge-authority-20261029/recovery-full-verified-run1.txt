@@ -1,0 +1,174 @@
+.....F
+=================================== FAILURES ===================================
+______ test_nine_families_repair_wrong_derived_scope_identifiers_and_keys ______
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1912: in _exec_single_context
+    self.dialect.do_executemany(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1189: in do_executemany
+    cursor.executemany(statement, parameters)
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:148: in executemany
+    raise ex.with_traceback(None)
+E   psycopg.errors.UniqueViolation: duplicate key value violates unique constraint "enterprise_search_sources_tenant_id_source_type_source_id_key"
+E   DETAIL:  Key (tenant_id, source_type, source_id)=(e36779e6-ff05-4814-83ef-defd9a52e5f2, damaged_derived_only, d73189fd-b586-42ae-b6e0-3f8a6b35d2ac) already exists.
+
+The above exception was the direct cause of the following exception:
+tests/enterprise_search/test_recovery_pg.py:286: in test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+    with Session(person.admin) as session, session.begin():
+                                           ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+<sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit>:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1330: in commit
+    self._prepare_impl()
+<sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction._prepare_impl>:2: in _prepare_impl
+    return target(fn, self)
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1304: in _prepare_impl
+    self.session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+<sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush>:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:84: in _save_obj
+    _emit_update_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:916: in _emit_update_statements
+    c = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1912: in _exec_single_context
+    self.dialect.do_executemany(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1189: in do_executemany
+    cursor.executemany(statement, parameters)
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:148: in executemany
+    raise ex.with_traceback(None)
+E   sqlalchemy.exc.IntegrityError: (psycopg.errors.UniqueViolation) duplicate key value violates unique constraint "enterprise_search_sources_tenant_id_source_type_source_id_key"
+E   DETAIL:  Key (tenant_id, source_type, source_id)=(e36779e6-ff05-4814-83ef-defd9a52e5f2, damaged_derived_only, d73189fd-b586-42ae-b6e0-3f8a6b35d2ac) already exists.
+E   [SQL: UPDATE enterprise_search_sources SET source_type=%(source_type)s::VARCHAR WHERE enterprise_search_sources.id = %(enterprise_search_sources_id)s::UUID]
+E   [SQL parameters hidden due to hide_parameters=True]
+E   (Background on this error at: https://sqlalche.me/e/21/gkpj)
+=============================== warnings summary ===============================
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py: 18 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+  tests/enterprise_search/test_recovery_pg.py:201: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize("damage", ["all_tables", "chunks_only", "statistics_only", "same_count"])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 5 passed, 70 warnings in 547.84s (0:09:07)

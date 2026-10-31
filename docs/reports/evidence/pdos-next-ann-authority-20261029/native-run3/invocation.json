@@ -1,0 +1,9 @@
+{
+  "tests": [
+    "tests/enterprise_search/test_embedding_ann_authority_pg.py",
+    "tests/enterprise_search/test_embedding_ann_sql.py"
+  ],
+  "port": 53502,
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "model_calls": 0
+}

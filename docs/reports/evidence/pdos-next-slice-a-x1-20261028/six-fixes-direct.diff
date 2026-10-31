@@ -1,0 +1,125 @@
+--- pdos-next/server/pdos_next/agent_kernel/api.py (opening)
++++ pdos-next/server/pdos_next/agent_kernel/api.py (fixed)
+@@ -294,6 +294,13 @@
+                         AgentRun.product_id,
+                         AgentRun.project_id,
+                         AgentRun.requester_id,
++                        # Receipt visibility also validates fixed service-run bindings.
++                        AgentRun.trigger,
++                        AgentRun.writer_id,
++                        AgentRun.intent_digest,
++                        AgentRun.goal,
++                        AgentRun.validation_budget_id,
++                        AgentRun.token_limit,
+                         AgentRun.state,
+                         AgentRun.error_code,
+                         AgentRun.created_at,
+--- pdos-next/server/tests/agent_kernel/test_context_projection_pg.py (opening)
++++ pdos-next/server/tests/agent_kernel/test_context_projection_pg.py (fixed)
+@@ -13,6 +13,7 @@
+ from pdos_next.agent_kernel.bindings import SkillBinding
+ from pdos_next.agent_kernel.bootstrap import Bootstrap
+ from pdos_next.agent_kernel.context_projection import check_messages
++from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
+ from pdos_next.agent_kernel.graph import AgentKernel
+ from pdos_next.agent_kernel.host import BoundHost
+ from pdos_next.agent_kernel.management import register_agreement
+@@ -160,6 +161,19 @@
+     )
+     assert result["output"]["status"] == "completed" and len(client.requests) == 2
+     assert client.requests[0]["system"] == client.requests[1]["system"]
+-    assert client.requests[0]["tools"] == client.requests[1]["tools"]
++    registry = default_registry()
++    research = owner.catalog.configuration("public_research")
++    drafting = owner.catalog.configuration("proposal_drafting")
++    assert client.requests[0]["tools"] == disclosure(
++        registry, "main", skill_operations([research]),
++    )
++    assert client.requests[1]["tools"] == disclosure(
++        registry, "main", skill_operations([research, drafting]),
++    )
++    before = {tool["name"]: tool for tool in client.requests[0]["tools"]}
++    after = {tool["name"]: tool for tool in client.requests[1]["tools"]}
++    assert before.keys() < after.keys()
++    assert all(after[name] == definition for name, definition in before.items())
++    assert "proposal.item.patch" not in before and "proposal.item.patch" in after
+     repeated = AgentKernel(host, default_registry()).execute(scope, checkpointer=saver)
+     assert repeated["output"] == result["output"] and len(client.requests) == 2
+--- pdos-next/server/tests/agent_kernel/test_snapshot_proof_transactions.py (opening)
++++ pdos-next/server/tests/agent_kernel/test_snapshot_proof_transactions.py (fixed)
+@@ -11,6 +11,7 @@
+ 
+ from pdos_next.agent_kernel.bindings import ModelBinding, WriteSource, execution_key
+ from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
++from pdos_next.agent_kernel.disclosure import binding_operations, disclosure_digest
+ from pdos_next.agent_kernel.host import BoundHost
+ from pdos_next.agent_kernel.m3_calculators import ENGINES
+ from pdos_next.agent_kernel.models import AgentRun, PublicWebSnapshot, TenantSkillEnablement
+@@ -24,7 +25,6 @@
+ from pdos_next.research.service import ResearchChild, ResearchService
+ from pdos_next.research.types import ReadPage, ResearchTask, Snapshot
+ from pdos_next.research.web import ResourceLimits
+-from pdos_next.service import digest
+ from tests.agent_kernel.research.test_research import service as synthetic_service
+ from tests.agent_kernel.test_read_proof_transactions import read_fixture
+ from tests.preproject.test_g0 import create
+@@ -33,11 +33,14 @@
+ 
+ def model_for(f, tool, arguments, *, isolation="main"):
+     scope = f.scope.child(isolation)
+-    binding = ModelBinding.model_validate(f.model.execution_binding).model_copy(update={
++    previous = ModelBinding.model_validate(f.model.execution_binding)
++    loaded = () if isolation != "main" else previous.loaded_skills
++    binding = previous.model_copy(update={
+         "isolation": isolation,
+-        "tool_definitions_digest": digest(f.registry.definitions(isolation)),
+-        "loaded_skills": () if isolation != "main" else
+-            ModelBinding.model_validate(f.model.execution_binding).loaded_skills,
++        "tool_definitions_digest": disclosure_digest(
++            f.registry, isolation, binding_operations(f.catalog, loaded),
++        ),
++        "loaded_skills": loaded,
+     })
+     with f.store.transaction(scope, lock=True) as (_, run):
+         run.versions = {
+--- pdos-next/server/tests/agent_kernel/test_process_view.py (opening)
++++ pdos-next/server/tests/agent_kernel/test_process_view.py (fixed)
+@@ -1,7 +1,7 @@
+ """Actual public process projection and terminal timestamps; zero model calls."""
+ 
+ from datetime import timedelta
+-from uuid import uuid4
++from uuid import UUID, uuid4
+ 
+ import pytest
+ from sqlalchemy import event, func, select
+@@ -60,6 +60,29 @@
+     assert "agent_tool_calls.result" not in sql and "agent_tool_calls.execution_binding" not in sql
+     assert "agent_runs.result" not in sql and "agent_runs.versions" not in sql
+     assert "agent_run_events.body," not in sql and " LIMIT " in sql
++
++
++def test_service_run_process_checks_binding_without_exposing_fixed_goal(setup):
++    from pdos_next.domain.automations import service_runtime
++    from pdos_next.domain.automations.service_models import AutomationServiceAttempt
++    from tests.automations_pg.test_service_automation_pg import _activate, _ready, _spec
++
++    spec = _spec(setup, _ready(setup))
++    _, reference = _activate(setup, spec)
++    service_runtime.tick(setup.engine, reference)
++    with Session(setup.admin) as session:
++        identity = session.scalar(select(AutomationServiceAttempt.run_id).where(
++            AutomationServiceAttempt.service_grant_id == UUID(reference["grant_id"]),
++        ))
++    resource = f"/v1/categories/{setup.category}/agent-runs/{identity}/process"
++    response = setup.client.get(resource, headers=setup.headers)
++    assert response.status_code == 200, response.text
++    assert response.json()["run_id"] == str(identity)
++    assert response.json()["business_receipt_count"] == 0
++    assert spec["goal"] not in response.text
++    assert setup.client.get(resource, headers={
++        "Authorization": "Bearer " + setup.tokens[setup.peer],
++    }).status_code == 403
+ 
+ 
+ def test_terminal_time_is_atomic_and_stable_after_refresh_and_original_cancel_replay(setup):

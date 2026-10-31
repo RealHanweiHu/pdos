@@ -1,0 +1,68 @@
+{
+  "base_sha": "28bacbb7d8be01b50296004a66891ab9892d30f4",
+  "stage_root": "/tmp/pdos-embedding-settings-stage-20261029",
+  "live_mutations": false,
+  "files": [
+    {
+      "source": "files/pdos-next/web/src/app/api/v1/categories/[categoryId]/embedding-profile/route.ts",
+      "target": "pdos-next/web/src/app/api/v1/categories/[categoryId]/embedding-profile/route.ts",
+      "action": "create",
+      "sha256": "f6e9a7e98c9ad5f82252db618be8b507e97bc9a760650c947e87e962093bb08f",
+      "live_exists_at_freeze": false
+    },
+    {
+      "source": "files/pdos-next/web/src/components/model_configuration/embedding-settings.test.mjs",
+      "target": "pdos-next/web/src/components/model_configuration/embedding-settings.test.mjs",
+      "action": "create",
+      "sha256": "f06b0293496d258fdcfe74f6b70b2324ba88911851135e1e211be41cb0f24a47",
+      "live_exists_at_freeze": false
+    },
+    {
+      "source": "files/pdos-next/web/src/components/model_configuration/embedding-settings.tsx",
+      "target": "pdos-next/web/src/components/model_configuration/embedding-settings.tsx",
+      "action": "create",
+      "sha256": "e2f71bb2aa27396c9bfb9b73b1a45e5ef39ff5cb8818bcc940d170bae11f8007",
+      "live_exists_at_freeze": false
+    },
+    {
+      "source": "files/pdos-next/web/src/lib/embedding-settings-proxy.ts",
+      "target": "pdos-next/web/src/lib/embedding-settings-proxy.ts",
+      "action": "create",
+      "sha256": "5f99d37299598f52e5bc24607ded65d1d9016e3b547bb644498c3b9266b0ca25",
+      "live_exists_at_freeze": false
+    },
+    {
+      "source": "files/pdos-next/web/src/lib/embedding-settings.ts",
+      "target": "pdos-next/web/src/lib/embedding-settings.ts",
+      "action": "create",
+      "sha256": "217bfd1315b0121791c4e59e7a7377ca34fa9503a30b066b5d45de78aff995c0",
+      "live_exists_at_freeze": false
+    }
+  ],
+  "patches": [
+    {
+      "source": "patches/embedding-api-category-revision.patch",
+      "target": "pdos-next/server/pdos_next/enterprise_search/embedding_api.py",
+      "action": "review_and_apply_patch",
+      "sha256": "70c072b7ecfced8b2721fd259349396e0fea26d055b317f1515864b39af1fb7f",
+      "base_file_sha256": "8cf74b4af45940e1c466cd8cb810cafde2407f839fc8045368dbedbcb959c0ef"
+    },
+    {
+      "source": "patches/platform-settings-embedding-hook.patch",
+      "target": "pdos-next/web/src/components/platform-settings.tsx",
+      "action": "review_and_apply_patch",
+      "sha256": "68e10e920643e1ebe116ed1c22261d9cdcf4383838a9fa7292d93be30f0c9993",
+      "base_file_sha256": "53c7beb8e9a807ff031a79a919e5ce27f4c368ae2312a00658d80bed1ac9f418"
+    }
+  ],
+  "checks": {
+    "pure_tests": "15 passed",
+    "isolated_tsc": "passed",
+    "precise_eslint": "5 files passed",
+    "patch_apply_check": "both passed",
+    "database": "not run",
+    "next_build": "not run",
+    "browser": "not run",
+    "real_provider": "not run"
+  }
+}

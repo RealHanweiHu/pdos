@@ -1,0 +1,202 @@
+{
+  "format_version": 1,
+  "frozen": true,
+  "scope": "RAG11.3 answer-to-native-work followup task CTA; no live/DB/provider operations",
+  "apply_only_listed_files": true,
+  "stage_root": "/tmp/pdos-work-followup-stage-20261029",
+  "depends_on_B": "/tmp/pdos-project-current-context-stage-20261029/apply-manifest.json",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/api.py",
+      "operation": "modified",
+      "base_sha256": "b95ee84d87dacb6021d75d7cbed145fd9dee5b008775bfbb8c867c987a0a28e7",
+      "candidate_sha256": "18842068e8af2cb75843419cf32c93b0fee105f747cb0b941e400a444a115468",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/pdos_next/agent_kernel/api.py",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/api.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/bootstrap.py",
+      "operation": "modified",
+      "base_sha256": "9e1c8bcfcc33e2141a62c72e0a7c04fddb1c4667f762a9cadd39d33e9f132b48",
+      "candidate_sha256": "80e50c3484a41101f660922102e0cf9960d754e6c4c187a8586e05f1962e80af",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/pdos_next/agent_kernel/bootstrap.py",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/bootstrap.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/context_projection.py",
+      "operation": "modified",
+      "base_sha256": "0db55048f3d11c537c830a9741942950429d87316e146c6aa3bf2447b762f00f",
+      "candidate_sha256": "4d1ace4efbb5421374eceb0e161e577e9ca467770b1341d282cb101a1f8eecaa",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/pdos_next/agent_kernel/context_projection.py",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/context_projection.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/domain_candidates.py",
+      "operation": "modified",
+      "base_sha256": "600f1948b2e4cd134a2d9060c79b2f462cc0f934ccff2200cc9cccd66c73c663",
+      "candidate_sha256": "07358a927c4912356bcb1699288d839df8eaafba3dd399e047a698edf5f48931",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/pdos_next/agent_kernel/domain_candidates.py",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/domain_candidates.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/host.py",
+      "operation": "modified",
+      "base_sha256": "44ead88b494bbc5ef43effbd59256b1a727e222677e0212dc44c6928a391eacd",
+      "candidate_sha256": "13b152c05f4cc1d589da50a0e968818a4b268b76016732433c68afa5f66c54a4",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/pdos_next/agent_kernel/host.py",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/host.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/work_state_candidates.py",
+      "operation": "modified",
+      "base_sha256": "062a467d99f873df7feb08115ffe6ad42a0bbdda9c7563c581d224341d990130",
+      "candidate_sha256": "9097fe905334d634ece205fd4edf1677ffe3ef0ab28adc2d76ef3814c99cb19a",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/pdos_next/agent_kernel/work_state_candidates.py",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/work_state_candidates.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/work_management/service.py",
+      "operation": "modified",
+      "base_sha256": "956e58553df44c06f0ee95213d6cc6ad9fab7f37f70ec8f906c08abe3b8ee9c1",
+      "candidate_sha256": "539dd7266b5d6d4ba3678f0a3f1762f81cd8d227bb6ec7c5c5885f34e70cc3a6",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/pdos_next/domain/work_management/service.py",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/server/pdos_next/domain/work_management/service.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/action_sources.py",
+      "operation": "modified",
+      "base_sha256": "375e6da5bbeeee6f4835c720f91072700f85788148708ab163da7a68dc6797cd",
+      "candidate_sha256": "9d9e51dacd3dc456a3fb10015c4192d07832b1cab3a6c2766167cc567049aa4b",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/pdos_next/enterprise_search/action_sources.py",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/server/pdos_next/enterprise_search/action_sources.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_adapter.py",
+      "operation": "modified",
+      "base_sha256": "344e5ef135044e28f1ca4b0e64870cf33f72d7d8b4a53e36062a6db751d9857f",
+      "candidate_sha256": "cd680b003ea65405968d13bdb81240200dec675fbb098cc170d316149e6faca1",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/pdos_next/enterprise_search/assistant_adapter.py",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/server/pdos_next/enterprise_search/assistant_adapter.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/work_followup_actions.py",
+      "operation": "new",
+      "base_sha256": null,
+      "candidate_sha256": "fee81bb96a6242c81d461abbc2c6ee1eb86711e8be490f9f7e28e9356ce838c0",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/pdos_next/enterprise_search/work_followup_actions.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/work_followup_candidates.py",
+      "operation": "new",
+      "base_sha256": null,
+      "candidate_sha256": "7e65539040226d5790a32dbdc7df7467881ab0d3b98a9689cf511c856d736719",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/pdos_next/enterprise_search/work_followup_candidates.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_work_followup.py",
+      "operation": "new",
+      "base_sha256": null,
+      "candidate_sha256": "a4bfb5f744393b98da6e8d4407dd3d3752519877aa9b8c8bb9cc5d41f78ebf62",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/tests/enterprise_search/test_work_followup.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_work_followup_temporal_pg.py",
+      "operation": "new",
+      "base_sha256": null,
+      "candidate_sha256": "b46fec67cdd0e9e59e532fb27437bab006e5b5a578e14527a3a6edfd28e9815f",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/server/tests/enterprise_search/test_work_followup_temporal_pg.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/run-candidates.tsx",
+      "operation": "modified",
+      "base_sha256": "5affe207eec1584168a32fb0fdc15fd9ada48bc2e4cbecf5411df5d3f8885ca8",
+      "candidate_sha256": "ee887f378792b7a12f2a2fe2d62615e193758db1e94ad21f215c67544745d6de",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/web/src/components/pai/run-candidates.tsx",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/web/src/components/pai/run-candidates.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/work-followup-action.tsx",
+      "operation": "new",
+      "base_sha256": null,
+      "candidate_sha256": "4f23220af1a176dc45fa8c186a67c112f0922c7a4c8f85ad2fe868e73b1039a5",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/web/src/components/pai/work-followup-action.tsx",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/work-followup-candidate.tsx",
+      "operation": "new",
+      "base_sha256": null,
+      "candidate_sha256": "46f3bde86381420ac0851ffee36459a54e34a3efc030bb97a2ac96df91bee635",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/web/src/components/pai/work-followup-candidate.tsx",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/work-followup-flow.test.mjs",
+      "operation": "new",
+      "base_sha256": null,
+      "candidate_sha256": "c15d18618ff25823f0dbf7106e077e61c8420adeb445f872d6ebfae33bfa9b16",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/web/src/components/pai/work-followup-flow.test.mjs",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/web/src/components/xiaopai.tsx",
+      "operation": "modified",
+      "base_sha256": "e2ba8382db68c048359da8e3ac99d4133876ebda3eed78e1f7cad691af196d72",
+      "candidate_sha256": "51d8603d5f7087e9992a12c893e9fa5a280376d11d3e19c18464e1e490b17f96",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/web/src/components/xiaopai.tsx",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/web/src/components/xiaopai.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/lib/domain-candidate.ts",
+      "operation": "modified",
+      "base_sha256": "fb9490ee303c7c0b48e625a69c212d0930d4e7afed47657f04a4c0189f8a4148",
+      "candidate_sha256": "9b10c60e05b0ab539bf42bc107849135420eea1b6432bc461f1109b4b795840d",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/web/src/lib/domain-candidate.ts",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/web/src/lib/domain-candidate.ts"
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-start-intent.test.mjs",
+      "operation": "modified",
+      "base_sha256": "88384bca58628fa1406122adaac2dd77f2262c55adc6a2287b399da4b93f0175",
+      "candidate_sha256": "28a08769a5ba81a195c32e25deffdd2518c24402dad8dd6c3df693dd12688f11",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/web/src/lib/run-start-intent.test.mjs",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/web/src/lib/run-start-intent.test.mjs"
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-start-intent.ts",
+      "operation": "modified",
+      "base_sha256": "310579f50f57b3d9dadd486d7a1717a3077428e5d117d6a00f66009f5ba2f94b",
+      "candidate_sha256": "a2430a2e663f84769bb83c08df41f3337fccbc9c7bed2fd2c4a7a0bb124c5f16",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/web/src/lib/run-start-intent.ts",
+      "base_path": "/tmp/pdos-work-followup-stage-20261029/base/pdos-next/web/src/lib/run-start-intent.ts"
+    },
+    {
+      "path": "pdos-next/web/src/lib/work-followup.ts",
+      "operation": "new",
+      "base_sha256": null,
+      "candidate_sha256": "effee2d8694d00d11c6d3cee50f32ed10709107d68da6d8d2239bb0191c834ad",
+      "staged_path": "/tmp/pdos-work-followup-stage-20261029/candidate/pdos-next/web/src/lib/work-followup.ts",
+      "base_path": null
+    }
+  ],
+  "shared_patch": {
+    "path": "/tmp/pdos-work-followup-stage-20261029/shared.patch",
+    "sha256": "4b791a284276ab780551b4d66fcca9cf95cc86b484dfd044cdcdeb443ec6f36b"
+  },
+  "no_migration": true,
+  "no_new_domain_command": true,
+  "no_skill_or_T0_qualification_change": true,
+  "validation": {
+    "pure_passed": 72,
+    "frontend_passed": 53,
+    "python_ruff_files": 13,
+    "frontend_eslint_files": 7,
+    "tsc": "passed: noEmit, incremental false, full copied candidate web source tree",
+    "native_pg_temporal": "4 collected only; not executed",
+    "no_live_db_network_services_or_commit": true
+  }
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="21.015" timestamp="2026-10-29T12:52:47.845807-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_eval_v0_handle_candidate_pg" name="test_ctx09_native_handle_page2_then_same_handle_page3_failure[F48000]" time="20.032"><failure message="AssertionError: {'error': {'code': 'SOURCE_STALE', 'message': '读取结果已变化，请使用新的运行重新读取。', 'detail': {'reason': 'SOURCE_STALE'}}}&#10;assert 'SOURCE_STALE' == 'SOURCE_UNAVAILABLE'&#10;  &#10;  - SOURCE_UNAVAILABLE&#10;  + SOURCE_STALE">setup = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x145c379b0&gt;
+focus = 48000
+record_property = &lt;function record_property.&lt;locals&gt;.append_property at 0x14684fec0&gt;
+
+    @pytest.mark.parametrize("focus", [48_000, 64_000], ids=["F48000", "F64000"])
+    def test_ctx09_native_handle_page2_then_same_handle_page3_failure(
+        setup, monkeypatch, focus, record_property,
+    ):
+        destination = observation_path("CTX-09", focus)
+        question = case("CTX-09")
+        project = create_g0_project(setup, visibility="category").project_id
+        # Only the six disclosed scenario entries exist in this source. Repeated
+        # known text creates three JSON fragments, not invented entries 7..9.
+        known = "条目1 Q-301 已登记；条目2 Q-302 待确认；条目3 Q-303 已登记；" + (
+            "条目4 Q-304 已登记；条目5 Q-305 已登记；条目6 Q-306 待确认。"
+        )
+        registered = post(setup, request(setup, "category.knowledge.add", {
+            "kind": "boundary", "content": {"definition": known + "；已披露条目过程说明" * 1000},
+        }))
+        assert registered.status_code == 200, registered.text
+        provider = ScriptedProvider("CTX-09")
+        with native_runtime(setup, provider, focus) as runtime:
+            original = runtime.host.continue_result
+            rechecks = []
+    
+            def fail_page3(bound, data, *, original_reader=None):
+                if data.page != 3:
+                    return original(bound, data, original_reader=original_reader)
+    
+                def unavailable(*args, **kwargs):
+                    # First do the real original registered READ/source check. The
+                    # injected availability failure happens before page 3 is built.
+                    value = runtime.host.read(*args, **kwargs)
+                    rechecks.append({"handle": data.handle, "page": data.page,
+                                     "original_call_id": value["execution_ref"]["call_id"]})
+                    raise DomainError("SOURCE_UNAVAILABLE", "离线夹具受控续读不可用。")
+    
+                return original(bound, data, original_reader=unavailable)
+    
+            monkeypatch.setattr(runtime.host, "continue_result", fail_page3)
+            scope, state = advance(runtime, {
+                "goal": question["turns"][0]["content"] + "\n" + question["final_prompt"],
+                "product_id": str(setup.product), "project_id": str(project),
+            })
+            assert provider.failure is not None
+&gt;           assert provider.failure["error"]["code"] == "SOURCE_UNAVAILABLE", provider.failure
+E           AssertionError: {'error': {'code': 'SOURCE_STALE', 'message': '读取结果已变化，请使用新的运行重新读取。', 'detail': {'reason': 'SOURCE_STALE'}}}
+E           assert 'SOURCE_STALE' == 'SOURCE_UNAVAILABLE'
+E             
+E             - SOURCE_UNAVAILABLE
+E             + SOURCE_STALE
+
+tests/agent_kernel/test_eval_v0_handle_candidate_pg.py:350: AssertionError</failure></testcase></testsuite></testsuites>

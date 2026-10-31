@@ -1,0 +1,23 @@
+{
+  "candidate_inputs": 571,
+  "changed_since_candidate": [],
+  "component_tests": 146,
+  "navigation_tests": 10,
+  "last_changed_chat_tests": 47,
+  "browser_sizes": [
+    "1280x720",
+    "390x844"
+  ],
+  "browser_themes": [
+    "light",
+    "dark"
+  ],
+  "backend_writes": false,
+  "new_model_calls": false,
+  "known_gaps": [
+    "organization_messages",
+    "persistent_project_sets",
+    "category_name_and_purpose_update"
+  ],
+  "independent_review_material_findings_fixed": 6
+}

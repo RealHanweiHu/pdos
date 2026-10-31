@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 3 items
+
+tests/knowledge_pg/test_assistant_personal_targets.py ...                [100%]
+
+=============================== warnings summary ===============================
+tests/knowledge_pg/test_assistant_personal_targets.py::test_personal_answer_explicit_target_saves_original_run_and_proof_without_fabricated_artifact
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:611: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-personal-knowledge-targets-20261029/pg-personal-targets-run1.xml -
+======================== 3 passed, 1 warning in 36.04s =========================

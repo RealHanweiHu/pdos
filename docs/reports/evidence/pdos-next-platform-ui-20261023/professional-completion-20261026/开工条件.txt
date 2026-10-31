@@ -1,0 +1,85 @@
+Browser tab: 7, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:57861/?area=cockpit&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&project=8f8b24bb-fffd-488e-8cf4-c64042253960&projectView=builds&panel=start&build=f09bd1b3-1ef0-4cc9-9def-ee1e428ebfae&request=4e188e7d-477e-4338-ba79-40ff8af1dc97&run=5544b072-867e-42a5-ae4f-38b56e12b5a0".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 142-153, 158-196
+~1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:57861/?area=cockpit&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&project=8f8b24bb-fffd-488e-8cf4-c64042253960&projectView=builds&panel=start&build=f09bd1b3-1ef0-4cc9-9def-ee1e428ebfae&request=4e188e7d-477e-4338-ba79-40ff8af1dc97&run=5544b072-867e-42a5-ae4f-38b56e12b5a0
+~		3 link Description: 跳到工作内容, Value: 127.0.0.1:57861/?area=cockpit&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&project=8f8b24bb-fffd-488e-8cf4-c64042253960&projectView=builds&panel=start&build=f09bd1b3-1ef0-4cc9-9def-ee1e428ebfae&request=4e188e7d-477e-4338-ba79-40ff8af1dc97&run=5544b072-867e-42a5-ae4f-38b56e12b5a0#workspace-content
+~						134 checkbox 开工条件, Value: 1
+~						140 checkbox 结果与处置, Value: 0
++					158 container 专业记录
++						159 container
++							160 text 试制轮次
++							161 pop up button (collapsed, settable) Description: 专业记录试制轮次, Value: Synthetic first prototype, Secondary Actions: Expand
++								162 menu
++									163 (disabled) 选择本项目轮次
++									164 (disabled) Synthetic first prototype
++						165 container
++							166 text 查找记录
++							167 search text field (settable) 查找专业记录
++						168 checkbox (settable, integer) Description: 包含历史版本, Value: 0
++						169 button 刷新专业记录
++							170 image
++						171 table
++							172 row
++								173 cell
++									174 text 记录
++								175 cell
++									176 text 类型
++								177 cell
++									178 text 状态
++								179 cell
++									180 text 版本与依据
++								181 cell
++									182 text 保存时间
++							183 row
++								184 cell
++									185 button 开工条件核对
++										186 text 开工条件核对
++										187 image
++								188 cell
++									189 text 开工条件核对
++								190 cell
++									191 text 待核对
++								192 cell
++									193 text v1 ·  依据当前
++								194 cell
++									195 text 2026/10/17 05:43:36
++							196 row
++								197 cell
++									198 button 具名开工决定
++										199 text 具名开工决定
++										200 image
++								201 cell
++									202 text 具名开工决定
++								203 cell
++									204 text 已批准
++								205 cell
++									206 text v1 ·  依据当前
++								207 cell
++									208 text 2026/10/17 05:43:41
++							209 row
++								210 cell
++									211 button 具名开工决定
++										212 text 具名开工决定
++										213 image
++								214 cell
++									215 text 具名开工决定
++								216 cell
++									217 text 已批准
++								218 cell
++									219 text v1 ·  依据当前
++								220 cell
++									221 text 2026/10/17 05:43:43
++							222 row
++								223 cell
++									224 button 实际开工
++										225 text 实际开工
++										226 image
++								227 cell
++									228 text 实际开工
++								229 cell
++									230 text 状态需核对
++								231 cell
++									232 text v1 ·  依据当前
++								233 cell
++									234 text 2026/10/17 05:43:46
+The focused UI element is 134 checkbox 开工条件, Value: 1

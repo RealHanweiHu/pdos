@@ -1,0 +1,18 @@
+{
+  "format_version": 1,
+  "frozen": true,
+  "files": [
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py",
+      "operation": "modified",
+      "old_sha256": "4ac077fe0fb93ce37c4f3db325091f20c71955a2b1bd10f38e9485a954acf7da",
+      "new_sha256": "c1a7cc1f1e4f3fc1f7681dc9f03391b26098ca0c02ca6d980bdd45fa209bdbfe",
+      "base_path": "/tmp/pdos-project-footprint-binding-stage-20261029/visibility-memory-test-delta/base/pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py",
+      "staged_path": "/tmp/pdos-project-footprint-binding-stage-20261029/visibility-memory-test-delta/pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py"
+    }
+  ],
+  "patch_path": "/tmp/pdos-project-footprint-binding-stage-20261029/visibility-memory-test-delta/memory-assertion.patch",
+  "patch_sha256": "95d61d8e19247090f9539ee6aafb0a8a5988dfd681f30176c571196f3a36a005",
+  "scope": "test-only: call actual conversation.memory in ordinary Human snapshot to isolate native ancestor RLS, preserving the exact FORBIDDEN_SCOPE assertion",
+  "validation": "Ruff+AST passed; actual PG not run; no production/candidate/policy change"
+}

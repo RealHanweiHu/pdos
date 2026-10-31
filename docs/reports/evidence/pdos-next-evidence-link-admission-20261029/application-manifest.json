@@ -1,0 +1,38 @@
+{
+  "stage": "native locator-only EvidenceLink admission",
+  "base": "current live post842 integrated F and action layer; no DB/migration change",
+  "shared": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/proposal_context.py",
+      "base_sha256": "a6ab8f3ed59930ef564a4900b843c7ef660feba7ad082036fca6404a97ded813",
+      "candidate_sha256": "f7add87e392f124eae2a1c3eacc77d060bedae4d0041f8debfd842c14a95f0ec"
+    }
+  ],
+  "new": [
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_proposal_link_projection.py",
+      "sha256": "1a8030254754f92c8afaea0d2a31d3c1876f006730bdf13b8231903843ff84e5"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_proposal_link_projection_pg.py",
+      "sha256": "a06f0664db3cb5b357e08d4e590ccdef4ba9327f72e13e8cb31f1f37a5f8d329"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "README.md",
+      "sha256": "b79bee48b7a20d088c964f9eca1ec6067bc5d178c5df168b758eb48106ab8daa"
+    },
+    {
+      "path": "shared.patch",
+      "sha256": "f8babd208f3f9cfcef52b9d56cac13b176d37477f580b8f9f61bfe90687b3625"
+    }
+  ],
+  "validation": {
+    "pure": "258 passed (9 new+249 existing), candidate module only, DB/Temporal/checkpoint env removed",
+    "ruff": "PASS: explicit --config pdos-next/ruff.toml, 3 files",
+    "native_pg": "4 cases collect-only, not executed by subagent"
+  },
+  "live_modified": false,
+  "db_or_services_started": false
+}

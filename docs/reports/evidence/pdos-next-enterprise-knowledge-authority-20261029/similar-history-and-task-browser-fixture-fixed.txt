@@ -1,0 +1,72 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 9 items
+
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_reads_metadata_fields_and_never_creates_run_or_business_write PASSED [ 11%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_explicit_not_relevant_feedback_is_private_append_only_and_idempotent PASSED [ 22%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_merged_and_already_linked_logical_objects_are_excluded PASSED [ 33%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_warm_latency_and_sql_count PASSED [ 44%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_agent_has_no_feedback_sql_privileges[SELECT] PASSED [ 55%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_agent_has_no_feedback_sql_privileges[INSERT] PASSED [ 66%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_agent_has_no_feedback_sql_privileges[UPDATE] PASSED [ 77%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_agent_has_no_feedback_sql_privileges[DELETE] PASSED [ 88%]
+tests/enterprise_search/test_task_result_pg.py::test_four_tables_replay_actual_citations_and_save_the_same_private_cells[cases-measures] PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_reads_metadata_fields_and_never_creates_run_or_business_write
+tests/enterprise_search/test_similar_history_pg.py::test_actual_explicit_not_relevant_feedback_is_private_append_only_and_idempotent
+tests/enterprise_search/test_similar_history_pg.py::test_actual_merged_and_already_linked_logical_objects_are_excluded
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_warm_latency_and_sql_count
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_similar_history_pg.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_reads_metadata_fields_and_never_creates_run_or_business_write
+tests/enterprise_search/test_similar_history_pg.py::test_actual_explicit_not_relevant_feedback_is_private_append_only_and_idempotent
+tests/enterprise_search/test_similar_history_pg.py::test_actual_merged_and_already_linked_logical_objects_are_excluded
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_warm_latency_and_sql_count
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_reads_metadata_fields_and_never_creates_run_or_business_write
+tests/enterprise_search/test_similar_history_pg.py::test_actual_explicit_not_relevant_feedback_is_private_append_only_and_idempotent
+tests/enterprise_search/test_similar_history_pg.py::test_actual_merged_and_already_linked_logical_objects_are_excluded
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_warm_latency_and_sql_count
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_reads_metadata_fields_and_never_creates_run_or_business_write
+tests/enterprise_search/test_similar_history_pg.py::test_actual_explicit_not_relevant_feedback_is_private_append_only_and_idempotent
+tests/enterprise_search/test_similar_history_pg.py::test_actual_merged_and_already_linked_logical_objects_are_excluded
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_warm_latency_and_sql_count
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_reads_metadata_fields_and_never_creates_run_or_business_write
+tests/enterprise_search/test_similar_history_pg.py::test_actual_explicit_not_relevant_feedback_is_private_append_only_and_idempotent
+tests/enterprise_search/test_similar_history_pg.py::test_actual_merged_and_already_linked_logical_objects_are_excluded
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_warm_latency_and_sql_count
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_reads_metadata_fields_and_never_creates_run_or_business_write
+tests/enterprise_search/test_similar_history_pg.py::test_actual_explicit_not_relevant_feedback_is_private_append_only_and_idempotent
+tests/enterprise_search/test_similar_history_pg.py::test_actual_merged_and_already_linked_logical_objects_are_excluded
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_warm_latency_and_sql_count
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_similar_history_pg.py: 18 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/similar_history_context.py:47: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    ).distinct(GovernanceEvent.project_id).order_by(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-enterprise-knowledge-authority-20261029/similar-history-and-task-browser-fixture-fixed.xml -
+================== 9 passed, 54 warnings in 304.67s (0:05:04) ==================

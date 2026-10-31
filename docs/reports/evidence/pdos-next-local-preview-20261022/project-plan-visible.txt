@@ -1,0 +1,3 @@
+Browser tab: 2, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:59650/?area=category&category=b24a8a71-981e-49cc-a32c-496641be611d&product=6a921dbe-5876-4aef-a878-313d16407478&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d&bench=projects&view=plan".
+There has been no change in the accessibility tree.
+The focused UI element is 1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:59650/?area=category&category=b24a8a71-981e-49cc-a32c-496641be611d&product=6a921dbe-5876-4aef-a878-313d16407478&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d&bench=projects&view=plan

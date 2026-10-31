@@ -1,0 +1,790 @@
+--- a/pdos-next/server/pdos_next/agent_kernel/session_presentation.py
++++ b/pdos-next/server/pdos_next/agent_kernel/session_presentation.py
+@@ -4,7 +4,7 @@
+ from uuid import UUID
+ 
+ from pydantic import Field, model_validator
+-from sqlalchemy import and_, exists, func, or_, select, text
++from sqlalchemy import and_, func, or_, select, text
+ 
+ from pdos_next.errors import DomainError
+ from pdos_next.schema_base import StrictModel
+@@ -30,6 +30,7 @@
+     cursor: UUID | None = None
+     page_size: int = Field(default=20, ge=1, le=50)
+     proposal_id: UUID | None = None
++    project_id: UUID | None = None
+     q: str = Field(default="", max_length=160)
+     view: Literal["active", "archived"] = "active"
+ 
+@@ -51,34 +52,9 @@
+         return self
+ 
+ 
+-def _visible_sessions(ctx, proposal_id):
+-    from pdos_next.domain.projects.models import Project
+-
+-    readable = _sessions(ctx, proposal_id)
+-    return (
+-        select(*readable.c, AgentSession.project_id)
+-        .join(
+-            AgentSession,
+-            and_(
+-                AgentSession.tenant_id == readable.c.tenant_id,
+-                AgentSession.id == readable.c.session_id,
+-            ),
+-        )
+-        .where(
+-            or_(
+-                AgentSession.project_id.is_(None),
+-                exists(
+-                    select(Project.id).where(
+-                        Project.tenant_id == AgentSession.tenant_id,
+-                        Project.category_id == AgentSession.category_id,
+-                        Project.product_id == AgentSession.product_id,
+-                        Project.id == AgentSession.project_id,
+-                    )
+-                ),
+-            )
+-        )
+-        .cte("presentation_readable_sessions")
+-    )
++def _visible_sessions(ctx, proposal_id, project_id=None):
++    readable = _sessions(ctx, proposal_id, project_id)
++    return select(*readable.c).cte("presentation_readable_sessions")
+ 
+ 
+ def _visible_runs(sessions):
+@@ -96,7 +72,7 @@
+ 
+ 
+ def _eligible(ctx, page):
+-    sessions = _visible_sessions(ctx, page.proposal_id)
++    sessions = _visible_sessions(ctx, page.proposal_id, page.project_id)
+     runs = _visible_runs(sessions)
+     ranked = select(
+         *runs.c,
+@@ -176,7 +152,7 @@
+ 
+ 
+ def read_list(session, ctx, page):
+-    _human(session, ctx, page.proposal_id)
++    _human(session, ctx, page.proposal_id, page.project_id)
+     eligible = _eligible(ctx, page)
+     query = select(eligible)
+     if page.cursor is not None:
+@@ -232,7 +208,7 @@
+     return {
+         "version": "agent-conversation-list/v1",
+         "principal_id": str(ctx.requester_id),
+-        "scope": _scope(ctx, page.proposal_id),
++        "scope": _scope(ctx, page.proposal_id, page.project_id),
+         "as_of": session.scalar(select(func.transaction_timestamp())).isoformat(),
+         "items": items,
+         "next_cursor": items[-1]["session_id"] if len(rows) > page.page_size else None,
+--- a/pdos-next/server/pdos_next/agent_kernel/session_views.py
++++ b/pdos-next/server/pdos_next/agent_kernel/session_views.py
+@@ -26,6 +26,7 @@
+     cursor: UUID | None = None
+     page_size: int = Field(default=20, ge=1, le=50)
+     proposal_id: UUID | None = None
++    project_id: UUID | None = None
+     q: str = Field(default="", max_length=160)
+ 
+ 
+@@ -33,16 +34,18 @@
+     cursor: UUID | None = None
+     page_size: int = Field(default=20, ge=1, le=50)
+     proposal_id: UUID | None = None
+-
+-
+-def _scope(ctx, proposal_id):
++    project_id: UUID | None = None
++
++
++def _scope(ctx, proposal_id, project_id=None):
+     return {
+         "category_id": str(ctx.category_id) if ctx.category_id else None,
+         "proposal_id": str(proposal_id) if proposal_id else None,
++        **({"project_id": str(project_id)} if project_id is not None else {}),
+     }
+ 
+ 
+-def _human(session, ctx, proposal_id):
++def _human(session, ctx, proposal_id, project_id=None):
+     require_context(session, ctx)
+     actor = session.get(Principal, ctx.actor_id)
+     if (
+@@ -56,7 +59,7 @@
+     ):
+         raise DomainError("FORBIDDEN_SCOPE", "会话只向当前具名本人显示。", 403)
+     if ctx.category_id is None:
+-        if proposal_id is not None:
++        if proposal_id is not None or project_id is not None:
+             raise DomainError("FORBIDDEN_SCOPE", "个人会话入口不能选择业务提案。", 403)
+     else:
+         require_access(session, ctx, None)
+@@ -64,11 +67,21 @@
+             from pdos_next.domain.preproject.access import proposal
+ 
+             proposal(session, ctx, proposal_id)
+-
+-
+-def _sessions(ctx, proposal_id):
++        if project_id is not None:
++            from pdos_next.domain.projects.models import Project
++
++            from .project_scope import require_project
++
++            project = session.get(Project, project_id)
++            if project is None or project.category_id != ctx.category_id:
++                raise DomainError("FORBIDDEN_SCOPE", "项目不存在或当前不可读。", 403)
++            require_project(session, ctx, project_id, project.product_id)
++
++
++def _sessions(ctx, proposal_id, project_id=None):
+     """Apply ordinary parent RLS before goals, counts, search or cursor reads."""
+     from pdos_next.domain.preproject.models import Proposal
++    from pdos_next.domain.projects.models import Project
+ 
+     current_proposal = func.coalesce(AgentSessionBinding.proposal_id, AgentSession.proposal_id)
+     query = select(
+@@ -79,6 +92,7 @@
+         AgentSession.created_at,
+         AgentSession.category_id,
+         AgentSession.product_id,
++        AgentSession.project_id,
+         current_proposal.label("proposal_id"),
+     ).outerjoin(
+         AgentSessionBinding,
+@@ -110,11 +124,25 @@
+                 )
+             ),
+         ),
++        or_(
++            AgentSession.project_id.is_(None),
++            exists(select(Project.id).where(
++                Project.tenant_id == AgentSession.tenant_id,
++                Project.category_id == AgentSession.category_id,
++                Project.product_id == AgentSession.product_id,
++                Project.id == AgentSession.project_id,
++            )),
++        ),
+     )
+     if ctx.category_id is None:
+-        query = query.where(AgentSession.product_id.is_(None), current_proposal.is_(None))
++        query = query.where(
++            AgentSession.product_id.is_(None), current_proposal.is_(None),
++            AgentSession.project_id.is_(None),
++        )
+     if proposal_id is not None:
+         query = query.where(current_proposal == proposal_id)
++    if project_id is not None:
++        query = query.where(AgentSession.project_id == project_id)
+     return query.cte("readable_sessions")
+ 
+ 
+@@ -138,6 +166,7 @@
+                 AgentRun.requester_id == sessions.c.owner_id,
+                 AgentRun.category_id.is_not_distinct_from(sessions.c.category_id),
+                 AgentRun.product_id.is_not_distinct_from(sessions.c.product_id),
++                AgentRun.project_id.is_not_distinct_from(sessions.c.project_id),
+                 or_(
+                     AgentRun.proposal_id.is_not_distinct_from(sessions.c.proposal_id),
+                     and_(sessions.c.proposal_id.is_not(None), AgentRun.proposal_id.is_(None)),
+@@ -197,7 +226,7 @@
+     }
+ 
+ 
+-def _metadata(row, run_count):
++def _metadata(row, run_count, *, include_project=False):
+     return {
+         "session_id": str(row["session_id"]),
+         "revision": row["revision"],
+@@ -205,6 +234,7 @@
+         "scope": {
+             key: str(row[key]) if row[key] else None
+             for key in ("category_id", "product_id", "proposal_id")
++            + (("project_id",) if include_project else ())
+         },
+         "run_count": run_count,
+     }
+@@ -227,8 +257,8 @@
+ 
+ 
+ def read_list(session, ctx, page):
+-    _human(session, ctx, page.proposal_id)
+-    sessions = _sessions(ctx, page.proposal_id)
++    _human(session, ctx, page.proposal_id, page.project_id)
++    sessions = _sessions(ctx, page.proposal_id, page.project_id)
+     runs = _runs(sessions)
+     ranked = select(
+         *runs.c,
+@@ -286,7 +316,7 @@
+     )
+     items = []
+     for row in rows[: page.page_size]:
+-        item = _metadata(row, row["run_count"])
++        item = _metadata(row, row["run_count"], include_project=page.project_id is not None)
+         item.update(
+             latest_run=_head(row, "latest_"),
+             matched_run={**_head(row, "matched_"), "match_kind": row["match_kind"]} if q else None,
+@@ -295,7 +325,7 @@
+     return {
+         "version": "agent-session-list/v1",
+         "principal_id": str(ctx.requester_id),
+-        "scope": _scope(ctx, page.proposal_id),
++        "scope": _scope(ctx, page.proposal_id, page.project_id),
+         "as_of": session.scalar(select(func.transaction_timestamp())).isoformat(),
+         "items": items,
+         "next_cursor": items[-1]["session_id"] if len(rows) > page.page_size else None,
+@@ -303,8 +333,8 @@
+ 
+ 
+ def read_runs(session, ctx, session_id, page):
+-    _human(session, ctx, page.proposal_id)
+-    sessions = _sessions(ctx, page.proposal_id)
++    _human(session, ctx, page.proposal_id, page.project_id)
++    sessions = _sessions(ctx, page.proposal_id, page.project_id)
+     selected = (
+         session.execute(select(sessions).where(sessions.c.session_id == session_id))
+         .mappings()
+@@ -363,9 +393,9 @@
+     return {
+         "version": "agent-session-runs/v1",
+         "principal_id": str(ctx.requester_id),
+-        "scope": _scope(ctx, page.proposal_id),
++        "scope": _scope(ctx, page.proposal_id, page.project_id),
+         "as_of": session.scalar(select(func.transaction_timestamp())).isoformat(),
+-        "session": _metadata(selected, count),
++        "session": _metadata(selected, count, include_project=page.project_id is not None),
+         "items": items,
+         "next_cursor": items[-1]["run_id"] if len(rows) > page.page_size else None,
+     }
+--- a/pdos-next/server/tests/agent_kernel/test_session_presentation.py
++++ b/pdos-next/server/tests/agent_kernel/test_session_presentation.py
+@@ -77,6 +77,24 @@
+     assert "%50\\%\\_\\\\%" in compiled.params.values()
+     assert "LIMIT" not in sql and "OFFSET" not in sql
+     assert "agent_runs.result" not in sql and "agent_runs.read_sources" not in sql
++
++
++def test_project_conversation_selector_precedes_title_search_counts_and_cursor():
++    project = uuid4()
++    page = service.ConversationPage(project_id=project, q="saved discussion")
++    compiled = select(service._eligible(context(), page)).compile(dialect=postgresql.dialect())
++    sql = str(compiled)
++    assert project in compiled.params.values()
++    assert "agent_sessions.project_id =" in sql
++    assert "EXISTS (SELECT projects.id" in sql
++    assert (
++        "agent_runs.project_id IS NOT DISTINCT FROM presentation_readable_sessions.project_id"
++        in sql
++    )
++    assert "LIMIT" not in sql
++    assert "agent_runs.result" not in sql
++    # Read filtering does not change the original presentation write/receipt contract.
++    assert "project_id" not in service.PresentationScope.model_fields
+ 
+ 
+ class WriteSession:
+--- a/pdos-next/server/tests/agent_kernel/test_session_views.py
++++ b/pdos-next/server/tests/agent_kernel/test_session_views.py
+@@ -87,6 +87,28 @@
+     assert not {"title", "archived", "pinned", "session_status"} & head.keys()
+ 
+ 
++def test_project_filter_binds_actual_session_and_run_before_any_search_or_paging():
++    ctx, project = context(), uuid4()
++    sessions = views._sessions(ctx, None, project)
++    compiled = select(views._matched(views._runs(sessions), "original goal")).compile(
++        dialect=postgresql.dialect()
++    )
++    sql = str(compiled)
++    assert project in compiled.params.values()
++    assert "agent_sessions.project_id =" in sql
++    assert "EXISTS (SELECT projects.id" in sql
++    assert "agent_runs.project_id IS NOT DISTINCT FROM readable_sessions.project_id" in sql
++    assert "agent_sessions.owner_id =" in sql
++    assert "LIMIT" not in sql
++    assert "agent_runs.result" not in sql
++    assert views._scope(ctx, None) == {"category_id": str(ctx.category_id), "proposal_id": None}
++    assert views._scope(ctx, None, project)["project_id"] == str(project)
++    for model in (views.SessionPage, views.RunPage):
++        assert model(project_id=project).project_id == project
++        with pytest.raises(ValidationError):
++            model(project_id="not-a-project")
++
++
+ def test_router_query_models_and_read_snapshot_are_wired_without_a_database(monkeypatch):
+     seen = []
+ 
+--- a/pdos-next/web/src/app/api/route-pai-session-presentation.test.mjs
++++ b/pdos-next/web/src/app/api/route-pai-session-presentation.test.mjs
+@@ -41,13 +41,21 @@
+ });
+ test("list and presentation query allowlists reject duplicates, scope forgery and malformed paths before network", async () => {
+  const h = harness();
+- for (const query of ["view=all", "view=active&view=archived", "page_size=01", "page_size=51", "q=a&q=b", "cursor=bad", "principal_id=x", "project_id="+key, "category_id="+key, "proposal_id=bad"]) assert.equal((await h.list(query, category)).status, 422, query);
++ for (const query of ["view=all", "view=active&view=archived", "page_size=01", "page_size=51", "q=a&q=b", "cursor=bad", "principal_id=x", "project_id=bad", "category_id="+key, "proposal_id=bad"]) assert.equal((await h.list(query, category)).status, 422, query);
+  for (const query of ["view=active", "page_size=1", "q=name", "cursor="+key, "proposal_id="+proposal+"&proposal_id="+proposal, "principal_id="+key]) {
+   assert.equal((await h.post(original, query)).status, 422); assert.equal((await h.recover(query)).status, 422);
+  }
+  assert.equal((await h.list(`proposal_id=${proposal}`)).status, 422); assert.equal((await h.exports.paiPresentation(h.request("GET"), undefined, session, key)).status, 200); assert.equal((await h.exports.paiPresentation(h.request("POST", `proposal_id=${proposal}`), undefined, session)).status, 422);
+  const prior = h.calls.length; assert.equal((await h.post(original,"","bad")).status,404); assert.equal((await h.post(original,"",category,"bad")).status,404); assert.equal((await h.recover("",category,session,"bad")).status,404); assert.equal(h.calls.length, prior);
+  assert.equal((await h.list(new URLSearchParams({q:"😀".repeat(160)}).toString())).status,200); assert.equal((await h.list(new URLSearchParams({q:"😀".repeat(161)}).toString())).status,422);
++});
++test("project conversation list filters stay category-bound and cannot widen presentation writes", async () => {
++ const h = harness(); assert.equal((await h.list(`project_id=${key}`, category)).status, 200);
++ assert.equal(new URL(h.calls[0].url).searchParams.get("project_id"), key);
++ assert.equal((await h.list(`project_id=${key}`)).status, 422);
++ assert.equal((await h.list(`project_id=${key}&project_id=${proposal}`, category)).status, 422);
++ assert.equal((await h.post(original, `project_id=${key}`)).status, 422);
++ assert.equal((await h.recover(`project_id=${key}`)).status, 422); assert.equal(h.calls.length, 1);
+ });
+ test("mutations require same origin, live auth and exact JSON body schema", async () => {
+  const h = harness();
+--- a/pdos-next/web/src/app/api/route-pai-sessions.test.mjs
++++ b/pdos-next/web/src/app/api/route-pai-sessions.test.mjs
+@@ -41,6 +41,14 @@
+   assert.equal((await h.send("q=history", category, session)).status, 422);
+   assert.equal(h.calls.length, 1);
+ });
++test("actual project is preserved for Session and Run pages and rejected in personal routes", async () => {
++ const h = harness();
++ for (const sid of [undefined, session]) assert.equal((await h.send(`project_id=${cursor}`, category, sid)).status, 200);
++ assert.ok(h.calls.every(call => new URL(call.url).searchParams.get("project_id") === cursor && call.init.method === "GET"));
++ assert.equal((await h.send(`project_id=${cursor}`)).status, 422);
++ assert.equal((await h.send(`project_id=${cursor}&project_id=${session}`, category)).status, 422);
++ assert.equal(h.calls.length, 2);
++});
+ test("search length matches the API Unicode-character bound", async () => {
+   const h = harness();
+   assert.equal((await h.send(new URLSearchParams({ q: "🧪".repeat(160) }).toString(), category)).status, 200);
+--- a/pdos-next/web/src/components/app-shell.tsx
++++ b/pdos-next/web/src/components/app-shell.tsx
+@@ -237,7 +237,7 @@
+   else if (location.area === "inbox") content = <Inbox api={browserApi} principalId={session!.principal_id} onOpenRun={openRun} onOpenProject={(categoryId, projectId) => navigate("cockpit", { categoryId, projectId })}/>;
+   else if (location.area === "pai") content = null;
+   else if (location.area === "projects") content = <ProjectList api={browserApi} principalId={session!.principal_id} onOpenProject={(categoryId, projectId) => navigate("cockpit", { categoryId, projectId })} onOpenPlan={(categoryId, projectId) => pushAndApply(`${globalHref({ area: "cockpit", categoryId, projectId })}&projectView=plan`)} onStartProposal={managedCategories.length ? () => openProductManagement("proposals") : undefined} />;
+-  else if (location.area === "cockpit") content = <ProjectCockpit key={`${session?.principal_id}:${location.categoryId}:${location.projectId}`} initialView={projectView(search.get("projectView"))} api={browserApi} session={session!} location={location} onOpenProject={(categoryId, projectId) => navigate("cockpit", { categoryId, projectId })} onOpenOverview={() => navigate("projects")} onOpenWorkbench={openWorkbench} onPaiContext={setPaiContext} />;
++  else if (location.area === "cockpit") content = <ProjectCockpit key={`${session?.principal_id}:${location.categoryId}:${location.projectId}`} initialView={projectView(search.get("projectView"))} api={browserApi} session={session!} location={location} onOpenProject={(categoryId, projectId) => navigate("cockpit", { categoryId, projectId })} onOpenOverview={() => navigate("projects")} onOpenWorkbench={openWorkbench} onOpenRun={openRun} onPaiContext={setPaiContext} />;
+   else if (location.area === "programs") content = <ProjectSets api={browserApi} principalId={session!.principal_id} onOpenProject={(categoryId, projectId) => navigate("cockpit", { categoryId, projectId })}/>;
+   else if ((location.area === "category" || location.area === "knowledge") && categoriesError) content = <section className="workspace-empty"><p role="alert">品类范围与产品管理权限暂未读取完成：{categoriesError}</p><Button variant="outline" onClick={() => void load()}><ArrowClockwise/>重新读取</Button></section>;
+   else if (location.area === "knowledge" && !knowledgeWorkbench) content = <KnowledgeIndex key={`${session!.principal_id}:knowledge`} api={browserApi} categories={categories} principalId={session!.principal_id}/>;
+--- a/pdos-next/web/src/components/pai/session-history.test.mjs
++++ b/pdos-next/web/src/components/pai/session-history.test.mjs
+@@ -120,6 +120,25 @@
+   assert.ok(calls.every(call => call.body === undefined)); assert.ok(!calls.some(call => /agent-runs|commands/.test(call.path)));
+ });
+ 
++test("project history carries actual project through list and Run reads and clears earlier project content", async () => {
++  const calls = [], selected = [], project = uuid(500), other = uuid(501);
++  const api = async (path, body) => {
++    calls.push({ path, body }); const bound = new URLSearchParams(path.split("?")[1]).get("project_id");
++    assert.ok([project, other].includes(bound));
++    const result = path.includes("/runs?") ? runs() : list([item(sid, head(runId, bound === project ? "当前项目讨论" : "另一项目讨论"))]);
++    result.scope.project_id = bound;
++    if (result.session) result.session.scope.project_id = bound; else result.items.forEach(row => { row.scope.project_id = bound; });
++    return result;
++  };
++  const c = component({ api, scope: { ...scope, projectId: project }, onSelectRun: (...args) => selected.push(args) });
++  await c.flush(); assert.equal(text(sessionButton(c)), "当前项目讨论");
++  sessionButton(c).props.onClick(); await c.flush(); assert.deepEqual(selected, [[runId, sid]]);
++  assert.ok(calls.some(call => call.path.includes("/runs?") && call.path.includes(`project_id=${project}`)));
++  assert.ok(!text(c.render({ scope: { ...scope, projectId: other } })).includes("当前项目讨论"));
++  c.effects(); await c.flush(); assert.equal(text(sessionButton(c)), "另一项目讨论");
++  assert.ok(calls.every(call => call.body === undefined)); c.unmount();
++});
++
+ test("server search includes historic matched_run; Unicode limit counts characters and old search replies stay hidden", async () => {
+   const calls = []; let late;
+   const c = component({ api: async path => {
+@@ -290,7 +309,7 @@
+ 
+ test("refresh and identity transitions discard late mutation receipts, original request state and editor by the appropriate boundary", async () => {
+   let complete, body, reads = 0;
+-  const api = async (path, value) => { if (value) { body = value; return new Promise(resolve => { complete = resolve; }); } reads++; return list(); };
++  const api = async (path, value) => { if (value) { body = value; return new Promise(resolve => { complete = resolve; }); } reads++; const response = list(), project = new URLSearchParams(path.split("?")[1]).get("project_id"); if (project) { response.scope.project_id = project; response.items.forEach(row => { row.scope.project_id = project; }); } return response; };
+   const c = component({ api }); await c.flush(); await rename(c, "迟到名称"); await click(c, "刷新会话");
+   assert.ok(namedButton(c, "查询原请求回执")); const prior = reads; complete(receipt(body)); await tick(); await c.flush();
+   assert.equal(reads, prior); assert.ok(namedButton(c, "查询原请求回执"));
+--- a/pdos-next/web/src/components/pai/session-history.tsx
++++ b/pdos-next/web/src/components/pai/session-history.tsx
+@@ -57,8 +57,8 @@
+   const [selectedSession, setSelectedSession] = useState<string | null>(null);
+   const [runs, setRuns] = useState<{ key: string; value: PaiSessionRuns | null; error: string; loading: boolean }>({ key: "", value: null, error: "", loading: false });
+   const generation = useRef(0), runGeneration = useRef(0);
+-  const readScope: PaiSessionScope = { principalId, categoryId: scope.categoryId, proposalId: scope.proposalId };
+-  const listKey = JSON.stringify([principalId, scope.categoryId, scope.proposalId ?? null, q, view, refreshVersion, refresh]);
++  const readScope: PaiSessionScope = { principalId, categoryId: scope.categoryId, proposalId: scope.proposalId, projectId: scope.projectId };
++  const listKey = JSON.stringify([principalId, scope.categoryId, scope.proposalId ?? null, scope.projectId ?? null, q, view, refreshVersion, refresh]);
+   const listCurrent = list.key === listKey ? list : { value: null, error: "", loading: true };
+   const sessionId = list.key === listKey ? selectedSession : null;
+   const runKey = `${listKey}:${sessionId ?? ""}`;
+@@ -70,7 +70,7 @@
+     if (!cursor) { setEditor(null); setSelectedSession(null); runGeneration.current++; setRuns({ key: "", value: null, loading: false, error: "" }); }
+     setList(old => ({ key, value: cursor && old.key === key ? old.value : null, loading: true, error: "" }));
+     try {
+-      const page = await readConversations(api, { principalId, categoryId: scope.categoryId, proposalId: scope.proposalId }, { q, cursor, view });
++      const page = await readConversations(api, { principalId, categoryId: scope.categoryId, proposalId: scope.proposalId, projectId: scope.projectId }, { q, cursor, view });
+       if (generation.current !== own || scopeRef.current.listKey !== key || scopeRef.current.api !== api) return;
+       setList(old => {
+         const prior = cursor && old.key === key ? old.value : null;
+@@ -78,7 +78,7 @@
+         return { key, loading: false, error: "", value: prior ? { ...page, items: [...prior.items, ...page.items.filter(item => !prior.items.some(previous => previous.session_id === item.session_id))] } : page };
+       });
+     } catch (failure) { if (generation.current === own && scopeRef.current.listKey === key) { setList({ key, value: null, loading: false, error: message(failure) }); setSelectedSession(null); setRuns({ key: "", value: null, loading: false, error: "" }); runGeneration.current++; if ([401, 403].includes((failure as { status?: number }).status ?? 0) && onPermissionDenied) onPermissionDenied(); else onClearSelection(); } }
+-  }, [api, principalId, scope.categoryId, scope.proposalId, q, view, listKey, onClearSelection, onPermissionDenied]);
++  }, [api, principalId, scope.categoryId, scope.proposalId, scope.projectId, q, view, listKey, onClearSelection, onPermissionDenied]);
+   useEffect(() => {
+     let active = true;
+     const listCounter = generation, runCounter = runGeneration, operationCounter = operationGeneration;
+--- a/pdos-next/web/src/components/projects/project-activity.test.mjs
++++ b/pdos-next/web/src/components/projects/project-activity.test.mjs
+@@ -42,4 +42,12 @@
+ test("scope/principal/readVersion changes isolate late results and hide prior data", async t => { for (const field of ["categoryId", "productId", "projectId", "principalId", "readVersion"]) { const env = environment(t); await ready(env); await click(env, "加载更多动态"); const old = env.pending(), selectedScope = field === "readVersion" ? scope : { ...scope, [field]: id(99) }; env.setProps({ scope: selectedScope, readVersion: field === "readVersion" ? 1 : 0 }); assert.doesNotMatch(env.html(), /实际计算返回/); await env.flush(); env.respond(old, page([{ ...item(20), summary: "旧请求私有内容" }], null)); await env.flush(); assert.doesNotMatch(env.html(), /旧请求私有内容|实际计算返回/); const next = item(30); next.summary = "当前已核对动态"; await ready(env, page([next], null, selectedScope)); assert.match(env.html(), /当前已核对动态/); } });
+ test("transport replacement cannot expose old response and never writes storage", async t => { const env = environment(t); await env.flush(); const old = env.pending(), newCalls = []; const replacement = route => new Promise(resolve => newCalls.push({ route, resolve })); env.setProps({ api: replacement }); await env.flush(); env.respond(old, page()); await env.flush(); assert.doesNotMatch(env.html(), /实际计算返回/); assert.equal(newCalls.length, 1); newCalls[0].resolve(page([], null)); await env.flush(); assert.match(env.html(), /当前权限下尚无可读/); for (const file of [path.join(root, "src/lib/project-activity.ts"), path.join(directory, "project-activity.tsx")]) assert.doesNotMatch(readFileSync(file, "utf8"), /localStorage|sessionStorage/); });
+ test("mixed feed distinguishes private run event sequence and bound identity from domain receipt", async t => { const env = environment(t); await ready(env, page([item(), runItem(20), runItem(21)], null)); const html = env.html(); for (const text of ["本人绑定本项目的小Pai运行", "本人项目运行", "绑定执行身份", "事件序号 20", "事件序号 21", "无业务写入回执", "待本人答复", "实际计算返回", "v2"]) assert.ok(html.includes(text), text); assert.doesNotMatch(html, /v20|v21|共享运行/); assert.equal(env.calls.length, 1); assert.ok(env.calls.every(call => call.body === undefined)); });
++test("project discussion entry opens the existing Run via its read callback without any write", async t => {
++ const env = environment(t), opened = []; env.setProps({ onOpenRun: id => opened.push(id) });
++ await ready(env, page([runItem(20)], null));
++ const row = nodes(env.tree(), node => node.type?.name === "Activity")[0]; assert.ok(row);
++ const button = nodes(row.type(row.props), node => words(node.props?.children) === "查看当时讨论与结果" && typeof node.props?.onClick === "function")[0];
++ assert.ok(button); button.props.onClick(); await env.flush();
++ assert.deepEqual(opened, [id(50)]); assert.equal(env.calls.length, 1); assert.ok(env.calls.every(call => call.body === undefined));
++});
+ test("null run receipts merge across pages while duplicate actual event fails and retries same cursor", async t => { const env = environment(t); await ready(env, page([runItem(20)])); await click(env, "加载更多动态"); const first = env.pending(); env.respond(first, page([runItem(20)], null)); await env.flush(); assert.match(env.html(), /分页记录或读取时点不一致/); assert.match(env.html(), /事件序号 20/); await click(env, "重试加载更多"); const retry = env.pending(); assert.equal(retry.route, first.route); env.respond(retry, page([runItem(21)], null)); await env.flush(); assert.match(env.html(), /事件序号 20/); assert.match(env.html(), /事件序号 21/); assert.doesNotMatch(env.html(), /加载更多失败/); assert.ok(env.calls.every(call => call.body === undefined)); });
+--- a/pdos-next/web/src/components/projects/project-activity.tsx
++++ b/pdos-next/web/src/components/projects/project-activity.tsx
+@@ -23,7 +23,7 @@
+       {item.task_refs.length > 0 && <ul aria-label="固定任务版本">{item.task_refs.map(ref => <li key={`${ref.id}:${ref.revision}`}>任务 {ref.id} · v{ref.revision}</li>)}</ul>}
+       {item.sources.length > 0 ? <ul aria-label="来源引用">{item.sources.map((source, index) => <li key={`${source.kind}:${source.id}:${source.revision}:${index}`}>{source.kind} · {source.id} · v{source.revision}{source.position !== undefined && <> · {source.position}</>}</li>)}</ul> : <p>本条未登记原文引用。</p>}
+     </details>
+-    <div className={styles.actions}>{item.link && <a href={projectActivityHref(scope, item.link.view)}>{item.link.label}<ArrowRight size={14} aria-hidden="true"/></a>}{item.run_id && (onOpenRun ? <Button variant="outline" onClick={() => onOpenRun(item.run_id!)}>打开本次小Pai运行</Button> : <span className={styles.run}>运行 {item.run_id}</span>)}</div>
++    <div className={styles.actions}>{item.link && <a href={projectActivityHref(scope, item.link.view)}>{item.link.label}<ArrowRight size={14} aria-hidden="true"/></a>}{item.run_id && (onOpenRun ? <Button variant="outline" onClick={() => onOpenRun(item.run_id!)}>查看当时讨论与结果</Button> : <span className={styles.run}>运行 {item.run_id}</span>)}</div>
+   </>;
+   if (compact) return <li className={styles.compactItem}><details>
+     <summary className={styles.compactSummary}><span className={styles.actorMark} aria-hidden="true">{item.actor.kind === "ai" ? <Sparkle size={13}/> : (item.actor.name ?? "?").slice(0, 1)}</span><span className={styles.compactText}><span className={styles.actorName}>{item.actor.name ?? "身份待核对"}</span><span>{item.summary}</span></span><time dateTime={item.recorded_at} title={`记录于 ${item.recorded_at}`}>{new Date(item.recorded_at).toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}</time></summary>
+--- a/pdos-next/web/src/components/projects/project-cockpit.tsx
++++ b/pdos-next/web/src/components/projects/project-cockpit.tsx
+@@ -59,13 +59,14 @@
+ }
+ 
+ 
+-export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOverview, onOpenWorkbench, onPaiContext, initialView = "tasks" }: {
++export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOverview, onOpenWorkbench, onOpenRun, onPaiContext, initialView = "tasks" }: {
+   initialView?: ProjectViewId;
+   api: Api; session: { name: string; principal_id: string }; location: GlobalLocation;
+   onOpenProject: (categoryId: string, projectId: string) => void;
+   onOpenOverview: () => void;
+   onPaiContext?: (context: PaiContext | null) => void;
+   onOpenWorkbench: (categoryId: string, productId: string, projectId: string) => void;
++  onOpenRun?: (runId: string, categoryId: string) => void;
+ }) {
+   const [reload, setReload] = useState(0);
+   const scope = JSON.stringify([session.principal_id, location.categoryId, location.projectId, reload]);
+@@ -94,7 +95,7 @@
+     <Button variant="outline" onClick={onOpenOverview}><ArrowLeft/>返回经营总览</Button>
+   </>;
+   const readTime = portfolio.asOf && <p className="subtle mb-4">项目资料读取于 <time dateTime={portfolio.asOf}>{new Date(portfolio.asOf).toLocaleString()}</time></p>;
+-  if (entry) return <ProjectWorkspace initialView={initialView} entry={entry} api={api} session={session} today={today} onBack={onOpenOverview} onOpenWorkbench={onOpenWorkbench} readAt={portfolio.asOf} readVersion={reload} onRefresh={() => setReload(value => value + 1)} />;
++  if (entry) return <ProjectWorkspace initialView={initialView} entry={entry} api={api} session={session} today={today} onBack={onOpenOverview} onOpenWorkbench={onOpenWorkbench} onOpenRun={onOpenRun} readAt={portfolio.asOf} readVersion={reload} onRefresh={() => setReload(value => value + 1)} />;
+   return <>
+     {refresh}{readTime}
+     {portfolio.readErrors.map(item => <p key={item.path} role="status" className="subtle">部分范围暂不可读：{item.message}</p>)}
+--- a/pdos-next/web/src/components/projects/project-workspace.tsx
++++ b/pdos-next/web/src/components/projects/project-workspace.tsx
+@@ -24,13 +24,14 @@
+   entry: PortfolioProject; session: { name: string; principal_id: string }; today: string;
+   onBack: () => void;
+   onOpenWorkbench: (categoryId: string, productId: string, projectId: string) => void;
++  onOpenRun?: (runId: string, categoryId: string) => void;
+ };
+ type Tab = ProjectViewId;
+ function Section({ title, icon, tail, children, className = "" }: { title: string; icon?: ReactNode; tail?: ReactNode; children: ReactNode; className?: string }) {
+   return <section className={`${styles.section} ${className}`} aria-label={title}><h2>{icon}{title}{tail && <span>{tail}</span>}</h2>{children}</section>;
+ }
+ 
+-export function ProjectWorkspace({ entry, api, session, today, onBack, onOpenWorkbench, onRefresh, readAt, readVersion = 0, initialView = "tasks" }: Props) {
++export function ProjectWorkspace({ entry, api, session, today, onBack, onOpenWorkbench, onOpenRun, onRefresh, readAt, readVersion = 0, initialView = "tasks" }: Props) {
+   const [tab, setTab] = useState<Tab>(initialView);
+   const [lastProfessional, setLastProfessional] = useState<ProfessionalView | null>(isProfessionalView(initialView) ? initialView : null);
+   const [routeView, setRouteView] = useState(initialView);
+@@ -72,7 +73,7 @@
+     <div id={`project-panel-${tab}`} role="tabpanel" aria-labelledby={tabs.slice(0,4).some(t => t.id === tab) ? `project-tab-${tab}` : "project-tab-more"} className={styles.workspaceBody}>
+       {tab === "tasks" && <ProjectWork view="tasks" api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} productRevision={0} readVersion={readVersion} onRefresh={onRefresh}/>}
+       {tab === "now" && <div className={styles.workspaceGrid}><div><Section title="需要推进" icon={<ClipboardText size={15}/>} tail={entry.openItemsError ? "暂不可读" : `${open.length} 项任务 / 风险`}>
+-        {entry.openItemsError ? <p role="status" className="workspace-read-error">{entry.openItemsError}</p> : open.length === 0 ? <p className={styles.panelEmpty}>当前没有未结任务或风险。</p> : open.map(item => <div className={styles.action} key={item.id}>{item.kind === "risk" ? <Warning size={15} aria-hidden="true"/> : <ClipboardText size={15} aria-hidden="true"/>}<div className={styles.actionBody}><p>{item.title}</p><small>{item.kind === "risk" ? "风险" : "任务"} · {item.owner_id === session.principal_id ? "本人负责" : item.owner_name ?? "负责人姓名暂不可读"}</small></div><span className={styles.tag} data-overdue={dueState(item, today) === "overdue"}>{dueState(item, today) === "overdue" ? "已逾期 · " : ""}{item.due_date ?? "期限未知"}</span><Button size="sm" variant="ghost" onClick={() => chooseTab("tasks")}>办理<ArrowRight size={12}/></Button></div>)}<p className={styles.panelFoot}>接收、验证与待决定事项按专业工作中的实际记录办理。</p></Section><div className={styles.activitySlot}><ProjectActivity compact api={api} scope={{ categoryId: category.id, productId: product.id, projectId: project.id, principalId: session.principal_id }} readVersion={readVersion}/></div></div>
++        {entry.openItemsError ? <p role="status" className="workspace-read-error">{entry.openItemsError}</p> : open.length === 0 ? <p className={styles.panelEmpty}>当前没有未结任务或风险。</p> : open.map(item => <div className={styles.action} key={item.id}>{item.kind === "risk" ? <Warning size={15} aria-hidden="true"/> : <ClipboardText size={15} aria-hidden="true"/>}<div className={styles.actionBody}><p>{item.title}</p><small>{item.kind === "risk" ? "风险" : "任务"} · {item.owner_id === session.principal_id ? "本人负责" : item.owner_name ?? "负责人姓名暂不可读"}</small></div><span className={styles.tag} data-overdue={dueState(item, today) === "overdue"}>{dueState(item, today) === "overdue" ? "已逾期 · " : ""}{item.due_date ?? "期限未知"}</span><Button size="sm" variant="ghost" onClick={() => chooseTab("tasks")}>办理<ArrowRight size={12}/></Button></div>)}<p className={styles.panelFoot}>接收、验证与待决定事项按专业工作中的实际记录办理。</p></Section><div className={styles.activitySlot}><ProjectActivity compact api={api} scope={{ categoryId: category.id, productId: product.id, projectId: project.id, principalId: session.principal_id }} readVersion={readVersion} onOpenRun={onOpenRun ? id => onOpenRun(id, category.id) : undefined}/></div></div>
+         <div>{build}<ProjectCommitments api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} readVersion={readVersion}/><div className={styles.updatePrompt}><span className={styles.avatar}>{session.name.slice(0, 1)}</span><button type="button" onClick={() => setWritingUpdate(true)}>写状态更新</button></div>{plan}</div></div>}
+       {tab === "gates" && <ProjectGovernance api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} readVersion={readVersion} onSaved={onRefresh}/>}
+       {tab === "plan" && <div className={styles.planView}><header className={styles.planHeading}><h2>计划</h2><p>安排里程碑，协调资源与承诺。</p></header><nav className="workspace-view-tabs" aria-label="计划视图">{([["milestones","里程碑"],["resources","资源需求"],["commitments","承诺与外部等待"]] as const).map(([id,label]) => <button key={id} aria-pressed={planView === id} onClick={() => setPlanView(id)}>{label}</button>)}</nav><div hidden={planView !== "milestones"}><ConnectedProjectPlanning compact api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} onSaved={() => onRefresh?.()}/></div><div hidden={planView === "milestones"}>{planView === "resources" && <ProjectPlanResources api={scoped} productId={product.id} projectId={project.id} readVersion={readVersion}/>}<ProjectWork view="plan" planSection={planView === "resources" ? "resources" : "commitments"} api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} productRevision={0} readVersion={readVersion} onRefresh={onRefresh}/></div></div>}
+--- a/pdos-next/web/src/lib/pai-session-presentation-proxy.ts
++++ b/pdos-next/web/src/lib/pai-session-presentation-proxy.ts
+@@ -44,7 +44,7 @@
+   const query = new URLSearchParams();
+   for (const [key, value] of request.nextUrl.searchParams) {
+     if (query.has(key)) return error("会话参数必须唯一。", 422);
+-    const valid = key === "proposal_id" ? categoryId !== undefined && uuid.test(value)
++    const valid = key === "proposal_id" || list && key === "project_id" ? categoryId !== undefined && uuid.test(value)
+       : !list ? false : key === "view" ? value === "active" || value === "archived"
+       : key === "q" ? [...value].length <= 160 : key === "cursor" ? uuid.test(value)
+       : key === "page_size" ? /^(?:[1-9]|[1-4][0-9]|50)$/.test(value) : false;
+--- a/pdos-next/web/src/lib/pai-session-presentation.test.mjs
++++ b/pdos-next/web/src/lib/pai-session-presentation.test.mjs
+@@ -16,6 +16,21 @@
+ const page = (items = [row()]) => ({ version: "agent-conversation-list/v1", principal_id: id(1), scope: { category_id: id(2), proposal_id: id(3) }, as_of: stamp, items, next_cursor: null });
+ const request = (action = "rename") => ({ sessionId: id(100), body: { action, expected_revision: 0, request_key: id(900), ...(action === "rename" ? { title: "自定义名称" } : {}) } });
+ const receipt = req => ({ version: "agent-session-presentation/v1", principal_id: id(1), scope: page().scope, session: { session_id: req.sessionId, ...row().scope }, presentation: { ...saved({ title: req.body.title ?? null, pinned: req.body.action === "pin", archived: req.body.action === "archive" }), action: req.body.action, request_key: req.body.request_key } });
++
++test("project list selector is sent and checked against both envelope and each actual Session", async () => {
++ const selected = { ...scope, projectId: id(4) }, raw = page(), calls = [];
++ raw.scope.project_id = id(4);
++ await readConversations(async path => { calls.push(path); return raw; }, selected);
++ assert.equal(new URLSearchParams(calls[0].split("?")[1]).get("project_id"), id(4));
++ for (const mutate of [value => value.scope.project_id = id(5), value => value.items[0].scope.project_id = id(5)]) {
++  const bad = clone(raw); mutate(bad); await assert.rejects(readConversations(async () => bad, selected));
++ }
++ const req = request(), original = receipt(req), writeCalls = [];
++ await writePresentation(async (...args) => { writeCalls.push(args); return original; }, selected, req);
++ assert.ok(!writeCalls[0][0].includes("project_id"), "original write scope and request identity remain unchanged");
++ original.session.project_id = id(5);
++ await assert.rejects(writePresentation(async () => original, selected, req), error => error.status === 503);
++});
+ 
+ test("managed list preserves revision-zero facts and actual project scope without enriching legacy DTOs", async () => {
+  const original = page(), calls = []; const value = await readConversations(async (...args) => { calls.push(args); return original; }, scope);
+--- a/pdos-next/web/src/lib/pai-session-presentation.ts
++++ b/pdos-next/web/src/lib/pai-session-presentation.ts
+@@ -6,7 +6,7 @@
+ export type PresentationBody = { expected_revision: number; request_key: string; action: PresentationAction; title?: string | null };
+ export type PresentationRequest = { sessionId: string; body: PresentationBody };
+ export type PresentationReceipt = { version: "agent-session-presentation/v1"; principal_id: string; scope: PageScope; session: { session_id: string; category_id: string | null; product_id: string | null; proposal_id: string | null; project_id: string | null }; presentation: PaiPresentation & { action: PresentationAction; request_key: string } };
+-type PageScope = { category_id: string | null; proposal_id: string | null };
++type PageScope = { category_id: string | null; proposal_id: string | null; project_id?: string | null };
+ type PaiSessionListOptions = { q?: string; cursor?: string | null; pageSize?: number };
+ type PaiSessionMeta = Omit<PaiConversation, "latest_run" | "matched_run" | "presentation">;
+ const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === "object" && !Array.isArray(value);
+@@ -45,10 +45,11 @@
+ }
+ function scopeInput(scope: PaiSessionScope): PageScope {
+   if (!object(scope) || !uuid(scope.principalId) || !(scope.categoryId === null || scope.categoryId === "" || uuid(scope.categoryId))
+-    || !(scope.proposalId === undefined || scope.proposalId === null || uuid(scope.proposalId))) invalid();
++    || !(scope.proposalId === undefined || scope.proposalId === null || uuid(scope.proposalId))
++    || !(scope.projectId === undefined || scope.projectId === null || uuid(scope.projectId))) invalid();
+   const category_id = scope.categoryId || null, proposal_id = scope.proposalId ?? null;
+-  if (category_id === null && proposal_id !== null) invalid();
+-  return { category_id, proposal_id };
++  if (category_id === null && (proposal_id !== null || scope.projectId != null)) invalid();
++  return { category_id, proposal_id, ...(scope.projectId ? { project_id: scope.projectId } : {}) };
+ }
+ function pageInput(options: PaiSessionListOptions, searching: boolean) {
+   if (!object(options) || Object.keys(options).some(key => !["cursor", "pageSize", ...(searching ? ["q"] : [])].includes(key))) invalid();
+@@ -69,6 +70,7 @@
+     && object(value.scope) && keys(value.scope, ["category_id", "product_id", "proposal_id", "project_id"])
+     && nullableUuid(value.scope.project_id) && sameId(value.scope.category_id, expected.category_id) && nullableUuid(value.scope.product_id) && nullableUuid(value.scope.proposal_id)
+     && (expected.proposal_id === null || sameId(value.scope.proposal_id, expected.proposal_id))
++    && (!expected.project_id || sameId(value.scope.project_id, expected.project_id))
+     && (expected.category_id !== null || value.scope.product_id === null && value.scope.proposal_id === null && value.scope.project_id === null);
+ }
+ function pageEnd(value: Record<string, unknown>, page: ReturnType<typeof pageInput>, ids: string[]): void {
+@@ -85,8 +87,10 @@
+     : uuid(value.id) && timestamp(value.created_at);
+ }
+ const root = (scope: PageScope) => scope.category_id === null ? "v1/personal" : `v1/categories/${scope.category_id}`;
+-function boundScope(value: unknown, expected: PageScope): boolean {
+-  return object(value) && keys(value, ["category_id", "proposal_id"]) && sameId(value.category_id, expected.category_id) && sameId(value.proposal_id, expected.proposal_id);
++function boundScope(value: unknown, expected: PageScope, projectFiltered = true): boolean {
++  return object(value) && keys(value, ["category_id", "proposal_id", ...(projectFiltered && expected.project_id ? ["project_id"] : [])])
++    && sameId(value.category_id, expected.category_id) && sameId(value.proposal_id, expected.proposal_id)
++    && (!projectFiltered || !expected.project_id || sameId(value.project_id, expected.project_id));
+ }
+ function withProposal(scope: PageScope, path: string): string {
+   return `${root(scope)}/${path}${scope.proposal_id ? `?${new URLSearchParams({ proposal_id: scope.proposal_id })}` : ""}`;
+@@ -103,6 +107,7 @@
+   if (view !== "active" && view !== "archived") invalid();
+   const page = pageInput(paging, true), query = new URLSearchParams({ view, page_size: String(page.pageSize) });
+   if (page.q) query.set("q", page.q); if (page.cursor) query.set("cursor", page.cursor); if (expected.proposal_id) query.set("proposal_id", expected.proposal_id);
++  if (expected.project_id) query.set("project_id", expected.project_id);
+   const value = await api<unknown>(`${root(expected)}/agent-conversations?${query}`);
+   if (!object(value) || !keys(value, ["version", "principal_id", "scope", "as_of", "items", "next_cursor"]) || value.version !== "agent-conversation-list/v1"
+     || !sameId(value.principal_id, scope.principalId) || !boundScope(value.scope, expected) || !timestamp(value.as_of) || !Array.isArray(value.items) || !nullableUuid(value.next_cursor)) invalid();
+@@ -128,10 +133,11 @@
+ }
+ function receipt(value: unknown, scope: PaiSessionScope, expected: PageScope, request: PresentationRequest): PresentationReceipt {
+   if (!object(value) || !keys(value, ["version", "principal_id", "scope", "session", "presentation"]) || value.version !== "agent-session-presentation/v1"
+-    || !sameId(value.principal_id, scope.principalId) || !boundScope(value.scope, expected) || !object(value.session)
++    || !sameId(value.principal_id, scope.principalId) || !boundScope(value.scope, expected, false) || !object(value.session)
+     || !keys(value.session, ["session_id", "category_id", "product_id", "proposal_id", "project_id"]) || !sameId(value.session.session_id, request.sessionId)
+     || !sameId(value.session.category_id, expected.category_id) || !nullableUuid(value.session.product_id) || !nullableUuid(value.session.proposal_id) || !nullableUuid(value.session.project_id)
+     || expected.proposal_id !== null && !sameId(value.session.proposal_id, expected.proposal_id)
++    || expected.project_id && !sameId(value.session.project_id, expected.project_id)
+     || expected.category_id === null && [value.session.product_id, value.session.proposal_id, value.session.project_id].some(id => id !== null)
+     || !presentation(value.presentation, true) || value.presentation.revision !== request.body.expected_revision + 1
+     || value.presentation.action !== request.body.action || !sameId(value.presentation.request_key, request.body.request_key)) invalid();
+--- a/pdos-next/web/src/lib/pai-sessions-proxy.ts
++++ b/pdos-next/web/src/lib/pai-sessions-proxy.ts
+@@ -14,7 +14,7 @@
+     if (query.has(key)) return error("会话查询须使用唯一明确的范围与游标。", 422);
+     const valid = key === "page_size" ? /^(?:[1-9]|[1-4][0-9]|50)$/.test(value)
+       : key === "cursor" ? uuid.test(value)
+-      : key === "proposal_id" ? categoryId !== undefined && uuid.test(value)
++      : key === "proposal_id" || key === "project_id" ? categoryId !== undefined && uuid.test(value)
+       : key === "q" ? sessionId === undefined && [...value].length <= 160
+       : false;
+     if (!valid) return error("请使用有效的会话范围、搜索或分页参数。", 422);
+--- a/pdos-next/web/src/lib/pai-sessions.test.mjs
++++ b/pdos-next/web/src/lib/pai-sessions.test.mjs
+@@ -38,6 +38,20 @@
+   return { api, calls };
+ }
+ const base = `v1/categories/${scope.categoryId}/agent-sessions`;
++
++test("project-selected run history binds query, envelope and actual Session project", async () => {
++  const selected = { ...scope, projectId: id(8) }, raw = runs();
++  raw.scope.project_id = selected.projectId; raw.session.scope.project_id = selected.projectId;
++  const transport = apiFor(raw); await readSessionRuns(transport.api, selected, id(100));
++  assert.equal(new URL(transport.calls[0][0], "https://local.invalid").searchParams.get("project_id"), id(8));
++  for (const field of ["envelope", "session"]) {
++    const mismatch = clone(raw); if (field === "envelope") mismatch.scope.project_id = id(9); else mismatch.session.scope.project_id = id(9);
++    await assert.rejects(readSessionRuns(async () => mismatch, selected, id(100)));
++  }
++  let calls = 0;
++  await assert.rejects(readSessionList(async () => { calls++; }, { ...selected, categoryId: null }));
++  assert.equal(calls, 0);
++});
+ 
+ test("real Session identity groups Run metadata without inventing a title, session status or authority", async () => {
+   const raw = list(), transport = apiFor(raw), value = await readSessionList(transport.api, scope);
+--- a/pdos-next/web/src/lib/pai-sessions.ts
++++ b/pdos-next/web/src/lib/pai-sessions.ts
+@@ -1,15 +1,15 @@
+ export type PaiSessionApi = <T>(path: string, body?: unknown) => Promise<T>;
+-export type PaiSessionScope = { principalId: string; categoryId: string | null; proposalId?: string | null };
++export type PaiSessionScope = { principalId: string; categoryId: string | null; proposalId?: string | null; projectId?: string | null };
+ export type PaiRunStatus = "queued" | "running" | "waiting_input" | "completed" | "partial" | "failed" | "cancelled";
+ export type PaiRunHead = { run_id: string; goal: string; status: PaiRunStatus; error_code: string | null; created_at: string; continued_from_id: string | null; reverted: boolean };
+ export type PaiSessionMeta = {
+   session_id: string; revision: number; created_at: string;
+-  scope: { category_id: string | null; product_id: string | null; proposal_id: string | null };
++  scope: { category_id: string | null; product_id: string | null; proposal_id: string | null; project_id?: string | null };
+   run_count: number;
+ };
+ export type PaiSessionItem = PaiSessionMeta & { latest_run: PaiRunHead; matched_run: (PaiRunHead & { match_kind: "goal" | "run_id" | "session_id" }) | null };
+ export type PaiSessionRun = PaiRunHead & { conversation: { previous_run_id: string | null; next_run_id: string | null } };
+-type PageScope = { category_id: string | null; proposal_id: string | null };
++type PageScope = { category_id: string | null; proposal_id: string | null; project_id?: string | null };
+ export type PaiSessionList = { version: "agent-session-list/v1"; principal_id: string; scope: PageScope; as_of: string; items: PaiSessionItem[]; next_cursor: string | null };
+ export type PaiSessionRuns = { version: "agent-session-runs/v1"; principal_id: string; scope: PageScope; as_of: string; session: PaiSessionMeta; items: PaiSessionRun[]; next_cursor: string | null };
+ export type PaiSessionListOptions = { q?: string; cursor?: string | null; pageSize?: number };
+@@ -51,10 +51,11 @@
+ }
+ function scopeInput(scope: PaiSessionScope): PageScope {
+   if (!object(scope) || !uuid(scope.principalId) || !(scope.categoryId === null || scope.categoryId === "" || uuid(scope.categoryId))
+-    || !(scope.proposalId === undefined || scope.proposalId === null || uuid(scope.proposalId))) invalid();
++    || !(scope.proposalId === undefined || scope.proposalId === null || uuid(scope.proposalId))
++    || !(scope.projectId === undefined || scope.projectId === null || uuid(scope.projectId))) invalid();
+   const category_id = scope.categoryId || null, proposal_id = scope.proposalId ?? null;
+-  if (category_id === null && proposal_id !== null) invalid();
+-  return { category_id, proposal_id };
++  if (category_id === null && (proposal_id !== null || scope.projectId != null)) invalid();
++  return { category_id, proposal_id, ...(scope.projectId ? { project_id: scope.projectId } : {}) };
+ }
+ function pageInput(options: PaiSessionListOptions, searching: boolean) {
+   if (!object(options) || Object.keys(options).some(key => !["cursor", "pageSize", ...(searching ? ["q"] : [])].includes(key))) invalid();
+@@ -68,12 +69,14 @@
+   if (page.cursor) query.set("cursor", page.cursor);
+   if (page.q) query.set("q", page.q);
+   if (scope.proposal_id) query.set("proposal_id", scope.proposal_id);
++  if (scope.project_id) query.set("project_id", scope.project_id);
+   return `${root}${suffix}?${query}`;
+ }
+ function envelope(value: unknown, scope: PaiSessionScope, expected: PageScope, version: string, detail: boolean): Record<string, unknown> {
+   if (!object(value) || !keys(value, ["version", "principal_id", "scope", "as_of", "items", "next_cursor", ...(detail ? ["session"] : [])]) || value.version !== version
+-    || !sameId(value.principal_id, scope.principalId) || !object(value.scope) || !keys(value.scope, ["category_id", "proposal_id"])
++    || !sameId(value.principal_id, scope.principalId) || !object(value.scope) || !keys(value.scope, ["category_id", "proposal_id", ...(expected.project_id ? ["project_id"] : [])])
+     || !sameId(value.scope.category_id, expected.category_id) || !sameId(value.scope.proposal_id, expected.proposal_id)
++    || expected.project_id && !sameId(value.scope.project_id, expected.project_id)
+     || !timestamp(value.as_of) || !Array.isArray(value.items) || !nullableUuid(value.next_cursor)) invalid();
+   return value;
+ }
+@@ -87,9 +90,10 @@
+ function sessionMeta(value: unknown, expected: PageScope, extra: string[] = []): value is PaiSessionMeta & Record<string, unknown> {
+   return object(value) && keys(value, ["session_id", "revision", "created_at", "scope", "run_count", ...extra])
+     && uuid(value.session_id) && integer(value.revision) && timestamp(value.created_at) && integer(value.run_count)
+-    && object(value.scope) && keys(value.scope, ["category_id", "product_id", "proposal_id"])
++    && object(value.scope) && keys(value.scope, ["category_id", "product_id", "proposal_id", ...(expected.project_id ? ["project_id"] : [])])
+     && sameId(value.scope.category_id, expected.category_id) && nullableUuid(value.scope.product_id) && nullableUuid(value.scope.proposal_id)
+     && (expected.proposal_id === null || sameId(value.scope.proposal_id, expected.proposal_id))
++    && (!expected.project_id || sameId(value.scope.project_id, expected.project_id))
+     && (expected.category_id !== null || value.scope.product_id === null && value.scope.proposal_id === null);
+ }
+ function pageEnd(value: Record<string, unknown>, page: ReturnType<typeof pageInput>, ids: string[]): void {
+--- /dev/null
++++ b/pdos-next/server/tests/agent_kernel/test_project_discussion_history_pg.py
+@@ -0,0 +1,64 @@
++"""Actual owned project discussion GETs; only root runs the isolated PostgreSQL case."""
++
++from tests.agent_kernel.test_session_presentation_pg import (
++    _base,
++    _fixture,
++    _list,
++    _ok,
++    _read,
++    _real_run,
++    _revoke_peer_project_fixture,
++)
++from tests.agent_kernel.test_session_views_pg import counts
++from tests.g0_fixture import create_g0_project
++
++
++def test_project_discussions_filter_before_search_paging_and_actual_authority_recheck(setup):
++    work = _fixture(setup)
++    project = work["project"].project_id
++    later = _real_run(setup, project=project, goal="Owned selected project second discussion")
++    other_project = create_g0_project(
++        setup, visibility="category", name="Other readable discussion project",
++        purpose="Separate same-category project history without model execution",
++    )
++    unrelated = _real_run(
++        setup, project=other_project.project_id, goal="Other project must not match this view",
++    )
++    before = counts(setup)
++    listing = _ok(_list(setup, project_id=project))
++    owned = {work["category"]["session_id"], later["session_id"]}
++    assert {row["session_id"] for row in listing["items"]} == owned
++    assert listing["scope"]["project_id"] == project
++    assert all(row["scope"]["project_id"] == project for row in listing["items"])
++    assert work["peer"]["session_id"] not in owned
++    assert _ok(_list(setup, project_id=project, q=unrelated["run_id"]))["items"] == []
++
++    first = _ok(_list(setup, project_id=project, page_size=1))
++    second = _ok(_list(setup, project_id=project, page_size=1, cursor=first["next_cursor"]))
++    assert {first["items"][0]["session_id"], second["items"][0]["session_id"]} == owned
++    assert second["next_cursor"] is None
++    assert _list(setup, project_id=project, cursor=unrelated["session_id"])["status_code"] == 403
++
++    prefix = _base(setup)
++    selected_runs = _ok(_read(
++        setup, prefix + f"/agent-sessions/{later['session_id']}/runs",
++        params={"project_id": project},
++    ))
++    assert selected_runs["session"]["scope"]["project_id"] == project
++    assert [row["run_id"] for row in selected_runs["items"]] == [later["run_id"]]
++    assert _read(
++        setup, prefix + f"/agent-sessions/{unrelated['session_id']}/runs",
++        params={"project_id": project},
++    )["status_code"] == 404
++    assert _read(
++        setup, "/v1/personal/agent-conversations", params={"project_id": project},
++    )["status_code"] == 403
++    assert counts(setup) == before, "all discussion operations above are read-only"
++
++    peer_page = _ok(_list(setup, actor=setup.peer, project_id=project))
++    assert [row["session_id"] for row in peer_page["items"]] == [work["peer"]["session_id"]]
++    _revoke_peer_project_fixture(setup, project)
++    assert _list(setup, actor=setup.peer, project_id=project)["status_code"] == 403
++    hidden = _ok(_list(setup, actor=setup.peer))
++    assert work["peer"]["session_id"] not in {row["session_id"] for row in hidden["items"]}
++    assert {row["session_id"] for row in _ok(_list(setup, project_id=project))["items"]} == owned

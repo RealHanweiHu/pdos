@@ -1,0 +1,121 @@
+{
+  "stage_manifest_sha256": "ae6b8cbe555d14fba0bd0da44cd7808546f6e39a2a0ab5938153bf3f127dba1c",
+  "new_files": [
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_query.py",
+      "sha256": "1656c41146dcacb0a7484582021cf06dd7a186a393bcaf7f420d3b881e6cf106"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_query_binding.py",
+      "sha256": "1b5ae420cd3b02db54011a8658360283f2d341abca57e1d9f67d0b219d911b24"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_embedding_query.py",
+      "sha256": "4d90f780eb6bca4a5589b7959f0c7518abfbfec8f44ad92632852c2c7fd38aa9"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_embedding_query_pg.py",
+      "sha256": "5f0cc5754fcdcfea784b2ea712d33178a552213abf0ce7ddfc6ce42585832b6a"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_embedding_query_temporal_pg.py",
+      "sha256": "52c70152a7a818cf69eae43f3c98cc3342eee6125e5bee8ebb0f8ee1cd9b6277"
+    }
+  ],
+  "changes": [
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_adapter.py",
+      "base": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/assistant_adapter.py",
+      "base_sha256": "c444e5297bde13d2f89e7a4735122758ef9a4c526f31c35a5c43dc2a2142b6db",
+      "result_sha256": "344e5ef135044e28f1ca4b0e64870cf33f72d7d8b4a53e36062a6db751d9857f",
+      "patch": "patches/pdos-next__server__pdos_next__enterprise_search__assistant_adapter.py.patch"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_scope.py",
+      "base": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/assistant_scope.py",
+      "base_sha256": "42ce07f8eef73939382e55dee1f69857c952fe1487e1c1131a084b27ee52d8ba",
+      "result_sha256": "d5f6db7836a682e34b6183074840c50bfcf3bdd650963bf2fe4574164b11ca6a",
+      "patch": "patches/pdos-next__server__pdos_next__enterprise_search__assistant_scope.py.patch"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/bootstrap.py",
+      "base": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/bootstrap.py",
+      "base_sha256": "2010058f54caee75488d1e2e1dc714cc4f61eecc280c3f236ba0b1ac638b2e6c",
+      "result_sha256": "b9f2a892f713c5b9c00e5708480fe0a0bdc33311abebcb1e4355e1dbe9938c5e",
+      "patch": "patches/pdos-next__server__pdos_next__agent_kernel__bootstrap.py.patch"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/execution_schema.py",
+      "base": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/execution_schema.py",
+      "base_sha256": "eb1d0771f80f1604528ed9695d0408231e2ca99d851e4cfe3481e1f59d4aa262",
+      "result_sha256": "a9e90c3b05431adb62a3bf2f784f0bb8f40e7497b7402af535701962c35d0cbb",
+      "patch": "patches/pdos-next__server__pdos_next__agent_kernel__execution_schema.py.patch"
+    }
+  ],
+  "runtime_dependencies": [
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_models.py",
+      "sha256": "74b20eab15d42892d03031f643eb563d95677d9813f14a87ec45eeffa486cb4e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_profiles.py",
+      "sha256": "d2dd58e48f96099563b3f313994fd8d5948dcc196396258fe2342ac295c500c5"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_runtime.py",
+      "sha256": "793ed5027263d7264d50587b6e55c0aacd7bbc78510c84f59cc19a3cbd6aa405"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_hybrid.py",
+      "sha256": "c8850faf7bd3affe8625919faef3cca2673df33519efcc403825e5884c773903"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_sources.py",
+      "sha256": "9416eff6342baa91afa2cbcdcd93f4a1e838395bcc5dc15cef84ed749ad55019"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_schemas.py",
+      "sha256": "6efae8e3c3bbb4b01aafd47a4f4971fb072ffc46fe9abff1409abca265d7e2a4"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_activities.py",
+      "sha256": "e2aa3c3d787a88790ff797ecfb6786163a14679373fc72ba3bd15832c013919b"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/retrieval_filters.py",
+      "sha256": "b9f8b0f526753a5370b564ec3829c894d7b599d9527b3e8ca4be8bd44d6c430b"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/query.py",
+      "sha256": "a2d537610cb03dfc6f0d323cfdc7e58c014e78c8e2a5d16ae8ac251869f95fa2"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/sources.py",
+      "sha256": "209856d378e18933360e04cbf086bf5b95c89a30d354612e72fc69e10452b24f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_sources.py",
+      "sha256": "6cb53d53e459dcb597447de3e68495618e1d3909b68d6bc15323673f9f80a8f8"
+    }
+  ],
+  "database_applied": true,
+  "root_delta": {
+    "temporal_fixture": "Replaced underscore-separated query that shared ONLY with raw marker by unrelated Chinese vocabulary; product tokenizer unchanged",
+    "boundary_tests": "Native cancel/revoke during synthetic provider; record original reservation before native cancellation clears hold",
+    "migration": "s0_0838 after actual 0837 preflight, static SQL and privileged nonempty-history guard"
+  },
+  "final_sha256": {
+    "pdos-next/server/migrations/schema_s0_0838.py": "ac04534b03bc36f9d286f1a273bb2e5ad3322663e9f4ee4d9eecfa86064cc10f",
+    "pdos-next/server/migrations/versions/s0_0838_embedding_query_binding.py": "046b89d9dd309b480a371c08f30e63cad47de23a5dfe47ea9c99602344c4c855",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "b9f2a892f713c5b9c00e5708480fe0a0bdc33311abebcb1e4355e1dbe9938c5e",
+    "pdos-next/server/pdos_next/agent_kernel/execution_schema.py": "a9e90c3b05431adb62a3bf2f784f0bb8f40e7497b7402af535701962c35d0cbb",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_adapter.py": "344e5ef135044e28f1ca4b0e64870cf33f72d7d8b4a53e36062a6db751d9857f",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_scope.py": "d5f6db7836a682e34b6183074840c50bfcf3bdd650963bf2fe4574164b11ca6a",
+    "pdos-next/server/pdos_next/enterprise_search/embedding_query.py": "1656c41146dcacb0a7484582021cf06dd7a186a393bcaf7f420d3b881e6cf106",
+    "pdos-next/server/pdos_next/enterprise_search/embedding_query_binding.py": "1b5ae420cd3b02db54011a8658360283f2d341abca57e1d9f67d0b219d911b24",
+    "pdos-next/server/tests/enterprise_search/test_embedding_query.py": "4d90f780eb6bca4a5589b7959f0c7518abfbfec8f44ad92632852c2c7fd38aa9",
+    "pdos-next/server/tests/enterprise_search/test_embedding_query_boundaries_pg.py": "aa1b8ac797100c516f50a5810e7622c6e740e1fe2b3762e97466a18bc48a477c",
+    "pdos-next/server/tests/enterprise_search/test_embedding_query_pg.py": "5f0cc5754fcdcfea784b2ea712d33178a552213abf0ce7ddfc6ce42585832b6a",
+    "pdos-next/server/tests/enterprise_search/test_embedding_query_temporal_pg.py": "246b15fcba60a9fc2dfd658ce89634835bf58e7ee243969142bfe5955145b765"
+  }
+}

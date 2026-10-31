@@ -1,0 +1,13 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 3 items
+
+tests/agent_kernel/test_retrieval_feedback_pg.py .                       [ 33%]
+tests/enterprise_search/test_assistant_depth_temporal_pg.py .            [ 66%]
+tests/agent_kernel/test_context_x3_temporal_pg.py .                      [100%]
+
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-assistant-combined-20261029/pg-materials-depth-x3-run2.xml -
+======================== 3 passed in 100.31s (0:01:40) =========================

@@ -1,0 +1,373 @@
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+_____ test_actual_t1_background_rls_exact_ann_profile_version_and_disable ______
+
+self = <sqlalchemy.engine.base.Connection object at 0x1601b5eb0>
+
+    def _commit_impl(self) -> None:
+        if self._has_events or self.engine._has_events:
+            self.dispatch.commit(self)
+    
+        if self._echo:
+            if self._is_autocommit_isolation():
+                self._log_info(
+                    "COMMIT using DBAPI connection.commit(), "
+                    "has no effect due to autocommit mode"
+                )
+            else:
+                self._log_info("COMMIT")
+        try:
+>           self.engine.dialect.do_commit(self.connection)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <psycopg.Connection [IDLE] (host=127.0.0.1 port=53502 user=pdos_next_app database=pdos_test) at 0x138e83fe0>
+command = b'COMMIT', result_format = <Format.TEXT: 0>
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -> PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+>               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               psycopg.errors.InsufficientPrivilege: permission denied for function enterprise_embedding_retire
+E               CONTEXT:  SQL statement "SELECT public.enterprise_embedding_retire(NEW.tenant_id, ARRAY(
+E                    SELECT p.id FROM public.enterprise_embedding_profiles p
+E                     WHERE p.tenant_id=NEW.tenant_id AND p.profile_id=NEW.profile_id))"
+E               PL/pgSQL function enterprise_embedding_profile_atom() line 32 at PERFORM
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: InsufficientPrivilege
+
+The above exception was the direct cause of the following exception:
+
+setup = <isolated synthetic test scope>
+
+    def test_actual_t1_background_rls_exact_ann_profile_version_and_disable(setup):
+        shared = register(setup, "Synthetic A", "SYNTHETIC_VECTOR_BODY_A")
+        private = register(setup, "Synthetic private", "SYNTHETIC_VECTOR_BODY_PRIVATE", "private")
+        for identity in (shared, private):
+            index(setup, identity)
+        provider, ports = ports_for(setup)
+        command = command_for(setup)
+        path = f"/v1/categories/{setup.category}/commands"
+        with TestClient(create_app(setup.engine, setup.auth, embedding_ports=ports)) as client:
+            denied = client.post(path, json=command, headers=setup.headers)
+            assert denied.status_code == 409 and not provider.calls
+            preview = client.post(path + "/preview", json=command, headers=setup.headers)
+            assert preview.status_code == 200, preview.text
+            assert preview.json()["review"]["expected_sources"] == 2
+            assert not provider.calls  # Neither save preview nor unconfirmed attempt sends anything.
+        receipt, _preview = save_profile(setup, ports, command)
+        assert not provider.calls
+        with TestClient(create_app(setup.engine, setup.auth, embedding_ports=ports)) as client:
+            status = client.get(
+                f"/v1/categories/{setup.category}/embedding-profile", headers=setup.headers
+            )
+            assert status.status_code == 200, status.text
+            assert status.json()["budget"]["revision"] == 1
+            assert status.json()["profiles"][0]["profile_version_id"] == receipt["subject_id"]
+            assert not provider.calls and "secret_json" not in status.text
+        activities, plan = execute_saved(setup, ports, receipt)
+        count = len(provider.calls)
+        for identity in plan["batches"]:
+            assert activities.embed({"context": plan["context"], "batch_id": identity})["replayed"]
+        assert len(provider.calls) == count
+        version = UUID(receipt["subject_id"])
+        data = SearchInput(query="完全不相干词", source_types=["artifact"])
+        with session_for(setup) as session:
+            owner = hybrid_search(
+                session, setup.ctx, data, profile_version_id=version, vector=(1.0, 0.0)
+            )
+        assert {row["source_id"] for row in owner["items"]} == {str(shared), str(private)}
+        peer_ctx = replace(setup.ctx, actor_id=setup.peer, requester_id=setup.peer)
+        with session_for(setup, actor=setup.peer) as session:
+            exact = hybrid_search(
+                session, peer_ctx, data, profile_version_id=version, vector=(1.0, 0.0)
+            )
+            ann = hybrid_search(
+                session,
+                peer_ctx,
+                data,
+                profile_version_id=version,
+                vector=(1.0, 0.0),
+                strategy="iterative",
+            )
+        assert {row["source_id"] for row in exact["items"]} == {str(shared)}
+        assert {row["source_id"] for row in ann["items"]} == {str(shared)}
+        assert str(private) not in str(exact) and "SYNTHETIC_VECTOR_BODY_PRIVATE" not in str(exact)
+        assert len(provider.calls) == count  # Page/offline shadow recall never embeds a query.
+        # A different dimension/profile version can coexist but never mix query spaces.
+        second = command_for(setup, budget_revision=1, dimensions=3)
+        second_receipt, _ = save_profile(setup, ports, second)
+        provider.dimensions = 3
+        execute_saved(setup, ports, second_receipt)
+        with Session(setup.admin) as session:
+            assert set(
+                session.scalars(
+                    select(ChunkEmbedding.dimensions).where(ChunkEmbedding.tenant_id == setup.tenant)
+                )
+            ) == {2, 3}
+            budget = session.get(EmbeddingBudget, setup.tenant)
+            assert budget.held_micro_usd == 0 and budget.spent_micro_usd > 0
+            assert session.scalar(
+                select(func.count())
+                .select_from(EmbeddingCall)
+                .where(EmbeddingCall.tenant_id == setup.tenant)
+            ) == len(provider.calls)
+            for model in (Audit, Outbox, AgentEvent):
+                rows = session.scalars(select(model).where(model.tenant_id == setup.tenant))
+                assert "synthetic-embedding-only" not in str([row.__dict__ for row in rows])
+        disabled = command_for(
+            setup,
+            profile_id=UUID(command["payload"]["profile_id"]),
+            revision=1,
+            budget_revision=2,
+            enabled=False,
+        )
+>       save_profile(setup, ports, disabled)
+
+tests/enterprise_search/test_embedding_projection_pg.py:135: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/enterprise_search/embedding_harness.py:106: in save_profile
+    saved = client.post(path, json=preview.json()["command"], headers=setup.headers)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1204: in post
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1310: in handle
+    await super().handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:282: in handle
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+pdos_next/api.py:680: in command
+    result = category_transaction(engine, ctx, apply_command)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:74: in category_transaction
+    with tenant_session(
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:30: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+<sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit>:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1337: in commit
+    trans.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2609: in commit
+    self._do_commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2714: in _do_commit
+    self._connection_commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2685: in _connection_commit_impl
+    self.connection._commit_impl()
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1165: in _commit_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1163: in _commit_impl
+    self.engine.dialect.do_commit(self.connection)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:954: in do_commit
+    dbapi_connection.commit()
+.venv/lib/python3.12/site-packages/psycopg/connection.py:309: in commit
+    self.wait(self._commit_gen())
+.venv/lib/python3.12/site-packages/psycopg/connection.py:495: in wait
+    return waiting.wait(
+psycopg_binary/_psycopg/waiting.pyx:255: in psycopg_binary._psycopg.wait_c
+    ???
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:592: in _commit_gen
+    yield from self._exec_command(b"COMMIT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <psycopg.Connection [IDLE] (host=127.0.0.1 port=53502 user=pdos_next_app database=pdos_test) at 0x138e83fe0>
+command = b'COMMIT', result_format = <Format.TEXT: 0>
+
+    def _exec_command(
+        self, command: QueryNoTemplate, result_format: pq.Format = TEXT
+    ) -> PQGen[PGresult | None]:
+        """
+        Generator to send a command and receive the result to the backend.
+    
+        Only used to implement internal commands such as "commit", with eventual
+        arguments bound client-side. The cursor can do more complex stuff.
+        """
+        self._check_connection_ok()
+    
+        if isinstance(command, str):
+            command = command.encode(self.pgconn._encoding)
+        elif isinstance(command, Composable):
+            command = command.as_bytes(self)
+    
+        if self._pipeline:
+            cmd = partial(
+                self.pgconn.send_query_params,
+                command,
+                None,
+                result_format=result_format,
+            )
+            self._pipeline.command_queue.append(cmd)
+            self._pipeline.result_queue.append(None)
+            return None
+    
+        # Unless needed, use the simple query protocol, e.g. to interact with
+        # pgbouncer. In pipeline mode we always use the advanced query protocol
+        # instead, see #350
+        if result_format == TEXT:
+            self.pgconn.send_query(command)
+        else:
+            self.pgconn.send_query_params(command, None, result_format=result_format)
+    
+        results: list[PGresult] = (yield from generators.execute(self.pgconn))
+        if len(results) != 1:
+            raise e.InternalError(
+                f"received {len(results)} results from command {command.decode()!r}"
+            )
+    
+        result = results[0]
+        if result.status != COMMAND_OK and result.status != TUPLES_OK:
+            if result.status == FATAL_ERROR:
+>               raise e.error_from_result(result, encoding=self.pgconn._encoding)
+E               sqlalchemy.exc.ProgrammingError: (psycopg.errors.InsufficientPrivilege) permission denied for function enterprise_embedding_retire
+E               CONTEXT:  SQL statement "SELECT public.enterprise_embedding_retire(NEW.tenant_id, ARRAY(
+E                    SELECT p.id FROM public.enterprise_embedding_profiles p
+E                     WHERE p.tenant_id=NEW.tenant_id AND p.profile_id=NEW.profile_id))"
+E               PL/pgSQL function enterprise_embedding_profile_atom() line 32 at PERFORM
+E               (Background on this error at: https://sqlalche.me/e/21/f405)
+
+.venv/lib/python3.12/site-packages/psycopg/_connection_base.py:487: ProgrammingError
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_embedding_projection_pg.py::test_actual_t1_background_rls_exact_ann_profile_version_and_disable
+1 failed, 2 passed in 23.18s

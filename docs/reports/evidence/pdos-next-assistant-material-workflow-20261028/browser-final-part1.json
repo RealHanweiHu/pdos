@@ -1,0 +1,45 @@
+[
+  {
+    "command": [
+      "eval",
+      "() => ({width:innerWidth,documentWidth:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains(\"dark\"),font:getComputedStyle(document.body).fontFamily,regions:[...document.querySelectorAll('[role=\"region\"][aria-label=\"差异表，可横向滚动\"]')].map(el=>({width:el.clientWidth,scrollWidth:el.scrollWidth,tabIndex:el.tabIndex,border:getComputedStyle(el).borderColor}))})"
+    ],
+    "exit": 0,
+    "output": "### Result\n{\n  \"width\": 1280,\n  \"documentWidth\": 1280,\n  \"dark\": false,\n  \"font\": \"Geist, \\\"PingFang SC\\\", \\\"Microsoft YaHei\\\", sans-serif\",\n  \"regions\": [\n    {\n      \"width\": 1090,\n      \"scrollWidth\": 1090,\n      \"tabIndex\": 0,\n      \"border\": \"rgb(230, 230, 233)\"\n    },\n    {\n      \"width\": 1090,\n      \"scrollWidth\": 1090,\n      \"tabIndex\": 0,\n      \"border\": \"rgb(230, 230, 233)\"\n    }\n  ]\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({width:innerWidth,documentWidth:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains(\"dark\"),font:getComputedStyle(document.body).fontFamily,regions:[...document.querySelectorAll(\\'[role=\"region\"][aria-label=\"差异表，可横向滚动\"]\\')].map(el=>({width:el.clientWidth,scrollWidth:el.scrollWidth,tabIndex:el.tabIndex,border:getComputedStyle(el).borderColor}))})');\n```\n"
+  },
+  {
+    "command": [
+      "click",
+      "f2e7"
+    ],
+    "exit": 0,
+    "output": "### Ran Playwright code\n```js\nawait page.getByRole('button', { name: '切换明暗' }).click();\n```\n### Page\n- Page URL: http://127.0.0.1:57948/\n- Page Title: 固定资料比较 · 合成组件检查\n### Snapshot\n- [Snapshot](.playwright-cli/page-2026-10-29T00-10-36-842Z.yml)\n"
+  },
+  {
+    "command": [
+      "screenshot",
+      "--filename=desktop-dark.png",
+      "--full-page"
+    ],
+    "exit": 0,
+    "output": "### Result\n- [Screenshot of full page](./desktop-dark.png)\n### Ran Playwright code\n```js\n// Screenshot full page and save it as ./desktop-dark.png\nawait page.screenshot({\n  fullPage: true,\n  path: './desktop-dark.png',\n  scale: 'css',\n  type: 'png'\n});\n```\n"
+  },
+  {
+    "command": [
+      "resize",
+      "390",
+      "844"
+    ],
+    "exit": 0,
+    "output": "### Ran Playwright code\n```js\nawait page.setViewportSize({ width: 390, height: 844 });\n```\n"
+  },
+  {
+    "command": [
+      "screenshot",
+      "--filename=mobile-dark.png",
+      "--full-page"
+    ],
+    "exit": 0,
+    "output": "### Result\n- [Screenshot of full page](./mobile-dark.png)\n### Ran Playwright code\n```js\n// Screenshot full page and save it as ./mobile-dark.png\nawait page.screenshot({\n  fullPage: true,\n  path: './mobile-dark.png',\n  scale: 'css',\n  type: 'png'\n});\n```\n"
+  }
+]

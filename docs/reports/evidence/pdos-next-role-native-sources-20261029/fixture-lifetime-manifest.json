@@ -1,0 +1,34 @@
+{
+  "format_version": 1,
+  "frozen": true,
+  "scope": "Two-test-file fixture composition only: keep manufacturing issuer alive and restore real outer change report store before yield",
+  "apply_only_listed_files": true,
+  "stage_root": "/tmp/pdos-role-fixture-lifetime-stage-20261029",
+  "files": [
+    {
+      "path": "pdos-next/server/tests/enterprise_search/role_native_source_harness.py",
+      "operation": "modified",
+      "base_sha256": "7c94e517c50d1e9155d9dd43228187c4120cbab9a076f89d47477257d950dd89",
+      "candidate_sha256": "d88fed645f394985bf47cafc68063237b15b5f0335af31166a91145d615737f5",
+      "base_path": "/tmp/pdos-role-fixture-lifetime-stage-20261029/base/pdos-next/server/tests/enterprise_search/role_native_source_harness.py",
+      "staged_path": "/tmp/pdos-role-fixture-lifetime-stage-20261029/candidate/pdos-next/server/tests/enterprise_search/role_native_source_harness.py"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_recovery_pg.py",
+      "operation": "modified",
+      "base_sha256": "b76ac19eba0ce5cb6f895cd4cdfd24a2ba0caf6714a21a8106d1bd88064eb6f1",
+      "candidate_sha256": "285272aa453210dde89551ab85eafee8b3fe3e32bcd1df18858c4653dde1f216",
+      "base_path": "/tmp/pdos-role-fixture-lifetime-stage-20261029/base/pdos-next/server/tests/enterprise_search/test_recovery_pg.py",
+      "staged_path": "/tmp/pdos-role-fixture-lifetime-stage-20261029/candidate/pdos-next/server/tests/enterprise_search/test_recovery_pg.py"
+    }
+  ],
+  "shared_patch_sha256": "da97d2bfcb254aba14df219412a7538f6f6d841810aaed69c1f5064d956d1288",
+  "verification": {
+    "pure": "2 passed (normal/exception consumer); real private temporary store bytes with fixture port doubles, no DB",
+    "base_reproducer": "2 failed against unchanged base; inner store visible instead of original report reader",
+    "ruff": "2 test files passed explicit pdos-next/ruff.toml",
+    "native_pg": "NOT run; root owns guarded PG validation",
+    "pure_nodeid": "tests/enterprise_search/test_recovery_pg.py::test_mixed_fixture_preserves_outer_report_bytes_until_issuer_teardown",
+    "native_nodeid": "tests/enterprise_search/test_recovery_pg.py::test_registered_family_search_and_authority_batch_stay_constant_sql_and_under_one_second"
+  }
+}

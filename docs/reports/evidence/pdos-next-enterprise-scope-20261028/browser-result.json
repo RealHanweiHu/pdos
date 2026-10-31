@@ -1,0 +1,87 @@
+{
+  "authenticated": true,
+  "app": "actual production frontend and actual isolated RLS API, inference dispatch disabled",
+  "verified_at_utc": "2026-10-29T03:12:38.384506+00:00",
+  "human_scope_saved": {
+    "scope": "same_category",
+    "include_customer_private": false
+  },
+  "revision": 5,
+  "scope_current_saved_before_final_checks": "browser-result.json prior checkpoint, revision 2, verified against actual DB",
+  "customer_option_saved_then_reset": true,
+  "reload_reopened_same_session": true,
+  "server_source_group_displayed": "同品类其他项目",
+  "fixed_source_passage_opened": true,
+  "remove_object_returns_to_personal_work": true,
+  "model_calls_unchanged": true,
+  "business_receipts_unchanged": true,
+  "original_run_still_completed_in_original_project": true,
+  "viewports": [
+    {
+      "width": 1280,
+      "height": 900,
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "document_width": 1280
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "document_width": 390
+    },
+    {
+      "width": 320,
+      "height": 740,
+      "themes": [
+        "dark"
+      ],
+      "document_width": 320
+    }
+  ],
+  "keyboard": {
+    "native_scope_enter_expands_and_collapses": true,
+    "tab_reaches_composer": true,
+    "composer_label": "发消息给小Pai",
+    "composer_visible_box_at_320": {
+      "x": 31,
+      "y": 608.8125,
+      "width": 258,
+      "height": 50.1875
+    }
+  },
+  "fonts": {
+    "status": "loaded",
+    "families": [
+      "Geist",
+      "Geist Mono"
+    ],
+    "requests_self_hosted": true
+  },
+  "images": [
+    "output/playwright/desktop-light.png",
+    "output/playwright/desktop-dark.png",
+    "output/playwright/mobile-light.png",
+    "output/playwright/mobile-dark.png",
+    "output/playwright/narrow-dark.png",
+    "output/playwright/narrow-dark-collapsed.png",
+    "output/playwright/restored-source-dark.png"
+  ],
+  "snapshots": [
+    "output/playwright/page-2026-10-29T03-06-45-881Z.yml",
+    "output/playwright/page-2026-10-29T03-09-28-178Z.yml",
+    "output/playwright/page-2026-10-29T03-09-41-351Z.yml",
+    "output/playwright/page-2026-10-29T03-10-17-528Z.yml"
+  ],
+  "real_models": false,
+  "embedding": false,
+  "notes": [
+    "Expanded scope details can extend below the phone viewport; closing the native details leaves the composer visible and keyboard reachable.",
+    "Playwright check() reported its immediate controlled-input assertion before the async API response; later DOM and database both confirmed checked=true. No product change was needed."
+  ]
+}

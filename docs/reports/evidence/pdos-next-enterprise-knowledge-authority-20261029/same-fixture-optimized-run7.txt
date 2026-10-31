@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "/tmp/pdos_enterprise_same_fixture_benchmark.py", line 50, in <module>
+    actual = search(session,ctx,data)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/query.py", line 112, in search
+    authority = retrieval_catalog(families)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/sources.py", line 58, in retrieval_catalog
+    return union_all(select(catalog(others)), select(knowledge)).cte(
+                            ^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/sources.py", line 38, in catalog
+    return _catalog(tuple(sorted(set(SOURCE_TYPES if source_types is None else source_types))))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/sources.py", line 188, in _catalog
+    branches.extend(projectors(artifact.cte("enterprise_authoritative_artifacts"), selected))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/business_sources.py", line 397, in projectors
+    native(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/business_sources.py", line 353, in native
+    replacements.get(field.key, projected.c[field.key]).label(field.key)
+                                ~~~~~~~~~~~^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/sql/base.py", line 2107, in __getitem__
+    return self._index[key][1]
+           ~~~~~~~~~~~^^^^^
+KeyError: 'content_hash'

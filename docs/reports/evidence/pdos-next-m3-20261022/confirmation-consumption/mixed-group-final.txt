@@ -1,0 +1,57 @@
+..................................                                       [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_category_adoption_transactions.py: 5 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 7 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:517: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([category])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 5 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 7 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:526: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([grant])
+
+tests/agent_kernel/test_category_adoption_transactions.py::test_adoption_resolves_without_agent_grant_and_dispatches_same_reference
+tests/agent_kernel/test_category_adoption_transactions.py::test_category_wait_survives_postgres_checkpoint_and_new_host
+tests/agent_kernel/test_category_adoption_transactions.py::test_terminal_candidate_not_signalled_and_receipt_authority_loss_rejects_recovery
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_actual_t1_sources_signature_and_replay
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_whole_groups_may_be_omitted[omit0]
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_whole_groups_may_be_omitted[omit1]
+tests/agent_kernel/test_category_candidate_transactions.py::test_category_transaction_failure_rolls_back_every_fact_and_confirmation
+tests/agent_kernel/test_category_candidate_transactions.py::test_category_transaction_failure_rolls_back_every_fact_and_confirmation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:554: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([snapshot])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 5 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 5 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:577: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 5 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 5 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:604: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 5 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 7 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:663: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([receipt])
+
+tests/agent_kernel/test_category_source_writeback_pg.py: 10 warnings
+tests/agent_kernel/test_context_projection_entries.py: 3 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:715: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_source_writeback_pg.py: 63 warnings
+tests/agent_kernel/test_context_projection_entries.py: 24 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 18 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:600: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+34 passed, 189 warnings in 117.55s (0:01:57)

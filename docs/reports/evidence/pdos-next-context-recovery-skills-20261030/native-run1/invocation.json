@@ -1,0 +1,17 @@
+{
+  "tests": [
+    "tests/agent_kernel/test_context_restart_pg.py",
+    "tests/agent_kernel/test_requested_skills_pg.py",
+    "tests/agent_kernel/test_continued_skills_pg.py",
+    "tests/agent_kernel/test_work_state_pg.py",
+    "tests/agent_kernel/test_work_state_candidates_pg.py",
+    "tests/agent_kernel/test_run_continuation.py",
+    "tests/enterprise_search/test_citation_inheritance_pg.py",
+    "tests/agent_kernel/test_conversation_acl_pg.py",
+    "-x",
+    "--tb=short"
+  ],
+  "port": 53502,
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "model_calls": 0
+}

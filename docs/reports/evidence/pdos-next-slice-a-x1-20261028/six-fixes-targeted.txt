@@ -1,0 +1,25 @@
+.......                                                                  [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_context_projection_pg.py::test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[development]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[test]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[production]
+tests/agent_kernel/test_context_projection_pg.py::test_registered_graph_progressively_adds_context_and_replay_never_calls_provider
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service.py:242: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:174: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([chain])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:199: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([attempt])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+7 passed, 9 warnings in 40.34s

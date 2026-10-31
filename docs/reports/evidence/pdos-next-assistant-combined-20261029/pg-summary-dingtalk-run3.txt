@@ -1,0 +1,67 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 6 items
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend PASSED [ 16%]
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_reserved_summary_rechecks_current_binding_app_and_source_before_wire[binding] PASSED [ 33%]
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_reserved_summary_rechecks_current_binding_app_and_source_before_wire[application] PASSED [ 50%]
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_reserved_summary_rechecks_current_binding_app_and_source_before_wire[source] PASSED [ 66%]
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_temporal_delivery_uses_original_run_and_official_mock PASSED [ 83%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/dingtalk/test_summary_delivery_pg.py: 10 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/dingtalk/test_summary_delivery_pg.py: 30 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/dingtalk/test_summary_delivery_pg.py: 10 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/dingtalk/test_summary_delivery_pg.py: 10 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/dingtalk/test_summary_delivery_pg.py: 10 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/dingtalk/test_summary_delivery_pg.py: 10 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/dingtalk/test_summary_delivery_pg.py: 10 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/dingtalk/test_summary_delivery_pg.py: 10 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service.py:256: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_reserved_summary_rechecks_current_binding_app_and_source_before_wire[binding]
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_reserved_summary_rechecks_current_binding_app_and_source_before_wire[application]
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_reserved_summary_rechecks_current_binding_app_and_source_before_wire[source]
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_temporal_delivery_uses_original_run_and_official_mock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:176: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([chain])
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_reserved_summary_rechecks_current_binding_app_and_source_before_wire[binding]
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_reserved_summary_rechecks_current_binding_app_and_source_before_wire[application]
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_reserved_summary_rechecks_current_binding_app_and_source_before_wire[source]
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_temporal_delivery_uses_original_run_and_official_mock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:201: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([attempt])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-summary-dingtalk-20261029/pg-summary-dingtalk-run3.xml -
+================== 6 passed, 110 warnings in 67.14s (0:01:07) ==================

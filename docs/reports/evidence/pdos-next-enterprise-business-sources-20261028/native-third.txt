@@ -1,0 +1,61 @@
+....                                                                     [100%]
+=============================== warnings summary ===============================
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+  tests/enterprise_search/test_retrieval_pg.py:206: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 30 warnings in 136.21s (0:02:16)

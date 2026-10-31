@@ -1,0 +1,9 @@
+{
+  "path": "/private/tmp/pdos-next-before-0854-20261029.dump",
+  "sha256": "a8443a23625a781863fa87eb5c43f2b3c88f50835e9e964bd5885c8fc3cc8c82",
+  "bytes": 114480753,
+  "pg_restore_listing_verified": true,
+  "port": 53502,
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head_before": "s0_0853"
+}

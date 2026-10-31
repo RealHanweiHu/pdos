@@ -1,0 +1,202 @@
+[
+  {
+    "path": "pdos-next/web/src/components/workspace-experience.tsx",
+    "before_sha256": "de4e557d77b1ed31bf78e5ec2093ecb5c739b01af2f568e3f57a212bca62509d",
+    "sha256": "b6e3cf733397fbd677a60f51e107eec76b049899350d53126db8b6146e43b876"
+  },
+  {
+    "path": "pdos-next/web/src/components/workspace.tsx",
+    "before_sha256": "66137a8b0181125b565c7d9b45c0999b0f280d6a115508e0184d8f5f102a5bef",
+    "sha256": "addc8d1b3f5277fa11e985b3173b86f194e468578ed00e4f9259ba61943d4ee6"
+  },
+  {
+    "path": "pdos-next/web/src/lib/build-change-orders-view.test.ts",
+    "before_sha256": "154049e178c7655b6ff69c11d5c49dd6a7ddbc29d17685546c6ea53e909079b2",
+    "sha256": "e38390247a56f4cd177843a5a20dfe7dc88c4a88785192b704c128c7aae8ae88"
+  },
+  {
+    "path": "pdos-next/web/src/lib/professional-records.test.mjs",
+    "before_sha256": null,
+    "sha256": "f3041dcb5dc0cc4cd951a01a8dcf0f2442ae0c457e3fb04ce2441dfcb5edde6c"
+  },
+  {
+    "path": "pdos-next/web/src/lib/professional-records.ts",
+    "before_sha256": null,
+    "sha256": "423c662b99cbe2d1bdca35ebd86435905f69e467b6fa4e8dae80b280903c8aad"
+  },
+  {
+    "path": "pdos-next/web/src/lib/global-navigation.ts",
+    "before_sha256": "27aa244d400b04393d8d38b5366bc8f9cc01e5224a23af1fa8210ee85b855285",
+    "sha256": "eef20777cdddb506e4e0ffa8602c82674b362446e7d2e5c60861ea7ec80d471e"
+  },
+  {
+    "path": "pdos-next/web/src/lib/build-change-orders-view.ts",
+    "before_sha256": "bfc36b5bcd90e379f451c50c77cece72faedebc6891906586c5ef9efd5eb03d3",
+    "sha256": "931cf6ddabd6585a232109956a769a1e6cbe621a981e4f9534be1b7d497ca234"
+  },
+  {
+    "path": "pdos-next/web/src/lib/project-draft-recovery.ts",
+    "before_sha256": null,
+    "sha256": "71489ab492062560b8a2748080d2b001a88fad7c21b9d4167c0e45367639e2fa"
+  },
+  {
+    "path": "pdos-next/web/src/lib/global-navigation.test.ts",
+    "before_sha256": "d47be311a5cea12722e84273eb2e090c7ad43ff6893fa73159db5eaed1b0358f",
+    "sha256": "c5c03fe81897c2f46a8100f5eeb0648e2d7701339c5d204314a2b5fc1a8714e2"
+  },
+  {
+    "path": "pdos-next/web/src/components/manufacturing-preparation/manufacturing-preparation.tsx",
+    "before_sha256": "dc8d1e8b315241dbf5063df0402c18d2d3d18258f5a0b35751d666f04db5b139",
+    "sha256": "b6f67ad56a0740b7ff367c4c61858ed6e773d9c599cd6dbb40a0474b3cba0a51"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/project-build-summary.tsx",
+    "before_sha256": "7359d584e5164505b371fe107c1f313c505d188b13ae1c1d3899424c9bd8a186",
+    "sha256": "86defb1b4419eafdc56c8dbf0450609b9ab4464b5108e4345f5c1728bd54bd11"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/project-professional-records.test.mjs",
+    "before_sha256": null,
+    "sha256": "abc10934de534c33c45727f3584d470419b979fb404f990870236c79b6631ef7"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/project-professional.module.css",
+    "before_sha256": "daad34016d744b439cb4bf9cb388ad6014f263719ac785da8a2a1bef6590863c",
+    "sha256": "4689ea5ceb8d96c376af8b0bb57100b3f8d3072337435390c7447bae6c4e761d"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/project-professional-records.tsx",
+    "before_sha256": null,
+    "sha256": "244a1bf68cf8c7b5ea8a7277042dbab5a8d1b1d7692cac4d59fef12dc526329e"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/project-views.module.css",
+    "before_sha256": "542cc4e02f3b86dce81adc788226dc5b8416e186e733af9dbb282ebecf3338cc",
+    "sha256": "fe0396e8f90a56e711291ed1c65e26e18f53707091530b3b7f6b7492d92507cf"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/professional-target.tsx",
+    "before_sha256": null,
+    "sha256": "816a7f45b874c1fb0eccd4c6f3232cdce1c0b713ac00dc8a47457066c1920fbe"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/project-views.test.mjs",
+    "before_sha256": "d78f220842cc25700435233c39c175c3304435b71a83ddad5c18836db6ed9679",
+    "sha256": "f8646679431ce61165d65b9a2c249c3a344defc672c5288d956432faab36f064"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/project-overview-builds.tsx",
+    "before_sha256": null,
+    "sha256": "cc45dfd012b344b3b4a1ac765a29dabd839b248ba6bbf7e88f3f9188c541c315"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/project-workspace.tsx",
+    "before_sha256": "e94a39eae9e1e103fd29f2982b63a2c1d68b5a837fe1a73617b9154c08d42ce1",
+    "sha256": "ad300ada94f8a6efc3323cec6a9c0f396051d1acf0702326d92e3da1e8b9292f"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/project-professional.tsx",
+    "before_sha256": "92b5c82c71c4aaec5bd5e901fcc67b06c83d4626f8987c98f2f2cfbf01b8f4c1",
+    "sha256": "1206e73335bb93517f19400457258e617bbfdbf404e91a996a93896099e06244"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/project-build-summary.test.mjs",
+    "before_sha256": "d877cfd67c5e5babc07baa7fc03d898874713948fd36343237b7031140328f8b",
+    "sha256": "d1d0d3db67d4f69eff5c55cf290448a0f3c83c3d14e202db645b407b8b548087"
+  },
+  {
+    "path": "pdos-next/web/src/components/product/verification-professional.tsx",
+    "before_sha256": "439b1927907211262301d3e1facf8ca9d0dd4bb435c4bd82dea7a9a8bee962cb",
+    "sha256": "0ae54ddfb08dea67adb2cffd9036568fc6c2b0301911fac8f6fe7daba98dd558"
+  },
+  {
+    "path": "pdos-next/web/src/components/builds/build-change-orders.tsx",
+    "before_sha256": "3ed5108bdb7d193c54c179a6b786344594a853cd6121689470377367c4a8e4db",
+    "sha256": "5695214f0e80e3a8150dce3bcd22961916a772f36e4c2d18f6525cf443ff656e"
+  },
+  {
+    "path": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+    "before_sha256": "5bf94d900ee5d25d0cd04b1baf0a91e50eb0b12e2962e46b18cd86f3eb529e72",
+    "sha256": "9a3aecf86f9a1b5b3778fd6c0dc4776b72ce3a0b20ab63dd5ccb503ff1bd32b6"
+  },
+  {
+    "path": "pdos-next/web/src/components/builds/build-change-orders.test.mjs",
+    "before_sha256": "0eb9d806ba2dce1848ae38caa5d022f825a5b8025d42d5f9d78479231cd26040",
+    "sha256": "69ece0892118ffd457c21e533616abe490e67281a22877c9b164f8ce7e564817"
+  },
+  {
+    "path": "pdos-next/web/src/components/builds/build-handoff.tsx",
+    "before_sha256": "f86b21293a73eabd7f14715325e93d665bbf799a8c9a42653bf7ef94e7199cac",
+    "sha256": "a7687cec97255d9e01ec56611427ba8d78426d78ace542844071ef354997f0d3"
+  },
+  {
+    "path": "pdos-next/web/src/components/builds/build-start.tsx",
+    "before_sha256": "fdf39a5611ec4f697dcdab94043d697364c7685c4654ef48ae3b48509563dae6",
+    "sha256": "afc0682f6562901dc80e94622304d79f6a85601bf7369f6adda2d8a6149f22a0"
+  },
+  {
+    "path": "pdos-next/web/src/components/builds/build-cost.tsx",
+    "before_sha256": "e079b5d55811dbc02f4f8253021450ad05d4263308cadf9929dcc5484e08176c",
+    "sha256": "3cea7db67abf88ffb19cdc96b97687545f533fa5cad9c113904e875bfe068c6f"
+  },
+  {
+    "path": "pdos-next/web/src/components/builds/build-verification.tsx",
+    "before_sha256": "ab0609436aecaee07aa6207d35abd0beaa31e21255ff1457016e01299b0f4498",
+    "sha256": "f817bc66d7d66f71c7d0e7844bb8b6ff7f9b0fe42f44cc70586cbd3b5b4a04ee"
+  },
+  {
+    "path": "pdos-next/web/src/components/builds/build-quality-followup.tsx",
+    "before_sha256": "59348a10a1e182cd34c797ae27eef5ab8db7d1e030ff070da2c3405342454ac6",
+    "sha256": "7f8ab2b1469567e16026df03b83e19e880fca11ac22ebd2313815927f32b6ec3"
+  },
+  {
+    "path": "pdos-next/web/src/components/builds/build-launch.tsx",
+    "before_sha256": "7ad69130c1640bef92c82afe1c1ce4d57496dd5ffb6ac2427618ae6f467686b9",
+    "sha256": "8cace7ccb4d72fed9a16971b8d1019ff79a5572a39db9025b720ce2bc1bc1d5b"
+  },
+  {
+    "path": "pdos-next/web/src/components/builds/build-execution.tsx",
+    "before_sha256": "d8fd0e734ca5e05b8cb92c08698e65f57879975ec5a4ec57b82810e3e93c5491",
+    "sha256": "0b4dc6d21e991f7a682cc99885ad6358c97468f55d59c063ab0cc1da2cf72fd7"
+  },
+  {
+    "path": "pdos-next/web/src/components/builds/build-results.tsx",
+    "before_sha256": "a00f8c6d4f25da2b618549f196c885d5bd7c608533307727a513f982a3f1149c",
+    "sha256": "8a7b751ef412237c0dc2707393972ec7c197f3e760d911515ee118438f31a99f"
+  },
+  {
+    "path": "pdos-next/web/src/components/builds/build-supply.tsx",
+    "before_sha256": "32efb9a39956cd1b6170ecb3dc0e022cb9091a94348e07e475b3406a73560012",
+    "sha256": "d5a1c584b3a56e436cf5565d709a8312418a641ec5083b46f04323c927d1a655"
+  },
+  {
+    "path": "pdos-next/web/src/components/field/field-feedback.tsx",
+    "before_sha256": "bc62e0b5b79dedfbab151ab2bd601901f1a275d145b253f3171ead3213bb3f46",
+    "sha256": "c4d43d4f62842bdd01d0cb9628f4dfba10a1f6a1a6770fa4e7c93246e6f9cbe8"
+  },
+  {
+    "path": "pdos-next/web/src/components/field/field-feedback.test.mjs",
+    "before_sha256": "46bdec3e5af14a038aa75ab7e81671b6670ea4323ab0dd56da29030eee51a5fb",
+    "sha256": "98f5f9334f426ca7b9c26cd1d4378f368f3169b4590e488c9529a67a2bd706f0"
+  },
+  {
+    "path": "pdos-next/web/src/components/manufacturing-publication/manufacturing-publication.test.mjs",
+    "before_sha256": "a3e72eb83954e95215d0946c2125b6b82f470510375b5ed28aac26f83c093d7d",
+    "sha256": "961cedb48ababd6083b3a75bfafa4aeaad124703deab8255ed2931de88f9e259"
+  },
+  {
+    "path": "pdos-next/web/src/components/manufacturing-publication/manufacturing-publication.tsx",
+    "before_sha256": "206c4294433d3bc8146ddd4e2392d31561ddcb20c2efcea4e41a91093def306f",
+    "sha256": "7efbe8f8acddc55036ada76acb1b55cb9c29c6efc6c6c95499f542319c9952be"
+  },
+  {
+    "path": "pdos-next/server/pdos_next/project_activity.py",
+    "before_sha256": "e9e1ed90cfbf9dbd89ccb1cf2ac46c1b82635bb60d03e14862d1cb43e2b9f6a6",
+    "sha256": "f3647fe97b8de6756bb3f23d707313df75e67e63999537383fc0f4cb9fd20be4"
+  },
+  {
+    "path": "pdos-next/web/next.config.ts",
+    "sha256": "2df13935322dfa88794c1b05f89445b9e8a53979b4a685d4dea92bede9a4e6bd",
+    "note": "isolated preview dist override; existing default preserved"
+  }
+]

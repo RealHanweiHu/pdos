@@ -1,0 +1,21 @@
+{
+  "stage": "/tmp/pdos-x2-candidate-state-stage-20261029",
+  "operation": "manifest-only exact SHA replay; never directory overlay",
+  "ordered_manifests": [
+    {
+      "path": "apply-manifest.json",
+      "sha256": "9dd223335a8453a29ac84424a8c5a7341029e13402f9b228366382274775f2e2"
+    },
+    {
+      "path": "fixture-delta-manifest.json",
+      "sha256": "793b202414118558f37bbdd9855840c14c895c992f8afc59aec5b0487617a70c"
+    }
+  ],
+  "steps": [
+    "Validate every existing destination matches its base SHA and every new destination is absent; stop/rebase only conflicting hunks if not.",
+    "Apply x2-candidate-state.patch, then memory-session-fixture.patch, or copy only the 10+1 manifest-listed staged files after all base checks.",
+    "Verify each output staged_sha256. Never overwrite validation-only copied sources.",
+    "No migration, worker, API, Host, graph or schema wiring is required.",
+    "Root may run the four collected actual PG/Temporal nodeids using only the already verified isolated test runner; this package has not run DB."
+  ]
+}

@@ -1,0 +1,147 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 309 items
+
+tests/enterprise_search/test_assistant_temporal_pg.py::test_authenticated_question_runs_durably_and_opens_fixed_source_without_new_inference PASSED [  0%]
+tests/enterprise_search/test_business_profile_pg.py::test_native_source_planner_cost_and_warm_latency_without_jit PASSED [  0%]
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs PASSED [  0%]
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model PASSED [  1%]
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated PASSED [  1%]
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock PASSED [  1%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_frozen_child_citation_extracts_without_search_and_replays_without_inference PASSED [  2%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_reference_alias_resolves_across_three_turns_and_ledger_records_origin PASSED [  2%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_bounded_preview_and_pages_preserve_older_refs_without_research PASSED [  2%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_current_authority_rechecked_and_fixed_body_never_silently_replaced[withdrawn] PASSED [  3%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_current_authority_rechecked_and_fixed_body_never_silently_replaced[updated] PASSED [  3%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_same_session_without_lineage_and_foreign_reference_do_not_expand_scope PASSED [  3%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_explicit_exclusion_is_versioned_and_keeps_refs_out_of_next_turn PASSED [  4%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_real_new_knowledge_version_preserves_old_fixed_citation_and_labels_history PASSED [  4%]
+tests/enterprise_search/test_citation_inheritance_temporal_pg.py::test_http_continuation_reissues_citation_and_replay_does_not_repeat_inference PASSED [  4%]
+tests/enterprise_search/test_comparison.py::test_paragraph_changes_keep_both_exact_locations_and_unchanged_text_is_not_returned PASSED [  5%]
+tests/enterprise_search/test_comparison.py::test_unrelated_replacements_are_unaligned_and_limits_are_never_no_change PASSED [  5%]
+tests/enterprise_search/test_comparison.py::test_markdown_rows_and_empty_line_changes_keep_literal_spans PASSED [  5%]
+tests/enterprise_search/test_comparison.py::test_xlsx_aligns_reordered_columns_and_rows_by_the_original_key_header PASSED [  6%]
+tests/enterprise_search/test_comparison.py::test_ambiguous_headers_or_keys_are_not_invented_as_additions_or_removals PASSED [  6%]
+tests/enterprise_search/test_comparison.py::test_formulas_are_literal_not_calculated_and_parse_gaps_stay_explicit PASSED [  6%]
+tests/enterprise_search/test_comparison.py::test_comparison_child_has_one_read_surface_and_no_search_or_write_authority PASSED [  7%]
+tests/enterprise_search/test_comparison_originals_pg.py::test_uploaded_pair_uses_real_native_locations_and_scan_invalidation_is_model_free[pdf] PASSED [  7%]
+tests/enterprise_search/test_comparison_originals_pg.py::test_uploaded_pair_uses_real_native_locations_and_scan_invalidation_is_model_free[xlsx] PASSED [  7%]
+tests/enterprise_search/test_comparison_pg.py::test_pinned_documents_compare_without_index_and_save_verified_private_table PASSED [  8%]
+tests/enterprise_search/test_comparison_pg.py::test_comparison_batches_are_complete_only_after_every_actual_change_is_read PASSED [  8%]
+tests/enterprise_search/test_comparison_pg.py::test_unchanged_parsed_documents_need_no_interpretation_model PASSED [  8%]
+tests/enterprise_search/test_comparison_pg.py::test_invented_impact_is_rejected_and_partial_is_not_presented_as_complete PASSED [  9%]
+tests/enterprise_search/test_comparison_pg.py::test_materials_reader_cannot_sign_an_unpinned_source PASSED [  9%]
+tests/enterprise_search/test_comparison_pg.py::test_documented_impact_has_a_literal_side_reference_without_inventing_authority PASSED [  9%]
+tests/enterprise_search/test_comparison_pg.py::test_withdrawal_during_final_model_removes_comparison_and_unverified_unknowns PASSED [ 10%]
+tests/enterprise_search/test_comparison_temporal_pg.py::test_http_document_pair_reaches_verified_differences_and_idempotent_private_table PASSED [ 10%]
+tests/enterprise_search/test_dispatch.py::test_projection_ack_keeps_durable_identity_and_replay_is_idempotent PASSED [ 10%]
+tests/enterprise_search/test_dispatch.py::test_projection_start_failure_remains_unknown_for_outbox_retry PASSED [ 11%]
+tests/enterprise_search/test_dispatch.py::test_security_workflow_identity_is_preserved_alongside_projection PASSED [ 11%]
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements PASSED [ 11%]
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source FAILED [ 11%]
+
+=================================== FAILURES ===================================
+_ test_professional_record_runs_through_authenticated_temporal_and_fixed_source _
+tests/enterprise_search/test_execution_records_pg.py:238: in test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+    run_http_case(
+tests/enterprise_search/test_assistant_temporal_pg.py:210: in run_http_case
+    asyncio.run(actual())
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_assistant_temporal_pg.py:130: in actual
+    assert (
+E   assert (200 == 200 and 'SYNTHETIC_NAMED_REVIEW_ONLY_IN_FIXED_SOURCE_20261028' in '{"kind": "test_run", "facts": {"id": "39fdb4f5-16d3-4612-80f5-6ff96a0c093a", "result": "pass", "status": "reviewed", "actor_id": "e31dbb07-306c-4ae9-811a-1a7863129bbb", "coverage": [{"item_id": "dimension", "sample_id": "4aeb75b9-35d9-486e-9d96-f418782bc9b9"}, {"item_id": "dimension", "sample_id": "6e0ca1b7-dc8b-42fa-8d98-5051d0ae2ed4"}], "revision": 4, "operation": "test.run.review", "actual_end": {"actor_id": "e31dbb07-306c-4ae9-811a-1a7863129bbb", "occurred_at": "2026-10-29T06:29:45.912798Z", "received_at": "2026-10-29T06:29:48.333563Z", "effective_at": null, "original_timezone": "UTC"}, "request_id": "fcce208f-9436-4b30-a969-38510468e0b5", "disposition": null, "record_kind": "test_result_action", "actual_start": {"actor_id": "e31dbb07-306c-4ae9-811a-1a7863129bbb", "occurred_at": "2026-10-29T06:29:41.279331Z", "received_at": "2026-10-29T06:29:42.759208Z", "effective_at": null, "original_timezone": "UTC"}, "final_result": {"actor_id": "e31dbb07-306c-4ae9-811a-1a7863129bbb", "occurred_at": "2026-10-29T06:29:46.036426Z", "received_at": "2026-10-29T06:29:48.333563Z", "effective_at": null, "original_timezone": "UTC"}, "run_revision": 4, "run_version_id": "6db2415f-fb70-45ab-ad68-f12a58c59b22", "computed_results": [{"result": "pass", "coverage": {"item_id": "dimension", "sample_id": "4aeb75b9-35d9-486e-9d96-f418782bc9b9"}, "measurement_id": "bd045924-e915-4b83-97af-8d4d87c3e7f5"}, {"result": "pass", "coverage": {"item_id": "dimension", "sample_id": "6e0ca1b7-dc8b-42fa-8d98-5051d0ae2ed4"}, "measurement_id": "b7e2056a-4c3a-4096-a2ff-d2746101d713"}], "preliminary_result": null, "')
+E    +  where 200 = <Response [200 OK]>.status_code
+=============================== warnings summary ===============================
+tests/enterprise_search/test_business_profile_pg.py::test_native_source_planner_cost_and_warm_latency_without_jit
+  tests/enterprise_search/test_business_profile_pg.py:12: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_native_source_planner_cost_and_warm_latency_without_jit(setup, record_property):
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_business_sources_pg.py: 3 warnings
+tests/enterprise_search/test_business_temporal_pg.py: 3 warnings
+tests/enterprise_search/test_business_wait_supply_pg.py: 6 warnings
+tests/enterprise_search/test_execution_records_pg.py: 6 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_citation_inheritance_pg.py::test_real_new_knowledge_version_preserves_old_fixed_citation_and_labels_history
+tests/enterprise_search/test_citation_inheritance_pg.py::test_real_new_knowledge_version_preserves_old_fixed_citation_and_labels_history
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-enterprise-knowledge-authority-20261029/backend-candidate-4-remaining.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+============ 1 failed, 36 passed, 59 warnings in 641.63s (0:10:41) =============

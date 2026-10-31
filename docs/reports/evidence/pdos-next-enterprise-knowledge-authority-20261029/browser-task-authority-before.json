@@ -1,0 +1,25 @@
+{
+  "stage": "before",
+  "target": "127.0.0.1:53502/pdos_test",
+  "models": 5,
+  "receipts": 1,
+  "runs": 1,
+  "products": [
+    {
+      "id": "bd58ef6d-2d5b-44f1-a86c-6b2357e4e582",
+      "root_id": "bd58ef6d-2d5b-44f1-a86c-6b2357e4e582",
+      "supersedes_id": "None",
+      "owner_id": "74237860-2adc-4fda-928e-3182689b0ae9",
+      "run_id": "0207b037-83f0-4646-8536-7d135e961685",
+      "session_id": "5c7fd578-1a42-4783-9d56-db450360c1eb",
+      "revision": 1,
+      "kind": "table",
+      "origin": "ai_draft",
+      "title": "以前漏气怎么处理？",
+      "body_sha256": "b84ffaf27809ce0e85daa5d437f89b6f747abef14d2d37baad331e9ea16c7c22"
+    }
+  ],
+  "model_calls_unchanged": true,
+  "business_receipts_unchanged": true,
+  "original_version_preserved": true
+}

@@ -1,0 +1,16 @@
+..F                                                                      [100%]
+=================================== FAILURES ===================================
+_____ test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute ______
+
+setup = <isolated synthetic test scope>
+
+    def test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute(setup):
+        with scoped(setup) as session:
+>           assert schema_covered(session)
+E           assert False
+E            +  where False = schema_covered(<sqlalchemy.orm.session.Session object at 0x11f337da0>)
+
+tests/preproject/test_m3_lifecycle_catalog.py:140: AssertionError
+=========================== short test summary info ============================
+FAILED tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute
+1 failed, 2 passed in 1.85s

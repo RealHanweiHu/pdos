@@ -1,0 +1,14 @@
+{
+  "argv": [
+    ".venv/bin/ruff",
+    "check",
+    "../tools/tests/test_xiaopai_context_admission.py"
+  ],
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+  "started_at": "2026-10-29T22:52:46.929170+00:00",
+  "finished_at": "2026-10-29T22:52:46.969361+00:00",
+  "exit_code": 0,
+  "stdout_log": "ruff-tools-evidence-run1.log",
+  "stdout_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+  "scope": "pure tests, collection or static lint only; native PG entries not executed; no DB/server/browser/real model"
+}

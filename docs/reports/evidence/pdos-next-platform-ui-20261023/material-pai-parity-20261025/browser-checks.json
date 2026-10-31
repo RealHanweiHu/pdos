@@ -1,0 +1,21 @@
+{
+  "environment": "isolated synthetic pdos_test on 53502; API 59110 / Next 59111; no model calls",
+  "category_id": "48eb15ac-7fbc-4611-865b-f2b342e321c3",
+  "checks": [
+    "History shows single-line session titles",
+    "Parameter candidate opens independent editor beside original conversation",
+    "Unsent standard condition and method survive fold/reopen",
+    "Real T1 preview and save v1 keep editor/chat and original AI candidate",
+    "Second manual edit saves v2 of same parameter",
+    "Reload and original session adopted card reopen authoritative v2",
+    "Current object id/version context displayed beside composer",
+    "390px no document horizontal overflow; sticky footer stacking corrected",
+    "Desktop light/dark inspected; viewport/theme restored",
+    "Comprehensive 57859 page action clears previous greeting run and prefills category material request without sending"
+  ],
+  "responsive": {
+    "width": 390,
+    "pageScrollWidth": 390,
+    "dialogWidth": 390
+  }
+}

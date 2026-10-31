@@ -1,0 +1,10 @@
+{
+  "tenant": "eb2aca06-83e8-45a2-b222-963eab46daca",
+  "human": "4fdef765-700c-4343-b40f-779860fe7a6d",
+  "agent": "6f52273a-651e-4e24-9f01-ade1b69f272c",
+  "category": "64a52cf5-3ba2-43e8-a91f-ce98279daec8",
+  "baseline_models": 0,
+  "baseline_receipts": 0,
+  "synthetic": true,
+  "credentials": "private temporary files only"
+}

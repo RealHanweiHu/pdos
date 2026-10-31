@@ -1,0 +1,8 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "head": "s0_0825",
+  "metadata_diff": [],
+  "history_guard_refused_downgrade": true,
+  "history_rows_preserved": 77,
+  "force_rls_preserved": true
+}

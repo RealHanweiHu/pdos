@@ -1,0 +1,76 @@
+{
+  "version": "keyword-query-grammar-proposal/v1",
+  "recorded_at": "2026-10-29T22:57:25.224626+00:00",
+  "state": "unapplied_waiting_for_root_ann_freeze_release",
+  "authorized_future_files": [
+    "pdos-next/server/pdos_next/enterprise_search/tokenizer.py",
+    "pdos-next/server/pdos_next/enterprise_search/query.py",
+    "pdos-next/server/tests/enterprise_search/test_query_grammar.py"
+  ],
+  "production_or_repository_test_files_changed": false,
+  "database_connections": 0,
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "pure_contract_regressions": {
+    "passed": 6,
+    "elapsed_seconds": 0.45,
+    "log": "draft-pure.log",
+    "xml": "draft-pure.xml"
+  },
+  "draft_ruff": {
+    "files": 3,
+    "status": "passed",
+    "log": "draft-ruff.log",
+    "first_party_override_reason": "draft files reside outside pdos_next package tree"
+  },
+  "frozen_native_baseline": {
+    "macro_recall_at_5": 0.9791666666666666,
+    "macro_recall_at_10": 0.9791666666666666,
+    "unchanged": true
+  },
+  "pure_simulation_19_word_candidate": {
+    "positive_cases": 24,
+    "observed_positive_cases": 24,
+    "expected_source_count": 28,
+    "missing_positive_case_ids": [],
+    "hits_at_5": 27,
+    "macro_recall_at_5": 0.9791666666666666,
+    "micro_recall_at_5": 0.9642857142857143,
+    "hits_at_10": 28,
+    "macro_recall_at_10": 1.0,
+    "micro_recall_at_10": 1.0,
+    "mrr": 0.9791666666666666
+  },
+  "limits": [
+    "The changed candidate has no new native SQL/HTTP observation.",
+    "recall@5 gap and semantic mismatch remain.",
+    "The original labels, query prompts and corpus are unchanged.",
+    "Four forbidden checks in the pure simulation use existing fixture visibility only; they do not constitute a new ACL test."
+  ],
+  "future_native_validation": "existing 28-query HTTP baseline including four exact-code and four forbidden-source cases; root alone runs database",
+  "replay_note": "Copies preserve original /private/tmp paths and commands. To repeat, use a fresh scratch directory/output; do not overwrite these evidence files.",
+  "repository_inputs_unchanged": {
+    "pdos-next/server/pdos_next/enterprise_search/tokenizer.py": "029845ab0af72b1af70e9747f281f6452b847cbb09ccf5474ba706f96d49016d",
+    "pdos-next/server/pdos_next/enterprise_search/query.py": "fa2eae06378cf27492e0245d3e5965c9974e6cdf379035c0fddb4f867cc61307",
+    "docs/evaluations/xiaopai-v0/corpus.json": "846de93e8a8dd496ddc432b30220146dfc868b170da63ef331be83cdadc43920",
+    "docs/evaluations/xiaopai-v0/questions.json": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685"
+  },
+  "copied_files_sha256": {
+    "query-draft.py": "f3b5408880946486289074024192d3a718e6a753089d11ef2078698f438b4e0c",
+    "comparison-with-negative-copula.json": "cccf6a7fe61ce48b04e736a21597cf24a1a425562a6862a1b0e62e5c763d0591",
+    "draft-pure.log": "d6b812a3a3261c99f39afc03d6b4acb86ff319bfb17dc5ce3a765b895b67f563",
+    "draft-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "comparison.json": "bcdea5d427357bff0e57ddff96676ff068c2e010f6d9d7c2d54d756dbe15bc72",
+    "copula-pure.log": "a3de3d41784fef3b86826ada555bfe5cfeef999c2cbdb3ce0096bfe67a008b32",
+    "query-only-function-words.patch": "b50004805bed2de49dffaf2a0cd329553109d770098ec050354bbadc830f13d0",
+    "draft-pure.xml": "30ff820dfed32c4c05008abdcc030c403a9d840121c3564dac86fdc5b7b61f34",
+    "validation.json": "06d7c51bd5eb1ed6394f4c23c11cc6a5358a4e86605c1c008cf5c023eb9e16da",
+    "tokenizer-draft.py": "db7825d21cd8a614b8458920b38cb98b49610f15e4da943ead9ce4d206066036",
+    "build_draft.py": "2e7f86b8eade62bf36f132dd8a6fe9fc04f3ff2b152e7ecb17a4930408966866",
+    "proposal.md": "afab0028ca7aeda0de961291d6e23f036fea400d3568d51cb3550c3e8ceb0e5b",
+    "basic-pure.log": "1fb8291338eba6b5bad3293bf53be6e9074494f6e6cb85909ce768004d09ccaa",
+    "run_draft_tests.py": "f5df9d0d9173e751ceee622c7df9424c6f28d159b0b09239f4975ee89364b301",
+    "test_query_grammar.py": "d2b6deb3a56347b8f74d93b74cf6a83f31b386cfb0cbc8f979126573353d5ea3",
+    "pure-recompute.py": "b518a16e58e92591f547ff1fa199d5d1de0d15420deb00a0a824565e6282c703"
+  }
+}

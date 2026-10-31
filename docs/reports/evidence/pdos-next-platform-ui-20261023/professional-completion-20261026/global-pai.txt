@@ -1,0 +1,112 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox"
+      - generic: 收件箱
+    - link "小Pai" [active]:
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge"
+      - generic: 知识
+    - paragraph: 产品管理
+    - link "品类":
+      - /url: "?area=category"
+      - generic: 品类
+    - link "立项提案":
+      - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&focus=proposals"
+      - generic: 立项提案
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - generic: 小Pai
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main
+- complementary "小Pai 工作栏":
+  - region "个人小 Pai":
+    - complementary "个人工作记录":
+      - strong: 会话
+      - button "新对话":
+        - text: 新对话
+      - generic "持久会话记录":
+        - generic: 搜索会话名称、原目标或完整标识
+        - searchbox "搜索会话名称、原目标或完整标识"
+        - group "会话视图":
+          - button "最近" [pressed]
+          - button "已归档"
+        - button "刷新会话":
+        - button "帮我梳理一个想法":
+          - strong: 帮我梳理一个想法
+        - generic "管理会话：帮我梳理一个想法": ···
+        - button "好的":
+          - strong: 好的
+        - generic "管理会话：好的": ···
+        - button "你好":
+          - strong: 你好
+        - generic "管理会话：你好": ···
+        - button "你好":
+          - strong: 你好
+        - generic "管理会话：你好": ···
+        - button "你好":
+          - strong: 你好
+        - generic "管理会话：你好": ···
+        - button "你好":
+          - strong: 你好
+        - generic "管理会话：你好": ···
+      - paragraph: 私人会话 · 仅你可见
+    - button "返回对话" [expanded]:
+    - generic "小Pai"
+    - button "新建对话":
+    - generic "会话信息":
+    - button "关闭小Pai 工作栏":
+    - generic "通用对话":
+      - generic: 通用对话
+    - generic: 仅你可见
+    - generic "小Pai 对话线程":
+      - heading "有什么想一起解决的？" [level=1]
+      - paragraph: 从一个问题、一个想法，或一份资料开始。
+      - button "帮我梳理一个想法":
+        - text: 帮我梳理一个想法
+      - button "起草一份工作方案":
+        - text: 起草一份工作方案
+      - button "比较两个方案":
+        - text: 比较两个方案
+    - generic "自动选择技能":
+      - text: 自动选择技能
+    - group "本次发送携带什么":
+      - generic "查看携带上下文":
+    - textbox "希望小Pai完成什么？":
+      - /placeholder: 发消息给小Pai…
+    - button "保存并启动个人任务" [disabled]:
+      - generic: 保存并启动个人任务
+    - generic: Enter 发送 · Shift Enter 换行

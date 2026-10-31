@@ -1,0 +1,54 @@
+{
+  "samples": 12,
+  "returned_sources": [
+    6
+  ],
+  "queries_per_request": [
+    7
+  ],
+  "p95_seconds": 1.4566492312180344,
+  "max_seconds": 1.428520124987699,
+  "durations_seconds": [
+    1.34219487500377,
+    1.3035407500574365,
+    1.428520124987699,
+    1.2285474159289151,
+    1.1744645839789882,
+    1.348151250043884,
+    1.1421036249957979,
+    1.1257852079579607,
+    1.1205290000652894,
+    1.0549078340409324,
+    1.2589357079705223,
+    1.0520383330294862
+  ],
+  "sql_profile": {
+    "direct_page": {
+      "samples": 12,
+      "median_seconds": 0.3939121249713935,
+      "max_seconds": 0.5532396249473095,
+      "sql_chars": 110631
+    },
+    "set_jit": {
+      "samples": 12,
+      "median_seconds": 0.001194291515275836,
+      "max_seconds": 0.0018836669623851776,
+      "sql_chars": 17
+    },
+    "presence": {
+      "samples": 12,
+      "median_seconds": 0.016996229416690767,
+      "max_seconds": 0.02298016706481576,
+      "sql_chars": 799
+    },
+    "related_metadata": {
+      "samples": 12,
+      "median_seconds": 0.47404312499566004,
+      "max_seconds": 0.6379931248957291,
+      "sql_chars": 108367
+    }
+  },
+  "real_models": false,
+  "embedding": false,
+  "scope": "one Build and its actual registered execution/TestRun records, not all-source scale"
+}

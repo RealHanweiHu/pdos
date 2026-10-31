@@ -1,0 +1,74 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____ test_actual_registered_page_returns_original_read_reference_on_restore ____
+
+setup = <isolated synthetic test scope>
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-490/test_actual_registered_page_re0')
+
+    def test_actual_registered_page_returns_original_read_reference_on_restore(setup, tmp_path):
+>       f, snapshot, _ = registration(setup, tmp_path)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_m3_research_composition_transactions.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_snapshot_proof_transactions.py:97: in registration
+    receipt = f.adapter.execute(
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/domain_adapter.py:327: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/database.py:81: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/domain_adapter.py:302: in write
+    call, previous = prepare_domain_call(
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/execution.py:404: in prepare_domain_call
+    model, skill = verify_source(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x120cc5520>
+scope = RunScope(tenant_id=UUID('8f8683d2-aa80-40c2-8f86-7f4ec510c375'), requester_id=UUID('5f47e13b-d6f8-4bd5-8197-27c2f15f4c..._categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation', project_id=None)
+run = <pdos_next.agent_kernel.models.AgentRun object at 0x120e948c0>
+spec = ToolSpec(name='research.snapshot.register', description='办理 research.snapshot.register。何时调用尚未登记，使用前须由该领域确认。产生 research...r='T0', operation_key='research.snapshot.register', taint='trusted', parallel_safe=False, budget_weight=1, version='1')
+arguments = {'snapshot_id': 'd412d58d-3259-43b0-9eee-2cdfce4351f0'}
+source = WriteSource(skill=SkillBinding(key='public_research', version='0.2.3-draft', digest='025f00b181d78a49e959c94272b259258...'c7c6b7c5-9cb6-41f3-9d86-9be3ffe4b331')), model_call_id=UUID('92f25b7b-d8fb-41b1-a6b9-60d2bec8d02c'), response_index=0)
+catalog = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x1205fa960>
+registry = <pdos_next.agent_kernel.registry.ToolRegistry object at 0x1202a0f80>
+route = namespace(version='synthetic@1', digest='6e9ad00716ce9b360ada47b8da2d22c754351358e4be0baaabe1dfea26e677a8', protocol='openai-compatible', base_url='https://synthetic.invalid/v1', model='synthetic-model')
+prepare_only = False
+
+    def verify_source(
+        session, scope, run, spec, arguments, source, *, catalog, registry, route, prepare_only=False
+    ):
+        if not isinstance(source, WriteSource):
+            raise DomainError("FORBIDDEN_SCOPE", "T0 来源须来自服务器执行账本。")
+        model_call = session.get(AgentToolCall, source.model_call_id)
+        model = validate_model_source(
+            run, model_call, scope, source, spec, arguments, route=route, prepare_only=prepare_only
+        )
+        validate_skill_load(session, scope, source.skill)
+        skill = catalog.load(
+            source.skill.key, scope, lambda _, s: policy.skill_enabled(session, scope, s)
+        )
+        if skill.version != source.skill.version or skill.digest != source.skill.digest:
+            raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
+        current = registry.get(spec.name)
+        # The binding must match the disclosure its own loaded skills imply, so a write
+        # is provably bound to a call that could actually see that command.
+        disclosed = disclosure(
+            registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+        )
+        if (
+            current != spec
+            or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
+            or current.operation_key != spec.operation_key
+            or spec.name not in skill.operations
+            or digest(disclosed) != model.tool_definitions_digest
+            or not any(item["name"] == spec.name for item in disclosed)
+        ):
+>           raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
+E           pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。
+
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/execution.py:290: DomainError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_m3_research_composition_transactions.py::test_actual_registered_page_returns_original_read_reference_on_restore
+1 failed in 4.24s

@@ -1,0 +1,8 @@
+{
+  "argv": [
+    "pdos-next/server/.venv/bin/python",
+    "pdos-next/tools/validate_contracts.py"
+  ],
+  "exit_code": 0,
+  "seconds": 0.044
+}

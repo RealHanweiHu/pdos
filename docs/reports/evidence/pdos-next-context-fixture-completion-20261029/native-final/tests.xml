@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="9.339" timestamp="2026-10-29T16:06:02.492556-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_eval_v0_handle_candidate_pg" name="test_ctx09_native_handle_page2_then_same_handle_page3_failure[F48000]" time="8.380"><failure message="AssertionError: {&quot;code&quot;:&quot;VERSION_CONFLICT&quot;,&quot;message&quot;:&quot;资料版本已变化，请重新读取。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;material_version_moved&quot;}}">tests/agent_kernel/test_eval_v0_handle_candidate_pg.py:440: in test_ctx09_native_handle_page2_then_same_handle_page3_failure
+    directory = native_directory(setup, question)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/eval_v0_ctx09_directory_support.py:79: in native_directory
+    receipt = add({"kind": "boundary", "regions": [DIRECTORY_REGION], "content": content,
+tests/agent_kernel/eval_v0_ctx09_directory_support.py:50: in add
+    return native_command("category.knowledge.add", payload)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/eval_v0_ctx09_directory_support.py:42: in native_command
+    assert response.status_code == 200, response.text
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: {"code":"VERSION_CONFLICT","message":"资料版本已变化，请重新读取。","detail":{"reason":"material_version_moved"}}</failure></testcase></testsuite></testsuites>

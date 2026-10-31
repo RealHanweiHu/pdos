@@ -1,0 +1,61 @@
+{
+  "algorithm": "sha256",
+  "scope": "11 frozen hidden-owner-goal UI production/test files",
+  "files": [
+    {
+      "path": "pdos-next/web/src/lib/pai-sessions.ts",
+      "sha256": "d60cf36cf846ec209f75c4fd3b51bbf948b2c6b58d22be414777facfeff6e777",
+      "bytes": 16279
+    },
+    {
+      "path": "pdos-next/web/src/lib/pai-sessions.test.mjs",
+      "sha256": "1bbf7bdf8e35c7d928ee60762cdbfe6cac021c9828745b4c909967bca311d6b4",
+      "bytes": 17133
+    },
+    {
+      "path": "pdos-next/web/src/lib/pai-session-presentation.ts",
+      "sha256": "6659e16e74d54ffcecde779b08c6871627807b3f231f21692183d399c12c2343",
+      "bytes": 16121
+    },
+    {
+      "path": "pdos-next/web/src/lib/pai-session-presentation.test.mjs",
+      "sha256": "8831c2778cc067a1bc16daaf063b372277655c97b6ed958d3762a8d69a6732fe",
+      "bytes": 8987
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/session-history.tsx",
+      "sha256": "69a819346015e5c7aa20272ad528e91fbf02368dec2d7c35eabe77492f7d8e49",
+      "bytes": 18974
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/session-history.test.mjs",
+      "sha256": "ffaf6757266b1a7b6fc08c04e9f47edba19548618406fb8639e538530fdd13b4",
+      "bytes": 32218
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/conversation-history.tsx",
+      "sha256": "7aeb1a22d943cccf7a99d1c832cc43abacc1fdfcd01b89a0d7f29c9bdb99e4ac",
+      "bytes": 6010
+    },
+    {
+      "path": "pdos-next/web/src/components/pai-conversation.tsx",
+      "sha256": "207017e269eb6497826ebb84b1746a90ee8c08541cd5ff89766c82e3e094d787",
+      "bytes": 12512
+    },
+    {
+      "path": "pdos-next/web/src/components/category-create/personal-xiaopai.tsx",
+      "sha256": "784032bb00d82dea955877ef2618332fcc46c8f31e520957c2fd0ff3d35b8dde",
+      "bytes": 32643
+    },
+    {
+      "path": "pdos-next/web/src/components/xiaopai.tsx",
+      "sha256": "2eed6bb2d15cb299e45ff45d167de4878b8ad6ac0b07b0c12c02c52d01cef04e",
+      "bytes": 41387
+    },
+    {
+      "path": "pdos-next/web/src/components/xiaopai.test.mjs",
+      "sha256": "39852a430861f2d86c3313c3b1ca2ce4241f3caf7e20384e01d60a27cbc57142",
+      "bytes": 45585
+    }
+  ]
+}

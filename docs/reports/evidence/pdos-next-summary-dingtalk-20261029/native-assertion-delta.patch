@@ -1,0 +1,23 @@
+--- a/pdos-next/server/tests/dingtalk/test_summary_delivery_pg.py
++++ b/pdos-next/server/tests/dingtalk/test_summary_delivery_pg.py
+@@ -167,7 +167,19 @@
+         assert row.run_id == UUID(work.envelope["subject_id"])
+         assert row.p26["provider"] == "dingtalk" and row.attempts == 1
+         assert UUID(work.work.receipt["subject_id"]) in row.source_ids
+-        assert "具名登记" in row.payload["text"] and row.payload["target_kind"] == "direct"
++        summary = s.get(AgentRun, row.run_id).result["result"]["personal_summary"]
++        for group in summary["groups"]:
++            for item in group["items"]:
++                for value in (
++                    item["title"],
++                    item["change"]["text"],
++                    item["relationship"]["text"],
++                    item["next_step"]["text"],
++                    item["continue_url"],
++                ):
++                    assert value in row.payload["text"]
++        assert row.payload["target_kind"] == "direct"
++        assert f"/dingtalk/runs/{row.run_id}?category={row.category_id}" in row.payload["url"]
+         for model in (Message, Delivery, AgentToolCall, ValidationBudget):
+             assert (
+                 s.scalar(

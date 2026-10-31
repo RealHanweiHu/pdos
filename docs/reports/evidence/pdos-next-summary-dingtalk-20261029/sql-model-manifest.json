@@ -1,0 +1,39 @@
+{
+  "status": "frozen_sql_model_subset_runtime_and_tests_continue",
+  "expected_predecessor": "s0_0851",
+  "suggested_next_revision": "root assigns actual next (expected 0852)",
+  "new_files": {
+    "pdos-next/server/pdos_next/dingtalk/summary_models.py": "8f23ed396f4128f21f5daa2eb13af3cae244305c2f5395c6bbd1eaedc835f61c",
+    "pdos-next/server/migrations/candidates/summary_dingtalk.py": "ba40cd1accf30e811d095867eb6c5b11b42e24edc70e82619a9eda7646e7d8c6"
+  },
+  "public_patch": "sql-model-public-hooks.patch",
+  "public_patch_sha256": "86f76fef8d23a78ae18c1948e5d80cc6926a14bc4761ff4fbaec001f297b651e",
+  "public_bases": {
+    "pdos-next/server/pdos_next/models.py": "43d294ab18af26d427fcfa171c69309b2058a8f718d918a910a5ffce5cb5b2ea",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py": "a26412c8e600ba2d558c2cf2ef84cfb0bc3b088b677a8131d3a24f018bee4c92"
+  },
+  "predecessor_inputs": {
+    "/tmp/pdos-summary-dingtalk-lifecycle-predecessor-0851.json": "2fdde4f9268e9e49ea6819b58b89c8482a73fabfe582f01d67e5a0a9a776cc7a",
+    "/tmp/pdos-summary-dingtalk-nodes-predecessor-0851.json": "7ed1e13be6ab770f6d8c226ae9677421b6abeeb05eb0a468eac855879a6cfa48",
+    "/tmp/pdos-summary-dingtalk-owner-acl-predecessor-0851.json": "f39d3186c989055467ac3505bcdd8fc59f9d10881659ec25154ef5f843621732"
+  },
+  "native_acl_changes": false,
+  "existing_table_policy_additions": [
+    "dingtalk_applications: summary_dispatch_metadata SELECT TO pdos_next_owner",
+    "dingtalk_account_bindings: summary_dispatch_metadata SELECT TO pdos_next_owner"
+  ],
+  "owner_acl_basis": "All eight existing tables are owned by pdos_next_owner with complete SELECT; six already have owner_internal true. Only two G metadata SELECT policies are added and exactly removed on down; no existing-table grants/revokes.",
+  "migration_interface": [
+    "BASE_SQL",
+    "LIFECYCLE_UP_SQL",
+    "DOWN_SQL",
+    "PREVIOUS_FUNCTIONS",
+    "NATIVE_FUNCTIONS"
+  ],
+  "downgrade": "Reject nonempty summary history first; empty restores exact two function predecessors and removes only this increment.",
+  "runtime_tables": [
+    "dingtalk_summary_deliveries"
+  ],
+  "no_db_or_real_provider_used": true,
+  "null_semantics": "p26/provider_receipt JSONB(none_as_null=True): initial ORM None binds SQL NULL as required by native insert guard; physical TABLE_SQL unchanged"
+}

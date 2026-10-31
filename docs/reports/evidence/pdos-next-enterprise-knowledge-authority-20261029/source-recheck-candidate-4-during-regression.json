@@ -1,0 +1,14 @@
+{
+  "candidate": "4",
+  "manifest_inputs": 968,
+  "changed": [],
+  "unchanged": true,
+  "next_phase_unintegrated_excluded": [
+    "pdos-next/server/pdos_next/enterprise_search/action_sources.py",
+    "pdos-next/server/pdos_next/enterprise_search/verification_candidates.py",
+    "pdos-next/server/tests/enterprise_search/test_action_sources.py",
+    "pdos-next/server/tests/enterprise_search/test_verification_candidates.py",
+    "pdos-next/web/src/components/pai/verification-preparation-card.tsx",
+    "pdos-next/web/src/components/pai/verification-preparation-card.test.mjs"
+  ]
+}

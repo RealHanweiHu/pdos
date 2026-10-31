@@ -1,0 +1,54 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 2 items
+
+tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0] PASSED [ 50%]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0]
+tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0]
+tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-action-taint-20261029/pg-taint-verification-run3.xml -
+================== 2 passed, 18 warnings in 179.82s (0:02:59) ==================

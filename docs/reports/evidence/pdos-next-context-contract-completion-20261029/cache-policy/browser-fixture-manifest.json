@@ -1,0 +1,8 @@
+{
+  "scope": "native protocol UI fixture only; no fixture or server execution",
+  "files": {
+    "pdos-next/server/tests/agent_kernel/prompt_cache_browser_fixture.py": "f97c44ab0b3c590f60769e716a0d06ab1be4cf70842d09ca41d59e6f68673667",
+    "docs/reports/evidence/pdos-next-context-contract-completion-20261029/cache-policy/browser-fixture-README.md": "7badb28c9d7dd0aa2d3e7e696f4d8a0e9cd356836c6f0ed0da2e56501d614e6f",
+    "docs/reports/evidence/pdos-next-context-contract-completion-20261029/cache-policy/browser-fixture-checks.json": "994eec43f22689e5a1116cbf11b99b1fe2164f4cbb41027b68b688125e435117"
+  }
+}

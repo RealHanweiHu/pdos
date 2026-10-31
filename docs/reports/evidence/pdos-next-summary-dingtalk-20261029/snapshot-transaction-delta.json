@@ -1,0 +1,11 @@
+{
+  "status": "ready_for_root_actual_regression",
+  "file": "pdos-next/server/pdos_next/dingtalk/summary_delivery.py",
+  "base_sha256": "1ed84572da0fad8fb68863eea97a729668385f44c91e0f53aaa9b4b3926cc63d",
+  "final_sha256": "b032ad125dd413bd8e933b83070c1d4fce255b97473776ae4375fb419eea3ebc",
+  "patch_sha256": "f4a21d00c36e0ee155a66e81458fc98e3273241b3490797dcda30bc76588a8d2",
+  "cause": "Bootstrap.writer_for executes SELECT FOR SHARE in snapshot; PostgreSQL rejects READ ONLY transaction",
+  "change": "Use existing repeatable_read=True transaction option; owner/category RLS and all pre-send app/binding/current writer/source checks retained",
+  "root_regression": "tests/dingtalk/test_summary_delivery_pg.py native5 + schema coverage",
+  "no_db_or_live_changes": true
+}

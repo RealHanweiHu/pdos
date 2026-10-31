@@ -1,0 +1,13 @@
+{
+  "base_head": "67e2650e9fabc21161212f22b9546bf800e60043",
+  "files": {
+    "pdos-next/server/pdos_next/agent_kernel/category_candidate.py": "ae022c30ec893a2e09e7f54e0086b24ebfcbe2383fd581ed1d5e67e029bcca01",
+    "pdos-next/server/tests/confirmation_fixture.py": "0cb92e23f29f59a73d00b34d8f001592f9995917a3bf2eda78fd6c52157dd188",
+    "pdos-next/server/tests/preproject/test_confirmation_recovery_pg.py": "b82cdb921f16a3ff4267f828aae6a62e478fd629321ba8b9048aa2a8faf12b9f",
+    "pdos-next/server/tests/agent_kernel/test_category_adoption_transactions.py": "049f2460e9fe6bcce1aadedb9c258c8a7ed1ebefe19c00a8c1b36dfb9f1212a8",
+    "pdos-next/server/tests/agent_kernel/test_category_candidate.py": "396cc6c640a1c097dda40c8d895fb84b2b40bc0a7a4ea41708fac952ee36f1bd",
+    "pdos-next/server/tests/agent_kernel/test_category_candidate_transactions.py": "95cd5d6328ca600a5bbf9bab1738919a0f7be5b2e8657ebc798c88d52573e841",
+    "pdos-next/server/tests/agent_kernel/test_category_source_writeback_pg.py": "dd7b4eacf75617d433e62c30364e130c24fd45ce90673473c4e4aeec494617a0",
+    "pdos-next/server/tests/agent_kernel/test_context_projection_entries.py": "51a186388a334e341c854345493b92809d6acf5e47aad683df8213d3221dbadb"
+  }
+}

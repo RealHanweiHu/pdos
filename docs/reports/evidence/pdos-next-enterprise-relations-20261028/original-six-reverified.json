@@ -1,0 +1,29 @@
+{
+  "original_six": [
+    {
+      "case": "tests.agent_kernel.test_context_projection_pg::test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked",
+      "result": "passed"
+    },
+    {
+      "case": "tests.agent_kernel.test_context_projection_pg::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[development]",
+      "result": "passed"
+    },
+    {
+      "case": "tests.agent_kernel.test_context_projection_pg::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[test]",
+      "result": "passed"
+    },
+    {
+      "case": "tests.agent_kernel.test_context_projection_pg::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[production]",
+      "result": "passed"
+    },
+    {
+      "case": "tests.agent_kernel.test_context_projection_pg::test_registered_graph_progressively_adds_context_and_replay_never_calls_provider",
+      "result": "passed"
+    },
+    {
+      "case": "tests.agent_kernel.test_m3_research_composition_transactions::test_actual_registered_page_returns_original_read_reference_on_restore",
+      "result": "passed"
+    }
+  ],
+  "evidence": "database-final.junit.xml"
+}

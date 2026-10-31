@@ -1,0 +1,37 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 13 items
+
+tests/dingtalk/test_channel_pg.py .F
+
+=================================== FAILURES ===================================
+___ test_native_ack_and_unknown_delivery_recover_by_lookup_with_durable_p26 ____
+
+channel = namespace(setup=<isolated synthetic test scope>, app=<pdos_next.dingtalk.models.Application object at 0x130979970>, ru...estclient.TestClient object at 0x1308baa20>, service=<pdos_next.dingtalk.runtime.ChannelService object at 0x130a2a210>)
+
+    def test_native_ack_and_unknown_delivery_recover_by_lookup_with_durable_p26(channel):
+        setup = channel.setup
+        bind(channel)
+        result = incoming(channel)
+        assert result.status_code == 202, result.text
+        ref = DeliveryReference(
+            tenant_id=setup.tenant, message_id=UUID(result.json()["message_id"]), phase="received"
+        )
+        key = delivery_key(ref.message_id, "received")
+        channel.runtime.adapter.lose_after_send.add(key)
+        first = channel.service.deliver(ref)
+>       assert first["state"] == "unknown" and first["attempts"] == 1
+E       AssertionError: assert ('cancelled' == 'unknown'
+E         
+E         - unknown
+E         + cancelled)
+
+tests/dingtalk/test_channel_pg.py:181: AssertionError
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-dingtalk-20261029/pg-run1.xml -
+=========================== short test summary info ============================
+FAILED tests/dingtalk/test_channel_pg.py::test_native_ack_and_unknown_delivery_recover_by_lookup_with_durable_p26
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+========================= 1 failed, 1 passed in 4.91s ==========================

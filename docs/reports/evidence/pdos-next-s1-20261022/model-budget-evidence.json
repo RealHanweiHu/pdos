@@ -1,0 +1,145 @@
+{
+  "tenant_id": "4046073e-d405-42f1-8f3e-a742e6e47164",
+  "run_id": "a2067183-bd63-4981-ac30-aecd91269ece",
+  "model_calls": [
+    {
+      "id": "420785be-842d-442a-9f55-64dd4d74a924",
+      "run_id": "76b65cf6-28fb-4e18-917d-69623f296209",
+      "tool": "model",
+      "state": "failed",
+      "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+      "provider_request_id": null,
+      "cost_state": "estimated_unknown",
+      "cost_charged_micro_usd": 49012,
+      "actual_input_tokens": 148007,
+      "actual_output_tokens": 2048
+    },
+    {
+      "id": "d2c33d94-8f43-4bf1-ad1d-c8c062f2002f",
+      "run_id": "3fe04f06-62b1-4ecb-a3d1-51cb96f845a9",
+      "tool": "model",
+      "state": "failed",
+      "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+      "provider_request_id": null,
+      "cost_state": "estimated_unknown",
+      "cost_charged_micro_usd": 49012,
+      "actual_input_tokens": 148007,
+      "actual_output_tokens": 2048
+    },
+    {
+      "id": "80832d8d-2c67-4e32-8bd5-b62f6603bd94",
+      "run_id": "5496bca4-c734-4957-a7d1-61cc7d36e144",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request_id": "072935521efe08a8d567ca653c73d917",
+      "cost_state": "actual",
+      "cost_charged_micro_usd": 14511,
+      "actual_input_tokens": 40775,
+      "actual_output_tokens": 1393
+    },
+    {
+      "id": "7ba9d168-7d63-43de-8937-a2fbbc68c681",
+      "run_id": "5496bca4-c734-4957-a7d1-61cc7d36e144",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request_id": "0729356bf8f9d9116d483cf37f06e845",
+      "cost_state": "actual",
+      "cost_charged_micro_usd": 3882,
+      "actual_input_tokens": 42981,
+      "actual_output_tokens": 502
+    },
+    {
+      "id": "b45d33ed-6251-4f4e-b405-9de1fafc63f7",
+      "run_id": "a2067183-bd63-4981-ac30-aecd91269ece",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request_id": "0729369838034c7201ff8413bb5b50b2",
+      "cost_state": "actual",
+      "cost_charged_micro_usd": 14251,
+      "actual_input_tokens": 40855,
+      "actual_output_tokens": 1166
+    },
+    {
+      "id": "5f27347a-0309-40a6-92dd-698919544307",
+      "run_id": "a2067183-bd63-4981-ac30-aecd91269ece",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request_id": "072936aa147e19f367ed80baf254c8cf",
+      "cost_state": "actual",
+      "cost_charged_micro_usd": 3606,
+      "actual_input_tokens": 42319,
+      "actual_output_tokens": 464
+    },
+    {
+      "id": "10813936-c6f3-4d43-bfb7-07500f7cba80",
+      "run_id": "a2067183-bd63-4981-ac30-aecd91269ece",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request_id": "072936b69d6a9b8b89801d40c13ae111",
+      "cost_state": "actual",
+      "cost_charged_micro_usd": 4721,
+      "actual_input_tokens": 43301,
+      "actual_output_tokens": 1400
+    }
+  ],
+  "budgets": [
+    {
+      "id": "7f1cd65a-64da-43f0-a4ac-289bc6509194",
+      "active": true,
+      "limit_micro_usd": 950988,
+      "calls": 6,
+      "call_limit": 7,
+      "spent_micro_usd": 89983,
+      "held_micro_usd": 0
+    },
+    {
+      "id": "5bb72a7c-be6b-48ae-be8d-b5466e1b7bf9",
+      "active": false,
+      "limit_micro_usd": 1000000,
+      "calls": 1,
+      "call_limit": 8,
+      "spent_micro_usd": 49012,
+      "held_micro_usd": 0
+    }
+  ],
+  "skill_enablements": [
+    {
+      "skill_key": "proposal_drafting",
+      "enabled": true,
+      "qualified_model_version": null,
+      "qualified_skill_version": null,
+      "qualification_id": null
+    },
+    {
+      "skill_key": "gap_check",
+      "enabled": true,
+      "qualified_model_version": null,
+      "qualified_skill_version": null,
+      "qualification_id": null
+    }
+  ],
+  "qualification_count": 0,
+  "total_calls": 7,
+  "actual_micro_usd": 40971,
+  "estimated_unknown_micro_usd": 98024,
+  "business_receipts": [
+    {
+      "id": "ed39ee43-9e64-46b3-a5a6-907d993dcc65",
+      "operation": "proposal.item.patch",
+      "actor_id": "69f1c732-2201-4c0f-a064-41bc207f8363",
+      "requester_id": "69f1c732-2201-4c0f-a064-41bc207f8363",
+      "agent_run_id": "a2067183-bd63-4981-ac30-aecd91269ece",
+      "confirmation_id": "eb1d72d5-a1e2-47cc-bb2f-a7b84421f888",
+      "subject_id": "3c1cd7aa-a6a4-4fe9-b432-021f491d7a2d",
+      "subject_revision": 2
+    }
+  ],
+  "g0_decisions": [
+    "56e194e7-de92-4f53-901c-97f001dc1cab"
+  ]
+}

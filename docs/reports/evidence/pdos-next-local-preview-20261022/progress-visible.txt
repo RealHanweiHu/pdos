@@ -1,0 +1,3 @@
+Browser tab: 2, Title: "计划执行进度 · PDOS", URL: "http://127.0.0.1:59650/plan".
+There has been no change in the accessibility tree.
+The focused UI element is 1 AXWebArea 计划执行进度 · PDOS, URL: 127.0.0.1:59650/plan

@@ -1,0 +1,28 @@
+{
+  "samples": 12,
+  "returned_sources": [
+    6
+  ],
+  "queries_per_request": [
+    7
+  ],
+  "p95_seconds": 4.520312364166602,
+  "max_seconds": 4.495911457925104,
+  "durations_seconds": [
+    4.076254292041995,
+    4.26715562492609,
+    4.096210375078954,
+    4.3974193329922855,
+    3.935951666906476,
+    4.495911457925104,
+    4.240736249950714,
+    4.130762791959569,
+    3.805479542003013,
+    4.4261945829493925,
+    4.037764957989566,
+    4.087219291948713
+  ],
+  "real_models": false,
+  "embedding": false,
+  "scope": "one Build and its actual registered execution/TestRun records, not all-source scale"
+}

@@ -1,0 +1,30 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "from": "s0_0849",
+  "allocated": "s0_0850",
+  "functions": {
+    "kernel_lifecycle_links(text,jsonb)": {
+      "owner": "pdos_next_owner",
+      "security_definer": false,
+      "acl": "{pdos_next_owner=X/pdos_next_owner}",
+      "old_sha256": "5d5dc63b15e131d6835dd3f1ce099fd7b85347309fb05775ac4c454d9064bdfb",
+      "new_sha256": "9764bec52e783e1b2503dd611bd347372045e19d16d66b087dbfc3a273676527"
+    },
+    "kernel_source_reference_gate()": {
+      "owner": "pdos_next_owner",
+      "security_definer": true,
+      "acl": "{pdos_next_owner=X/pdos_next_owner}",
+      "old_sha256": "6771585d856c2ac0539fa1c6adeb8fc36ccadbd94d75b2215ca1d3431c128ff5",
+      "new_sha256": "11833a14bff95f15b5d471eb1ae82355b47c934c4570948d6ce41b14a149a9fa"
+    },
+    "kernel_source_reference_clock()": {
+      "owner": "pdos_next_owner",
+      "security_definer": true,
+      "acl": "{pdos_next_owner=X/pdos_next_owner}",
+      "old_sha256": "5020345df192ce1da206d55fed40ee2b57d238816743fcf76a727e338d2de45b",
+      "new_sha256": "3bbbc41108de9006e7b33a5e303ef51b32949f65893b6c316aeaf64429b39396"
+    }
+  },
+  "body_only_replacements": true,
+  "real_provider_accessed": false
+}

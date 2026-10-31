@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="3" time="16.974" timestamp="2026-10-29T04:47:35.333063-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_embedding_canonical_provider_pg" name="test_profile_confirms_canonical_identity_and_plan_excludes_internal_under_its_agreement" time="6.245"><failure message="AttributeError: 'NoneType' object has no attribute 'consumed'">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_profile_confirms_canonical_identity_and_plan_excludes_internal_under_its_agreement(setup):
+        source = register(setup, "Canonical plan source", "SYNTHETIC_CANONICAL_INTERNAL")
+        index(setup, source)
+        provider, backend = canonical_ports(setup)
+        policy = register_policy(setup, ["public"])
+        command = command_for(setup)
+        assert urlsplit(command["payload"]["metadata"]["base_url"]).hostname != CANONICAL
+        receipt, preview = save_profile(setup, backend, command)
+        assert preview["review"]["provider"] == CANONICAL
+        assert preview["command"]["payload"]["confirmation_token"]
+        assert provider.calls == []
+        version_id = UUID(receipt["subject_id"])
+        with Session(setup.admin) as session:
+            stored = session.get(EmbeddingProfile, version_id)
+            assert stored.binding_digest == preview["review"]["binding_digest"]
+            actual = session.get(Receipt, UUID(receipt["id"]))
+            confirmed = session.get(Confirmation, actual.confirmation_id)
+&gt;           assert confirmed.consumed is True
+                   ^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'NoneType' object has no attribute 'consumed'
+
+tests/enterprise_search/test_embedding_canonical_provider_pg.py:107: AttributeError</failure></testcase><testcase classname="tests.enterprise_search.test_embedding_canonical_provider_pg" name="test_real_queued_batch_is_denied_after_canonical_agreement_tightens_without_spend" time="4.709" /><testcase classname="tests.enterprise_search.test_embedding_canonical_provider_pg" name="test_native_main_read_uses_canonical_agreement_and_honest_keyword_fallback_without_fee" time="5.282" /></testsuite></testsuites>

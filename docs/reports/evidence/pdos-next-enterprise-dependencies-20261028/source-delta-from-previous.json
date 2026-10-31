@@ -1,0 +1,16 @@
+{
+  "changed": [
+    "pdos-next/server/pdos_next/enterprise_search/api.py",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_adapter.py",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_answer.py",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_scope.py",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_sources.py",
+    "pdos-next/web/src/components/pai/answer-sources.tsx",
+    "pdos-next/web/src/components/xiaopai.test.mjs"
+  ],
+  "added": [
+    "pdos-next/server/pdos_next/enterprise_search/assistant_dependencies.py",
+    "pdos-next/server/tests/enterprise_search/test_knowledge_dependencies_pg.py",
+    "pdos-next/server/tests/enterprise_search/test_knowledge_dependencies_temporal_pg.py"
+  ]
+}

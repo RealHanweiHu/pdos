@@ -1,0 +1,29 @@
+{
+  "candidate": "same-lineage-citation-reissue-and-versioned-exclusion",
+  "verified_at_utc": "2026-10-28T23:21:36.462798+00:00",
+  "checkpoint_status": "functionality_verified_with_latency_variation",
+  "single_full_run_green": false,
+  "test_files": 42,
+  "full_run_cases": 365,
+  "full_run_passed": 364,
+  "full_run_failed": 1,
+  "errors": 0,
+  "skipped": 0,
+  "warnings": 244,
+  "duration_seconds": 1032.048,
+  "failed_cases": [
+    "tests.enterprise_search.test_retrieval_pg::test_query_count_is_constant_and_local_warm_latency_below_one_second"
+  ],
+  "original_six_passed": 6,
+  "new_inheritance_cases_passed": 9,
+  "isolated_followup_passed": 1,
+  "source_inputs": 211,
+  "changed": [],
+  "frontend_tests": 52,
+  "frontend_sources_compared": 660,
+  "database_target": "127.0.0.1:53502/pdos_test",
+  "head": "s0_0829",
+  "real_models": false,
+  "embedding": false,
+  "goal_complete": false
+}

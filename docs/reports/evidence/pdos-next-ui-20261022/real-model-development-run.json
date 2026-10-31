@@ -1,0 +1,432 @@
+{
+  "run": {
+    "run_id": "7ad4975b-bca3-4667-96ac-8b9175637311",
+    "goal": "合成 UI 联验，只需回答这一轮，不要调用任何读取、研究或业务写入工具。请使用资料查漏方法检查以下界面说明的缺项：用户可以选择当前可见项目，手选已启用且固定版本的技能；未知请求保留原键；品类经验候选不冒充正式规则；阶段、健康度与冻结点仍未知。请给出两句简短中文草稿，保留未知，并只调用 pdos_agent_output 收尾，status=completed，不要创建候选或业务记录。",
+    "session_id": "4fd56be3-e838-49bd-8f10-174b689c8025",
+    "conversation": {
+      "previous_run_id": null,
+      "next_run_id": null
+    },
+    "product_id": null,
+    "proposal_id": null,
+    "project_id": null,
+    "status": "partial",
+    "result": {
+      "result": {
+        "actions": []
+      },
+      "status": "partial",
+      "summary": "结果未通过完整核对。",
+      "questions": [],
+      "unfinished": [
+        "最终结构或引用尚未核对"
+      ]
+    },
+    "error_code": null,
+    "reconciliation": null,
+    "process": {
+      "run_id": "7ad4975b-bca3-4667-96ac-8b9175637311",
+      "status": "partial",
+      "reverted": false,
+      "error_code": null,
+      "started_at": "2026-10-23T08:52:22.334852+00:00",
+      "observed_at": "2026-10-23T08:55:43.983760+00:00",
+      "last_recorded_at": "2026-10-23T08:53:48.682203+00:00",
+      "ended_at": "2026-10-23T08:53:48.682203+00:00",
+      "elapsed_seconds": 86.347351,
+      "call_counts": {
+        "total": 3,
+        "completed": 3,
+        "pending": 0,
+        "failed": 0
+      },
+      "source_count": 0,
+      "sources": [],
+      "next_source_cursor": null,
+      "business_receipt_count": 0,
+      "receipts": [],
+      "next_receipt_cursor": null,
+      "steps": [
+        {
+          "id": "664f97b9-6b0c-410e-ae94-c50e900ee054",
+          "sequence": 1,
+          "at": "2026-10-23T08:52:22.366228+00:00",
+          "kind": "accepted",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "35a574e2-98d2-4e2a-a680-c7b0c5957ba9",
+          "sequence": 2,
+          "at": "2026-10-23T08:52:22.958052+00:00",
+          "kind": "skill_loaded",
+          "tool": null,
+          "skill": "gap_check",
+          "version": "0.2.1-draft",
+          "status": null
+        },
+        {
+          "id": "71153ee1-e9b6-4862-b291-89e3d7482faf",
+          "sequence": 3,
+          "at": "2026-10-23T08:52:23.029498+00:00",
+          "kind": "context_projected",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "projected",
+          "context_fields": [
+            "goal",
+            "sources"
+          ],
+          "context_omitted": [],
+          "context_issues": []
+        },
+        {
+          "id": "5206cbf3-d006-48b3-920b-666e44b6d90c",
+          "sequence": 4,
+          "at": "2026-10-23T08:52:23.086982+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "5abd7b94-fc77-4710-ae20-f23cc04a47a1",
+          "sequence": 6,
+          "at": "2026-10-23T08:53:01.050410+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "cb57341e-5e5a-407e-bc31-d49cf988305a",
+          "sequence": 8,
+          "at": "2026-10-23T08:53:27.611550+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "fe56c5d4-39a9-4bd7-9f26-5b9344070c09",
+          "sequence": 10,
+          "at": "2026-10-23T08:53:48.652363+00:00",
+          "kind": "run_state",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "partial"
+        },
+        {
+          "id": "aa5b5a92-4335-41a2-9857-713c74673aa9",
+          "sequence": 11,
+          "at": "2026-10-23T08:53:48.682203+00:00",
+          "kind": "finished",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "partial"
+        }
+      ],
+      "next_before": null
+    },
+    "versions": {
+      "provider_key": "minimax",
+      "budget_policy": "development_unlimited",
+      "model_version": "MiniMax-M3",
+      "prompt_prefixes": {
+        "main": "f7abfb423ac2e51c7d78d56145246825c7ced4e829449037bf24e9314b3954e5"
+      },
+      "tool_definitions": {
+        "main": "112404f08e5e13687016b4e0c4a64548bc06032d3b0aa5966e6e3573c7e15968"
+      },
+      "tool_disclosures": {
+        "main": {
+          "chain": [
+            "112404f08e5e13687016b4e0c4a64548bc06032d3b0aa5966e6e3573c7e15968"
+          ],
+          "names": [
+            "ai.skill.qualify",
+            "build.engineering.authorize",
+            "build.lot.read",
+            "build.manufacturing.authorize",
+            "build.read",
+            "build.sample.read",
+            "calc.cost_subtotal",
+            "calc.derivation_diff",
+            "calc.market_size",
+            "calc.opportunity_score",
+            "calc.price_band",
+            "calc.spec_compare",
+            "category.competitors.list",
+            "category.knowledge.list",
+            "category.list",
+            "category.member.grant",
+            "category.parameters.list",
+            "category.read",
+            "change.close",
+            "change.order.approve",
+            "change.selection.decide",
+            "change.verification.record",
+            "conversation.history",
+            "evidence.extract",
+            "evidence.link.create",
+            "evidence.search",
+            "integration.handoff.authorize",
+            "knowledge.rule.publish",
+            "mcp.connector.allow",
+            "mcp.read",
+            "mcp.tools.list",
+            "npi.manufacturing_baseline.publish",
+            "platform.read",
+            "product.baseline.read",
+            "product.definition.item.patch",
+            "project.create",
+            "proposal.g0.decide",
+            "proposal.g0.submit",
+            "proposal.item.patch",
+            "proposal.items.read",
+            "proposal.question.create",
+            "proposal.read",
+            "proposal.share",
+            "provider.agreement.register",
+            "quality.capa.verification.review",
+            "quality.issue.read",
+            "quality.issue.root_cause.decide",
+            "release.engineering.approve",
+            "release.exception.decide",
+            "release.exception.withdraw",
+            "release.manufacturing.approve",
+            "research.fanout",
+            "research.search",
+            "skill.load",
+            "test.disposition.decide",
+            "test.run.read",
+            "test.run.review"
+          ]
+        }
+      },
+      "checkpoint_layout": "session-run-ns/v1",
+      "context_snapshots": {
+        "892e064bcb7235e0ae244f603185bd9578dbee38e9559b0eeb8a5dc6dbbf3822": {
+          "scope": {
+            "product_id": null,
+            "category_id": null,
+            "proposal_id": null,
+            "requester_id": "69f1c732-2201-4c0f-a064-41bc207f8363",
+            "data_categories": [
+              "internal"
+            ]
+          },
+          "fields": [
+            "goal",
+            "sources"
+          ],
+          "issues": [],
+          "skills": [
+            {
+              "key": "gap_check",
+              "digest": "2071cd492f74daa1e8d17d718e6253879503b079586160460e8ff52b9961421f",
+              "version": "0.2.1-draft",
+              "load_event_id": "35a574e2-98d2-4e2a-a680-c7b0c5957ba9"
+            }
+          ],
+          "omitted": [],
+          "event_id": "71153ee1-e9b6-4862-b291-89e3d7482faf",
+          "read_set": [],
+          "schema_digest": "3b42c22b1e5eb3b8465e370e0aaffa761125106d070bedec1adf1b73c081b469",
+          "source_digest": "94b94e787248beeea7456cd72dc35432aa2ea420e9afede5dac44943154af8a7",
+          "content_digest": "4ea2735c2adaba414e5173d2febf932ce2abe84c240a140943d63b9b6be47d35"
+        }
+      },
+      "model_route_digest": "588eef18037b98bdd7f30e05cfd1f5e424f537ad4c5d86b99f282e444daef4d7"
+    },
+    "reverted": false,
+    "reverted_at": null,
+    "reverted_by": null,
+    "revert_receipt_id": null,
+    "cancel_epoch": 0
+  },
+  "events": {
+    "items": [
+      {
+        "sequence": 1,
+        "event": {
+          "type": "accepted",
+          "status": "queued",
+          "requested_skills": [
+            {
+              "key": "gap_check",
+              "digest": "2071cd492f74daa1e8d17d718e6253879503b079586160460e8ff52b9961421f",
+              "version": "0.2.1-draft"
+            }
+          ]
+        }
+      },
+      {
+        "sequence": 2,
+        "event": {
+          "key": "gap_check",
+          "type": "skill_loaded",
+          "digest": "2071cd492f74daa1e8d17d718e6253879503b079586160460e8ff52b9961421f",
+          "version": "0.2.1-draft",
+          "isolation": "main"
+        }
+      },
+      {
+        "sequence": 3,
+        "event": {
+          "type": "context_projected",
+          "fields": [
+            "goal",
+            "sources"
+          ],
+          "issues": [],
+          "skills": [
+            {
+              "key": "gap_check",
+              "digest": "2071cd492f74daa1e8d17d718e6253879503b079586160460e8ff52b9961421f",
+              "version": "0.2.1-draft",
+              "load_event_id": "35a574e2-98d2-4e2a-a680-c7b0c5957ba9"
+            }
+          ],
+          "status": "projected",
+          "omitted": [],
+          "schema_digest": "3b42c22b1e5eb3b8465e370e0aaffa761125106d070bedec1adf1b73c081b469",
+          "content_digest": "4ea2735c2adaba414e5173d2febf932ce2abe84c240a140943d63b9b6be47d35"
+        }
+      },
+      {
+        "sequence": 4,
+        "event": {
+          "turn": 1,
+          "type": "model_started"
+        }
+      },
+      {
+        "sequence": 5,
+        "event": {
+          "type": "egress_checked",
+          "provider": "minimax",
+          "checked_at": "2026-10-23T08:52:23.473234+00:00",
+          "agreement_id": null,
+          "data_categories": [
+            "internal"
+          ],
+          "agreement_revision": null
+        }
+      },
+      {
+        "sequence": 6,
+        "event": {
+          "turn": 2,
+          "type": "model_started"
+        }
+      },
+      {
+        "sequence": 7,
+        "event": {
+          "type": "egress_checked",
+          "provider": "minimax",
+          "checked_at": "2026-10-23T08:53:01.455585+00:00",
+          "agreement_id": null,
+          "data_categories": [
+            "internal"
+          ],
+          "agreement_revision": null
+        }
+      },
+      {
+        "sequence": 8,
+        "event": {
+          "turn": 3,
+          "type": "model_started"
+        }
+      },
+      {
+        "sequence": 9,
+        "event": {
+          "type": "egress_checked",
+          "provider": "minimax",
+          "checked_at": "2026-10-23T08:53:28.105020+00:00",
+          "agreement_id": null,
+          "data_categories": [
+            "internal"
+          ],
+          "agreement_revision": null
+        }
+      },
+      {
+        "sequence": 10,
+        "event": {
+          "type": "run_state",
+          "status": "partial",
+          "error_code": null
+        }
+      },
+      {
+        "sequence": 11,
+        "event": {
+          "type": "finished",
+          "status": "partial"
+        }
+      }
+    ],
+    "next_cursor": 11,
+    "status": "partial",
+    "reverted": false
+  },
+  "ledger": [
+    {
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request_id": "072a537e2f96fb29470c7997c4664072",
+      "cost_state": "actual",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 15157,
+      "actual_input_tokens": 36034,
+      "actual_output_tokens": 3093,
+      "id": "22a8d082-236d-47fe-8be9-2bfabf96c595",
+      "budget_policy": "development_unlimited"
+    },
+    {
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request_id": "072a53a4335f1581066681a7e9fec4fa",
+      "cost_state": "actual",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 6365,
+      "actual_input_tokens": 39174,
+      "actual_output_tokens": 2484,
+      "id": "78c25eea-2484-4dd3-b101-f8520c158676",
+      "budget_policy": "development_unlimited"
+    },
+    {
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request_id": "072a53beb8cb0f57a5bdc51192f23d3f",
+      "cost_state": "actual",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 5973,
+      "actual_input_tokens": 41705,
+      "actual_output_tokens": 2167,
+      "id": "14f06e5b-ceb4-4646-a69e-ca0fab1bd4a1",
+      "budget_policy": "development_unlimited"
+    }
+  ],
+  "total_model_calls": 3,
+  "actual_charged_micro_usd": 27495,
+  "business_receipts": [],
+  "browser_used": false,
+  "development_policy_authorized": true,
+  "collection": "Read original durable Run and exact ledger after old driver assertion; no repost or workflow start."
+}

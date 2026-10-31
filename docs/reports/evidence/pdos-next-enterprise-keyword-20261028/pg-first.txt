@@ -1,0 +1,38 @@
+..F..                                                                    [100%]
+=================================== FAILURES ===================================
+__ test_outbox_replay_and_full_rebuild_do_not_duplicate_df_or_business_facts ___
+
+setup = <isolated synthetic test scope>
+
+    def test_outbox_replay_and_full_rebuild_do_not_duplicate_df_or_business_facts(setup):
+        identity = register(setup, "D16 气密记录", "漏气，复验。")
+        with Session(setup.admin) as session:
+            outbox, receipt = session.execute(
+                select(Outbox, Receipt)
+                .join(Receipt, Outbox.receipt_id == Receipt.id)
+                .where(Outbox.subject_id == identity)
+            ).one()
+            reference = {
+                "tenant_id": str(setup.tenant),
+                "category_id": str(setup.category),
+                "actor_id": str(outbox.actor_id),
+                "requester_id": str(receipt.requester_id),
+                "event_id": str(outbox.id),
+                "subject_id": str(identity),
+                "subject_revision": outbox.subject_revision,
+                "event_type": outbox.type,
+            }
+            facts = session.scalar(select(func.count()).select_from(Receipt))
+        assert process_event(setup.engine, reference) == {"processed": 1, "changed": 1}
+        assert process_event(setup.engine, reference) == {"processed": 1, "changed": 0}
+        with session_for(setup) as session:
+            before = session.get(SearchCorpus, setup.tenant)
+            expected = before.chunk_count, before.token_count
+>           frequencies = dict(session.execute(select(SearchTerm.term, SearchTerm.document_count)))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: 'ChunkedIteratorResult' object is not subscriptable
+
+tests/enterprise_search/test_retrieval_pg.py:138: TypeError
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_retrieval_pg.py::test_outbox_replay_and_full_rebuild_do_not_duplicate_df_or_business_facts
+1 failed, 4 passed in 19.31s

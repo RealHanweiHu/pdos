@@ -1,0 +1,14 @@
+[
+  {
+    "signature": "m3_lifecycle_source_links(uuid,uuid,text,jsonb)",
+    "base_schema": "schema_s0_0839.py::NATIVE_FUNCTIONS",
+    "sha256": "e4b390b2e35a27c1ee00484248a3da8303fbaa5903465319d1a1e5ef198dc521",
+    "unchanged_by_0841": true
+  },
+  {
+    "signature": "m3_lifecycle_nodes(uuid,uuid,uuid[])",
+    "base_schema": "schema_s0_0839.py::NATIVE_FUNCTIONS",
+    "sha256": "ac67cddf4709cee62f4055f6545a3d0e7f65504d3c296149cd74a971104097b8",
+    "unchanged_by_0841": true
+  }
+]

@@ -1,0 +1,72 @@
+Browser tab: 3, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:59650/?area=projects&category=b24a8a71-981e-49cc-a32c-496641be611d".
+1 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:59650/?area=projects&category=b24a8a71-981e-49cc-a32c-496641be611d
+	2 container
+		3 pop up button (collapsed) Description: Open Next.js Dev Tools, ID: next-logo, Secondary Actions: Expand
+			4 image
+		5 text PDOS · 研发工作区
+		6 link Description: 跳到工作内容, Value: 127.0.0.1:59650/?area=projects&category=b24a8a71-981e-49cc-a32c-496641be611d#workspace-content
+		7 text PDOS
+		8 button 收起侧栏
+			9 image
+		10 button (collapsed) Description: 新建：选择办理入口, Help: 新建, Secondary Actions: Expand
+			11 text 新建
+		12 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			13 text ⌘K
+		14 container 工作区导航
+			15 text 日常
+			16 link Description: 我的工作, Value: 127.0.0.1:59650/?area=work&category=b24a8a71-981e-49cc-a32c-496641be611d
+			17 link Description: 项目, Value: 127.0.0.1:59650/?area=projects&category=b24a8a71-981e-49cc-a32c-496641be611d
+			18 container 最近的在办项目
+				19 link Description: 便携充气泵 · S1 演示项目 阶段尚未提供, Help: 便携充气泵 · S1 演示项目 · 阶段尚未提供, Value: 127.0.0.1:59650/?area=cockpit&category=b24a8a71-981e-49cc-a32c-496641be611d&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d
+			20 link Description: 组合与资源, Value: 127.0.0.1:59650/?area=programs&category=b24a8a71-981e-49cc-a32c-496641be611d
+			21 link Description: 知识, Value: 127.0.0.1:59650/?area=knowledge&category=b24a8a71-981e-49cc-a32c-496641be611d
+			22 text 产品管理
+			23 link Description: 品类开发, Value: 127.0.0.1:59650/?area=category
+			24 link Description: 立项提案, Value: 127.0.0.1:59650/?area=category&category=b24a8a71-981e-49cc-a32c-496641be611d&focus=proposals
+			25 text 按你在各品类的产品管理权限显示。
+		26 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: 127.0.0.1:59650/plan
+		27 link Description: 设置, Value: 127.0.0.1:59650/?area=settings&category=b24a8a71-981e-49cc-a32c-496641be611d
+		28 button 切换明暗主题
+		29 text 胡汉伟 · 本地演示
+		30 text 本地合成环境
+		31 text 项目
+		32 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			33 image
+		34 container workspace-content
+			35 container 项目视图
+				36 checkbox 列表, Value: 0
+				37 checkbox 看板, Value: 0
+				38 checkbox 时间轴, Value: 1
+			39 button (collapsed) 筛选, Secondary Actions: Expand
+			40 checkbox (settable, integer) Description: 我负责的, Value: 0
+			41 container
+				42 text 1  个可见项目
+			43 button 刷新项目
+				44 image
+				45 text 刷新
+			46 text 当前显示计划的完成时间预测范围；阶段区间、门禁与冻结点待对应事实接入。基线、预测、承诺和实际分别呈现。
+			47 container
+				48 text 暂无可读日期
+				49 container 便携充气泵 · S1 演示项目四时间
+					50 button 便携充气泵 · S1 演示项目
+					51 text f0b9ea1f
+					52 container
+						53 text 便携充气泵 · S1 演示型号  ·  汽车充气泵
+					54 text 尚无具名状态更新。
+					55 button 打开项目
+						56 text 打开项目
+						57 image
+					58 button 工作与计划
+					59 text 基线
+					60 text 未知
+					61 text 预测
+					62 text 未知 — 未知
+					63 text 承诺
+					64 text 未知
+					65 text 实际
+					66 text 未知
+			67 container
+				68 text 读取于  10/22/2026, 11:16:02 AM
+		69 button Description: 打开小Pai工作栏, Help: 在当前范围打开小Pai
+
+The focused UI element is 38 checkbox 时间轴, Value: 1

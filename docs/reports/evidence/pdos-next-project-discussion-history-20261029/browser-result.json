@@ -1,0 +1,172 @@
+{
+  "synthetic": true,
+  "native_ui_checks_passed": true,
+  "before": {
+    "agent_sessions": 6,
+    "agent_runs": 6,
+    "agent_run_events": 2,
+    "agent_run_inputs": 0,
+    "agent_tool_calls": 0,
+    "action_receipts": 8,
+    "audit_entries": 8,
+    "outbox_events": 10,
+    "request_keys": 8,
+    "confirmations": 8,
+    "categories": 1,
+    "products": 3,
+    "projects": 2,
+    "project_product_links": 2,
+    "definition_revisions": 2,
+    "proposals": 2,
+    "proposal_items": 6,
+    "proposal_item_versions": 6,
+    "proposal_revisions": 8,
+    "proposal_submissions": 2,
+    "proposal_decisions": 2,
+    "project_open_items": 0,
+    "grants": 3,
+    "object_audiences": 12
+  },
+  "after": {
+    "agent_sessions": 6,
+    "agent_runs": 6,
+    "agent_run_events": 2,
+    "agent_run_inputs": 0,
+    "agent_tool_calls": 0,
+    "action_receipts": 8,
+    "audit_entries": 8,
+    "outbox_events": 10,
+    "request_keys": 8,
+    "confirmations": 8,
+    "categories": 1,
+    "products": 3,
+    "projects": 2,
+    "project_product_links": 2,
+    "definition_revisions": 2,
+    "proposals": 2,
+    "proposal_items": 6,
+    "proposal_item_versions": 6,
+    "proposal_revisions": 8,
+    "proposal_submissions": 2,
+    "proposal_decisions": 2,
+    "project_open_items": 0,
+    "grants": 3,
+    "object_audiences": 12
+  },
+  "protected_snapshot_unchanged": true,
+  "new_runs": 0,
+  "new_receipts": 0,
+  "new_toolcalls": 0,
+  "actual_current_project_history": {
+    "version": "agent-conversation-list/v1",
+    "principal_id": "c982d606-b3f8-4a7b-9a73-25ce2b9dec85",
+    "scope": {
+      "category_id": "75ae4995-ef1f-4897-916a-968065a78118",
+      "proposal_id": null,
+      "project_id": "99bac31a-f4ca-4f67-b362-ab00ff2e1c95"
+    },
+    "as_of": "2026-10-29T17:05:08.747282+00:00",
+    "items": [
+      {
+        "session_id": "a084b538-d5c2-423b-b9cc-61ca79f47698",
+        "revision": 1,
+        "created_at": "2026-10-29T16:53:52.462729+00:00",
+        "scope": {
+          "category_id": "75ae4995-ef1f-4897-916a-968065a78118",
+          "product_id": "de2e9627-5eb6-4732-8af3-07606f6d9c01",
+          "proposal_id": null,
+          "project_id": "99bac31a-f4ca-4f67-b362-ab00ff2e1c95"
+        },
+        "run_count": 1,
+        "latest_run": {
+          "run_id": "6edc73fa-0602-4601-838a-cf6e885090df",
+          "goal": "Owned current project second discussion; queued, no generated answer",
+          "status": "queued",
+          "error_code": null,
+          "created_at": "2026-10-29T16:53:54.952438+00:00",
+          "continued_from_id": null,
+          "reverted": false
+        },
+        "matched_run": null,
+        "presentation": {
+          "id": null,
+          "revision": 0,
+          "title": null,
+          "pinned": false,
+          "archived": false,
+          "created_at": null
+        }
+      },
+      {
+        "session_id": "831b6b7d-8f04-4f8c-8f8b-3abd092dd3f5",
+        "revision": 1,
+        "created_at": "2026-10-29T16:53:45.650152+00:00",
+        "scope": {
+          "category_id": "75ae4995-ef1f-4897-916a-968065a78118",
+          "product_id": "de2e9627-5eb6-4732-8af3-07606f6d9c01",
+          "proposal_id": null,
+          "project_id": "99bac31a-f4ca-4f67-b362-ab00ff2e1c95"
+        },
+        "run_count": 1,
+        "latest_run": {
+          "run_id": "753f0c74-6771-4f5e-b041-37928dbb9433",
+          "goal": "Synthetic P20 original owner project goal; never infer a business result",
+          "status": "cancelled",
+          "error_code": null,
+          "created_at": "2026-10-29T16:53:45.650152+00:00",
+          "continued_from_id": null,
+          "reverted": false
+        },
+        "matched_run": null,
+        "presentation": {
+          "id": null,
+          "revision": 0,
+          "title": null,
+          "pinned": false,
+          "archived": false,
+          "created_at": null
+        }
+      }
+    ],
+    "next_cursor": null
+  },
+  "allowed_http": {
+    "GET /v1/session": 3,
+    "GET /v1/categories": 1,
+    "GET /v1/personal/projects": 1,
+    "GET /v1/personal/projects/99bac31a-f4ca-4f67-b362-ab00ff2e1c95": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/products/de2e9627-5eb6-4732-8af3-07606f6d9c01/builds": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/products/de2e9627-5eb6-4732-8af3-07606f6d9c01/project-work": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/products/de2e9627-5eb6-4732-8af3-07606f6d9c01/project-work/fulfillment": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/products/de2e9627-5eb6-4732-8af3-07606f6d9c01/project-work/activity": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-conversations": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-runs/753f0c74-6771-4f5e-b041-37928dbb9433": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-runs/753f0c74-6771-4f5e-b041-37928dbb9433/events": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-sessions/831b6b7d-8f04-4f8c-8f8b-3abd092dd3f5/work-state": 1,
+    "GET /v1/personal/work-products": 2,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-runs/753f0c74-6771-4f5e-b041-37928dbb9433/candidates": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-runs/753f0c74-6771-4f5e-b041-37928dbb9433/source-bindings": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-runs/753f0c74-6771-4f5e-b041-37928dbb9433/continuation": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-sessions/a084b538-d5c2-423b-b9cc-61ca79f47698/runs": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-runs/6edc73fa-0602-4601-838a-cf6e885090df": 18,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-runs/6edc73fa-0602-4601-838a-cf6e885090df/events": 18,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-sessions/a084b538-d5c2-423b-b9cc-61ca79f47698/work-state": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-runs/6edc73fa-0602-4601-838a-cf6e885090df/candidates": 1,
+    "GET /v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-runs/6edc73fa-0602-4601-838a-cf6e885090df/source-bindings": 1
+  },
+  "denied_http": {},
+  "project_history_reads": {
+    "/v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-conversations project_id=99bac31a-f4ca-4f67-b362-ab00ff2e1c95": 1,
+    "/v1/categories/75ae4995-ef1f-4897-916a-968065a78118/agent-sessions/a084b538-d5c2-423b-b9cc-61ca79f47698/runs project_id=99bac31a-f4ca-4f67-b362-ab00ff2e1c95": 1
+  },
+  "ports": {
+    "original_native_api_ports": true,
+    "temporal_port_configured": false
+  },
+  "web": {
+    "actual_web_base": "http://127.0.0.1:64477",
+    "actual_api_base": "http://127.0.0.1:65076",
+    "fresh_principal_id": "c982d606-b3f8-4a7b-9a73-25ce2b9dec85",
+    "verified_at": "2026-10-29T16:57:01.442986+00:00"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "status": "ready_for_root_execution",
+  "no_db_or_services_started_by_subagent": true,
+  "root_current_schema": "0852 validated by root",
+  "fixture": "browser_fixture.py::test_summary_dingtalk_browser[setup0]",
+  "files": {
+    "browser_fixture.py": "15dc755548d81e97186fbd51d211df8f9b42fe15b0ffec610e54ab6e55154453",
+    "README.md": "ef0e6adddb0cb1984c434d3efb9f8cfdb92669d2fa7852e390d895938a845e5b",
+    "collect.txt": "429d6ddf92f6d1b74a32d38cbbd83ce3f316cacec4b291acebc5ef674028cc85",
+    "ruff.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "repo_native_dependencies": {
+    "pdos-next/server/tests/dingtalk/test_summary_delivery_pg.py": "097d6427c2e892d1e738a5053d1d31466bd6421157957ffd5cb2a6ca66aa536e",
+    "pdos-next/server/tests/dingtalk/test_official_pg.py": "4cc74d73d3ca1be4bc5193b6a090d8cae01037f210a156e29b47b485c7a232d6",
+    "pdos-next/server/tests/conftest.py": "ff6e3534af7a621107bb08cbd016634dc15fe220c64b734eb3720faab6fa842e"
+  },
+  "checks": {
+    "collect_only_no_db_env": "1 collected",
+    "ruff_repo_config": "passed",
+    "actual_fixture_run": "root pending"
+  },
+  "outputs": "fresh PDOS_BROWSER_DIR: ready.json/storage.json/web-verified.json/result.json; storage is private, never publish",
+  "finish": "root creates finish marker after UI; native assertions create result.json",
+  "default": "station only; UI selects actual own verified binding then original draft/preview/T1",
+  "mock_only": "repo OfficialAdapter + httpx.MockTransport + SyntheticKms; original admitted deterministic summary Run; no new chat or Message",
+  "native_agent_read_ports": "Bootstrap(setup.engine).api_ports(RuntimeTemporal()) passed explicitly; RuntimeTemporal has no port, RuntimePorts remains empty; ASGI blocks chat writes"
+}

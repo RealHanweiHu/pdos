@@ -1,0 +1,2782 @@
+### Browser `pdos-m9-completion-20261022` opened with pid 45861.
+### Ran Playwright code
+```js
+await page.goto('about:blank');
+```
+### Page
+- Page URL: about:blank
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-22T18-16-58-637Z.yml)
+
+### Result
+{"syntheticLoginSet":true}
+### Ran Playwright code
+```js
+await (async page => { await page.context().addCookies([{"name": "pdos-next-session", "value": "[SYNTHETIC_LOGIN_REDACTED]", "domain": "127.0.0.1", "path": "/", "httpOnly": true, "sameSite": "Lax"}]); return { syntheticLoginSet: true }; })(page);
+```
+
+### Ran Playwright code
+```js
+await page.goto('http://127.0.0.1:53283/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e');
+```
+### Page
+- Page URL: http://127.0.0.1:53283/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e
+- Page Title: PDOS · 研发工作区
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-22T18-17-00-007Z.yml)
+
+### Page
+- Page URL: http://127.0.0.1:53283/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e4]
+  - generic [ref=e5]:
+    - link "跳到工作内容" [ref=e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=e7]:
+      - generic [ref=e8]:
+        - generic [aria-hidden] [ref=e9]: P
+        - generic [ref=e10]: PDOS
+        - button "收起侧栏" [ref=e11]
+      - generic [ref=e12]:
+        - group [ref=e13]:
+          - generic "新建：选择办理入口" [ref=e14] [cursor=pointer]: 新建
+        - button "搜索对象" [ref=e20] [cursor=pointer]:
+          - generic [ref=e23]: ⌘K
+      - navigation "工作区导航" [ref=e24]:
+        - paragraph [ref=e25]: 日常
+        - link "我的工作" [ref=e27] [cursor=pointer]:
+          - /url: "?area=work&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+        - generic [ref=e31]:
+          - link "项目" [ref=e32] [cursor=pointer]:
+            - /url: "?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+          - generic "最近的在办项目" [ref=e36]:
+            - link "Approved revision fixture 阶段尚未提供" [ref=e37] [cursor=pointer]:
+              - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+              - generic [ref=e39]: Approved revision fixture
+              - generic "阶段尚未提供" [ref=e40]: —
+        - link "组合与资源" [ref=e42] [cursor=pointer]:
+          - /url: "?area=programs&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+          - generic [ref=e46]: 尚未接入
+        - link "知识" [ref=e48] [cursor=pointer]:
+          - /url: "?area=knowledge&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic [ref=e52]:
+        - link "计划执行进度" [ref=e53] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=e56]: 计划进度
+        - link "设置" [ref=e57] [cursor=pointer]:
+          - /url: "?area=settings&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+        - button "切换明暗主题" [ref=e61]:
+          - generic [ref=e64]: 切换暗色
+        - generic [ref=e65]:
+          - generic [aria-hidden] [ref=e66]: S
+          - generic [ref=e67]:
+            - paragraph [ref=e68]: Synthetic qualified quality
+            - paragraph [ref=e69]: 本地合成环境
+    - generic [ref=e70]:
+      - banner [ref=e71]:
+        - generic [ref=e72]:
+          - link "项目" [ref=e73] [cursor=pointer]:
+            - /url: "?area=projects"
+          - generic [ref=e76]: Approved revision fixture
+        - button "搜索对象" [ref=e79]
+      - main [ref=e80]:
+        - navigation "品类工作台区" [ref=e81]:
+          - link "型号" [ref=e82] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=products&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "项目" [ref=e86] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "知识" [ref=e90] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=knowledge&view=sources&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "设置" [ref=e94] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=settings&view=preferences&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - button "快速查找入口或型号" [ref=e98] [cursor=pointer]
+          - combobox "当前型号" [ref=e101]:
+            - option "Synthetic product"
+            - option "Approved revision fixture" [selected]
+        - navigation "项目视图" [ref=e102]:
+          - link "现在" [ref=e103] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "工作与计划" [ref=e107] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=plan&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "试制" [ref=e111] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=builds&task=prepare&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "测试与交接" [ref=e115] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=verification&task=prepare&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "问题与变更" [ref=e119] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "现场与客户反馈" [ref=e123] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=field&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "评审与交付 尚未接入" [ref=e127] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=reviews&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+            - generic [ref=e130]: 评审与交付
+            - generic "尚未接入" [ref=e131]
+          - link "资料" [ref=e132] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=files&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+        - generic [ref=e136]:
+          - generic [ref=e138]:
+            - heading "问题与变更" [level=1] [ref=e139]
+            - paragraph [ref=e140]: 当前范围：Approved revision fixture
+          - generic [ref=e142]:
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - generic [ref=e145]:
+                  - heading "失败调查、措施与双线变更" [level=2] [ref=e146]
+                  - paragraph [ref=e149]: 固定原报告与判定 → 具名问题办理 → 有来源的措施草稿与变更影响核对。工程和制造分别保留历史，未知范围保持未知。
+                - button "刷新当前事实" [ref=e150]
+              - generic [ref=e151]:
+                - generic [ref=e152]:
+                  - text: 明确选择试制轮次
+                  - combobox "质量闭环试制轮次" [ref=e153]:
+                    - option "请选择当前可读轮次" [selected]
+                    - option "Synthetic separate approved-configuration verification Build · v1"
+                    - option "Synthetic first prototype · v1"
+                - generic [ref=e154]:
+                  - text: 固定测试运行
+                  - combobox "质量闭环测试运行" [disabled] [ref=e155]:
+                    - option "请选择运行，不按时间猜选" [selected]
+              - paragraph [ref=e156]: 先明确选择轮次，再读取本轮请求和结果；空选择不扫描全型号历史。
+              - generic [ref=e157]:
+                - heading "2 · 当前问题与独立历史" [level=3] [ref=e158]
+                - generic [ref=e159]:
+                  - generic [ref=e160]:
+                    - text: 真实问题
+                    - combobox "真实问题" [disabled] [ref=e161]:
+                      - option "请选择已有问题" [selected]
+                  - generic [ref=e162]:
+                    - text: 问题版本
+                    - combobox "问题版本" [disabled] [ref=e163]
+                - paragraph [ref=e164]: 选择真实问题后可读取固定失败、原政策、措施与历史；未创建的对象不生成占位身份。
+            - generic [ref=e165]:
+              - generic [ref=e166]:
+                - generic [ref=e167]:
+                  - heading "根因、本人整改与独立复验回链" [level=2] [ref=e168]
+                  - paragraph [ref=e171]: 保留原失败与假设 → 具名根因 → 本人实际完成 → 固定新输出与新复验分支。有效性、问题关闭和正式变更批准仍未开放。
+                - button "刷新当前整改事实" [ref=e172]
+              - generic [ref=e173]:
+                - text: 明确选择试制轮次
+                - combobox "整改后续轮次" [ref=e174]:
+                  - option "请选择当前可读轮次" [selected]
+                  - option "Synthetic separate approved-configuration verification Build · v1"
+                  - option "Synthetic first prototype · v1"
+              - generic [ref=e175]:
+                - generic [ref=e176]:
+                  - text: 明确选择本轮已有问题 / CAPA
+                  - combobox "整改后续问题" [disabled] [ref=e177]:
+                    - option "请选择当前可读真实问题" [selected]
+                - generic [ref=e178]:
+                  - text: 当前 / 固定历史版本
+                  - combobox "整改问题固定版本" [disabled] [ref=e179]:
+                    - option "读取服务器当前版本" [selected]
+              - paragraph [ref=e180]: 先明确选择轮次，再读取本轮问题；空选择不深查全型号复验，也不默认选择某一轮。
+            - region "变更适用性与正式计划准备" [ref=e181]:
+              - generic [ref=e182]:
+                - generic [ref=e183]:
+                  - paragraph [ref=e184]: 固定影响 · 真实适用性 · 明确生效范围
+                  - heading "变更适用性与变更令准备" [level=2] [ref=e185]
+                - button "刷新当前正式依据" [ref=e188]
+              - paragraph [ref=e189]: 具名决定逐项适用性，再固定真实计划项与逐对象处置。未知范围继续保留；准备计划不表示已批准、实际实施或生效。
+              - generic [ref=e190]:
+                - text: 明确选择本项目变更
+                - combobox "明确选择本项目变更" [ref=e191]:
+                  - option "选择固定变更，不默认首条" [selected]
+                  - option "Synthetic actual Field corrective configuration change · v12 · 已具名关闭"
+              - paragraph [ref=e192]: 先明确选择变更，再读取政策、逐项决定和完整正式计划；空选择不深查全部历史。
+    - button "打开小Pai工作栏" [ref=e193] [cursor=pointer]: 小Pai
+```
+### Events
+- New console entries: .playwright-cli/console-2026-10-22T18-16-59-801Z.log#L1
+
+### Page
+- Page URL: http://127.0.0.1:53283/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Snapshot
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e4]
+  - generic [ref=e5]:
+    - link "跳到工作内容" [ref=e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=e7]:
+      - generic [ref=e8]:
+        - generic [aria-hidden] [ref=e9]: P
+        - generic [ref=e10]: PDOS
+        - button "收起侧栏" [ref=e11]
+      - generic [ref=e12]:
+        - group [ref=e13]:
+          - generic "新建：选择办理入口" [ref=e14] [cursor=pointer]: 新建
+        - button "搜索对象" [ref=e20] [cursor=pointer]:
+          - generic [ref=e23]: ⌘K
+      - navigation "工作区导航" [ref=e24]:
+        - paragraph [ref=e25]: 日常
+        - link "我的工作" [ref=e27] [cursor=pointer]:
+          - /url: "?area=work&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+        - generic [ref=e31]:
+          - link "项目" [ref=e32] [cursor=pointer]:
+            - /url: "?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+          - generic "最近的在办项目" [ref=e36]:
+            - link "Approved revision fixture 阶段尚未提供" [ref=e37] [cursor=pointer]:
+              - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+              - generic [ref=e39]: Approved revision fixture
+              - generic "阶段尚未提供" [ref=e40]: —
+        - link "组合与资源" [ref=e42] [cursor=pointer]:
+          - /url: "?area=programs&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+          - generic [ref=e46]: 尚未接入
+        - link "知识" [ref=e48] [cursor=pointer]:
+          - /url: "?area=knowledge&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic [ref=e52]:
+        - link "计划执行进度" [ref=e53] [cursor=pointer]:
+          - /url: /plan
+          - generic [ref=e56]: 计划进度
+        - link "设置" [ref=e57] [cursor=pointer]:
+          - /url: "?area=settings&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+        - button "切换明暗主题" [ref=e61]:
+          - generic [ref=e64]: 切换暗色
+        - generic [ref=e65]:
+          - generic [aria-hidden] [ref=e66]: S
+          - generic [ref=e67]:
+            - paragraph [ref=e68]: Synthetic qualified quality
+            - paragraph [ref=e69]: 本地合成环境
+    - generic [ref=e70]:
+      - banner [ref=e71]:
+        - generic [ref=e72]:
+          - link "项目" [ref=e73] [cursor=pointer]:
+            - /url: "?area=projects"
+          - generic [ref=e76]: Approved revision fixture
+        - button "搜索对象" [ref=e79]
+      - main [ref=e80]:
+        - navigation "品类工作台区" [ref=e81]:
+          - link "型号" [ref=e82] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=products&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "项目" [ref=e86] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "知识" [ref=e90] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=knowledge&view=sources&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "设置" [ref=e94] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=settings&view=preferences&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - button "快速查找入口或型号" [ref=e98] [cursor=pointer]
+          - combobox "当前型号" [ref=e101]:
+            - option "Synthetic product"
+            - option "Approved revision fixture" [selected]
+        - navigation "项目视图" [ref=e102]:
+          - link "现在" [ref=e103] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "工作与计划" [ref=e107] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=plan&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "试制" [ref=e111] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=builds&task=prepare&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "测试与交接" [ref=e115] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=verification&task=prepare&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "问题与变更" [ref=e119] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "现场与客户反馈" [ref=e123] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=field&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "评审与交付 尚未接入" [ref=e127] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=reviews&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+            - generic [ref=e130]: 评审与交付
+            - generic "尚未接入" [ref=e131]
+          - link "资料" [ref=e132] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=files&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+        - generic [ref=e136]:
+          - generic [ref=e138]:
+            - heading "问题与变更" [level=1] [ref=e139]
+            - paragraph [ref=e140]: 当前范围：Approved revision fixture
+          - generic [ref=e142]:
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - generic [ref=e145]:
+                  - heading "失败调查、措施与双线变更" [level=2] [ref=e146]
+                  - paragraph [ref=e149]: 固定原报告与判定 → 具名问题办理 → 有来源的措施草稿与变更影响核对。工程和制造分别保留历史，未知范围保持未知。
+                - button "刷新当前事实" [ref=e150]
+              - generic [ref=e151]:
+                - generic [ref=e152]:
+                  - text: 明确选择试制轮次
+                  - combobox "质量闭环试制轮次" [ref=e153]:
+                    - option "请选择当前可读轮次" [selected]
+                    - option "Synthetic separate approved-configuration verification Build · v1"
+                    - option "Synthetic first prototype · v1"
+                - generic [ref=e154]:
+                  - text: 固定测试运行
+                  - combobox "质量闭环测试运行" [disabled] [ref=e155]:
+                    - option "请选择运行，不按时间猜选" [selected]
+              - paragraph [ref=e156]: 先明确选择轮次，再读取本轮请求和结果；空选择不扫描全型号历史。
+              - generic [ref=e157]:
+                - heading "2 · 当前问题与独立历史" [level=3] [ref=e158]
+                - generic [ref=e159]:
+                  - generic [ref=e160]:
+                    - text: 真实问题
+                    - combobox "真实问题" [disabled] [ref=e161]:
+                      - option "请选择已有问题" [selected]
+                  - generic [ref=e162]:
+                    - text: 问题版本
+                    - combobox "问题版本" [disabled] [ref=e163]
+                - paragraph [ref=e164]: 选择真实问题后可读取固定失败、原政策、措施与历史；未创建的对象不生成占位身份。
+            - generic [ref=e165]:
+              - generic [ref=e166]:
+                - generic [ref=e167]:
+                  - heading "根因、本人整改与独立复验回链" [level=2] [ref=e168]
+                  - paragraph [ref=e171]: 保留原失败与假设 → 具名根因 → 本人实际完成 → 固定新输出与新复验分支。有效性、问题关闭和正式变更批准仍未开放。
+                - button "刷新当前整改事实" [ref=e172]
+              - generic [ref=e173]:
+                - text: 明确选择试制轮次
+                - combobox "整改后续轮次" [ref=e174]:
+                  - option "请选择当前可读轮次" [selected]
+                  - option "Synthetic separate approved-configuration verification Build · v1"
+                  - option "Synthetic first prototype · v1"
+              - generic [ref=e175]:
+                - generic [ref=e176]:
+                  - text: 明确选择本轮已有问题 / CAPA
+                  - combobox "整改后续问题" [disabled] [ref=e177]:
+                    - option "请选择当前可读真实问题" [selected]
+                - generic [ref=e178]:
+                  - text: 当前 / 固定历史版本
+                  - combobox "整改问题固定版本" [disabled] [ref=e179]:
+                    - option "读取服务器当前版本" [selected]
+              - paragraph [ref=e180]: 先明确选择轮次，再读取本轮问题；空选择不深查全型号复验，也不默认选择某一轮。
+            - region "变更适用性与正式计划准备" [ref=e181]:
+              - generic [ref=e182]:
+                - generic [ref=e183]:
+                  - paragraph [ref=e184]: 固定影响 · 真实适用性 · 明确生效范围
+                  - heading "变更适用性与变更令准备" [level=2] [ref=e185]
+                - button "刷新当前正式依据" [ref=e188]
+              - paragraph [ref=e189]: 具名决定逐项适用性，再固定真实计划项与逐对象处置。未知范围继续保留；准备计划不表示已批准、实际实施或生效。
+              - generic [ref=e190]:
+                - text: 明确选择本项目变更
+                - combobox "明确选择本项目变更" [ref=e191]:
+                  - option "选择固定变更，不默认首条" [selected]
+                  - option "Synthetic actual Field corrective configuration change · v12 · 已具名关闭"
+              - paragraph [ref=e192]: 先明确选择变更，再读取政策、逐项决定和完整正式计划；空选择不深查全部历史。
+    - button "打开小Pai工作栏" [ref=e193] [cursor=pointer]: 小Pai
+```
+
+### Result
+{"selectedClosedCase":true}
+### Ran Playwright code
+```js
+await (async page => {
+  await page.getByRole('combobox', {name:'明确选择本项目变更',exact:true}).selectOption({label:'Synthetic actual Field corrective configuration change · v12 · 已具名关闭'});
+  await page.getByRole('region',{name:'实际采用、独立验证与分别关闭',exact:true}).waitFor({timeout:60000});
+  return {selectedClosedCase:true};
+}
+)(page);
+```
+
+### Error
+TimeoutError: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('button', { name: '切换明暗主题', exact: true })[22m
+
+
+### Page
+- Page URL: http://127.0.0.1:53283/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e
+- Page Title: PDOS · 研发工作区
+### Snapshot
+```yaml
+- generic [active] [ref=f1e1]:
+  - alert [ref=f1e2]
+  - generic [ref=f1e3]:
+    - link "跳到工作内容" [ref=f1e4] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - generic [ref=f1e5]:
+      - banner [ref=f1e6]:
+        - button "打开导航" [ref=f1e7]
+        - generic [ref=f1e8]:
+          - link "项目" [ref=f1e9] [cursor=pointer]:
+            - /url: "?area=projects"
+          - generic [ref=f1e12]: Approved revision fixture
+        - button "搜索对象" [ref=f1e15]
+      - main [ref=f1e16]:
+        - navigation "品类工作台区" [ref=f1e17]:
+          - link "型号" [ref=f1e18] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=products&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "项目" [ref=f1e22] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "知识" [ref=f1e26] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=knowledge&view=sources&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "设置" [ref=f1e30] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=settings&view=preferences&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - button "快速查找入口或型号" [ref=f1e34] [cursor=pointer]
+          - combobox "当前型号" [ref=f1e37]:
+            - option "Synthetic product"
+            - option "Approved revision fixture" [selected]
+        - navigation "项目视图" [ref=f1e38]:
+          - link "现在" [ref=f1e39] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "工作与计划" [ref=f1e43] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=plan&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "试制" [ref=f1e47] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=builds&task=prepare&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "测试与交接" [ref=f1e51] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=verification&task=prepare&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "问题与变更" [ref=f1e55] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "现场与客户反馈" [ref=f1e59] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=field&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "评审与交付 尚未接入" [ref=f1e63] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=reviews&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+            - generic [ref=f1e66]: 评审与交付
+            - generic "尚未接入" [ref=f1e67]
+          - link "资料" [ref=f1e68] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=files&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+        - generic [ref=f1e72]:
+          - generic [ref=f1e74]:
+            - heading "问题与变更" [level=1] [ref=f1e75]
+            - paragraph [ref=f1e76]: 当前范围：Approved revision fixture
+          - generic [ref=f1e78]:
+            - generic [ref=f1e79]:
+              - generic [ref=f1e80]:
+                - generic [ref=f1e81]:
+                  - heading "失败调查、措施与双线变更" [level=2] [ref=f1e82]
+                  - paragraph [ref=f1e85]: 固定原报告与判定 → 具名问题办理 → 有来源的措施草稿与变更影响核对。工程和制造分别保留历史，未知范围保持未知。
+                - button "刷新当前事实" [ref=f1e86]
+              - generic [ref=f1e87]:
+                - generic [ref=f1e88]:
+                  - text: 明确选择试制轮次
+                  - combobox "质量闭环试制轮次" [ref=f1e89]:
+                    - option "请选择当前可读轮次" [selected]
+                    - option "Synthetic separate approved-configuration verification Build · v1"
+                    - option "Synthetic first prototype · v1"
+                - generic [ref=f1e90]:
+                  - text: 固定测试运行
+                  - combobox "质量闭环测试运行" [disabled] [ref=f1e91]:
+                    - option "请选择运行，不按时间猜选" [selected]
+              - paragraph [ref=f1e92]: 先明确选择轮次，再读取本轮请求和结果；空选择不扫描全型号历史。
+              - generic [ref=f1e93]:
+                - heading "2 · 当前问题与独立历史" [level=3] [ref=f1e94]
+                - generic [ref=f1e95]:
+                  - generic [ref=f1e96]:
+                    - text: 真实问题
+                    - combobox "真实问题" [disabled] [ref=f1e97]:
+                      - option "请选择已有问题" [selected]
+                  - generic [ref=f1e98]:
+                    - text: 问题版本
+                    - combobox "问题版本" [disabled] [ref=f1e99]
+                - paragraph [ref=f1e100]: 选择真实问题后可读取固定失败、原政策、措施与历史；未创建的对象不生成占位身份。
+            - generic [ref=f1e101]:
+              - generic [ref=f1e102]:
+                - generic [ref=f1e103]:
+                  - heading "根因、本人整改与独立复验回链" [level=2] [ref=f1e104]
+                  - paragraph [ref=f1e107]: 保留原失败与假设 → 具名根因 → 本人实际完成 → 固定新输出与新复验分支。有效性、问题关闭和正式变更批准仍未开放。
+                - button "刷新当前整改事实" [ref=f1e108]
+              - generic [ref=f1e109]:
+                - text: 明确选择试制轮次
+                - combobox "整改后续轮次" [ref=f1e110]:
+                  - option "请选择当前可读轮次" [selected]
+                  - option "Synthetic separate approved-configuration verification Build · v1"
+                  - option "Synthetic first prototype · v1"
+              - generic [ref=f1e111]:
+                - generic [ref=f1e112]:
+                  - text: 明确选择本轮已有问题 / CAPA
+                  - combobox "整改后续问题" [disabled] [ref=f1e113]:
+                    - option "请选择当前可读真实问题" [selected]
+                - generic [ref=f1e114]:
+                  - text: 当前 / 固定历史版本
+                  - combobox "整改问题固定版本" [disabled] [ref=f1e115]:
+                    - option "读取服务器当前版本" [selected]
+              - paragraph [ref=f1e116]: 先明确选择轮次，再读取本轮问题；空选择不深查全型号复验，也不默认选择某一轮。
+            - region "变更适用性与正式计划准备" [ref=f1e117]:
+              - generic [ref=f1e118]:
+                - generic [ref=f1e119]:
+                  - paragraph [ref=f1e120]: 固定影响 · 真实适用性 · 明确生效范围
+                  - heading "变更适用性与变更令准备" [level=2] [ref=f1e121]
+                - button "刷新当前正式依据" [ref=f1e124]
+              - paragraph [ref=f1e125]: 具名决定逐项适用性，再固定真实计划项与逐对象处置。未知范围继续保留；准备计划不表示已批准、实际实施或生效。
+              - paragraph [ref=f1e126]: 本地合成演练：此处材料与决定仅验证办理闭环，不代表真实生产资格或人工验收通过。
+              - generic [ref=f1e127]:
+                - text: 明确选择本项目变更
+                - combobox "明确选择本项目变更" [ref=f1e128]:
+                  - option "选择固定变更，不默认首条"
+                  - option "Synthetic actual Field corrective configuration change · v12 · 已具名关闭" [selected]
+              - generic [ref=f1e129]:
+                - heading "Synthetic actual Field corrective configuration change · 当前 v12" [level=3] [ref=f1e130]
+                - paragraph [ref=f1e131]: 已具名关闭 · 用途：Verify preparation
+                - heading "当前正式政策" [level=4] [ref=f1e132]
+                - paragraph [ref=f1e135]: 须分别办理：工程、制造；有效区间：2026/10/22 10:56:48 — 2026/10/22 14:56:43。
+                - blockquote [ref=f1e136]:
+                  - paragraph [ref=f1e137]: Synthetic actual dual discipline policy · v1 · 第 1 行
+                  - paragraph [ref=f1e138]: "{\"nature\":\"synthetic\",\"owner_id\":\"78dbc83d-75d2-4513-bc4d-a5d3d5081f6c\",\"publisher_id\":\"56e0c8e2-51b3-4087-80de-b2b2debd1f4f\",\"purpose\":\"Verify preparation\",\"required_disciplines\":[\"engineering\",\"manufacturing\"],\"schema_version\":\"pdos-controlled-change-policy-v1\",\"scope\":{\"product_id\":\"815224c5-3d8a-4bce-853e-0c5ba4df7a49\",\"project_id\":\"92024f6a-febd-4f3b-869b-82b15639a70e\",\"tenant_id\":\"78340ac0-57c2-4235-87c6-a468dd3d8173\"},\"valid_from\":\"2026-10-22T17:56:48.205440Z\",\"valid_until\":\"2026-10-22T21:56:43.477253Z\",\"visibility\":\"category\"}"
+              - region "现场反馈的未来变更计划项" [ref=f1e139]:
+                - heading "1 · 明确未来变更计划项，再具名决定适用性" [level=3] [ref=f1e140]
+                - paragraph [ref=f1e141]: 选择真实反馈、拟变更配置与实际执行人。这里填写未来实施意图；已发生遏制或改善记录仍保留为历史事实。
+                - group [ref=f1e142]:
+                  - generic [ref=f1e143]:
+                    - text: 本项依据的实际反馈
+                    - combobox "本项依据的实际反馈" [ref=f1e144]:
+                      - option "请选择实际反馈及固定版本" [selected]
+                      - option "Synthetic customer vibration feedback · v2"
+                  - generic [ref=f1e145]:
+                    - text: 未来实施类型
+                    - combobox "未来实施类型" [ref=f1e146]:
+                      - option "建立新工程配置" [selected]
+                      - option "建立新制造配置"
+                  - generic [ref=f1e147]:
+                    - text: 拟变更的实际配置
+                    - combobox "拟变更的实际配置" [ref=f1e148]:
+                      - option "请选择实际配置及固定版本" [selected]
+                      - option "Synthetic original engineering configuration · v1"
+                  - generic [ref=f1e149]:
+                    - text: 本计划项实际执行人
+                    - combobox "本计划项实际执行人" [ref=f1e150]:
+                      - option "请选择真实人员" [selected]
+                      - option "Synthetic independent future reviewer"
+                      - option "Synthetic owner"
+                      - option "Synthetic peer"
+                      - option "Synthetic qualified quality"
+                      - option "Synthetic separate test executor"
+                  - generic [ref=f1e151]:
+                    - text: 未来实施意图
+                    - textbox "未来实施意图" [ref=f1e152]
+                  - generic [ref=f1e153]:
+                    - checkbox "明确限定为指定前轮的继任开发 Build 实际采用" [ref=f1e154]
+                    - text: 明确限定为指定前轮的继任开发 Build 实际采用
+                  - generic [ref=f1e155]:
+                    - text: 适用条件（每行一项）
+                    - textbox "适用条件（每行一项）" [ref=f1e156]
+                  - generic [ref=f1e157]:
+                    - text: 后续复验要求
+                    - textbox "后续复验要求" [ref=f1e158]
+                  - generic [ref=f1e159]:
+                    - text: 本项适用性判断
+                    - combobox "本项适用性判断" [ref=f1e160]:
+                      - option "未知，保留调查" [selected]
+                      - option "适用本次明确范围"
+                      - option "不适用本次明确范围"
+                  - generic [ref=f1e161]:
+                    - text: 本项适用至（可选，含时区）
+                    - textbox "本项适用至（可选，含时区）" [ref=f1e162]:
+                      - /placeholder: 留空不另设截止时点
+                  - generic [ref=f1e163]:
+                    - text: 本项适用性判断理由
+                    - textbox "本项适用性判断理由" [ref=f1e164]
+                - region "登记本项未来计划材料并读取适用性候选" [ref=f1e165]:
+                  - paragraph [ref=f1e166]: 先保留本人明确填写的材料，再读取真实原文进入既有办理。这里只登记材料，不作专业批准或实施确认。
+                  - button "登记本项未来计划材料并读取适用性候选" [ref=f1e167]
+              - generic [ref=f1e168]:
+                - heading "2 · 选择真实适用计划项并逐一处置已知对象，准备一次确认" [level=3] [ref=f1e169]
+                - group "只采用服务器已核对的当前适用性事实；未知、不适用或过期记录保留阅读。" [ref=f1e170]:
+                  - generic [ref=f1e172]:
+                    - generic [ref=f1e173]:
+                      - checkbox "计划项 1 · 制造 · 适用 · 事实 v1" [ref=f1e174]
+                      - generic [ref=f1e175]: 计划项 1 · 制造 · 适用 · 事实 v1
+                    - generic [ref=f1e176]:
+                      - generic [ref=f1e177]:
+                        - term [ref=f1e178]: 专业范围
+                        - definition [ref=f1e179]: 制造
+                      - generic [ref=f1e180]:
+                        - term [ref=f1e181]: 明确生效范围
+                        - definition [ref=f1e182]:
+                          - generic [ref=f1e183]:
+                            - generic [ref=f1e184]:
+                              - term [ref=f1e185]: 固定对象
+                              - definition [ref=f1e186]:
+                                - generic [ref=f1e189]:
+                                  - generic [ref=f1e190]:
+                                    - term [ref=f1e191]: 固定版本
+                                    - definition [ref=f1e192]: "1"
+                                  - generic [ref=f1e193]:
+                                    - term [ref=f1e194]: 类型
+                                    - definition [ref=f1e195]: manufacturing_configuration
+                            - generic [ref=f1e196]:
+                              - term [ref=f1e197]: 对象 / 批次 / 序号范围
+                              - definition [ref=f1e198]:
+                                - generic [ref=f1e199]: "object:manufacturing_configuration:88bb68ca-04af-4bbb-b272-7fabd869ab56:1:"
+                            - generic [ref=f1e201]:
+                              - term [ref=f1e202]: 实际适用条件
+                              - definition [ref=f1e203]:
+                                - generic [ref=f1e204]: 仅在明确前轮的继任开发 Build 中实际采用；不代表库存、在制、其他 Build 或 ERP/MES 的切换。
+                            - generic [ref=f1e206]:
+                              - term [ref=f1e207]: 精确原文依据
+                              - definition [ref=f1e208]:
+                                - blockquote [ref=f1e211]:
+                                  - paragraph [ref=f1e212]: Synthetic actual customer report · v1 · 第 1 行
+                                  - paragraph [ref=f1e213]: "{\"observation\":\"Synthetic customer vibration report; batch unknown\",\"purpose\":\"Verify preparation\"}"
+                      - generic [ref=f1e214]:
+                        - term [ref=f1e215]: 受控实施意图
+                        - definition [ref=f1e216]:
+                          - generic [ref=f1e217]:
+                            - generic [ref=f1e218]:
+                              - term [ref=f1e219]: 类型
+                              - definition [ref=f1e220]: 建立新制造配置的意图
+                            - generic [ref=f1e221]:
+                              - term [ref=f1e222]: 实施意图的固定依据
+                              - definition [ref=f1e223]:
+                                - generic [ref=f1e224]:
+                                  - generic [ref=f1e226]:
+                                    - generic [ref=f1e227]:
+                                      - term [ref=f1e228]: 固定版本
+                                      - definition [ref=f1e229]: "1"
+                                    - generic [ref=f1e230]:
+                                      - term [ref=f1e231]: 类型
+                                      - definition [ref=f1e232]: manufacturing_configuration
+                                  - generic [ref=f1e234]:
+                                    - generic [ref=f1e235]:
+                                      - term [ref=f1e236]: 固定版本
+                                      - definition [ref=f1e237]: "1"
+                                    - generic [ref=f1e238]:
+                                      - term [ref=f1e239]: 类型
+                                      - definition [ref=f1e240]: build
+                            - generic [ref=f1e241]:
+                              - term [ref=f1e242]: 实际说明
+                              - definition [ref=f1e243]: Future manufacturing configuration revision after named approval
+                      - generic [ref=f1e244]:
+                        - term [ref=f1e245]: 后续核验要求
+                        - definition [ref=f1e246]: New samples and Run with independent verification
+                    - blockquote [ref=f1e247]:
+                      - paragraph [ref=f1e248]: Synthetic explicit Field plan applicability · v1 · 第 1 行
+                      - paragraph [ref=f1e249]: "{\"change_id\":\"51d743d6-26a5-53d5-9729-b0d1e8023fb9\",\"decider_id\":\"56e0c8e2-51b3-4087-80de-b2b2debd1f4f\",\"executor_id\":\"78dbc83d-75d2-4513-bc4d-a5d3d5081f6c\",\"feedback\":{\"id\":\"f76a82fe-4b90-56f9-8def-beccaa9ef914\",\"revision\":2},\"feedback_sha256\":\"093a594d466ff5632b980125e58ae1446ac30c9b12af3c7904cc464128a6480f\",\"feedback_version_id\":\"6e651cb1-352a-5628-828d-0ba077654885\",\"item\":{\"discipline\":\"manufacturing\",\"id\":\"00ffe600-541d-4ed0-bc03-116a136011ed\",\"intent\":{\"basis\":[{\"id\":\"88bb68ca-04af-4bbb-b272-7fabd869ab56\",\"key\":null,\"kind\":\"manufacturing_configuration\",\"revision\":1},{\"id\":\"53deaa61-7d2d-4605-9d65-58e5aa393800\",\"key\":null,\"kind\":\"build\",\"revision\":1}],\"description\":\"Future manufacturing configuration revision after named approval\",\"id\":\"22e0bab2-ebab-425a-9ffc-896caa2c5114\",\"kind\":\"new_manufacturing_configuration\"},\"selection\":{\"conditions\":[\"仅在明确前轮的继任开发 Build 中实际采用；不代表库存、在制、其他 Build 或 ERP/MES 的切换。\"],\"objects\":[{\"id\":\"88bb68ca-04af-4bbb-b272-7fabd869ab56\",\"key\":null,\"kind\":\"manufacturing_configuration\",\"revision\":1}],\"sources\":[{\"id\":\"10ca6266-e4f1-4fda-b169-9845eae2c913\",\"kind\":\"artifact\",\"position\":\"line:1;quote_sha256:ef195e2c881fc9682a59a44f7d1f95c48a9de5b3b1dfc4e3bb50b398990ee581\",\"revision\":1}],\"units\":[\"object:manufacturing_configuration:88bb68ca-04af-4bbb-b272-7fabd869ab56:1:\"]},\"verification_requirement\":\"New samples and Run with independent verification\"},\"nature\":\"synthetic\",\"purpose\":\"Verify preparation\",\"reason\":\"Named explicit future Field plan, not the performed response ledger\",\"schema_version\":\"pdos-field-change-selection-v1\",\"scope\":{\"product_id\":\"815224c5-3d8a-4bce-853e-0c5ba4df7a49\",\"project_id\":\"92024f6a-febd-4f3b-869b-82b15639a70e\",\"tenant_id\":\"78340ac0-57c2-4235-87c6-a468dd3d8173\"},\"status\":\"applicable\",\"valid_until\":null}"
+                  - generic [ref=f1e250]:
+                    - generic [ref=f1e251]:
+                      - checkbox "计划项 2 · 工程 · 适用 · 事实 v1" [ref=f1e252]
+                      - generic [ref=f1e253]: 计划项 2 · 工程 · 适用 · 事实 v1
+                    - generic [ref=f1e254]:
+                      - generic [ref=f1e255]:
+                        - term [ref=f1e256]: 专业范围
+                        - definition [ref=f1e257]: 工程
+                      - generic [ref=f1e258]:
+                        - term [ref=f1e259]: 明确生效范围
+                        - definition [ref=f1e260]:
+                          - generic [ref=f1e261]:
+                            - generic [ref=f1e262]:
+                              - term [ref=f1e263]: 固定对象
+                              - definition [ref=f1e264]:
+                                - generic [ref=f1e267]:
+                                  - generic [ref=f1e268]:
+                                    - term [ref=f1e269]: 固定版本
+                                    - definition [ref=f1e270]: "1"
+                                  - generic [ref=f1e271]:
+                                    - term [ref=f1e272]: 类型
+                                    - definition [ref=f1e273]: engineering_configuration
+                            - generic [ref=f1e274]:
+                              - term [ref=f1e275]: 对象 / 批次 / 序号范围
+                              - definition [ref=f1e276]:
+                                - generic [ref=f1e277]: "object:engineering_configuration:fe583a8c-13bd-4128-9279-1cb9739d2e4a:1:"
+                            - generic [ref=f1e279]:
+                              - term [ref=f1e280]: 实际适用条件
+                              - definition [ref=f1e281]:
+                                - generic [ref=f1e282]: 仅在明确前轮的继任开发 Build 中实际采用；不代表库存、在制、其他 Build 或 ERP/MES 的切换。
+                            - generic [ref=f1e284]:
+                              - term [ref=f1e285]: 精确原文依据
+                              - definition [ref=f1e286]:
+                                - blockquote [ref=f1e289]:
+                                  - paragraph [ref=f1e290]: Synthetic actual customer report · v1 · 第 1 行
+                                  - paragraph [ref=f1e291]: "{\"observation\":\"Synthetic customer vibration report; batch unknown\",\"purpose\":\"Verify preparation\"}"
+                      - generic [ref=f1e292]:
+                        - term [ref=f1e293]: 受控实施意图
+                        - definition [ref=f1e294]:
+                          - generic [ref=f1e295]:
+                            - generic [ref=f1e296]:
+                              - term [ref=f1e297]: 类型
+                              - definition [ref=f1e298]: 建立新工程配置的意图
+                            - generic [ref=f1e299]:
+                              - term [ref=f1e300]: 实施意图的固定依据
+                              - definition [ref=f1e301]:
+                                - generic [ref=f1e302]:
+                                  - generic [ref=f1e304]:
+                                    - generic [ref=f1e305]:
+                                      - term [ref=f1e306]: 固定版本
+                                      - definition [ref=f1e307]: "1"
+                                    - generic [ref=f1e308]:
+                                      - term [ref=f1e309]: 类型
+                                      - definition [ref=f1e310]: engineering_configuration
+                                  - generic [ref=f1e312]:
+                                    - generic [ref=f1e313]:
+                                      - term [ref=f1e314]: 固定版本
+                                      - definition [ref=f1e315]: "1"
+                                    - generic [ref=f1e316]:
+                                      - term [ref=f1e317]: 类型
+                                      - definition [ref=f1e318]: build
+                            - generic [ref=f1e319]:
+                              - term [ref=f1e320]: 实际说明
+                              - definition [ref=f1e321]: Future engineering configuration revision after named approval
+                      - generic [ref=f1e322]:
+                        - term [ref=f1e323]: 后续核验要求
+                        - definition [ref=f1e324]: New samples and Run with independent verification
+                    - blockquote [ref=f1e325]:
+                      - paragraph [ref=f1e326]: Synthetic explicit Field plan applicability · v1 · 第 1 行
+                      - paragraph [ref=f1e327]: "{\"change_id\":\"51d743d6-26a5-53d5-9729-b0d1e8023fb9\",\"decider_id\":\"56e0c8e2-51b3-4087-80de-b2b2debd1f4f\",\"executor_id\":\"78dbc83d-75d2-4513-bc4d-a5d3d5081f6c\",\"feedback\":{\"id\":\"f76a82fe-4b90-56f9-8def-beccaa9ef914\",\"revision\":2},\"feedback_sha256\":\"093a594d466ff5632b980125e58ae1446ac30c9b12af3c7904cc464128a6480f\",\"feedback_version_id\":\"6e651cb1-352a-5628-828d-0ba077654885\",\"item\":{\"discipline\":\"engineering\",\"id\":\"c8f98275-dc9d-4904-b9ff-1fbc6796a13b\",\"intent\":{\"basis\":[{\"id\":\"fe583a8c-13bd-4128-9279-1cb9739d2e4a\",\"key\":null,\"kind\":\"engineering_configuration\",\"revision\":1},{\"id\":\"53deaa61-7d2d-4605-9d65-58e5aa393800\",\"key\":null,\"kind\":\"build\",\"revision\":1}],\"description\":\"Future engineering configuration revision after named approval\",\"id\":\"e090e368-207e-4e06-8270-29c718617df2\",\"kind\":\"new_engineering_configuration\"},\"selection\":{\"conditions\":[\"仅在明确前轮的继任开发 Build 中实际采用；不代表库存、在制、其他 Build 或 ERP/MES 的切换。\"],\"objects\":[{\"id\":\"fe583a8c-13bd-4128-9279-1cb9739d2e4a\",\"key\":null,\"kind\":\"engineering_configuration\",\"revision\":1}],\"sources\":[{\"id\":\"10ca6266-e4f1-4fda-b169-9845eae2c913\",\"kind\":\"artifact\",\"position\":\"line:1;quote_sha256:ef195e2c881fc9682a59a44f7d1f95c48a9de5b3b1dfc4e3bb50b398990ee581\",\"revision\":1}],\"units\":[\"object:engineering_configuration:fe583a8c-13bd-4128-9279-1cb9739d2e4a:1:\"]},\"verification_requirement\":\"New samples and Run with independent verification\"},\"nature\":\"synthetic\",\"purpose\":\"Verify preparation\",\"reason\":\"Named explicit future Field plan, not the performed response ledger\",\"schema_version\":\"pdos-field-change-selection-v1\",\"scope\":{\"product_id\":\"815224c5-3d8a-4bce-853e-0c5ba4df7a49\",\"project_id\":\"92024f6a-febd-4f3b-869b-82b15639a70e\",\"tenant_id\":\"78340ac0-57c2-4235-87c6-a468dd3d8173\"},\"status\":\"applicable\",\"valid_until\":null}"
+                  - heading "全部已知影响对象的明确处置" [level=4] [ref=f1e328]
+                  - group "Synthetic motor BOM · 固定 v1" [ref=f1e329]:
+                    - paragraph [ref=f1e331]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f1e332]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f1e333]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f1e334]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f1e335]
+                    - group [ref=f1e336]:
+                      - generic [ref=f1e337]:
+                        - generic [ref=f1e338]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f1e339]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f1e340]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f1e341]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic motor BOM · 固定 v1" [ref=f1e342]:
+                    - paragraph [ref=f1e344]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f1e345]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f1e346]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f1e347]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f1e348]
+                    - group [ref=f1e349]:
+                      - generic [ref=f1e350]:
+                        - generic [ref=f1e351]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f1e352]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f1e353]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f1e354]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic first prototype · 固定 v1" [ref=f1e355]:
+                    - paragraph [ref=f1e357]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f1e358]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f1e359]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f1e360]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f1e361]
+                    - group [ref=f1e362]:
+                      - generic [ref=f1e363]:
+                        - generic [ref=f1e364]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f1e365]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f1e366]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f1e367]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic original engineering configuration · 固定 v1" [ref=f1e368]:
+                    - paragraph [ref=f1e370]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f1e371]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f1e372]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f1e373]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f1e374]
+                    - group [ref=f1e375]:
+                      - generic [ref=f1e376]:
+                        - generic [ref=f1e377]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f1e378]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f1e379]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f1e380]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic customer vibration feedback · 固定 v2" [ref=f1e381]:
+                    - paragraph [ref=f1e383]: 固定领域事实 · v2。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f1e384]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f1e385]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f1e386]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f1e387]
+                    - group [ref=f1e388]:
+                      - generic [ref=f1e389]:
+                        - generic [ref=f1e390]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f1e391]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f1e392]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f1e393]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic original motor assembly process · 固定 v1" [ref=f1e394]:
+                    - paragraph [ref=f1e396]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f1e397]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f1e398]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f1e399]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f1e400]
+                    - group [ref=f1e401]:
+                      - generic [ref=f1e402]:
+                        - generic [ref=f1e403]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f1e404]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f1e405]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f1e406]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic manual motor assembly · 固定 v1" [ref=f1e407]:
+                    - paragraph [ref=f1e409]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f1e410]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f1e411]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f1e412]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f1e413]
+                    - group [ref=f1e414]:
+                      - generic [ref=f1e415]:
+                        - generic [ref=f1e416]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f1e417]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f1e418]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f1e419]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic motor · 固定 v1" [ref=f1e420]:
+                    - paragraph [ref=f1e422]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f1e423]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f1e424]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f1e425]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f1e426]
+                    - group [ref=f1e427]:
+                      - generic [ref=f1e428]:
+                        - generic [ref=f1e429]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f1e430]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f1e431]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f1e432]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "SYN-68d49451-3278-40ee-acf5-5d45ab24dcde · 固定 v1" [ref=f1e433]:
+                    - paragraph [ref=f1e435]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f1e436]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f1e437]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f1e438]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f1e439]
+                    - group [ref=f1e440]:
+                      - generic [ref=f1e441]:
+                        - generic [ref=f1e442]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f1e443]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f1e444]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f1e445]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "SYN-87ae4221-5a7c-47d8-a75b-dd5980d4a417 · 固定 v1" [ref=f1e446]:
+                    - paragraph [ref=f1e448]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f1e449]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f1e450]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f1e451]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f1e452]
+                    - group [ref=f1e453]:
+                      - generic [ref=f1e454]:
+                        - generic [ref=f1e455]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f1e456]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f1e457]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f1e458]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Approved revision fixture · 固定 v1" [ref=f1e459]:
+                    - paragraph [ref=f1e461]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f1e462]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f1e463]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f1e464]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f1e465]
+                    - group [ref=f1e466]:
+                      - generic [ref=f1e467]:
+                        - generic [ref=f1e468]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f1e469]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f1e470]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f1e471]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "固定测试Run · 固定 v3" [ref=f1e472]:
+                    - paragraph [ref=f1e474]: 固定领域事实 · v3。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f1e475]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f1e476]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f1e477]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f1e478]
+                    - group [ref=f1e479]:
+                      - generic [ref=f1e480]:
+                        - generic [ref=f1e481]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f1e482]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f1e483]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f1e484]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - generic [ref=f1e485]:
+                    - generic [ref=f1e486]:
+                      - text: 计划到期时点（可选，含时区）
+                      - textbox "计划到期时点（可选，含时区）" [ref=f1e487]:
+                        - /placeholder: 留空不另设计划到期
+                    - paragraph [ref=f1e488]: 不补为当前时间，不延长政策、来源和具名适用性事实的有效期。
+                  - generic [ref=f1e489]:
+                    - text: 具名准备原因
+                    - textbox "具名准备原因" [ref=f1e490]
+                - button "核对完整变更令与生效计划，一次确认" [ref=f1e491]
+                - paragraph [ref=f1e492]: 未知影响和未知处置继续保留。本节只准备计划；专业批准在下方分别办理，实际实施与生效仍须另行核对。
+              - generic [ref=f1e493]:
+                - heading "已保存变更令与明确生效计划" [level=3] [ref=f1e494]
+                - group [ref=f1e495]:
+                  - generic "变更令 1 · 2 项已记录专业决定" [ref=f1e496] [cursor=pointer]
+              - region "变更令具名专业批准" [ref=f1e497]:
+                - generic [ref=f1e498]:
+                  - generic [ref=f1e499]:
+                    - heading "3 · 本变更令的具名专业批准" [level=3] [ref=f1e500]
+                    - paragraph [ref=f1e503]: 按实际待批准计划分别办理本专业决定。权限、资格、提出者独立性和当前版本由服务器核对。
+                  - button "重新读取专业决定" [ref=f1e504]
+                - paragraph [ref=f1e505]: Synthetic actual Field corrective configuration change · 当前 v12 · 当前状态仅供核对
+                - paragraph [ref=f1e506]: 本地合成演练；此处决定不代表真实生产资格或阶段验收。
+                - generic [ref=f1e507]:
+                  - text: 明确选择已保存变更令
+                  - combobox "明确选择已保存变更令" [ref=f1e508]:
+                    - option "选择正式计划，不默认首条" [selected]
+                    - option "变更令 1 · 当前办理计划 · 2/2 项专业决定"
+              - region "批准计划约束的实际实施记录" [ref=f1e509]:
+                - generic [ref=f1e510]:
+                  - generic [ref=f1e511]:
+                    - heading "4 · 实际实施原件与本人确认" [level=3] [ref=f1e512]
+                    - paragraph [ref=f1e515]: 选取已经获批的固定计划项，从真实原件核对实际结果。捕获材料和正式实施保存分别办理。
+                  - button "重新读取批准与实施" [ref=f1e516]
+                - paragraph [ref=f1e517]: Synthetic actual Field corrective configuration change · 当前 v12
+                - generic [ref=f1e518]:
+                  - text: 明确选择已保存变更令
+                  - combobox "明确选择已保存变更令" [ref=f1e519]:
+                    - option "选择固定计划，不默认首条" [selected]
+                    - option "变更令 1 · 当前计划"
+              - region "实际采用、独立验证与分别关闭" [ref=f1e520]:
+                - generic [ref=f1e521]:
+                  - generic [ref=f1e522]:
+                    - heading "5 · 实际采用、独立验证与分别关闭" [level=3] [ref=f1e523]
+                    - paragraph [ref=f1e526]: 明确选择真实批次和测试对应。三步分别核对、分别确认；实际采用限定于本计划声明的继任开发 Build。
+                  - button "重新读取实际依据" [ref=f1e527]
+                - paragraph [ref=f1e528]: 当前变更 v12 · 已具名关闭
+                - generic [ref=f1e529]:
+                  - heading "实际开发 Build 采用 · 一次确认" [level=4] [ref=f1e530]
+                  - generic [ref=f1e532]:
+                    - term [ref=f1e533]: 当前缺项
+                    - definition [ref=f1e534]:
+                      - generic [ref=f1e537]:
+                        - generic [ref=f1e538]:
+                          - term [ref=f1e539]: 核对项
+                          - definition [ref=f1e540]: VALIDATION_FAILED
+                        - generic [ref=f1e541]:
+                          - term [ref=f1e542]: 具体说明
+                          - definition [ref=f1e543]: 请先完成批准与实际配置实施。
+                  - group [ref=f1e544]:
+                    - generic [ref=f1e545]:
+                      - text: 本次实际采用计划项
+                      - combobox "本次实际采用计划项" [disabled] [ref=f1e546]:
+                        - option "明确选择已有实际新配置的计划项" [disabled] [selected]
+                        - option "计划项 1 · Future engineering configuration revision after named approval · 已记录实际采用" [disabled]
+                        - option "计划项 2 · Future manufacturing configuration revision after named approval · 已记录实际采用" [disabled]
+                    - generic [ref=f1e547]:
+                      - text: 真实继任开发 Build 与实际产出批次
+                      - combobox "真实继任开发 Build 与实际产出批次" [disabled] [ref=f1e548]:
+                        - option "从当前实际批次明确选择" [disabled] [selected]
+                        - option "Synthetic separate approved-configuration verification Build · 批次 v1 · 2026/10/22 11:03:24" [disabled]
+                    - paragraph [ref=f1e549]: 实际批次、样件及实施输出由服务器重新核对。这里只记录明确开发范围；其他 Build、库存、在制品和 ERP / MES 切换分别保留。
+                    - button "读取本项实际采用的一次确认" [disabled]
+                - generic [ref=f1e550]:
+                  - heading "独立验证本变更 · 具名复核" [level=4] [ref=f1e551]
+                  - generic [ref=f1e553]:
+                    - term [ref=f1e554]: 当前缺项
+                    - definition [ref=f1e555]:
+                      - generic [ref=f1e558]:
+                        - generic [ref=f1e559]:
+                          - term [ref=f1e560]: 核对项
+                          - definition [ref=f1e561]: VALIDATION_FAILED
+                        - generic [ref=f1e562]:
+                          - term [ref=f1e563]: 具体说明
+                          - definition [ref=f1e564]: 请先完成批准与实际配置实施。
+                  - group [ref=f1e565]:
+                    - generic [ref=f1e566]:
+                      - heading "计划项 1 · Future engineering configuration revision after named approval" [level=5] [ref=f1e567]
+                      - paragraph [ref=f1e568]: 核验要求：New samples and Run with independent verification
+                      - button "为计划项 1 添加真实测试对应" [disabled]
+                    - generic [ref=f1e569]:
+                      - heading "计划项 2 · Future manufacturing configuration revision after named approval" [level=5] [ref=f1e570]
+                      - paragraph [ref=f1e571]: 核验要求：New samples and Run with independent verification
+                      - button "为计划项 2 添加真实测试对应" [disabled]
+                    - generic [ref=f1e572]:
+                      - text: 本次具名独立验证说明
+                      - textbox "本次具名独立验证说明" [disabled] [ref=f1e573]
+                    - paragraph [ref=f1e574]: 原测量、固定方法、全部计划项覆盖、采用后的观察窗口和当前独立性由服务器核对。提出、批准、实施或测试执行者不能自证；Run 已复核或处置也须另行作出本变更的独立决定。
+                    - button "读取本变更独立验证的具名批准" [disabled]
+                - generic [ref=f1e575]:
+                  - heading "分别关闭本变更 · 具名决定" [level=4] [ref=f1e576]
+                  - generic [ref=f1e577]:
+                    - generic [ref=f1e578]:
+                      - term [ref=f1e579]: 当前缺项
+                      - definition [ref=f1e580]:
+                        - generic [ref=f1e583]:
+                          - generic [ref=f1e584]:
+                            - term [ref=f1e585]: 核对项
+                            - definition [ref=f1e586]: VALIDATION_FAILED
+                          - generic [ref=f1e587]:
+                            - term [ref=f1e588]: 具体说明
+                            - definition [ref=f1e589]: 请先完成批准与实际配置实施。
+                    - generic [ref=f1e590]:
+                      - term [ref=f1e591]: 单独关闭决定
+                      - definition [ref=f1e592]:
+                        - generic [ref=f1e593]:
+                          - generic [ref=f1e594]:
+                            - term [ref=f1e595]: 决定保存时间
+                            - definition [ref=f1e596]: 2026-10-22T18:11:51.626567Z
+                          - generic [ref=f1e597]:
+                            - term [ref=f1e598]: 具名说明
+                            - definition [ref=f1e599]: Separately close only this fixed approved development scope after actual adoption and independent pass
+                          - generic [ref=f1e600]:
+                            - term [ref=f1e601]: 准确来源
+                            - definition [ref=f1e602]:
+                              - generic [ref=f1e603]:
+                                - generic [ref=f1e604]: 固定原文 · v1 · line:1
+                                - generic [ref=f1e606]: 固定原文 · v1 · line:1
+                                - generic [ref=f1e608]: 固定原文 · v1 · line:1
+                                - generic [ref=f1e610]: 固定原文 · v1 · line:1
+                                - generic [ref=f1e612]: 固定原文 · v1 · line:1
+                                - generic [ref=f1e614]: 固定原文 · v1 · line:1
+                                - generic [ref=f1e616]: 固定原文 · v1 · line:1
+                                - generic [ref=f1e618]: 固定原文 · v1 · line:1
+                                - generic [ref=f1e620]: 固定原文 · v1 · line:1
+                                - generic [ref=f1e622]: 固定原文 · v1 · line:2
+                                - generic [ref=f1e624]: 固定原文 · v1 · line:2
+                                - generic [ref=f1e626]: 固定原文 · v1 · line:3
+                  - group [ref=f1e628]:
+                    - generic [ref=f1e629]:
+                      - text: 本次具名关闭说明
+                      - textbox "本次具名关闭说明" [disabled] [ref=f1e630]
+                    - paragraph [ref=f1e631]: 完整实际采用和当前独立通过仍须核对；本次关闭单独批准，不改写原测试结果或其他业务对象。
+                    - button "读取单独具名关闭本变更的批准" [disabled]
+    - button "打开小Pai工作栏" [ref=f1e632] [cursor=pointer]: 小Pai
+```
+
+### Result
+{"passed":true,"status":"closed","namedClosureRetainedAfterRefresh":true,"allCompletionButtonsDisabled":true,"refreshMutations":[],"light":{"viewport":1440,"width":1440,"dark":false},"dark":{"viewport":320,"width":320,"dark":true},"businessCommandsSubmitted":0,"scope":"Actual 2026-10-22 saved closed case through built BFF/UI; saving and original-command replay verified by current HTTP/PG chain","screenshots":["/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-m9-completion-20261022/closed-light.png","/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-m9-completion-20261022/closed-dark-mobile.png"]}
+### Ran Playwright code
+```js
+await (async page => {
+const out="/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-m9-completion-20261022";
+const form=()=>page.getByRole('region',{name:'实际采用、独立验证与分别关闭',exact:true});
+await form().getByText(/当前变更 v[0-9]+ · 已具名关闭/).waitFor({timeout:60000});
+const closure='Separately close only this fixed approved development scope after actual adoption and independent pass';
+if(!(await form().innerText()).includes(closure)) throw Error('Saved separate named closure text missing');
+for(const name of ['读取本项实际采用的一次确认','读取本变更独立验证的具名批准','读取单独具名关闭本变更的批准']) if(!(await form().getByRole('button',{name,exact:true}).isDisabled())) throw Error('Closed scope must not offer another completion mutation');
+const writes=[]; const capture=request=>{if(!['GET','HEAD'].includes(request.method()))writes.push({method:request.method(),path:new URL(request.url()).pathname});};
+page.on('request',capture);await page.reload();await form().getByText(/当前变更 v[0-9]+ · 已具名关闭/).waitFor({timeout:60000});page.off('request',capture);
+if(writes.length)throw Error('Read-only refresh performed a mutation');
+if(!(await form().innerText()).includes(closure))throw Error('Named closure lost after refresh');
+await page.setViewportSize({width:1440,height:1000});
+if((await page.locator('html').getAttribute('class')??'').split(/\s+/).includes('dark')) await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();
+await form().getByRole('heading',{name:'5 · 实际采用、独立验证与分别关闭',exact:true}).evaluate(el=>el.scrollIntoView({block:'center',behavior:'instant'}));
+await page.screenshot({path:out+'/closed-light.png'});
+const light=await page.evaluate(()=>({viewport:innerWidth,width:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains('dark')}));
+if(!(await page.locator('html').getAttribute('class')??'').split(/\s+/).includes('dark'))await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();
+await page.setViewportSize({width:320,height:900});
+await form().getByRole('heading',{name:'5 · 实际采用、独立验证与分别关闭',exact:true}).evaluate(el=>el.scrollIntoView({block:'center',behavior:'instant'}));
+await page.screenshot({path:out+'/closed-dark-mobile.png'});
+const dark=await page.evaluate(()=>({viewport:innerWidth,width:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains('dark')}));
+if(light.width>light.viewport||dark.width>dark.viewport||light.dark||!dark.dark)throw Error('Actual closed viewport overflow');
+return {passed:true,status:'closed',namedClosureRetainedAfterRefresh:true,allCompletionButtonsDisabled:true,refreshMutations:writes,light,dark,businessCommandsSubmitted:0,scope:'Actual 2026-10-22 saved closed case through built BFF/UI; saving and original-command replay verified by current HTTP/PG chain',screenshots:[out+'/closed-light.png',out+'/closed-dark-mobile.png']};
+}
+)(page);
+```
+
+### Result
+Total messages: 0 (Errors: 0, Warnings: 0)
+
+
+### Page
+- Page URL: http://127.0.0.1:53283/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e
+- Page Title: PDOS · 研发工作区
+### Snapshot
+```yaml
+- generic [active] [ref=f2e1]:
+  - alert [ref=f2e2]
+  - generic [ref=f2e3]:
+    - link "跳到工作内容" [ref=f2e4] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - generic [ref=f2e5]:
+      - banner [ref=f2e6]:
+        - button "打开导航" [ref=f2e7]
+        - generic [ref=f2e8]:
+          - link "项目" [ref=f2e9] [cursor=pointer]:
+            - /url: "?area=projects"
+          - generic [ref=f2e12]: Approved revision fixture
+        - button "搜索对象" [ref=f2e15]
+      - main [ref=f2e16]:
+        - navigation "品类工作台区" [ref=f2e17]:
+          - link "型号" [ref=f2e18] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=products&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "项目" [ref=f2e22] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "知识" [ref=f2e26] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=knowledge&view=sources&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "设置" [ref=f2e30] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=settings&view=preferences&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - button "快速查找入口或型号" [ref=f2e34] [cursor=pointer]
+          - combobox "当前型号" [ref=f2e37]:
+            - option "Synthetic product"
+            - option "Approved revision fixture" [selected]
+        - navigation "项目视图" [ref=f2e38]:
+          - link "现在" [ref=f2e39] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=overview&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "工作与计划" [ref=f2e43] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=plan&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "试制" [ref=f2e47] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=builds&task=prepare&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "测试与交接" [ref=f2e51] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=verification&task=prepare&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "问题与变更" [ref=f2e55] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "现场与客户反馈" [ref=f2e59] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=field&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+          - link "评审与交付 尚未接入" [ref=f2e63] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=reviews&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+            - generic [ref=f2e66]: 评审与交付
+            - generic "尚未接入" [ref=f2e67]
+          - link "资料" [ref=f2e68] [cursor=pointer]:
+            - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e&bench=projects&view=files&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49"
+        - generic [ref=f2e72]:
+          - generic [ref=f2e74]:
+            - heading "问题与变更" [level=1] [ref=f2e75]
+            - paragraph [ref=f2e76]: 当前范围：Approved revision fixture
+          - generic [ref=f2e78]:
+            - generic [ref=f2e79]:
+              - generic [ref=f2e80]:
+                - generic [ref=f2e81]:
+                  - heading "失败调查、措施与双线变更" [level=2] [ref=f2e82]
+                  - paragraph [ref=f2e85]: 固定原报告与判定 → 具名问题办理 → 有来源的措施草稿与变更影响核对。工程和制造分别保留历史，未知范围保持未知。
+                - button "刷新当前事实" [ref=f2e86]
+              - generic [ref=f2e87]:
+                - generic [ref=f2e88]:
+                  - text: 明确选择试制轮次
+                  - combobox "质量闭环试制轮次" [ref=f2e89]:
+                    - option "请选择当前可读轮次" [selected]
+                    - option "Synthetic separate approved-configuration verification Build · v1"
+                    - option "Synthetic first prototype · v1"
+                - generic [ref=f2e90]:
+                  - text: 固定测试运行
+                  - combobox "质量闭环测试运行" [disabled] [ref=f2e91]:
+                    - option "请选择运行，不按时间猜选" [selected]
+              - paragraph [ref=f2e92]: 先明确选择轮次，再读取本轮请求和结果；空选择不扫描全型号历史。
+              - generic [ref=f2e93]:
+                - heading "2 · 当前问题与独立历史" [level=3] [ref=f2e94]
+                - generic [ref=f2e95]:
+                  - generic [ref=f2e96]:
+                    - text: 真实问题
+                    - combobox "真实问题" [disabled] [ref=f2e97]:
+                      - option "请选择已有问题" [selected]
+                  - generic [ref=f2e98]:
+                    - text: 问题版本
+                    - combobox "问题版本" [disabled] [ref=f2e99]
+                - paragraph [ref=f2e100]: 选择真实问题后可读取固定失败、原政策、措施与历史；未创建的对象不生成占位身份。
+            - generic [ref=f2e101]:
+              - generic [ref=f2e102]:
+                - generic [ref=f2e103]:
+                  - heading "根因、本人整改与独立复验回链" [level=2] [ref=f2e104]
+                  - paragraph [ref=f2e107]: 保留原失败与假设 → 具名根因 → 本人实际完成 → 固定新输出与新复验分支。有效性、问题关闭和正式变更批准仍未开放。
+                - button "刷新当前整改事实" [ref=f2e108]
+              - generic [ref=f2e109]:
+                - text: 明确选择试制轮次
+                - combobox "整改后续轮次" [ref=f2e110]:
+                  - option "请选择当前可读轮次" [selected]
+                  - option "Synthetic separate approved-configuration verification Build · v1"
+                  - option "Synthetic first prototype · v1"
+              - generic [ref=f2e111]:
+                - generic [ref=f2e112]:
+                  - text: 明确选择本轮已有问题 / CAPA
+                  - combobox "整改后续问题" [disabled] [ref=f2e113]:
+                    - option "请选择当前可读真实问题" [selected]
+                - generic [ref=f2e114]:
+                  - text: 当前 / 固定历史版本
+                  - combobox "整改问题固定版本" [disabled] [ref=f2e115]:
+                    - option "读取服务器当前版本" [selected]
+              - paragraph [ref=f2e116]: 先明确选择轮次，再读取本轮问题；空选择不深查全型号复验，也不默认选择某一轮。
+            - region "变更适用性与正式计划准备" [ref=f2e117]:
+              - generic [ref=f2e118]:
+                - generic [ref=f2e119]:
+                  - paragraph [ref=f2e120]: 固定影响 · 真实适用性 · 明确生效范围
+                  - heading "变更适用性与变更令准备" [level=2] [ref=f2e121]
+                - button "刷新当前正式依据" [ref=f2e124]
+              - paragraph [ref=f2e125]: 具名决定逐项适用性，再固定真实计划项与逐对象处置。未知范围继续保留；准备计划不表示已批准、实际实施或生效。
+              - paragraph [ref=f2e126]: 本地合成演练：此处材料与决定仅验证办理闭环，不代表真实生产资格或人工验收通过。
+              - generic [ref=f2e127]:
+                - text: 明确选择本项目变更
+                - combobox "明确选择本项目变更" [ref=f2e128]:
+                  - option "选择固定变更，不默认首条"
+                  - option "Synthetic actual Field corrective configuration change · v12 · 已具名关闭" [selected]
+              - generic [ref=f2e129]:
+                - heading "Synthetic actual Field corrective configuration change · 当前 v12" [level=3] [ref=f2e130]
+                - paragraph [ref=f2e131]: 已具名关闭 · 用途：Verify preparation
+                - heading "当前正式政策" [level=4] [ref=f2e132]
+                - paragraph [ref=f2e135]: 须分别办理：工程、制造；有效区间：2026/10/22 10:56:48 — 2026/10/22 14:56:43。
+                - blockquote [ref=f2e136]:
+                  - paragraph [ref=f2e137]: Synthetic actual dual discipline policy · v1 · 第 1 行
+                  - paragraph [ref=f2e138]: "{\"nature\":\"synthetic\",\"owner_id\":\"78dbc83d-75d2-4513-bc4d-a5d3d5081f6c\",\"publisher_id\":\"56e0c8e2-51b3-4087-80de-b2b2debd1f4f\",\"purpose\":\"Verify preparation\",\"required_disciplines\":[\"engineering\",\"manufacturing\"],\"schema_version\":\"pdos-controlled-change-policy-v1\",\"scope\":{\"product_id\":\"815224c5-3d8a-4bce-853e-0c5ba4df7a49\",\"project_id\":\"92024f6a-febd-4f3b-869b-82b15639a70e\",\"tenant_id\":\"78340ac0-57c2-4235-87c6-a468dd3d8173\"},\"valid_from\":\"2026-10-22T17:56:48.205440Z\",\"valid_until\":\"2026-10-22T21:56:43.477253Z\",\"visibility\":\"category\"}"
+              - region "现场反馈的未来变更计划项" [ref=f2e139]:
+                - heading "1 · 明确未来变更计划项，再具名决定适用性" [level=3] [ref=f2e140]
+                - paragraph [ref=f2e141]: 选择真实反馈、拟变更配置与实际执行人。这里填写未来实施意图；已发生遏制或改善记录仍保留为历史事实。
+                - group [ref=f2e142]:
+                  - generic [ref=f2e143]:
+                    - text: 本项依据的实际反馈
+                    - combobox "本项依据的实际反馈" [ref=f2e144]:
+                      - option "请选择实际反馈及固定版本" [selected]
+                      - option "Synthetic customer vibration feedback · v2"
+                  - generic [ref=f2e145]:
+                    - text: 未来实施类型
+                    - combobox "未来实施类型" [ref=f2e146]:
+                      - option "建立新工程配置" [selected]
+                      - option "建立新制造配置"
+                  - generic [ref=f2e147]:
+                    - text: 拟变更的实际配置
+                    - combobox "拟变更的实际配置" [ref=f2e148]:
+                      - option "请选择实际配置及固定版本" [selected]
+                      - option "Synthetic original engineering configuration · v1"
+                  - generic [ref=f2e149]:
+                    - text: 本计划项实际执行人
+                    - combobox "本计划项实际执行人" [ref=f2e150]:
+                      - option "请选择真实人员" [selected]
+                      - option "Synthetic independent future reviewer"
+                      - option "Synthetic owner"
+                      - option "Synthetic peer"
+                      - option "Synthetic qualified quality"
+                      - option "Synthetic separate test executor"
+                  - generic [ref=f2e151]:
+                    - text: 未来实施意图
+                    - textbox "未来实施意图" [ref=f2e152]
+                  - generic [ref=f2e153]:
+                    - checkbox "明确限定为指定前轮的继任开发 Build 实际采用" [ref=f2e154]
+                    - text: 明确限定为指定前轮的继任开发 Build 实际采用
+                  - generic [ref=f2e155]:
+                    - text: 适用条件（每行一项）
+                    - textbox "适用条件（每行一项）" [ref=f2e156]
+                  - generic [ref=f2e157]:
+                    - text: 后续复验要求
+                    - textbox "后续复验要求" [ref=f2e158]
+                  - generic [ref=f2e159]:
+                    - text: 本项适用性判断
+                    - combobox "本项适用性判断" [ref=f2e160]:
+                      - option "未知，保留调查" [selected]
+                      - option "适用本次明确范围"
+                      - option "不适用本次明确范围"
+                  - generic [ref=f2e161]:
+                    - text: 本项适用至（可选，含时区）
+                    - textbox "本项适用至（可选，含时区）" [ref=f2e162]:
+                      - /placeholder: 留空不另设截止时点
+                  - generic [ref=f2e163]:
+                    - text: 本项适用性判断理由
+                    - textbox "本项适用性判断理由" [ref=f2e164]
+                - region "登记本项未来计划材料并读取适用性候选" [ref=f2e165]:
+                  - paragraph [ref=f2e166]: 先保留本人明确填写的材料，再读取真实原文进入既有办理。这里只登记材料，不作专业批准或实施确认。
+                  - button "登记本项未来计划材料并读取适用性候选" [ref=f2e167]
+              - generic [ref=f2e168]:
+                - heading "2 · 选择真实适用计划项并逐一处置已知对象，准备一次确认" [level=3] [ref=f2e169]
+                - group "只采用服务器已核对的当前适用性事实；未知、不适用或过期记录保留阅读。" [ref=f2e170]:
+                  - generic [ref=f2e172]:
+                    - generic [ref=f2e173]:
+                      - checkbox "计划项 1 · 制造 · 适用 · 事实 v1" [ref=f2e174]
+                      - generic [ref=f2e175]: 计划项 1 · 制造 · 适用 · 事实 v1
+                    - generic [ref=f2e176]:
+                      - generic [ref=f2e177]:
+                        - term [ref=f2e178]: 专业范围
+                        - definition [ref=f2e179]: 制造
+                      - generic [ref=f2e180]:
+                        - term [ref=f2e181]: 明确生效范围
+                        - definition [ref=f2e182]:
+                          - generic [ref=f2e183]:
+                            - generic [ref=f2e184]:
+                              - term [ref=f2e185]: 固定对象
+                              - definition [ref=f2e186]:
+                                - generic [ref=f2e189]:
+                                  - generic [ref=f2e190]:
+                                    - term [ref=f2e191]: 固定版本
+                                    - definition [ref=f2e192]: "1"
+                                  - generic [ref=f2e193]:
+                                    - term [ref=f2e194]: 类型
+                                    - definition [ref=f2e195]: manufacturing_configuration
+                            - generic [ref=f2e196]:
+                              - term [ref=f2e197]: 对象 / 批次 / 序号范围
+                              - definition [ref=f2e198]:
+                                - generic [ref=f2e199]: "object:manufacturing_configuration:88bb68ca-04af-4bbb-b272-7fabd869ab56:1:"
+                            - generic [ref=f2e201]:
+                              - term [ref=f2e202]: 实际适用条件
+                              - definition [ref=f2e203]:
+                                - generic [ref=f2e204]: 仅在明确前轮的继任开发 Build 中实际采用；不代表库存、在制、其他 Build 或 ERP/MES 的切换。
+                            - generic [ref=f2e206]:
+                              - term [ref=f2e207]: 精确原文依据
+                              - definition [ref=f2e208]:
+                                - blockquote [ref=f2e211]:
+                                  - paragraph [ref=f2e212]: Synthetic actual customer report · v1 · 第 1 行
+                                  - paragraph [ref=f2e213]: "{\"observation\":\"Synthetic customer vibration report; batch unknown\",\"purpose\":\"Verify preparation\"}"
+                      - generic [ref=f2e214]:
+                        - term [ref=f2e215]: 受控实施意图
+                        - definition [ref=f2e216]:
+                          - generic [ref=f2e217]:
+                            - generic [ref=f2e218]:
+                              - term [ref=f2e219]: 类型
+                              - definition [ref=f2e220]: 建立新制造配置的意图
+                            - generic [ref=f2e221]:
+                              - term [ref=f2e222]: 实施意图的固定依据
+                              - definition [ref=f2e223]:
+                                - generic [ref=f2e224]:
+                                  - generic [ref=f2e226]:
+                                    - generic [ref=f2e227]:
+                                      - term [ref=f2e228]: 固定版本
+                                      - definition [ref=f2e229]: "1"
+                                    - generic [ref=f2e230]:
+                                      - term [ref=f2e231]: 类型
+                                      - definition [ref=f2e232]: manufacturing_configuration
+                                  - generic [ref=f2e234]:
+                                    - generic [ref=f2e235]:
+                                      - term [ref=f2e236]: 固定版本
+                                      - definition [ref=f2e237]: "1"
+                                    - generic [ref=f2e238]:
+                                      - term [ref=f2e239]: 类型
+                                      - definition [ref=f2e240]: build
+                            - generic [ref=f2e241]:
+                              - term [ref=f2e242]: 实际说明
+                              - definition [ref=f2e243]: Future manufacturing configuration revision after named approval
+                      - generic [ref=f2e244]:
+                        - term [ref=f2e245]: 后续核验要求
+                        - definition [ref=f2e246]: New samples and Run with independent verification
+                    - blockquote [ref=f2e247]:
+                      - paragraph [ref=f2e248]: Synthetic explicit Field plan applicability · v1 · 第 1 行
+                      - paragraph [ref=f2e249]: "{\"change_id\":\"51d743d6-26a5-53d5-9729-b0d1e8023fb9\",\"decider_id\":\"56e0c8e2-51b3-4087-80de-b2b2debd1f4f\",\"executor_id\":\"78dbc83d-75d2-4513-bc4d-a5d3d5081f6c\",\"feedback\":{\"id\":\"f76a82fe-4b90-56f9-8def-beccaa9ef914\",\"revision\":2},\"feedback_sha256\":\"093a594d466ff5632b980125e58ae1446ac30c9b12af3c7904cc464128a6480f\",\"feedback_version_id\":\"6e651cb1-352a-5628-828d-0ba077654885\",\"item\":{\"discipline\":\"manufacturing\",\"id\":\"00ffe600-541d-4ed0-bc03-116a136011ed\",\"intent\":{\"basis\":[{\"id\":\"88bb68ca-04af-4bbb-b272-7fabd869ab56\",\"key\":null,\"kind\":\"manufacturing_configuration\",\"revision\":1},{\"id\":\"53deaa61-7d2d-4605-9d65-58e5aa393800\",\"key\":null,\"kind\":\"build\",\"revision\":1}],\"description\":\"Future manufacturing configuration revision after named approval\",\"id\":\"22e0bab2-ebab-425a-9ffc-896caa2c5114\",\"kind\":\"new_manufacturing_configuration\"},\"selection\":{\"conditions\":[\"仅在明确前轮的继任开发 Build 中实际采用；不代表库存、在制、其他 Build 或 ERP/MES 的切换。\"],\"objects\":[{\"id\":\"88bb68ca-04af-4bbb-b272-7fabd869ab56\",\"key\":null,\"kind\":\"manufacturing_configuration\",\"revision\":1}],\"sources\":[{\"id\":\"10ca6266-e4f1-4fda-b169-9845eae2c913\",\"kind\":\"artifact\",\"position\":\"line:1;quote_sha256:ef195e2c881fc9682a59a44f7d1f95c48a9de5b3b1dfc4e3bb50b398990ee581\",\"revision\":1}],\"units\":[\"object:manufacturing_configuration:88bb68ca-04af-4bbb-b272-7fabd869ab56:1:\"]},\"verification_requirement\":\"New samples and Run with independent verification\"},\"nature\":\"synthetic\",\"purpose\":\"Verify preparation\",\"reason\":\"Named explicit future Field plan, not the performed response ledger\",\"schema_version\":\"pdos-field-change-selection-v1\",\"scope\":{\"product_id\":\"815224c5-3d8a-4bce-853e-0c5ba4df7a49\",\"project_id\":\"92024f6a-febd-4f3b-869b-82b15639a70e\",\"tenant_id\":\"78340ac0-57c2-4235-87c6-a468dd3d8173\"},\"status\":\"applicable\",\"valid_until\":null}"
+                  - generic [ref=f2e250]:
+                    - generic [ref=f2e251]:
+                      - checkbox "计划项 2 · 工程 · 适用 · 事实 v1" [ref=f2e252]
+                      - generic [ref=f2e253]: 计划项 2 · 工程 · 适用 · 事实 v1
+                    - generic [ref=f2e254]:
+                      - generic [ref=f2e255]:
+                        - term [ref=f2e256]: 专业范围
+                        - definition [ref=f2e257]: 工程
+                      - generic [ref=f2e258]:
+                        - term [ref=f2e259]: 明确生效范围
+                        - definition [ref=f2e260]:
+                          - generic [ref=f2e261]:
+                            - generic [ref=f2e262]:
+                              - term [ref=f2e263]: 固定对象
+                              - definition [ref=f2e264]:
+                                - generic [ref=f2e267]:
+                                  - generic [ref=f2e268]:
+                                    - term [ref=f2e269]: 固定版本
+                                    - definition [ref=f2e270]: "1"
+                                  - generic [ref=f2e271]:
+                                    - term [ref=f2e272]: 类型
+                                    - definition [ref=f2e273]: engineering_configuration
+                            - generic [ref=f2e274]:
+                              - term [ref=f2e275]: 对象 / 批次 / 序号范围
+                              - definition [ref=f2e276]:
+                                - generic [ref=f2e277]: "object:engineering_configuration:fe583a8c-13bd-4128-9279-1cb9739d2e4a:1:"
+                            - generic [ref=f2e279]:
+                              - term [ref=f2e280]: 实际适用条件
+                              - definition [ref=f2e281]:
+                                - generic [ref=f2e282]: 仅在明确前轮的继任开发 Build 中实际采用；不代表库存、在制、其他 Build 或 ERP/MES 的切换。
+                            - generic [ref=f2e284]:
+                              - term [ref=f2e285]: 精确原文依据
+                              - definition [ref=f2e286]:
+                                - blockquote [ref=f2e289]:
+                                  - paragraph [ref=f2e290]: Synthetic actual customer report · v1 · 第 1 行
+                                  - paragraph [ref=f2e291]: "{\"observation\":\"Synthetic customer vibration report; batch unknown\",\"purpose\":\"Verify preparation\"}"
+                      - generic [ref=f2e292]:
+                        - term [ref=f2e293]: 受控实施意图
+                        - definition [ref=f2e294]:
+                          - generic [ref=f2e295]:
+                            - generic [ref=f2e296]:
+                              - term [ref=f2e297]: 类型
+                              - definition [ref=f2e298]: 建立新工程配置的意图
+                            - generic [ref=f2e299]:
+                              - term [ref=f2e300]: 实施意图的固定依据
+                              - definition [ref=f2e301]:
+                                - generic [ref=f2e302]:
+                                  - generic [ref=f2e304]:
+                                    - generic [ref=f2e305]:
+                                      - term [ref=f2e306]: 固定版本
+                                      - definition [ref=f2e307]: "1"
+                                    - generic [ref=f2e308]:
+                                      - term [ref=f2e309]: 类型
+                                      - definition [ref=f2e310]: engineering_configuration
+                                  - generic [ref=f2e312]:
+                                    - generic [ref=f2e313]:
+                                      - term [ref=f2e314]: 固定版本
+                                      - definition [ref=f2e315]: "1"
+                                    - generic [ref=f2e316]:
+                                      - term [ref=f2e317]: 类型
+                                      - definition [ref=f2e318]: build
+                            - generic [ref=f2e319]:
+                              - term [ref=f2e320]: 实际说明
+                              - definition [ref=f2e321]: Future engineering configuration revision after named approval
+                      - generic [ref=f2e322]:
+                        - term [ref=f2e323]: 后续核验要求
+                        - definition [ref=f2e324]: New samples and Run with independent verification
+                    - blockquote [ref=f2e325]:
+                      - paragraph [ref=f2e326]: Synthetic explicit Field plan applicability · v1 · 第 1 行
+                      - paragraph [ref=f2e327]: "{\"change_id\":\"51d743d6-26a5-53d5-9729-b0d1e8023fb9\",\"decider_id\":\"56e0c8e2-51b3-4087-80de-b2b2debd1f4f\",\"executor_id\":\"78dbc83d-75d2-4513-bc4d-a5d3d5081f6c\",\"feedback\":{\"id\":\"f76a82fe-4b90-56f9-8def-beccaa9ef914\",\"revision\":2},\"feedback_sha256\":\"093a594d466ff5632b980125e58ae1446ac30c9b12af3c7904cc464128a6480f\",\"feedback_version_id\":\"6e651cb1-352a-5628-828d-0ba077654885\",\"item\":{\"discipline\":\"engineering\",\"id\":\"c8f98275-dc9d-4904-b9ff-1fbc6796a13b\",\"intent\":{\"basis\":[{\"id\":\"fe583a8c-13bd-4128-9279-1cb9739d2e4a\",\"key\":null,\"kind\":\"engineering_configuration\",\"revision\":1},{\"id\":\"53deaa61-7d2d-4605-9d65-58e5aa393800\",\"key\":null,\"kind\":\"build\",\"revision\":1}],\"description\":\"Future engineering configuration revision after named approval\",\"id\":\"e090e368-207e-4e06-8270-29c718617df2\",\"kind\":\"new_engineering_configuration\"},\"selection\":{\"conditions\":[\"仅在明确前轮的继任开发 Build 中实际采用；不代表库存、在制、其他 Build 或 ERP/MES 的切换。\"],\"objects\":[{\"id\":\"fe583a8c-13bd-4128-9279-1cb9739d2e4a\",\"key\":null,\"kind\":\"engineering_configuration\",\"revision\":1}],\"sources\":[{\"id\":\"10ca6266-e4f1-4fda-b169-9845eae2c913\",\"kind\":\"artifact\",\"position\":\"line:1;quote_sha256:ef195e2c881fc9682a59a44f7d1f95c48a9de5b3b1dfc4e3bb50b398990ee581\",\"revision\":1}],\"units\":[\"object:engineering_configuration:fe583a8c-13bd-4128-9279-1cb9739d2e4a:1:\"]},\"verification_requirement\":\"New samples and Run with independent verification\"},\"nature\":\"synthetic\",\"purpose\":\"Verify preparation\",\"reason\":\"Named explicit future Field plan, not the performed response ledger\",\"schema_version\":\"pdos-field-change-selection-v1\",\"scope\":{\"product_id\":\"815224c5-3d8a-4bce-853e-0c5ba4df7a49\",\"project_id\":\"92024f6a-febd-4f3b-869b-82b15639a70e\",\"tenant_id\":\"78340ac0-57c2-4235-87c6-a468dd3d8173\"},\"status\":\"applicable\",\"valid_until\":null}"
+                  - heading "全部已知影响对象的明确处置" [level=4] [ref=f2e328]
+                  - group "Synthetic motor BOM · 固定 v1" [ref=f2e329]:
+                    - paragraph [ref=f2e331]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f2e332]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f2e333]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f2e334]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f2e335]
+                    - group [ref=f2e336]:
+                      - generic [ref=f2e337]:
+                        - generic [ref=f2e338]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f2e339]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f2e340]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f2e341]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic motor BOM · 固定 v1" [ref=f2e342]:
+                    - paragraph [ref=f2e344]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f2e345]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f2e346]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f2e347]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f2e348]
+                    - group [ref=f2e349]:
+                      - generic [ref=f2e350]:
+                        - generic [ref=f2e351]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f2e352]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f2e353]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f2e354]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic first prototype · 固定 v1" [ref=f2e355]:
+                    - paragraph [ref=f2e357]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f2e358]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f2e359]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f2e360]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f2e361]
+                    - group [ref=f2e362]:
+                      - generic [ref=f2e363]:
+                        - generic [ref=f2e364]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f2e365]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f2e366]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f2e367]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic original engineering configuration · 固定 v1" [ref=f2e368]:
+                    - paragraph [ref=f2e370]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f2e371]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f2e372]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f2e373]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f2e374]
+                    - group [ref=f2e375]:
+                      - generic [ref=f2e376]:
+                        - generic [ref=f2e377]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f2e378]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f2e379]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f2e380]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic customer vibration feedback · 固定 v2" [ref=f2e381]:
+                    - paragraph [ref=f2e383]: 固定领域事实 · v2。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f2e384]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f2e385]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f2e386]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f2e387]
+                    - group [ref=f2e388]:
+                      - generic [ref=f2e389]:
+                        - generic [ref=f2e390]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f2e391]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f2e392]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f2e393]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic original motor assembly process · 固定 v1" [ref=f2e394]:
+                    - paragraph [ref=f2e396]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f2e397]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f2e398]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f2e399]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f2e400]
+                    - group [ref=f2e401]:
+                      - generic [ref=f2e402]:
+                        - generic [ref=f2e403]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f2e404]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f2e405]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f2e406]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic manual motor assembly · 固定 v1" [ref=f2e407]:
+                    - paragraph [ref=f2e409]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f2e410]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f2e411]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f2e412]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f2e413]
+                    - group [ref=f2e414]:
+                      - generic [ref=f2e415]:
+                        - generic [ref=f2e416]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f2e417]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f2e418]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f2e419]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Synthetic motor · 固定 v1" [ref=f2e420]:
+                    - paragraph [ref=f2e422]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f2e423]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f2e424]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f2e425]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f2e426]
+                    - group [ref=f2e427]:
+                      - generic [ref=f2e428]:
+                        - generic [ref=f2e429]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f2e430]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f2e431]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f2e432]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "SYN-68d49451-3278-40ee-acf5-5d45ab24dcde · 固定 v1" [ref=f2e433]:
+                    - paragraph [ref=f2e435]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f2e436]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f2e437]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f2e438]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f2e439]
+                    - group [ref=f2e440]:
+                      - generic [ref=f2e441]:
+                        - generic [ref=f2e442]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f2e443]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f2e444]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f2e445]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "SYN-87ae4221-5a7c-47d8-a75b-dd5980d4a417 · 固定 v1" [ref=f2e446]:
+                    - paragraph [ref=f2e448]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f2e449]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f2e450]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f2e451]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f2e452]
+                    - group [ref=f2e453]:
+                      - generic [ref=f2e454]:
+                        - generic [ref=f2e455]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f2e456]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f2e457]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f2e458]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "Approved revision fixture · 固定 v1" [ref=f2e459]:
+                    - paragraph [ref=f2e461]: 固定领域事实 · v1。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f2e462]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f2e463]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f2e464]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f2e465]
+                    - group [ref=f2e466]:
+                      - generic [ref=f2e467]:
+                        - generic [ref=f2e468]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f2e469]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f2e470]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f2e471]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - group "固定测试Run · 固定 v3" [ref=f2e472]:
+                    - paragraph [ref=f2e474]: 固定领域事实 · v3。保留其真实出处；本对象的处置说明仍需另选可核对原文。
+                    - generic [ref=f2e475]:
+                      - text: 本对象处置
+                      - combobox "本对象处置" [ref=f2e476]:
+                        - option "未知，明确保留缺口" [selected]
+                        - option "由本次真实计划项覆盖"
+                        - option "已具名评审无需更改"
+                    - generic [ref=f2e477]:
+                      - text: 具名处置原因
+                      - textbox "具名处置原因" [ref=f2e478]
+                    - group [ref=f2e479]:
+                      - generic [ref=f2e480]:
+                        - generic [ref=f2e481]:
+                          - text: 已登记原文
+                          - combobox "已登记原文" [ref=f2e482]:
+                            - option "明确选择当前可读原文" [selected]
+                            - option "Synthetic motor assembly input · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic actual method dossier · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic new test executor physical capacity declaration · v1"
+                            - option "Synthetic actual customer report · v1"
+                            - option "Synthetic actual dual discipline policy · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic explicit Field plan applicability · v1"
+                            - option "Synthetic Field per-object reviewed dispositions · v1"
+                            - option "Synthetic fixed internal revision coverage v2 · v1"
+                            - option "Synthetic Field configuration revision instructions · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic native Field implementation occurrence · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic separate Build actual start · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic exact measurement JSONL · v1"
+                            - option "Synthetic event · v1"
+                            - option "Synthetic event · v1"
+                        - generic [ref=f2e483]:
+                          - text: 派生原文完整行
+                          - spinbutton "派生原文完整行" [ref=f2e484]: "1"
+                      - button "采用这一完整行作为精确依据" [disabled]
+                  - generic [ref=f2e485]:
+                    - generic [ref=f2e486]:
+                      - text: 计划到期时点（可选，含时区）
+                      - textbox "计划到期时点（可选，含时区）" [ref=f2e487]:
+                        - /placeholder: 留空不另设计划到期
+                    - paragraph [ref=f2e488]: 不补为当前时间，不延长政策、来源和具名适用性事实的有效期。
+                  - generic [ref=f2e489]:
+                    - text: 具名准备原因
+                    - textbox "具名准备原因" [ref=f2e490]
+                - button "核对完整变更令与生效计划，一次确认" [ref=f2e491]
+                - paragraph [ref=f2e492]: 未知影响和未知处置继续保留。本节只准备计划；专业批准在下方分别办理，实际实施与生效仍须另行核对。
+              - generic [ref=f2e493]:
+                - heading "已保存变更令与明确生效计划" [level=3] [ref=f2e494]
+                - group [ref=f2e495]:
+                  - generic "变更令 1 · 2 项已记录专业决定" [ref=f2e496] [cursor=pointer]
+              - region "变更令具名专业批准" [ref=f2e497]:
+                - generic [ref=f2e498]:
+                  - generic [ref=f2e499]:
+                    - heading "3 · 本变更令的具名专业批准" [level=3] [ref=f2e500]
+                    - paragraph [ref=f2e503]: 按实际待批准计划分别办理本专业决定。权限、资格、提出者独立性和当前版本由服务器核对。
+                  - button "重新读取专业决定" [ref=f2e504]
+                - paragraph [ref=f2e505]: Synthetic actual Field corrective configuration change · 当前 v12 · 当前状态仅供核对
+                - paragraph [ref=f2e506]: 本地合成演练；此处决定不代表真实生产资格或阶段验收。
+                - generic [ref=f2e507]:
+                  - text: 明确选择已保存变更令
+                  - combobox "明确选择已保存变更令" [ref=f2e508]:
+                    - option "选择正式计划，不默认首条" [selected]
+                    - option "变更令 1 · 当前办理计划 · 2/2 项专业决定"
+              - region "批准计划约束的实际实施记录" [ref=f2e509]:
+                - generic [ref=f2e510]:
+                  - generic [ref=f2e511]:
+                    - heading "4 · 实际实施原件与本人确认" [level=3] [ref=f2e512]
+                    - paragraph [ref=f2e515]: 选取已经获批的固定计划项，从真实原件核对实际结果。捕获材料和正式实施保存分别办理。
+                  - button "重新读取批准与实施" [ref=f2e516]
+                - paragraph [ref=f2e517]: Synthetic actual Field corrective configuration change · 当前 v12
+                - generic [ref=f2e518]:
+                  - text: 明确选择已保存变更令
+                  - combobox "明确选择已保存变更令" [ref=f2e519]:
+                    - option "选择固定计划，不默认首条" [selected]
+                    - option "变更令 1 · 当前计划"
+              - region "实际采用、独立验证与分别关闭" [ref=f2e520]:
+                - generic [ref=f2e521]:
+                  - generic [ref=f2e522]:
+                    - heading "5 · 实际采用、独立验证与分别关闭" [level=3] [ref=f2e523]
+                    - paragraph [ref=f2e526]: 明确选择真实批次和测试对应。三步分别核对、分别确认；实际采用限定于本计划声明的继任开发 Build。
+                  - button "重新读取实际依据" [ref=f2e527]
+                - paragraph [ref=f2e528]: 当前变更 v12 · 已具名关闭
+                - generic [ref=f2e529]:
+                  - heading "实际开发 Build 采用 · 一次确认" [level=4] [ref=f2e530]
+                  - generic [ref=f2e532]:
+                    - term [ref=f2e533]: 当前缺项
+                    - definition [ref=f2e534]:
+                      - generic [ref=f2e537]:
+                        - generic [ref=f2e538]:
+                          - term [ref=f2e539]: 核对项
+                          - definition [ref=f2e540]: VALIDATION_FAILED
+                        - generic [ref=f2e541]:
+                          - term [ref=f2e542]: 具体说明
+                          - definition [ref=f2e543]: 请先完成批准与实际配置实施。
+                  - group [ref=f2e544]:
+                    - generic [ref=f2e545]:
+                      - text: 本次实际采用计划项
+                      - combobox "本次实际采用计划项" [disabled] [ref=f2e546]:
+                        - option "明确选择已有实际新配置的计划项" [disabled] [selected]
+                        - option "计划项 1 · Future engineering configuration revision after named approval · 已记录实际采用" [disabled]
+                        - option "计划项 2 · Future manufacturing configuration revision after named approval · 已记录实际采用" [disabled]
+                    - generic [ref=f2e547]:
+                      - text: 真实继任开发 Build 与实际产出批次
+                      - combobox "真实继任开发 Build 与实际产出批次" [disabled] [ref=f2e548]:
+                        - option "从当前实际批次明确选择" [disabled] [selected]
+                        - option "Synthetic separate approved-configuration verification Build · 批次 v1 · 2026/10/22 11:03:24" [disabled]
+                    - paragraph [ref=f2e549]: 实际批次、样件及实施输出由服务器重新核对。这里只记录明确开发范围；其他 Build、库存、在制品和 ERP / MES 切换分别保留。
+                    - button "读取本项实际采用的一次确认" [disabled]
+                - generic [ref=f2e550]:
+                  - heading "独立验证本变更 · 具名复核" [level=4] [ref=f2e551]
+                  - generic [ref=f2e553]:
+                    - term [ref=f2e554]: 当前缺项
+                    - definition [ref=f2e555]:
+                      - generic [ref=f2e558]:
+                        - generic [ref=f2e559]:
+                          - term [ref=f2e560]: 核对项
+                          - definition [ref=f2e561]: VALIDATION_FAILED
+                        - generic [ref=f2e562]:
+                          - term [ref=f2e563]: 具体说明
+                          - definition [ref=f2e564]: 请先完成批准与实际配置实施。
+                  - group [ref=f2e565]:
+                    - generic [ref=f2e566]:
+                      - heading "计划项 1 · Future engineering configuration revision after named approval" [level=5] [ref=f2e567]
+                      - paragraph [ref=f2e568]: 核验要求：New samples and Run with independent verification
+                      - button "为计划项 1 添加真实测试对应" [disabled]
+                    - generic [ref=f2e569]:
+                      - heading "计划项 2 · Future manufacturing configuration revision after named approval" [level=5] [ref=f2e570]
+                      - paragraph [ref=f2e571]: 核验要求：New samples and Run with independent verification
+                      - button "为计划项 2 添加真实测试对应" [disabled]
+                    - generic [ref=f2e572]:
+                      - text: 本次具名独立验证说明
+                      - textbox "本次具名独立验证说明" [disabled] [ref=f2e573]
+                    - paragraph [ref=f2e574]: 原测量、固定方法、全部计划项覆盖、采用后的观察窗口和当前独立性由服务器核对。提出、批准、实施或测试执行者不能自证；Run 已复核或处置也须另行作出本变更的独立决定。
+                    - button "读取本变更独立验证的具名批准" [disabled]
+                - generic [ref=f2e575]:
+                  - heading "分别关闭本变更 · 具名决定" [level=4] [ref=f2e576]
+                  - generic [ref=f2e577]:
+                    - generic [ref=f2e578]:
+                      - term [ref=f2e579]: 当前缺项
+                      - definition [ref=f2e580]:
+                        - generic [ref=f2e583]:
+                          - generic [ref=f2e584]:
+                            - term [ref=f2e585]: 核对项
+                            - definition [ref=f2e586]: VALIDATION_FAILED
+                          - generic [ref=f2e587]:
+                            - term [ref=f2e588]: 具体说明
+                            - definition [ref=f2e589]: 请先完成批准与实际配置实施。
+                    - generic [ref=f2e590]:
+                      - term [ref=f2e591]: 单独关闭决定
+                      - definition [ref=f2e592]:
+                        - generic [ref=f2e593]:
+                          - generic [ref=f2e594]:
+                            - term [ref=f2e595]: 决定保存时间
+                            - definition [ref=f2e596]: 2026-10-22T18:11:51.626567Z
+                          - generic [ref=f2e597]:
+                            - term [ref=f2e598]: 具名说明
+                            - definition [ref=f2e599]: Separately close only this fixed approved development scope after actual adoption and independent pass
+                          - generic [ref=f2e600]:
+                            - term [ref=f2e601]: 准确来源
+                            - definition [ref=f2e602]:
+                              - generic [ref=f2e603]:
+                                - generic [ref=f2e604]: 固定原文 · v1 · line:1
+                                - generic [ref=f2e606]: 固定原文 · v1 · line:1
+                                - generic [ref=f2e608]: 固定原文 · v1 · line:1
+                                - generic [ref=f2e610]: 固定原文 · v1 · line:1
+                                - generic [ref=f2e612]: 固定原文 · v1 · line:1
+                                - generic [ref=f2e614]: 固定原文 · v1 · line:1
+                                - generic [ref=f2e616]: 固定原文 · v1 · line:1
+                                - generic [ref=f2e618]: 固定原文 · v1 · line:1
+                                - generic [ref=f2e620]: 固定原文 · v1 · line:1
+                                - generic [ref=f2e622]: 固定原文 · v1 · line:2
+                                - generic [ref=f2e624]: 固定原文 · v1 · line:2
+                                - generic [ref=f2e626]: 固定原文 · v1 · line:3
+                  - group [ref=f2e628]:
+                    - generic [ref=f2e629]:
+                      - text: 本次具名关闭说明
+                      - textbox "本次具名关闭说明" [disabled] [ref=f2e630]
+                    - paragraph [ref=f2e631]: 完整实际采用和当前独立通过仍须核对；本次关闭单独批准，不改写原测试结果或其他业务对象。
+                    - button "读取单独具名关闭本变更的批准" [disabled]
+    - button "打开小Pai工作栏" [ref=f2e632] [cursor=pointer]: 小Pai
+```
+
+### Result
+{"passed":true,"status":"closed","namedClosureRetainedAfterRefresh":true,"allCompletionButtonsDisabled":true,"refreshMutations":[],"light":{"viewport":1440,"width":1440,"dark":false},"dark":{"viewport":320,"width":320,"dark":true},"businessCommandsSubmitted":0,"scope":"Actual 2026-10-22 saved closed case through built BFF/UI; saving and original-command replay verified by current HTTP/PG chain","screenshots":["/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-m9-completion-20261022/closed-light.png","/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-m9-completion-20261022/closed-dark-mobile.png"]}
+### Ran Playwright code
+```js
+await (async page => {
+const out="/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-m9-completion-20261022";
+const form=()=>page.getByRole('region',{name:'实际采用、独立验证与分别关闭',exact:true});
+await form().getByText(/当前变更 v[0-9]+ · 已具名关闭/).waitFor({timeout:60000});
+const closure='Separately close only this fixed approved development scope after actual adoption and independent pass';
+if(!(await form().innerText()).includes(closure)) throw Error('Saved separate named closure text missing');
+for(const name of ['读取本项实际采用的一次确认','读取本变更独立验证的具名批准','读取单独具名关闭本变更的批准']) if(!(await form().getByRole('button',{name,exact:true}).isDisabled())) throw Error('Closed scope must not offer another completion mutation');
+const writes=[]; const capture=request=>{if(!['GET','HEAD'].includes(request.method()))writes.push({method:request.method(),path:new URL(request.url()).pathname});};
+page.on('request',capture);await page.reload();await form().getByText(/当前变更 v[0-9]+ · 已具名关闭/).waitFor({timeout:60000});page.off('request',capture);
+if(writes.length)throw Error('Read-only refresh performed a mutation');
+if(!(await form().innerText()).includes(closure))throw Error('Named closure lost after refresh');
+await page.setViewportSize({width:1440,height:1000});
+if((await page.locator('html').getAttribute('class')??'').split(/\s+/).includes('dark')) await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();
+await form().getByRole('heading',{name:'分别关闭本变更 · 具名决定',exact:true}).evaluate(el=>el.scrollIntoView({block:'start',behavior:'instant'}));
+await page.screenshot({path:out+'/closed-light.png'});
+const light=await page.evaluate(()=>({viewport:innerWidth,width:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains('dark')}));
+if(!(await page.locator('html').getAttribute('class')??'').split(/\s+/).includes('dark'))await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();
+await page.setViewportSize({width:320,height:900});
+await form().getByRole('heading',{name:'分别关闭本变更 · 具名决定',exact:true}).evaluate(el=>el.scrollIntoView({block:'start',behavior:'instant'}));
+await page.screenshot({path:out+'/closed-dark-mobile.png'});
+const dark=await page.evaluate(()=>({viewport:innerWidth,width:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains('dark')}));
+if(light.width>light.viewport||dark.width>dark.viewport||light.dark||!dark.dark)throw Error('Actual closed viewport overflow');
+return {passed:true,status:'closed',namedClosureRetainedAfterRefresh:true,allCompletionButtonsDisabled:true,refreshMutations:writes,light,dark,businessCommandsSubmitted:0,scope:'Actual 2026-10-22 saved closed case through built BFF/UI; saving and original-command replay verified by current HTTP/PG chain',screenshots:[out+'/closed-light.png',out+'/closed-dark-mobile.png']};
+}
+)(page);
+```
+
+Browser 'pdos-m9-completion-20261022' closed
+
+
+### Browser `pdos-m9-completion-20261022` opened with pid 51109.
+### Ran Playwright code
+```js
+await page.goto('about:blank');
+```
+### Page
+- Page URL: about:blank
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-22T18-24-19-505Z.yml)
+
+### Result
+{"syntheticLoginSet":true}
+### Ran Playwright code
+```js
+await (async page => { await page.context().addCookies([{"name": "pdos-next-session", "value": "[SYNTHETIC_LOGIN_REDACTED]", "domain": "127.0.0.1", "path": "/", "httpOnly": true, "sameSite": "Lax"}]); return { syntheticLoginSet: true }; })(page);
+```
+
+### Ran Playwright code
+```js
+await page.goto('http://127.0.0.1:53283/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e');
+```
+### Page
+- Page URL: http://127.0.0.1:53283/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e
+- Page Title: PDOS · 研发工作区
+### Snapshot
+- [Snapshot](.playwright-cli/page-2026-10-22T18-24-20-868Z.yml)
+
+### Result
+{"selectedClosedCase":true}
+### Ran Playwright code
+```js
+await (async page => {
+  await page.getByRole('combobox', {name:'明确选择本项目变更',exact:true}).selectOption({label:'Synthetic actual Field corrective configuration change · v12 · 已具名关闭'});
+  await page.getByRole('region',{name:'实际采用、独立验证与分别关闭',exact:true}).waitFor({timeout:60000});
+  return {selectedClosedCase:true};
+}
+)(page);
+```
+### Page
+- Page URL: http://127.0.0.1:53283/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Events
+- New console entries: .playwright-cli/console-2026-10-22T18-24-20-696Z.log#L1
+
+### Result
+{"passed":true,"status":"closed","namedClosureRetainedAfterRefresh":true,"allCompletionButtonsDisabled":true,"closedExplanationShown":true,"obsoletePrerequisiteFailureAbsent":true,"refreshMutations":[],"light":{"viewport":1440,"width":1440,"dark":false},"dark":{"viewport":320,"width":320,"dark":true},"businessCommandsSubmitted":0,"scope":"Actual 2026-10-22 saved closed case through final built BFF/UI; saving and original-command replay verified by current HTTP/PG chain","screenshots":["/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-m9-completion-20261022/closed-light.png","/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-m9-completion-20261022/closed-dark-mobile.png"]}
+### Ran Playwright code
+```js
+await (async page => {
+const out="/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-m9-completion-20261022";
+const form=()=>page.getByRole('region',{name:'实际采用、独立验证与分别关闭',exact:true});
+await form().getByText(/当前变更 v[0-9]+ · 已具名关闭/).waitFor({timeout:60000});
+const closure='Separately close only this fixed approved development scope after actual adoption and independent pass';
+if(!(await form().innerText()).includes(closure)) throw Error('Saved separate named closure text missing');
+if(!(await form().innerText()).includes('本变更已具名关闭。实际采用、独立验证和关闭记录继续保留，不再重复办理。'))throw Error('Closed state explanation missing');
+if((await form().innerText()).includes('请先完成批准与实际配置实施'))throw Error('Closed state still displays obsolete prerequisite failure');
+for(const name of ['读取本项实际采用的一次确认','读取本变更独立验证的具名批准','读取单独具名关闭本变更的批准']) if(!(await form().getByRole('button',{name,exact:true}).isDisabled())) throw Error('Closed scope must not offer another completion mutation');
+const writes=[]; const capture=request=>{if(!['GET','HEAD'].includes(request.method()))writes.push({method:request.method(),path:new URL(request.url()).pathname});};
+page.on('request',capture);await page.reload();await form().getByText(/当前变更 v[0-9]+ · 已具名关闭/).waitFor({timeout:60000});page.off('request',capture);
+if(writes.length)throw Error('Read-only refresh performed a mutation');
+if(!(await form().innerText()).includes(closure))throw Error('Named closure lost after refresh');
+await page.setViewportSize({width:1440,height:1000});
+if((await page.locator('html').getAttribute('class')??'').split(/\s+/).includes('dark')) await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();
+await form().getByRole('heading',{name:'5 · 实际采用、独立验证与分别关闭',exact:true}).evaluate(el=>el.scrollIntoView({block:'center',behavior:'instant'}));
+await page.screenshot({path:out+'/closed-light.png'});
+const light=await page.evaluate(()=>({viewport:innerWidth,width:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains('dark')}));
+if(!(await page.locator('html').getAttribute('class')??'').split(/\s+/).includes('dark'))await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();
+await page.setViewportSize({width:320,height:900});
+await form().getByRole('heading',{name:'分别关闭本变更 · 具名决定',exact:true}).evaluate(el=>el.scrollIntoView({block:'start',behavior:'instant'}));
+await page.screenshot({path:out+'/closed-dark-mobile.png'});
+const dark=await page.evaluate(()=>({viewport:innerWidth,width:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains('dark')}));
+if(light.width>light.viewport||dark.width>dark.viewport||light.dark||!dark.dark)throw Error('Actual closed viewport overflow');
+return {passed:true,status:'closed',namedClosureRetainedAfterRefresh:true,allCompletionButtonsDisabled:true,closedExplanationShown:true,obsoletePrerequisiteFailureAbsent:true,refreshMutations:writes,light,dark,businessCommandsSubmitted:0,scope:'Actual 2026-10-22 saved closed case through final built BFF/UI; saving and original-command replay verified by current HTTP/PG chain',screenshots:[out+'/closed-light.png',out+'/closed-dark-mobile.png']};
+}
+)(page);
+```
+### Page
+- Page URL: http://127.0.0.1:53283/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&bench=projects&view=issues&product=815224c5-3d8a-4bce-853e-0c5ba4df7a49&project=92024f6a-febd-4f3b-869b-82b15639a70e
+- Page Title: PDOS · 研发工作区
+
+### Result
+{"passed":true,"status":"closed","namedClosureRetainedAfterRefresh":true,"allCompletionButtonsDisabled":true,"closedExplanationShown":true,"obsoletePrerequisiteFailureAbsent":true,"refreshMutations":[],"light":{"viewport":1440,"width":1440,"dark":false},"dark":{"viewport":320,"width":320,"dark":true},"businessCommandsSubmitted":0,"scope":"Actual 2026-10-22 saved closed case through final built BFF/UI; saving and original-command replay verified by current HTTP/PG chain","screenshots":["/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-m9-completion-20261022/closed-light.png","/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-m9-completion-20261022/closed-dark-mobile.png"]}
+### Ran Playwright code
+```js
+await (async page => {
+const out="/Users/huhanwei/Desktop/ai-native-R&D-platform/output/playwright/pdos-m9-completion-20261022";
+const form=()=>page.getByRole('region',{name:'实际采用、独立验证与分别关闭',exact:true});
+await form().getByText(/当前变更 v[0-9]+ · 已具名关闭/).waitFor({timeout:60000});
+const closure='Separately close only this fixed approved development scope after actual adoption and independent pass';
+if(!(await form().innerText()).includes(closure)) throw Error('Saved separate named closure text missing');
+if(!(await form().innerText()).includes('本变更已具名关闭。实际采用、独立验证和关闭记录继续保留，不再重复办理。'))throw Error('Closed state explanation missing');
+if((await form().innerText()).includes('请先完成批准与实际配置实施'))throw Error('Closed state still displays obsolete prerequisite failure');
+for(const name of ['读取本项实际采用的一次确认','读取本变更独立验证的具名批准','读取单独具名关闭本变更的批准']) if(!(await form().getByRole('button',{name,exact:true}).isDisabled())) throw Error('Closed scope must not offer another completion mutation');
+const writes=[]; const capture=request=>{if(!['GET','HEAD'].includes(request.method()))writes.push({method:request.method(),path:new URL(request.url()).pathname});};
+page.on('request',capture);await page.reload();await form().getByText(/当前变更 v[0-9]+ · 已具名关闭/).waitFor({timeout:60000});page.off('request',capture);
+if(writes.length)throw Error('Read-only refresh performed a mutation');
+if(!(await form().innerText()).includes(closure))throw Error('Named closure lost after refresh');
+await page.setViewportSize({width:1440,height:1000});
+if((await page.locator('html').getAttribute('class')??'').split(/\s+/).includes('dark')) await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();
+await form().getByRole('heading',{name:'5 · 实际采用、独立验证与分别关闭',exact:true}).evaluate(el=>el.scrollIntoView({block:'center',behavior:'instant'}));
+await page.screenshot({path:out+'/closed-light.png'});
+const light=await page.evaluate(()=>({viewport:innerWidth,width:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains('dark')}));
+if(!(await page.locator('html').getAttribute('class')??'').split(/\s+/).includes('dark'))await page.getByRole('button',{name:'切换明暗主题',exact:true}).click();
+await page.setViewportSize({width:320,height:900});
+await form().getByRole('heading',{name:'分别关闭本变更 · 具名决定',exact:true}).evaluate(el=>el.scrollIntoView({block:'start',behavior:'instant'}));
+await page.evaluate(()=>window.scrollBy(0,-170));
+await page.screenshot({path:out+'/closed-dark-mobile.png'});
+const dark=await page.evaluate(()=>({viewport:innerWidth,width:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains('dark')}));
+if(light.width>light.viewport||dark.width>dark.viewport||light.dark||!dark.dark)throw Error('Actual closed viewport overflow');
+return {passed:true,status:'closed',namedClosureRetainedAfterRefresh:true,allCompletionButtonsDisabled:true,closedExplanationShown:true,obsoletePrerequisiteFailureAbsent:true,refreshMutations:writes,light,dark,businessCommandsSubmitted:0,scope:'Actual 2026-10-22 saved closed case through final built BFF/UI; saving and original-command replay verified by current HTTP/PG chain',screenshots:[out+'/closed-light.png',out+'/closed-dark-mobile.png']};
+}
+)(page);
+```
+
+Browser 'pdos-m9-completion-20261022' closed
+
+

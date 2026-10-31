@@ -1,0 +1,87 @@
+{
+  "at_utc": "2026-10-29T22:02:38.946168+00:00",
+  "vector_count": 8192,
+  "dimensions": 384,
+  "source_chunks": 64,
+  "pure_passed": 69,
+  "native_batch_passed": 34,
+  "native_distinct_tests": 1,
+  "native_matrix_controls": 12,
+  "same_select_captures": 24,
+  "same_select_nearest_plans": 48,
+  "all_captures_matched": true,
+  "frozen_input_count": 89,
+  "frozen_inputs_unchanged_at_completion": true,
+  "profile_cleanup": "native_t1_disabled",
+  "remaining_profile_vectors": 0,
+  "temporary_settings_restored": true,
+  "phases": [
+    {
+      "phase": "owner_all",
+      "authorized_sources": 128,
+      "authorized_chunks": 8192,
+      "queries": 4,
+      "recall_at_5": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "recall_at_10": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "shortfall_queries": 0,
+      "any_stage_hnsw_queries": 0,
+      "final_stage_hnsw_queries": 0
+    },
+    {
+      "phase": "peer_public32_plus_audience32",
+      "authorized_sources": 64,
+      "authorized_chunks": 4096,
+      "queries": 4,
+      "recall_at_5": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "recall_at_10": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "shortfall_queries": 0,
+      "any_stage_hnsw_queries": 0,
+      "final_stage_hnsw_queries": 0
+    },
+    {
+      "phase": "peer_after_audience16_revoked",
+      "authorized_sources": 48,
+      "authorized_chunks": 3072,
+      "queries": 4,
+      "recall_at_5": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "recall_at_10": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "shortfall_queries": 0,
+      "any_stage_hnsw_queries": 0,
+      "final_stage_hnsw_queries": 0
+    }
+  ],
+  "ann_qualification": "ANN_not_exercised",
+  "semantic_quality": "not_scored",
+  "real_model_calls": 0,
+  "real_embedding_calls": 0
+}

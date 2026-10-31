@@ -1,0 +1,14 @@
+{
+  "snapshot": "/tmp/pdos-citations-build-20261028/pdos-next/web",
+  "recorded_files": 661,
+  "source_and_configuration_files_verified_unchanged": 660,
+  "generated_next_env_excluded_from_source_comparison": true,
+  "frontend_tests": 43,
+  "failures": 0,
+  "skipped": 0,
+  "target_eslint_errors": 0,
+  "target_eslint_warnings": 0,
+  "production_build_exit": 0,
+  "typescript_in_production_build": "passed",
+  "final_log": "frontend-build-source-final.txt"
+}

@@ -1,0 +1,4 @@
+patching file 'pdos-next/web/src/components/xiaopai.tsx'
+patching file 'pdos-next/web/src/components/category-create/personal-xiaopai.tsx'
+patching file 'pdos-next/web/src/components/pai/use-answer-resume.ts'
+patching file 'pdos-next/web/src/components/pai/answer-resume.test.mjs'

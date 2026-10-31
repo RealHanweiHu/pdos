@@ -1,0 +1,10 @@
+{
+  "production_source_unchanged_from_candidate9": true,
+  "only_delta": [
+    "pdos-next/server/tests/test_supply_execution.py"
+  ],
+  "retained": 824,
+  "remaining_expected": 14,
+  "total_cases": 838,
+  "scope": "Fix stale 403 expectation for invalid kit payload reused as release approval. Assert exact 422 VALIDATION_FAILED/INVALID_PAYLOAD for both start/release, zero receipts and unchanged confirmation count. Do not alter T2 authorization."
+}

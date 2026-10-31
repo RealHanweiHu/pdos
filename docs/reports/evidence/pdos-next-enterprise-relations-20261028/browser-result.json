@@ -1,0 +1,128 @@
+{
+  "kind": "actual_component_ssr_with_synthetic_sources_and_production_css",
+  "authenticated_product_navigation": false,
+  "metrics": [
+    {
+      "width": 1280,
+      "documentWidth": 1280,
+      "dark": false,
+      "font": "Geist, \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "cards": 2,
+      "links": [
+        {
+          "text": "查看当前问题",
+          "href": "/?area=cockpit&category=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&product=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&project=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&projectView=issues&panel=quality&build=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&issue=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        },
+        {
+          "text": "查看当前问题与措施",
+          "href": "/?area=cockpit&category=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&product=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&project=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&projectView=issues&panel=followup&build=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&issue=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        }
+      ],
+      "focused": {
+        "tag": "SUMMARY",
+        "text": "来源 · 2"
+      }
+    },
+    {
+      "width": 1280,
+      "documentWidth": 1280,
+      "dark": true,
+      "font": "Geist, \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "cards": 2,
+      "links": [
+        {
+          "text": "查看当前问题",
+          "href": "/?area=cockpit&category=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&product=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&project=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&projectView=issues&panel=quality&build=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&issue=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        },
+        {
+          "text": "查看当前问题与措施",
+          "href": "/?area=cockpit&category=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&product=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&project=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&projectView=issues&panel=followup&build=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&issue=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        }
+      ],
+      "focused": {
+        "tag": "BUTTON",
+        "text": "切换明暗"
+      }
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "dark": true,
+      "font": "Geist, \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "cards": 2,
+      "links": [
+        {
+          "text": "查看当前问题",
+          "href": "/?area=cockpit&category=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&product=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&project=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&projectView=issues&panel=quality&build=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&issue=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        },
+        {
+          "text": "查看当前问题与措施",
+          "href": "/?area=cockpit&category=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&product=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&project=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&projectView=issues&panel=followup&build=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&issue=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        }
+      ],
+      "focused": {
+        "tag": "BUTTON",
+        "text": "切换明暗"
+      }
+    },
+    {
+      "width": 320,
+      "documentWidth": 320,
+      "dark": true,
+      "font": "Geist, \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "cards": 2,
+      "links": [
+        {
+          "text": "查看当前问题",
+          "href": "/?area=cockpit&category=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&product=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&project=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&projectView=issues&panel=quality&build=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&issue=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        },
+        {
+          "text": "查看当前问题与措施",
+          "href": "/?area=cockpit&category=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&product=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&project=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&projectView=issues&panel=followup&build=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&issue=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        }
+      ],
+      "focused": {
+        "tag": "A",
+        "text": "查看当前问题"
+      }
+    },
+    {
+      "width": 390,
+      "documentWidth": 390,
+      "dark": false,
+      "font": "Geist, \"PingFang SC\", \"Microsoft YaHei\", sans-serif",
+      "cards": 2,
+      "links": [
+        {
+          "text": "查看当前问题",
+          "href": "/?area=cockpit&category=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&product=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&project=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&projectView=issues&panel=quality&build=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&issue=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        },
+        {
+          "text": "查看当前问题与措施",
+          "href": "/?area=cockpit&category=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&product=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&project=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&projectView=issues&panel=followup&build=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa&issue=aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+        }
+      ],
+      "focused": {
+        "tag": "BUTTON",
+        "text": "切换明暗"
+      }
+    }
+  ],
+  "screenshots": {
+    "desktop-light.png": "bac9926bf1eafa29d7186c5aab85f3c9ba00fb61b9a3f589745061abcdee6281",
+    "desktop-dark.png": "6d8f29db6b94e10d2aa1776d641a076657a21a4d39f5d539c811f2aade0b60b0",
+    "mobile-light.png": "ec6acbdcb2c455b7be458fae7f4ee7a1199965e815296ce7bd78490422c150b1",
+    "mobile-dark.png": "274e17f04781e85faa6e7f592fc23f1024a325067d485734ca754e8469bdf05e",
+    "narrow-dark.png": "d0a63eab79c31a1f50cdcc96411c066dc9335d3e913158de381bc27f8805367f"
+  },
+  "source_sha256": "0a1df18aba4dfab4be526f02b3c2a6e3bc54a5d249f199598700756dc5f77539",
+  "console": "### Result\nTotal messages: 0 (Errors: 0, Warnings: 0)\n\n",
+  "real_models": false,
+  "visually_inspected": [
+    "desktop-light.png",
+    "mobile-dark.png",
+    "narrow-dark.png"
+  ],
+  "own_browser_closed": true,
+  "own_http_server_stopped": true
+}

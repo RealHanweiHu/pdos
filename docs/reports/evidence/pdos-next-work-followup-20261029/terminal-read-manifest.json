@@ -1,0 +1,34 @@
+{
+  "format_version": 1,
+  "frozen": true,
+  "scope": "Work followup completed candidate read/Human confirmation lifecycle guard separation only",
+  "stage_root": "/tmp/pdos-work-candidate-terminal-stage-20261029",
+  "apply_only_listed_files": true,
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/work_followup_candidates.py",
+      "operation": "modified",
+      "base_sha256": "7e65539040226d5790a32dbdc7df7467881ab0d3b98a9689cf511c856d736719",
+      "candidate_sha256": "7fcd71b0e9542a804eb327163052deb2e2030abc6d53da4fa5252a32e10a09e5",
+      "staged_path": "/tmp/pdos-work-candidate-terminal-stage-20261029/candidate/pdos-next/server/pdos_next/enterprise_search/work_followup_candidates.py",
+      "base_path": "/tmp/pdos-work-candidate-terminal-stage-20261029/base/pdos-next/server/pdos_next/enterprise_search/work_followup_candidates.py"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_work_candidate_terminal.py",
+      "operation": "new",
+      "base_sha256": null,
+      "candidate_sha256": "57b99f0ba6d7070d753761ad0a1a0f14c05717b7d86f74fda3e41acc0f0c5d39",
+      "staged_path": "/tmp/pdos-work-candidate-terminal-stage-20261029/candidate/pdos-next/server/tests/enterprise_search/test_work_candidate_terminal.py"
+    }
+  ],
+  "shared_patch_sha256": "e6f466fe8b6927986548e73154334b9a9fb3addc136db76ea5cba039e850e1aa",
+  "verification": {
+    "base_reproducer": "3 terminal state cases fail on unchanged live base with CANCELLED_RUN; reproducer-base.txt",
+    "candidate": "27 pure passed; pure.txt",
+    "ruff": "2 files explicit pdos-next/ruff.toml passed; ruff.txt",
+    "actual_pg": "Not run; root owns actual PG; rerun existing first work followup case",
+    "nodeids": [
+      "tests/enterprise_search/test_work_followup_temporal_pg.py::test_task_follows_real_answer_clarification_native_create_assign_and_fresh_work_state[setup0]"
+    ]
+  }
+}

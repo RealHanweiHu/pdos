@@ -1,0 +1,12 @@
+{
+  "before_sha256": "fb9516e29634ceda7175e279006178eaac55a1f714491a22b10aec3b5fcd4fa2",
+  "before_matches_existing_source_manifest": true,
+  "after_sha256": "029845ab0af72b1af70e9747f281f6452b847cbb09ccf5474ba706f96d49016d",
+  "before_rule": "enterprise-codes/v1",
+  "after_rule": "enterprise-codes/v2",
+  "problem": "Generic separated prefixes were not extracted whole; incidental V1/V2 or embedded A7 could disguise missing exact identifier path.",
+  "change": "Accept separated prefixes with at least one numeric segment; retain standard forms and exclude date-only / word-only tokens. New code-rule version participates in existing rebuild work keys.",
+  "authority_unchanged": true,
+  "queries_or_rank_labels_retuned": false,
+  "migration_added": false
+}

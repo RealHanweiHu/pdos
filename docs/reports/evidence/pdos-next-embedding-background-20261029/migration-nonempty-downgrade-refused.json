@@ -1,0 +1,18 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "head_before": "s0_0837",
+  "head_after": "s0_0837",
+  "expected_rejection": "Retain profile/cost/egress history",
+  "exit": 1,
+  "counts_before_and_after": {
+    "enterprise_embedding_profiles": 22,
+    "enterprise_embedding_calls": 20,
+    "enterprise_embedding_batches": 20,
+    "enterprise_chunk_embeddings": 17,
+    "enterprise_embedding_budgets": 17,
+    "enterprise_embedding_profile_heads": 21,
+    "action_receipts": 47112
+  },
+  "retirement_permission_rollback_preserved": true,
+  "real_provider_accessed": false
+}

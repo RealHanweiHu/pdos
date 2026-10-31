@@ -1,0 +1,276 @@
+........................................................................ [ 20%]
+........................................................................ [ 40%]
+........................................................................ [ 61%]
+.......................................F................................ [ 81%]
+..................................................................       [100%]
+=================================== FAILURES ===================================
+_ test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs _
+
+change_work = namespace(setup=<isolated synthetic test scope>, config={'source': 'b2f9c541-8421-44c3-a223-23e3d569b892', 'project': ...: None}]}, issue_id=UUID('8d7a4992-8af2-5d9d-ba55-735f703099d2'), capa_id=UUID('28fa7f94-95a8-471e-9421-f7647e10cab4'))
+
+    def test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs(change_work):
+        work, person = change_work, change_work.quality
+        change, _command, change_id = created(work)
+        assert apply_event(person, change["id"])["processed"] == 1
+        assert apply_event(person, change["id"])["changed"] == 0
+        assert apply_event(person, work.issue_receipt["id"])["processed"] == 2
+        with Session(person.admin) as session:
+            receipt_ids = session.scalars(
+                select(Receipt.id).where(
+                    Receipt.tenant_id == person.tenant,
+                    Receipt.operation.in_(
+                        ["build.create", "test.run.plan", "test.run.start", "test.results.import"]
+                    ),
+                )
+            ).all()
+        assert len(receipt_ids) >= 4
+        for identity in receipt_ids:
+            assert apply_event(person, identity)["processed"] == 1
+        kinds = ["issue", "capa", "change", "build", "test_run"]
+        with native_session(person) as session:
+            prepare_read(session, kinds)
+            rows = session.execute(select_sources(source_types=kinds)).mappings().all()
+            assert set(kinds) <= {row["source_type"] for row in rows}, [
+                row["source_type"] for row in rows
+            ]
+            # The existing native owner decides visibility, not an index audience copy.
+            for row in rows:
+                assert (
+                    project(session, person.ctx, row["source_type"], row["source_id"])["status"]
+                    == "ready"
+                )
+        for kind, identity in [("issue", work.issue_id), ("capa", work.capa_id), ("change", change_id)]:
+            found = native_search(person, str(identity), [kind])
+            assert found["items"][0]["object_id"] == str(identity), found
+            assert found["items"][0]["channel"] == "exact_id"
+            assert found["items"][0]["nature"] == "structured"
+            assert "facts" not in found["items"][0]
+            hidden = native_search(work.setup, str(identity), [kind])
+            assert hidden["items"] == [], hidden
+        project_id = UUID(work.config["project"])
+        client = NativeClient(str(work.issue_id), ["issue"], expected_scope=str(project_id))
+        owner, scope, host, _adapter = fixture(person, client, project_id=project_id)
+>       output = execute(owner, scope, host)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_business_sources_pg.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/enterprise_search/test_assistant_pg.py:162: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:722: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:284: in model
+    turn = ports.model(
+pdos_next/agent_kernel/host.py:119: in model
+    return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/gateway.py:51: in turn
+    source_categories = self.data_categories_for(scope) if self.data_categories_for else None
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_adapter.py:278: in guard
+    selected, historical = self._carried(scope)
+                           ^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_adapter.py:92: in _carried
+    return ledger.carried(session, scope)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_ledger.py:91: in carried
+    own = issued(session, scope)
+          ^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_ledger.py:64: in issued
+    for call, _arguments in completed(session, scope, {"assistant.search"}):
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_ledger.py:44: in completed
+    _run, actual, binding, arguments = _historical_read(
+pdos_next/agent_kernel/deterministic_proofs.py:85: in _historical_read
+    KernelStore(None).authority(session, replace(scope, product_id=None))
+pdos_next/agent_kernel/persistence.py:167: in authority
+    require_project(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x124fca990>
+ctx = Context(tenant_id=UUID('f0a98add-1c71-4e0f-8d46-72949fce829c'), actor_id=UUID('8bf09f26-5604-4fb1-adeb-ed2a3deca4f1'),...ne, cancel_epoch=None, category_id=UUID('2218cbc9-2694-447b-a355-b1909c0f236a'), agent_run_id=None, agent_call_id=None)
+project_id = UUID('eaec4e02-71e3-40bf-b73b-6703ecadf939'), product_id = None
+lock = False
+
+    def require_project(session, ctx, project_id, product_id, *, lock=False):
+        if project_id is None:
+            return None
+        if ctx.category_id is None or product_id is None:
+>           raise DomainError("FORBIDDEN_SCOPE", "项目运行须绑定实际品类与型号。", 403)
+E           pdos_next.errors.DomainError: 项目运行须绑定实际品类与型号。
+E           During task with name 'model' and id '95a857ad-60ae-1d2d-fa3e-485f9e484472'
+
+pdos_next/agent_kernel/project_scope.py:14: DomainError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_context_projection_pg.py: 5 warnings
+tests/agent_kernel/test_snapshot_proof_transactions.py: 1 warning
+tests/enterprise_search/test_business_sources_pg.py: 1 warning
+tests/enterprise_search/test_business_temporal_pg.py: 1 warning
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/preproject/test_m3_lifecycle_catalog.py: 5 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service.py:242: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:174: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([chain])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:199: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([attempt])
+
+tests/agent_kernel/test_snapshot_proof_transactions.py: 6 warnings
+tests/enterprise_search/test_business_sources_pg.py: 3 warnings
+tests/enterprise_search/test_business_temporal_pg.py: 3 warnings
+tests/enterprise_search/test_business_wait_supply_pg.py: 6 warnings
+tests/external_wait_pg/test_workflow.py: 6 warnings
+tests/field_feedback_pg/test_field_chain.py: 3 warnings
+tests/knowledge_pg/test_publication.py: 6 warnings
+tests/preproject/test_m3_lifecycle_catalog.py: 30 warnings
+tests/project_risk_pg/test_chain.py: 6 warnings
+tests/test_project_governance.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_fixed_knowledge_claim_and_definition_edges_retain_actual_original
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_evidence_link_target_closure_retains_original_after_withdrawal[knowledge_entry]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_business_profile_pg.py::test_native_source_planner_cost_and_warm_latency_without_jit
+  tests/enterprise_search/test_business_profile_pg.py:12: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_native_source_planner_cost_and_warm_latency_without_jit(setup, record_property):
+
+tests/enterprise_search/test_business_sources_pg.py: 1 warning
+tests/enterprise_search/test_business_temporal_pg.py: 1 warning
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_business_sources_pg.py: 1 warning
+tests/enterprise_search/test_business_temporal_pg.py: 1 warning
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_business_sources_pg.py: 1 warning
+tests/enterprise_search/test_business_temporal_pg.py: 1 warning
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_business_sources_pg.py: 1 warning
+tests/enterprise_search/test_business_temporal_pg.py: 1 warning
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/preproject/test_m3_lifecycle_catalog.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_business_sources_pg.py: 1 warning
+tests/enterprise_search/test_business_temporal_pg.py: 1 warning
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 13 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+  tests/enterprise_search/test_retrieval_pg.py:206: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/field_feedback/service.py:323: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck
+tests/knowledge_pg/test_publication.py::test_actual_planned_build_result_becomes_scoped_candidate_and_named_rule
+tests/knowledge_pg/test_publication.py::test_actual_planned_build_result_becomes_scoped_candidate_and_named_rule
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/knowledge/service.py:420: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_parameter_reference_resolves_fixed_version_not_current_head
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_parameter_reference_resolves_fixed_version_not_current_head
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:535: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/work_management/service.py:385: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/project_risk/service.py:205: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+1 failed, 353 passed, 224 warnings in 711.99s (0:11:51)

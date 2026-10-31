@@ -1,0 +1,428 @@
+{
+  "unique_passes": 66,
+  "segments": [
+    {
+      "xml": "backend-positive-run2.xml",
+      "passed": 1,
+      "new_unique": 1
+    },
+    {
+      "xml": "backend-remaining-run1.xml",
+      "passed": 1,
+      "new_unique": 1
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "passed": 60,
+      "new_unique": 60
+    },
+    {
+      "xml": "backend-negative-run1.xml",
+      "passed": 4,
+      "new_unique": 4
+    }
+  ],
+  "production_unchanged_since_candidate1": true,
+  "test_delta": [
+    "pdos-next/server/tests/enterprise_search/test_verification_action_temporal_pg.py",
+    "pdos-next/server/tests/enterprise_search/verification_negative_fixture.py"
+  ],
+  "passed_cases": [
+    {
+      "xml": "backend-positive-run2.xml",
+      "classname": "tests.enterprise_search.test_verification_action_temporal_pg",
+      "name": "test_actual_verification_chain_recovers_lost_responses_without_second_model",
+      "time": "97.859"
+    },
+    {
+      "xml": "backend-remaining-run1.xml",
+      "classname": "tests.enterprise_search.test_verification_action_temporal_pg",
+      "name": "test_missing_count_interrupts_real_graph_and_only_explicit_answer_becomes_three",
+      "time": "94.085"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_context_projection_entries",
+      "name": "test_three_bound_entries_preserve_all_declared_working_context[customer_request]",
+      "time": "8.715"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_context_projection_entries",
+      "name": "test_three_bound_entries_preserve_all_declared_working_context[new_product]",
+      "time": "2.887"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_context_projection_entries",
+      "name": "test_three_bound_entries_preserve_all_declared_working_context[derivative]",
+      "time": "6.062"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority",
+      "time": "1.753"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_same_original_followup_is_serialized_and_recovers_without_current_binding",
+      "time": "0.859"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_followup_refuses_scope_changes_peer_and_unfinished_parent",
+      "time": "0.775"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_followup_appends_current_sources_without_replacing_original_versions",
+      "time": "2.844"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_private_personal_continuation_is_same_session_without_category_authority",
+      "time": "1.417"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_full_memory_pagination_retains_root_constraints_and_is_not_recent_raw_chat",
+      "time": "1.150"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_append_failure_rolls_back_new_turn_and_keeps_original_result",
+      "time": "0.768"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_sql_continuation_cannot_rebind_existing_turn",
+      "time": "0.910"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_revoking_parent_scope_hides_memory_before_model_egress",
+      "time": "1.208"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_registered_graph_receives_persisted_task_memory_and_replay_does_not_call_model",
+      "time": "3.336"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_cached_read_summary_requires_actual_local_result_and_guard_rechecks_it",
+      "time": "2.886"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_newly_revoked_turn_hides_answer_and_stops_frozen_history",
+      "time": "2.308"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_prepared_candidate_turn_keeps_answer",
+      "time": "1.436"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.agent_kernel.test_run_continuation",
+      "name": "test_thirty_turn_history_stays_bounded_and_full_history_is_available",
+      "time": "5.008"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_t1_records_unknowns_and_real_reference_samples_without_quality_authority",
+      "time": "16.067"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_nested_exact_refs_are_inherited_and_quotes_cannot_be_forged",
+      "time": "13.683"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_original_timezones_are_retained_but_tentative_never_becomes_a_commitment[expected]",
+      "time": "12.468"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_original_timezones_are_retained_but_tentative_never_becomes_a_commitment[tentative]",
+      "time": "12.721"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes0]",
+      "time": "0.000"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes1]",
+      "time": "0.000"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes2]",
+      "time": "0.000"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes3]",
+      "time": "0.000"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes4]",
+      "time": "0.000"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes5]",
+      "time": "0.001"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes6]",
+      "time": "0.000"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes7]",
+      "time": "0.000"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes8]",
+      "time": "0.000"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes9]",
+      "time": "0.000"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes10]",
+      "time": "0.000"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_successor_keeps_first_clock_history_and_saved_old_intent_replays",
+      "time": "14.179"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_competing_successors_are_cas_bound_and_cannot_overwrite_current",
+      "time": "16.779"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_concurrent_same_intent_commits_once_and_same_key_changed_body_is_refused",
+      "time": "11.671"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_confirmation_is_bound_to_actual_draft_and_complete_fixed_sources[reason]",
+      "time": "12.052"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_confirmation_is_bound_to_actual_draft_and_complete_fixed_sources[items]",
+      "time": "10.873"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_confirmation_is_bound_to_actual_draft_and_complete_fixed_sources[readset]",
+      "time": "11.328"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access[source]",
+      "time": "12.174"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access[inherited_source]",
+      "time": "11.782"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access[revision]",
+      "time": "11.243"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access[grant]",
+      "time": "11.537"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_final_receipt_failure_rolls_back_version_pointer_confirmation_and_outbox",
+      "time": "13.088"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_read_permission_keeps_saved_replay_and_does_not_allow_new_preparation",
+      "time": "12.474"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_private_preparation_and_sources_are_hidden_from_peer_and_other_tenant",
+      "time": "12.708"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_request_series_cannot_switch_build_or_use_another_product",
+      "time": "14.815"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_preparation_does_not_grant_professional_or_physical_authority",
+      "time": "13.720"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_database_history_rls_pointer_sequence_and_agent_zero_write",
+      "time": "13.781"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.test_verification_execution",
+      "name": "test_pointer_first_insert_cannot_skip_a_real_persisted_first_version",
+      "time": "10.888"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.verification_front.test_transactions",
+      "name": "test_fixed_preparation_and_new_server_clock_never_inherit_document_completion",
+      "time": "15.212"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.verification_front.test_transactions",
+      "name": "test_current_issuer_configuration_and_not_product_grant_controls_formal_action",
+      "time": "13.063"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.verification_front.test_transactions",
+      "name": "test_unknown_and_rejected_method_facts_are_saved_and_never_complete_documents[unknown]",
+      "time": "16.058"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.verification_front.test_transactions",
+      "name": "test_unknown_and_rejected_method_facts_are_saved_and_never_complete_documents[not_applicable]",
+      "time": "15.867"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.verification_front.test_transactions",
+      "name": "test_positive_method_once_common_receipt_old_intent_replay_and_immutable_history",
+      "time": "18.624"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.verification_front.test_transactions",
+      "name": "test_revoked_original_reviewer_qualification_invalidates_current_milestone_not_history",
+      "time": "15.479"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.verification_front.test_transactions",
+      "name": "test_t1_preview_binds_professional_epoch_and_saved_replay_requires_only_read_access",
+      "time": "17.104"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.verification_front.test_transactions",
+      "name": "test_two_competing_method_successors_cannot_overwrite_current",
+      "time": "16.463"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.verification_front.test_transactions",
+      "name": "test_final_outbox_failure_rolls_back_method_fact_request_pointer_and_confirmation",
+      "time": "18.179"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.verification_front.test_transactions",
+      "name": "test_schedule_is_t0_unknown_interval_and_never_resource_occupancy_or_actual",
+      "time": "15.854"
+    },
+    {
+      "xml": "backend-native-compatibility-run1.xml",
+      "classname": "tests.verification_front.test_transactions",
+      "name": "test_private_scope_rls_immutability_and_agent_zero_direct_write",
+      "time": "16.502"
+    },
+    {
+      "xml": "backend-negative-run1.xml",
+      "classname": "tests.enterprise_search.test_verification_action_temporal_pg",
+      "name": "test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-before_preview]",
+      "time": "71.227"
+    },
+    {
+      "xml": "backend-negative-run1.xml",
+      "classname": "tests.enterprise_search.test_verification_action_temporal_pg",
+      "name": "test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preview]",
+      "time": "72.573"
+    },
+    {
+      "xml": "backend-negative-run1.xml",
+      "classname": "tests.enterprise_search.test_verification_action_temporal_pg",
+      "name": "test_actual_authority_changes_block_native_adoption_at_each_boundary[execution_version-after_preview]",
+      "time": "63.530"
+    },
+    {
+      "xml": "backend-negative-run1.xml",
+      "classname": "tests.enterprise_search.test_verification_action_temporal_pg",
+      "name": "test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preparation]",
+      "time": "69.736"
+    }
+  ]
+}

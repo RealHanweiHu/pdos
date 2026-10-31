@@ -1,0 +1,23 @@
+{
+  "fixes": [
+    "Manufacturing preparation: bind native shared_proof_id plus common command/intent; legacy common receipt.confirmation_id is SQL NULL",
+    "Internal lifecycle resolver remains not executable by ordinary Human; visibility ordinary check first, internal projection test second",
+    "Manufacturing revision fixture keeps actual first version visibility",
+    "Handoff fixture selects scalar physical fact identity before session ends",
+    "Root Ruff import normalization only"
+  ],
+  "source_sha256": {
+    "pdos-next/server/pdos_next/enterprise_search/role_native_events.py": "90f4a8a1bdaec7ca43d3c84fcc75583906585a3f4adc780b4f2d43b80157286b",
+    "pdos-next/server/tests/enterprise_search/role_native_source_harness.py": "fda8035354c2042e5d06127695b60c9828115abd1978ffaf30684279fcc5dc59",
+    "pdos-next/server/tests/enterprise_search/test_manufacturing_document_sources_pg.py": "ce7dbd2e13eed0216163bf3e5c51fe80b5a2f63f70c409761682337b80ee476b",
+    "pdos-next/server/tests/enterprise_search/test_verification_handoff_sources_pg.py": "1bcf35a3a1e0e1260245490307d36798b340ab1f97721695b2b8eeaad553277d",
+    "pdos-next/server/tests/enterprise_search/test_project_status_sources_pg.py": "d322416922e0dcda842b15027f0a0c21ad25c09200506ad7c91d18905f8c40ab"
+  },
+  "passed": {
+    "project_status": "pg-role-run2.xml",
+    "manufacturing_document": "pg-role-run4.xml",
+    "verification_handoff": "pg-role-run5.xml"
+  },
+  "unique_actual_passed": 3,
+  "real_provider_calls": 0
+}

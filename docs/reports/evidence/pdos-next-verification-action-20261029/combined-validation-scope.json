@@ -1,0 +1,13 @@
+{
+  "staged_applied": false,
+  "combined_inputs": 757,
+  "passed_pure": 203,
+  "deferred_pg": 17,
+  "deferred_files": [
+    "tests/agent_kernel/test_context_projection_entries.py",
+    "tests/agent_kernel/test_run_continuation.py"
+  ],
+  "reason": "Database fixtures were incorrectly included in offline-only selection; all 17 stopped at absent explicit TEST_DATABASE_URL before connecting. Do not rerun the 203 unchanged passes. Run these two PG files with the next candidate after current shared DB lease ends.",
+  "previous_collection_error": "-c initially pointed to real project config, adding its pythonpath; corrected by copied config in the combined snapshot. Preserve both raw logs.",
+  "production_source_unchanged": true
+}

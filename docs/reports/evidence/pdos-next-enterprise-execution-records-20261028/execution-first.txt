@@ -1,0 +1,199 @@
+F.F                                                                      [100%]
+=================================== FAILURES ===================================
+_ test_fixed_execution_and_professional_records_are_citable_without_raw_measurements _
+
+results_work = namespace(setup=<isolated synthetic test scope>, config={'source': '405d09fc-bf0f-471a-9010-2d6029249bda', 'project': ...-28T21:53:59.575359+00:00', 'observed_timezone': 'UTC'}], report_artifact=UUID('b6d5d720-7f9d-436b-b1eb-fdbab931acff'))
+
+    def test_fixed_execution_and_professional_records_are_citable_without_raw_measurements(
+        results_work,
+    ):
+        work, person = results_work, results_work.setup
+        project_id = UUID(work.config["project"])
+        build_operations = {
+            "build.create",
+            "build.start",
+            "build.configuration.actual.record",
+            "build.output.record",
+        }
+        with Session(person.admin) as session:
+            receipts = session.scalars(
+                select(Receipt.id).where(
+                    Receipt.tenant_id == person.tenant, Receipt.operation.in_(build_operations)
+                )
+            ).all()
+        assert len(receipts) >= 4
+        for identity in receipts:
+            assert apply_event(person, identity)["processed"] == 1
+            assert apply_event(person, identity)["changed"] == 0
+        build_rows = records(person, "build")
+        assert len({row["source_id"] for row in build_rows}) >= 4
+        by_kind = {
+            row["structured"]["facts"].get("record_kind", "build_plan"): row for row in build_rows
+        }
+        assert set(by_kind) == {"build_plan", "build_start", "actual_configuration", "build_output"}
+        assert all(str(row["object_id"]) == work.build_id for row in build_rows)
+        start = by_kind["build_start"]
+        start_facts = start["structured"]["facts"]
+        assert start_facts["status"] == "executing"
+        assert start_facts["occurred_timezone"] == "UTC" and start_facts["occurred_at"]
+        assert start_facts["continuation_permission"] == "not_evaluated"
+        assert by_kind["build_output"]["structured"]["facts"]["observation_nature"] == "synthetic"
+        assert (
+            by_kind["actual_configuration"]["structured"]["facts"]["actual_engineering_revision"] == 1
+        )
+        assert all(
+            '"authority_snapshot"' not in row["body"] and '"position"' not in row["body"]
+            for row in build_rows
+        )
+        build_scope, _, _ = answer(person, start, project_id)
+    
+        captured, _ = capture(work, tuple(range(len(work.report_rows))))
+        imported, _ = accepted(
+            work.quality, command(work, "test.results.import", captured=captured, final=True)
+        )
+        assert apply_event(work.quality, imported["id"])["processed"] == 2
+        computed = post(work.quality, command(work, "test.result.compute"))
+        assert computed.status_code == 200, computed.text
+        review_text = "固定范围的专业评审已登记，数值判定与本结论分别保留。"
+        reviewed, _ = accepted(work.quality, command(work, "test.run.review", text=review_text))
+        assert apply_event(work.quality, reviewed["id"])["processed"] == 2
+        review_row = next(
+            row
+            for row in records(work.quality, "test_run")
+            if row["is_current"] and row["structured"]["facts"].get("operation") == "test.run.review"
+        )
+        facts = review_row["structured"]["facts"]
+        assert facts["professional_conclusion"]["text"] == review_text
+        assert facts["professional_conclusion"]["actor_id"] == str(work.quality.human)
+        assert facts["professional_conclusion"]["at"]["received_at"]
+        assert facts["result"] == "pass" and facts["disposition"] is None
+        assert facts["coverage"] and all(row["result"] == "pass" for row in facts["computed_results"])
+        assert all(
+            marker not in review_row["body"]
+            for marker in ('"raw_value"', '"position"', '"input_snapshot"', '"authority_snapshot"')
+        )
+        run_scope, citation, provider = answer(work.quality, review_row, project_id)
+        assert review_text in citation["quote"]
+    
+        disposition_text = "按本次已登记结果完成测试处置。"
+        disposed, _ = accepted(
+            work.quality, command(work, "test.disposition.decide", text=disposition_text)
+        )
+        assert apply_event(work.quality, disposed["id"])["processed"] == 2
+        current = [row for row in records(work.quality, "test_run") if row["is_current"]]
+        action = next(
+            row
+            for row in current
+            if row["structured"]["facts"].get("operation") == "test.disposition.decide"
+        )
+        assert action["structured"]["facts"]["professional_conclusion"]["text"] == review_text
+        assert action["structured"]["facts"]["disposition"]["text"] == disposition_text
+        assert action["source_id"] != review_row["source_id"]
+        old = next(
+            row
+            for row in records(work.quality, "test_run")
+            if row["source_id"] == review_row["source_id"]
+        )
+        assert not old["is_current"] and old["body"] == review_row["body"]
+        saved = work.quality.client.get(
+            f"/v1/categories/{person.category}/agent-runs/{run_scope.run_id}",
+            headers=work.quality.headers,
+        )
+        assert saved.status_code == 200, saved.text
+        previous = saved.json()["result"]["result"]["assistant"]
+        assert previous["sources"][0]["currentness"] == "updated"
+        assert review_text in previous["sources"][0]["quote"]
+        assert provider.calls == 3
+    
+        with Session(person.admin) as session, session.begin():
+>           root = session.get(BuildStart, start["source_id"]).event_source["id"]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'id'
+
+tests/enterprise_search/test_execution_records_pg.py:159: KeyError
+_____ test_query_count_is_constant_and_local_warm_latency_below_one_second _____
+
+setup = <isolated synthetic test scope>
+record_property = <function record_property.<locals>.append_property at 0x13dc5fc40>
+
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+        for i in range(8):
+            index(setup, register(setup, f"D{i + 10}-01 复验", "气密性漏气问题，核对工况。"))
+        statements, durations = [], []
+    
+        def count(_conn, _cursor, statement, _parameters, _context, _executemany):
+            statements.append(statement)
+    
+        event.listen(setup.engine, "before_cursor_execute", count)
+        try:
+            for _ in range(12):
+                with session_for(setup, personal=True) as session:
+                    statements.clear()
+                    begin = time.perf_counter()
+                    result = search(
+                        session, replace(setup.ctx, category_id=None), SearchInput(query="漏气怎么复验")
+                    )
+                    durations.append(time.perf_counter() - begin)
+                    assert result["returned"] == 8
+                    # One local setting, dependency batch, combined page/health/time.
+                    assert len(statements) == 3, len(statements)
+        finally:
+            event.remove(setup.engine, "before_cursor_execute", count)
+        p95 = statistics.quantiles(durations, n=20)[18]
+        record_property("keyword_warm_p95_seconds", p95)
+        record_property("keyword_queries_per_request", 3)
+        record_property("keyword_source_count", 8)
+        record_property("keyword_samples", len(durations))
+>       assert p95 < 1.0
+E       assert 1.1202602196426596 < 1.0
+
+tests/enterprise_search/test_retrieval_pg.py:234: AssertionError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+  tests/enterprise_search/test_retrieval_pg.py:206: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements
+FAILED tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+2 failed, 1 passed, 19 warnings in 224.06s (0:03:44)

@@ -1,0 +1,46 @@
+{
+  "format_version": 1,
+  "frozen": true,
+  "apply_after_lifecycle_manifest_sha256": "50a535adc2f5dc0da84f315e35b1e9032eb7c6597890dfdfdeae64491b7e619f",
+  "files": [
+    {
+      "path": "pdos-next/server/migrations/candidates/project_native_footprint_visibility.py",
+      "operation": "new",
+      "old_sha256": null,
+      "new_sha256": "24b3fb4aeb5798eac61cf2818d1a625de1d2fc16c3f4ad17ef7811273dbad0b0",
+      "staged_path": "/tmp/pdos-project-footprint-binding-stage-20261029/visibility-delta/pdos-next/server/migrations/candidates/project_native_footprint_visibility.py"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py",
+      "operation": "modified",
+      "old_sha256": "96b702b66591d336eb7ce7a5ec92c081b359810715cffa0d4a55777493e8e654",
+      "new_sha256": "4ac077fe0fb93ce37c4f3db325091f20c71955a2b1bd10f38e9485a954acf7da",
+      "staged_path": "/tmp/pdos-project-footprint-binding-stage-20261029/visibility-delta/pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py",
+      "base_path": "/tmp/pdos-project-footprint-binding-stage-20261029/visibility-delta/base/pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py"
+    }
+  ],
+  "pg_patch_path": "/tmp/pdos-project-footprint-binding-stage-20261029/visibility-delta/visibility-pg.patch",
+  "pg_patch_sha256": "5d78f9d6e0dca0b5e87bddddd50b07821a4e8cd6f49b3b9a2b004bd325a74c29",
+  "policy": {
+    "name": "kernel_source_audience",
+    "old_qual_exact": "kernel_read_set_visible(tenant_id, category_id, read_sources)",
+    "policy_roles_unchanged": [
+      "pdos_agent",
+      "pdos_next_app",
+      "pdos_next_auth",
+      "pdos_next_dispatch"
+    ],
+    "polpermissive": false,
+    "polcmd": "r",
+    "withcheck": null,
+    "only_using_expression_changes": true
+  },
+  "preflight_path": "/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-project-current-context-20261029/policy-preflight.json",
+  "preflight_sha256": "09b418f965b284a4c3e7eb74c5703a8c6d962bd17fc0db9c1190c122639c1b7c",
+  "validation": {
+    "ruff": "2 files passed",
+    "AST": "2 parsed",
+    "actual_pg": "combined lifecycle PG file 2 nodeids collected only; not run"
+  },
+  "wrapper": "Add UP_SQL to850 after function changes. On downgrade run existing native-only uncovered-history guard with all-tenant admin visibility first, then DOWN_SQL and old function restores. ALTER POLICY preserves roles/command/restrictiveness/withcheck."
+}

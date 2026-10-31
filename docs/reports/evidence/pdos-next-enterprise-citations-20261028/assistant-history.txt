@@ -1,0 +1,8 @@
+........                                                                 [100%]
+=============================== warnings summary ===============================
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+8 passed, 1 warning in 59.79s

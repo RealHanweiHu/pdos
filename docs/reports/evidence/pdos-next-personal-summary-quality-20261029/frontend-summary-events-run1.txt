@@ -1,0 +1,12 @@
+✔ summary reader performs only an explicit GET and clears old body before a denied reread (25.806042ms)
+✔ changing API or owner disposes in-flight private body and cannot acknowledge the old read (2.107375ms)
+✔ summary feed is a current owner GET, clears on 403 and never posts a fabricated message (2.778958ms)
+✔ summary feed rejects a non-progressing cursor without claiming complete coverage (2.3995ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 383.803125

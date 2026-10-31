@@ -1,0 +1,5 @@
+{
+  "native_keychain_create_read_replay": "passed",
+  "secret_in_process_arguments": false,
+  "synthetic_items_removed": true
+}

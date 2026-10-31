@@ -1,0 +1,10 @@
+{
+  "production_source_unchanged_from_candidate6": true,
+  "only_delta": [
+    "pdos-next/server/tests/enterprise_search/test_retrieval_pg.py"
+  ],
+  "retained": 629,
+  "remaining_expected": 209,
+  "total_cases": 838,
+  "reason": "Count the real JIT setup command explicitly, followed by the same three retrieval SQL calls; assert the exact first statement, preserve 1.0 second threshold. Candidate7 formal nine-family benchmark and 22 passed cases retained."
+}

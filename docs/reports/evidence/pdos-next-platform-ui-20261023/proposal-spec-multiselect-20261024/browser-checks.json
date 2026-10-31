@@ -1,0 +1,21 @@
+{
+  "searchAutofocused": true,
+  "existingDisabled": true,
+  "searchByKey": true,
+  "selectionSurvivesSearch": true,
+  "keyboardAndNoResults": true,
+  "batchAddsBothWithReferences": true,
+  "allAddedGuard": true,
+  "cancelDiscardsOnlySelection": true,
+  "escapeReturnsFocus": true,
+  "boundedNineParameterList": true,
+  "idAndUnitSearch": true,
+  "offlineDisablesBatch": true,
+  "saveKeepsChat": true,
+  "newSourcesSaved": true,
+  "reeditKeepsRowsAndSnapshots": true,
+  "mobileBoundedNoOverflow": true,
+  "openKeepsAppShell": true,
+  "previewKeepsExistingRows": true,
+  "availableParametersFirst": true
+}

@@ -1,0 +1,22 @@
+(node:28483) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ Xiaopai: 202 plus unchanged waiting_input preserves answer, polls, blocks repeat and reaches completion (11.858333ms)
+✔ Xiaopai: new needs_input sequence with the same question ID unlocks a fresh empty answer (5.758292ms)
+✔ Xiaopai: unknown POST response retains the exact original answer and key for explicit retry (13.278625ms)
+✔ Xiaopai: accepted answer survives an immediate GET 503 and resumes GET polling without reposting (12.674917ms)
+✔ Xiaopai: a later 403 clears the old form and stops the accepted-resume poll (11.134625ms)
+✔ Xiaopai: navigating away and back cannot re-enable the already submitted old interrupt (14.282917ms)
+✔ Personal: 202 plus unchanged waiting_input preserves answer, polls, blocks repeat and reaches completion (5.073917ms)
+✔ Personal: new needs_input sequence with the same question ID unlocks a fresh empty answer (3.720375ms)
+✔ Personal: unknown POST response retains the exact original answer and key for explicit retry (6.593583ms)
+✔ Personal: accepted answer survives an immediate GET 503 and resumes GET polling without reposting (7.4285ms)
+✔ Personal: a later 403 clears the old form and stops the accepted-resume poll (5.880333ms)
+✔ Personal: navigating away and back cannot re-enable the already submitted old interrupt (7.935625ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 453.771625

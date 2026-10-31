@@ -1,0 +1,33 @@
+{
+  "status": "frozen",
+  "no_real_source_edits": true,
+  "no_database_execution": true,
+  "files": [
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_verification_action_temporal_pg.py",
+      "baseline_sha256": "d27abc46b1bca153f9f84fb7eb717a627abfb78974cee2a3d2676e32608298c0",
+      "current_real_sha256": "d27abc46b1bca153f9f84fb7eb717a627abfb78974cee2a3d2676e32608298c0",
+      "staged_sha256": "75ed95572d7bb76d2dd3e435161dd7f60c78b8a085e719c67aa8dba3f9d546dd"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/verification_negative_fixture.py",
+      "baseline_sha256": null,
+      "current_real_sha256": null,
+      "staged_sha256": "1af6c2974f2a7e70d22cc494c760d53424bf3185479397294ae643905757e79e"
+    }
+  ],
+  "unchanged_harness": {
+    "path": "pdos-next/server/tests/enterprise_search/verification_action_harness.py",
+    "baseline_and_staged_sha256": "d8afa22a3237e9a124e0cf45dbbdc38dbf1a5f6bfe4f65dc4a41d4dab6058a4f"
+  },
+  "patches": {
+    "verification-negative-fixture.patch": "fbb057794f9ecbda9a64ed5137b91c5f2c73e8113376924949956400c3ddfc1c"
+  },
+  "validation": {
+    "pure_tests": "86 passed in 7.25s",
+    "ruff": "passed",
+    "ast": "3 parsed; positive/missing_count ASTs unchanged",
+    "collect": "4 negative cases; no fixture execution",
+    "patch": "dry-run, apply and 2 SHA matches"
+  }
+}

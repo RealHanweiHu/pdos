@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="17" time="169.300" timestamp="2026-10-29T04:06:08.597071-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_answer_native_category_receipt_replay_reopen_and_manual_review_revision" time="16.928" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_private_answer_cannot_enter_shared_category_without_native_deidentification" time="11.084" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_answer_candidate_uses_real_native_named_publication_and_becomes_retrievable" time="21.145"><failure message="AssertionError: {'status': 'partial', 'summary': '参考固定记录：更换密封圈。', 'result': {'assistant': {'version': 1, 'kind': 'enterprise', 'lookup': 'cited', 'citation_ids': ['a46fbadb-0f29-5dcc-858e-cd040c787682'], ...}}, 'questions': [], ...}&#10;assert ('partial' == 'completed'&#10;  &#10;  - completed&#10;  + partial)">knowledge_work = namespace(setup=&lt;isolated synthetic test scope&gt;, config={'source': '6bfc584f-32b1-4712-82e0-671ce880f179', 'definition...24a1d037993d327c34aa47'}, issuer=&lt;pdos_next.domain.professional_authority.service.IssuerContext object at 0x13d111a80&gt;)
+
+    def test_answer_candidate_uses_real_native_named_publication_and_becomes_retrievable(
+        knowledge_work,
+    ):
+        work, setup = knowledge_work, knowledge_work.setup
+&gt;       _identity, run, client = answer(setup)
+                                 ^^^^^^^^^^^^^
+
+tests/knowledge_pg/test_assistant_knowledge.py:169: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, visibility = 'category'
+
+    def answer(setup, *, visibility="category"):
+        identity = register(
+            setup, "F 合成漏气处理", "措施：更换密封圈。RAW_ONLY_CHILD_MARKER", visibility
+        )
+        index(setup, identity)
+        client = SyntheticClient()
+        owner, scope, host, _ = fixture(
+            setup, client, read_sources=({"artifact_id": str(identity), "expected_revision": 1},)
+        )
+        output = execute(owner, scope, host)
+&gt;       assert output["status"] == "completed" and output["result"]["assistant"]["lookup"] == "cited", (
+            output
+        )
+E       AssertionError: {'status': 'partial', 'summary': '参考固定记录：更换密封圈。', 'result': {'assistant': {'version': 1, 'kind': 'enterprise', 'lookup': 'cited', 'citation_ids': ['a46fbadb-0f29-5dcc-858e-cd040c787682'], ...}}, 'questions': [], ...}
+E       assert ('partial' == 'completed'
+E         
+E         - completed
+E         + partial)
+
+tests/knowledge_pg/test_assistant_knowledge.py:51: AssertionError</failure></testcase><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_gap_is_explicit_atomic_replayed_and_weekly_omits_questioner_and_private_comment" time="10.626"><failure message="AttributeError: 'types.SimpleNamespace' object has no attribute 'project_id'">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_gap_is_explicit_atomic_replayed_and_weekly_omits_questioner_and_private_comment(setup):
+        _identity, run, client = answer(setup)
+&gt;       feedback = setup.client.post(
+            f"/v1/categories/{setup.category}/agent-runs/{run}/feedback",
+            headers=setup.headers,
+            json={
+                "idempotency_key": str(uuid4()),
+                "categories": ["not_useful"],
+                "comment": "PRIVATE_COMMENT_MUST_NOT_SHARE",
+            },
+        )
+
+tests/knowledge_pg/test_assistant_knowledge.py:212: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1204: in post
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1817: in handle
+    await self.original_router.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2869: in handle
+    await included_router._handle_selected(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1843: in _handle_selected
+    await original_route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1308: in handle
+    await effective_context.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&amp;D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/api.py:466: in save_feedback
+    return record(session, ctx, visible_run(session, ctx, row), data)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = &lt;sqlalchemy.orm.session.Session object at 0x118b00b30&gt;
+ctx = Context(tenant_id=UUID('4e450132-54a5-4b00-8ac4-895e133225c7'), actor_id=UUID('9f13c2d7-f461-4437-8aee-88d5574ca885'),...ne, cancel_epoch=None, category_id=UUID('6a9e590d-56fb-481a-b194-b75e69b06d25'), agent_run_id=None, agent_call_id=None)
+row = namespace(id=UUID('5f845cfc-715e-404b-95d8-f068ec378d9c'), tenant_id=UUID('4e450132-54a5-4b00-8ac4-895e133225c7'), cat...b6b8757639c09186d06320005a', 'assistant_extract': '13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a'}})
+
+    def visible_run(session, ctx, row):
+        if row is None or row.requester_id != ctx.requester_id:
+            raise DomainError("FORBIDDEN_SCOPE", "运行不在当前可读范围。", 403)
+        if row.proposal_id is not None:
+            from pdos_next.domain.preproject.access import proposal
+    
+            proposal(session, ctx, row.proposal_id)
+        from .project_scope import require_project
+    
+&gt;       require_project(session, ctx, row.project_id, row.product_id)
+                                      ^^^^^^^^^^^^^^
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'project_id'
+
+pdos_next/agent_kernel/api.py:103: AttributeError</failure></testcase><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_agent_has_no_direct_fact_select_or_append[knowledge_answer_reviews]" time="0.624" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_agent_has_no_direct_fact_select_or_append[knowledge_gap_submissions]" time="0.562" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_agent_has_no_direct_fact_select_or_append[knowledge_gap_attributions]" time="0.797" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_withdrawn_actual_dependency_hides_new_knowledge_in_every_original_read_path" time="11.122" /><testcase classname="tests.knowledge_pg.test_publication" name="test_category_experience_to_explicit_named_rule_and_retained_source_recheck" time="16.429" /><testcase classname="tests.knowledge_pg.test_publication" name="test_actual_planned_build_result_becomes_scoped_candidate_and_named_rule" time="16.746" /><testcase classname="tests.automations_pg.test_personal_summary_gates_pg" name="test_native_approved_baseline_yields_current_and_future_fixed_estimates_without_writes" time="12.828" /><testcase classname="tests.automations_pg.test_personal_summary_gates_pg" name="test_readable_nonowner_needs_explicit_subscription_and_never_borrows_project_owner" time="11.235" /><testcase classname="tests.automations_pg.test_personal_summary_gates_pg" name="test_new_current_plan_does_not_reuse_old_approval_and_history_keeps_its_fixed_event" time="13.629" /><testcase classname="tests.automations_pg.test_personal_summary_gates_pg" name="test_actual_category_read_revocation_hides_native_event_and_original_refs" time="9.805" /><testcase classname="tests.automations_pg.test_personal_summary_gates_pg" name="test_explicit_follow_does_not_grant_another_humans_private_project_or_fixed_event[private]" time="12.047"><failure message="AssertionError: assert [Item(id='upc...ebcc9d3f00a')] == []&#10;  &#10;  Left contains 2 more items, first extra item: Item(id='upcoming_stage_gate:279fd697-ddec-4296-98cc-3f5cc8fa5fc2:89930561-41cb-49ed-9c01-34d5184e6115', kind='upcomin...'}, possible_impact='待确认', health=None, fingerprint='a565eef6c9f7c4536ab85d5129b8b92d7a97ead86aec4178ea7ffbecf506a12c')&#10;  Use -v to get more diff">gate_work = namespace(setup=&lt;isolated synthetic test scope&gt;, project='279fd697-ddec-4296-98cc-3f5cc8fa5fc2', definition=('847d39bb..., 'agent_run_id': None, 'result': {'id': '93442f5f-aa40-48b4-bb7f-c485e9c0e557', 'revision': 4, 'status': 'recorded'}})
+
+    @pytest.mark.parametrize("gate_work", ["private"], indirect=True)
+    def test_explicit_follow_does_not_grant_another_humans_private_project_or_fixed_event(gate_work):
+        work = gate_work
+        original = read(work)
+        assert len(entries(original)) == 2
+&gt;       assert entries(read(work, person=work.setup.peer, follow=True)) == []
+E       AssertionError: assert [Item(id='upc...ebcc9d3f00a')] == []
+E         
+E         Left contains 2 more items, first extra item: Item(id='upcoming_stage_gate:279fd697-ddec-4296-98cc-3f5cc8fa5fc2:89930561-41cb-49ed-9c01-34d5184e6115', kind='upcomin...'}, possible_impact='待确认', health=None, fingerprint='a565eef6c9f7c4536ab85d5129b8b92d7a97ead86aec4178ea7ffbecf506a12c')
+E         Use -v to get more diff
+
+tests/automations_pg/test_personal_summary_gates_pg.py:238: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute" time="0.679" /><testcase classname="tests.enterprise_search.test_embedding_controls_pg" name="test_metadata_get_and_profile_preview_require_actual_current_human_admin" time="1.706" /></testsuite></testsuites>

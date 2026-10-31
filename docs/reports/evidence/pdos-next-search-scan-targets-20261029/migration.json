@@ -1,0 +1,42 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0848",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/search-scan-targets-53502-before-0848.dump",
+  "backup_bytes": 103165072,
+  "backup_sha256": "c7915dff671c4244c2cf0dbff61f772424b27aa248cacc1af287e2a0877c88b4",
+  "operations": [
+    {
+      "direction": "upgrade",
+      "head": "s0_0848",
+      "history_counts_unchanged": true,
+      "owner_rls_policies_acl_unchanged": true,
+      "legacy_rows_null": true
+    },
+    {
+      "direction": "downgrade",
+      "head": "s0_0847",
+      "history_counts_unchanged": true,
+      "owner_rls_policies_acl_unchanged": true,
+      "legacy_rows_null": false
+    },
+    {
+      "direction": "upgrade",
+      "head": "s0_0848",
+      "history_counts_unchanged": true,
+      "owner_rls_policies_acl_unchanged": true,
+      "legacy_rows_null": true
+    }
+  ],
+  "counts": {
+    "agent_runs": 5128,
+    "action_receipts": 49063,
+    "artifact_versions": 11698,
+    "uploaded_originals": 1290,
+    "enterprise_search_sources": 3148,
+    "enterprise_search_chunks": 3346,
+    "enterprise_search_corpus": 1019,
+    "enterprise_search_terms": 50583
+  },
+  "real_provider_accessed": false
+}

@@ -1,0 +1,16 @@
+✔ fixed Change read exposes actual choices without automatic mutation or internal UUID inputs (25.628375ms)
+✔ local recovery storage failure stops the first material POST (5.32875ms)
+✔ storage failure after material prevents dependent common preview and retains original material input (7.305541ms)
+✔ actual adoption sends only selected native refs then requires the explicit T1 confirmation (10.604ms)
+✔ real Run mapping uses a string test-item key and server requirement hash before separate T2 approval (49.940541ms)
+✔ unknown T2 closure remount performs only GET and explicit recovery reuses the exact original command (9.786708ms)
+✔ 403 clears current private reading and keeps only the exact unresolved submission for later permission recovery (7.353541ms)
+✔ a changed product revision discards an old preview and never automatically submits it (14.390708ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 511.854125

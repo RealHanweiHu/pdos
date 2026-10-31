@@ -1,0 +1,11 @@
+{
+  "pdos-next/server/pdos_next/agent_kernel/requested_skills.py": "6c23bd7c78d2eed72e979391564626b36c0880a73a722a28a7d2da57a9837403",
+  "pdos-next/server/tests/agent_kernel/test_requested_skills.py": "5bd1fa7063cf26ee1f80a4db9db9e9d983b812530a455209edbe91a3690b8d57",
+  "pdos-next/server/tests/agent_kernel/test_requested_skills_pg.py": "e4116a045094fc3a984eaca899b8aaaf90b695563e8386acdffa0e0cb1f5339a",
+  "pdos-next/server/tests/agent_kernel/test_continued_skills_pg.py": "f61da21f44a284d78fa1934b2ef15b369ecf5e12ef91f45e1e19d7fd68d0d0de",
+  "pdos-next/server/tests/agent_kernel/test_conversation_memory.py": "5eaa8ace4f6e85aa80867a0bbea7295331d78425b94462eb5db98d78d15ed4ac",
+  "pdos-next/web/src/components/pai/continued-skill-picker.tsx": "dda7d34f01014dcb4670dca405cfc4b0a8f0a2fc14a2dc9cc2f66a91bd7d5cd2",
+  "pdos-next/web/src/components/pai/continued-skill-picker.test.mjs": "0e612dbcd662fc08f0af948fcfabb31d73f58aeccb7dabf45e31fcc3194088b4",
+  "pdos-next/web/src/lib/continued-skills.ts": "aef3a0a75bf5c47f57ba41ef7979fcee2722543a9a2091a266ba96cee921d5c8",
+  "pdos-next/web/src/lib/continued-skills.test.ts": "7f3e10c3989cefbe04f12b11fb80c35182729bfcc794a4c5007ca3890efcd50e"
+}

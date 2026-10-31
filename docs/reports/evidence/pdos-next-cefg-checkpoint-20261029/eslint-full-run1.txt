@@ -1,0 +1,26 @@
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/app/api/external-wait-route.test.mjs
+  13:7  warning  'operations' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/builds/build-change-orders.test.mjs
+  36:16  warning  'fill' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/category-create/personal-xiaopai 3.tsx
+  130:6  warning  React Hook useEffect has a missing dependency: 'workProducts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  133:6  warning  React Hook useEffect has a missing dependency: 'workProducts'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/inbox.test.mjs
+  11:9  warning  'renderToStaticMarkup' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/my-work.test.mjs
+  63:7  warning  'g0Item' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/pai/use-work-products 2.ts
+  12:101  error  Parsing error: ')' expected
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/verification/contracts.js
+  132:16  warning  '_a' is defined but never used  @typescript-eslint/no-unused-vars
+  167:12  warning  '_a' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 9 problems (1 error, 8 warnings)
+

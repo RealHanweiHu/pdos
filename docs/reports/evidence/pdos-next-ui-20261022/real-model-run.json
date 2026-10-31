@@ -1,0 +1,344 @@
+{
+  "run": {
+    "run_id": "68152280-76e6-48d1-b4e4-fe999c672f74",
+    "goal": "合成 UI 联验，只需回答这一轮，不要调用任何读取、研究或业务写入工具。请使用资料查漏方法检查以下界面说明的缺项：用户可以选择当前可见项目，手选已启用且固定版本的技能；未知请求保留原键；品类经验候选不冒充正式规则；阶段、健康度与冻结点仍未知。请给出两句简短中文草稿，保留未知，并只调用 pdos_agent_output 收尾，status=completed，不要创建候选或业务记录。",
+    "session_id": "a9ef4610-1559-44c2-abb0-02e5bad80db7",
+    "conversation": {
+      "previous_run_id": null,
+      "next_run_id": null
+    },
+    "product_id": null,
+    "proposal_id": null,
+    "project_id": null,
+    "status": "failed",
+    "result": null,
+    "error_code": "SOURCE_UNAVAILABLE",
+    "reconciliation": null,
+    "process": {
+      "run_id": "68152280-76e6-48d1-b4e4-fe999c672f74",
+      "status": "failed",
+      "reverted": false,
+      "error_code": "SOURCE_UNAVAILABLE",
+      "started_at": "2026-10-23T03:45:20.832278+00:00",
+      "observed_at": "2026-10-23T03:46:05.140663+00:00",
+      "last_recorded_at": "2026-10-23T03:46:05.014354+00:00",
+      "ended_at": "2026-10-23T03:46:05.014354+00:00",
+      "elapsed_seconds": 44.182076,
+      "call_counts": {
+        "total": 1,
+        "completed": 0,
+        "pending": 0,
+        "failed": 1
+      },
+      "source_count": 0,
+      "sources": [],
+      "next_source_cursor": null,
+      "business_receipt_count": 0,
+      "receipts": [],
+      "next_receipt_cursor": null,
+      "steps": [
+        {
+          "id": "e83b9718-3391-4032-bf82-4e896825f8d1",
+          "sequence": 1,
+          "at": "2026-10-23T03:45:20.862210+00:00",
+          "kind": "accepted",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "9288a451-ee54-43c0-981d-142db57b7e81",
+          "sequence": 2,
+          "at": "2026-10-23T03:45:21.331449+00:00",
+          "kind": "skill_loaded",
+          "tool": null,
+          "skill": "gap_check",
+          "version": "0.2.1-draft",
+          "status": null
+        },
+        {
+          "id": "bfb6fc55-0f94-4196-91bc-5c8c978310c1",
+          "sequence": 3,
+          "at": "2026-10-23T03:45:21.399684+00:00",
+          "kind": "context_projected",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "projected",
+          "context_fields": [
+            "goal",
+            "sources"
+          ],
+          "context_omitted": [],
+          "context_issues": []
+        },
+        {
+          "id": "7d20d083-1888-4729-bb31-c32448512f3c",
+          "sequence": 4,
+          "at": "2026-10-23T03:45:21.441005+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "4d274b1b-02a9-4ab4-9969-8d6c328cb77d",
+          "sequence": 6,
+          "at": "2026-10-23T03:46:05.014354+00:00",
+          "kind": "run_state",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "failed"
+        }
+      ],
+      "next_before": null
+    },
+    "versions": {
+      "provider_key": "minimax",
+      "model_version": "MiniMax-M3",
+      "prompt_prefixes": {
+        "main": "f7abfb423ac2e51c7d78d56145246825c7ced4e829449037bf24e9314b3954e5"
+      },
+      "tool_definitions": {
+        "main": "112404f08e5e13687016b4e0c4a64548bc06032d3b0aa5966e6e3573c7e15968"
+      },
+      "tool_disclosures": {
+        "main": {
+          "chain": [
+            "112404f08e5e13687016b4e0c4a64548bc06032d3b0aa5966e6e3573c7e15968"
+          ],
+          "names": [
+            "ai.skill.qualify",
+            "build.engineering.authorize",
+            "build.lot.read",
+            "build.manufacturing.authorize",
+            "build.read",
+            "build.sample.read",
+            "calc.cost_subtotal",
+            "calc.derivation_diff",
+            "calc.market_size",
+            "calc.opportunity_score",
+            "calc.price_band",
+            "calc.spec_compare",
+            "category.competitors.list",
+            "category.knowledge.list",
+            "category.list",
+            "category.member.grant",
+            "category.parameters.list",
+            "category.read",
+            "change.close",
+            "change.order.approve",
+            "change.selection.decide",
+            "change.verification.record",
+            "conversation.history",
+            "evidence.extract",
+            "evidence.link.create",
+            "evidence.search",
+            "integration.handoff.authorize",
+            "knowledge.rule.publish",
+            "mcp.connector.allow",
+            "mcp.read",
+            "mcp.tools.list",
+            "npi.manufacturing_baseline.publish",
+            "platform.read",
+            "product.baseline.read",
+            "product.definition.item.patch",
+            "project.create",
+            "proposal.g0.decide",
+            "proposal.g0.submit",
+            "proposal.item.patch",
+            "proposal.items.read",
+            "proposal.question.create",
+            "proposal.read",
+            "proposal.share",
+            "provider.agreement.register",
+            "quality.capa.verification.review",
+            "quality.issue.read",
+            "quality.issue.root_cause.decide",
+            "release.engineering.approve",
+            "release.exception.decide",
+            "release.exception.withdraw",
+            "release.manufacturing.approve",
+            "research.fanout",
+            "research.search",
+            "skill.load",
+            "test.disposition.decide",
+            "test.run.read",
+            "test.run.review"
+          ]
+        }
+      },
+      "checkpoint_layout": "session-run-ns/v1",
+      "context_snapshots": {
+        "1cfa937c8a58e771eb6e4a754d6d3b6f180da61e07439f979f18ee55e40bcd1a": {
+          "scope": {
+            "product_id": null,
+            "category_id": null,
+            "proposal_id": null,
+            "requester_id": "69f1c732-2201-4c0f-a064-41bc207f8363",
+            "data_categories": [
+              "internal"
+            ]
+          },
+          "fields": [
+            "goal",
+            "sources"
+          ],
+          "issues": [],
+          "skills": [
+            {
+              "key": "gap_check",
+              "digest": "2071cd492f74daa1e8d17d718e6253879503b079586160460e8ff52b9961421f",
+              "version": "0.2.1-draft",
+              "load_event_id": "9288a451-ee54-43c0-981d-142db57b7e81"
+            }
+          ],
+          "omitted": [],
+          "event_id": "bfb6fc55-0f94-4196-91bc-5c8c978310c1",
+          "read_set": [],
+          "schema_digest": "3b42c22b1e5eb3b8465e370e0aaffa761125106d070bedec1adf1b73c081b469",
+          "source_digest": "94b94e787248beeea7456cd72dc35432aa2ea420e9afede5dac44943154af8a7",
+          "content_digest": "4ea2735c2adaba414e5173d2febf932ce2abe84c240a140943d63b9b6be47d35"
+        }
+      },
+      "model_route_digest": "61bca7a4b9b0e5b0fe083c519cbb5c0d258026a1b57eec9073491985962f05c0"
+    },
+    "reverted": false,
+    "reverted_at": null,
+    "reverted_by": null,
+    "revert_receipt_id": null,
+    "cancel_epoch": 0
+  },
+  "events": {
+    "items": [
+      {
+        "sequence": 1,
+        "event": {
+          "type": "accepted",
+          "status": "queued",
+          "requested_skills": [
+            {
+              "key": "gap_check",
+              "digest": "2071cd492f74daa1e8d17d718e6253879503b079586160460e8ff52b9961421f",
+              "version": "0.2.1-draft"
+            }
+          ]
+        }
+      },
+      {
+        "sequence": 2,
+        "event": {
+          "key": "gap_check",
+          "type": "skill_loaded",
+          "digest": "2071cd492f74daa1e8d17d718e6253879503b079586160460e8ff52b9961421f",
+          "version": "0.2.1-draft",
+          "isolation": "main"
+        }
+      },
+      {
+        "sequence": 3,
+        "event": {
+          "type": "context_projected",
+          "fields": [
+            "goal",
+            "sources"
+          ],
+          "issues": [],
+          "skills": [
+            {
+              "key": "gap_check",
+              "digest": "2071cd492f74daa1e8d17d718e6253879503b079586160460e8ff52b9961421f",
+              "version": "0.2.1-draft",
+              "load_event_id": "9288a451-ee54-43c0-981d-142db57b7e81"
+            }
+          ],
+          "status": "projected",
+          "omitted": [],
+          "schema_digest": "3b42c22b1e5eb3b8465e370e0aaffa761125106d070bedec1adf1b73c081b469",
+          "content_digest": "4ea2735c2adaba414e5173d2febf932ce2abe84c240a140943d63b9b6be47d35"
+        }
+      },
+      {
+        "sequence": 4,
+        "event": {
+          "turn": 1,
+          "type": "model_started"
+        }
+      },
+      {
+        "sequence": 5,
+        "event": {
+          "type": "egress_checked",
+          "provider": "minimax",
+          "checked_at": "2026-10-23T03:45:21.806074+00:00",
+          "agreement_id": null,
+          "data_categories": [
+            "internal"
+          ],
+          "agreement_revision": null
+        }
+      },
+      {
+        "sequence": 6,
+        "event": {
+          "type": "run_state",
+          "status": "failed",
+          "error_code": "SOURCE_UNAVAILABLE"
+        }
+      }
+    ],
+    "next_cursor": 6,
+    "status": "failed",
+    "reverted": false
+  },
+  "workflow_result": {
+    "error_code": "SOURCE_UNAVAILABLE",
+    "run_id": "68152280-76e6-48d1-b4e4-fe999c672f74",
+    "status": "failed"
+  },
+  "namespace": "pdos-next-s1-demo-20261022",
+  "task_queue": "pdos-next-ui-skills-20261022",
+  "wallet_before": {
+    "id": "7f1cd65a-64da-43f0-a4ac-289bc6509194",
+    "revision": 2,
+    "active": true,
+    "created_at": "2026-10-22T12:26:23.725779+00:00",
+    "receipt_id": "3e6297d7-06da-4968-9739-3c71e564792f",
+    "limit_micro_usd": 950988,
+    "input_token_limit": 1400000,
+    "output_token_limit": 21952,
+    "call_limit": 7,
+    "calls": 6,
+    "held_micro_usd": 0,
+    "spent_micro_usd": 89983,
+    "held_input_tokens": 0,
+    "used_input_tokens": 358238,
+    "held_output_tokens": 0,
+    "used_output_tokens": 6973
+  },
+  "wallet_after": {
+    "id": "7f1cd65a-64da-43f0-a4ac-289bc6509194",
+    "revision": 2,
+    "active": true,
+    "created_at": "2026-10-22T12:26:23.725779+00:00",
+    "receipt_id": "3e6297d7-06da-4968-9739-3c71e564792f",
+    "limit_micro_usd": 950988,
+    "input_token_limit": 1400000,
+    "output_token_limit": 21952,
+    "call_limit": 7,
+    "calls": 7,
+    "held_micro_usd": 0,
+    "spent_micro_usd": 103829,
+    "held_input_tokens": 0,
+    "used_input_tokens": 394274,
+    "held_output_tokens": 0,
+    "used_output_tokens": 9021
+  },
+  "calls_delta": 1,
+  "spent_micro_usd_delta": 13846,
+  "browser_used": false,
+  "business_save_requested": false
+}

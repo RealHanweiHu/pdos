@@ -1,0 +1,9 @@
+{
+  "exit": 0,
+  "count": 752,
+  "inputs_unchanged": true,
+  "build": "/tmp/pdos-assistant-pages-build-20261029/pdos-next/web/.next",
+  "font_cache": "/tmp/pdos_scope_cached_google_fonts_v2.cjs",
+  "external_network": "blocked by snapshot-only preload",
+  "seconds": 46.64
+}

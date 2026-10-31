@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="21" time="368.965" timestamp="2026-10-29T04:57:10.638162-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.knowledge_pg.test_answer_footprint_pg" name="test_uncited_real_read_cannot_launder_prose_into_shared_category_or_candidate[private]" time="23.131" /><testcase classname="tests.knowledge_pg.test_answer_footprint_pg" name="test_uncited_real_read_cannot_launder_prose_into_shared_category_or_candidate[customer_original]" time="24.610" /><testcase classname="tests.knowledge_pg.test_answer_footprint_pg" name="test_uncited_shared_read_survives_native_save_and_does_not_acquire_an_unread_source" time="17.410"><failure message="AssertionError: {'status': 'partial', 'summary': '本次参考：漏气核查：更换密封圈。；漏气处理：更换密封圈。', 'result': {'non_read_source_uuid': '30164aa9-7185-4b4...'enterprise', 'lookup': 'cited', 'citation_ids': ['40ede664-6045-52ac-b493-414808f2243c'], ...}}, 'questions': [], ...}&#10;assert 'partial' == 'completed'&#10;  &#10;  - completed&#10;  + partial">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_uncited_shared_read_survives_native_save_and_does_not_acquire_an_unread_source(setup):
+        public = register(setup, "I14-A 公开漏气记录", "漏气处理：更换密封圈。")
+        uncited = register(setup, "I14-B 另一公开漏气记录", "漏气核查：更换密封圈。")
+        unread = register(setup, "Unrelated unread source", "No matching query")
+        for identity in (public, uncited):
+            index(setup, identity)
+        client = UncitedClient(public, unread_mention=str(unread))
+&gt;       _owner, scope, _output = checked_answer(setup, client, public)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/knowledge_pg/test_answer_footprint_pg.py:272: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;
+client = &lt;knowledge_pg.test_answer_footprint_pg.UncitedClient object at 0x130840440&gt;
+public_id = UUID('c562cbaa-3304-4e48-b092-20350aa4a565'), parent = None
+
+    def checked_answer(setup, client, public_id, *, parent=None):
+        owner, scope, host, _adapter = fixture(
+            setup,
+            client,
+            product_id=setup.product,
+            read_sources=({"artifact_id": str(public_id), "expected_revision": 1},),
+            session_id=parent.session_id if parent else None,
+            continued_from_id=parent.run_id if parent else None,
+        )
+        output = execute(owner, scope, host)
+&gt;       assert output["status"] == "completed", output
+E       AssertionError: {'status': 'partial', 'summary': '本次参考：漏气核查：更换密封圈。；漏气处理：更换密封圈。', 'result': {'non_read_source_uuid': '30164aa9-7185-4b4...'enterprise', 'lookup': 'cited', 'citation_ids': ['40ede664-6045-52ac-b493-414808f2243c'], ...}}, 'questions': [], ...}
+E       assert 'partial' == 'completed'
+E         
+E         - completed
+E         + partial
+
+tests/knowledge_pg/test_answer_footprint_pg.py:176: AssertionError</failure></testcase><testcase classname="tests.knowledge_pg.test_answer_footprint_pg" name="test_uncited_private_parent_footprint_remains_when_only_public_source_is_requeried" time="37.303"><failure message="AssertionError: assert '7e0c1afe-4bce-49ba-b904-78393037f75b' not in {'79bca3ea-fcac-42bd-9195-b816689816d7': '23bc5210-d972-5ddd-80ba-99b74e78993e', '7e0c1afe-4bce-49ba-b904-78393037f75b': '2e671af9-8a22-5f93-b379-047083216887'}&#10; +  where '7e0c1afe-4bce-49ba-b904-78393037f75b' = str(UUID('7e0c1afe-4bce-49ba-b904-78393037f75b'))&#10; +  and   {'79bca3ea-fcac-42bd-9195-b816689816d7': '23bc5210-d972-5ddd-80ba-99b74e78993e', '7e0c1afe-4bce-49ba-b904-78393037f75b': '2e671af9-8a22-5f93-b379-047083216887'} = &lt;knowledge_pg.test_answer_footprint_pg.UncitedClient object at 0x1372c0aa0&gt;.sources">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_uncited_private_parent_footprint_remains_when_only_public_source_is_requeried(setup):
+        public = register(setup, "I14-A 公开漏气记录", "漏气处理：更换密封圈。")
+        restricted = register(
+            setup, "I14-B 私有漏气记录", "漏气：更换密封圈。SYNTHETIC_PRIVATE", "private"
+        )
+        for identity in (public, restricted):
+            index(setup, identity)
+        _owner, parent, _output = checked_answer(setup, UncitedClient(public), public)
+        client = UncitedClient(public, query="I14-A")
+        _owner, scope, _output = checked_answer(setup, client, public, parent=parent)
+&gt;       assert (
+            str(restricted) not in client.sources
+        )  # Only carried native history can supply this root.
+E       AssertionError: assert '7e0c1afe-4bce-49ba-b904-78393037f75b' not in {'79bca3ea-fcac-42bd-9195-b816689816d7': '23bc5210-d972-5ddd-80ba-99b74e78993e', '7e0c1afe-4bce-49ba-b904-78393037f75b': '2e671af9-8a22-5f93-b379-047083216887'}
+E        +  where '7e0c1afe-4bce-49ba-b904-78393037f75b' = str(UUID('7e0c1afe-4bce-49ba-b904-78393037f75b'))
+E        +  and   {'79bca3ea-fcac-42bd-9195-b816689816d7': '23bc5210-d972-5ddd-80ba-99b74e78993e', '7e0c1afe-4bce-49ba-b904-78393037f75b': '2e671af9-8a22-5f93-b379-047083216887'} = &lt;knowledge_pg.test_answer_footprint_pg.UncitedClient object at 0x1372c0aa0&gt;.sources
+
+tests/knowledge_pg/test_answer_footprint_pg.py:322: AssertionError</failure></testcase><testcase classname="tests.knowledge_pg.test_answer_footprint_pg" name="test_human_original_deidentification_publishes_clean_answer_with_private_native_proof" time="3.828"><failure message="pdos_next.errors.DomainError: 逐字片段不在指定来源定位处。">security_work = namespace(setup=&lt;isolated synthetic test scope&gt;, store=&lt;pdos_next.object_journal.store.JournaledLocalObjectStore objec...a80&gt;, parser=&lt;function parse_original at 0x116af3420&gt;), client=&lt;starlette.testclient.TestClient object at 0x14007e810&gt;)
+work = &lt;isolated synthetic test scope&gt;
+
+    def test_human_original_deidentification_publishes_clean_answer_with_private_native_proof(
+        security_work,
+        work,
+    ):
+        setup = security_work.setup
+        original = uploaded(security_work, content="漏气：更换密封圈。合成客户甲专用。".encode())
+        source = parsed(security_work, original)
+        index(setup, source)
+        body = payload(work)
+        body.update(entry_kind="customer_request", customer_identities=["合成客户甲"])
+        proposal_id, _command = create(work, body)
+        item = read(work, proposal_id).json()["items"][0]
+        linked = post(
+            work,
+            evidence_request(
+                work,
+                "evidence.link.create",
+                {
+                    "evidence": {
+                        "type": "artifact",
+                        "id": str(source),
+                        "version": 1,
+                        "locator": "line:1",
+                    },
+                    "target": {
+                        "type": "proposal_item",
+                        "id": item["item_id"],
+                        "version": item["version"],
+                    },
+                    "relation": "supports",
+                },
+            ),
+        )
+        assert linked.status_code == 200, linked.text
+&gt;       scope = proposal_answer(
+            setup,
+            UncitedClient(source, material_id=source),
+            proposal_id,
+            source,
+        )
+
+tests/knowledge_pg/test_answer_footprint_pg.py:423: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/knowledge_pg/test_answer_footprint_pg.py:355: in proposal_answer
+    binding = owner.binding_for(session, setup.ctx, data)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/bootstrap.py:190: in binding_for
+    proposal_facts = collect(session, ctx, actual, read(session, ctx, actual.id))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/proposal_context.py:83: in collect
+    baseline.validate_sources(session, ctx, None, extra_refs=refs, resolved_references=closed)
+pdos_next/domain/preproject/baseline.py:525: in validate_sources
+    load_source(
+pdos_next/domain/preproject/claim_access.py:87: in load_source
+    fail("VALIDATION_FAILED", "quote_not_in_source", "逐字片段不在指定来源定位处。")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+code = 'VALIDATION_FAILED', reason = 'quote_not_in_source'
+message = '逐字片段不在指定来源定位处。', status = 409, detail = {}
+
+    def fail(code, reason, message, status=409, **detail):
+        error = DomainError(code, message, status, detail=detail)
+        error.detail["reason"] = reason
+&gt;       raise error
+E       pdos_next.errors.DomainError: 逐字片段不在指定来源定位处。
+
+pdos_next/domain/preproject/access.py:11: DomainError</failure></testcase><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_answer_native_category_receipt_replay_reopen_and_manual_review_revision" time="12.704" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_private_answer_cannot_enter_shared_category_without_native_deidentification" time="10.248" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_answer_candidate_uses_real_native_named_publication_and_becomes_retrievable" time="20.187" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_gap_is_explicit_atomic_replayed_and_weekly_omits_questioner_and_private_comment" time="11.271" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_agent_has_no_direct_fact_select_or_append[knowledge_answer_reviews]" time="0.626" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_agent_has_no_direct_fact_select_or_append[knowledge_gap_submissions]" time="0.578" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_agent_has_no_direct_fact_select_or_append[knowledge_gap_attributions]" time="0.562" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_withdrawn_actual_dependency_hides_new_knowledge_in_every_original_read_path" time="10.325" /><testcase classname="tests.knowledge_pg.test_assistant_personal_targets" name="test_personal_answer_explicit_target_saves_original_run_and_proof_without_fabricated_artifact" time="8.338" /><testcase classname="tests.knowledge_pg.test_assistant_personal_targets" name="test_unknown_gap_response_recovers_exact_native_submission_without_appending" time="10.321" /><testcase classname="tests.knowledge_pg.test_assistant_personal_targets" name="test_personal_product_original_requires_real_product_context_for_candidate" time="10.323" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge_lifecycle" name="test_native_uploaded_original_is_retained_by_both_f_facts_and_not_attribution" time="14.993" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge_lifecycle" name="test_actual_app_append_fences_both_f_tables_before_deferred_atoms[pending]" time="15.189" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge_lifecycle" name="test_actual_app_append_fences_both_f_tables_before_deferred_atoms[quarantined]" time="14.816" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge_lifecycle" name="test_reused_review_proofs_allow_current_peer_reads_without_private_run_or_rls_recursion" time="18.726" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge_lifecycle" name="test_native_issue_and_capa_answer_proofs_resolve_real_uploaded_roots" time="102.518" /></testsuite></testsuites>

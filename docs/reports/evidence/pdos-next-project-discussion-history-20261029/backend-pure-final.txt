@@ -1,0 +1,9 @@
+................................                                         [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_session_presentation.py::test_search_compiles_with_current_actual_parents_and_project_before_pagination
+tests/agent_kernel/test_session_presentation.py::test_project_conversation_selector_precedes_title_search_counts_and_cursor
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/session_presentation.py:98: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(presentation.session_id)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+32 passed, 2 warnings in 0.37s

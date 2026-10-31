@@ -1,0 +1,104 @@
+{
+  "scope": "E similar-history Change detail and unsaved Issue/Change title frontend completion",
+  "live_applied": true,
+  "files": [
+    {
+      "path": "pdos-next/web/src/app/api/v1/categories/[categoryId]/products/[productId]/change-execution/[changeId]/similar-history/feedback/route.ts",
+      "change": "added",
+      "base_sha256": null,
+      "sha256": "2b406ea82433d8f3041257e63db4e1255f1f9b14f35c86e37633aee45c8b9520"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/v1/categories/[categoryId]/products/[productId]/change-execution/[changeId]/similar-history/route.ts",
+      "change": "added",
+      "base_sha256": null,
+      "sha256": "94ee8ac1c18948b1325f2617b86efdec522ba74d30be707f1def5912a6a796a5"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/v1/categories/[categoryId]/products/[productId]/similar-history/route.ts",
+      "change": "added",
+      "base_sha256": null,
+      "sha256": "7bf57662405bb3d3aa868306a04618965f44fa1733e1d131cacce31993268cf6"
+    },
+    {
+      "path": "pdos-next/web/src/components/builds/build-quality-loop.tsx",
+      "change": "modified",
+      "base_sha256": "ed59e93db460b90af147b55bff2b327487cfe9e17bab19f611e931fd60d30c09",
+      "sha256": "b540f857acd39686de013eb638ad93e2314733fd29ebcd8f61c42807e2f22370"
+    },
+    {
+      "path": "pdos-next/web/src/components/category-material-editor.tsx",
+      "change": "modified",
+      "base_sha256": "5f20233d3490764a789456c96db9d570f885248c858b8895b494d5bfb32b842e",
+      "sha256": "7017b620b863129d6af480f9115caaa8c795a04e59f3b812769e88193c849a9c"
+    },
+    {
+      "path": "pdos-next/web/src/components/projects/project-professional-records.test.mjs",
+      "change": "modified",
+      "base_sha256": "18b7ba9f5e5bcabf46317065166c9750229c63320342101fda6cd82f3c2f8434",
+      "sha256": "f855e9c4b2e981e7f9041a575548a342f2f5b195f72465b0ec6daee430533319"
+    },
+    {
+      "path": "pdos-next/web/src/components/projects/project-professional-records.tsx",
+      "change": "modified",
+      "base_sha256": "9d4faa010a615e35ad259c1498784a5f815c38f014d5cbe929d9b30815674108",
+      "sha256": "63490b83234a1839c3fd1f79b931d24d5fde81d1ff4bddd2af135ff3ef5a7e51"
+    },
+    {
+      "path": "pdos-next/web/src/components/similar-history-pai.tsx",
+      "change": "modified",
+      "base_sha256": "bcc84ded19e517b4220f29cd1c330091139adb307d7c22ef7f3c456c21383484",
+      "sha256": "0d6d257e2933328da4106c4b1d2ef4afafc6417a4c222e08dea8a0cb8cbd5093"
+    },
+    {
+      "path": "pdos-next/web/src/components/similar-history-title.test.mjs",
+      "change": "added",
+      "base_sha256": null,
+      "sha256": "67bd03d5b1ce373dc4dfa69ee8a6eb66bcacd40d43978d2aa2c461639c085a31"
+    },
+    {
+      "path": "pdos-next/web/src/components/similar-history-title.tsx",
+      "change": "added",
+      "base_sha256": null,
+      "sha256": "7764c734cd3b9d5536fd43410831b096be310a8f284e9c593ff66616c2b16d81"
+    },
+    {
+      "path": "pdos-next/web/src/components/similar-history.test.mjs",
+      "change": "modified",
+      "base_sha256": "d9f11c2639bebdfad80fa95731841182485f21158d07e1b2260d81fca1a67f9f",
+      "sha256": "3653d898416b96f069dcc06067877d65d9165fd6967f6acd0d5c31ef2d8294e8"
+    },
+    {
+      "path": "pdos-next/web/src/components/similar-history.tsx",
+      "change": "modified",
+      "base_sha256": "9a4778fde14f0f0b6371b3928a8567292bf7e93f7bb220d8693760a1c8475df0",
+      "sha256": "a62a46597eee24c9781d205b1d3d73a9f0f06bd99ff4f58bab7ac5c86defcb92"
+    },
+    {
+      "path": "pdos-next/web/src/lib/similar-history-proxy.ts",
+      "change": "modified",
+      "base_sha256": "d94c2201594078a47a48977bbec744fde670839226eb8cb9cf4f3ad6c142990f",
+      "sha256": "f19d094413727ecc50e015418d703e408899a29811a219a66d5ddba2d52a4e56"
+    },
+    {
+      "path": "pdos-next/web/src/lib/similar-history.test.mjs",
+      "change": "modified",
+      "base_sha256": "6d1bcfd7d97424b445c73f7a582e38a792b7692e732f8f03c596dce961bba0db",
+      "sha256": "5320d823139ad9958a81a5b1369aa517fbb715ee9bf4ffb937a4b1099e0cde3f"
+    },
+    {
+      "path": "pdos-next/web/src/lib/similar-history.ts",
+      "change": "modified",
+      "base_sha256": "4ee5983340f8b07da805760e943341c98c621efb776a69634f267c3888a5d50e",
+      "sha256": "82228ab43698a014711ac050581cf9ba6f5bd7b5d590e29673ae3a45cc1ef5c8"
+    }
+  ],
+  "checks": {
+    "node_test_files": 5,
+    "node_cases": 44,
+    "tsc_exit": 0,
+    "eslint_files": 11,
+    "eslint_exit": 0
+  },
+  "database_service_build_model_network": false
+}

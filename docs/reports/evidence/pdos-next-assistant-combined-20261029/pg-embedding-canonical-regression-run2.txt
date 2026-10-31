@@ -1,0 +1,16 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 20 items
+
+tests/enterprise_search/test_embedding_projection_pg.py ..               [ 10%]
+tests/enterprise_search/test_embedding_projection_temporal_pg.py .       [ 15%]
+tests/enterprise_search/test_embedding_controls_pg.py ........           [ 55%]
+tests/enterprise_search/test_embedding_query_pg.py ......                [ 85%]
+tests/enterprise_search/test_embedding_query_temporal_pg.py .            [ 90%]
+tests/enterprise_search/test_embedding_query_boundaries_pg.py ..         [100%]
+
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-embedding-settings-20261029/pg-canonical-regression-run2.xml -
+======================== 20 passed in 92.03s (0:01:32) =========================

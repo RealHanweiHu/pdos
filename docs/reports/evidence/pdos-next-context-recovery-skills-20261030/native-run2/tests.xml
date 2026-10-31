@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="5" time="32.523" timestamp="2026-10-30T02:56:23.101322-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_context_restart_pg" name="test_budget_recovery_creates_fresh_session_preserves_proof_and_latest_human_deletion" time="4.126" /><testcase classname="tests.agent_kernel.test_context_restart_pg" name="test_recovery_is_explicit_owner_only_and_rejects_client_state_or_scope" time="2.234" /><testcase classname="tests.agent_kernel.test_context_restart_pg" name="test_two_restarts_reauthorize_original_candidate_metadata_and_actual_receipt" time="8.250" /><testcase classname="tests.agent_kernel.test_context_restart_pg" name="test_two_restarts_keep_exact_citation_roots_and_current_withdrawal_stops_disclosure" time="12.056" /><testcase classname="tests.agent_kernel.test_context_restart_pg" name="test_unquoted_search_candidate_guards_restored_notes_at_admission_and_before_model" time="4.522"><failure message="pdos_next.errors.DomainError: 模型调用未形成可用结果。&#10;During task with name 'model' and id 'bfa727f1-eb76-7c22-b1ef-d85508d181b3'">tests/agent_kernel/test_context_restart_pg.py:283: in test_unquoted_search_candidate_guards_restored_notes_at_admission_and_before_model
+    _admission_owner, admission, admission_source = unquoted_case("UNQADMIT01")
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_context_restart_pg.py:269: in unquoted_case
+    output = execute(owner, original, host)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_assistant_pg.py:182: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:833: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:325: in model
+    response = (model_step if callable(model_step) else ports.model)(
+pdos_next/agent_kernel/host.py:162: in model_step
+    turn = self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/gateway.py:368: in turn
+    raise DomainError(
+E   pdos_next.errors.DomainError: 模型调用未形成可用结果。
+E   During task with name 'model' and id 'bfa727f1-eb76-7c22-b1ef-d85508d181b3'</failure></testcase></testsuite></testsuites>

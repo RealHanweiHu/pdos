@@ -1,0 +1,230 @@
+- generic [ref=f4e1]:
+  - alert [ref=f4e4]
+  - generic [ref=f4e5]:
+    - link "跳到工作内容" [ref=f4e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f4e7]:
+      - generic [ref=f4e8]:
+        - generic [aria-hidden] [ref=f4e9]: P
+        - generic [ref=f4e10]: PDOS
+        - button "收起侧栏" [ref=f4e11]
+      - button "搜索或跳转" [ref=f4e12] [cursor=pointer]:
+        - generic [ref=f4e16]: ⌘ K
+      - navigation "工作区导航" [ref=f4e17]:
+        - link "我的工作" [ref=f4e19] [cursor=pointer]:
+          - /url: "?area=work&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - link "收件箱" [ref=f4e24] [cursor=pointer]:
+          - /url: "?area=inbox&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - link "小Pai" [ref=f4e29] [cursor=pointer]:
+          - /url: "?area=pai"
+        - link "项目" [ref=f4e34] [cursor=pointer]:
+          - /url: "?area=projects&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - link "项目集" [ref=f4e39] [cursor=pointer]:
+          - /url: "?area=programs&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - link "知识" [ref=f4e44] [cursor=pointer]:
+          - /url: "?area=knowledge&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - generic "最近的在办项目" [ref=f4e48]:
+          - paragraph [ref=f4e49]: 常用项目
+          - link "浏览器本人摘要项目" [ref=f4e50] [cursor=pointer]:
+            - /url: "?area=cockpit&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6&project=f6a3778e-633a-40fb-9618-795303070b97"
+            - generic [aria-hidden] [ref=f4e51]: 浏览
+      - generic [ref=f4e53]:
+        - link "设置" [ref=f4e54] [cursor=pointer]:
+          - /url: "?area=settings&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - generic [ref=f4e58]:
+          - generic [aria-hidden] [ref=f4e59]: S
+          - generic [ref=f4e60]:
+            - paragraph [ref=f4e61]: Synthetic owner
+            - paragraph [ref=f4e62]: 本地合成环境
+    - generic [ref=f4e63]:
+      - banner [ref=f4e64]:
+        - generic [ref=f4e65]:
+          - generic [ref=f4e66]: 工作空间
+          - generic [ref=f4e69]: 设置
+        - generic [ref=f4e70]:
+          - button "切换明暗主题" [ref=f4e71]
+          - button "搜索对象" [ref=f4e73]
+      - main [ref=f4e74]:
+        - region "设置" [ref=f4e75]:
+          - generic [ref=f4e77]:
+            - heading "设置" [level=1] [ref=f4e78]
+            - paragraph [ref=f4e79]: 低频配置集中管理，日常工作保持简洁。
+          - navigation "设置视图" [ref=f4e80]:
+            - button "个人偏好" [ref=f4e81] [cursor=pointer]
+            - button "成员与范围" [ref=f4e82] [cursor=pointer]
+            - button "小Pai与模型" [active] [pressed] [ref=f4e83] [cursor=pointer]
+            - button "集成与治理" [ref=f4e84] [cursor=pointer]
+          - generic [ref=f4e166]:
+            - text: 品类范围
+            - combobox "品类范围" [ref=f4e167]:
+              - option "汽车充气泵" [selected]
+          - generic [ref=f4e168]:
+            - navigation "小Pai设置" [ref=f4e169]:
+              - button "模型配置" [pressed] [ref=f4e170] [cursor=pointer]
+              - button "技能与资格" [ref=f4e171] [cursor=pointer]
+              - button "预算与用量" [ref=f4e172] [cursor=pointer]
+              - button "自动化规则" [ref=f4e173] [cursor=pointer]
+            - generic [ref=f4e175]:
+              - generic [ref=f4e176]:
+                - button "读取当前模型设置" [ref=f4e177]
+                - region "已保存的模型服务商" [ref=f4e178]:
+                  - generic [ref=f4e179]:
+                    - heading "模型服务商" [level=2] [ref=f4e180]
+                    - button "添加服务商" [ref=f4e181]
+                  - list [ref=f4e182]:
+                    - listitem [ref=f4e183]:
+                      - generic [ref=f4e184]:
+                        - paragraph [ref=f4e185]: Browser independent embedding
+                        - paragraph [ref=f4e186]: browser-embedding-model · https://custom.invalid/v1
+                        - paragraph [ref=f4e187]: 已保存 •••• · 已填写计费资料
+                      - button "切换使用" [ref=f4e188]
+                    - listitem [ref=f4e189]:
+                      - generic [ref=f4e190]:
+                        - paragraph [ref=f4e191]: synthetic-model
+                        - paragraph [ref=f4e192]: synthetic-model · https://synthetic.invalid/v1
+                        - paragraph [ref=f4e193]: 服务器已绑定 •••• · 已填写计费资料
+                      - button "切换使用" [ref=f4e194]
+                - region "租户模型配置" [ref=f4e196]:
+                  - generic [ref=f4e197]:
+                    - heading "模型设置" [level=2] [ref=f4e198]
+                    - paragraph [ref=f4e199]: 支持任意提供 OpenAI 兼容 Chat Completions API 的服务商，也保留 Anthropic 原生协议。填写服务商的基础 URL 和模型 ID，密钥由服务端安全绑定。
+                    - paragraph [ref=f4e200]: 配置用于当前租户。保存或启用后，仍须核对用途资格、本次材料授权与预算。
+                  - paragraph [ref=f4e201]: 尚未保存模型配置。
+                  - status [ref=f4e202]: 尚未配置模型
+                  - generic [ref=f4e203]:
+                    - group [ref=f4e204]:
+                      - generic [ref=f4e205]:
+                        - text: 协议
+                        - combobox "协议" [ref=f4e206]:
+                          - option "OpenAI 兼容" [selected]
+                          - option "Anthropic 原生"
+                      - generic [ref=f4e207]:
+                        - text: 服务端点（基础 URL）
+                        - textbox "服务端点（基础 URL）" [ref=f4e208]:
+                          - /placeholder: https://api.example.com/v1
+                      - generic [ref=f4e209]:
+                        - text: 模型 ID
+                        - textbox "模型 ID" [ref=f4e210]
+                      - generic [ref=f4e211]:
+                        - text: 模型版本
+                        - textbox "模型版本" [ref=f4e212]
+                      - generic [ref=f4e213]:
+                        - text: 最大输出 tokens
+                        - spinbutton "最大输出 tokens" [ref=f4e214]: "2048"
+                      - generic [ref=f4e215]:
+                        - text: 上下文窗口（tokens）
+                        - spinbutton "上下文窗口（tokens） 不填时按 32,000 估算" [ref=f4e216]
+                        - text: 不填时按 32,000 估算
+                      - generic [ref=f4e217]:
+                        - text: OpenAI 输出参数
+                        - combobox "OpenAI 输出参数" [ref=f4e218]:
+                          - option "max_completion_tokens" [selected]
+                          - option "max_tokens"
+                      - generic [ref=f4e219]:
+                        - text: OpenAI 响应格式
+                        - combobox "OpenAI 响应格式" [ref=f4e220]:
+                          - option "原有适配（兼容已保存配置）"
+                          - option "工具调用（无需 JSON Schema 扩展）" [selected]
+                          - option "JSON Schema"
+                          - option "JSON 对象"
+                          - option "JSON 文本（无需格式扩展）"
+                      - generic [ref=f4e221]:
+                        - checkbox "接口支持流式响应" [checked] [ref=f4e222]
+                        - text: 接口支持流式响应
+                      - generic [ref=f4e223]:
+                        - text: 超时（秒）
+                        - spinbutton "超时（秒）" [ref=f4e224]: "30"
+                      - generic [ref=f4e225]:
+                        - text: 响应上限（字节）
+                        - spinbutton "响应上限（字节）" [ref=f4e226]: "1048576"
+                      - generic [ref=f4e227]:
+                        - checkbox "启用此配置" [ref=f4e228]
+                        - text: 启用此配置
+                    - paragraph [ref=f4e229]: 密钥由服务端安全绑定，此处仅显示掩码。任何配置或密钥版本变更都需重新核对资格。
+                    - button "核对并预览" [ref=f4e230]
+              - region "独立 Embedding 索引设置" [ref=f4e231]:
+                - generic [ref=f4e232]:
+                  - heading "企业资料 Embedding" [level=2] [ref=f4e233]
+                  - button "读取配置与费用" [ref=f4e234]
+                - paragraph [ref=f4e235]: 独立配置后台语义索引。当前默认使用关键词检索；打开本页只读取设置与记录。
+                - generic [ref=f4e236]:
+                  - heading "当前配置版本" [level=3] [ref=f4e237]
+                  - list [ref=f4e238]:
+                    - listitem [ref=f4e239]:
+                      - generic [ref=f4e240]:
+                        - paragraph [ref=f4e241]: browser-embedding-model · 第 1 版 · 已停用
+                        - paragraph [ref=f4e242]: https://custom.invalid/v1 · 2 维 · 独立凭据已绑定
+                      - button "修改或停用" [ref=f4e243]
+                - generic [ref=f4e244]:
+                  - generic "选择或新增独立 Embedding 连接" [ref=f4e245]:
+                    - generic [ref=f4e246]:
+                      - heading "独立凭据连接" [level=4] [ref=f4e247]
+                      - button "新增独立连接 / 换 Key" [ref=f4e248]
+                    - paragraph [ref=f4e249]: 选择已保存且已核对支持 /embeddings 的 OpenAI 兼容连接，或添加一份独立连接。不会自动沿用当前聊天模型的 Key。要停止后台索引，请取消下方启用并预览确认。
+                    - generic [ref=f4e250]:
+                      - generic [ref=f4e251]:
+                        - text: 已保存连接
+                        - combobox "已保存连接" [ref=f4e252]:
+                          - option "明确选择一份连接" [selected]
+                          - option "Browser independent embedding · browser-embedding-model · 已填计量"
+                      - button "带入配置表单" [disabled]
+                    - button "重新读取已保存连接" [ref=f4e253]
+                  - generic [ref=f4e254]:
+                    - heading "新增独立 Embedding 配置" [level=3] [ref=f4e255]
+                    - group [ref=f4e256]:
+                      - generic [ref=f4e257]:
+                        - text: Embedding 服务端点
+                        - textbox "Embedding 服务端点" [ref=f4e258]:
+                          - /placeholder: https://api.example.com/v1
+                      - generic [ref=f4e259]:
+                        - text: Embedding 模型 ID
+                        - textbox "Embedding 模型 ID" [ref=f4e260]
+                      - generic [ref=f4e261]:
+                        - text: 模型版本
+                        - textbox "模型版本" [ref=f4e262]
+                      - generic [ref=f4e263]:
+                        - text: 向量维度
+                        - spinbutton "向量维度" [ref=f4e264]
+                      - generic [ref=f4e265]:
+                        - text: 独立凭据连接 ID
+                        - textbox "独立凭据连接 ID 填写服务器登记的公开连接 ID；独立凭据由服务器安全绑定，聊天连接不会自动复用。" [ref=f4e266]:
+                          - /placeholder: 已登记的独立 Embedding 连接 ID
+                        - text: 填写服务器登记的公开连接 ID；独立凭据由服务器安全绑定，聊天连接不会自动复用。
+                      - generic [ref=f4e267]:
+                        - text: 租户索引预算（USD）
+                        - textbox "租户索引预算（USD） 跨品类共用，包含已发生和保守占账费用。" [ref=f4e268]: "1"
+                        - text: 跨品类共用，包含已发生和保守占账费用。
+                      - generic [ref=f4e269]:
+                        - paragraph [ref=f4e270]: 允许后台索引的数据类别
+                        - generic [ref=f4e271]:
+                          - checkbox "公开资料" [ref=f4e272]
+                          - text: 公开资料
+                        - generic [ref=f4e273]:
+                          - checkbox "合成资料" [ref=f4e274]
+                          - text: 合成资料
+                        - generic [ref=f4e275]:
+                          - checkbox "内部资料" [checked] [ref=f4e276]
+                          - text: 内部资料
+                        - generic [ref=f4e277]:
+                          - checkbox "客户资料" [ref=f4e278]
+                          - text: 客户资料
+                      - generic [ref=f4e279]:
+                        - checkbox "另行包含客户原件 确认启用后，可读且符合出站类别限制的客户原件会发送给此 Embedding 服务商。" [ref=f4e280]
+                        - generic [ref=f4e281]:
+                          - text: 另行包含客户原件
+                          - generic [ref=f4e282]: 确认启用后，可读且符合出站类别限制的客户原件会发送给此 Embedding 服务商。
+                      - generic [ref=f4e283]:
+                        - checkbox "启用后台 Embedding 索引 保存停用配置不会出站。启用须在下一步核对服务商、数据类别、预计来源与费用，再一次确认。" [ref=f4e284]
+                        - generic [ref=f4e285]:
+                          - text: 启用后台 Embedding 索引
+                          - generic [ref=f4e286]: 保存停用配置不会出站。启用须在下一步核对服务商、数据类别、预计来源与费用，再一次确认。
+                    - button "核对配置并预览" [ref=f4e287]
+                - generic [ref=f4e288]:
+                  - generic [ref=f4e289]:
+                    - heading "索引预算与批次" [level=3] [ref=f4e290]
+                    - paragraph [ref=f4e291]: 租户索引预算：1 USD · 已计费 0 · 占用 0 · 第 1 版
+                    - paragraph [ref=f4e292]: 批次与调用记录显示当前品类；预算在租户内累计。
+                    - paragraph [ref=f4e293]: 当前品类尚无后台索引批次。
+                  - group [ref=f4e294]:
+                    - generic "查看后台调用与费用记录（0 条已读取）" [ref=f4e295] [cursor=pointer]
+    - button "打开小Pai工作栏" [ref=f4e162] [cursor=pointer]

@@ -1,0 +1,11 @@
+{
+  "files": 266,
+  "unmodified_backup_and_existing_test_style_errors_excluded": [
+    "pdos-next/server/pdos_next/agent_kernel/work_products 2.py",
+    "pdos-next/server/tests/agent_kernel/test_execution_binding.py",
+    "pdos-next/server/tests/agent_kernel/test_start_input.py",
+    "pdos-next/server/tests/test_scoped_dispatch.py"
+  ],
+  "work_products_format_ast_unchanged": true,
+  "exit": 0
+}

@@ -1,0 +1,69 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0833",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/similar-history-53502-before-0833.dump",
+  "backup_bytes": 85244079,
+  "operations": [
+    {
+      "operation": "upgrade",
+      "target": "s0_0833",
+      "exit": 0,
+      "existing_counts_unchanged": true
+    },
+    {
+      "operation": "downgrade",
+      "target": "s0_0832",
+      "exit": 0,
+      "existing_counts_unchanged": true
+    },
+    {
+      "operation": "upgrade",
+      "target": "s0_0833",
+      "exit": 0,
+      "existing_counts_unchanged": true
+    }
+  ],
+  "compared_tables": [
+    "action_receipts",
+    "agent_runs",
+    "artifact_versions",
+    "category_knowledge_entries",
+    "enterprise_search_chunks",
+    "enterprise_search_corpus",
+    "enterprise_search_terms",
+    "personal_preferences"
+  ],
+  "columns_match_orm": true,
+  "owner": "pdos_next_owner",
+  "rls": true,
+  "force_rls": true,
+  "privileges": {
+    "pdos_next_app": {
+      "SELECT": true,
+      "INSERT": true,
+      "UPDATE": false,
+      "DELETE": false
+    },
+    "pdos_agent": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false
+    },
+    "pdos_next_auth": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false
+    },
+    "pdos_next_dispatch": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false
+    }
+  },
+  "env_fallback": false,
+  "new_database": false
+}

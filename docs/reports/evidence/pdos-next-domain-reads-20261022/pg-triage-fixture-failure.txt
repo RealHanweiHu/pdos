@@ -1,0 +1,127 @@
+F....                                                                    [100%]
+=================================== FAILURES ===================================
+____ test_five_registered_reads_current_pointers_replay_and_revoked_access _____
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': '72d842b5-263a-43e1-ae80-6c2eb1f51d32', 'project': ...66-8f58-6300a5418a1a'}}}, policy_issuer=<pdos_next.domain.quality_execution.policy.PolicyIssuer object at 0x124e1fe20>)
+
+    def test_five_registered_reads_current_pointers_replay_and_revoked_access(quality_work):
+        work = quality_work
+        first, _ = create_issue(work)
+        before = counts(work)
+        issue_id = first["result"]["issue_id"]
+        readers = {}
+        for tool, arguments in {
+            "build.read": {"build_id": work.build_id},
+            "build.lot.read": {"build_id": work.build_id},
+            "build.sample.read": {"build_id": work.build_id, "page_size": 1},
+            "quality.issue.read": {"issue_id": issue_id},
+            "test.run.read": {"test_run_id": str(work.failure_run.id)},
+        }.items():
+            f = readers[tool] = reader(work, tool, arguments)
+            value = f.invoke()
+            assert value["items"], tool
+            assert value["project_id"] == work.config["project"]
+            assert value["basis_status"] == "not_assessed"
+            assert f.invoke() == value
+            assert all("revision" in item and "record_status" in item for item in value["items"])
+            with f.store.transaction(f.scope) as (s, _):
+                call = s.get(AgentToolCall, UUID(value["execution_ref"]["call_id"]))
+                assert call.state == "completed" and call.tool == tool
+                assert call.execution_binding["data_categories"] == ["internal"]
+                decision = egress(s, f.scope, "synthetic-structural-provider")
+                assert decision.data_categories == ("internal",) and decision.agreement_id is None
+        assert counts(work) == before
+        sample = readers["build.sample.read"].invoke()
+        assert sample["has_more"] and sample["next_cursor"]
+        f = reader(
+            work,
+            "build.sample.read",
+            {
+                "build_id": work.build_id,
+                "page_size": 1,
+                "cursor": sample["next_cursor"],
+            },
+        )
+        second = f.invoke()
+        assert second["items"][0]["id"] != sample["items"][0]["id"] and not second["has_more"]
+        assert "availability" not in second["items"][0]
+    
+        run = readers["test.run.read"].invoke()["items"][0]
+        assert run["id"] == str(work.failure_run.id) and run["revision"] == work.failure_run.revision
+        assert run["version_id"] == str(work.failure_run_version_id)
+        # Prove the ORM port selects no unbounded source/snapshot body.
+        statements = []
+    
+        def capture(_c, _cursor, sql, _params, _context, _many):
+            if sql.startswith("SELECT quality_issue_versions."):
+                statements.append(sql)
+    
+        event.listen(work.setup.engine, "before_cursor_execute", capture)
+        try:
+            readers["quality.issue.read"].invoke()
+        finally:
+            event.remove(work.setup.engine, "before_cursor_execute", capture)
+        assert statements and all("issue_snapshot" not in sql for sql in statements)
+    
+        # The current Issue advances; an old settled read cannot replay an old revision.
+>       triage(work, first)
+
+tests/agent_kernel/test_project_object_reads_pg.py:178: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/quality_execution/fixtures.py:294: in triage
+    value = command(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = namespace(setup=<isolated synthetic test scope>, config={'source': '72d842b5-263a-43e1-ae80-6c2eb1f51d32', 'project': ...66-8f58-6300a5418a1a'}}}, policy_issuer=<pdos_next.domain.quality_execution.policy.PolicyIssuer object at 0x124e1fe20>)
+operation = 'quality.issue.triage'
+payload = {'issue_id': 'd637b54f-97c9-5feb-b896-53e4d9835fd7', 'expected_issue_revision': 1, 'reason': 'Synthetic named triage, no root-cause decision'}
+
+    def command(work, operation, payload):
+        value = cmd(work.quality, operation, deepcopy(payload))
+        response = work.quality.client.post(
+            f"/v1/categories/{work.setup.category}/products/{work.setup.product}/quality-execution/inputs",
+            headers=work.quality.headers,
+            json=value,
+        )
+>       assert response.status_code == 200, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"code":"INTERNAL_ERROR","message":"当前完整风险政策发布接口待接入。","detail":{"reason":"INTEGRATION_REQUIRED"}}
+
+tests/quality_execution/fixtures.py:220: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[customer_request]
+tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[new_product]
+tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[derivative]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:715: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_project_object_reads_pg.py: 3 warnings
+tests/agent_kernel/test_context_projection_entries.py: 24 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:600: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:880: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:935: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+1 failed, 4 passed, 36 warnings in 107.60s (0:01:47)

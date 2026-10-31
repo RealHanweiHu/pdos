@@ -1,0 +1,8 @@
+{
+  "path": "pdos_next/agent_kernel/persistence.py",
+  "before_sha256": "a069049e04dfb31942a40ce85cf8cd1f4bee1af17ece87c6572a1d9300246e0d",
+  "after_sha256": "e5a416dee7149090a072fbc7b7ff0f737773ba1e65903fc639debc727c27b27a",
+  "ast_identical": true,
+  "ast_sha256": "b4cd1edbf98d454e235fcf54c3f08263c01e63ae0989bf56d1ddeb64145e68c2",
+  "change": "wrap one DomainError line to meet existing lint limit"
+}

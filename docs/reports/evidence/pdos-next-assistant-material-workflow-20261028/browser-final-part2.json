@@ -1,0 +1,117 @@
+[
+  {
+    "command": [
+      "eval",
+      "() => ({width:innerWidth,documentWidth:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains(\"dark\"),regions:[...document.querySelectorAll(\"[role=region][tabindex]\")].map(el=>({width:el.clientWidth,scrollWidth:el.scrollWidth,scrollLeft:el.scrollLeft,tabIndex:el.tabIndex,border:getComputedStyle(el).borderColor})),focused:document.activeElement?.getAttribute(\"aria-label\")})"
+    ],
+    "exit": 0,
+    "output": "### Result\n{\n  \"width\": 390,\n  \"documentWidth\": 390,\n  \"dark\": true,\n  \"regions\": [\n    {\n      \"width\": 356,\n      \"scrollWidth\": 640,\n      \"scrollLeft\": 0,\n      \"tabIndex\": 0,\n      \"border\": \"rgb(43, 45, 52)\"\n    },\n    {\n      \"width\": 356,\n      \"scrollWidth\": 640,\n      \"scrollLeft\": 0,\n      \"tabIndex\": 0,\n      \"border\": \"rgb(43, 45, 52)\"\n    }\n  ],\n  \"focused\": null\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({width:innerWidth,documentWidth:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains(\"dark\"),regions:[...document.querySelectorAll(\"[role=region][tabindex]\")].map(el=>({width:el.clientWidth,scrollWidth:el.scrollWidth,scrollLeft:el.scrollLeft,tabIndex:el.tabIndex,border:getComputedStyle(el).borderColor})),focused:document.activeElement?.getAttribute(\"aria-label\")})');\n```\n"
+  },
+  {
+    "command": [
+      "click",
+      "f2e7"
+    ],
+    "exit": 0,
+    "output": "### Ran Playwright code\n```js\nawait page.getByRole('button', { name: '切换明暗' }).click();\n```\n### Page\n- Page URL: http://127.0.0.1:57948/\n- Page Title: 固定资料比较 · 合成组件检查\n### Snapshot\n- [Snapshot](.playwright-cli/page-2026-10-29T00-11-13-509Z.yml)\n"
+  },
+  {
+    "command": [
+      "screenshot",
+      "--filename=mobile-light.png",
+      "--full-page"
+    ],
+    "exit": 0,
+    "output": "### Result\n- [Screenshot of full page](./mobile-light.png)\n### Ran Playwright code\n```js\n// Screenshot full page and save it as ./mobile-light.png\nawait page.screenshot({\n  fullPage: true,\n  path: './mobile-light.png',\n  scale: 'css',\n  type: 'png'\n});\n```\n"
+  },
+  {
+    "command": [
+      "eval",
+      "() => ({width:innerWidth,documentWidth:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains(\"dark\"),regions:[...document.querySelectorAll(\"[role=region][tabindex]\")].map(el=>({width:el.clientWidth,scrollWidth:el.scrollWidth,scrollLeft:el.scrollLeft,tabIndex:el.tabIndex,border:getComputedStyle(el).borderColor})),focused:document.activeElement?.getAttribute(\"aria-label\")})"
+    ],
+    "exit": 0,
+    "output": "### Result\n{\n  \"width\": 390,\n  \"documentWidth\": 390,\n  \"dark\": false,\n  \"regions\": [\n    {\n      \"width\": 356,\n      \"scrollWidth\": 640,\n      \"scrollLeft\": 0,\n      \"tabIndex\": 0,\n      \"border\": \"rgb(230, 230, 233)\"\n    },\n    {\n      \"width\": 356,\n      \"scrollWidth\": 640,\n      \"scrollLeft\": 0,\n      \"tabIndex\": 0,\n      \"border\": \"rgb(230, 230, 233)\"\n    }\n  ],\n  \"focused\": null\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({width:innerWidth,documentWidth:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains(\"dark\"),regions:[...document.querySelectorAll(\"[role=region][tabindex]\")].map(el=>({width:el.clientWidth,scrollWidth:el.scrollWidth,scrollLeft:el.scrollLeft,tabIndex:el.tabIndex,border:getComputedStyle(el).borderColor})),focused:document.activeElement?.getAttribute(\"aria-label\")})');\n```\n"
+  },
+  {
+    "command": [
+      "click",
+      "f2e7"
+    ],
+    "exit": 0,
+    "output": "### Ran Playwright code\n```js\nawait page.getByRole('button', { name: '切换明暗' }).click();\n```\n### Page\n- Page URL: http://127.0.0.1:57948/\n- Page Title: 固定资料比较 · 合成组件检查\n### Snapshot\n- [Snapshot](.playwright-cli/page-2026-10-29T00-11-16-307Z.yml)\n"
+  },
+  {
+    "command": [
+      "resize",
+      "320",
+      "720"
+    ],
+    "exit": 0,
+    "output": "### Ran Playwright code\n```js\nawait page.setViewportSize({ width: 320, height: 720 });\n```\n"
+  },
+  {
+    "command": [
+      "press",
+      "Tab"
+    ],
+    "exit": 0,
+    "output": "### Ran Playwright code\n```js\n// Press Tab\nawait page.keyboard.press('Tab');\n```\n"
+  },
+  {
+    "command": [
+      "press",
+      "ArrowRight"
+    ],
+    "exit": 0,
+    "output": "### Ran Playwright code\n```js\n// Press ArrowRight\nawait page.keyboard.press('ArrowRight');\n```\n"
+  },
+  {
+    "command": [
+      "press",
+      "ArrowRight"
+    ],
+    "exit": 0,
+    "output": "### Ran Playwright code\n```js\n// Press ArrowRight\nawait page.keyboard.press('ArrowRight');\n```\n"
+  },
+  {
+    "command": [
+      "eval",
+      "() => ({width:innerWidth,documentWidth:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains(\"dark\"),regions:[...document.querySelectorAll(\"[role=region][tabindex]\")].map(el=>({width:el.clientWidth,scrollWidth:el.scrollWidth,scrollLeft:el.scrollLeft,tabIndex:el.tabIndex,border:getComputedStyle(el).borderColor})),focused:document.activeElement?.getAttribute(\"aria-label\")})"
+    ],
+    "exit": 0,
+    "output": "### Result\n{\n  \"width\": 320,\n  \"documentWidth\": 320,\n  \"dark\": true,\n  \"regions\": [\n    {\n      \"width\": 286,\n      \"scrollWidth\": 640,\n      \"scrollLeft\": 80,\n      \"tabIndex\": 0,\n      \"border\": \"rgb(43, 45, 52)\"\n    },\n    {\n      \"width\": 286,\n      \"scrollWidth\": 640,\n      \"scrollLeft\": 0,\n      \"tabIndex\": 0,\n      \"border\": \"rgb(43, 45, 52)\"\n    }\n  ],\n  \"focused\": \"差异表，可横向滚动\"\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({width:innerWidth,documentWidth:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains(\"dark\"),regions:[...document.querySelectorAll(\"[role=region][tabindex]\")].map(el=>({width:el.clientWidth,scrollWidth:el.scrollWidth,scrollLeft:el.scrollLeft,tabIndex:el.tabIndex,border:getComputedStyle(el).borderColor})),focused:document.activeElement?.getAttribute(\"aria-label\")})');\n```\n"
+  },
+  {
+    "command": [
+      "screenshot",
+      "--filename=narrow-dark.png",
+      "--full-page"
+    ],
+    "exit": 0,
+    "output": "### Result\n- [Screenshot of full page](./narrow-dark.png)\n### Ran Playwright code\n```js\n// Screenshot full page and save it as ./narrow-dark.png\nawait page.screenshot({\n  fullPage: true,\n  path: './narrow-dark.png',\n  scale: 'css',\n  type: 'png'\n});\n```\n"
+  },
+  {
+    "command": [
+      "resize",
+      "1280",
+      "900"
+    ],
+    "exit": 0,
+    "output": "### Ran Playwright code\n```js\nawait page.setViewportSize({ width: 1280, height: 900 });\n```\n"
+  },
+  {
+    "command": [
+      "eval",
+      "() => ({width:innerWidth,documentWidth:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains(\"dark\"),regions:[...document.querySelectorAll(\"[role=region][tabindex]\")].map(el=>({width:el.clientWidth,scrollWidth:el.scrollWidth,scrollLeft:el.scrollLeft,tabIndex:el.tabIndex,border:getComputedStyle(el).borderColor})),focused:document.activeElement?.getAttribute(\"aria-label\")})"
+    ],
+    "exit": 0,
+    "output": "### Result\n{\n  \"width\": 1280,\n  \"documentWidth\": 1280,\n  \"dark\": true,\n  \"regions\": [\n    {\n      \"width\": 1090,\n      \"scrollWidth\": 1090,\n      \"scrollLeft\": 0,\n      \"tabIndex\": 0,\n      \"border\": \"rgb(43, 45, 52)\"\n    },\n    {\n      \"width\": 1090,\n      \"scrollWidth\": 1090,\n      \"scrollLeft\": 0,\n      \"tabIndex\": 0,\n      \"border\": \"rgb(43, 45, 52)\"\n    }\n  ],\n  \"focused\": \"差异表，可横向滚动\"\n}\n### Ran Playwright code\n```js\nawait page.evaluate('() => ({width:innerWidth,documentWidth:document.documentElement.scrollWidth,dark:document.documentElement.classList.contains(\"dark\"),regions:[...document.querySelectorAll(\"[role=region][tabindex]\")].map(el=>({width:el.clientWidth,scrollWidth:el.scrollWidth,scrollLeft:el.scrollLeft,tabIndex:el.tabIndex,border:getComputedStyle(el).borderColor})),focused:document.activeElement?.getAttribute(\"aria-label\")})');\n```\n"
+  },
+  {
+    "command": [
+      "console"
+    ],
+    "exit": 0,
+    "output": "### Result\nTotal messages: 0 (Errors: 0, Warnings: 0)\n\n"
+  }
+]

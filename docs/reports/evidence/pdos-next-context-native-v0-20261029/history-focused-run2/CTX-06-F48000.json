@@ -1,0 +1,229 @@
+{
+  "version": "context-native-observation/v1",
+  "case_id": "CTX-06",
+  "f_budget_tokens": 48000,
+  "native_binding_status": "bound",
+  "status": "native_control_checks_passed",
+  "scripted_provider": true,
+  "real_model_calls": 0,
+  "provider_dispatches": 6,
+  "context_budget": [
+    {
+      "focus": 48000,
+      "window": 54048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 0,
+        "envelope": 610
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 31104,
+      "fixed_over_half": true,
+      "admission_tokens": 35770,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 48000,
+      "window": 54048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 1191,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 0,
+        "envelope": 610
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 32295,
+      "fixed_over_half": true,
+      "admission_tokens": 37140,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 48000,
+      "window": 54048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 1975,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 0,
+        "envelope": 610
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 33079,
+      "fixed_over_half": true,
+      "admission_tokens": 38041,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 48000,
+      "window": 54048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 596,
+        "envelope": 845
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 31935,
+      "fixed_over_half": true,
+      "admission_tokens": 36726,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 48000,
+      "window": 54048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 1191,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 596,
+        "envelope": 845
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 33126,
+      "fixed_over_half": true,
+      "admission_tokens": 38095,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 48000,
+      "window": 54048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 1975,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 596,
+        "envelope": 845
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 33910,
+      "fixed_over_half": true,
+      "admission_tokens": 38997,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    }
+  ],
+  "bindings": {
+    "source_family": "knowledge",
+    "history_source": {
+      "source_type": "knowledge",
+      "source_id": "31d9b233-a50d-4f4c-8459-d5318ee1f168",
+      "lineage_id": "f2cd6d02-6aa9-41f9-b36f-7fb337bc39d5",
+      "version": 1,
+      "artifact_id": "287588a7-e13f-4fa5-8b8e-fc4fd435481b",
+      "artifact_revision": 1,
+      "receipt_id": "ca4faa3f-4ac1-4514-908c-e6dd006b9e4b",
+      "definition": "EVALCTX06扭矩；三月工艺0.6 N·m。"
+    },
+    "current_source": {
+      "source_type": "knowledge",
+      "source_id": "effa4d03-f493-46eb-9cc0-ea60ac09a0db",
+      "lineage_id": "f2cd6d02-6aa9-41f9-b36f-7fb337bc39d5",
+      "version": 3,
+      "artifact_id": "4278be67-6d28-4689-9696-1e249dd7110d",
+      "artifact_revision": 1,
+      "receipt_id": "33dfb88b-c904-4d0c-8b69-d2bffd0463f8",
+      "definition": "EVALCTX06扭矩；九月现行工艺0.8 N·m。"
+    },
+    "excluded_citation_id": "ef1beb30-02a6-598e-a57b-576be2be9b38",
+    "exclusion_revision": 2,
+    "removed_revision": 3,
+    "private_negative_source_id": "beaf4523-6a1a-4728-a27f-4752acec42d8",
+    "private_read_requests": 0,
+    "final_run_id": "7e16d1f2-6ebd-40dd-8430-b4fca726128f"
+  },
+  "model_quality_score": null,
+  "not_scored": [
+    "answer_correctness",
+    "citation_semantics",
+    "real_usage_latency_cost"
+  ],
+  "binding_limitations": [],
+  "usage_basis": "unmeasured_scripted_zero_only"
+}

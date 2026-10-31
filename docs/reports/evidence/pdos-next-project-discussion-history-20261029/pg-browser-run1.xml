@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="26.688" timestamp="2026-10-29T09:25:09.423224-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="browser_fixture" name="test_browser_project_discussions[setup0]" time="23.253"><failure message="assert 0 == 1&#10; +  where 0 = len([])">setup = &lt;isolated synthetic test scope&gt;
+
+    @pytest.mark.parametrize("setup", [{"test_authorization_hours": 4}], indirect=True)
+    def test_browser_project_discussions(setup):  # noqa: F811 -- actual pytest fixture injection
+        """Root only; nothing runs until this exact native test is explicitly executed."""
+        folder = private_folder(os.environ["PDOS_BROWSER_DIR"])
+&gt;       ready = prepare_case(setup, local_web(os.environ["PDOS_BROWSER_WEB_URL"]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/pdos-project-discussion-browser-20261029/browser_fixture.py:319: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/pdos-project-discussion-browser-20261029/browser_fixture.py:208: in prepare_case
+    "ports": no_dispatch_ports(person.client.app),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+app = &lt;fastapi.applications.FastAPI object at 0x138f30800&gt;
+
+    def no_dispatch_ports(app):
+        """Inspect the original app's native API closures; do not replace its ports."""
+        targets = [route for route in app.routes
+                   if getattr(route, "path", None) == "/v1/categories/{category_id}/agent-runs"
+                   and "POST" in (getattr(route, "methods", None) or ())]
+&gt;       assert len(targets) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+/tmp/pdos-project-discussion-browser-20261029/browser_fixture.py:122: AssertionError</failure></testcase></testsuite></testsuites>

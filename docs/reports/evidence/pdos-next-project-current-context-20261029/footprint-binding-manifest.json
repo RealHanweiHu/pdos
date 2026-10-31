@@ -1,0 +1,58 @@
+{
+  "format_version": 1,
+  "frozen": true,
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/persistence.py",
+      "operation": "modified",
+      "old_sha256": "d262bfc4f298c31808267b5576c6121e1238cae52f46f16dd9bd16b5b7236ce1",
+      "new_sha256": "20004e2fabeb3fe381f230aacd70f471c63b08841c97f8dedc5f140caa5bb5b7",
+      "base_path": "/tmp/pdos-project-footprint-binding-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/persistence.py",
+      "staged_path": "/tmp/pdos-project-footprint-binding-stage-20261029/pdos-next/server/pdos_next/agent_kernel/persistence.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/project_current_context.py",
+      "operation": "modified",
+      "old_sha256": "666719317124b47804d1f64f9193a14fd34cb53b8322a57d63c05d67ab3dd0e4",
+      "new_sha256": "e48a6685f6742d0279a2c5ac53f09d1ce583938b08f0e5902fe8ef8a5fe60de3",
+      "base_path": "/tmp/pdos-project-footprint-binding-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/project_current_context.py",
+      "staged_path": "/tmp/pdos-project-footprint-binding-stage-20261029/pdos-next/server/pdos_next/agent_kernel/project_current_context.py"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_project_current_context.py",
+      "operation": "modified",
+      "old_sha256": "b05bef2865ef4504cdc006864ee40035d92b7e1989d4457028394f387312825c",
+      "new_sha256": "a62f10ed3d30ea24d816cd9f923d8d7d712314fadc611503380ab3598a155b47",
+      "base_path": "/tmp/pdos-project-footprint-binding-stage-20261029/base/pdos-next/server/tests/agent_kernel/test_project_current_context.py",
+      "staged_path": "/tmp/pdos-project-footprint-binding-stage-20261029/pdos-next/server/tests/agent_kernel/test_project_current_context.py"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_project_current_context_pg.py",
+      "operation": "modified",
+      "old_sha256": "9a3544b32d0d333816ce93d7e0e4ac86c91aa7c3d7a751d9d172ec99ab28d1a0",
+      "new_sha256": "297150f2591823541783d1546913e17ecacdb3bf4bec0a1332f57be4834e21ea",
+      "base_path": "/tmp/pdos-project-footprint-binding-stage-20261029/base/pdos-next/server/tests/agent_kernel/test_project_current_context_pg.py",
+      "staged_path": "/tmp/pdos-project-footprint-binding-stage-20261029/pdos-next/server/tests/agent_kernel/test_project_current_context_pg.py"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_project_current_context_temporal_pg.py",
+      "operation": "modified",
+      "old_sha256": "ebb466db95f86e55494ccc898c4ef270523c830151e6a926092733dd2512a992",
+      "new_sha256": "d2f9add96beecef5c0dae4d9b4d4296e25f93f8211c26a18322c01a0aa5ef281",
+      "base_path": "/tmp/pdos-project-footprint-binding-stage-20261029/base/pdos-next/server/tests/agent_kernel/test_project_current_context_temporal_pg.py",
+      "staged_path": "/tmp/pdos-project-footprint-binding-stage-20261029/pdos-next/server/tests/agent_kernel/test_project_current_context_temporal_pg.py"
+    }
+  ],
+  "patch_path": "/tmp/pdos-project-footprint-binding-stage-20261029/project-footprint-binding.patch",
+  "patch_sha256": "0eb9bc6aeb51d291808dfacdb1537664d3e0232b7d281d6a0c8b7387e3c63a05",
+  "apply_only_listed_files": true,
+  "live_root": "/Users/huhanwei/Desktop/ai-native-R&D-platform",
+  "validation": {
+    "pure": "24 passed",
+    "ruff": "5 files passed",
+    "pg_temporal": "5 collected, not executed",
+    "no_live_db_network_build_git": true
+  },
+  "deployment_dependency": "separate lifecycle SQL candidate must retain native source_proof edges before runtime separation is deployed; no migration number assigned here",
+  "preserves": "current live B/D/CTA files; only these exact five narrow deltas"
+}

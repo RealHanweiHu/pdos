@@ -1,0 +1,88 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_category_candidate_matches_actual_skill_disclosure_not_unloaded_write_tools[False] _
+
+ledger = namespace(s=<test_category_candidate.MemorySession object at 0x12037cb00>, run=namespace(tenant_id=UUID('efe6bb05-478a...isolation': 'main'}), intent='agent:d5a9beef-2b39-4236-974c-bee136ed4e4a:model:d7abd4bd-1710-4802-b3a1-4a49381a6c4f:0')
+whole_registry = False
+
+    @pytest.mark.parametrize('whole_registry', [False, True])
+    def test_category_candidate_matches_actual_skill_disclosure_not_unloaded_write_tools(
+        ledger, whole_registry
+    ):
+        from pdos_next.agent_kernel.disclosure import binding_operations, disclosure
+    
+        f = ledger
+        f.owner.registry.add(ToolSpec('proposal.create', 'Unloaded write', {}, {}, 'write', 'T1'))
+        binding = ModelBinding.model_validate(f.model.execution_binding)
+        actual = disclosure(
+            f.owner.registry, 'main', binding_operations(f.owner.catalog, binding.loaded_skills)
+        )
+        assert not any(item['name'] == 'proposal.create' for item in actual)
+        fingerprint = digest(f.owner.registry.definitions() if whole_registry else actual)
+        f.model.execution_binding = binding.model_copy(update={
+            'tool_definitions_digest': fingerprint,
+        }).model_dump(mode='json')
+        f.run.versions['tool_definitions']['main'] = fingerprint
+        if whole_registry:
+            with pytest.raises(DomainError):
+                prepare(f)
+        else:
+>           result = prepare(f)
+                     ^^^^^^^^^^
+
+pdos-next/server/tests/agent_kernel/test_category_candidate.py:529: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos-next/server/tests/agent_kernel/test_category_candidate.py:171: in prepare
+    return candidate.prepare(f.s, f.scope, f.spec, f.args, f.intent, f.owner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos-next/server/pdos_next/agent_kernel/category_candidate.py:257: in prepare
+    value = _source(session, run, bootstrap, source, binding, arguments, intent_key, spec=spec)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos-next/server/pdos_next/agent_kernel/category_candidate.py:141: in _source
+    _deny()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'category_candidate_source_invalid'
+
+    def _deny(reason="category_candidate_source_invalid"):
+        error = DomainError(
+            "SOURCE_UNAVAILABLE", "新品类候选须来自当前授权的实际个人运行和可核对来源。",
+        )
+        error.detail["reason"] = reason
+>       raise error
+E       pdos_next.errors.DomainError: 新品类候选须来自当前授权的实际个人运行和可核对来源。
+
+pdos-next/server/pdos_next/agent_kernel/category_candidate.py:67: DomainError
+_ test_category_candidate_matches_actual_skill_disclosure_not_unloaded_write_tools[True] _
+
+ledger = namespace(s=<test_category_candidate.MemorySession object at 0x1203f7620>, run=namespace(tenant_id=UUID('33ae220e-502f...isolation': 'main'}), intent='agent:5116c738-c51c-4f97-b77f-f49f5ba3d088:model:4c83d2f4-a686-412f-aa5a-a9089ebd1437:0')
+whole_registry = True
+
+    @pytest.mark.parametrize('whole_registry', [False, True])
+    def test_category_candidate_matches_actual_skill_disclosure_not_unloaded_write_tools(
+        ledger, whole_registry
+    ):
+        from pdos_next.agent_kernel.disclosure import binding_operations, disclosure
+    
+        f = ledger
+        f.owner.registry.add(ToolSpec('proposal.create', 'Unloaded write', {}, {}, 'write', 'T1'))
+        binding = ModelBinding.model_validate(f.model.execution_binding)
+        actual = disclosure(
+            f.owner.registry, 'main', binding_operations(f.owner.catalog, binding.loaded_skills)
+        )
+        assert not any(item['name'] == 'proposal.create' for item in actual)
+        fingerprint = digest(f.owner.registry.definitions() if whole_registry else actual)
+        f.model.execution_binding = binding.model_copy(update={
+            'tool_definitions_digest': fingerprint,
+        }).model_dump(mode='json')
+        f.run.versions['tool_definitions']['main'] = fingerprint
+        if whole_registry:
+>           with pytest.raises(DomainError):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           Failed: DID NOT RAISE DomainError
+
+pdos-next/server/tests/agent_kernel/test_category_candidate.py:526: Failed
+=========================== short test summary info ============================
+FAILED pdos-next/server/tests/agent_kernel/test_category_candidate.py::test_category_candidate_matches_actual_skill_disclosure_not_unloaded_write_tools[False]
+FAILED pdos-next/server/tests/agent_kernel/test_category_candidate.py::test_category_candidate_matches_actual_skill_disclosure_not_unloaded_write_tools[True]
+2 failed, 91 deselected in 4.00s

@@ -1,0 +1,83 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目" [active]:
+      - /url: "?area=projects"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge"
+      - generic: 知识
+    - paragraph: 产品管理
+    - link "品类":
+      - /url: "?area=category"
+      - generic: 品类
+    - link "立项提案":
+      - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&focus=proposals"
+      - generic: 立项提案
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - generic: 项目
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - heading "项目" [level=1]
+  - paragraph: 查看阶段、负责人和下一门禁。
+  - button "从提案开始":
+    - text: 从提案开始
+  - group "项目视图":
+    - button "列表" [pressed]
+    - button "看板"
+    - button "时间轴"
+  - table:
+    - rowgroup:
+      - row "项目 阶段 健康度 负责人 下一门禁 承诺 / 预测":
+        - columnheader "项目"
+        - columnheader "阶段"
+        - columnheader "健康度"
+        - columnheader "负责人"
+        - columnheader "下一门禁"
+        - columnheader "承诺 / 预测"
+    - rowgroup:
+      - row "Approved revision fixture 设计 待核对 Synthetic owner 设计出口 承诺未知 / 未知":
+        - cell "Approved revision fixture":
+          - button "Approved revision fixture":
+            - text: Approved revision fixture
+        - cell "设计"
+        - cell "待核对"
+        - cell "Synthetic owner"
+        - cell "设计出口"
+        - cell "承诺未知 / 未知"
+  - paragraph: 阶段表示所在位置。看板用于查看；推进阶段需进入门禁评审。
+- button "打开小Pai工作栏":

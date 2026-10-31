@@ -1,0 +1,18 @@
+✔ initial failure is an error; explicit refresh hides old content before response; empty success stays distinct (13.076708ms)
+✔ actual actor/requester, version, receipt and unknown occurrence remain separate; no fake run link (2.249459ms)
+✔ more failure preserves old page and retries exact cursor; successful page merges once (8.229292ms)
+✔ duplicate receipt or event and cursor/watermark mismatch never silently append (11.672833ms)
+✔ 403 while paging removes every private activity and cursor (1.544333ms)
+✔ scope/principal/readVersion changes isolate late results and hide prior data (12.082459ms)
+✔ transport replacement cannot expose old response and never writes storage (1.580458ms)
+✔ mixed feed distinguishes private run event sequence and bound identity from domain receipt (2.658333ms)
+✔ project discussion entry opens the existing Run via its read callback without any write (2.255416ms)
+✔ null run receipts merge across pages while duplicate actual event fails and retries same cursor (6.276166ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 395.831209

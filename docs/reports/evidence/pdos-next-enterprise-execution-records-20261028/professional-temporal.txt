@@ -1,0 +1,146 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_professional_record_runs_through_authenticated_temporal_and_fixed_source _
+
+results_work = namespace(setup=<isolated synthetic test scope>, config={'source': '28292eb2-6482-447f-b373-7498c7afd83b', 'project': ...-28T22:15:59.745629+00:00', 'observed_timezone': 'UTC'}], report_artifact=UUID('8866890f-4abe-473f-9b90-13eff1d3e129'))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x137a537a0>
+
+    @pytest.mark.skipif(
+        not os.environ.get("PDOS_TEMPORAL_ADDRESS")
+        or not os.environ.get("PDOS_CHECKPOINT_DATABASE_URL"),
+        reason="Explicit verified local Temporal and checkpoint runtime required",
+    )
+    def test_professional_record_runs_through_authenticated_temporal_and_fixed_source(
+        results_work, monkeypatch
+    ):
+        work = results_work
+        captured, _ = capture(work, tuple(range(len(work.report_rows))))
+        accepted(work.quality, command(work, "test.results.import", captured=captured, final=True))
+        computed = post(work.quality, command(work, "test.result.compute"))
+        assert computed.status_code == 200, computed.text
+        receipt, _ = accepted(
+            work.quality,
+            command(
+                work, "test.run.review", text="SYNTHETIC_NAMED_REVIEW_ONLY_IN_FIXED_SOURCE_20261028"
+            ),
+        )
+        assert apply_event(work.quality, receipt["id"])["processed"] == 2
+        reviewed = next(
+            row
+            for row in records(work.quality, "test_run")
+            if row["is_current"] and row["structured"]["facts"].get("operation") == "test.run.review"
+        )
+>       run_http_case(
+            work.quality,
+            monkeypatch,
+            NativeClient(str(reviewed["source_id"]), ["test_run"]),
+            expected_kind="test_run",
+            expected_calls=3,
+        )
+
+tests/enterprise_search/test_execution_records_pg.py:238: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/enterprise_search/test_assistant_temporal_pg.py:116: in run_http_case
+    asyncio.run(actual())
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def actual():
+        temporal = await Client.connect(address, namespace=os.environ["PDOS_TEMPORAL_NAMESPACE"])
+        assert await temporal.service_client.check_health()
+        port = TemporalPort(temporal, task_queue="assistant-offline-" + str(uuid4()))
+        ports = bootstrap.api_ports(port)
+    
+        def synthetic_binding(*args):
+            binding = bootstrap.binding_for(*args)
+            binding.token_limit = 2_000_000
+            return binding
+    
+        app = create_app(
+            setup.engine,
+            setup.auth,
+            agent_runtime_ports=runtime,
+            agent_api_ports=replace(ports, binding_for=synthetic_binding),
+        )
+        activities = KernelActivities(
+            setup.engine, checkpoint_url=checkpoint_url, technical_engine=setup.dispatch
+        )
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            async with (
+                Worker(
+                    temporal,
+                    task_queue=port.task_queue,
+                    workflows=[XiaopaiWork],
+                    activities=[activities.advance, activities.reconcile],
+                    activity_executor=executor,
+                ),
+                httpx.AsyncClient(
+                    transport=httpx.ASGITransport(app=app), base_url="http://synthetic.local"
+                ) as http,
+            ):
+                path = "/v1/personal/agent-runs"
+                payload = {"goal": "以前漏气怎么处理？", "idempotency_key": str(uuid4())}
+                started = await http.post(path, headers=setup.headers, json=payload)
+                assert started.status_code == 202, started.text
+                identity = UUID(started.json()["run_id"])
+                handle = temporal.get_workflow_handle(workflow_id(setup.tenant, identity))
+                outcome = await asyncio.wait_for(handle.result(), 55)
+                assert outcome["status"] == "completed", outcome
+                record = await http.get(path + "/" + str(identity), headers=setup.headers)
+                assert record.status_code == 200, record.text
+                answer = record.json()["result"]["result"]["assistant"]
+                assert answer["lookup"] == "cited" and answer["matched_count"] == 1
+                source = await http.get(
+                    answer["sources"][0]["url"].removeprefix("/api"), headers=setup.headers
+                )
+>               assert (
+                    source.status_code == 200
+                    and answer["sources"][0]["quote"] in source.json()["text"]
+                )
+E               assert (200 == 200 and 'SYNTHETIC_NAMED_REVIEW_ONLY_IN_FIXED_SOURCE_20261028' in '{"kind": "test_run", "facts": {"id": "807cf47b-7f26-4de6-b21b-5ff170d24f18", "result": "pass", "status": "reviewed", ...39-4cc2-a499-583d21610617"}, "measurement_id": "9bda4e4f-08bd-4480-9a0d-d44309eaad65"}], "preliminary_result": null, "')
+E                +  where 200 = <Response [200 OK]>.status_code
+
+tests/enterprise_search/test_assistant_temporal_pg.py:101: AssertionError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+1 failed, 9 warnings in 80.66s (0:01:20)

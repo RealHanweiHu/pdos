@@ -1,0 +1,50 @@
+{
+  "run_id": "5496bca4-c734-4957-a7d1-61cc7d36e144",
+  "calls": [
+    {
+      "id": "c5dafb0f-245f-47aa-bdbc-ac770d6f8338",
+      "tool": "proposal.read",
+      "state": "completed",
+      "error_code": null,
+      "provider_request_id": null,
+      "cost_state": "unmetered",
+      "cost_charged_micro_usd": 0,
+      "actual_input_tokens": 0,
+      "actual_output_tokens": 0
+    },
+    {
+      "id": "0ff9b7cb-67dd-4280-9c51-fd36994a0291",
+      "tool": "proposal.items.read",
+      "state": "completed",
+      "error_code": null,
+      "provider_request_id": null,
+      "cost_state": "unmetered",
+      "cost_charged_micro_usd": 0,
+      "actual_input_tokens": 0,
+      "actual_output_tokens": 0
+    },
+    {
+      "id": "80832d8d-2c67-4e32-8bd5-b62f6603bd94",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request_id": "072935521efe08a8d567ca653c73d917",
+      "cost_state": "actual",
+      "cost_charged_micro_usd": 14511,
+      "actual_input_tokens": 40775,
+      "actual_output_tokens": 1393
+    },
+    {
+      "id": "7ba9d168-7d63-43de-8937-a2fbbc68c681",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request_id": "0729356bf8f9d9116d483cf37f06e845",
+      "cost_state": "actual",
+      "cost_charged_micro_usd": 3882,
+      "actual_input_tokens": 42981,
+      "actual_output_tokens": 502
+    }
+  ],
+  "reason": "model item_id was empty string; DTO rejected; no business candidates"
+}

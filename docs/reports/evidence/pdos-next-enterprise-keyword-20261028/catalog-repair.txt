@@ -1,0 +1,31 @@
+F.F                                                                      [100%]
+=================================== FAILURES ===================================
+____ test_frozen_catalog_matches_actual_columns_without_consuming_transport ____
+
+    def test_frozen_catalog_matches_actual_columns_without_consuming_transport():
+        assert set(COVERED_COLUMNS) == set(models.Base.metadata.tables)
+        for name, table in models.Base.metadata.tables.items():
+>           assert set(COVERED_COLUMNS[name]) == set(table.columns.keys())
+E           AssertionError: assert {'category_id...wner_id', ...} == {'base_plan_i...napshot', ...}
+E             
+E             Extra items in the right set:
+E             'resource_demands'
+E             'base_plan_id'
+E             Use -v to get more diff
+
+tests/preproject/test_m3_lifecycle_catalog.py:26: AssertionError
+_____ test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute ______
+
+setup = <isolated synthetic test scope>
+
+    def test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute(setup):
+        with scoped(setup) as session:
+>           assert schema_covered(session)
+E           assert False
+E            +  where False = schema_covered(<sqlalchemy.orm.session.Session object at 0x1085527e0>)
+
+tests/preproject/test_m3_lifecycle_catalog.py:140: AssertionError
+=========================== short test summary info ============================
+FAILED tests/preproject/test_m3_lifecycle_catalog.py::test_frozen_catalog_matches_actual_columns_without_consuming_transport
+FAILED tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute
+2 failed, 1 passed in 2.67s

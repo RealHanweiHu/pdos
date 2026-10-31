@@ -1,0 +1,6 @@
+{
+  "path": "pdos-next/server/tests/agent_kernel/test_personal_context_pins_pg.py",
+  "before_sha256": "c9017ac359e0b5c8f300aa7c4e3f416e54fdae72ba7a1232d9331822ca52b523",
+  "after_sha256": "8d56135aca03c920a132657678ce5cfca8685c15b895a99c8b4d597a33697fd1",
+  "reason": "Actual Artifact content/hash guard correctly rejects mutation. Exercise legal synthetic revision drift without modifying the immutable body/hash or guard."
+}

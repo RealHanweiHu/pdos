@@ -1,0 +1,120 @@
+{
+  "covered_columns": {
+    "knowledge_answer_reviews": [
+      "category_id",
+      "subject_kind",
+      "subject_id",
+      "responsible_id",
+      "applicability_scope",
+      "review_due_at",
+      "origin_run_id",
+      "answer_digest",
+      "source_proof",
+      "basis_count",
+      "verified_by",
+      "command_id",
+      "receipt_id",
+      "id",
+      "tenant_id",
+      "created_at"
+    ],
+    "knowledge_gap_submissions": [
+      "category_id",
+      "owner_id",
+      "recipient_id",
+      "run_id",
+      "feedback_id",
+      "request_key",
+      "request_sha256",
+      "kind",
+      "question",
+      "answer",
+      "search_scope",
+      "source_proof",
+      "id",
+      "tenant_id",
+      "created_at"
+    ],
+    "knowledge_gap_attributions": [
+      "category_id",
+      "submission_id",
+      "actor_id",
+      "request_key",
+      "reason",
+      "id",
+      "tenant_id",
+      "created_at"
+    ]
+  },
+  "category_knowledge_entries_append": [
+    "answer_sources"
+  ],
+  "M3_GUARDED_append": [
+    "knowledge_answer_reviews",
+    "knowledge_gap_submissions"
+  ],
+  "GUARDED_append": [
+    "knowledge_answer_reviews",
+    "knowledge_gap_submissions"
+  ],
+  "NON_CONSUMING_append": [
+    "knowledge_gap_attributions"
+  ],
+  "source_ports": [
+    {
+      "source_type": "issue",
+      "table": "quality_issue_versions",
+      "read_set": "required_source_read_set"
+    },
+    {
+      "source_type": "capa",
+      "table": "quality_issue_versions",
+      "read_set": "required_source_read_set"
+    },
+    {
+      "source_type": "change",
+      "table": "change_request_versions",
+      "read_set": "required_source_read_set"
+    },
+    {
+      "source_type": "external_wait",
+      "table": "external_wait_versions",
+      "read_set": "reads"
+    },
+    {
+      "source_type": "supply",
+      "table": "supply_snapshots",
+      "read_set": "required_source_read_set"
+    },
+    {
+      "source_type": "build",
+      "table": "build_starts",
+      "read_set": "required_source_read_set"
+    },
+    {
+      "source_type": "build",
+      "table": "actual_configurations",
+      "read_set": "required_source_read_set"
+    },
+    {
+      "source_type": "build",
+      "table": "build_lots",
+      "read_set": "required_source_read_set"
+    },
+    {
+      "source_type": "test_run",
+      "table": "verification_run_versions",
+      "read_set": "required_source_read_set"
+    },
+    {
+      "source_type": "test_run",
+      "table": "test_result_actions",
+      "read_set": "required_source_read_set"
+    },
+    {
+      "source_type": "build",
+      "table": "builds",
+      "read_set": "engineering_configurations.required_source_read_set || process_revisions.required_source_read_set"
+    }
+  ]
+}

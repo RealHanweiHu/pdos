@@ -1,0 +1,107 @@
+{
+  "method": "original HTTP source identities intersect original frozen labels; no producer scorer imported",
+  "questions_and_corpus_sha256_unchanged": {
+    "corpus.json": "846de93e8a8dd496ddc432b30220146dfc868b170da63ef331be83cdadc43920",
+    "questions.json": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685"
+  },
+  "positive_cases": 24,
+  "negative_cases_passed": 4,
+  "expected_sources": 28,
+  "recall": {
+    "5": {
+      "macro": 0.9791666666666666,
+      "micro": 0.9642857142857143,
+      "hits": 27
+    },
+    "10": {
+      "macro": 1.0,
+      "micro": 1.0,
+      "hits": 28
+    }
+  },
+  "expected_source_ranks": {
+    "ENG-01": {
+      "eng_seal_design": 2
+    },
+    "ENG-02": {
+      "eng_pilot_archive": 1
+    },
+    "ENG-03": {
+      "eng_thermal_report": 1
+    },
+    "ENG-04": {
+      "eng_seal_design": 2,
+      "eng_gate_minutes": 1
+    },
+    "ENG-05": {
+      "eng_gate_minutes": 1,
+      "eng_shield_trial": 2
+    },
+    "ENG-06": {
+      "eng_private_reserve": 1
+    },
+    "QUA-01": {
+      "qua_issue_record": 1
+    },
+    "QUA-02": {
+      "qua_failure_archive": 1
+    },
+    "QUA-03": {
+      "qua_capa_plan": 1
+    },
+    "QUA-04": {
+      "qua_issue_record": 1,
+      "qua_lab_report": 10
+    },
+    "QUA-05": {
+      "qua_lab_report": 1,
+      "qua_line_review": 2
+    },
+    "QUA-06": {
+      "qua_private_blind": 1
+    },
+    "PRD-01": {
+      "prd_work_instruction": 1
+    },
+    "PRD-02": {
+      "prd_pilot_archive": 1
+    },
+    "PRD-03": {
+      "prd_first_article": 1
+    },
+    "PRD-04": {
+      "prd_downtime": 1
+    },
+    "PRD-05": {
+      "prd_wip_reconcile": 1
+    },
+    "PRD-06": {
+      "prd_private_shift": 1
+    },
+    "PUR-01": {
+      "pur_commitment": 1
+    },
+    "PUR-02": {
+      "pur_supply_archive": 1
+    },
+    "PUR-03": {
+      "pur_rfq": 1
+    },
+    "PUR-04": {
+      "pur_substitution": 1
+    },
+    "PUR-05": {
+      "pur_receiving_conflict": 1
+    },
+    "PUR-06": {
+      "pur_private_cost": 1
+    }
+  },
+  "p50_ms": 69.7229165234603,
+  "p95_inclusive_ms": 93.34134766831994,
+  "identifier_channel_passed": 4,
+  "protected_state_unchanged": true,
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "all_24_source_document_sha256_unchanged": true
+}

@@ -1,0 +1,2718 @@
+--- /dev/null
++++ b/pdos-next/server/pdos_next/agent_kernel/context_corrections.py
+@@ -0,0 +1,465 @@
++"""Explicit Human focus/version/source choices, reloaded through ordinary RLS.
++
++These selectors narrow the existing conversation. They never rebind its scope,
++mint citations, reinterpret an old artifact as its head, or change old Runs.
++"""
++
++from copy import deepcopy
++from typing import Literal
++from uuid import UUID
++
++from pydantic import Field, model_validator
++from sqlalchemy import select, tuple_
++
++from pdos_next.enterprise_search.schemas import SourceType
++from pdos_next.errors import DomainError
++from pdos_next.schema_base import StrictModel
++from pdos_next.service import digest
++
++
++class SourceChoice(StrictModel):
++    source_type: SourceType
++    source_id: UUID
++    expected_revision: int = Field(ge=1, strict=True)
++
++
++class ContextChange(StrictModel):
++    kind: Literal["replace_focus", "fixed_versions", "current_only", "limit_sources", "clear"]
++    sources: list[SourceChoice] = Field(default_factory=list, max_length=50)
++
++    @model_validator(mode="after")
++    def choices(self):
++        if self.kind in {"current_only", "clear"}:
++            if self.sources:
++                raise ValueError("解除或当前版本条件不接受固定来源。")
++        elif not self.sources or self.kind == "replace_focus" and len(self.sources) != 1:
++            raise ValueError("请选择实际对象或固定来源。")
++        keys = {(ref.source_type, ref.source_id) for ref in self.sources}
++        if len(keys) != len(self.sources):
++            raise ValueError("同一固定来源不能重复选择。")
++        return self
++
++
++class SelectedSource(StrictModel):
++    source_type: SourceType
++    source_id: UUID
++    object_id: UUID
++    source_revision: int = Field(ge=1, strict=True)
++    content_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
++    category_id: UUID
++    product_id: UUID | None = None
++    project_id: UUID | None = None
++    proposal_id: UUID | None = None
++    title: str
++    private: bool = Field(strict=True)
++    customer_original: bool = Field(strict=True)
++
++
++class ContextSelection(StrictModel):
++    version: Literal[1] = 1
++    status: Literal["available", "unavailable"]
++    focus: SelectedSource | None
++    version_mode: Literal["any", "current", "fixed"]
++    versions: list[SelectedSource]
++    sources: list[SelectedSource] | None = Field(min_length=1)
++
++
++def validated(value):
++    try:
++        return ContextSelection.model_validate(value).model_dump(mode="json")
++    except (ValueError, TypeError):
++        raise DomainError("VERSION_CONFLICT", "已保存的显式条件无法核对，请重新选择。") from None
++
++
++def _scope(query, columns, run):
++    query = query.where(columns.tenant_id == run.tenant_id)
++    if run.category_id is not None:
++        query = query.where(columns.category_id == run.category_id)
++    # An explicit source selection may discuss another readable case within
++    # this category. It does not change the conversation's business target.
++    return query
++
++
++def _rows(session, run, choices):
++    from pdos_next.enterprise_search.sources import prepare_read, retrieval_catalog
++
++    types = {ref.source_type for ref in choices}
++    prepare_read(session, types)
++    source = retrieval_catalog(types)
++    keys = [(ref.source_type, ref.source_id, ref.expected_revision) for ref in choices]
++    fields = [column for column in source.c if column.key not in {"body", "structured"}]
++    return (
++        session.execute(
++            _scope(select(*fields), source.c, run).where(
++                tuple_(source.c.source_type, source.c.source_id, source.c.source_revision).in_(
++                    keys
++                ),
++            )
++        )
++        .mappings()
++        .all()
++    )
++
++
++def resolve(session, ctx, run, choices):
++    """Browser IDs select rows; revision/hash/audience/owner come only from actual reads."""
++    from pdos_next.enterprise_search.assistant_sources import current
++
++    if run.requester_id != ctx.requester_id or run.tenant_id != ctx.tenant_id:
++        raise DomainError("FORBIDDEN_SCOPE", "只能修改本人的当前会话。", 403)
++    rows = _rows(session, run, choices)
++    by_key = {(row["source_type"], row["source_id"], row["source_revision"]): row for row in rows}
++    selected = {}
++    for index, ref in enumerate(choices):
++        row = by_key.get((ref.source_type, ref.source_id, ref.expected_revision))
++        if row is None:
++            raise DomainError("SOURCE_UNAVAILABLE", "选定版本当前不可读，请重新选择。", 403)
++        selected[str(index)] = {
++            key: str(value) if isinstance(value, UUID) else value for key, value in row.items()
++        }
++    actual, missing = current(session, selected)
++    if missing or len(actual) != len(selected):
++        raise DomainError("SOURCE_UNAVAILABLE", "选定资料或其依据当前不可用。", 403)
++    return [
++        {
++            key: selected[str(index)][key]
++            for key in (
++                "source_type",
++                "source_id",
++                "object_id",
++                "source_revision",
++                "content_hash",
++                "category_id",
++                "product_id",
++                "project_id",
++                "proposal_id",
++                "title",
++            )
++        }
++        | {
++            "private": bool(actual[str(index)]["private"]),
++            "customer_original": bool(actual[str(index)]["customer_original"]),
++        }
++        for index in range(len(choices))
++    ]
++
++
++def values(condition):
++    if not condition:
++        return []
++    return (
++        ([condition["focus"]] if condition.get("focus") else [])
++        + list(condition.get("versions") or [])
++        + list(condition.get("sources") or [])
++    )
++
++
++def recheck(session, ctx, run, condition):
++    if not condition:
++        return None
++    condition = validated(condition)
++    if run is None:
++        raise DomainError("FORBIDDEN_SCOPE", "原会话已不可读。", 403)
++    if condition.get("status") == "unavailable":
++        raise DomainError("SOURCE_UNAVAILABLE", "选定条件已不可用，请重新选择或解除限定。")
++    choices, old = [], {}
++    for ref in values(condition):
++        choice = SourceChoice(
++            source_type=ref["source_type"],
++            source_id=ref["source_id"],
++            expected_revision=ref["source_revision"],
++        )
++        key = (choice.source_type, str(choice.source_id), choice.expected_revision)
++        if key not in old:
++            choices.append(choice)
++            old[key] = ref
++    for row in resolve(session, ctx, run, choices) if choices else []:
++        prior = old[(row["source_type"], row["source_id"], row["source_revision"])]
++        if row["content_hash"] != prior["content_hash"] or row["object_id"] != prior["object_id"]:
++            raise DomainError("SOURCE_STALE", "选定资料内容已变化，请重新选择固定版本。")
++        if (
++            row["private"]
++            and not prior["private"]
++            or row["customer_original"]
++            and not prior["customer_original"]
++        ):
++            raise DomainError("SOURCE_STALE", "资料分类已变化，请重新选择以更新本次绑定。")
++    return deepcopy(condition)
++
++
++def _current_focus(session, ctx, run, focus):
++    from pdos_next.enterprise_search.sources import prepare_read, retrieval_catalog
++
++    prepare_read(session, [focus["source_type"]])
++    source = retrieval_catalog([focus["source_type"]])
++    row = session.execute(
++        _scope(select(source.c.source_id, source.c.source_revision), source.c, run).where(
++            source.c.object_id == UUID(focus["object_id"]),
++            source.c.is_current,
++        )
++    ).one_or_none()
++    if row is None:
++        raise DomainError("SOURCE_UNAVAILABLE", "这个对象当前没有可选的有效版本。")
++    return resolve(
++        session,
++        ctx,
++        run,
++        [
++            SourceChoice(
++                source_type=focus["source_type"],
++                source_id=row.source_id,
++                expected_revision=row.source_revision,
++            )
++        ],
++    )[0]
++
++
++def apply(session, ctx, run, body, change):
++    if change.kind == "clear":
++        body.pop("context_selection", None)
++        body["focus_objects"] = [ref for ref in body["focus_objects"] if ref["kind"] != "source"]
++        return
++    selected = resolve(session, ctx, run, change.sources) if change.sources else []
++    condition = deepcopy(
++        body.get("context_selection")
++        or {
++            "version": 1,
++            "status": "available",
++            "focus": None,
++            "version_mode": "any",
++            "versions": [],
++            "sources": None,
++        }
++    )
++    if condition.get("status") != "available":
++        raise DomainError("SOURCE_UNAVAILABLE", "请先解除失效的资料条件，再重新选择。")
++    if change.kind == "replace_focus":
++        condition["focus"] = selected[0]
++        # Keep the actual selected version until a Human explicitly selects
++        # another version/current head. The business scope and literals survive.
++        condition.update(version_mode="fixed", versions=selected, sources=None)
++        body["focus_objects"] = [
++            ref for ref in body["focus_objects"] if ref["kind"] not in {"artifact", "source"}
++        ]
++        body["focus_objects"].append(
++            {
++                "kind": "source",
++                "id": selected[0]["object_id"],
++                "version": selected[0]["source_revision"],
++                "run_id": str(run.id),
++                "title": selected[0]["title"],
++            }
++        )
++    elif change.kind == "fixed_versions":
++        condition.update(version_mode="fixed", versions=selected, sources=None)
++        if condition.get("focus") and any(
++            (row["source_type"], row["object_id"])
++            != (
++                condition["focus"]["source_type"],
++                condition["focus"]["object_id"],
++            )
++            for row in selected
++        ):
++            condition["focus"] = None
++        elif condition.get("focus"):
++            condition["focus"] = selected[0]
++    elif change.kind == "current_only":
++        if condition.get("focus"):
++            condition["focus"] = _current_focus(session, ctx, run, condition["focus"])
++        condition.update(
++            version_mode="current", versions=[],
++            sources=[condition["focus"]] if condition.get("focus") else None,
++        )
++    else:
++        condition.update(sources=selected, focus=None, version_mode="any", versions=[])
++    body["focus_objects"] = [
++        ref for ref in body["focus_objects"] if ref["kind"] not in {"artifact", "source"}
++    ]
++    body["context_selection"] = condition
++
++
++def public(session, ctx, run, condition):
++    try:
++        return recheck(session, ctx, run, condition)
++    except DomainError as error:
++        if error.code not in {
++            "FORBIDDEN_SCOPE",
++            "NOT_FOUND",
++            "SOURCE_UNAVAILABLE",
++            "SOURCE_STALE",
++            "VERSION_CONFLICT",
++        }:
++            raise
++        return {
++            "version": 1,
++            "status": "unavailable",
++            "focus": None,
++            "version_mode": "any",
++            "versions": [],
++            "sources": None,
++        }
++
++
++def selected_reads(session, ctx, parent, state, incoming):
++    """Replace an artifact version only after an explicit verified Human choice."""
++    from pdos_next.contracts import SourceRead
++
++    condition = (
++        recheck(session, ctx, parent, state.body.get("context_selection")) if state else None
++    )
++    refs = {} if condition else {ref["artifact_id"]: dict(ref) for ref in parent.read_sources}
++    fixed = {row["source_id"]: row for row in values(condition) if row["source_type"] == "artifact"}
++    for identity, row in fixed.items():
++        if (
++            parent.category_id is None
++            or parent.product_id is not None
++            and row.get("product_id") not in {None, str(parent.product_id)}
++        ):
++            continue  # A discussion pin is not a business Run read-set.
++        refs[identity] = {"artifact_id": identity, "expected_revision": row["source_revision"]}
++    for ref in incoming:
++        identity = str(ref.artifact_id)
++        if identity in refs and refs[identity]["expected_revision"] != ref.expected_revision:
++            raise DomainError("VERSION_CONFLICT", "新增来源不能替换原固定版本，请明确选择版本。")
++        refs.setdefault(identity, ref.model_dump(mode="json"))
++    # Keep every original Run unchanged. Superseded mutable artifact rows can
++    # remain dated history, but cannot be rebound as a readable old version.
++    return [
++        SourceRead.model_validate({key: value for key, value in ref.items() if key != "product_id"})
++        for ref in refs.values()
++    ], condition
++
++
++def frozen_condition(run):
++    state = run.versions.get("work_state", {})
++    if not state:
++        return requested(run)[0]
++    if state and digest(state) != run.versions.get("work_state_digest"):
++        raise DomainError("VERSION_CONFLICT", "本轮已保存的携带条件无法核对。")
++    condition = state.get("context_selection")
++    condition = validated(condition) if condition else None
++    if condition and condition.get("status") != "available":
++        raise DomainError("SOURCE_UNAVAILABLE", "选定条件已不可用，请重新选择或解除限定。")
++    return condition
++
++
++def accepts(item, condition, *, actual=None):
++    if not condition:
++        return True
++    focus = condition.get("focus")
++    if focus and (item.get("source_type"), item.get("object_id")) != (
++        focus["source_type"],
++        focus["object_id"],
++    ):
++        return False
++    for rows in (
++        condition.get("sources"),
++        condition.get("versions") if condition["version_mode"] == "fixed" else None,
++    ):
++        if rows is not None and not any(
++            all(
++                str(item.get(key)) == str(ref[key])
++                for key in (
++                    "source_type",
++                    "source_id",
++                    "source_revision",
++                    "content_hash",
++                )
++            )
++            for ref in rows
++        ):
++            return False
++    # Actual currentness is a retrieval condition, never applicability proof.
++    return condition["version_mode"] != "current" or actual is None or bool(actual["is_current"])
++
++
++def options(session, ctx, run, query, *, object_id=None):
++    """Bounded metadata chooser; ordinary RLS and dependencies precede paging."""
++    from pdos_next.enterprise_search.assistant_sources import current
++    from pdos_next.enterprise_search.schemas import SOURCE_TYPES
++    from pdos_next.enterprise_search.sources import prepare_read, retrieval_catalog
++
++    prepare_read(session, SOURCE_TYPES)
++    source = retrieval_catalog(SOURCE_TYPES)
++    fields = [column for column in source.c if column.key not in {"body", "structured"}]
++    statement = _scope(select(*fields), source.c, run)
++    if object_id is not None:
++        statement = statement.where(source.c.object_id == object_id)
++    elif query.strip():
++        # Literal title search, not a model-produced broad query or SQL fragment.
++        statement = statement.where(source.c.title.icontains(query.strip(), autoescape=True))
++    else:
++        return {"items": [], "has_more": False}
++    rows = (
++        session.execute(
++            statement.order_by(source.c.title, source.c.source_type, source.c.source_id).limit(41)
++        )
++        .mappings()
++        .all()
++    )
++    candidates = {
++        str(index): {
++            key: str(value) if isinstance(value, UUID) else value for key, value in row.items()
++        }
++        for index, row in enumerate(rows)
++    }
++    actual, _missing = current(session, candidates)
++    items = [
++        {
++            field: row[field]
++            for field in (
++                "source_type",
++                "source_id",
++                "object_id",
++                "source_revision",
++                "title",
++                "is_current",
++            )
++        }
++        for key, row in candidates.items()
++        if key in actual
++    ]
++    return {"items": items[:40], "has_more": len(items) > 40, "artifact_history": "unavailable"}
++
++
++def configure_start(session, ctx, run, original_start, effective_start, parent):
++    """Public API hook in the create/dispatch UOW; only original Human input limits sources."""
++    from .work_state import latest
++
++    state = latest(session, parent.session_id) if parent is not None else None
++    condition = recheck(session, ctx, run, state.body.get("context_selection")) if state else None
++    if original_start.sources:
++        choices = [
++            SourceChoice(
++                source_type="artifact",
++                source_id=ref.artifact_id,
++                expected_revision=ref.expected_revision,
++            )
++            for ref in original_start.sources
++        ]
++        selected = resolve(session, ctx, run, choices)
++        condition = condition or {
++            "version": 1,
++            "status": "available",
++            "focus": None,
++            "version_mode": "any",
++            "versions": [],
++            "sources": None,
++        }
++        condition.update(sources=selected, focus=None, version_mode="any", versions=[])
++    condition = validated(condition) if condition else None
++    run.versions = {
++        **run.versions,
++        "requested_context_selection": condition,
++        "requested_context_selection_digest": digest(condition),
++        "context_selection_start_revision": state.revision if state else 0,
++    }
++
++
++def requested(run):
++    if "requested_context_selection" not in run.versions:
++        return None, False
++    condition = run.versions["requested_context_selection"]
++    if digest(condition) != run.versions.get("requested_context_selection_digest"):
++        raise DomainError("VERSION_CONFLICT", "本轮显式选择无法核对。")
++    return validated(condition) if condition else None, True
+--- a/pdos-next/server/pdos_next/agent_kernel/conversation.py
++++ b/pdos-next/server/pdos_next/agent_kernel/conversation.py
+@@ -6,7 +6,6 @@
+ from pydantic import Field
+ from sqlalchemy import select
+ 
+-from pdos_next.contracts import SourceRead
+ from pdos_next.errors import DomainError
+ from pdos_next.schema_base import StrictModel
+ from pdos_next.service import digest
+@@ -33,6 +32,8 @@
+ def prepare(session, ctx, data):
+     identity = data.continue_from_run_id
+     if identity is None:
++        if getattr(data, "context_revision", None) is not None:
++            raise DomainError("VALIDATION_FAILED", "资料纠正须从当前会话继续。", 422)
+         return data, None
+     if (
+         data.session_id
+@@ -70,18 +71,21 @@
+         session, conversation
+     ):
+         raise DomainError("FORBIDDEN_SCOPE", "原工作与当前会话提案范围不一致。")
+-    sources = [
+-        SourceRead.model_validate(
+-            {key: value for key, value in ref.items() if key != "product_id"}
+-        )
+-        for ref in parent.read_sources
+-    ]
+-    for ref in data.sources:
+-        prior = next((old for old in sources if old.artifact_id == ref.artifact_id), None)
+-        if prior is not None and prior.expected_revision != ref.expected_revision:
+-            raise DomainError("VERSION_CONFLICT", "新增来源不能替换原固定版本。")
+-        if prior is None:
+-            sources.append(ref)
++    from .context_corrections import selected_reads, values
++    from .work_state import _lock, latest
++
++    _lock(session, ctx.tenant_id, parent.session_id)
++    state = latest(session, parent.session_id)
++    expected_context = getattr(data, "context_revision", None)
++    if expected_context is not None and (state is None or state.revision != expected_context):
++        raise DomainError("VERSION_CONFLICT", "资料条件已变化，请按最新携带重新选择。")
++    sources, selection = selected_reads(session, ctx, parent, state, data.sources)
++    actual = values(selection)
++    parent._explicit_context_binding = {
++        "private_context": any(row["private"] for row in actual),
++        "data_categories": ["customer_original"]
++        if any(row["customer_original"] for row in actual) else [],
++    }
+     effective = data.model_copy(
+         update={
+             "session_id": parent.session_id,
+@@ -97,12 +101,15 @@
+ def merge_binding(binding, parent):
+     if parent is None:
+         return binding
++    selected = getattr(parent, "_explicit_context_binding", {})
+     return SimpleNamespace(
+         **{
+             **vars(binding),
+-            "private_context": binding.private_context or parent.private_context,
++            "private_context": binding.private_context or parent.private_context
++                or selected.get("private_context", False),
+             "data_categories": tuple(
+-                sorted(set(binding.data_categories) | set(parent.data_categories))
++                sorted(set(binding.data_categories) | set(parent.data_categories)
++                       | set(selected.get("data_categories", [])))
+             ),
+             "customer_identities": tuple(
+                 sorted(set(binding.customer_identities) | set(parent.customer_identities))
+--- a/pdos-next/server/pdos_next/agent_kernel/work_state.py
++++ b/pdos-next/server/pdos_next/agent_kernel/work_state.py
+@@ -6,7 +6,7 @@
+ from typing import Literal
+ from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
+ 
+-from fastapi import APIRouter
++from fastapi import APIRouter, Query, Request
+ from pydantic import Field, model_validator
+ from sqlalchemy import select, text
+ 
+@@ -16,6 +16,7 @@
+ from pdos_next.service import digest
+ 
+ from .context_budget import estimate_tokens
++from .context_corrections import ContextChange
+ from .models import AgentEvent, AgentRun, AgentSession
+ from .search_preferences import SearchPreferences
+ from .search_preferences import defaults as search_defaults
+@@ -38,12 +39,23 @@
+ class ChangeInput(StrictModel):
+     expected_revision: int = Field(ge=0, strict=True)
+     request_key: UUID
+-    action: Literal["remove_constraint", "exclude_source", "remove_exclusion", "set_search_scope"]
++    action: Literal[
++        "remove_constraint", "exclude_source", "remove_exclusion",
++        "set_search_scope", "correct_context",
++    ]
+     item_id: UUID | None = None
+     search_preferences: SearchPreferences | None = None
++    context_change: ContextChange | None = None
+ 
+     @model_validator(mode="after")
+     def action_fields(self):
++        if self.action == "correct_context":
++            if (self.context_change is None or self.item_id is not None
++                    or self.search_preferences is not None):
++                raise ValueError("纠正须提供显式选择，不能夹带其他携带动作。")
++            return self
++        if self.context_change is not None:
++            raise ValueError("其他携带动作不能夹带纠正条件。")
+         if self.action == "set_search_scope":
+             if self.item_id is not None or self.search_preferences is None:
+                 raise ValueError("查找范围修改须提供完整选择，不能修改携带条目。")
+@@ -152,6 +164,17 @@
+         return value
+     current = latest(session, run.session_id)
+     body = deepcopy(current.body) if current else empty()
++    from .context_corrections import requested
++
++    selection, configured = requested(run)
++    if configured and (current.revision if current else 0) == run.versions.get(
++        "context_selection_start_revision", -1,
++    ):
++        if selection:
++            body["context_selection"] = selection
++        else:
++            body.pop("context_selection", None)
++    # Human edits after start win, including an explicit clear. Never resurrect them.
+     # Only actual conversation goals from this session can prove a proposal.
+     rows = session.execute(
+         select(AgentRun.id, AgentRun.goal)
+@@ -204,6 +227,14 @@
+         key = ("artifact", ref["artifact_id"], ref["expected_revision"])
+         focus[key] = {"kind": key[0], "id": key[1], "version": key[2], "run_id": str(run.id)}
+     body["focus_objects"] = list(focus.values())
++    selection = body.get("context_selection")
++    if selection and selection.get("focus"):
++        selected = selection["focus"]
++        body["focus_objects"] = [ref for ref in body["focus_objects"]
++                                 if ref["kind"] not in {"artifact", "source"}]
++        body["focus_objects"].append({"kind": "source", "id": selected["object_id"],
++            "version": selected["source_revision"], "run_id": str(run.id),
++            "title": selected["title"]})
+     # These are references to persisted host receipts, never claims from result_json.
+     receipts = session.execute(
+         select(Receipt.id, Receipt.operation)
+@@ -310,6 +341,8 @@
+                 require_project(session, ctx, identity, origin.product_id)
+             elif kind == "product":
+                 require_access(session, ctx, identity, write=False)
++            elif kind == "source":
++                continue
+             elif kind == "category":
+                 require_access(session, replace(ctx, category_id=identity), None, write=False)
+             focus.append(item)
+@@ -372,6 +405,19 @@
+         context = {"kind": "proposal", "label": target.title, "scoped": True}
+     elif origin is not None and origin.category_id:
+         context = {"kind": "category", "label": "当前品类的可读资料", "scoped": False}
++    if body.get("context_selection"):
++        from .context_corrections import public as correction_public
++
++        public["context_selection"] = correction_public(
++            session, ctx, origin, body["context_selection"],
++        )
++        selection = public["context_selection"]
++        if selection["status"] == "available" and selection.get("focus"):
++            ref = selection["focus"]
++            public["focus_objects"].append({"kind": "source", "id": ref["object_id"],
++                "version": ref["source_revision"], "run_id": str(origin.id), "title": ref["title"]})
++        elif selection["status"] != "available":
++            hidden += 1
+     public["search_context"] = context
+     public["notes"] = ["部分资料已无权读取或已撤回，相关工作记录已隐藏。"] if hidden else []
+     # Completed history is compacted; constraints and focus references remain exact.
+@@ -406,6 +452,23 @@
+             value["missing"] = ["请从原工作继续，或新建会话明确选择资料。"]
+         else:
+             value = _project(session, ctx, row, current_run=run)
++        from .context_corrections import recheck, requested
++
++        selection, configured = requested(run)
++        if configured:
++            if selection:
++                recheck(session, ctx, run, selection)
++                value["context_selection"] = selection
++            else:
++                value.pop("context_selection", None)
++            value["focus_objects"] = [ref for ref in value["focus_objects"]
++                                      if ref["kind"] != "source"
++                                      and (not selection or ref["kind"] != "artifact")]
++            if selection and selection.get("focus"):
++                focus = selection["focus"]
++                value["focus_objects"].append({"kind": "source", "id": focus["object_id"],
++                    "version": focus["source_revision"], "run_id": str(run.id),
++                    "title": focus["title"]})
+         if run.continued_from_id is not None:
+             from pdos_next.enterprise_search.assistant_inheritance import page
+             from pdos_next.enterprise_search.assistant_schemas import CitationsInput
+@@ -479,6 +542,10 @@
+ 
+ def check_frozen(session, run, ctx):
+     value = run.versions.get("work_state")
++    if value and value.get("context_selection"):
++        from .context_corrections import recheck
++
++        recheck(session, ctx, run, value["context_selection"])
+     if value and value.get("citations"):
+         from pdos_next.enterprise_search.assistant_inheritance import recheck
+ 
+@@ -494,8 +561,10 @@
+     if row is None:
+         raise DomainError("CONVERSATION_HISTORY_REVOKED", "携带的工作状态已不可读。")
+     current = _project(session, ctx, row, current_run=run)
+-    visible = {(item["kind"], item["id"], item["version"]) for item in current["focus_objects"]}
+-    previous = {(item["kind"], item["id"], item["version"]) for item in value["focus_objects"]}
++    visible = {(item["kind"], item["id"], item["version"])
++               for item in current["focus_objects"] if item["kind"] != "source"}
++    previous = {(item["kind"], item["id"], item["version"])
++                for item in value["focus_objects"] if item["kind"] != "source"}
+     if previous - visible:
+         raise DomainError("CONVERSATION_HISTORY_REVOKED", "工作状态引用的资料已无权读取或已撤回。")
+ 
+@@ -504,7 +573,7 @@
+     _human(session, ctx, None)
+     _target(session, ctx, session_id, None)
+     feedback_run = None
+-    if data.action == "exclude_source":
++    if data.action in {"exclude_source", "correct_context"}:
+         # finish locks Run before this advisory lock. Event append/FK locking
+         # must follow that same order, even when the current goal changes.
+         before = latest(session, session_id)
+@@ -531,14 +600,18 @@
+     current = latest(session, session_id)
+     if current is None or current.revision != data.expected_revision:
+         raise DomainError("VERSION_CONFLICT", "本次携带已变化，请刷新后修改。")
+-    if data.action == "exclude_source" and (
++    if data.action in {"exclude_source", "correct_context"} and (
+         feedback_run is None or str(feedback_run.id) != current.body["current_goal"]["run_id"]
+     ):
+         raise DomainError("VERSION_CONFLICT", "当前工作已变化，请刷新后修改。")
+     body = deepcopy(current.body)
+     identity = str(data.item_id)
+     key = "constraints" if data.action == "remove_constraint" else "exclusions"
+-    if data.action == "set_search_scope":
++    if data.action == "correct_context":
++        from .context_corrections import apply
++
++        apply(session, ctx, feedback_run, body, data.context_change)
++    elif data.action == "set_search_scope":
+         body["search_preferences"] = data.search_preferences.model_dump(mode="json")
+     elif data.action == "exclude_source":
+         visible_state = _project(session, ctx, current)
+@@ -610,4 +683,27 @@
+         with transaction(ctx) as session:
+             return change(session, ctx, session_id, data)
+ 
++    @result.get("/v1/personal/agent-sessions/{session_id}/work-state/context-options")
++    @result.get("/v1/categories/{category_id}/agent-sessions/{session_id}/work-state/context-options")
++    def context_options(
++        session_id: UUID, request: Request, query: str = Query(default="", max_length=120),
++        object_id: UUID | None = None, ctx=context_dependency,
++    ):
++        from .context_corrections import options
++
++        keys = list(request.query_params)
++        if set(keys) - {"query", "object_id"} or any(
++            len(request.query_params.getlist(key)) != 1 for key in keys
++        ):
++            raise DomainError("INVALID_PAYLOAD", "资料选择只接受名称或实际对象编号。", 422)
++        with transaction(ctx, read_snapshot=True) as session:
++            _human(session, ctx, None)
++            _target(session, ctx, session_id, None)
++            state = latest(session, session_id)
++            run = (session.get(AgentRun, UUID(state.body["current_goal"]["run_id"]))
++                   if state else None)
++            if run is None:
++                raise DomainError("FORBIDDEN_SCOPE", "请先打开本人的实际会话。", 403)
++            return options(session, ctx, run, query, object_id=object_id)
++
+     return result
+--- a/pdos-next/server/pdos_next/enterprise_search/assistant_inheritance.py
++++ b/pdos-next/server/pdos_next/enterprise_search/assistant_inheritance.py
+@@ -139,7 +139,11 @@
+     # Updated metadata establishes ongoing ACL only. fixed() keeps the original
+     # revision/hash/locator; extract must still read that exact body or fail closed.
+     actual, _missing = current(session, selected, allow_updated=set(selected))
+-    readable = [cid for cid in keys if cid in actual]
++    from pdos_next.agent_kernel.context_corrections import accepts, frozen_condition
++
++    condition = frozen_condition(run)
++    readable = [cid for cid in keys if cid in actual
++                and accepts(selected[cid], condition, actual=actual[cid])]
+     visible = readable[: data.page_size]
+     more = len(readable) > len(visible)
+     return {
+--- a/pdos-next/server/pdos_next/enterprise_search/assistant_ledger.py
++++ b/pdos-next/server/pdos_next/enterprise_search/assistant_ledger.py
+@@ -91,7 +91,10 @@
+         refs.extend(call.result["items"])
+     if refs:
+         result.update(expand(session, run, refs))
+-    return result
++    from pdos_next.agent_kernel.context_corrections import accepts, frozen_condition
++
++    condition = frozen_condition(run)
++    return {cid: item for cid, item in result.items() if accepts(item, condition)}
+ 
+ 
+ def select_issued(session, scope, identities):
+@@ -158,4 +161,10 @@
+     # update must not invalidate their frozen metadata; extraction still requires
+     # the exact original body. Revocation/withdrawal/scan checks remain current.
+     inherited = {cid for cid, item in own.items() if "origin_run_id" in item}
++    from pdos_next.agent_kernel.context_corrections import frozen_condition
++
++    if frozen_condition(run):
++        # Historical conversation prose is still a dated record. A new answer
++        # may cite only own/currently reissued reads approved for this Run.
++        return own, inherited
+     return {**historical, **own}, (set(historical) - set(own)) | inherited
+--- a/pdos-next/server/pdos_next/enterprise_search/assistant_materials.py
++++ b/pdos-next/server/pdos_next/enterprise_search/assistant_materials.py
+@@ -5,6 +5,7 @@
+ from sqlalchemy import func, select
+ 
+ from pdos_next.agent_kernel.models import AgentRun
++from pdos_next.service import Context
+ 
+ from . import assistant_ledger as ledger
+ from .assistant_sources import current
+@@ -14,7 +15,21 @@
+ 
+ def read(session, scope, data, call_id):
+     run = session.get(AgentRun, scope.run_id)
++    from pdos_next.agent_kernel.context_corrections import (
++        accepts,
++        frozen_condition,
++        recheck,
++        values,
++    )
++
++    condition = frozen_condition(run)
++    if condition:
++        recheck(session, Context(scope.tenant_id, scope.requester_id, scope.requester_id,
++                                 category_id=scope.category_id), run, condition)
+     pinned = {ref["artifact_id"]: ref["expected_revision"] for ref in run.read_sources}
++    for ref in values(condition):
++        if ref["source_type"] == "artifact":
++            pinned[ref["source_id"]] = ref["source_revision"]
+     ids = list(dict.fromkeys(str(identity) for identity in data.artifact_ids))
+     if set(ids) - set(pinned):
+         ledger.deny("material_not_pinned")
+@@ -53,6 +68,8 @@
+         if identity not in actual:
+             continue
+         item = candidates[identity]
++        if not accepts(item, condition, actual=actual[identity]):
++            continue
+         item.update(
+             private=actual[identity]["private"],
+             customer_original=actual[identity]["customer_original"],
+--- a/pdos-next/server/pdos_next/enterprise_search/assistant_scope.py
++++ b/pdos-next/server/pdos_next/enterprise_search/assistant_scope.py
+@@ -41,7 +41,27 @@
+     if state is not None and digest(state) != run.versions.get("work_state_digest"):
+         ledger.deny("work_state_changed")
+     excluded = excluded_sources(session, run, state or {})
+-    primary = _verified(session, search(session, ctx, data, exclude_sources=excluded))
++    from pdos_next.agent_kernel.context_corrections import frozen_condition, recheck
++
++    condition = frozen_condition(run)
++    if condition:
++        recheck(session, ctx, run, condition)
++    selected = None
++    for rows in ((condition or {}).get("sources"),
++                 (condition or {}).get("versions")
++                 if (condition or {}).get("version_mode") == "fixed" else None):
++        if rows is not None:
++            keys = {(row["source_type"], row["source_id"], row["source_revision"],
++                     row["content_hash"]) for row in rows}
++            selected = keys if selected is None else selected & keys
++    focus = (condition or {}).get("focus")
++    filters = {"include_sources": selected,
++               "focus_object": (focus["source_type"], focus["object_id"]) if focus else None,
++               "current_only": (condition or {}).get("version_mode") == "current"}
++    if selected is not None:
++        data = data.model_copy(update={"include_history": True})
++    primary = _verified(session, search(session, ctx, data, exclude_sources=excluded,
++                                        **filters))
+     if not scope.project_id and not scope.proposal_id:
+         return primary
+     preferences = SearchPreferences.model_validate(
+@@ -61,7 +81,7 @@
+                                     "project_id": None, "proposal_id": None}),
+             exclude_project=scope.project_id, exclude_proposal=scope.proposal_id,
+             exclude_sources=set(excluded) | identities,
+-            allow_customer_private=preferences.include_customer_private,
++            allow_customer_private=preferences.include_customer_private, **filters,
+         ))
+         groups.append(("same_category", "同品类其他项目", fallback))
+     items, descriptors = [], []
+--- a/pdos-next/server/pdos_next/enterprise_search/query.py
++++ b/pdos-next/server/pdos_next/enterprise_search/query.py
+@@ -59,6 +59,7 @@
+ def search(
+     session, ctx, data: SearchInput, *, exclude_project=None, exclude_proposal=None,
+     exclude_sources=(), allow_customer_private=True,
++    include_sources=None, focus_object=None, current_only=False,
+ ):
+     require_context(session, ctx)
+     scope = _narrow(session, ctx, data)
+@@ -70,7 +71,13 @@
+     if not parsed["terms"] and not parsed["codes"] and identity is None:
+         raise DomainError("INVALID_PAYLOAD", "请输入可检索的词语或对象编号。", 422)
+     prepare_read(session, data.source_types)
+-    families, as_of = source_families(session, ctx, data.source_types, scope)
++    # A Human-selected case may belong to another readable project/product in
++    # the same category. Presence pruning must not discard that whole family
++    # using the unchanged business target before the exact SQL selector runs.
++    family_scope = scope
++    if include_sources is not None or focus_object is not None:
++        family_scope = {**scope, "product_id": None, "project_id": None, "proposal_id": None}
++    families, as_of = source_families(session, ctx, data.source_types, family_scope)
+     if not families:
+         return _response(session, data, scope, parsed, [], as_of=as_of)
+     c, state, corpus = SearchChunk, SearchSource, SearchCorpus
+@@ -111,9 +118,27 @@
+ 
+     authority = retrieval_catalog(families)
+     scoped = select(authority).where(authority.c.tenant_id == ctx.tenant_id)
++    explicit = None
++    if include_sources is not None:
++        explicit = tuple_(authority.c.source_type, authority.c.source_id,
++                          authority.c.source_revision, authority.c.content_hash).in_(
++            [(kind, UUID(str(identity)), revision, sha) for kind, identity, revision, sha
++             in include_sources]
++        )
++        scoped = scoped.where(explicit)
++    if focus_object is not None:
++        focus = and_(authority.c.source_type == focus_object[0],
++                     authority.c.object_id == UUID(str(focus_object[1])))
++        scoped = scoped.where(focus)
++        explicit = focus if explicit is None else and_(explicit, focus)
++    if current_only:
++        scoped = scoped.where(authority.c.is_current)
+     for key, value in scope.items():
+         if value is not None:
+-            scoped = scoped.where(getattr(authority.c, key) == value)
++            predicate = getattr(authority.c, key) == value
++            if key != "category_id" and explicit is not None:
++                predicate = or_(predicate, explicit)
++            scoped = scoped.where(predicate)
+     # These filters come only from the host's one-shot same-category policy.
+     # Apply them to both direct and relation authority before counts or paging.
+     if exclude_project is not None:
+--- a/pdos-next/server/pdos_next/skill_packages/context-schemas.json
++++ b/pdos-next/server/pdos_next/skill_packages/context-schemas.json
+@@ -794,6 +794,75 @@
+             "scoped"
+           ],
+           "additionalProperties": false
++        },
++        "context_selection": {
++          "additionalProperties": false,
++          "properties": {
++            "version": {
++              "const": 1,
++              "default": 1,
++              "title": "Version",
++              "type": "integer"
++            },
++            "status": {
++              "enum": [
++                "available",
++                "unavailable"
++              ],
++              "title": "Status",
++              "type": "string"
++            },
++            "focus": {
++              "anyOf": [
++                {
++                  "$ref": "#/$defs/context_correction_SelectedSource"
++                },
++                {
++                  "type": "null"
++                }
++              ]
++            },
++            "version_mode": {
++              "enum": [
++                "any",
++                "current",
++                "fixed"
++              ],
++              "title": "Version Mode",
++              "type": "string"
++            },
++            "versions": {
++              "items": {
++                "$ref": "#/$defs/context_correction_SelectedSource"
++              },
++              "title": "Versions",
++              "type": "array"
++            },
++            "sources": {
++              "anyOf": [
++                {
++                  "items": {
++                    "$ref": "#/$defs/context_correction_SelectedSource"
++                  },
++                  "minItems": 1,
++                  "type": "array"
++                },
++                {
++                  "type": "null"
++                }
++              ],
++              "title": "Sources"
++            }
++          },
++          "required": [
++            "status",
++            "focus",
++            "version_mode",
++            "versions",
++            "sources"
++          ],
++          "title": "ContextSelection",
++          "type": "object"
+         }
+       },
+       "required": [
+@@ -818,6 +887,115 @@
+         "missing"
+       ],
+       "additionalProperties": false
++    },
++    "context_correction_SelectedSource": {
++      "additionalProperties": false,
++      "properties": {
++        "source_type": {
++          "enum": [
++            "artifact",
++            "knowledge",
++            "issue",
++            "capa",
++            "change",
++            "external_wait",
++            "supply",
++            "build",
++            "test_run"
++          ],
++          "title": "Source Type",
++          "type": "string"
++        },
++        "source_id": {
++          "format": "uuid",
++          "title": "Source Id",
++          "type": "string"
++        },
++        "object_id": {
++          "format": "uuid",
++          "title": "Object Id",
++          "type": "string"
++        },
++        "source_revision": {
++          "minimum": 1,
++          "title": "Source Revision",
++          "type": "integer"
++        },
++        "content_hash": {
++          "pattern": "^[a-f0-9]{64}$",
++          "title": "Content Hash",
++          "type": "string"
++        },
++        "category_id": {
++          "format": "uuid",
++          "title": "Category Id",
++          "type": "string"
++        },
++        "product_id": {
++          "anyOf": [
++            {
++              "format": "uuid",
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Product Id"
++        },
++        "project_id": {
++          "anyOf": [
++            {
++              "format": "uuid",
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Project Id"
++        },
++        "proposal_id": {
++          "anyOf": [
++            {
++              "format": "uuid",
++              "type": "string"
++            },
++            {
++              "type": "null"
++            }
++          ],
++          "default": null,
++          "title": "Proposal Id"
++        },
++        "title": {
++          "title": "Title",
++          "type": "string"
++        },
++        "private": {
++          "title": "Private",
++          "type": "boolean"
++        },
++        "customer_original": {
++          "title": "Customer Original",
++          "type": "boolean"
++        }
++      },
++      "required": [
++        "source_type",
++        "source_id",
++        "object_id",
++        "source_revision",
++        "content_hash",
++        "category_id",
++        "title",
++        "private",
++        "customer_original"
++      ],
++      "title": "SelectedSource",
++      "type": "object"
+     }
+   },
+   "profiles": {
+--- /dev/null
++++ b/pdos-next/server/tests/agent_kernel/test_context_correction_start.py
+@@ -0,0 +1,202 @@
++"""Execute the actual public start endpoint with the delivered API patch in a temp copy."""
++
++import asyncio
++import importlib.util
++import subprocess
++import sys
++from contextlib import contextmanager
++from pathlib import Path
++from types import SimpleNamespace
++from uuid import UUID, uuid4
++
++import pytest
++
++from pdos_next.agent_kernel import context_corrections, conversation, work_state
++from pdos_next.contracts import SourceRead
++from pdos_next.errors import DomainError
++from pdos_next.service import Context, digest
++from tests.agent_kernel.test_context_corrections import case
++
++
++def patched_api(tmp_path):
++    # In the integrated tree the root applies the public API hook itself. The
++    # stage alone leaves api.py immutable and validates its separate patch here.
++    from pdos_next.agent_kernel import api as actual
++
++    if "context_revision" in actual.StartInput.model_fields:
++        return actual
++    stage = Path(__file__).parents[4]
++    relative = Path("pdos-next/server/pdos_next/agent_kernel/api.py")
++    target = tmp_path / relative
++    target.parent.mkdir(parents=True)
++    target.write_bytes((stage / relative).read_bytes())
++    subprocess.run(
++        ["git", "apply", "--check", str(stage / "api-context-corrections.patch")],
++        cwd=tmp_path,
++        check=True,
++        capture_output=True,
++    )
++    subprocess.run(
++        ["git", "apply", str(stage / "api-context-corrections.patch")],
++        cwd=tmp_path,
++        check=True,
++        capture_output=True,
++    )
++    name = "pdos_next.agent_kernel._context_correction_api_test"
++    spec = importlib.util.spec_from_file_location(name, target)
++    module = importlib.util.module_from_spec(spec)
++    sys.modules[name] = module
++    spec.loader.exec_module(module)
++    return module
++
++
++def test_actual_start_freezes_only_original_human_sources_before_dispatch(monkeypatch, tmp_path):
++    api = patched_api(tmp_path)
++    run, _ctx, ref = case()
++    ref.update(source_type="artifact", object_id=ref["source_id"])
++    ctx = Context(run.tenant_id, run.requester_id, run.requester_id, category_id=run.category_id)
++    original_ref = SourceRead(artifact_id=UUID(ref["source_id"]), expected_revision=2)
++    auto_ref = SourceRead(artifact_id=uuid4(), expected_revision=1)
++    data = api.StartInput(
++        goal="只看所选资料", idempotency_key="context-public-start", sources=[original_ref]
++    )
++    effective = data.model_copy(update={"session_id": uuid4(), "sources": [original_ref, auto_ref]})
++    run.session_id, run.state, run.continued_from_id = effective.session_id, "queued", None
++    events, dispatched, reads = [], [], []
++    scalars = iter([None, None, run, True, run])
++    session = SimpleNamespace(
++        execute=lambda *_args, **_kwargs: None,
++        scalar=lambda *_args: next(scalars),
++        add=events.append,
++    )
++
++    @contextmanager
++    def transaction(*_args, **_kwargs):
++        yield session
++
++    def resolve(_session, _ctx, _run, choices):
++        reads.append(choices)
++        assert len(choices) == 1 and choices[0].source_id == original_ref.artifact_id
++        return [ref]
++
++    async def dispatch(_reference):
++        condition, configured = context_corrections.requested(run)
++        assert configured and condition["sources"] == [ref]
++        assert run.versions["requested_context_selection_digest"] == digest(condition)
++        dispatched.append(run.id)
++
++    monkeypatch.setattr(api, "tenant_session", transaction)
++    created = []
++
++    def create(*_args, **kwargs):
++        run.intent_digest = kwargs["request_digest"]
++        created.append(kwargs)
++        return run
++
++    monkeypatch.setattr(api, "create_run", create)
++    monkeypatch.setattr(api, "require_access", lambda *_args: None)
++    monkeypatch.setattr(conversation, "prepare", lambda *_args: (effective, None))
++    monkeypatch.setattr(context_corrections, "resolve", resolve)
++    monkeypatch.setattr(work_state, "latest", lambda *_: None)
++    binding = SimpleNamespace(
++        private_context=True, data_categories=["internal"], customer_identities=[], read_sources=[]
++    )
++    ports = api.ApiPorts(
++        writer_for=lambda *_args: uuid4(),
++        binding_for=lambda *_args: binding,
++        start_workflow=dispatch,
++        signal_workflow=None,
++        cancel_workflow=None,
++    )
++    router = api.router(None, context_dependency=lambda: ctx, ports=ports)
++    endpoint = next(
++        route.endpoint
++        for route in router.routes
++        if getattr(route, "path", None) == "/v1/categories/{category_id}/agent-runs"
++        and "POST" in route.methods
++    )
++    result = asyncio.run(endpoint(data, ctx=ctx))
++    assert result["run_id"] == str(run.id) and dispatched == [run.id] and len(reads) == 1
++    assert (
++        len(effective.sources) == 2
++        and len(run.versions["requested_context_selection"]["sources"]) == 1
++    )
++
++    legacy = data.model_dump(
++        exclude={
++            "idempotency_key",
++            "project_id",
++            "requested_skills",
++            "search_preferences",
++            "verification_action",
++            "lookup_depth",
++            "context_revision",
++        }
++    )
++    assert run.intent_digest == digest({"category_id": ctx.category_id, "request": legacy})
++    monkeypatch.setattr(
++        context_corrections,
++        "configure_start",
++        lambda *_args: pytest.fail("accepted intent must not reconfigure"),
++    )
++    replay = asyncio.run(endpoint(data, ctx=ctx))
++    assert replay["run_id"] == result["run_id"] and len(created) == len(reads) == 1
++    with pytest.raises(DomainError) as conflict:
++        asyncio.run(endpoint(data.model_copy(update={"context_revision": 1}), ctx=ctx))
++    assert conflict.value.code == "DUPLICATE_INTENT_CONFLICT"
++
++
++def test_actual_prepare_checks_context_revision_under_original_lock_order(monkeypatch, tmp_path):
++    api = patched_api(tmp_path)
++    parent, ctx, _ref = case()
++    parent.session_id, parent.reverted_at, parent.state = uuid4(), None, "completed"
++    state = SimpleNamespace(revision=7, body={})
++    conversation_row = SimpleNamespace(owner_id=parent.requester_id)
++    events = []
++    monkeypatch.setattr(conversation, "owner", lambda *_: None)
++    monkeypatch.setattr(conversation, "current_proposal_id", lambda *_: None)
++    monkeypatch.setattr(work_state, "_lock", lambda *_: events.append("work-state advisory"))
++    monkeypatch.setattr(work_state, "latest", lambda *_: events.append("latest") or state)
++    data = api.StartInput(
++        goal="按本次选择重新查",
++        idempotency_key="context-cas-original",
++        continue_from_run_id=parent.id,
++        context_revision=6,
++    )
++
++    def session():
++        sequence = iter([parent, None, conversation_row])
++
++        def scalar(statement):
++            value = next(sequence)
++            if value is parent:
++                assert statement._for_update_arg is not None
++                events.append("Run lock")
++            return value
++
++        return SimpleNamespace(scalar=scalar)
++
++    with pytest.raises(DomainError) as stale:
++        conversation.prepare(session(), ctx, data)
++    assert stale.value.code == "VERSION_CONFLICT"
++    assert events == ["Run lock", "work-state advisory", "latest"]
++    events.clear()
++    effective, actual_parent = conversation.prepare(
++        session(), ctx, data.model_copy(update={"context_revision": 7})
++    )
++    assert actual_parent is parent and effective.session_id == parent.session_id
++    assert effective.product_id == parent.product_id and effective.project_id == parent.project_id
++    legacy, legacy_parent = conversation.prepare(
++        SimpleNamespace(),
++        ctx,
++        api.StartInput(goal="普通旧请求", idempotency_key="legacy-no-context-cas"),
++    )
++    assert legacy.context_revision is None and legacy_parent is None
++    with pytest.raises(DomainError):
++        conversation.prepare(
++            SimpleNamespace(),
++            ctx,
++            api.StartInput(
++                goal="新会话不能夹带版本", idempotency_key="bad-context-cas", context_revision=7
++            ),
++        )
+--- /dev/null
++++ b/pdos-next/server/tests/agent_kernel/test_context_corrections.py
+@@ -0,0 +1,371 @@
++"""Human selectors use actual fixed source reads, not prompt or scope claims."""
++
++from copy import deepcopy
++from types import SimpleNamespace
++from uuid import UUID, uuid4
++
++import pytest
++from pydantic import ValidationError
++from sqlalchemy.dialects import postgresql
++
++from pdos_next.agent_kernel import context_corrections as corrections
++from pdos_next.agent_kernel import work_state
++from pdos_next.agent_kernel.conversation import merge_binding
++from pdos_next.contracts import SourceRead
++from pdos_next.errors import DomainError
++from pdos_next.service import digest
++
++
++def case():
++    run = SimpleNamespace(
++        id=uuid4(),
++        tenant_id=uuid4(),
++        requester_id=uuid4(),
++        category_id=uuid4(),
++        product_id=None,
++        project_id=None,
++        proposal_id=None,
++        read_sources=[],
++        versions={},
++        private_context=False,
++        data_categories=["internal"],
++        customer_identities=[],
++    )
++    ctx = SimpleNamespace(tenant_id=run.tenant_id, requester_id=run.requester_id)
++    ref = {
++        "source_type": "issue",
++        "source_id": str(uuid4()),
++        "object_id": str(uuid4()),
++        "source_revision": 2,
++        "content_hash": "a" * 64,
++        "category_id": str(run.category_id),
++        "product_id": None,
++        "project_id": None,
++        "proposal_id": None,
++        "title": "实际登记问题",
++        "private": True,
++        "customer_original": False,
++    }
++    return run, ctx, ref
++
++
++def selection(ref, **updates):
++    return {
++        "version": 1,
++        "status": "available",
++        "focus": ref,
++        "version_mode": "any",
++        "versions": [],
++        "sources": None,
++        **updates,
++    }
++
++
++def change(ref, kind="replace_focus"):
++    return corrections.ContextChange(
++        kind=kind,
++        sources=[
++            {
++                "source_type": ref["source_type"],
++                "source_id": ref["source_id"],
++                "expected_revision": ref["source_revision"],
++            }
++        ],
++    )
++
++
++@pytest.mark.parametrize(
++    "patch",
++    [
++        {"owner_id": str(uuid4())},
++        {"tenant_id": str(uuid4())},
++        {"audience": []},
++        {
++            "sources": [
++                {
++                    "source_type": "issue",
++                    "source_id": str(uuid4()),
++                    "expected_revision": 1,
++                    "content_hash": "a" * 64,
++                }
++            ]
++        },
++    ],
++)
++def test_human_change_is_closed_and_cannot_supply_policy_or_actual_hash(patch):
++    _run, _ctx, ref = case()
++    with pytest.raises(ValidationError):
++        corrections.ContextChange.model_validate({**change(ref).model_dump(), **patch})
++
++
++def test_existing_work_state_actions_cannot_smuggle_a_context_change():
++    _run, _ctx, ref = case()
++    base = {"request_key": uuid4(), "expected_revision": 4}
++    assert work_state.ChangeInput(**base, action="correct_context", context_change=change(ref))
++    with pytest.raises(ValidationError):
++        work_state.ChangeInput(
++            **base, action="remove_constraint", item_id=uuid4(), context_change=change(ref)
++        )
++    with pytest.raises(ValidationError):
++        work_state.ChangeInput(
++            **base, action="correct_context", item_id=uuid4(), context_change=change(ref)
++        )
++
++
++def test_catalog_lookup_keeps_scope_and_exact_version_under_ordinary_rls(monkeypatch):
++    run, _ctx, ref = case()
++    run.product_id, run.project_id = uuid4(), uuid4()
++    statements = []
++    monkeypatch.setattr("pdos_next.enterprise_search.sources.prepare_read", lambda *_: None)
++    session = SimpleNamespace(
++        execute=lambda query: (
++            statements.append(query)
++            or SimpleNamespace(mappings=lambda: SimpleNamespace(all=lambda: []))
++        )
++    )
++    corrections._rows(session, run, change(ref).sources)
++    sql = str(
++        statements[0].compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True})
++    )
++    assert str(run.tenant_id) in sql and str(run.category_id) in sql
++    assert "source_id" in sql and "category_id" in sql
++    assert str(run.product_id) not in sql and str(run.project_id) not in sql
++    assert "source_revision) IN" in sql and str(ref["source_id"]) in sql
++    assert "SECURITY DEFINER" not in sql and "owner_id =" not in sql
++
++
++def test_resolution_reloads_real_rows_and_dependencies_not_browser_titles(monkeypatch):
++    run, ctx, ref = case()
++    actual = {
++        **ref,
++        "source_id": UUID(ref["source_id"]),
++        "object_id": UUID(ref["object_id"]),
++        "category_id": run.category_id,
++        "private": False,
++    }
++    monkeypatch.setattr(corrections, "_rows", lambda *_: [actual])
++    seen = []
++
++    def current(_session, rows):
++        seen.append(rows)
++        return {"0": {"private": True, "customer_original": True}}, {}
++
++    monkeypatch.setattr("pdos_next.enterprise_search.assistant_sources.current", current)
++    result = corrections.resolve(None, ctx, run, change(ref).sources)
++    assert result[0]["title"] == ref["title"] and result[0]["content_hash"] == ref["content_hash"]
++    assert result[0]["private"] and result[0]["customer_original"]
++    assert len(seen) == 1
++    monkeypatch.setattr(
++        "pdos_next.enterprise_search.assistant_sources.current",
++        lambda *_: ({}, {"0": "source_dependency_unavailable"}),
++    )
++    with pytest.raises(DomainError):
++        corrections.resolve(None, ctx, run, change(ref).sources)
++
++
++def test_wrong_object_replaces_focus_but_retains_literal_constraints_and_tombstones(monkeypatch):
++    run, ctx, ref = case()
++    body = work_state.empty()
++    body.update(
++        constraints=[{"id": "literal", "text": "压力单位未知", "run_id": str(run.id)}],
++        removed_constraints=["deleted"],
++        focus_objects=[
++            {
++                "kind": "artifact",
++                "id": str(uuid4()),
++                "version": 1,
++                "run_id": str(run.id),
++            }
++        ],
++        context_selection=selection(ref, version_mode="fixed", versions=[ref]),
++    )
++    before = deepcopy(body)
++    monkeypatch.setattr(corrections, "resolve", lambda *_: [ref])
++    corrections.apply(None, ctx, run, body, change(ref))
++    assert body["constraints"] == before["constraints"]
++    assert body["removed_constraints"] == ["deleted"]
++    assert body["context_selection"]["focus"] == ref
++    assert body["context_selection"]["versions"] == [ref]
++    assert body["context_selection"]["version_mode"] == "fixed"
++    newer = {**ref, "source_id": str(uuid4()), "source_revision": 3, "content_hash": "b" * 64}
++    assert not corrections.accepts(newer, body["context_selection"])
++    assert all(item["kind"] != "artifact" for item in body["focus_objects"])
++    corrections.apply(None, ctx, run, body, corrections.ContextChange(kind="clear"))
++    assert "context_selection" not in body and body["focus_objects"] == []
++    assert body["removed_constraints"] == ["deleted"]
++
++
++def test_human_current_choice_resolves_actual_head_once_without_rewriting_old_run(monkeypatch):
++    run, ctx, ref = case()
++    body = work_state.empty() | {"context_selection": selection(ref)}
++    old = deepcopy(ref)
++    head = {**ref, "source_id": str(uuid4()), "source_revision": 3, "content_hash": "b" * 64}
++    monkeypatch.setattr(corrections, "_current_focus", lambda *_: head)
++    corrections.apply(None, ctx, run, body, corrections.ContextChange(kind="current_only"))
++    assert body["context_selection"]["focus"] == head
++    assert body["context_selection"]["version_mode"] == "current" and ref == old
++    assert body["context_selection"]["sources"] == [head]
++    newer = {**head, "source_id": str(uuid4()), "source_revision": 4, "content_hash": "c" * 64}
++    assert not corrections.accepts(newer, body["context_selection"], actual={"is_current": True})
++
++
++def test_only_explicit_current_artifact_choice_replaces_parent_fixed_read(monkeypatch):
++    run, ctx, ref = case()
++    ref.update(source_type="artifact", object_id=ref["source_id"])
++    run.read_sources = [{"artifact_id": ref["source_id"], "expected_revision": 1}]
++    state = SimpleNamespace(body={"context_selection": selection(ref)})
++    monkeypatch.setattr(corrections, "recheck", lambda *_: selection(ref))
++    reads, _condition = corrections.selected_reads(None, ctx, run, state, [])
++    assert reads == [SourceRead(artifact_id=ref["source_id"], expected_revision=2)]
++    assert run.read_sources[0]["expected_revision"] == 1
++    with pytest.raises(DomainError):
++        corrections.selected_reads(
++            None,
++            ctx,
++            run,
++            state,
++            [
++                SourceRead(artifact_id=ref["source_id"], expected_revision=1),
++            ],
++        )
++    monkeypatch.setattr(corrections, "recheck", lambda *_: None)
++    with pytest.raises(DomainError):
++        corrections.selected_reads(None, ctx, run, state, reads)
++
++
++def test_original_human_sources_limit_but_automatic_verification_sources_do_not(monkeypatch):
++    run, ctx, ref = case()
++    original = SimpleNamespace(sources=[])
++    effective = SimpleNamespace(sources=[SourceRead(artifact_id=uuid4(), expected_revision=1)])
++    monkeypatch.setattr(corrections, "resolve", lambda *_: [ref])
++    corrections.configure_start(None, ctx, run, original, effective, None)
++    assert corrections.requested(run) == (None, True)
++    original.sources = effective.sources
++    corrections.configure_start(None, ctx, run, original, effective, None)
++    assert corrections.requested(run)[0]["sources"] == [ref]
++    assert run.versions["context_selection_start_revision"] == 0
++
++
++def test_actual_selected_privacy_merges_with_original_binding_without_scope_change():
++    run, _ctx, _ref = case()
++    run._explicit_context_binding = {
++        "private_context": True,
++        "data_categories": ["customer_original"],
++    }
++    binding = SimpleNamespace(
++        private_context=False, data_categories=["internal"], customer_identities=[], read_sources=[]
++    )
++    merged = merge_binding(binding, run)
++    assert merged.private_context and "customer_original" in merged.data_categories
++    assert not hasattr(merged, "category_id") and run.category_id is not None
++
++
++def test_frozen_condition_digest_and_fixed_hash_remain_authoritative(monkeypatch):
++    run, ctx, ref = case()
++    value = selection(ref)
++    run.versions = {"work_state": {"context_selection": value}, "work_state_digest": "bad"}
++    with pytest.raises(DomainError):
++        corrections.frozen_condition(run)
++    run.versions["work_state_digest"] = digest(run.versions["work_state"])
++    assert corrections.frozen_condition(run) == value
++    monkeypatch.setattr(corrections, "resolve", lambda *_: [{**ref, "content_hash": "b" * 64}])
++    with pytest.raises(DomainError):
++        corrections.recheck(None, ctx, run, value)
++    hidden = corrections.public(None, ctx, run, value)
++    assert hidden["status"] == "unavailable" and ref["title"] not in str(hidden)
++
++
++def test_exact_allowlist_and_currentness_never_become_applicability():
++    _run, _ctx, ref = case()
++    fixed = selection(ref, focus=None, sources=[ref])
++    assert corrections.accepts(ref, fixed)
++    assert not corrections.accepts({**ref, "content_hash": "b" * 64}, fixed)
++    assert not corrections.accepts({**ref, "source_revision": 3}, fixed)
++    current = selection(ref, focus=None, version_mode="current")
++    assert not corrections.accepts(ref, current, actual={"is_current": False})
++    assert corrections.accepts(ref, current, actual={"is_current": True})
++    assert "applicable" not in current and "verified" not in current
++
++
++def test_removed_literal_condition_is_not_revived_by_context_choices(monkeypatch):
++    run, ctx, ref = case()
++    proposal = {"run_id": str(run.id), "text": "压力单位未知"}
++    accepted, _ = work_state.validate_constraints([proposal], {str(run.id): "压力单位未知"}, set())
++    body = work_state.empty() | {"removed_constraints": [accepted[0]["id"]]}
++    monkeypatch.setattr(corrections, "resolve", lambda *_: [ref])
++    corrections.apply(None, ctx, run, body, change(ref, "limit_sources"))
++    values, rejected = work_state.validate_constraints(
++        [proposal], {str(run.id): "压力单位未知"}, set(body["removed_constraints"])
++    )
++    assert values == [] and rejected[0]["reason"] == "removed_by_user"
++
++
++def test_real_finish_does_not_resurrect_a_later_human_clear_or_deleted_literal(monkeypatch):
++    run, _ctx, ref = case()
++    run.category_id = None
++    run.trigger, run.state, run.goal, run.session_id = (
++        "conversation",
++        "failed",
++        "压力单位未知",
++        uuid4(),
++    )
++    literal, _ = work_state.validate_constraints(
++        [{"run_id": str(run.id), "text": run.goal}],
++        {str(run.id): run.goal},
++        set(),
++    )
++    body = work_state.empty() | {"removed_constraints": [literal[0]["id"]]}
++    latest = SimpleNamespace(revision=2, body=body)
++    condition = selection(ref)
++    run.versions = {
++        "requested_context_selection": condition,
++        "requested_context_selection_digest": digest(condition),
++        "context_selection_start_revision": 1,
++    }
++    sequences = iter([[SimpleNamespace(id=run.id, goal=run.goal)], [], []])
++    session = SimpleNamespace(
++        scalar=lambda *_: None, execute=lambda *_: SimpleNamespace(all=lambda: next(sequences))
++    )
++    appended = []
++    monkeypatch.setattr(work_state, "_lock", lambda *_: None)
++    monkeypatch.setattr(work_state, "latest", lambda *_: latest)
++    monkeypatch.setattr(
++        work_state,
++        "_append",
++        lambda _session, _run, value, **_kwargs: appended.append(deepcopy(value)),
++    )
++    work_state._record_finish(
++        session,
++        run,
++        {
++            "result": {
++                "context_proposals": {
++                    "constraints": [{"run_id": str(run.id), "text": run.goal}],
++                }
++            }
++        },
++    )
++    assert "context_selection" not in appended[0]
++    assert appended[0]["constraints"] == []
++    assert appended[0]["removed_constraints"] == [literal[0]["id"]]
++    assert run.versions["work_state_proposals"]["rejected"][0]["reason"] == "removed_by_user"
++
++
++def test_registered_context_schema_retains_exact_human_selection_without_new_authority():
++    from pdos_next.agent_kernel.context_projection import project
++    from pdos_next.agent_kernel.skills import SkillCatalog
++
++    _run, _ctx, ref = case()
++    registered = SkillCatalog().contexts
++    schema = {
++        **registered["$defs"]["work_state"]["properties"]["context_selection"],
++        "$defs": registered["$defs"],
++    }
++    value = selection(ref, version_mode="fixed", versions=[ref])
++    projected, omitted, issues = project(value, schema)
++    assert projected == value and not omitted and not issues
++    assert projected["versions"][0]["content_hash"] == ref["content_hash"]
++    assert schema["additionalProperties"] is False
++    narrowed, omitted, issues = project({**value, "audience": ["model-supplied"]}, schema)
++    assert narrowed == value and not issues
++    assert omitted == [{"field": "/audience", "reason": "outside_skill_context_schema"}]
+--- /dev/null
++++ b/pdos-next/server/tests/agent_kernel/test_context_corrections_pg.py
+@@ -0,0 +1,239 @@
++"""Actual HTTP/CAS/RLS/SQL drafts. Root runs only on its verified isolated pdos_test.
++
++No real model/embedding call is required. API patch and preceding stages must be
++applied before these tests; no provider inference is started by this file.
++"""
++
++from uuid import UUID, uuid4
++
++from sqlalchemy import func, select
++from sqlalchemy.orm import Session
++
++from pdos_next.agent_kernel.bootstrap import Bootstrap
++from pdos_next.agent_kernel.models import AgentRun
++from pdos_next.agent_kernel.persistence import KernelStore
++from pdos_next.agent_kernel.work_state_models import AgentWorkState
++from pdos_next.database import tenant_session
++from pdos_next.enterprise_search.assistant_schemas import AssistantSearchInput
++from pdos_next.enterprise_search.assistant_scope import retrieve
++from tests.agent_kernel.test_run_continuation import path, scope, start
++from tests.enterprise_search.test_retrieval_pg import index, register
++
++
++def finish(setup, identity, *, proposed_run=None, personal=False):
++    KernelStore(setup.engine).finish(
++        scope(setup, identity, personal=personal),
++        {
++            "summary": "合成案例核对结果，压力单位未知。",
++            "unfinished": [],
++            "questions": [],
++            "result": {
++                "context_proposals": {
++                    "constraints": [
++                        {"run_id": str(proposed_run or identity), "text": "压力单位未知"},
++                    ]
++                }
++            },
++        },
++    )
++
++
++def work_path(setup, session_id):
++    return f"/v1/categories/{setup.category}/agent-sessions/{session_id}/work-state"
++
++
++def read_state(setup, session_id):
++    response = setup.client.get(work_path(setup, session_id), headers=setup.headers)
++    assert response.status_code == 200, response.text
++    return response.json()
++
++
++def edit(setup, session_id, state, kind, refs=(), *, key=None):
++    body = {
++        "expected_revision": state["revision"],
++        "request_key": str(key or uuid4()),
++        "action": "correct_context",
++        "context_change": {"kind": kind, "sources": list(refs)},
++    }
++    response = setup.client.post(work_path(setup, session_id), headers=setup.headers, json=body)
++    return response, body
++
++
++def search_run(setup, identity):
++    host = Bootstrap(setup.engine)
++    actual_scope = scope(setup, identity)
++    host.project_context(actual_scope, "按选定资料核对漏气，压力单位未知。")
++    with tenant_session(
++        setup.engine,
++        setup.tenant,
++        actor_id=setup.human,
++        requester_id=setup.human,
++        category_id=setup.category,
++        read_snapshot=True,
++    ) as session:
++        return retrieve(
++            session,
++            setup.ctx,
++            actual_scope,
++            AssistantSearchInput(query="漏气", source_types=["artifact"], limit=1),
++        )
++
++
++def test_private_source_selection_replay_sql_limit_clear_and_deleted_constraint(setup):
++    first = register(setup, "原漏气资料", "漏气处理参考。", visibility="private")
++    second = register(setup, "正确漏气资料", "漏气处理参考。", visibility="private")
++    for identity in (first, second):
++        index(setup, identity)
++    parent, accepted = start(
++        setup,
++        goal="核对漏气，压力单位未知。",
++        sources=[
++            {
++                "artifact_id": str(first),
++                "expected_revision": 1,
++            }
++        ],
++    )
++    finish(setup, parent)
++    session_id = accepted["session_id"]
++    state = read_state(setup, session_id)
++    assert state["context_selection"]["sources"][0]["source_id"] == str(first)
++    constraint = state["constraints"][0]["id"]
++    removed = setup.client.post(
++        work_path(setup, session_id),
++        headers=setup.headers,
++        json={
++            "expected_revision": state["revision"],
++            "request_key": str(uuid4()),
++            "action": "remove_constraint",
++            "item_id": constraint,
++        },
++    )
++    assert removed.status_code == 200, removed.text
++    state = removed.json()
++    response, original = edit(
++        setup,
++        session_id,
++        state,
++        "limit_sources",
++        [
++            {
++                "source_type": "artifact",
++                "source_id": str(second),
++                "expected_revision": 1,
++            }
++        ],
++    )
++    assert response.status_code == 200, response.text
++    assert (
++        setup.client.post(work_path(setup, session_id), headers=setup.headers, json=original).json()
++        == response.json()
++    )
++    saved_revision = response.json()["revision"]
++    changed = setup.client.post(
++        work_path(setup, session_id),
++        headers=setup.headers,
++        json={
++            "expected_revision": saved_revision,
++            "request_key": str(uuid4()),
++            "action": "set_search_scope",
++            "search_preferences": {
++                "scope": "current",
++                "include_customer_private": False,
++            },
++        },
++    )
++    assert changed.status_code == 200, changed.text
++    stale = setup.client.post(
++        path(setup),
++        headers=setup.headers,
++        json={
++            "continue_from_run_id": str(parent),
++            "goal": "继续核对漏气。",
++            "idempotency_key": str(uuid4()),
++            "context_revision": saved_revision,
++        },
++    )
++    assert stale.status_code == 409
++    accepted_revision, child_key = changed.json()["revision"], str(uuid4())
++    child, _ = start(
++        setup,
++        continue_from_run_id=str(parent),
++        goal="继续核对漏气。",
++        idempotency_key=child_key,
++        context_revision=accepted_revision,
++    )
++    found = search_run(setup, child)
++    assert found["returned"] == 1 and not found["truncated"]
++    assert {item["source_id"] for item in found["items"]} == {str(second)}
++    with Session(setup.admin) as session:
++        old, new = session.get(AgentRun, parent), session.get(AgentRun, child)
++        assert old.read_sources[0]["artifact_id"] == str(first)
++        assert {ref["artifact_id"] for ref in new.read_sources} == {str(second)}
++        assert (
++            session.scalar(
++                select(func.count())
++                .select_from(AgentWorkState)
++                .where(
++                    AgentWorkState.session_id == UUID(session_id),
++                    AgentWorkState.request_key == UUID(original["request_key"]),
++                )
++            )
++            == 1
++        )
++    finish(setup, child, proposed_run=parent)
++    state = read_state(setup, session_id)
++    assert state["constraints"] == []
++    cleared, _ = edit(setup, session_id, state, "clear")
++    assert cleared.status_code == 200 and "context_selection" not in cleared.json()
++    replay = setup.client.post(
++        path(setup),
++        headers=setup.headers,
++        json={
++            "continue_from_run_id": str(parent),
++            "goal": "继续核对漏气。",
++            "idempotency_key": child_key,
++            "context_revision": accepted_revision,
++        },
++    )
++    assert replay.status_code == 202 and replay.json()["run_id"] == str(child)
++    next_run, _ = start(setup, continue_from_run_id=str(child), goal="解除限定后继续核对漏气。")
++    next_result = search_run(setup, next_run)
++    assert next_result["returned"] == 1 and next_result["truncated"]
++    assert len(next_result["items"]) == 1  # both sources exist before LIMIT 1, so it truncates
++
++
++def test_context_options_are_owner_only_and_made_up_artifact_history_is_rejected(setup):
++    artifact = register(setup, "本人私有选定资料", "漏气。", visibility="private")
++    parent, accepted = start(setup, goal="核对资料，压力单位未知。")
++    finish(setup, parent)
++    session_id = accepted["session_id"]
++    options = work_path(setup, session_id) + "/context-options"
++    own = setup.client.get(options, params={"query": "本人私有选定资料"}, headers=setup.headers)
++    assert own.status_code == 200 and str(artifact) in own.text
++    for actor in (setup.peer, setup.other_human):
++        denied = setup.client.get(
++            options,
++            params={"query": "本人私有选定资料"},
++            headers={"Authorization": f"Bearer {setup.tokens[actor]}"},
++        )
++        assert denied.status_code in {403, 404}
++        assert str(artifact) not in denied.text and "本人私有选定资料" not in denied.text
++    state = read_state(setup, session_id)
++    response, _ = edit(
++        setup,
++        session_id,
++        state,
++        "fixed_versions",
++        [
++            {
++                "source_type": "artifact",
++                "source_id": str(artifact),
++                "expected_revision": 99,
++            }
++        ],
++    )
++    assert response.status_code == 403
++    assert read_state(setup, session_id)["revision"] == state["revision"]
++    original = setup.client.get(path(setup) + f"/{parent}", headers=setup.headers)
++    assert original.status_code == 200 and original.json()["status"] == "completed"
+--- /dev/null
++++ b/pdos-next/server/tests/agent_kernel/test_personal_context_pins_pg.py
+@@ -0,0 +1,161 @@
++"""Actual ordinary personal read pins; no business binding, model or new scan.
++
++Root-only PG draft. Synthetic fixture categories/grants and fault injection are
++local test data; no execution of this file is authorized in the subagent stage.
++"""
++# ruff: noqa: F811 -- registers the existing offline parser/scanner fixture
++
++import hashlib
++from dataclasses import replace
++from uuid import UUID, uuid4
++
++import pytest
++from sqlalchemy import select
++from sqlalchemy.orm import Session
++
++from pdos_next.agent_kernel.bootstrap import Bootstrap
++from pdos_next.agent_kernel.models import AgentRun
++from pdos_next.enterprise_search.assistant_materials import read
++from pdos_next.enterprise_search.assistant_schemas import MaterialsInput
++from pdos_next.enterprise_search.assistant_sources import human_snapshot
++from pdos_next.errors import DomainError
++from pdos_next.models import Artifact, Category, Grant
++from pdos_next.original_security import configure
++from tests.agent_kernel.test_context_corrections_pg import finish
++from tests.agent_kernel.test_run_continuation import scope, start
++from tests.test_original_security import parsed, uploaded
++from tests.test_original_security import security_work as security_work
++
++
++def pin_personal(setup, identities):
++    parent, accepted = start(setup, personal=True, goal="按选定资料核对，压力单位未知。")
++    finish(setup, parent, personal=True)
++    path = f"/v1/personal/agent-sessions/{accepted['session_id']}/work-state"
++    state = setup.client.get(path, headers=setup.headers).json()
++    changed = setup.client.post(
++        path,
++        headers=setup.headers,
++        json={
++            "expected_revision": state["revision"],
++            "request_key": str(uuid4()),
++            "action": "correct_context",
++            "context_change": {
++                "kind": "limit_sources",
++                "sources": [
++                    {"source_type": "artifact", "source_id": str(identity), "expected_revision": 1}
++                    for identity in identities
++                ],
++            },
++        },
++    )
++    assert changed.status_code == 200, changed.text
++    child, _ = start(
++        setup,
++        personal=True,
++        continue_from_run_id=str(parent),
++        goal="只依据这些资料继续核对。",
++        context_revision=changed.json()["revision"],
++    )
++    actual = scope(setup, child, personal=True)
++    Bootstrap(setup.engine).project_context(actual, "只依据这些资料继续核对。")
++    with Session(setup.admin) as session:
++        row = session.get(AgentRun, child)
++        assert row.category_id is None and row.product_id is None and row.read_sources == []
++        assert row.private_context
++    return actual
++
++
++def material(setup, actual, identities):
++    with human_snapshot(setup.engine, actual) as session:
++        return read(session, actual, MaterialsInput(artifact_ids=identities), uuid4())
++
++
++def test_personal_explicit_two_category_pins_read_normally_then_revoke_without_business_scope(
++    security_work,
++):
++    work, setup = security_work, security_work.setup
++    first = parsed(work, uploaded(work, content="个人固定原件。".encode()))
++    other_category, second = uuid4(), uuid4()
++    content = "另一品类本人可读固定资料。"
++    with Session(setup.admin) as session, session.begin():
++        session.add(
++            Category(
++                id=other_category,
++                tenant_id=setup.tenant,
++                owner_id=setup.human,
++                name="合成只读品类",
++                purpose="显式纠正的普通 RLS fixture",
++            )
++        )
++        session.flush()
++        session.add(
++            Grant(
++                tenant_id=setup.tenant,
++                category_id=other_category,
++                principal_id=setup.human,
++                can_write=False,
++            )
++        )
++        session.add(
++            Artifact(
++                id=second,
++                tenant_id=setup.tenant,
++                category_id=other_category,
++                product_id=None,
++                owner_id=setup.human,
++                title="另一品类本人资料",
++                source_label="合成",
++                content=content,
++                content_hash=hashlib.sha256(content.encode()).hexdigest(),
++                visibility="private",
++                revision=1,
++                status="active",
++            )
++        )
++    actual = pin_personal(setup, [first, second])
++    scans = work.scanner.calls
++    result = material(setup, actual, [first, second])
++    assert result["returned"] == 2 and {row["source_id"] for row in result["items"]} == {
++        str(first),
++        str(second),
++    }
++    with Session(setup.admin) as session, session.begin():
++        grant = session.scalar(
++            select(Grant).where(
++                Grant.category_id == other_category, Grant.principal_id == setup.human
++            )
++        )
++        session.delete(grant)
++    with pytest.raises(DomainError):
++        material(setup, actual, [second])
++    assert work.scanner.calls == scans
++
++
++@pytest.mark.parametrize("changed", ["content", "scan"])
++def test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes(
++    security_work,
++    changed,
++):
++    work, setup = security_work, security_work.setup
++    identity = UUID(str(parsed(work, uploaded(work, content="个人固定原件。".encode()))))
++    actual = pin_personal(setup, [identity])
++    assert material(setup, actual, [identity])["returned"] == 1
++    scans = work.scanner.calls
++    if changed == "content":
++        # Synthetic fault: a later mutable Artifact version does not reconstruct old bytes.
++        with Session(setup.admin) as session, session.begin():
++            row = session.get(Artifact, identity)
++            row.revision += 1
++            row.content = "后来的原值不能代替固定旧版"
++            row.content_hash = hashlib.sha256(row.content.encode()).hexdigest()
++    else:
++        configuration = replace(
++            work.runtime.configuration,
++            scanner=replace(
++                work.runtime.configuration.scanner, rules_version="context-pins-changed@2"
++            ),
++        )
++        configure(setup.engine, replace(work.runtime, configuration=configuration))
++    with pytest.raises(DomainError):
++        material(setup, actual, [identity])
++    assert work.scanner.calls == scans
+--- a/pdos-next/server/tests/enterprise_search/test_assistant_depth.py
++++ b/pdos-next/server/tests/enterprise_search/test_assistant_depth.py
+@@ -27,7 +27,7 @@
+     )
+     conversation = SimpleNamespace(id=session_id, owner_id=human, tenant_id=tenant,
+                                    proposal_id=None)
+-    rows = iter([parent, existing_child, conversation, None])
++    rows = iter([parent, existing_child, conversation, None, None])
+     writes = []
+ 
+     def get(model, identity):
+@@ -35,6 +35,7 @@
+         return SimpleNamespace(kind="human", active=True)
+ 
+     session = SimpleNamespace(scalar=lambda *_args: next(rows), get=get,
++                              execute=lambda *_args, **_kwargs: None,
+                               add=lambda *_args: writes.append(True))
+     requested = DeepenInput(continue_from_run_id=parent.id, goal="比较尚未核对的测试条件",
+                             idempotency_key="deeper-lookup-request")
+--- /dev/null
++++ b/pdos-next/server/tests/enterprise_search/test_context_correction_filters.py
+@@ -0,0 +1,127 @@
++"""Compile the actual authority query and exercise fixed inherited-reference paging."""
++
++from datetime import UTC, datetime
++from types import SimpleNamespace
++from uuid import uuid4
++
++import pytest
++from sqlalchemy.dialects import postgresql
++
++from pdos_next.enterprise_search import assistant_inheritance as inheritance
++from pdos_next.enterprise_search import assistant_scope, query
++from pdos_next.enterprise_search.assistant_schemas import AssistantSearchInput, CitationsInput
++from pdos_next.service import digest
++from tests.agent_kernel.test_context_corrections import case, selection
++
++
++def test_real_query_applies_fixed_filters_before_all_counts_paging_and_relations(monkeypatch):
++    run, ctx, ref = case()
++    statements = []
++    now = datetime.now(UTC)
++    metadata = {
++        "incomplete": False,
++        "indexed_as_of": now,
++        "unsafe_match": False,
++        "as_of": now,
++        "primary_rows": [],
++        "related_rows": [],
++    }
++    session = SimpleNamespace(
++        execute=lambda statement: (
++            statements.append(statement)
++            or SimpleNamespace(mappings=lambda: SimpleNamespace(one=lambda: metadata))
++        )
++    )
++    scope = {
++        "category_id": run.category_id,
++        "product_id": uuid4(),
++        "project_id": uuid4(),
++        "proposal_id": None,
++    }
++    monkeypatch.setattr(query, "require_context", lambda *_: None)
++    monkeypatch.setattr(query, "_narrow", lambda *_: scope)
++    monkeypatch.setattr(query, "prepare_read", lambda *_: None)
++    family_scopes = []
++    monkeypatch.setattr(
++        query, "source_families",
++        lambda _session, _ctx, _types, selected_scope: (
++            family_scopes.append(selected_scope) or (["issue", "capa"], now)
++        ),
++    )
++    monkeypatch.setattr(query, "dependency_originals", lambda *_: set())
++    monkeypatch.setattr(query, "safe_originals", lambda *_: set())
++    query.search(
++        session,
++        ctx,
++        AssistantSearchInput(query="漏气", include_history=True),
++        include_sources=[("issue", ref["source_id"], 2, ref["content_hash"])],
++        focus_object=("issue", ref["object_id"]),
++        current_only=True,
++    )
++    assert family_scopes == [{**scope, "product_id": None, "project_id": None}]
++    compiled = statements[0].compile(dialect=postgresql.dialect())
++    sql = str(compiled)
++    authority = sql.split("scoped_authoritative_sources AS MATERIALIZED", 1)[1].split(
++        "scoped_enterprise_sources AS",
++        1,
++    )[0]
++    assert ref["source_id"] in str(compiled.params)
++    assert ref["content_hash"] in str(compiled.params)
++    assert ref["object_id"] in str(compiled.params)
++    assert ".object_id =" in authority and ".is_current" in authority
++    assert "source_revision" in authority and "content_hash) IN" in authority
++    assert sql.index("scoped_authoritative_sources AS MATERIALIZED") < sql.index(
++        "enterprise_page AS",
++    )
++    assert "scoped_authoritative_sources" in sql.split("related_", 1)[-1]
++
++
++def test_empty_intersection_is_an_empty_sql_allowlist_not_omission(monkeypatch):
++    run, ctx, ref = case()
++    other = {**ref, "source_id": str(uuid4())}
++    condition = selection(ref, focus=None, sources=[ref], version_mode="fixed", versions=[other])
++    state = {"context_selection": condition}
++    run.versions = {"work_state": state, "work_state_digest": digest(state)}
++    captured = []
++    session = SimpleNamespace(get=lambda *_: run)
++    scope = SimpleNamespace(run_id=run.id, project_id=None, proposal_id=None)
++    monkeypatch.setattr("pdos_next.agent_kernel.context_corrections.recheck", lambda *_: condition)
++    monkeypatch.setattr(assistant_scope, "_verified", lambda _session, value: value)
++    monkeypatch.setattr(
++        assistant_scope, "search", lambda *_args, **kwargs: captured.append(kwargs) or {"items": []}
++    )
++    assistant_scope.retrieve(session, ctx, scope, AssistantSearchInput(query="漏气"))
++    assert captured[0]["include_sources"] == set()
++
++
++@pytest.mark.parametrize("mode", ["current", "fixed"])
++def test_inherited_reference_conditions_precede_returned_count_and_cursor(monkeypatch, mode):
++    run, _ctx, ref = case()
++    old, selected = str(uuid4()), str(uuid4())
++    roots = {
++        old: (
++            str(uuid4()),
++            {**ref, "citation_id": old, "source_revision": 1, "content_hash": "b" * 64},
++        ),
++        selected: (str(uuid4()), {**ref, "citation_id": selected}),
++    }
++    condition = selection(
++        ref, focus=None, version_mode=mode, versions=[ref] if mode == "fixed" else []
++    )
++    state = {"context_selection": condition}
++    run.versions = {"work_state": state, "work_state_digest": digest(state)}
++    monkeypatch.setattr(inheritance, "registry", lambda *_: (roots, []))
++    monkeypatch.setattr(
++        inheritance,
++        "current",
++        lambda *_args, **_kwargs: (
++            {
++                old: {"is_current": False, "updated": False, "read_basis_status": "current"},
++                selected: {"is_current": True, "updated": False, "read_basis_status": "current"},
++            },
++            {},
++        ),
++    )
++    page = inheritance.page(None, run, CitationsInput(page_size=1))
++    assert page["returned"] == 1 and not page["has_more"] and page["next_cursor"] is None
++    assert page["items"][0]["origin_citation_id"] == selected
+--- /dev/null
++++ b/pdos-next/server/tests/enterprise_search/test_personal_context_pins.py
+@@ -0,0 +1,113 @@
++"""Actual material reader uses only frozen Human pins and repeats its ordinary recheck."""
++
++from datetime import UTC, datetime
++from types import SimpleNamespace
++from uuid import UUID, uuid4
++
++import pytest
++
++from pdos_next.agent_kernel import context_corrections as corrections
++from pdos_next.enterprise_search import assistant_materials as materials
++from pdos_next.enterprise_search.assistant_schemas import MaterialsInput
++from pdos_next.errors import DomainError
++from pdos_next.service import digest
++from tests.agent_kernel.test_context_corrections import case, selection
++
++
++def fixture(monkeypatch):
++    run, ctx, ref = case()
++    run.category_id = None
++    ref.update(source_type="artifact", object_id=ref["source_id"])
++    condition = selection(ref, focus=None, sources=[ref])
++    state = {"context_selection": condition}
++    run.versions = {"work_state": state, "work_state_digest": digest(state)}
++    scope = SimpleNamespace(
++        run_id=run.id, tenant_id=run.tenant_id, requester_id=run.requester_id, category_id=None
++    )
++    row = {
++        **ref,
++        "source_id": UUID(ref["source_id"]),
++        "object_id": UUID(ref["object_id"]),
++        "category_id": UUID(ref["category_id"]),
++        "tenant_id": run.tenant_id,
++        "as_of": datetime.now(UTC),
++        "body_chars": 24,
++        "is_current": True,
++    }
++    executed, checked = [], []
++    session = SimpleNamespace(
++        get=lambda *_: run,
++        execute=lambda query: (
++            executed.append(query)
++            or SimpleNamespace(mappings=lambda: SimpleNamespace(all=lambda: [row]))
++        ),
++    )
++    monkeypatch.setattr(corrections, "_rows", lambda *_: [row])
++
++    def current(_session, candidates):
++        checked.append(candidates)
++        return {key: row for key in candidates}, {}
++
++    monkeypatch.setattr("pdos_next.enterprise_search.assistant_sources.current", current)
++    monkeypatch.setattr(materials, "current", current)
++    return SimpleNamespace(
++        run=run,
++        ctx=ctx,
++        ref=ref,
++        scope=scope,
++        row=row,
++        session=session,
++        executed=executed,
++        checked=checked,
++    )
++
++
++def test_personal_fixed_source_is_readable_without_forging_a_business_read_set(monkeypatch):
++    f = fixture(monkeypatch)
++    result = materials.read(
++        f.session, f.scope, MaterialsInput(artifact_ids=[f.ref["source_id"]]), uuid4()
++    )
++    assert result["returned"] == 1 and result["items"][0]["source_revision"] == 2
++    assert result["items"][0]["content_hash"] == f.ref["content_hash"]
++    assert f.run.read_sources == [] and f.run.category_id is None
++    assert len(f.checked) == 2  # selection recheck and material source/dependency recheck
++
++
++@pytest.mark.parametrize(
++    "reason", ["source_changed", "source_unavailable", "source_dependency_unavailable"]
++)
++def test_changed_revoked_or_scan_invalid_pin_stops_before_material_body_query(monkeypatch, reason):
++    f = fixture(monkeypatch)
++    monkeypatch.setattr(
++        "pdos_next.enterprise_search.assistant_sources.current", lambda *_: ({}, {"0": reason})
++    )
++    with pytest.raises(DomainError):
++        materials.read(
++            f.session, f.scope, MaterialsInput(artifact_ids=[f.ref["source_id"]]), uuid4()
++        )
++    assert f.executed == []
++
++
++def test_nonselected_source_cannot_be_added_by_model_material_parameters(monkeypatch):
++    f = fixture(monkeypatch)
++    with pytest.raises(DomainError):
++        materials.read(f.session, f.scope, MaterialsInput(artifact_ids=[uuid4()]), uuid4())
++    assert f.executed == []
++
++
++def test_frozen_classification_cannot_silently_understate_new_source_taint(monkeypatch):
++    f = fixture(monkeypatch)
++    f.run.versions["work_state"]["context_selection"]["sources"][0]["customer_original"] = False
++    f.run.versions["work_state_digest"] = digest(f.run.versions["work_state"])
++    monkeypatch.setattr(
++        "pdos_next.enterprise_search.assistant_sources.current",
++        lambda _session, candidates: (
++            {key: {**f.row, "customer_original": True} for key in candidates},
++            {},
++        ),
++    )
++    with pytest.raises(DomainError) as changed:
++        materials.read(
++            f.session, f.scope, MaterialsInput(artifact_ids=[f.ref["source_id"]]), uuid4()
++        )
++    assert changed.value.code == "SOURCE_STALE" and f.executed == []
+--- a/pdos-next/web/src/app/api/[...path]/route.ts
++++ b/pdos-next/web/src/app/api/[...path]/route.ts
+@@ -214,7 +214,7 @@
+   const personalAgent = personalAgentPaths.test(forwardPath.join("/"));
+   const personalView = personalViewPaths.test(forwardPath.join("/"));
+   const personalWorkProducts = /^v1\/personal\/work-products(?:\/[a-f0-9-]{36}(?:\/revisions)?|\/from-run)?$/i.test(forwardPath.join("/"));
+-  const workState = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-sessions\/[a-f0-9-]{36}\/work-state$/i.test(forwardPath.join("/"));
++  const workState = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-sessions\/[a-f0-9-]{36}\/work-state(?:\/context-options)?$/i.test(forwardPath.join("/"));
+   const enterpriseSearch = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/enterprise-search$/i.test(forwardPath.join("/"));
+   const assistantSource = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-runs\/[a-f0-9-]{36}\/assistant-sources\/[a-f0-9-]{36}$/i.test(forwardPath.join("/"));
+   const projectSets = /^v1\/project-sets(?:\/move)?$/.test(forwardPath.join("/"));
+@@ -269,8 +269,12 @@
+     if (request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "检索请使用只读查询提交入口。" }, { status: 405, headers: { Allow: "POST" } });
+     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "检索条件只接受正文，不接受其他范围或查询参数。" }, { status: 422 });
+   } else if (workState) {
+-    if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "本次携带只支持读取和本人修改。" }, { status: 405, headers: { Allow: "GET, POST" } });
+-    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "本次携带按本人会话读取，不接受额外查询条件。" }, { status: 422 });
++    const options = pathname.endsWith("/context-options");
++    if (!(options ? ["GET"] : ["GET", "POST"]).includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "请使用资料选择读取或本人携带修改入口。" }, { status: 405, headers: { Allow: options ? "GET" : "GET, POST" } });
++    for (const [key, value] of request.nextUrl.searchParams) {
++      if (!options || query.has(key) || !(key === "query" && value.length <= 120 || key === "object_id" && uuid.test(value))) return Response.json({ code: "VALIDATION_FAILED", message: "本次携带或资料选择条件无效。" }, { status: 422 });
++      query.set(key, value);
++    }
+   } else if (projectSets) {
+     if (!(pathname.endsWith("/move") ? ["POST"] : ["GET", "POST"]).includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "项目集入口不支持此操作。" }, { status: 405 });
+     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "项目集只按当前组织读取。" }, { status: 422 });
+--- a/pdos-next/web/src/app/api/route-work-state.test.mjs
++++ b/pdos-next/web/src/app/api/route-work-state.test.mjs
+@@ -54,3 +54,15 @@
+   assert.equal((await h.send("v1/personal/agent-sessions/bad/work-state")).status, 404);
+   assert.equal(h.calls.length, 0);
+ });
++
++
++test("context options are ordinary read-only metadata with closed, encoded selectors", async () => {
++  const h = harness(), resource = `${workPath}/context-options`;
++  assert.equal((await h.send(resource, "GET", "query=气密问题")).status, 200);
++  const url = new URL(h.calls.at(-1).url); assert.equal(url.searchParams.get("query"), "气密问题");
++  assert.equal(h.calls.at(-1).init.body, undefined);
++  assert.equal((await h.send(`v1/categories/${run}/agent-sessions/${session}/work-state/context-options`, "GET", `object_id=${run}`)).status, 200);
++  const before = h.calls.length;
++  for (const [method, query] of [["POST", ""], ["GET", `owner_id=${run}`], ["GET", "query=a&query=b"], ["GET", "object_id=bad"]]) assert.notEqual((await h.send(resource, method, query, method === "POST" ? {} : undefined)).status, 200);
++  assert.equal(h.calls.length, before);
++});
+--- a/pdos-next/web/src/components/pai/answer-followup-actions.test.mjs
++++ b/pdos-next/web/src/components/pai/answer-followup-actions.test.mjs
+@@ -85,11 +85,12 @@
+ }
+ test("native journal preserves deep after a lost response, replays exact body and opens actual next Run", async t => {
+   const c = native(t), actions = await c.ready(); assert.ok(actions);
+-  const original = deeperLookupRequest(id(1), "继续核对更多工况", id(9), [{ artifact_id: id(20), expected_revision: 2 }]);
++  const original = { ...deeperLookupRequest(id(1), "继续核对更多工况", id(9), [{ artifact_id: id(20), expected_revision: 2 }]), context_revision: 5 };
+   const sent = actions.props.onContinue(original).catch(() => {}); await c.settle();
+   c.respond({ run_id: id(1), owner_id: id(8), can_continue: true, existing: null }); await c.settle();
+   const write = c.current(); assert.deepEqual(write.body, original); c.reject(Error("response lost")); await sent; await c.settle();
+   assert.equal(JSON.parse([...c.store.values()].find(v => v.includes('"request"'))).request.lookup_depth, "deep");
++  assert.equal(JSON.parse([...c.store.values()].find(v => v.includes('"request"'))).request.context_revision, 5);
+   const retry = nodes(c.tree()).find(v => v.type === "button" && words(v) === "核对并重试原请求"); assert.ok(retry); retry.props.onClick(); await c.settle();
+   c.respond({ run_id: id(1), owner_id: id(8), can_continue: true, existing: null }); await c.settle();
+   assert.deepEqual(c.current().body, original); c.respond({ run_id: id(30), continued_from_id: id(1) }); await c.settle(); assert.deepEqual(c.opened, [id(30)]);
+--- a/pdos-next/web/src/components/pai/answer-followup-actions.tsx
++++ b/pdos-next/web/src/components/pai/answer-followup-actions.tsx
+@@ -7,6 +7,7 @@
+ import type { ContinuationRequest, ContinuationSource } from "@/lib/run-continuation";
+ import type { WorkspaceTransport } from "@/lib/workspace-api";
+ import { AnswerCorrections } from "./answer-corrections";
++import { ExplicitContextCorrections } from "./explicit-context-corrections";
+ 
+ type Props = {
+   api: WorkspaceTransport; context: CorrectionContext; disabled?: boolean; additionalSources?: ContinuationSource[];
+@@ -67,6 +68,7 @@
+           onState(state);
+           return state;
+         }} onCollapsed={() => { setError(""); }} />
++      <ExplicitContextCorrections api={api} context={context} disabled={disabled} onContinue={onContinue} onState={onState} onUnavailable={onUnavailable}/>
+       {error && <p role="alert">{error}</p>}
+     </div>
+   </details>;
+--- /dev/null
++++ b/pdos-next/web/src/components/pai/explicit-context-corrections.test.mjs
+@@ -0,0 +1,69 @@
++import assert from "node:assert/strict";
++import { existsSync, readFileSync } from "node:fs";
++import Module, { createRequire } from "node:module";
++import path from "node:path";
++import test from "node:test";
++import { fileURLToPath } from "node:url";
++const directory = path.dirname(fileURLToPath(import.meta.url)), web = path.resolve(directory, "../../.."), dependency = createRequire(path.join(web, "package.json")), ts = dependency("typescript"), React = dependency("react"), { renderToStaticMarkup } = dependency("react-dom/server");
++let hooks;
++const same = (a, b) => a && b && a.length === b.length && a.every((v, i) => Object.is(v, b[i]));
++const shim = { ...React,
++  useState(initial) { const h = hooks, i = h.index++; if (!(i in h.values)) h.values[i] = typeof initial === "function" ? initial() : initial; return [h.values[i], value => { h.values[i] = typeof value === "function" ? value(h.values[i]) : value; h.dirty = true; }]; },
++  useRef(initial) { const h = hooks, i = h.index++; if (!(i in h.values)) h.values[i] = { current: initial }; return h.values[i]; },
++  useCallback(callback, deps) { const h = hooks, i = h.index++; if (!same(h.values[i]?.deps, deps)) h.values[i] = { deps, callback }; return h.values[i].callback; },
++  useEffect(effect, deps) { const h = hooks, i = h.index++, old = h.values[i]; if (!old || !same(old.deps, deps)) { h.values[i] = { deps, cleanup: null }; h.effects.push(() => { old?.cleanup?.(); h.values[i].cleanup = effect(); }); } },
++};
++function load(filename, react = shim) {
++  if (filename.endsWith(".css")) return { __esModule: true, default: new Proxy({}, { get: (_t, key) => key }) };
++  if (!path.extname(filename)) filename = [".tsx", ".ts"].map(ext => filename + ext).find(existsSync);
++  const compiled = new Module(filename);
++  compiled.require = name => name === "react" ? react : name === "@/components/ui/button" ? { Button: "button" } : name === "@phosphor-icons/react" ? new Proxy({}, { get: () => "i" }) : name.startsWith("@/") ? load(path.join(web, "src", name.slice(2)), react) : name.startsWith(".") ? load(path.resolve(path.dirname(filename), name), react) : dependency(name);
++  compiled._compile(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText, filename);
++  return compiled.exports;
++}
++const { ExplicitContextCorrections } = load(path.join(directory, "explicit-context-corrections.tsx"));
++const { ExplicitContextCorrections: StaticCorrections } = load(path.join(directory, "explicit-context-corrections.tsx"), React);
++const id = n => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
++const context = () => ({ root: "v1/agent-runs", run: { run_id: id(1), session_id: id(2), status: "completed", reverted: false }, workState: { version: "agent-work-state/v1", session_id: id(2), revision: 4, focus_objects: [], exclusions: [] } });
++const words = tree => typeof tree === "string" || typeof tree === "number" ? String(tree) : Array.isArray(tree) ? tree.map(words).join("") : tree && typeof tree === "object" ? words(tree.props?.children) : "";
++const nodes = tree => !tree || typeof tree !== "object" ? [] : Array.isArray(tree) ? tree.flatMap(nodes) : [tree, ...nodes(tree.props?.children)];
++const tick = () => new Promise(resolve => setImmediate(resolve));
++function component(props) {
++  const h = { values: [], index: 0, effects: [], dirty: false }; let tree;
++  function render() { h.index = 0; h.effects = []; h.dirty = false; hooks = h; try { tree = ExplicitContextCorrections(props); } finally { hooks = null; } h.effects.forEach(effect => effect()); return tree; }
++  return { render, tree: () => tree, async settle() { for (let i = 0; i < 6; i++) { if (!tree || h.dirty) render(); await tick(); } return tree; } };
++}
++const option = () => ({ source_type: "issue", source_id: id(8), object_id: id(7), source_revision: 2, title: "实际问题", is_current: true });
++const saved = () => ({ ...context().workState, revision: 5, context_selection: { version: 1, status: "available", focus: null, version_mode: "any", versions: [], sources: [option()] } });
++const button = (c, text) => nodes(c.tree()).find(node => node.type === "button" && words(node) === text);
++async function read(c) { await c.settle(); nodes(c.tree()).find(node => node.type === "input" && !node.props.type).props.onChange({ target: { value: "气密问题" } }); await c.settle(); await nodes(c.tree()).find(node => node.type === "form").props.onSubmit({ preventDefault() {} }); await c.settle(); }
++
++test("SSR is a small explicit chooser and never reads, corrects or starts automatically", () => {
++  const html = renderToStaticMarkup(React.createElement(StaticCorrections, { api: () => { throw Error("No SSR IO"); }, context: context(), onContinue() {}, onState() {} }));
++  assert.match(html, /换对象、版本或资料/); assert.match(html, /只用所选资料/); assert.match(html, /对应会话/); assert.doesNotMatch(html, /00000000|预览|批准|确认弹窗/);
++});
++test("a readable single choice is displayed, fixed, saved, reread and natively continued once", async () => {
++  const calls = [], continued = [], states = [];
++  const c = component({ context: context(), api: async (url, body) => { calls.push({ url, body }); return url.includes("context-options") ? { items: [option()], has_more: false } : saved(); }, onContinue: async body => continued.push(body), onState: state => states.push(state) });
++  await read(c); assert.match(calls[0].url, /context-options\?query=/); assert.equal(calls[0].body, undefined);
++  assert.match(words(c.tree()), /实际问题 · v2/); assert.equal(button(c, "只用所选资料").props.disabled, false);
++  await button(c, "只用所选资料").props.onClick(); await c.settle();
++  assert.equal(calls.length, 3); assert.equal(calls[1].body.action, "correct_context");
++  assert.deepEqual(calls[1].body.context_change, { kind: "limit_sources", sources: [{ source_type: "issue", source_id: id(8), expected_revision: 2 }] });
++  assert.equal(calls[2].body, undefined); assert.equal(continued.length, 1); assert.equal(continued[0].continue_from_run_id, id(1)); assert.equal(continued[0].context_revision, 5);
++  for (const key of ["product_id", "session_id", "source_proof", "owner_id", "lookup_depth"]) assert.equal(key in continued[0], false);
++  assert.equal(states.length, 1);
++});
++test("lost correction response retries the original Human key and does not start early", async () => {
++  const calls = [], continued = []; let lost = true;
++  const c = component({ context: context(), api: async (url, body) => { calls.push({ url, body }); if (url.includes("context-options")) return { items: [option()], has_more: false }; if (body && lost) { lost = false; throw Error("response lost"); } return saved(); }, onContinue: async body => continued.push(body), onState() {} });
++  await read(c); await button(c, "只用所选资料").props.onClick(); await c.settle(); assert.equal(continued.length, 0);
++  const first = calls[1].body; await button(c, "重试原纠正").props.onClick(); await c.settle();
++  assert.deepEqual(calls[2].body, first); assert.equal(continued.length, 1);
++});
++test("a later Human clear wins over an older replay and no continuation is posted", async () => {
++  const calls = [], continued = [], states = [];
++  const c = component({ context: context(), api: async (url, body) => { calls.push({ url, body }); if (url.includes("context-options")) return { items: [option()], has_more: false }; return body ? saved() : { ...context().workState, revision: 6 }; }, onContinue: async body => continued.push(body), onState: state => states.push(state) });
++  await read(c); await button(c, "只用所选资料").props.onClick(); await c.settle();
++  assert.equal(continued.length, 0); assert.equal(states.at(-1).context_selection, undefined); assert.match(words(c.tree()), /条件已变化/); assert.equal(button(c, "重试原纠正"), undefined);
++});
+--- /dev/null
++++ b/pdos-next/web/src/components/pai/explicit-context-corrections.tsx
+@@ -0,0 +1,68 @@
++"use client";
++
++import { useEffect, useRef, useState } from "react";
++import { Button } from "@/components/ui/button";
++import { contextOptionsPath, correctionSaved, explicitCorrection, type ContextOption, type ExplicitCorrectionKind, type ExplicitCorrectionRequest, type ExplicitWorkState } from "@/lib/explicit-context-corrections";
++import type { CorrectionContext } from "@/lib/answer-corrections";
++import type { ContinuationRequest } from "@/lib/run-continuation";
++import type { WorkspaceTransport } from "@/lib/workspace-api";
++
++export function ExplicitContextCorrections({ api, context, disabled, onContinue, onState, onUnavailable }: {
++  api: WorkspaceTransport; context: CorrectionContext; disabled?: boolean;
++  onContinue: (request: ContinuationRequest) => Promise<void>;
++  onState: (state: ExplicitWorkState) => void; onUnavailable?: () => void;
++}) {
++  const [query, setQuery] = useState(""), [options, setOptions] = useState<ContextOption[]>([]), [selected, setSelected] = useState<string[]>([]);
++  const [pending, setPending] = useState<ExplicitCorrectionRequest | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState(""), [notice, setNotice] = useState("");
++  const lock = useRef(false), generation = useRef(0);
++  useEffect(() => { const counter = generation; return () => { counter.current++; }; }, []);
++  const key = (row: ContextOption) => `${row.source_type}:${row.source_id}`;
++  async function read(objectId?: string) {
++    if (disabled || lock.current) return;
++    lock.current = true; setBusy(true); setError(""); const own = generation.current;
++    try {
++      const result = await api<{ items: ContextOption[]; has_more: boolean }>(contextOptionsPath(context, query, objectId));
++      if (own !== generation.current) return;
++      setOptions(result.items); setSelected(result.items.length === 1 ? [key(result.items[0])] : []);
++      setNotice(result.has_more ? "请补充名称，缩小选择范围。" : result.items.length ? "" : "没有找到当前可选的记录。");
++    } catch (failure) { if (own === generation.current) { setOptions([]); setSelected([]); if ([401, 403].includes((failure as { status?: number }).status ?? 0)) onUnavailable?.(); setError(failure instanceof Error ? failure.message : "资料暂未读回。"); } }
++    finally { if (own === generation.current) { lock.current = false; setBusy(false); } }
++  }
++  async function send(request: ExplicitCorrectionRequest) {
++    if (disabled || lock.current) return;
++    lock.current = true; setBusy(true); setPending(request); setError(""); const own = generation.current;
++    try {
++      const result = await api<ExplicitWorkState>(request.path, request.body);
++      if (own !== generation.current) return;
++      if (!correctionSaved(request, result, context)) throw new Error("纠正结果待读回，请重试原操作。");
++      const latest = await api<ExplicitWorkState>(request.path);
++      if (own !== generation.current) return;
++      onState(latest);
++      if (!correctionSaved(request, latest, context)) throw Object.assign(new Error("资料条件已变化，请按最新选择继续。"), { status: 409 });
++      await onContinue({ ...request.continuation, context_revision: latest.revision });
++      if (own === generation.current) setPending(null);
++    } catch (failure) {
++      if (own !== generation.current) return;
++      const status = (failure as { status?: number }).status;
++      if ([401, 403].includes(status ?? 0)) { setOptions([]); setSelected([]); setPending(null); onUnavailable?.(); }
++      else if ([404, 409, 422].includes(status ?? 0)) setPending(null);
++      setError(failure instanceof Error ? failure.message : "操作结果待读回，请重试原操作。");
++    } finally { if (own === generation.current) { lock.current = false; setBusy(false); } }
++  }
++  function choose(kind: ExplicitCorrectionKind) {
++    try { void send(explicitCorrection(context, kind, ["current_only", "clear"].includes(kind) ? [] : options.filter(row => selected.includes(key(row))), crypto.randomUUID(), crypto.randomUUID())); }
++    catch (failure) { setError(failure instanceof Error ? failure.message : "请明确选择。"); }
++  }
++  const blocked = disabled || busy || !!pending;
++  return <details className="min-w-0 space-y-2 text-sm [overflow-wrap:anywhere]">
++    <summary className="cursor-pointer">换对象、版本或资料</summary>
++    <div className="space-y-2 pt-2">
++      <form className="flex min-w-0 flex-wrap gap-2" onSubmit={event => { event.preventDefault(); if (query.trim()) void read(); }}><label className="min-w-0 flex-1">对象或资料名称<input className="block w-full min-w-0" value={query} maxLength={120} disabled={blocked} onChange={event => setQuery(event.target.value)}/></label><Button type="submit" variant="outline" size="sm" disabled={blocked || !query.trim()}>查找</Button></form>
++      {options.map(row => <div key={key(row)} className="flex min-w-0 flex-wrap gap-2"><label className="min-w-0"><input type="checkbox" checked={selected.includes(key(row))} disabled={blocked} onChange={event => setSelected(prior => event.target.checked ? [...prior, key(row)] : prior.filter(value => value !== key(row)))}/> {row.title} · v{row.source_revision}{!row.is_current ? " · 历史版本" : ""}</label><Button type="button" variant="ghost" size="sm" disabled={blocked} onClick={() => void read(row.object_id)}>查看可读版本</Button></div>)}
++      <div className="flex flex-wrap gap-2"><Button type="button" variant="outline" size="sm" disabled={blocked || selected.length !== 1} onClick={() => choose("replace_focus")}>换为这个对象并重查</Button><Button type="button" variant="outline" size="sm" disabled={blocked || !selected.length} onClick={() => choose("fixed_versions")}>只看所选版本</Button><Button type="button" variant="outline" size="sm" disabled={blocked || !selected.length} onClick={() => choose("limit_sources")}>只用所选资料</Button><Button type="button" variant="ghost" size="sm" disabled={blocked} onClick={() => choose("current_only")}>只看当前有效资料</Button><Button type="button" variant="ghost" size="sm" disabled={blocked} onClick={() => choose("clear")}>解除资料条件并重查</Button></div>
++      <p className="text-xs text-muted-foreground">仅选择当前范围可读的版本。更换项目或型号，可从范围导航打开对应会话。</p>
++      {notice && <p role="status">{notice}</p>}{error && <p role="alert">{error}</p>}
++      {pending && !busy && <Button type="button" size="sm" variant="outline" disabled={disabled} onClick={() => void send(pending)}>重试原纠正</Button>}
++    </div>
++  </details>;
++}
+--- a/pdos-next/web/src/components/pai/source-picker.test.mjs
++++ b/pdos-next/web/src/components/pai/source-picker.test.mjs
+@@ -114,7 +114,7 @@
+   const details = elements(c.render(), e => e.type?.name === "SourceDetails")[0];
+   const html = renderToStaticMarkup(React.createElement(details.type, details.props));
+   assert.match(html, /原件：真实规格.pdf · 版本 8/); assert.match(html, /已登记解析结果/); assert.match(html, /已记录扫描通过/);
+-  assert.equal(calls[0].body, undefined); assert.match(text(c.render()), /只随下次新工作发送固定版本/);
++  assert.equal(calls[0].body, undefined); assert.match(text(c.render()), /所选资料会限定下次回答的检索范围/);
+   pickerButton(c).props.onClick(); await c.flush(); assert.equal(calls.length, 1); assert.match(text(c.render()), /真实已登记附件 · v3/);
+ });
+ 
+--- a/pdos-next/web/src/components/pai/source-picker.tsx
++++ b/pdos-next/web/src/components/pai/source-picker.tsx
+@@ -69,7 +69,7 @@
+     {selected.length > 0 && <div className={styles.selected} aria-label="下次新工作固定来源">{selected.map(source => <span className={styles.chip} key={source.artifact_id}>{source.title} · v{source.expected_revision}<button type="button" disabled={disabled} aria-label={`移除来源 ${source.title}`} onClick={() => onChange({ scope: key, items: selected.filter(item => item.artifact_id !== source.artifact_id) })}><X size={11} aria-hidden="true" /></button></span>)}</div>}
+     {open && <section className={styles.panel} aria-label="选择已登记来源">
+       <div className={styles.heading}><strong>选择已登记来源</strong><Button type="button" variant="ghost" size="sm" disabled={disabled || loading} onClick={() => void load()}>刷新来源</Button></div>
+-      <p className={styles.hint}>只随下次新工作发送固定版本；继续现有工作沿用原绑定来源。</p>
++      <p className={styles.hint}>所选资料会限定下次回答的检索范围；可在回答下解除资料条件。</p>
+       <p className={styles.hint}>{scope.proposalId ? "为本提案选择当前品类的可读资料；提案自动携带的资料以运行绑定记录为准。" : scope.productId ? "当前品类及关联型号的可读登记资料。" : "当前品类的可读登记资料；关联型号后可选择该型号资料。"}此处不上传新文件。</p>
+       {loading && <p role="status">正在读取登记来源…</p>}{error && <p role="alert">{error}</p>}
+       <div className={styles.list}>{reading?.items.map(source => <div className={styles.option} key={source.artifact_id}>
+--- a/pdos-next/web/src/components/pai/work-state-carry.tsx
++++ b/pdos-next/web/src/components/pai/work-state-carry.tsx
+@@ -18,6 +18,7 @@
+   citation_directory?: { has_more: boolean };
+   completed_count: number; unfinished: string[]; notes: string[];
+   context_incomplete: boolean; missing: string[];
++  context_selection?: import("@/lib/explicit-context-corrections").ContextSelection;
+   search_preferences?: SearchPreferences;
+   search_context?: { label: string; kind: string; scoped: boolean };
+ };
+@@ -81,6 +82,7 @@
+       {reading.error && <p role="alert">{reading.error}</p>}
+       {!value && !reading.error && <p role="status">正在读取…</p>}
+       {value && <>
++        {value.context_selection && <div className="space-y-1"><p>资料条件：{value.context_selection.status === "unavailable" ? "选定条件当前不可用，请重新选择或解除" : value.context_selection.version_mode === "current" ? "只看当前有效资料" : value.context_selection.version_mode === "fixed" ? "只看所选版本" : value.context_selection.sources ? "只用所选资料" : "已更换焦点对象"}</p>{value.context_selection.status === "available" && <ul>{[...(value.context_selection.focus ? [value.context_selection.focus] : []), ...value.context_selection.versions, ...(value.context_selection.sources ?? [])].filter((source, index, rows) => rows.findIndex(row => row.source_type === source.source_type && row.source_id === source.source_id && row.source_revision === source.source_revision) === index).map((source, index) => <li key={index}>{source.title} · v{source.source_revision}</li>)}</ul>}</div>}
+         {value.root_goal && <p>最初目标：{value.root_goal.text}</p>}
+         {value.current_goal && <p>当前目标：{value.current_goal.text}</p>}
+         {value.constraints.map(item => <p key={item.id}>约束：{item.text} <Button type="button" size="sm" variant="ghost" disabled={disabled || busy || !!pending} onClick={() => void remove("remove_constraint", item.id)}>移除约束</Button></p>)}
+--- /dev/null
++++ b/pdos-next/web/src/lib/explicit-context-corrections.ts
+@@ -0,0 +1,42 @@
++import { canCorrectAnswer, type CorrectionContext, type CorrectionWorkState } from "./answer-corrections";
++import type { ContinuationRequest } from "./run-continuation";
++
++export type ContextOption = { source_type: string; source_id: string; object_id: string; source_revision: number; title: string; is_current: boolean };
++export type ContextChoice = { source_type: string; source_id: string; expected_revision: number };
++export type ExplicitCorrectionKind = "replace_focus" | "fixed_versions" | "current_only" | "limit_sources" | "clear";
++export type ContextSelectionSource = { source_type: string; source_id: string; source_revision: number; title: string };
++export type ContextSelection = { version: 1; status: "available" | "unavailable"; focus: ContextSelectionSource | null; version_mode: "any" | "current" | "fixed"; versions: ContextSelectionSource[]; sources: ContextSelectionSource[] | null };
++export type ExplicitWorkState = CorrectionWorkState & { context_selection?: ContextSelection };
++export type ExplicitCorrectionRequest = { path: string; body: { expected_revision: number; request_key: string; action: "correct_context"; context_change: { kind: ExplicitCorrectionKind; sources: ContextChoice[] } }; continuation: ContinuationRequest };
++const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
++const kinds = ["artifact", "knowledge", "issue", "capa", "change", "external_wait", "supply", "build", "test_run"];
++
++export function contextStatePath(context: CorrectionContext): string {
++  return `${context.root.replace(/agent-runs$/, "agent-sessions")}/${context.run.session_id}/work-state`;
++}
++export function contextOptionsPath(context: CorrectionContext, query: string, objectId?: string): string {
++  if (!canCorrectAnswer(context) || query.length > 120 || objectId !== undefined && !uuid.test(objectId)) throw new Error("请从当前会话选择资料。");
++  const params = new URLSearchParams(objectId ? { object_id: objectId } : { query: query.trim() });
++  return `${contextStatePath(context)}/context-options?${params}`;
++}
++export function explicitCorrection(context: CorrectionContext, kind: ExplicitCorrectionKind, selected: ContextOption[], key: string, continuationKey: string): ExplicitCorrectionRequest {
++  if (!canCorrectAnswer(context) || !uuid.test(key) || !uuid.test(continuationKey) || !["replace_focus", "fixed_versions", "current_only", "limit_sources", "clear"].includes(kind)) throw new Error("请从当前回答纠正。");
++  const sources = selected.map(row => ({ source_type: row.source_type, source_id: row.source_id, expected_revision: row.source_revision }));
++  if (sources.length > 50 || sources.some(row => !kinds.includes(row.source_type) || !uuid.test(row.source_id) || !Number.isSafeInteger(row.expected_revision) || row.expected_revision < 1)
++    || new Set(sources.map(row => `${row.source_type}:${row.source_id}`)).size !== sources.length
++    || ["current_only", "clear"].includes(kind) && sources.length !== 0
++    || !["current_only", "clear"].includes(kind) && sources.length === 0 || kind === "replace_focus" && sources.length !== 1) throw new Error("请选择要核对的实际对象或版本。");
++  return { path: contextStatePath(context), body: { expected_revision: context.workState.revision, request_key: key, action: "correct_context", context_change: { kind, sources } },
++    continuation: { goal: kind === "clear" ? "解除资料限定，按当前问题重新核对。" : "按照这次选定的对象与资料条件，重新核对当前问题。", idempotency_key: continuationKey, continue_from_run_id: context.run.run_id } };
++}
++/** A replay response is historical. Always compare the latest read before continuing. */
++export function correctionSaved(request: ExplicitCorrectionRequest, state: ExplicitWorkState, context: CorrectionContext): boolean {
++  if (state.version !== "agent-work-state/v1" || state.session_id !== context.run.session_id || state.revision <= request.body.expected_revision) return false;
++  const selection = state.context_selection;
++  if (request.body.context_change.kind === "clear") return selection === undefined;
++  if (!selection || selection.version !== 1 || selection.status !== "available") return false;
++  if (request.body.context_change.kind === "current_only") return selection.version_mode === "current";
++  // The full fixed identities are supplied by the server; titles never establish a match.
++  const rows = (request.body.context_change.kind === "replace_focus" ? [selection.focus] : request.body.context_change.kind === "fixed_versions" ? selection.versions : selection.sources);
++  return !!rows && rows.length === request.body.context_change.sources.length && request.body.context_change.sources.every(ref => rows.some(row => row?.source_type === ref.source_type && row.source_id === ref.source_id && row.source_revision === ref.expected_revision));
++}
+--- a/pdos-next/web/src/lib/run-continuation.ts
++++ b/pdos-next/web/src/lib/run-continuation.ts
+@@ -1,6 +1,6 @@
+ import { validSearchPreferences, type SearchPreferences } from "./search-preferences";
+ export type ContinuationSource = { artifact_id: string; expected_revision: number };
+-export type ContinuationRequest = { goal: string; idempotency_key: string; continue_from_run_id: string; sources?: ContinuationSource[]; search_preferences?: SearchPreferences; lookup_depth?: "deep" };
++export type ContinuationRequest = { goal: string; idempotency_key: string; continue_from_run_id: string; sources?: ContinuationSource[]; search_preferences?: SearchPreferences; lookup_depth?: "deep"; context_revision?: number };
+ export type PendingContinuation = { root: string; owner_id: string; request: ContinuationRequest };
+ export type ContinuationReading = { run_id: string; owner_id: string; can_continue: boolean; existing: {run_id:string;goal:string;idempotency_key:string}|null };
+ const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
+@@ -9,7 +9,7 @@
+ export function restoreContinuation(value:unknown,root:string,ownerId:string,runId:string):PendingContinuation|null {
+   if(!record(value)||Object.keys(value).some(key=>!["root","owner_id","request"].includes(key))||value.root!==root||value.owner_id!==ownerId||!record(value.request))return null;
+   const request=value.request;
+-  if(Object.keys(request).some(key=>!["goal","idempotency_key","continue_from_run_id","sources","search_preferences","lookup_depth"].includes(key))||request.continue_from_run_id!==runId||typeof request.idempotency_key!=="string"||!uuid.test(request.idempotency_key)||typeof request.goal!=="string"||request.goal.trim().length<1||request.goal.length>8000||!validSources(request.sources)||request.search_preferences!==undefined&&!validSearchPreferences(request.search_preferences)||request.lookup_depth!==undefined&&request.lookup_depth!=="deep")return null;
++  if(Object.keys(request).some(key=>!["goal","idempotency_key","continue_from_run_id","sources","search_preferences","lookup_depth","context_revision"].includes(key))||request.continue_from_run_id!==runId||typeof request.idempotency_key!=="string"||!uuid.test(request.idempotency_key)||typeof request.goal!=="string"||request.goal.trim().length<1||request.goal.length>8000||!validSources(request.sources)||request.search_preferences!==undefined&&!validSearchPreferences(request.search_preferences)||request.lookup_depth!==undefined&&request.lookup_depth!=="deep"||request.context_revision!==undefined&&(!Number.isSafeInteger(request.context_revision)||Number(request.context_revision)<1))return null;
+   return value as PendingContinuation;
+ }
+ export function matchesContinuation(request:ContinuationRequest,value:ContinuationReading):boolean {
+--- a/pdos-next/web/src/lib/run-start-intent.test.mjs
++++ b/pdos-next/web/src/lib/run-start-intent.test.mjs
+@@ -81,7 +81,7 @@
+ });
+ 
+ test("explicit deep and correction continuation restore their original closed requests", () => {
+-  const value = { path: "v1/agent-runs", body: { goal: "深入核对同类工况", idempotency_key: proposal, continue_from_run_id: proposal, sources: [], lookup_depth: "deep", search_preferences: { scope: "same_category", include_customer_private: false } } };
++  const value = { path: "v1/agent-runs", body: { goal: "深入核对同类工况", idempotency_key: proposal, continue_from_run_id: proposal, sources: [], lookup_depth: "deep", context_revision: 7, search_preferences: { scope: "same_category", include_customer_private: false } } };
+   assert.equal(restoreRunStart(value, undefined, proposal), value);
+-  for (const patch of [{ continue_from_run_id: undefined }, { lookup_depth: "quick" }, { product_id: proposal }, { project_id: proposal }, { session_id: proposal }, { requested_skills: [] }]) assert.equal(restoreRunStart({ ...value, body: { ...value.body, ...patch } }, undefined, proposal), null);
++  for (const patch of [{ continue_from_run_id: undefined }, { lookup_depth: "quick" }, { context_revision: 0 }, { context_revision: "7" }, { context_revision: 1.5 }, { context_revision: true }, { product_id: proposal }, { project_id: proposal }, { session_id: proposal }, { requested_skills: [] }]) assert.equal(restoreRunStart({ ...value, body: { ...value.body, ...patch } }, undefined, proposal), null);
+ });
+--- a/pdos-next/web/src/lib/run-start-intent.ts
++++ b/pdos-next/web/src/lib/run-start-intent.ts
+@@ -2,7 +2,7 @@
+ import { validVerificationAction, type VerificationAction } from "./verification-action";
+ import { validSearchPreferences, type SearchPreferences } from "./search-preferences";
+ export type RequestedSkill = { key: string; version: string; digest: string };
+-type Start = { goal: string; idempotency_key: string; product_id?: string | null; continue_from_run_id?: string; verification_action?: VerificationAction; proposal_id?: string; project_id?: string; sources?: { artifact_id: string; expected_revision: number }[]; lookup_depth?: "deep"; requested_skills?: RequestedSkill[]; search_preferences?: SearchPreferences };
++type Start = { goal: string; idempotency_key: string; product_id?: string | null; continue_from_run_id?: string; verification_action?: VerificationAction; proposal_id?: string; project_id?: string; sources?: { artifact_id: string; expected_revision: number }[]; lookup_depth?: "deep"; context_revision?: number; requested_skills?: RequestedSkill[]; search_preferences?: SearchPreferences };
+ export type RunStartIntent = { path: "v1/agent-runs"; body: Start };
+ const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
+ const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="223.563" timestamp="2026-10-29T08:03:44.808313-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_recovery_pg" name="test_registered_family_search_and_authority_batch_stay_constant_sql_and_under_one_second" time="222.611"><properties><property name="warmup_iterations" value="5" /><property name="measured_iterations" value="40" /><property name="search_warm_p95_seconds" value="1.0259137981163804" /><property name="search_durations_seconds" value="[1.4136309159221128, 1.116357250022702, 1.1132275420241058, 0.9214283749461174, 1.1842432919656858, 0.9343492919579148, 0.8668347919592634, 0.8328235000371933, 0.8564064579550177, 0.8545473749982193, 0.779284166987054, 1.023625416914001, 0.6640201660338789, 0.6816532090306282, 0.6570372499991208, 0.6662278339499608, 0.6522037079557776, 0.6551127919228747, 0.6712227499810979, 0.7135557919973508, 0.9936213329201564, 0.6938648750074208, 0.65518941602204, 0.6563342500012368, 0.6666739999782294, 0.647874541929923, 0.6948226250242442, 0.6866549579426646, 0.6876830830005929, 1.069393040961586, 0.6650576249230653, 0.6558428748976439, 0.6759997080080211, 0.666838749893941, 0.6543401660164818, 0.6628968750592321, 0.6555994999362156, 0.6653108750469983, 0.6614907920593396, 1.118880083085969, 0.936199750052765, 0.6939812089549378, 0.6705002499511465, 0.6755538749275729, 0.6834138749400154]" /><property name="search_sql_counts" value="[5]" /><property name="verify_registered_warm_p95_seconds" value="0.505392936069984" /><property name="verify_registered_durations_seconds" value="[0.6840679999440908, 0.6158157919999212, 0.5118267079815269, 0.474429541034624, 0.47674275003373623, 0.4985934590222314, 0.4762831670232117, 0.4762093750759959, 0.45583183295093477, 0.47914812492672354, 0.4643137500388548, 0.3939639999298379, 0.39380608301144093, 0.3924304589163512, 0.38893212494440377, 0.3848388330079615, 0.3893729579867795, 0.40515966690145433, 0.3864803750766441, 0.38357249996624887, 0.6782518329564482, 0.378827708074823, 0.3956055830931291, 0.39052374998573214, 0.38709437497891486, 0.3956989999860525, 0.40304116695187986, 0.3864416249562055, 0.38441166700795293, 0.39720816700719297, 0.6345829999772832, 0.38564200000837445, 0.38535854197107255, 0.4072876670397818, 0.376839250093326, 0.38897900003939867, 0.3845384169835597, 0.397195708937943, 0.38211641705129296, 0.45088362495880574, 0.38770670793019235, 0.3987617500824854, 0.4107900840463117, 0.3933690000558272, 0.3887978750281036]" /><property name="verify_registered_sql_counts" value="[4]" /><property name="verify_expanded_warm_p95_seconds" value="0.5013382480421569" /><property name="verify_expanded_durations_seconds" value="[0.5732852909713984, 1.0223552499664947, 0.5283083750400692, 0.4964241669513285, 0.5161066659493372, 0.5266010840423405, 0.4859541669720784, 0.4660489590605721, 0.4847300830297172, 0.5000086250947788, 0.7347647920250893, 0.39639941696077585, 0.402436374919489, 0.41324141691438854, 0.4165259579895064, 0.40247170894872397, 0.3938709170324728, 0.3914186250185594, 0.40187033300753683, 0.39465870801359415, 0.3929006669204682, 0.39607787504792213, 0.40917474997695535, 0.4037408330477774, 0.40661854203790426, 0.4043124580057338, 0.41854162502568215, 0.3924552499083802, 0.3998159160837531, 0.3884827089495957, 0.3949836250394583, 0.3975470419973135, 0.3808501670137048, 0.40322525007650256, 0.41235375008545816, 0.3911727500380948, 0.3853729999391362, 0.40264737501274794, 0.42364558298140764, 0.41428479098249227, 0.3893200419843197, 0.40046612499281764, 0.40241083304863423, 0.3997497500386089, 0.41335379099473357]" /><property name="verify_expanded_sql_counts" value="[4]" /><property name="mixed_source_family_counts" value="Counter({'artifact': 26, 'knowledge': 6, 'change': 6, 'external_wait': 6, 'supply': 6, 'issue': 4, 'build': 4, 'test_run': 4, 'field_feedback': 3, 'manufacturing_document': 2, 'verification_handoff': 2, 'capa': 1, 'project_status': 1})" /><property name="historical_families_in_authority_batch" value="['verification_handoff']" /><property name="authority_batch_sizes" value="[13, 59]" /></properties><failure message="assert 1.0259137981163804 &lt; 1.0">all_sources = namespace(person=namespace(test_authorization_window=None, test_authorization_until=None, admin=Engine(postgresql+psyc... None, 'object_id': UUID('92a0145c-ea2b-4ecb-8496-0e391a99ab26'), 'original_ids': [], 'read_basis_status': 'current'}])
+record_property = &lt;function record_property.&lt;locals&gt;.append_property at 0x12a50f740&gt;
+
+    def test_registered_family_search_and_authority_batch_stay_constant_sql_and_under_one_second(
+        all_sources,
+        record_property,
+    ):
+        person = all_sources.person
+        # Increase real derived workload across sources written by this same actor.
+        for index_ in range(5):
+            add_knowledge(person, index_ + 1)
+            register(person, f"Synthetic scale artifact {index_}", "Synthetic recovery scale evidence.")
+            all_sources.supply()
+            all_sources.waiting()
+            payload = change_payload(all_sources.work)
+            payload["title"] += f" scale #{index_}"
+            command, _inputs = change_command(all_sources.work, "change.request.create", payload)
+            response = post(all_sources.work.quality, command)
+            assert response.status_code == 200, response.text
+        indexing.rebuild(person.engine, replace(person.ctx, category_id=None))
+        source_rows = authority(person)
+        family_counts = Counter(row["source_type"] for row in source_rows)
+        assert set(family_counts) == set(SOURCE_TYPES)
+        citations, expanded = {}, {}
+        historical_families = []
+        for kind in SOURCE_TYPES:
+            family = [row for row in source_rows if row["source_type"] == kind]
+            row = next((row for row in family if row["is_current"]), family[0])
+            # Physical handoff facts become historical when the actual request later
+            # advances through Start/results. Search that real history explicitly;
+            # never manufacture an extra handoff or label the past fact Current.
+            if not row["is_current"]:
+                historical_families.append(kind)
+            with readonly(person) as session:
+                found = search(
+                    session,
+                    replace(person.ctx, category_id=None),
+                    SearchInput(
+                        query=str(row["source_id"]),
+                        source_types=[kind],
+                        include_history=not row["is_current"],
+                        limit=50,
+                    ),
+                )
+            assert found["items"], (kind, found)
+            citations[str(uuid4())] = found["items"][0]
+            expanded[(kind, str(row["source_id"]))] = found["items"][0]
+        for row in source_rows:
+            key = row["source_type"], str(row["source_id"])
+            if not row["is_current"] or key in expanded:
+                continue
+            with readonly(person) as session:
+                found = search(
+                    session,
+                    replace(person.ctx, category_id=None),
+                    SearchInput(
+                        query=key[1],
+                        source_types=[key[0]],
+                        limit=1,
+                    ),
+                )
+            assert found["items"] and found["items"][0]["source_id"] == key[1], (key, found)
+            expanded[key] = found["items"][0]
+        expanded = {str(uuid4()): item for item in expanded.values()}
+        assert len(expanded) &gt; len(citations)
+        modes = ("search", "verify_registered", "verify_expanded")
+        durations, counts, statements = {mode: [] for mode in modes}, {mode: [] for mode in modes}, []
+        profile_path = os.environ.get("PDOS_ENTERPRISE_PROFILE_PATH")
+        first_sql, capture_trace, active_mode = [], False, None
+    
+        def track(_connection, _cursor, statement, parameters, _context, _many):
+            statements.append(True)
+            if capture_trace:
+                first_sql.append({"mode": active_mode, "sql": statement, "parameters": parameters})
+    
+        event.listen(person.engine, "before_cursor_execute", track)
+        # Exercise the prepared statement and RLS plans before measuring warm reads.
+        # Forty observations keep empirical p95 within the measured distribution;
+        # eleven observations with the default exclusive estimator can exceed max.
+        warmup, measured = 5, 40
+        try:
+            for iteration in range(warmup + measured):
+                for mode in modes:
+                    active_mode = mode
+                    capture_trace = bool(profile_path) and iteration == 0
+                    with readonly(person) as session:
+                        statements.clear()
+                        started = time.perf_counter()
+                        if mode == "search":
+                            value = search(
+                                session,
+                                replace(person.ctx, category_id=None),
+                                SearchInput(
+                                    query="synthetic",
+                                    limit=50,
+                                ),
+                            )
+                            assert value["coverage"]["status"] == "current" and value["returned"] &gt; 0
+                        else:
+                            batch = citations if mode == "verify_registered" else expanded
+                            actual, missing = current(session, batch)
+                            assert not missing and len(actual) == len(batch), missing
+                        durations[mode].append(time.perf_counter() - started)
+                        counts[mode].append(len(statements))
+        finally:
+            event.remove(person.engine, "before_cursor_execute", track)
+        if profile_path:
+            # Explicit local diagnostics only: context/SQL binds contain synthetic
+            # identities, never DSNs, bearer tokens, model credentials or bodies.
+            with os.fdopen(
+                os.open(profile_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), "w"
+            ) as out:
+                json.dump(
+                    {
+                        "context": context_reference(replace(person.ctx, category_id=None)),
+                        "request": {"query": "synthetic", "limit": 50},
+                        "family_counts": dict(family_counts),
+                        "authority_batch_sizes": [len(citations), len(expanded)],
+                        "first_sql": first_sql,
+                    },
+                    out,
+                    default=str,
+                )
+        record_property("warmup_iterations", warmup)
+        record_property("measured_iterations", measured)
+        for mode in durations:
+            p95 = statistics.quantiles(durations[mode][warmup:], n=20, method="inclusive")[18]
+            record_property(mode + "_warm_p95_seconds", p95)
+            record_property(mode + "_durations_seconds", durations[mode])
+            record_property(mode + "_sql_counts", str(sorted(set(counts[mode]))))
+        record_property("mixed_source_family_counts", str(family_counts))
+        record_property("historical_families_in_authority_batch", historical_families)
+        record_property("authority_batch_sizes", [len(citations), len(expanded)])
+        print(
+            json.dumps(
+                {
+                    "family_counts": dict(family_counts),
+                    "context": context_reference(replace(person.ctx, category_id=None)),
+                    "authority_batch_sizes": [len(citations), len(expanded)],
+                    "warm_p95_seconds": {
+                        mode: statistics.quantiles(
+                            durations[mode][warmup:],
+                            n=20,
+                            method="inclusive",
+                        )[18]
+                        for mode in modes
+                    },
+                    "sql_counts": {mode: sorted(set(counts[mode])) for mode in modes},
+                }
+            )
+        )
+        for mode in durations:
+            assert len(set(counts[mode])) == 1
+&gt;           assert statistics.quantiles(durations[mode][warmup:], n=20, method="inclusive")[18] &lt; 1.0
+E           assert 1.0259137981163804 &lt; 1.0
+
+tests/enterprise_search/test_recovery_pg.py:689: AssertionError</failure></testcase></testsuite></testsuites>

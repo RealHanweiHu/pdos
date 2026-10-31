@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/tools/validate_contracts.py", line 16, in <module>
+    assert len(data["items"]) == count
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

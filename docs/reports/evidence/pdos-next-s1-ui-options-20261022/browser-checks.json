@@ -1,0 +1,133 @@
+{
+  "desktop": [
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "headings": [
+        "我的工作"
+      ],
+      "url": "?direction=a&view=work"
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "headings": [
+        "便携充气泵"
+      ],
+      "url": "?direction=a&view=proposal"
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "headings": [
+        "便携充气泵"
+      ],
+      "url": "?direction=a&view=project"
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "headings": [
+        "我的工作",
+        "噪声条件待确定"
+      ],
+      "url": "?direction=b&view=work"
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "headings": [
+        "便携充气泵"
+      ],
+      "url": "?direction=b&view=proposal"
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "headings": [
+        "便携充气泵"
+      ],
+      "url": "?direction=b&view=project"
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "headings": [
+        "今天，从立项之后开始。"
+      ],
+      "url": "?direction=c&view=work"
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "headings": [
+        "便携充气泵"
+      ],
+      "url": "?direction=c&view=proposal"
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "headings": [
+        "便携充气泵"
+      ],
+      "url": "?direction=c&view=project"
+    }
+  ],
+  "narrowDark": [
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "url": "?direction=a&view=work",
+      "width": 388
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "url": "?direction=a&view=proposal",
+      "width": 388
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "url": "?direction=a&view=project",
+      "width": 388
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "url": "?direction=b&view=work",
+      "width": 388
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "url": "?direction=b&view=proposal",
+      "width": 388
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "url": "?direction=b&view=project",
+      "width": 388
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "url": "?direction=c&view=work",
+      "width": 388
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "url": "?direction=c&view=proposal",
+      "width": 388
+    },
+    {
+      "documentOverflow": false,
+      "frameOverflow": false,
+      "url": "?direction=c&view=project",
+      "width": 388
+    }
+  ]
+}

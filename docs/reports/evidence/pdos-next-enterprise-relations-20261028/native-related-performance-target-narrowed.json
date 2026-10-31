@@ -1,0 +1,66 @@
+{
+  "samples": 12,
+  "returned_sources": [
+    6
+  ],
+  "queries_per_request": [
+    7
+  ],
+  "p95_seconds": 5.465579016972333,
+  "max_seconds": 5.425244666985236,
+  "durations_seconds": [
+    5.310003667022102,
+    5.179822583915666,
+    5.0693869170499966,
+    5.044701916980557,
+    5.167801790987141,
+    4.962578917038627,
+    5.0449729999527335,
+    5.425244666985236,
+    5.239569916040637,
+    5.099144750041887,
+    5.036634040996432,
+    4.778466333053075
+  ],
+  "sql_profile": {
+    "direct_page": {
+      "samples": 12,
+      "median_seconds": 0.47870408347807825,
+      "max_seconds": 0.5080793750239536,
+      "sql_chars": 109213
+    },
+    "related_scan_dependencies": {
+      "samples": 12,
+      "median_seconds": 1.928749875514768,
+      "max_seconds": 2.097165208077058,
+      "sql_chars": 102733
+    },
+    "related_metadata": {
+      "samples": 12,
+      "median_seconds": 2.038118186988868,
+      "max_seconds": 2.397078499896452,
+      "sql_chars": 107308
+    },
+    "presence": {
+      "samples": 12,
+      "median_seconds": 0.016575312474742532,
+      "max_seconds": 0.060559040983207524,
+      "sql_chars": 799
+    },
+    "set_jit": {
+      "samples": 12,
+      "median_seconds": 0.0012414584634825587,
+      "max_seconds": 0.01062524993903935,
+      "sql_chars": 17
+    },
+    "direct_scan_dependencies": {
+      "samples": 12,
+      "median_seconds": 0.49475891701877117,
+      "max_seconds": 0.7008284160401672,
+      "sql_chars": 98592
+    }
+  },
+  "real_models": false,
+  "embedding": false,
+  "scope": "one Build and its actual registered execution/TestRun records, not all-source scale"
+}

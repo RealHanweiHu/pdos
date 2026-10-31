@@ -1,0 +1,143 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos_next/agent_kernel/context_corrections.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from copy import deepcopy
+ 8 | | from typing import Literal
+ 9 | | from uuid import UUID
+10 | |
+11 | | from pydantic import Field, model_validator
+12 | | from sqlalchemy import or_, select, tuple_
+13 | |
+14 | | from pdos_next.enterprise_search.schemas import SourceType
+15 | | from pdos_next.errors import DomainError
+16 | | from pdos_next.schema_base import StrictModel
+17 | | from pdos_next.service import digest
+   | |____________________________________^
+help: Organize imports
+   |
+19 |
+   -
+20 | class SourceChoice(StrictModel):
+   |
+
+E501 Line too long (101 > 100)
+   --> pdos_next/agent_kernel/context_corrections.py:223:101
+    |
+221 |     from pdos_next.contracts import SourceRead
+222 |
+223 |     condition = recheck(session, ctx, parent, state.body.get("context_selection")) if state else None
+    |                                                                                                     ^
+224 |     refs = {} if condition else {ref["artifact_id"]: dict(ref) for ref in parent.read_sources}
+225 |     fixed = {row["source_id"]: row for row in values(condition)
+    |
+
+E501 Line too long (117 > 100)
+  --> pdos_next/agent_kernel/work_state.py:42:101
+   |
+40 |     expected_revision: int = Field(ge=0, strict=True)
+41 |     request_key: UUID
+42 |     action: Literal["remove_constraint", "exclude_source", "remove_exclusion", "set_search_scope", "correct_context"]
+   |                                                                                                     ^^^^^^^^^^^^^^^^^
+43 |     item_id: UUID | None = None
+44 |     search_preferences: SearchPreferences | None = None
+   |
+
+E501 Line too long (110 > 100)
+  --> pdos_next/agent_kernel/work_state.py:50:101
+   |
+48 |     def action_fields(self):
+49 |         if self.action == "correct_context":
+50 |             if self.context_change is None or self.item_id is not None or self.search_preferences is not None:
+   |                                                                                                     ^^^^^^^^^^
+51 |                 raise ValueError("纠正须提供显式选择，不能夹带其他携带动作。")
+52 |             return self
+   |
+
+E501 Line too long (104 > 100)
+   --> pdos_next/agent_kernel/work_state.py:407:101
+    |
+405 |         from .context_corrections import public as correction_public
+406 |
+407 |         public["context_selection"] = correction_public(session, ctx, origin, body["context_selection"])
+    |                                                                                                     ^^^^
+408 |         selection = public["context_selection"]
+409 |         if selection["status"] == "available" and selection.get("focus"):
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> pdos_next/agent_kernel/work_state.py:468:9
+    |
+466 |                 "tool": "assistant.citations.read", "has_more": False, "next_cursor": None
+467 |             }
+468 |         from .context_corrections import requested, recheck
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+469 |
+470 |         selection, configured = requested(run)
+    |
+help: Organize imports
+    |
+467 |             }
+    -         from .context_corrections import requested, recheck
+468 +         from .context_corrections import recheck, requested
+469 |
+    |
+
+E501 Line too long (124 > 100)
+   --> pdos_next/agent_kernel/work_state.py:550:101
+    |
+548 |         raise DomainError("CONVERSATION_HISTORY_REVOKED", "携带的工作状态已不可读。")
+549 |     current = _project(session, ctx, row, current_run=run)
+550 |     visible = {(item["kind"], item["id"], item["version"]) for item in current["focus_objects"] if item["kind"] != "source"}
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+551 |     previous = {(item["kind"], item["id"], item["version"]) for item in value["focus_objects"] if item["kind"] != "source"}
+552 |     if previous - visible:
+    |
+
+E501 Line too long (123 > 100)
+   --> pdos_next/agent_kernel/work_state.py:551:101
+    |
+549 |     current = _project(session, ctx, row, current_run=run)
+550 |     visible = {(item["kind"], item["id"], item["version"]) for item in current["focus_objects"] if item["kind"] != "source"}
+551 |     previous = {(item["kind"], item["id"], item["version"]) for item in value["focus_objects"] if item["kind"] != "source"}
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^
+552 |     if previous - visible:
+553 |         raise DomainError("CONVERSATION_HISTORY_REVOKED", "工作状态引用的资料已无权读取或已撤回。")
+    |
+
+E501 Line too long (102 > 100)
+   --> pdos_next/agent_kernel/work_state.py:680:101
+    |
+678 |             _target(session, ctx, session_id, None)
+679 |             state = latest(session, session_id)
+680 |             run = session.get(AgentRun, UUID(state.body["current_goal"]["run_id"])) if state else None
+    |                                                                                                     ^^
+681 |             if run is None:
+682 |                 raise DomainError("FORBIDDEN_SCOPE", "请先打开本人的实际会话。", 403)
+    |
+
+F821 Undefined name `filters`
+  --> pdos_next/enterprise_search/assistant_scope.py:62:76
+   |
+60 |             exclude_project=scope.project_id, exclude_proposal=scope.proposal_id,
+61 |             exclude_sources=identities,
+62 |             allow_customer_private=preferences.include_customer_private, **filters,
+   |                                                                            ^^^^^^^
+63 |         ))
+64 |         groups.append(("same_category", "同品类其他项目", fallback))
+   |
+
+E501 Line too long (103 > 100)
+   --> tests/agent_kernel/test_context_corrections.py:171:101
+    |
+169 | def test_actual_selected_privacy_merges_with_original_binding_without_scope_change():
+170 |     run, _ctx, _ref = case()
+171 |     run._explicit_context_binding = {"private_context": True, "data_categories": ["customer_original"]}
+    |                                                                                                     ^^^
+172 |     binding = SimpleNamespace(private_context=False, data_categories=["internal"],
+173 |                               customer_identities=[], read_sources=[])
+    |
+
+Found 11 errors.
+[*] 2 fixable with the `--fix` option.

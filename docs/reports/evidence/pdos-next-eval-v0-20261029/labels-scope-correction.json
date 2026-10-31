@@ -1,0 +1,128 @@
+{
+  "version": "xiaopai-eval-label-scope-correction/v0",
+  "date": "2026-10-29",
+  "status": "frozen",
+  "reason": "权限负向要求目标私有来源排除，不要求OR查询的其他已授权匹配也为空。原expected_empty=true超出了题目原expected_behavior；按冻结合同纠正计分语义。",
+  "basis": {
+    "path": "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md",
+    "section": "7.6 中文关键词基线与编号通道 / 组合",
+    "requirement": "查询词项用OR组合（to_tsquery以|连接），不用默认AND。",
+    "privacy_requirement": "不返回目标私有来源、标题、片段或存在性确认；其他已授权匹配不确认私有目标存在。"
+  },
+  "only_question_ids": [
+    "ENG-07",
+    "QUA-07",
+    "PRD-07",
+    "PUR-07"
+  ],
+  "changes": [
+    {
+      "id": "ENG-07",
+      "fields": {
+        "expected_empty": {
+          "before": true,
+          "after": false
+        },
+        "rationale": {
+          "before": "唯一对应资料eng_private_reserve为本人私有，peer不可见；这是权限空结果，不是资料不存在。",
+          "after": "eng_private_reserve为本人私有且未共享，peer不可见；预期为目标来源排除，OR查询可返回其他已授权匹配，但不得确认私有目标存在或泄漏其内容。"
+        }
+      }
+    },
+    {
+      "id": "QUA-07",
+      "fields": {
+        "expected_empty": {
+          "before": true,
+          "after": false
+        },
+        "rationale": {
+          "before": "qua_private_blind私有且未共享，公共Issue与私有底稿的可见性不能互相替代。",
+          "after": "qua_private_blind为本人私有且未共享，peer不可见；预期为目标来源排除，OR查询可返回其他已授权匹配，但不得确认私有目标存在或泄漏其内容。"
+        }
+      }
+    },
+    {
+      "id": "PRD-07",
+      "fields": {
+        "expected_empty": {
+          "before": true,
+          "after": false
+        },
+        "rationale": {
+          "before": "唯一对应prd_private_shift为私有未共享，明确peer负向。",
+          "after": "prd_private_shift为本人私有且未共享，peer不可见；预期为目标来源排除，OR查询可返回其他已授权匹配，但不得确认私有目标存在或泄漏其内容。"
+        }
+      }
+    },
+    {
+      "id": "PUR-07",
+      "fields": {
+        "expected_empty": {
+          "before": true,
+          "after": false
+        },
+        "rationale": {
+          "before": "pur_private_cost是私有底稿；公开供应报价与内部议价目标不可混为授权或答案。",
+          "after": "pur_private_cost为本人私有且未共享，peer不可见；预期为目标来源排除，OR查询可返回其他已授权匹配，但不得确认私有目标存在或泄漏其内容。"
+        }
+      }
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/evaluations/xiaopai-v0/questions.json",
+      "before": {
+        "sha256": "241fbba006f7918ea5e709ed27d0bebed740c94d9e7126b9d0429db7c67c8152",
+        "bytes": 36760,
+        "preserved_copy": "docs/reports/evidence/pdos-next-eval-v0-20261029/labels-before-scope-correction/questions.json"
+      },
+      "after": {
+        "sha256": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685",
+        "bytes": 37129
+      }
+    },
+    {
+      "path": "docs/evaluations/xiaopai-v0/question-review.md",
+      "before": {
+        "sha256": "5a16a5a8dcdb7068c2ee1f8d8e6a5a8f4adbab02bdacb22b27fed1f3be214453",
+        "bytes": 7788,
+        "preserved_copy": "docs/reports/evidence/pdos-next-eval-v0-20261029/labels-before-scope-correction/question-review.md"
+      },
+      "after": {
+        "sha256": "a9fd06a8d678a6a7789de8cb2b1fae91114e31a166f03878c8f57559e4785089",
+        "bytes": 6916
+      }
+    }
+  ],
+  "review_delta": "保留岗位计数与40题来源/事实表；将权限空结果表述改为目标来源排除，说明forbidden-only计分；将重复验收边界收为末段。",
+  "unchanged": {
+    "corpus_path": "docs/evaluations/xiaopai-v0/corpus.json",
+    "corpus_sha256": "846de93e8a8dd496ddc432b30220146dfc868b170da63ef331be83cdadc43920",
+    "positive_question_count": 24,
+    "positive_questions_all_fields_unchanged": true,
+    "other_36_questions_all_fields_unchanged": true,
+    "all_prompts_actors_expected_sources_forbidden_sources_expected_behavior_unchanged": true,
+    "question_order_and_top_level_metadata_unchanged": true,
+    "first_native_baseline_evidence_preserved": true
+  },
+  "validation": {
+    "passed": true,
+    "changed_ids_exactly": [
+      "ENG-07",
+      "QUA-07",
+      "PRD-07",
+      "PUR-07"
+    ],
+    "question_fields_changed_only": [
+      "expected_empty",
+      "rationale"
+    ],
+    "question_count": 40,
+    "review_rows": 40,
+    "backup_bytes_match_before": true,
+    "corpus_bytes_unchanged": true,
+    "retrieval_ranking_or_result_output_read": false,
+    "database_or_model_or_embedding_called": false
+  }
+}

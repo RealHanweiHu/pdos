@@ -1,0 +1,80 @@
+{
+  "database_port": 57358,
+  "marker": "c351c0ca-b874-49b9-bf1b-44c3ad150aaf",
+  "schema_head": "s0_0814",
+  "tenant_id": "78340ac0-57c2-4235-87c6-a468dd3d8173",
+  "registered_enabled_skills": 18,
+  "t0_qualifications": 0,
+  "runs": [
+    {
+      "run_id": "60dbc38b-9f91-474a-bfd3-702cb161d9c7",
+      "goal": "你好",
+      "status": "failed",
+      "error_code": "INTERNAL_ERROR",
+      "result": null,
+      "model": "MiniMax-M3",
+      "budget_policy": "development_unlimited",
+      "model_calls": [
+        {
+          "state": "completed",
+          "cost_state": "actual",
+          "charged_micro_usd": 11964,
+          "input_tokens": 37221,
+          "output_tokens": 252
+        },
+        {
+          "state": "completed",
+          "cost_state": "actual",
+          "charged_micro_usd": 4230,
+          "input_tokens": 37843,
+          "output_tokens": 1353
+        }
+      ],
+      "business_receipts": 0
+    },
+    {
+      "run_id": "eb0a12df-f177-4de6-abef-16d0867eee6e",
+      "goal": "你好，请只用一句话打招呼，不读取资料、不创建或修改任何业务记录。",
+      "status": "completed",
+      "error_code": null,
+      "result": {
+        "result": {
+          "note": "本轮仅打招呼，未读取资料，未创建或修改任何业务记录。",
+          "records_read": 0,
+          "greeting_only": true,
+          "tools_invoked": [],
+          "records_created": 0,
+          "category_context": {
+            "name": "汽车充气泵",
+            "context_ref": "16aa371e-7d1a-48ed-a83c-fca5ada97fed"
+          },
+          "records_modified": 0
+        },
+        "status": "completed",
+        "summary": "你好！我是小Pai，随时可以帮你推进汽车充气泵品类的立项、变更、验证或放行事务。",
+        "questions": [],
+        "unfinished": []
+      },
+      "model": "MiniMax-M3",
+      "budget_policy": "development_unlimited",
+      "model_calls": [
+        {
+          "state": "completed",
+          "cost_state": "actual",
+          "charged_micro_usd": 11984,
+          "input_tokens": 37250,
+          "output_tokens": 261
+        }
+      ],
+      "business_receipts": 0
+    }
+  ],
+  "wallets": [
+    {
+      "calls": 3,
+      "spent_micro_usd": 28178,
+      "held_micro_usd": 0,
+      "development_unlimited": true
+    }
+  ]
+}

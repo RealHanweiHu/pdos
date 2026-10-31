@@ -1,0 +1,2 @@
+Command: npx eslint src/app/ui-lab/platform
+Exit code: 0

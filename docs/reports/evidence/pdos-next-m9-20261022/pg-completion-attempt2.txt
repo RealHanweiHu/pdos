@@ -1,0 +1,294 @@
+F
+=================================== FAILURES ===================================
+_____ test_native_field_adoption_independent_verification_and_named_close ______
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': 'fe84a076-8824-4847-b19c-545e25c1419e', 'project': ...:"active","maintenance":[],"resource":{"id":"9428b4b6-d60a-46ad-9c42-51c31d6adf06","kind":"person","revision":1}}'),)))
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x14655fcb0>
+
+    def test_native_field_adoption_independent_verification_and_named_close(quality_work, monkeypatch):
+        work = quality_work
+        helper.declare_people(work)
+        people.continuation_people(work)
+        completion_people(work)
+        milestone(work, "upstream_ready")
+        with helper.session(work) as session:
+            assert session.scalar(select(func.count()).select_from(QualityIssueVersion)) == 0
+        feedback, report = native_field(work)
+        milestone(work, "field_located", feedback=feedback)
+        created, inputs = change.command(
+            work,
+            "change.request.create",
+            {
+                "title": "Synthetic actual Field corrective configuration change",
+                "reason": "Explicit user future plan from actual customer report",
+                "roots": [{"kind": "field_feedback", **feedback, "key": None}],
+                "references": [],
+                "sources": [report.source.model_dump(mode="json")],
+                "visibility": "category",
+            },
+        )
+        response = post(work.quality, created)
+        assert response.status_code == 200, response.text
+        change_id = inputs["change_id"]
+        until = now() + timedelta(hours=1)
+        scope, policy, items = policy_and_field_items(work, change_id, feedback, report, until)
+        # The named selection fixes the old Build before any formal plan/approval.
+        old_build = Ref(kind="build", id=UUID(str(work.build_id)), revision=1)
+        items = tuple(
+            item.model_copy(
+                update={
+                    "selection": item.selection.model_copy(
+                        update={
+                            "conditions": (DEVELOPMENT_BUILD_ADOPTION_CONDITION,),
+                        }
+                    ),
+                    "intent": item.intent.model_copy(
+                        update={
+                            "basis": (*item.intent.basis, old_build),
+                        }
+                    ),
+                }
+            )
+            for item in items
+        )
+        unknown, _ = change.capture(work, change_id)
+        graph = GraphSnapshot.model_validate(unknown["capture"]["graph"])
+        assert all(v.status == "unknown" for v in graph.coverage)
+        paths, facets = upstream.coverage_declarations(graph)
+        try:
+            impact, _ = change.command(work, "change.impact.compute", unknown["impact_payload"])
+            response = post(work.quality, impact)
+            assert response.status_code == 200, response.text
+            current, _ = change.current(work, change_id)
+            assessment = ImpactAssessment.model_validate(current["request_snapshot"]["assessments"][-1])
+            assert assessment.unknown and assessment.known
+            selected = [select_field_item(work, change_id, current, item, feedback) for item in items]
+            milestone(work, "two_field_selections", change_id=change_id, feedback=feedback)
+            rows = []
+            for node in graph.nodes:
+                linked = tuple(
+                    item.id
+                    for item in items
+                    if node.ref in item.selection.objects
+                    or (node.ref.kind == "operation" and item.discipline == "manufacturing")
+                )
+                rows.append(
+                    {
+                        "object": node.ref.model_dump(mode="json"),
+                        "handling": "covered_by_plan" if linked else "reviewed_no_change",
+                        "item_ids": [str(v) for v in linked],
+                        "rationale": "Bounded synthetic disposition; retain historical identities",
+                    }
+                )
+            disposition = helper.original(
+                work.quality,
+                {"change_id": change_id, "dispositions": rows},
+                "Synthetic Field per-object reviewed dispositions",
+            )
+            helper.publish_coverage(
+                work, scope, change_id, graph, until, paths=paths, facet_states=facets
+            )
+            # Source registration changes the genuine dependency watermark. Recapture
+            # after all chosen originals exist, rather than relaxing the closure fence.
+            response = work.quality.client.post(
+                endpoint(work) + "/captures",
+                headers=work.quality.headers,
+                json={
+                    "capture_key": str(uuid4()),
+                    "change_id": change_id,
+                    "expected_change_revision": current["revision"],
+                    "reason": "Recheck actual closure after registering the exact plan sources",
+                },
+            )
+            assert response.status_code == 200, response.text
+            impact, _ = change.command(work, "change.impact.compute", response.json()["impact_payload"])
+            response = post(work.quality, impact)
+            assert response.status_code == 200, response.text
+            current, _ = change.current(work, change_id)
+            assessment = ImpactAssessment.model_validate(current["request_snapshot"]["assessments"][-1])
+            assert not assessment.unknown
+            milestone(work, "current_covered_impact", change_id=change_id, feedback=feedback)
+            plan = EffectivityPlan(
+                id=uuid4(),
+                items=items,
+                expires_at=None,
+                dispositions=tuple(
+                    Disposition.model_validate(
+                        {**row, "sources": [disposition.source.model_dump(mode="json")]}
+                    )
+                    for row in rows
+                ),
+            )
+            command, review = helper.inputs(
+                work,
+                work.quality,
+                "change.order.prepare",
+                {
+                    "change_id": change_id,
+                    "expected_change_revision": current["revision"],
+                    "visibility": "category",
+                    "assessment_id": str(assessment.id),
+                    "plan": plan.model_dump(mode="json"),
+                    "reason": "Prepare the Field plan with actual complete coverage",
+                },
+            )
+            assert not review["unknown"]
+            accepted(work.quality, command)
+            milestone(work, "order_prepared", change_id=change_id, feedback=feedback)
+            for discipline, caller in (("engineering", work.engineer), ("manufacturing", work.setup)):
+                current, _ = change.current(work, change_id)
+                command, _ = helper.inputs(
+                    work,
+                    caller,
+                    "change.order.approve",
+                    {
+                        "change_id": change_id,
+                        "expected_change_revision": current["revision"],
+                        "visibility": "category",
+                        "discipline": discipline,
+                        "text": "Named professional approval of the fixed actual Field plan",
+                        "expires_at": None,
+                        "sources": [
+                            policy.source.model_dump(mode="json"),
+                            disposition.source.model_dump(mode="json"),
+                        ],
+                    },
+                )
+                receipt, _ = accepted(caller, command)
+                upstream.actual_group(
+                    work, receipt, caller, "change.order.approve", "change.approved", tier="T2"
+                )
+            current, _ = change.current(work, change_id)
+            assert current["status"] == "approved"
+            milestone(work, "dual_approved", change_id=change_id, feedback=feedback)
+            config_source = helper.original(
+                work.setup,
+                {
+                    "change_id": change_id,
+                    "feedback": feedback,
+                    "instruction": "Synthetic mount and assembly revision after dual approval",
+                },
+                "Synthetic Field configuration revision instructions",
+            )
+            eng, _ = upstream.revisions(work, config_source)
+            first, _ = field_occurrence(
+                work, change_id, items[0], selected[0], feedback, eng, config_source
+            )
+            milestone(work, "engineering_implemented", change_id=change_id, feedback=feedback)
+            mfg, _ = upstream.revisions(work, config_source, eng)
+            second, _ = field_occurrence(
+                work, change_id, items[1], selected[1], feedback, mfg, config_source
+            )
+            milestone(work, "both_implemented", change_id=change_id, feedback=feedback)
+            with ExitStack() as cleanup:
+                continued = next_round.create_new_build(work, eng, mfg, cleanup=cleanup)
+                next_round.create_actual_samples(continued)
+                next_round.create_new_request(continued, method_dossier=work.source)
+                milestone(work, "new_physical_request", change_id=change_id, feedback=feedback)
+                tested = next_round.record_new_run_results(
+                    continued,
+                    monkeypatch,
+                    cleanup=cleanup,
+                    raw_value="10.0000",
+                    test_executor=work.retest_executor,
+                    test_person_resource=work.retest_person_resource,
+                    independent_reviewer=work.independent_reviewer,
+                )
+                assert tested.final.run.result == "pass" and tested.final.run.id != work.failure_run.id
+                request_dto = VerificationRequest.model_validate(tested.final.request.request_snapshot)
+                assert request_dto.build.engineering_configuration.id == UUID(eng["subject_id"])
+>               complete_native_change(work, change_id, items, continued, tested)
+
+tests/change_execution/test_native_field_completion_chain.py:505: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/change_execution/test_native_field_completion_chain.py:197: in complete_native_change
+    receipt, command, atom = apply_completion(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = namespace(setup=<isolated synthetic test scope>, config={'source': 'fe84a076-8824-4847-b19c-545e25c1419e', 'project': ...:"active","maintenance":[],"resource":{"id":"9428b4b6-d60a-46ad-9c42-51c31d6adf06","kind":"person","revision":1}}'),)))
+caller = namespace(admin=Engine([PRIVATE_DSN] engine=Engine(postgresql+psycopg:...e, cancel_epoch=None, category_id=UUID('3e01702f-7e9c-423a-95d7-23ad5d73d8a9'), agent_run_id=None, agent_call_id=None))
+operation = 'change.effectivity.record'
+payload = {'change_id': '143586e9-fd65-5825-96b9-6db145b16dbc', 'expected_change_revision': 9, 'visibility': 'category', 'item_id': '8ec02b0f-89d2-43b8-913c-cc1e175dea61', ...}
+tier = 'T1'
+
+    def apply_completion(work, caller, operation, payload, tier):
+        before = completion_counts(work)
+        response = caller.client.post(
+            endpoint(work) + "/completion-material",
+            headers=caller.headers,
+            json={"operation": operation, "payload": payload},
+        )
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"SOURCE_STALE","message":"固定范围覆盖依据未满足，须重新取得可信原件并核对。","detail":{"reason":"COVERAGE_OWNER_STALE"}}
+E       assert 409 == 200
+E        +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/change_execution/test_native_field_completion_chain.py:161: AssertionError
+=============================== warnings summary ===============================
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:715: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:600: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:880: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:935: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/field_feedback/service.py:323: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/change_controlled_owner.py:818: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # BEFORE Current target guard, never a commit/second Receipt.
+
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/service.py:1224: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/change_coverage_owner/importer.py:368: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([fact])
+
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/change_order_service.py:1220: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Actual candidate trigger validates parent before pointer flush.
+
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/change_implementation_owner.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([result])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_native_field_completion_chain.py::test_native_field_adoption_independent_verification_and_named_close
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 23 warnings in 2481.48s (0:41:21)

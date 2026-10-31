@@ -1,0 +1,26 @@
+{
+  "version": "query-only-draft-validation/v1",
+  "applied": false,
+  "database_connections": 0,
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "checks": [
+    "all 48 unchanged source/title analyses and index tokenizer version",
+    "all 40 raw question strings unchanged; codes/families/index version preserved; safe tsquery/counts/removed trace",
+    "single-character technical words, factual negations and compound words retained",
+    "9 exact identifier controls unchanged",
+    "all-function query stays empty with no noise fallback; exact-code-only channel survives; copula removal explicit"
+  ],
+  "query_policy_version": "query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf",
+  "repository_read_sha256": {
+    "pdos-next/server/pdos_next/enterprise_search/tokenizer.py": "029845ab0af72b1af70e9747f281f6452b847cbb09ccf5474ba706f96d49016d",
+    "pdos-next/server/pdos_next/enterprise_search/query.py": "fa2eae06378cf27492e0245d3e5965c9974e6cdf379035c0fddb4f867cc61307",
+    "docs/evaluations/xiaopai-v0/corpus.json": "846de93e8a8dd496ddc432b30220146dfc868b170da63ef331be83cdadc43920",
+    "docs/evaluations/xiaopai-v0/questions.json": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685"
+  },
+  "draft_sha256": {
+    "query-only-function-words.patch": "b50004805bed2de49dffaf2a0cd329553109d770098ec050354bbadc830f13d0",
+    "tokenizer-draft.py": "db7825d21cd8a614b8458920b38cb98b49610f15e4da943ead9ce4d206066036",
+    "query-draft.py": "f3b5408880946486289074024192d3a718e6a753089d11ef2078698f438b4e0c"
+  }
+}

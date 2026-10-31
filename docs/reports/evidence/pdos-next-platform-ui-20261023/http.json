@@ -1,0 +1,11 @@
+[
+  {
+    "host": "localhost:57859",
+    "status": 200,
+    "contains_preview": true
+  },
+  {
+    "host": "design-review.invalid",
+    "status": 404
+  }
+]

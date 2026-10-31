@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="6" time="89.252" timestamp="2026-10-29T13:09:29.124152-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_eval_v0_history_state_pg" name="test_eval_v0_history_state_native_controls[CTX-04-F48000]" time="2.647"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;引用片段不在原件指定行内。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;quote_not_in_source&quot;}}">setup = &lt;isolated synthetic test scope&gt;, case_id = 'CTX-04', focus = 48000
+
+    @pytest.mark.parametrize("focus", [48000, 64000], ids=["F48000", "F64000"])
+    @pytest.mark.parametrize("case_id", ["CTX-01", "CTX-04", "CTX-05", "CTX-06", "CTX-07", "CTX-10"])
+    def test_eval_v0_history_state_native_controls(setup, case_id, focus):
+        builders = {"CTX-01": ctx01, "CTX-04": ctx04, "CTX-05": ctx05,
+                    "CTX-06": ctx06, "CTX-07": ctx07, "CTX-10": ctx10}
+&gt;       builders[case_id](setup, CASES[case_id], focus)
+
+tests/agent_kernel/test_eval_v0_history_state_pg.py:302: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_eval_v0_history_state_pg.py:94: in ctx04
+    p8 = create_g0_project(setup, visibility="category", name="松屿 P8",
+tests/g0_fixture.py:239: in create_g0_project
+    created, _ = save(
+tests/g0_fixture.py:231: in save
+    return run_command(setup, operation, payload, actor=actor, revision=revision)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, operation = 'proposal.create'
+payload = {'title': '松屿 P8', 'entry_kind': 'new_product', 'brief': '合成复验待办范围', 'groups': {'items': [{'kind': 'section', 'content...me': 'Develop', 'kind': 'new'}}, {'kind': 'option', 'content': {'name': 'Keep current state', 'kind': 'do_nothing'}}]}}
+actor = None, revision = 1
+
+    def run_command(setup, operation, payload, *, actor=None, revision=1):
+        """One real T1/T2 command through the public preview/commit pair."""
+        command = {
+            "category_id": str(setup.category),
+            "command_id": str(uuid4()),
+            "idempotency_key": str(uuid4()),
+            "operation": operation,
+            "product_id": None,
+            "expected_revision": revision,
+            "source_read_set": [],
+            "payload": payload,
+        }
+        headers = {"Authorization": f"Bearer {setup.tokens[actor or setup.human]}"}
+        route = f"/v1/categories/{setup.category}/commands"
+        preview = setup.client.post(route + "/preview", headers=headers, json=command)
+&gt;       assert preview.status_code == 200, preview.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"引用片段不在原件指定行内。","detail":{"reason":"quote_not_in_source"}}
+
+tests/g0_fixture.py:31: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_eval_v0_history_state_pg" name="test_eval_v0_history_state_native_controls[CTX-04-F64000]" time="1.650"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;引用片段不在原件指定行内。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;quote_not_in_source&quot;}}">setup = &lt;isolated synthetic test scope&gt;, case_id = 'CTX-04', focus = 64000
+
+    @pytest.mark.parametrize("focus", [48000, 64000], ids=["F48000", "F64000"])
+    @pytest.mark.parametrize("case_id", ["CTX-01", "CTX-04", "CTX-05", "CTX-06", "CTX-07", "CTX-10"])
+    def test_eval_v0_history_state_native_controls(setup, case_id, focus):
+        builders = {"CTX-01": ctx01, "CTX-04": ctx04, "CTX-05": ctx05,
+                    "CTX-06": ctx06, "CTX-07": ctx07, "CTX-10": ctx10}
+&gt;       builders[case_id](setup, CASES[case_id], focus)
+
+tests/agent_kernel/test_eval_v0_history_state_pg.py:302: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_eval_v0_history_state_pg.py:94: in ctx04
+    p8 = create_g0_project(setup, visibility="category", name="松屿 P8",
+tests/g0_fixture.py:239: in create_g0_project
+    created, _ = save(
+tests/g0_fixture.py:231: in save
+    return run_command(setup, operation, payload, actor=actor, revision=revision)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, operation = 'proposal.create'
+payload = {'title': '松屿 P8', 'entry_kind': 'new_product', 'brief': '合成复验待办范围', 'groups': {'items': [{'kind': 'section', 'content...me': 'Develop', 'kind': 'new'}}, {'kind': 'option', 'content': {'name': 'Keep current state', 'kind': 'do_nothing'}}]}}
+actor = None, revision = 1
+
+    def run_command(setup, operation, payload, *, actor=None, revision=1):
+        """One real T1/T2 command through the public preview/commit pair."""
+        command = {
+            "category_id": str(setup.category),
+            "command_id": str(uuid4()),
+            "idempotency_key": str(uuid4()),
+            "operation": operation,
+            "product_id": None,
+            "expected_revision": revision,
+            "source_read_set": [],
+            "payload": payload,
+        }
+        headers = {"Authorization": f"Bearer {setup.tokens[actor or setup.human]}"}
+        route = f"/v1/categories/{setup.category}/commands"
+        preview = setup.client.post(route + "/preview", headers=headers, json=command)
+&gt;       assert preview.status_code == 200, preview.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"引用片段不在原件指定行内。","detail":{"reason":"quote_not_in_source"}}
+
+tests/g0_fixture.py:31: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_eval_v0_history_state_pg" name="test_eval_v0_history_state_native_controls[CTX-06-F48000]" time="26.052" /><testcase classname="tests.agent_kernel.test_eval_v0_history_state_pg" name="test_eval_v0_history_state_native_controls[CTX-06-F64000]" time="20.460" /><testcase classname="tests.agent_kernel.test_eval_v0_history_state_pg" name="test_eval_v0_history_state_native_controls[CTX-07-F48000]" time="21.289" /><testcase classname="tests.agent_kernel.test_eval_v0_history_state_pg" name="test_eval_v0_history_state_native_controls[CTX-07-F64000]" time="16.403" /></testsuite></testsuites>

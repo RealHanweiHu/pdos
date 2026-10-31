@@ -1,0 +1,76 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 2 items
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second FAILED
+
+=================================== FAILURES ===================================
+_ test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second _
+tests/enterprise_search/test_recovery_pg.py:609: in test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+    assert len(set(counts[mode])) == 1 and p95 < 1.0
+E   assert (1 == 1 and 3.2077467325376348 < 1.0)
+E    +  where 1 = len({5})
+E    +    where {5} = set([5, 5, 5, 5, 5, 5, ...])
+=============================== warnings summary ===============================
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  tests/enterprise_search/test_recovery_pg.py:520: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-enterprise-recovery-20261029/recovery-performance-temporal-run3.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+================== 1 failed, 22 warnings in 181.06s (0:03:01) ==================

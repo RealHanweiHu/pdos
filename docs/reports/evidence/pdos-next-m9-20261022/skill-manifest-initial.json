@@ -1,0 +1,7 @@
+{
+  "pdos-next/server/pdos_next/skill_packages/work_management.md": "d461e5bb3f860623a1b18a8d14bdcf2bde7bb2446758323a90556cf42915f36c",
+  "pdos-next/server/pdos_next/skill_packages/change_control.md": "6230e341d51ef198c0c4bbffaf68e6c805c3f50ee7b788104666c3ed1c72fa19",
+  "pdos-next/server/pdos_next/agent_kernel/command_usage.json": "5ba5561e19a88c072c7e63449a3a9adf5c898a67bf9cc6db9e9a5fb4727cc60c",
+  "pdos-next/server/tests/agent_kernel/test_work_skill_contracts.py": "a838d3ece3ff40ce64fb5fe90454f33c74d3a917da3c4e74571fb9de7a03f11e",
+  "pdos-next/server/tests/agent_kernel/test_m3_skill_contracts.py": "58af3388dc565d4c268faa527cf62b1050b42ffa9b254cbeae961bb29768faf7"
+}

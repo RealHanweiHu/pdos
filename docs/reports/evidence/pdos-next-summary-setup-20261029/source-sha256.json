@@ -1,0 +1,16 @@
+{
+  "pdos-next/server/pdos_next/domain/automations/schemas.py": "14c5cb913b8ac70ee9b7b8a53d295ab223d6121a0493ce361cafa1a6934f4aed",
+  "pdos-next/server/pdos_next/domain/automations/service.py": "9c589de0014261c3bf5a0c65bd40cf537b0243decef5795d99cb30b97d9efe16",
+  "pdos-next/server/pdos_next/domain/automations/runtime.py": "ae2c8058a0faf74ea885784afe73bf47976b3afcc2ce225e5739d6f6bdad9a89",
+  "pdos-next/server/pdos_next/agent_kernel/gateway.py": "99739343b26d322fd538bca72fa27fc8227774716497c3ae8262cb11e52893ed",
+  "pdos-next/web/src/lib/automation-rules.ts": "f7f6af545ab8856f5407d8a541b73720cd27e308831c5ab52d1a522957915dcd",
+  "pdos-next/web/src/components/automation-rules.tsx": "1cad12e21566c32ec8d0b1feaec993858b25ea30b7bab99b94f9d17c03993f21",
+  "pdos-next/web/src/components/personal-summary-settings.tsx": "8a6973b917a2cd1af14974f5561bce816321f5778e5b4d3ade78a988c0cc16af",
+  "pdos-next/web/src/components/automation-rules.test.mjs": "3dc13360dc67391a8d9c719e78bc7b967055300d7f2d7945c2525340b4fd22b8",
+  "pdos-next/web/src/lib/automation-rules.test.mjs": "a3fcd15320e3a7ad7eb2b59fe03a27181c203b6820524859c1318dac3ca95bc6",
+  "pdos-next/server/migrations/schema_summary_walletless.py": "9d7b20327c31ebbfff1034d022784e968950f4864e9a204a2f9e07c78bc5150b",
+  "pdos-next/server/tests/automations/test_summary_setup.py": "6d12f9e971f88eb274d0dff5e4f6f216d88eec9484d41182318fd18a93e9177f",
+  "pdos-next/server/tests/automations/test_summary_setup_sql.py": "444d19959bea92a495cbce8eaa78579fa1abde90c0f88569897bf898be33e95c",
+  "pdos-next/server/tests/automations_pg/test_summary_setup_pg.py": "a6f63bfc965d921abd277abd99f732f8e3c3cbb7c9e0c21b07c48cb7a8ed43a9",
+  "pdos-next/server/migrations/versions/s0_0840_deterministic_summary.py": "20fa7c9d5f62013a4d3b71f8f41a897fb7a370268ffb969f8aa8eb39265246a1"
+}

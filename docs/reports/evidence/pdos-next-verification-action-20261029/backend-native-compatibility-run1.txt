@@ -1,0 +1,110 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 60 items
+
+tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[customer_request] PASSED [  1%]
+tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[new_product] PASSED [  3%]
+tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[derivative] PASSED [  5%]
+tests/agent_kernel/test_run_continuation.py::test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority PASSED [  6%]
+tests/agent_kernel/test_run_continuation.py::test_same_original_followup_is_serialized_and_recovers_without_current_binding PASSED [  8%]
+tests/agent_kernel/test_run_continuation.py::test_followup_refuses_scope_changes_peer_and_unfinished_parent PASSED [ 10%]
+tests/agent_kernel/test_run_continuation.py::test_followup_appends_current_sources_without_replacing_original_versions PASSED [ 11%]
+tests/agent_kernel/test_run_continuation.py::test_private_personal_continuation_is_same_session_without_category_authority PASSED [ 13%]
+tests/agent_kernel/test_run_continuation.py::test_full_memory_pagination_retains_root_constraints_and_is_not_recent_raw_chat PASSED [ 15%]
+tests/agent_kernel/test_run_continuation.py::test_append_failure_rolls_back_new_turn_and_keeps_original_result PASSED [ 16%]
+tests/agent_kernel/test_run_continuation.py::test_sql_continuation_cannot_rebind_existing_turn PASSED [ 18%]
+tests/agent_kernel/test_run_continuation.py::test_revoking_parent_scope_hides_memory_before_model_egress PASSED [ 20%]
+tests/agent_kernel/test_run_continuation.py::test_registered_graph_receives_persisted_task_memory_and_replay_does_not_call_model PASSED [ 21%]
+tests/agent_kernel/test_run_continuation.py::test_cached_read_summary_requires_actual_local_result_and_guard_rechecks_it PASSED [ 23%]
+tests/agent_kernel/test_run_continuation.py::test_newly_revoked_turn_hides_answer_and_stops_frozen_history PASSED [ 25%]
+tests/agent_kernel/test_run_continuation.py::test_prepared_candidate_turn_keeps_answer PASSED [ 26%]
+tests/agent_kernel/test_run_continuation.py::test_thirty_turn_history_stays_bounded_and_full_history_is_available PASSED [ 28%]
+tests/test_verification_execution.py::test_t1_records_unknowns_and_real_reference_samples_without_quality_authority PASSED [ 30%]
+tests/test_verification_execution.py::test_nested_exact_refs_are_inherited_and_quotes_cannot_be_forged PASSED [ 31%]
+tests/test_verification_execution.py::test_original_timezones_are_retained_but_tentative_never_becomes_a_commitment[expected] PASSED [ 33%]
+tests/test_verification_execution.py::test_original_timezones_are_retained_but_tentative_never_becomes_a_commitment[tentative] PASSED [ 35%]
+tests/test_verification_execution.py::test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes0] PASSED [ 36%]
+tests/test_verification_execution.py::test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes1] PASSED [ 38%]
+tests/test_verification_execution.py::test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes2] PASSED [ 40%]
+tests/test_verification_execution.py::test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes3] PASSED [ 41%]
+tests/test_verification_execution.py::test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes4] PASSED [ 43%]
+tests/test_verification_execution.py::test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes5] PASSED [ 45%]
+tests/test_verification_execution.py::test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes6] PASSED [ 46%]
+tests/test_verification_execution.py::test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes7] PASSED [ 48%]
+tests/test_verification_execution.py::test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes8] PASSED [ 50%]
+tests/test_verification_execution.py::test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes9] PASSED [ 51%]
+tests/test_verification_execution.py::test_payload_does_not_accept_unpaired_clocks_or_trusted_authority[changes10] PASSED [ 53%]
+tests/test_verification_execution.py::test_successor_keeps_first_clock_history_and_saved_old_intent_replays PASSED [ 55%]
+tests/test_verification_execution.py::test_competing_successors_are_cas_bound_and_cannot_overwrite_current PASSED [ 56%]
+tests/test_verification_execution.py::test_concurrent_same_intent_commits_once_and_same_key_changed_body_is_refused PASSED [ 58%]
+tests/test_verification_execution.py::test_confirmation_is_bound_to_actual_draft_and_complete_fixed_sources[reason] PASSED [ 60%]
+tests/test_verification_execution.py::test_confirmation_is_bound_to_actual_draft_and_complete_fixed_sources[items] PASSED [ 61%]
+tests/test_verification_execution.py::test_confirmation_is_bound_to_actual_draft_and_complete_fixed_sources[readset] PASSED [ 63%]
+tests/test_verification_execution.py::test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access[source] PASSED [ 65%]
+tests/test_verification_execution.py::test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access[inherited_source] PASSED [ 66%]
+tests/test_verification_execution.py::test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access[revision] PASSED [ 68%]
+tests/test_verification_execution.py::test_saved_receipt_replay_survives_source_drift_and_requires_current_read_access[grant] PASSED [ 70%]
+tests/test_verification_execution.py::test_final_receipt_failure_rolls_back_version_pointer_confirmation_and_outbox PASSED [ 71%]
+tests/test_verification_execution.py::test_read_permission_keeps_saved_replay_and_does_not_allow_new_preparation PASSED [ 73%]
+tests/test_verification_execution.py::test_private_preparation_and_sources_are_hidden_from_peer_and_other_tenant PASSED [ 75%]
+tests/test_verification_execution.py::test_request_series_cannot_switch_build_or_use_another_product PASSED [ 76%]
+tests/test_verification_execution.py::test_preparation_does_not_grant_professional_or_physical_authority PASSED [ 78%]
+tests/test_verification_execution.py::test_database_history_rls_pointer_sequence_and_agent_zero_write PASSED [ 80%]
+tests/test_verification_execution.py::test_pointer_first_insert_cannot_skip_a_real_persisted_first_version PASSED [ 81%]
+tests/verification_front/test_transactions.py::test_fixed_preparation_and_new_server_clock_never_inherit_document_completion PASSED [ 83%]
+tests/verification_front/test_transactions.py::test_current_issuer_configuration_and_not_product_grant_controls_formal_action PASSED [ 85%]
+tests/verification_front/test_transactions.py::test_unknown_and_rejected_method_facts_are_saved_and_never_complete_documents[unknown] PASSED [ 86%]
+tests/verification_front/test_transactions.py::test_unknown_and_rejected_method_facts_are_saved_and_never_complete_documents[not_applicable] PASSED [ 88%]
+tests/verification_front/test_transactions.py::test_positive_method_once_common_receipt_old_intent_replay_and_immutable_history PASSED [ 90%]
+tests/verification_front/test_transactions.py::test_revoked_original_reviewer_qualification_invalidates_current_milestone_not_history PASSED [ 91%]
+tests/verification_front/test_transactions.py::test_t1_preview_binds_professional_epoch_and_saved_replay_requires_only_read_access PASSED [ 93%]
+tests/verification_front/test_transactions.py::test_two_competing_method_successors_cannot_overwrite_current PASSED [ 95%]
+tests/verification_front/test_transactions.py::test_final_outbox_failure_rolls_back_method_fact_request_pointer_and_confirmation PASSED [ 96%]
+tests/verification_front/test_transactions.py::test_schedule_is_t0_unknown_interval_and_never_resource_occupancy_or_actual PASSED [ 98%]
+tests/verification_front/test_transactions.py::test_private_scope_rls_immutability_and_agent_zero_direct_write PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/agent_kernel/test_context_projection_entries.py: 3 warnings
+tests/test_verification_execution.py: 21 warnings
+tests/verification_front/test_transactions.py: 11 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_context_projection_entries.py: 24 warnings
+tests/test_verification_execution.py: 63 warnings
+tests/verification_front/test_transactions.py: 33 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/test_verification_execution.py: 21 warnings
+tests/verification_front/test_transactions.py: 11 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/test_verification_execution.py: 21 warnings
+tests/verification_front/test_transactions.py: 11 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/test_verification_execution.py: 21 warnings
+tests/verification_front/test_transactions.py: 11 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/test_verification_execution.py: 21 warnings
+tests/verification_front/test_transactions.py: 11 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/test_verification_execution.py: 21 warnings
+tests/verification_front/test_transactions.py: 11 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-verification-action-20261029/backend-native-compatibility-run1.xml -
+================= 60 passed, 315 warnings in 493.43s (0:08:13) =================

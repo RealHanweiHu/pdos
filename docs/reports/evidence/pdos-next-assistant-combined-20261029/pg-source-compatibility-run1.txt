@@ -1,0 +1,84 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 14 items
+
+tests/enterprise_search/test_recovery_pg.py F
+
+=================================== FAILURES ===================================
+_ test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables] _
+
+all_sources = namespace(person=namespace(test_authorization_window=None, test_authorization_until=None, admin=Engine(postgresql+psyc... None, 'object_id': UUID('701f28be-f78d-55f9-ac67-49251f6fff78'), 'original_ids': [], 'read_basis_status': 'current'}])
+damage = 'all_tables'
+record_property = <function record_property.<locals>.append_property at 0x16aaa8720>
+
+    @pytest.mark.parametrize("damage", ["all_tables", "chunks_only", "statistics_only", "same_count"])
+    def test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes(
+        all_sources,
+        damage,
+        record_property,
+    ):
+        person = all_sources.person
+        ctx = replace(person.ctx, category_id=None)
+        original_facts = digest(authority(person))
+        initial = indexing.rebuild(person.engine, ctx)
+>       assert initial["failed"] == 0
+E       assert 3 == 0
+
+tests/enterprise_search/test_recovery_pg.py:223: AssertionError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:611: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/field_feedback/service.py:323: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  tests/enterprise_search/test_recovery_pg.py:213: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize("damage", ["all_tables", "chunks_only", "statistics_only", "same_count"])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-source-compatibility-20261029/pg-run1.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+================== 1 failed, 14 warnings in 95.07s (0:01:35) ===================

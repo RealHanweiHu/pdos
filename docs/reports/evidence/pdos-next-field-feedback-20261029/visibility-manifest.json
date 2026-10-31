@@ -1,0 +1,47 @@
+{
+  "stage": "/tmp/pdos-d-field-knowledge-visibility-stage-20261029",
+  "base_git_head": "28bacbb7d8be01b50296004a66891ab9892d30f4",
+  "live_mutation": false,
+  "new_files": [
+    {
+      "path": "pdos-next/server/tests/knowledge_pg/test_field_feedback_knowledge_visibility_pg.py",
+      "stage_path": "files/pdos-next/server/tests/knowledge_pg/test_field_feedback_knowledge_visibility_pg.py",
+      "sha256": "289267dcd9fe170ca86ff4729d8c9b8c457a6db1bfb4430d89d85ca94dcf2ca1"
+    }
+  ],
+  "patches": [
+    {
+      "path": "pdos-next/server/tests/knowledge/test_assistant_knowledge.py",
+      "base_sha256": "4118acb034b14be6146f4fa64a12d85d7c99b408ba264e6c6f7fc93bcd721d9a",
+      "result_sha256": "ca2154fcef7bd6b5fa08dc7086cb283f299ab35ac4dd60686bdbd31164266a83",
+      "patch_path": "patches/knowledge-visibility-count.patch",
+      "patch_sha256": "dabc50bf13531173c2a9fa2e05e6251124453ade79f973f928ece1a98a3144fc"
+    }
+  ],
+  "unnumbered_sql": [
+    {
+      "path": "sql/base-0839-knowledge-answer-sources-visible.sql",
+      "sha256": "95ac56918077300a8ce3f5d8f0c4fe266a71e12ce326edcad909d4d0b5ecde1d",
+      "apply": "root migration review only; not a direct live file"
+    },
+    {
+      "path": "sql/unnumbered-field-knowledge-visibility-up.sql",
+      "sha256": "d051417603cffcdd7630b34bf73ec8d7d8775356ab4abfce9bf1476e252162f0",
+      "apply": "root migration review only; not a direct live file"
+    }
+  ],
+  "artifacts": {
+    "README.md": "085d7a26e1427cc92b969dfc9c720b188293d1c16d338d8852cd0d3aaefa81e9",
+    "sql-contract.json": "4cf4be297cc0fae8c633821e098053a0b36418d9c483d67850e2388567d8b732",
+    "patch-contract.json": "88535103ec2a05eff070bfa4d823c4c4b79749e8ed2ffceeb96906cfa784cb30",
+    "schema-audit.json": "5b9d4ce9b83548140cedef5a63f8e85fc76d61a892abba20e7483707eeb4f0e6",
+    "evidence.json": "9a2c867c5a26dd91a34620a2677457200a02e06caffd92b9b649c6e7d39e20a6"
+  },
+  "verification": {
+    "pure": 20,
+    "pg_collect": 1,
+    "pg_executed": 0,
+    "ruff_files": 2
+  },
+  "remaining": "Root normalizes actual PG old pin, assigns next actual migration, adds retention downgrade guard, executes new1 PG and combined current candidate."
+}

@@ -1,0 +1,190 @@
+TAP version 13
+# Subtest: project filters retain the authorized identity, and ownership is not inferred from visibility
+ok 1 - project filters retain the authorized identity, and ownership is not inferred from visibility
+  ---
+  duration_ms: 1.984834
+  type: 'test'
+  ...
+# Subtest: missing stage templates do not become a six-stage plan or a health decision
+ok 2 - missing stage templates do not become a six-stage plan or a health decision
+  ---
+  duration_ms: 0.368208
+  type: 'test'
+  ...
+# Subtest: unknown, single-sided and reversed finish bounds cannot be drawn as a fabricated interval
+ok 3 - unknown, single-sided and reversed finish bounds cannot be drawn as a fabricated interval
+  ---
+  duration_ms: 0.297167
+  type: 'test'
+  ...
+# Subtest: the approved three views use one authorized read set and open the correct project or plan
+ok 4 - the approved three views use one authorized read set and open the correct project or plan
+  ---
+  duration_ms: 20.809625
+  type: 'test'
+  ...
+# Subtest: project read errors retain retry without masquerading as an empty portfolio
+ok 5 - project read errors retain retry without masquerading as an empty portfolio
+  ---
+  duration_ms: 6.56175
+  type: 'test'
+  ...
+# Subtest: directory identity changes hide prior entries before the next read completes
+ok 6 - directory identity changes hide prior entries before the next read completes
+  ---
+  duration_ms: 1.497792
+  type: 'test'
+  ...
+# Subtest: workspace retains Build and commitments, separates maturity, and all execution links keep project scope
+ok 7 - workspace retains Build and commitments, separates maturity, and all execution links keep project scope
+  ---
+  duration_ms: 21.51075
+  type: 'test'
+  ...
+# Subtest: one real activity stream occupies the overview main column and leaves when the tab changes
+ok 8 - one real activity stream occupies the overview main column and leaves when the tab changes
+  ---
+  duration_ms: 3.01825
+  type: 'test'
+  ...
+# Subtest: cockpit delegates activity to the workspace instead of appending a duplicate stream, preserving refresh inputs
+ok 9 - cockpit delegates activity to the workspace instead of appending a duplicate stream, preserving refresh inputs
+  ---
+  duration_ms: 0.974625
+  type: 'test'
+  ...
+# Subtest: professional summaries retain explicit project scope while maintenance is mounted only on demand
+ok 10 - professional summaries retain explicit project scope while maintenance is mounted only on demand
+  ---
+  duration_ms: 2.235625
+  type: 'test'
+  ...
+# Subtest: the main project view delegates professional work without losing scope across tab changes
+ok 11 - the main project view delegates professional work without losing scope across tab changes
+  ---
+  duration_ms: 1.733333
+  type: 'test'
+  ...
+# Subtest: cockpit task read failures remain unknown rather than claiming zero risks or no conflicts
+ok 12 - cockpit task read failures remain unknown rather than claiming zero risks or no conflicts
+  ---
+  duration_ms: 1.779916
+  type: 'test'
+  ...
+# Subtest: cockpit identity, category, project and API changes synchronously hide prior private reads
+ok 13 - cockpit identity, category, project and API changes synchronously hide prior private reads
+  ---
+  duration_ms: 5.595625
+  type: 'test'
+  ...
+# Subtest: read failure remains distinct from an empty task list and can be retried
+ok 14 - read failure remains distinct from an empty task list and can be retried
+  ---
+  duration_ms: 27.735375
+  type: 'test'
+  ...
+# Subtest: actual component acceptance previews but only the explicit confirmation performs one save
+ok 15 - actual component acceptance previews but only the explicit confirmation performs one save
+  ---
+  duration_ms: 52.426166
+  type: 'test'
+  ...
+# Subtest: response loss survives remount without an automatic POST and replays the exact original command
+ok 16 - response loss survives remount without an automatic POST and replays the exact original command
+  ---
+  duration_ms: 51.328875
+  type: 'test'
+  ...
+# Subtest: storage failure stays inside the event boundary and prevents every command POST
+ok 17 - storage failure stays inside the event boundary and prevents every command POST
+  ---
+  duration_ms: 19.9235
+  type: 'test'
+  ...
+# Subtest: confirmation storage failure retains the review and never sends an unrecoverable write
+ok 18 - confirmation storage failure retains the review and never sends an unrecoverable write
+  ---
+  duration_ms: 35.203416
+  type: 'test'
+  ...
+# Subtest: access denial removes local private material and hides previous task and report details
+ok 19 - access denial removes local private material and hides previous task and report details
+  ---
+  duration_ms: 16.294166
+  type: 'test'
+  ...
+# Subtest: scope disposal during actual inputs cancels the old preview continuation
+ok 20 - scope disposal during actual inputs cancels the old preview continuation
+  ---
+  duration_ms: 20.781292
+  type: 'test'
+  ...
+# Subtest: time categories and named weekly statements retain their separate meaning
+ok 21 - time categories and named weekly statements retain their separate meaning
+  ---
+  duration_ms: 16.384375
+  type: 'test'
+  ...
+# Subtest: G0 continuation prefills an editable draft while outcomes require human input and T0 saves only a task
+ok 22 - G0 continuation prefills an editable draft while outcomes require human input and T0 saves only a task
+  ---
+  duration_ms: 42.844416
+  type: 'test'
+  ...
+# Subtest: an existing G0 link selects the same task and task completion preserves the independent risk
+ok 23 - an existing G0 link selects the same task and task completion preserves the independent risk
+  ---
+  duration_ms: 16.920958
+  type: 'test'
+  ...
+# Subtest: a current G0 task assignment accepts its inherited fixed basis but still waits for T1 confirmation
+ok 24 - a current G0 task assignment accepts its inherited fixed basis but still waits for T1 confirmation
+  ---
+  duration_ms: 33.66675
+  type: 'test'
+  ...
+# Subtest: G0 draft refresh never duplicates a newly linked task or automatically replays an unknown save
+ok 25 - G0 draft refresh never duplicates a newly linked task or automatically replays an unknown save
+  ---
+  duration_ms: 44.32225
+  type: 'test'
+  ...
+# Subtest: stale G0 draft links and G0 access denial cannot become a fresh duplicate task
+ok 26 - stale G0 draft links and G0 access denial cannot become a fresh duplicate task
+  ---
+  duration_ms: 24.32475
+  type: 'test'
+  ...
+# Subtest: list and board share filtered actual tasks, and linked plan tasks never appear twice
+ok 27 - list and board share filtered actual tasks, and linked plan tasks never appear twice
+  ---
+  duration_ms: 22.657958
+  type: 'test'
+  ...
+# Subtest: unknown plan metadata cannot classify a linked task as NPI and filter state remains read-only
+ok 28 - unknown plan metadata cannot classify a linked task as NPI and filter state remains read-only
+  ---
+  duration_ms: 2.222791
+  type: 'test'
+  ...
+# Subtest: the compact task drawer carries confirmation and preserves the draft when closed
+ok 29 - the compact task drawer carries confirmation and preserves the draft when closed
+  ---
+  duration_ms: 7.867709
+  type: 'test'
+  ...
+# Subtest: status update drawer reports read failures inside the dialog and closing notifies its parent
+ok 30 - status update drawer reports read failures inside the dialog and closing notifies its parent
+  ---
+  duration_ms: 2.111209
+  type: 'test'
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 30
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1103.839125

@@ -1,0 +1,26 @@
+{
+  "scope": "ordinary live RLS metadata reused once inside the same final SQL statement",
+  "files": [
+    "pdos-next/server/pdos_next/enterprise_search/query.py"
+  ],
+  "before_sha256": "cba39e6a0811c6fff139e13c633275703e24cdbccb67a88de40a43848ba6b38f",
+  "after_sha256": "fa2eae06378cf27492e0245d3e5965c9974e6cdf379035c0fddb4f867cc61307",
+  "migration": null,
+  "source_permissions_scan_and_final_catalog_conditions": "unchanged",
+  "style_only": "imports normalized and one 101-char existing line wrapped",
+  "formal_performance_threshold_seconds": 1.0,
+  "formal_performance_pending": false,
+  "same_71_source_diagnostics": [
+    "thirteen-family-search-profile-run1.json",
+    "thirteen-family-search-profile-run2.json"
+  ],
+  "formal_performance_status": "passed",
+  "formal_result": "../pdos-next-role-native-sources-20261029/performance-final.json",
+  "formal_p95_seconds": {
+    "search": 0.9663491211773362,
+    "verify_registered": 0.5147289586486294,
+    "verify_expanded": 0.6745712569158059
+  },
+  "pure_passed": 26,
+  "native_regression_passed": 5
+}

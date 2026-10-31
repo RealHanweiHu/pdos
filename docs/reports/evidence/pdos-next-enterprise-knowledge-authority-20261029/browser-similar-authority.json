@@ -1,0 +1,24 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "tenant": "f7458632-1a88-4bec-8b94-18f807f4c5fc",
+  "models_before": 0,
+  "models_after": 0,
+  "agent_runs_after": 0,
+  "receipts_before": 67,
+  "receipts_after": 68,
+  "receipt": {
+    "id": "17cd2462-8dfa-4f82-ba1a-155618b41e2d",
+    "operation": "quality.issue.merge",
+    "subject_id": "389b5ed0-62ff-4c12-9fcd-7fa3000119d5",
+    "subject_revision": 2
+  },
+  "feedback_actions": {
+    "merge_prepared": 2,
+    "not_relevant": 1,
+    "opened": 1
+  },
+  "anchor_revision_after": 2,
+  "read_and_prefill_created_no_run": true,
+  "actual_t1_confirmed": true,
+  "synthetic": true
+}

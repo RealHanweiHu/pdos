@@ -1,0 +1,57 @@
+{
+  "base_sha": "28bacbb7d8be01b50296004a66891ab9892d30f4",
+  "stage_root": "/tmp/pdos-embedding-connection-stage-20261029",
+  "files": [
+    {
+      "source": "files/pdos-next/server/tests/enterprise_search/test_embedding_managed_connections.py",
+      "target": "pdos-next/server/tests/enterprise_search/test_embedding_managed_connections.py",
+      "action": "create",
+      "sha256": "32c0988117f3f91b192f2dd6909e14584c37dfe7687885186a4b5ec8de404b94",
+      "live_exists_at_freeze": false
+    },
+    {
+      "source": "files/pdos-next/web/src/components/model_configuration/embedding-connection-picker.tsx",
+      "target": "pdos-next/web/src/components/model_configuration/embedding-connection-picker.tsx",
+      "action": "create",
+      "sha256": "84f4581d18107b9f997f2153e9a5e9080e1b30dd28753941c826d330a5b75836",
+      "live_exists_at_freeze": false
+    },
+    {
+      "source": "files/pdos-next/web/src/components/model_configuration/embedding-connections.test.mjs",
+      "target": "pdos-next/web/src/components/model_configuration/embedding-connections.test.mjs",
+      "action": "create",
+      "sha256": "a5fdf8cf2229779be6dcd1985cb1d2cb7f8429f66b6b3ffd1a319f6a6a44a313",
+      "live_exists_at_freeze": false
+    },
+    {
+      "source": "files/pdos-next/web/src/lib/embedding-connections.ts",
+      "target": "pdos-next/web/src/lib/embedding-connections.ts",
+      "action": "create",
+      "sha256": "f1f727e6b832e5a46bb189e13b37d65653acc4b0f86d73affe1d8336b1db71ae",
+      "live_exists_at_freeze": false
+    }
+  ],
+  "patches": [
+    {
+      "source": "patches/embedding-settings-connection-hook.patch",
+      "target": "pdos-next/web/src/components/model_configuration/embedding-settings.tsx",
+      "action": "review_and_apply_patch",
+      "sha256": "9bf7c22417e156cfdc677dc11895b5b1286cc7ca7e212d51991a512748dd1dd6",
+      "base_file_sha256": "e2f71bb2aa27396c9bfb9b73b1a45e5ef39ff5cb8818bcc940d170bae11f8007"
+    }
+  ],
+  "checks": {
+    "new_frontend_tests": 8,
+    "frontend_with_existing_profile_regression": "23 passed",
+    "fake_kms_backend": "3 passed",
+    "isolated_tsc": "passed",
+    "precise_eslint": "4 files passed",
+    "ruff": "passed, explicit pdos-next/ruff.toml",
+    "patch_apply_check": "passed",
+    "database": "not run",
+    "real_kms_keychain": "not run",
+    "provider_network": "not run",
+    "next_build_browser": "not run"
+  },
+  "separate_issue": "Provider canonical identity mismatch found; no rate card relabel or policy changes in this package."
+}

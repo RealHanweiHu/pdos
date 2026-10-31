@@ -1,0 +1,10 @@
+[
+  "tests/preproject/test_lifecycle_guard_repair_pg.py",
+  "tests/preproject/test_m3_lifecycle_catalog.py",
+  "tests/project_risk_pg/test_chain.py",
+  "tests/test_personal_preferences.py",
+  "tests/test_personal_preferences_pg.py",
+  "tests/test_project_governance.py",
+  "tests/test_scoped_dispatch.py",
+  "tests/test_supply_execution.py"
+]

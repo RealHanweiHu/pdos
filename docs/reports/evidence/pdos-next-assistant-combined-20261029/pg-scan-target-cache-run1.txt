@@ -1,0 +1,66 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 4 items
+
+tests/enterprise_search/test_original_scan_targets_pg.py::test_scan_target_cache_falls_back_and_never_grants_original_readability FAILED [ 25%]
+
+=================================== FAILURES ===================================
+___ test_scan_target_cache_falls_back_and_never_grants_original_readability ____
+
+setup = <isolated synthetic test scope>
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...f80>, parser=<function parse_original at 0x117662de0>), client=<starlette.testclient.TestClient object at 0x15b71a300>)
+
+    def test_scan_target_cache_falls_back_and_never_grants_original_readability(setup, security_work):
+        first = uploaded(security_work, visibility="private", content=b"Original cachemarker evidence")
+        identity = parsed(security_work, first)
+        other = uploaded(security_work, visibility="category", content=b"Unrelated public original")
+        parsed(security_work, other)
+        index(setup, identity)
+    
+        def hint(value):
+            with Session(setup.admin) as session, session.begin():
+                row = session.scalar(select(SearchSource).where(
+                    SearchSource.tenant_id == setup.tenant,
+                    SearchSource.source_type == "artifact", SearchSource.source_id == identity,
+                ))
+                assert row is not None
+                row.original_ids = value
+    
+        def read(person):
+            statements = []
+    
+            def track(*args):
+                statements.append(args[2])
+    
+            event.listen(setup.engine, "before_cursor_execute", track)
+            try:
+                with tenant_session(setup.engine, setup.tenant, actor_id=person,
+                                    requester_id=person, read_snapshot=True) as session:
+                    value = search(session, replace(setup.ctx, actor_id=person,
+                                   requester_id=person, category_id=None),
+                                   SearchInput(query="cachemarker", source_types=["artifact"]))
+            finally:
+                event.remove(setup.engine, "before_cursor_execute", track)
+            return value, len(statements)
+    
+        with Session(setup.admin) as session:
+            assert session.scalar(select(SearchSource.original_ids).where(
+                SearchSource.source_id == identity, SearchSource.tenant_id == setup.tenant,
+            )) == [first]
+        cached, cached_sql = read(setup.human)
+>       assert cached["coverage"]["status"] == "current"
+E       AssertionError: assert 'partial' == 'current'
+E         
+E         - current
+E         + partial
+
+tests/enterprise_search/test_original_scan_targets_pg.py:53: AssertionError
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-search-scan-targets-20261029/pg-cache-run1.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_original_scan_targets_pg.py::test_scan_target_cache_falls_back_and_never_grants_original_readability
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+============================== 1 failed in 10.40s ==============================

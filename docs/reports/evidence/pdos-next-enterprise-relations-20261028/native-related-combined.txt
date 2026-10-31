@@ -1,0 +1,35 @@
+RELATED_PROFILE {"samples": 12, "returned_sources": [6], "queries_per_request": [5], "p95_seconds": 0.9825860313663725, "max_seconds": 0.9654362500878051, "durations_seconds": [0.8466181249823421, 0.916436875006184, 0.8315469999797642, 0.8349589169956744, 0.7753945000004023, 0.7288776671048254, 0.739619666012004, 0.9654362500878051, 0.8395634159678593, 0.7380317919887602, 0.6786127090454102, 0.6646399999735877], "sql_profile": {"presence": {"samples": 12, "median_seconds": 0.01798922847956419, "max_seconds": 0.027395499986596406, "sql_chars": 799}, "set_jit": {"samples": 12, "median_seconds": 0.001147499482613057, "max_seconds": 0.00669491698499769, "sql_chars": 17}, "related_metadata": {"samples": 12, "median_seconds": 0.5225006459513679, "max_seconds": 0.716250165947713, "sql_chars": 129011}}, "real_models": false, "embedding": false, "scope": "one Build and its actual registered execution/TestRun records, not all-source scale"}
+.
+=============================== warnings summary ===============================
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 9 warnings in 89.00s (0:01:29)

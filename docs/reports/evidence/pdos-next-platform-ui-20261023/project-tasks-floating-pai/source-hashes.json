@@ -1,0 +1,12 @@
+{
+  "pdos-next/web/src/app/ui-lab/platform/platform-preview.tsx": "e929a9cfd9c73c6458a9e613eb9f48b13c44f4ba4cb356603acf95517b5b148b",
+  "pdos-next/web/src/app/ui-lab/platform/platform.module.css": "46a18e07aa8396fcc3c433734a4cbf4d5c0176376a1fcfc2850c1a518ee9484e",
+  "pdos-next/web/src/app/ui-lab/platform/project-tasks.tsx": "098d88a07562399c70093b625a40e09fd7afc0a0c56f02e426a362e5e0b8a507",
+  "pdos-next/web/src/app/ui-lab/platform/project-tasks.module.css": "f218419933c675d79fa0161324c6037476096af3d61bcfc9473c41f93aaa0c7c",
+  "pdos-next/web/src/app/ui-lab/platform/design-data.ts": "b2228efeb97c84f9ee9fe6285d1d977bb0d15876a38c0806b97a9bc3a48adaee",
+  "pdos-next/web/src/app/ui-lab/platform/page.tsx": "54fbe9c48e364b81999ca02227b86a927038d6a5e7d545b56ea22e8c82e12a99",
+  "pdos-next/web/src/app/ui-lab/platform/DESIGN.md": "27e4d69db87042ffbe69390bad2766ef4054e1922ec42904ab2b0d5d96db798b",
+  "pdos-next/web/next.config.ts": "6747c88797d6eb1d4018bdf0ec460db4b367053ee1900b0ccfdd557efa6ed5e4",
+  "docs/design/2026-10-23-pdos-full-product-ui-candidate.md": "1211e535a4eeaa66dc5a0a974b8fba1b51f28ed063f4b6b419d4868bf6e2760b",
+  "tasks/ai-native-integrated-todo.md": "8bc1ca6ebef5e840677c158c97ad809fbc4ce89c75808e0bf9a3926873e184e8"
+}

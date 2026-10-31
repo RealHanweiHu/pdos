@@ -1,0 +1,70 @@
+{
+  "scope": "RAG11.5/13 E Change details and unsaved Issue/Change title hints only",
+  "live": true,
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/similar_history.py",
+      "sha256": "f1e90386bd4ae8a1127659b1c25748d3ccdefbd88a39388bb1d1c15e001121c7"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/similar_history_api.py",
+      "sha256": "4ff1cbb7759bcb97de2143edb9e11b087709a3d083b26b2bfe4c84aec36ce661"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/similar_history_schemas.py",
+      "sha256": "c290915ac5ab1d66878748abcff360512b015bbd38d7372e207443ad13a21179"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/similar_history_models.py",
+      "sha256": "3a22c0c06bc033b196895f286a637c1c10e79d3f3e8333a18b9788b694156847"
+    },
+    {
+      "path": "pdos-next/server/migrations/candidates/similar_history_change_origin.py",
+      "sha256": "602419c1b805011fed3f3e57b827ee47aac20a4c2dbe1bc416bcbe3e311decba"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_similar_history_completion.py",
+      "sha256": "5f5bd52d1ab2f320c360d6a7f84a90091659749119486ae33374c63fd90b7407"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_similar_history_completion_pg.py",
+      "sha256": "fc1b9fb5a8243eb9e358338c01df6d9a8c51703f3dcad19b12c63856bd37ac86"
+    }
+  ],
+  "verification": {
+    "pure": "27 passed (11 existing +16 new)",
+    "ruff": "7 changed/new files passed with explicit pdos-next/ruff.toml",
+    "pg_collected": [
+      "tests/enterprise_search/test_similar_history_pg.py::test_actual_page_reads_metadata_fields_and_never_creates_run_or_business_write",
+      "tests/enterprise_search/test_similar_history_pg.py::test_actual_explicit_not_relevant_feedback_is_private_append_only_and_idempotent",
+      "tests/enterprise_search/test_similar_history_pg.py::test_actual_merged_and_already_linked_logical_objects_are_excluded",
+      "tests/enterprise_search/test_similar_history_pg.py::test_actual_page_warm_latency_and_sql_count",
+      "tests/enterprise_search/test_similar_history_pg.py::test_actual_agent_has_no_feedback_sql_privileges[SELECT]",
+      "tests/enterprise_search/test_similar_history_pg.py::test_actual_agent_has_no_feedback_sql_privileges[INSERT]",
+      "tests/enterprise_search/test_similar_history_pg.py::test_actual_agent_has_no_feedback_sql_privileges[UPDATE]",
+      "tests/enterprise_search/test_similar_history_pg.py::test_actual_agent_has_no_feedback_sql_privileges[DELETE]",
+      "tests/enterprise_search/test_similar_history_completion_pg.py::test_native_change_details_exclude_self_and_registered_issue_and_reveal_no_private_trace[setup0]",
+      "tests/enterprise_search/test_similar_history_completion_pg.py::test_native_change_feedback_is_private_exact_append_only_and_cannot_merge[setup0]",
+      "tests/enterprise_search/test_similar_history_completion_pg.py::test_native_title_suggestions_for_both_forms_are_readonly_and_have_no_draft_identity[setup0]",
+      "tests/enterprise_search/test_similar_history_completion_pg.py::test_native_change_and_title_page_inclusive_p95_and_constant_sql[setup0]"
+    ],
+    "actual_pg": "root owns and runs; no DB connection by this agent"
+  },
+  "browser_fixture": {
+    "nodeid": "tests/enterprise_search/test_similar_history_completion_pg.py::test_native_change_details_exclude_self_and_registered_issue_and_reveal_no_private_trace[setup0]",
+    "fixture": "similar_change_pair",
+    "attributes": [
+      "work",
+      "app",
+      "first",
+      "second",
+      "change_ids",
+      "issue",
+      "project_id",
+      "title_query"
+    ],
+    "description": "Actual same quality/results/change native chain; original receipts and app/security/report object store; no model or worker required"
+  },
+  "migration": "candidate SQL supplied; root reports actual s0_0851 backup/up/down/up and old Issue history preserved; no further SQL changes",
+  "lifecycle": "root added exact three typed Change origin columns to COVERED_COLUMNS; this agent did not edit lifecycle catalog"
+}

@@ -1,0 +1,10 @@
+### Ran Playwright code
+```js
+await page.getByRole('button', { name: 'D16 接口漏气历史变更 A' }).click();
+```
+### Page
+- Page URL: http://127.0.0.1:63199/?area=cockpit&category=73711877-ef9b-42f7-99a8-902801b02e12&product=a86c0e16-4541-438e-8f37-619508159d78&project=11a99ae3-e01b-4f55-a35d-73849bdfd6a9&projectView=issues&panel=changes&change=1e630027-e7bc-5f96-bd99-a7ba504b34ec
+- Page Title: PDOS · 研发工作区
+- Console: 1 errors, 0 warnings
+### Snapshot
+- [Snapshot](docs/reports/evidence/pdos-next-similar-history-completion-20261029/.playwright-cli/page-2026-10-29T16-22-07-281Z.yml)

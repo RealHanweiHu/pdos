@@ -1,0 +1,7 @@
+{
+  "reason": "Actual PG PL/pgSQL IF parser requires parenthesized CASE in IS DISTINCT FROM expression",
+  "old": "IF NEW.source_proof IS DISTINCT FROM CASE WHEN NEW.subject_kind='category'\n      THEN subject->'answer_sources' ELSE subject#>'{source_basis,answer_sources}' END THEN",
+  "new": "IF NEW.source_proof IS DISTINCT FROM (CASE WHEN NEW.subject_kind='category'\n      THEN subject->'answer_sources' ELSE subject#>'{source_basis,answer_sources}' END) THEN",
+  "schema_sha256": "104aa749957f822fdc7bdb1b99e1b57dbd12e6563887c1e5bb7affe29d968923",
+  "stage_original_unchanged": true
+}

@@ -1,0 +1,323 @@
+.........................FFF.F.F.                                        [100%]
+=================================== FAILURES ===================================
+_ test_every_fresh_search_and_fallback_gets_exclusions_before_source_recheck[False] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x14372f9b0>
+project = False
+
+    @pytest.mark.parametrize("project", [False, True])
+    def test_every_fresh_search_and_fallback_gets_exclusions_before_source_recheck(
+        monkeypatch, project,
+    ):
+        category, project_id, excluded_id, included_id, next_id = [uuid4() for _ in range(5)]
+        state = {"exclusions": [{"kind": "artifact", "id": str(excluded_id)}],
+                 "search_preferences": {"scope": "same_category", "include_customer_private": False}}
+        run = SimpleNamespace(versions={"work_state": state, "work_state_digest": digest(state)})
+        session = SimpleNamespace(get=lambda *_args: run)
+        scope = SimpleNamespace(run_id=uuid4(), project_id=project_id if project else None,
+                                proposal_id=None)
+        calls, authorized = [], []
+    
+        def search(_session, _ctx, data, **options):
+            blocked = set(options["exclude_sources"])
+            assert ("artifact", str(excluded_id)) in blocked
+            calls.append(blocked)
+            all_rows = [
+                {"source_type": "artifact", "source_id": str(excluded_id), "channel": "relation"},
+                {"source_type": "issue", "source_id": str(included_id), "channel": "keyword"},
+                {"source_type": "capa", "source_id": str(next_id), "channel": "relation"},
+            ]
+            items = [{**row, "private": False, "customer_original": False} for row in all_rows
+                     if (row["source_type"], row["source_id"]) not in blocked]
+            return {"items": items, "returned": len(items), "direct_returned": 1,
+                    "related_returned": 1, "truncated": False, "related_truncated": False,
+                    "scope": {"category_id": str(category)},
+                    "coverage": {"status": "current", "notice": None, "indexed_as_of": None}}
+    
+        def current(_session, rows):
+            assert all(row["source_id"] != str(excluded_id) for row in rows.values())
+            authorized.extend(rows.values())
+            return rows, {}
+    
+        monkeypatch.setattr(policy, "search", search)
+        monkeypatch.setattr(policy, "current", current)
+        data = AssistantSearchInput(query="漏气", project_id=scope.project_id)
+>       result = policy.retrieve(session, object(), scope, data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_assistant_exclusions.py:116: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/enterprise_search/assistant_scope.py:36: in retrieve
+    primary = _verified(session, search(session, ctx, data))
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_session = namespace(get=<function test_every_fresh_search_and_fallback_gets_exclusions_before_source_recheck.<locals>.<lambda> at 0x14374b420>)
+_ctx = <object object at 0x143067910>
+data = AssistantSearchInput(query='漏气', source_types=['artifact', 'knowledge', 'issue', 'capa', 'change', 'external_wait', 's...y_id=None, product_id=None, project_id=None, proposal_id=None, include_history=False, after=None, before=None, limit=8)
+options = {}
+
+    def search(_session, _ctx, data, **options):
+>       blocked = set(options["exclude_sources"])
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'exclude_sources'
+
+tests/enterprise_search/test_assistant_exclusions.py:93: KeyError
+_ test_every_fresh_search_and_fallback_gets_exclusions_before_source_recheck[True] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x14372d0a0>
+project = True
+
+    @pytest.mark.parametrize("project", [False, True])
+    def test_every_fresh_search_and_fallback_gets_exclusions_before_source_recheck(
+        monkeypatch, project,
+    ):
+        category, project_id, excluded_id, included_id, next_id = [uuid4() for _ in range(5)]
+        state = {"exclusions": [{"kind": "artifact", "id": str(excluded_id)}],
+                 "search_preferences": {"scope": "same_category", "include_customer_private": False}}
+        run = SimpleNamespace(versions={"work_state": state, "work_state_digest": digest(state)})
+        session = SimpleNamespace(get=lambda *_args: run)
+        scope = SimpleNamespace(run_id=uuid4(), project_id=project_id if project else None,
+                                proposal_id=None)
+        calls, authorized = [], []
+    
+        def search(_session, _ctx, data, **options):
+            blocked = set(options["exclude_sources"])
+            assert ("artifact", str(excluded_id)) in blocked
+            calls.append(blocked)
+            all_rows = [
+                {"source_type": "artifact", "source_id": str(excluded_id), "channel": "relation"},
+                {"source_type": "issue", "source_id": str(included_id), "channel": "keyword"},
+                {"source_type": "capa", "source_id": str(next_id), "channel": "relation"},
+            ]
+            items = [{**row, "private": False, "customer_original": False} for row in all_rows
+                     if (row["source_type"], row["source_id"]) not in blocked]
+            return {"items": items, "returned": len(items), "direct_returned": 1,
+                    "related_returned": 1, "truncated": False, "related_truncated": False,
+                    "scope": {"category_id": str(category)},
+                    "coverage": {"status": "current", "notice": None, "indexed_as_of": None}}
+    
+        def current(_session, rows):
+            assert all(row["source_id"] != str(excluded_id) for row in rows.values())
+            authorized.extend(rows.values())
+            return rows, {}
+    
+        monkeypatch.setattr(policy, "search", search)
+        monkeypatch.setattr(policy, "current", current)
+        data = AssistantSearchInput(query="漏气", project_id=scope.project_id)
+>       result = policy.retrieve(session, object(), scope, data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_assistant_exclusions.py:116: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/enterprise_search/assistant_scope.py:36: in retrieve
+    primary = _verified(session, search(session, ctx, data))
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_session = namespace(get=<function test_every_fresh_search_and_fallback_gets_exclusions_before_source_recheck.<locals>.<lambda> at 0x14374a980>)
+_ctx = <object object at 0x143067280>
+data = AssistantSearchInput(query='漏气', source_types=['artifact', 'knowledge', 'issue', 'capa', 'change', 'external_wait', 's...UID('777a0d4e-d78f-4a3e-aad3-a7e4bf0d4d90'), proposal_id=None, include_history=False, after=None, before=None, limit=8)
+options = {}
+
+    def search(_session, _ctx, data, **options):
+>       blocked = set(options["exclude_sources"])
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'exclude_sources'
+
+tests/enterprise_search/test_assistant_exclusions.py:93: KeyError
+________ test_changed_frozen_work_state_rejects_before_any_fresh_search ________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x14372eab0>
+
+    def test_changed_frozen_work_state_rejects_before_any_fresh_search(monkeypatch):
+        state = {"exclusions": []}
+        run = SimpleNamespace(versions={"work_state": state, "work_state_digest": "0" * 64})
+        session = SimpleNamespace(get=lambda *_args: run)
+        scope = SimpleNamespace(run_id=uuid4(), project_id=None, proposal_id=None)
+        monkeypatch.setattr(policy, "search", lambda *_args, **_kwargs: pytest.fail("fresh query"))
+        with pytest.raises(DomainError):
+>           policy.retrieve(session, object(), scope, AssistantSearchInput(query="漏气"))
+
+tests/enterprise_search/test_assistant_exclusions.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/enterprise_search/assistant_scope.py:36: in retrieve
+    primary = _verified(session, search(session, ctx, data))
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+_args = (namespace(get=<function test_changed_frozen_work_state_rejects_before_any_fresh_search.<locals>.<lambda> at 0x14374a8..._id=None, product_id=None, project_id=None, proposal_id=None, include_history=False, after=None, before=None, limit=8))
+_kwargs = {}
+
+>   monkeypatch.setattr(policy, "search", lambda *_args, **_kwargs: pytest.fail("fresh query"))
+                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: fresh query
+
+tests/enterprise_search/test_assistant_exclusions.py:129: Failed
+_ test_threshold_follows_source_recheck_and_never_changes_model_selectors[3-True-same_category-2] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x143763bf0>, count = 3
+invalid = True, mode = 'same_category', calls = 2
+
+    @pytest.mark.parametrize("count,invalid,mode,calls", [
+        (3, False, "same_category", 1), (3, True, "same_category", 2),
+        (2, False, "current", 1), (0, False, "same_category", 2),
+    ])
+    def test_threshold_follows_source_recheck_and_never_changes_model_selectors(
+        monkeypatch, count, invalid, mode, calls
+    ):
+        category, project, product = uuid4(), uuid4(), uuid4()
+        state = {"search_preferences": {"scope": mode, "include_customer_private": False}}
+        run = SimpleNamespace(versions={"work_state": state, "work_state_digest": digest(state)})
+        session = SimpleNamespace(get=lambda *_args: run)
+        scope = SimpleNamespace(project_id=project, proposal_id=None, run_id=uuid4())
+        data = AssistantSearchInput(query="漏气", product_id=product, project_id=project)
+        invoked = []
+    
+        def search(_session, _ctx, query, **options):
+            invoked.append((query, options))
+            amount = count if len(invoked) == 1 else 1
+            items = [{"source_type": "issue", "source_id": str(uuid4()), "channel": "keyword",
+                      "private": False, "customer_original": False, "bad": invalid and i == 0}
+                     for i in range(amount)]
+            return {"items": items, "returned": amount, "direct_returned": amount,
+                    "related_returned": 0, "truncated": False, "related_truncated": False,
+                    "scope": {"category_id": str(category)},
+                    "coverage": {"status": "current", "notice": None, "indexed_as_of": None}}
+    
+        monkeypatch.setattr(policy, "search", search)
+        monkeypatch.setattr(policy, "current", lambda _s, rows: (
+            {key: item for key, item in rows.items() if not item["bad"]},
+            {key: "unavailable" for key, item in rows.items() if item["bad"]},
+        ))
+>       result = policy.retrieve(session, object(), scope, data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_scope_policy.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = namespace(get=<function test_threshold_follows_source_recheck_and_never_changes_model_selectors.<locals>.<lambda> at 0x1437485e0>)
+ctx = <object object at 0x1430676b0>
+scope = namespace(project_id=UUID('2eb1e995-c725-45bf-97c5-c0096417bb6b'), proposal_id=None, run_id=UUID('ada98b7d-fb3b-4182-8e79-922398c798ec'))
+data = AssistantSearchInput(query='漏气', source_types=['artifact', 'knowledge', 'issue', 'capa', 'change', 'external_wait', 's...UID('2eb1e995-c725-45bf-97c5-c0096417bb6b'), proposal_id=None, include_history=False, after=None, before=None, limit=8)
+
+    def retrieve(session, ctx, scope, data):
+        primary = _verified(session, search(session, ctx, data))
+        if not scope.project_id and not scope.proposal_id:
+            return primary
+        run = session.get(AgentRun, scope.run_id)
+        if run is None:
+            ledger.deny("run_unreadable")
+        state = run.versions.get("work_state")
+        if state is not None and digest(state) != run.versions.get("work_state_digest"):
+            ledger.deny("work_state_changed")
+        preferences = SearchPreferences.model_validate(
+            state.get("search_preferences", {}) if state is not None
+            else run.versions.get("requested_search_preferences", {})
+        )
+        label = "当前项目" if scope.project_id else "当前提案"
+        groups = [("current", label, primary)]
+        identities = {(item["source_type"], item["source_id"]) for item in primary["items"]}
+        if preferences.scope == "same_category" and len(identities) < MIN_CURRENT:
+            category = primary["scope"]["category_id"]
+            if category is None:
+                ledger.deny("category_root_required")
+            fallback = _verified(session, search(
+                session, ctx,
+                data.model_copy(update={"category_id": UUID(category), "product_id": None,
+                                        "project_id": None, "proposal_id": None}),
+                exclude_project=scope.project_id, exclude_proposal=scope.proposal_id,
+                exclude_sources=identities,
+>               allow_customer_private=preferences.include_customer_private, **filters,
+                                                                               ^^^^^^^
+            ))
+E           NameError: name 'filters' is not defined
+
+pdos_next/enterprise_search/assistant_scope.py:62: NameError
+_ test_threshold_follows_source_recheck_and_never_changes_model_selectors[0-False-same_category-2] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x143761820>, count = 0
+invalid = False, mode = 'same_category', calls = 2
+
+    @pytest.mark.parametrize("count,invalid,mode,calls", [
+        (3, False, "same_category", 1), (3, True, "same_category", 2),
+        (2, False, "current", 1), (0, False, "same_category", 2),
+    ])
+    def test_threshold_follows_source_recheck_and_never_changes_model_selectors(
+        monkeypatch, count, invalid, mode, calls
+    ):
+        category, project, product = uuid4(), uuid4(), uuid4()
+        state = {"search_preferences": {"scope": mode, "include_customer_private": False}}
+        run = SimpleNamespace(versions={"work_state": state, "work_state_digest": digest(state)})
+        session = SimpleNamespace(get=lambda *_args: run)
+        scope = SimpleNamespace(project_id=project, proposal_id=None, run_id=uuid4())
+        data = AssistantSearchInput(query="漏气", product_id=product, project_id=project)
+        invoked = []
+    
+        def search(_session, _ctx, query, **options):
+            invoked.append((query, options))
+            amount = count if len(invoked) == 1 else 1
+            items = [{"source_type": "issue", "source_id": str(uuid4()), "channel": "keyword",
+                      "private": False, "customer_original": False, "bad": invalid and i == 0}
+                     for i in range(amount)]
+            return {"items": items, "returned": amount, "direct_returned": amount,
+                    "related_returned": 0, "truncated": False, "related_truncated": False,
+                    "scope": {"category_id": str(category)},
+                    "coverage": {"status": "current", "notice": None, "indexed_as_of": None}}
+    
+        monkeypatch.setattr(policy, "search", search)
+        monkeypatch.setattr(policy, "current", lambda _s, rows: (
+            {key: item for key, item in rows.items() if not item["bad"]},
+            {key: "unavailable" for key, item in rows.items() if item["bad"]},
+        ))
+>       result = policy.retrieve(session, object(), scope, data)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_scope_policy.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = namespace(get=<function test_threshold_follows_source_recheck_and_never_changes_model_selectors.<locals>.<lambda> at 0x143749ee0>)
+ctx = <object object at 0x143067fc0>
+scope = namespace(project_id=UUID('83027246-ee5d-4f68-ba72-1f47f90180da'), proposal_id=None, run_id=UUID('58e128f1-8a96-4eed-8986-1971f6cfcf7d'))
+data = AssistantSearchInput(query='漏气', source_types=['artifact', 'knowledge', 'issue', 'capa', 'change', 'external_wait', 's...UID('83027246-ee5d-4f68-ba72-1f47f90180da'), proposal_id=None, include_history=False, after=None, before=None, limit=8)
+
+    def retrieve(session, ctx, scope, data):
+        primary = _verified(session, search(session, ctx, data))
+        if not scope.project_id and not scope.proposal_id:
+            return primary
+        run = session.get(AgentRun, scope.run_id)
+        if run is None:
+            ledger.deny("run_unreadable")
+        state = run.versions.get("work_state")
+        if state is not None and digest(state) != run.versions.get("work_state_digest"):
+            ledger.deny("work_state_changed")
+        preferences = SearchPreferences.model_validate(
+            state.get("search_preferences", {}) if state is not None
+            else run.versions.get("requested_search_preferences", {})
+        )
+        label = "当前项目" if scope.project_id else "当前提案"
+        groups = [("current", label, primary)]
+        identities = {(item["source_type"], item["source_id"]) for item in primary["items"]}
+        if preferences.scope == "same_category" and len(identities) < MIN_CURRENT:
+            category = primary["scope"]["category_id"]
+            if category is None:
+                ledger.deny("category_root_required")
+            fallback = _verified(session, search(
+                session, ctx,
+                data.model_copy(update={"category_id": UUID(category), "product_id": None,
+                                        "project_id": None, "proposal_id": None}),
+                exclude_project=scope.project_id, exclude_proposal=scope.proposal_id,
+                exclude_sources=identities,
+>               allow_customer_private=preferences.include_customer_private, **filters,
+                                                                               ^^^^^^^
+            ))
+E           NameError: name 'filters' is not defined
+
+pdos_next/enterprise_search/assistant_scope.py:62: NameError
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_assistant_exclusions.py::test_every_fresh_search_and_fallback_gets_exclusions_before_source_recheck[False]
+FAILED tests/enterprise_search/test_assistant_exclusions.py::test_every_fresh_search_and_fallback_gets_exclusions_before_source_recheck[True]
+FAILED tests/enterprise_search/test_assistant_exclusions.py::test_changed_frozen_work_state_rejects_before_any_fresh_search
+FAILED tests/enterprise_search/test_scope_policy.py::test_threshold_follows_source_recheck_and_never_changes_model_selectors[3-True-same_category-2]
+FAILED tests/enterprise_search/test_scope_policy.py::test_threshold_follows_source_recheck_and_never_changes_model_selectors[0-False-same_category-2]
+5 failed, 28 passed in 0.45s

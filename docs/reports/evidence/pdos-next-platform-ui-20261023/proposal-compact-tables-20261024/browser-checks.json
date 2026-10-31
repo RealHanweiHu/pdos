@@ -1,0 +1,54 @@
+[
+  {
+    "check": "新增问题后聚焦问题名称",
+    "passed": true
+  },
+  {
+    "check": "键盘按行移到负责人",
+    "passed": true
+  },
+  {
+    "check": "删除后保留下一行内容并移动焦点",
+    "passed": true
+  },
+  {
+    "check": "问题为空时有空态且焦点回到添加入口",
+    "passed": true
+  },
+  {
+    "check": "离线时表格编辑与增删禁用",
+    "passed": true
+  },
+  {
+    "check": "保存阅读态沿用三张表并保留全部修改及小Pai",
+    "passed": true
+  },
+  {
+    "check": "继续编辑回填已保存表格值",
+    "passed": true
+  },
+  {
+    "check": "900px中等窗口无页面横向溢出",
+    "passed": true
+  },
+  {
+    "check": "390px表格在局部滚动区内且不撑宽编辑区",
+    "passed": true
+  },
+  {
+    "check": "窄屏聚焦右侧字段可滚动到完整期限",
+    "passed": true
+  },
+  {
+    "check": "长方案文本保持有界编辑高度且全文可滚动",
+    "passed": true
+  },
+  {
+    "check": "窄屏修订保存后原会话仍可继续",
+    "passed": true
+  },
+  {
+    "check": "窄屏保存阅读态保留完整长方案与局部表格滚动",
+    "passed": true
+  }
+]

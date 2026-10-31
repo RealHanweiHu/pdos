@@ -1,0 +1,434 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_ test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs _
+
+change_work = namespace(setup=<isolated synthetic test scope>, config={'source': '1851975d-fbff-469f-a150-1e8b30236649', 'project': ...: None}]}, issue_id=UUID('c77859eb-6203-5f5b-8a08-0afa1b41ccf4'), capa_id=UUID('e99fecb3-b7ab-4933-975e-6ecd3d9ae0f1'))
+
+    def test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs(change_work):
+        work, person = change_work, change_work.quality
+        change, _command, change_id = created(work)
+        assert apply_event(person, change["id"])["processed"] == 1
+        assert apply_event(person, change["id"])["changed"] == 0
+        assert apply_event(person, work.issue_receipt["id"])["processed"] == 2
+        kinds = ["issue", "capa", "change", "build", "test_run"]
+        with native_session(person) as session:
+            prepare_read(session, kinds)
+            rows = session.execute(select_sources(source_types=kinds)).mappings().all()
+            assert set(kinds) <= {row["source_type"] for row in rows}, [
+                row["source_type"] for row in rows
+            ]
+            # The existing native owner decides visibility, not an index audience copy.
+            for row in rows:
+                assert (
+                    project(session, person.ctx, row["source_type"], row["source_id"])["status"]
+                    == "ready"
+                )
+        for kind, identity in [("issue", work.issue_id), ("capa", work.capa_id), ("change", change_id)]:
+            found = native_search(person, str(identity), [kind])
+            assert found["items"][0]["object_id"] == str(identity), found
+            assert found["items"][0]["channel"] == "exact_id"
+            assert found["items"][0]["nature"] == "structured"
+            assert "facts" not in found["items"][0]
+            hidden = native_search(work.setup, str(identity), [kind])
+            assert hidden["items"] == [], hidden
+        client = NativeClient(str(work.issue_id), ["issue"])
+        owner, scope, host, _adapter = fixture(person, client)
+>       output = execute(owner, scope, host)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_business_sources_pg.py:149: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/enterprise_search/test_assistant_pg.py:155: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:722: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:486: in tools
+    answers[call.id] = call_tool(index, call)
+                       ^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:421: in call_tool
+    result = ports.read(
+pdos_next/agent_kernel/host.py:139: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:189: in read_callback
+    result = computed if engine is not None else callback(scope, arguments)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/host.py:141: in <lambda>
+    callback=lambda bound, args: resume(bound, args, intent_key=intent_key),
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_adapter.py:96: in search
+    actual, missing = current(session, provisional)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_sources.py:41: in current
+    + [query.c.structured["source_refs"].label("source_refs")]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/operators.py:823: in __getitem__
+    return self.operate(getitem, index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:1598: in operate
+    return op(self.comparator, *other, **kwargs)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/operators.py:823: in __getitem__
+    return self.operate(getitem, index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/type_api.py:267: in operate
+    return op_fn(self.expr, op, *other, **addtl_kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/default_comparator.py:242: in _getitem_impl
+    _unsupported_impl(expr, op, other, **kw)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+expr = <sqlalchemy.sql.elements.ColumnClause at 0x16b7fd3a0; structured>
+op = <built-in function getitem>, arg = ('source_refs',), kw = {}
+
+    def _unsupported_impl(
+        expr: ColumnElement[Any], op: OperatorType, *arg: Any, **kw: Any
+    ) -> NoReturn:
+>       raise NotImplementedError(
+            "Operator '%s' is not supported on this expression" % op.__name__
+        )
+E       NotImplementedError: Operator 'getitem' is not supported on this expression
+E       During task with name 'tools' and id '028f0cc9-818c-b4a4-4396-2b9ed891ac12'
+
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/default_comparator.py:248: NotImplementedError
+______ test_native_wait_current_history_and_external_reply_are_separated _______
+
+work = namespace(setup=<isolated synthetic test scope>, project_id=UUID('9716c997-b77f-432e-a283-fd6b5d356725'), original_id=...unction parse_original at 0x12811e980>), client=<starlette.testclient.TestClient object at 0x16ccd88c0>), task_id=None)
+
+    def test_native_wait_current_history_and_external_reply_are_separated(work):
+        _command, receipt = wait_execute(work, create_record())
+        setup = work.setup
+        first = UUID(receipt["subject_id"])
+        identity = receipt["result"]["wait_id"]
+        assert apply_event(setup, receipt["id"])["processed"] == 1
+        found = native_search(setup, identity, ["external_wait"])
+        assert found["items"][0]["source_id"] == str(first)
+        _command, updated = wait_execute(
+            work,
+            {
+                "action": "reply",
+                "at": now().isoformat(),
+                "original_timezone": "UTC",
+                "status": "received",
+                "text": "RAW_EXTERNAL_REPLY_DO_NOT_SEND",
+            },
+            wait={"id": identity, "revision": 1},
+        )
+        assert apply_event(setup, updated["id"])["processed"] == 1
+        current = native_search(setup, identity, ["external_wait"])
+        assert current["returned"] == 1 and current["items"][0]["source_revision"] == 2
+        history = native_search(setup, identity, ["external_wait"], include_history=True)
+        assert history["returned"] == 2
+        with native_session(setup) as session:
+            prepare_read(session, ["external_wait"])
+            rows = (
+                session.execute(select_sources(source_type="external_wait", include_body=True))
+                .mappings()
+                .all()
+            )
+            assert all("RAW_EXTERNAL_REPLY_DO_NOT_SEND" not in row["body"] for row in rows)
+            latest = next(row for row in rows if row["source_revision"] == 2)
+            assert latest["structured"]["facts"]["reply"]["status"] == "received"
+        client = NativeClient(identity, ["external_wait"])
+        owner, scope, host, _adapter = fixture(setup, client)
+>       output = execute(owner, scope, host)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_business_wait_supply_pg.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/enterprise_search/test_assistant_pg.py:155: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:722: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:486: in tools
+    answers[call.id] = call_tool(index, call)
+                       ^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:421: in call_tool
+    result = ports.read(
+pdos_next/agent_kernel/host.py:139: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:189: in read_callback
+    result = computed if engine is not None else callback(scope, arguments)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/host.py:141: in <lambda>
+    callback=lambda bound, args: resume(bound, args, intent_key=intent_key),
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_adapter.py:96: in search
+    actual, missing = current(session, provisional)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_sources.py:41: in current
+    + [query.c.structured["source_refs"].label("source_refs")]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/operators.py:823: in __getitem__
+    return self.operate(getitem, index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:1598: in operate
+    return op(self.comparator, *other, **kwargs)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/operators.py:823: in __getitem__
+    return self.operate(getitem, index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/type_api.py:267: in operate
+    return op_fn(self.expr, op, *other, **addtl_kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/default_comparator.py:242: in _getitem_impl
+    _unsupported_impl(expr, op, other, **kw)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+expr = <sqlalchemy.sql.elements.ColumnClause at 0x16c9b2060; structured>
+op = <built-in function getitem>, arg = ('source_refs',), kw = {}
+
+    def _unsupported_impl(
+        expr: ColumnElement[Any], op: OperatorType, *arg: Any, **kw: Any
+    ) -> NoReturn:
+>       raise NotImplementedError(
+            "Operator '%s' is not supported on this expression" % op.__name__
+        )
+E       NotImplementedError: Operator 'getitem' is not supported on this expression
+E       During task with name 'tools' and id 'bd8374af-ec9f-59ab-cb34-51065fa956fa'
+
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/default_comparator.py:248: NotImplementedError
+_____ test_actual_supplier_commitment_is_structured_and_never_claims_stock _____
+
+setup = <isolated synthetic test scope>
+supply_work = {'source': 'eb50ffff-441a-472d-b540-15c52c03a17c', 'definition': '94af64cf-04c4-4a48-bff6-7855da405d99', 'project': '6...-6f50d1508bb3', 'product_id': 'aa05a1f0-39c8-4cee-8375-24f983ee4294', 'operation': 'engineering.bom.revise', ...}, ...}
+
+    def test_actual_supplier_commitment_is_structured_and_never_claims_stock(setup, supply_work):
+        work = supply_work
+        value = capture_input(work)
+        row = value["records"][0]
+        for key in ("source_system", "pool_id", "quality", "availability"):
+            row.pop(key)
+        row.update(
+            record_kind="commitment",
+            supplier_id="SYN-SUPPLIER",
+            expected_at=(now() + timedelta(days=3)).isoformat(),
+            note="RAW_SUPPLIER_NOTE_DO_NOT_SEND",
+        )
+        _capture, receipt, _command = recorded(setup, work, payload=value)
+        assert apply_event(setup, receipt["id"])["processed"] == 1
+        found = native_search(setup, receipt["subject_id"], ["supply"])
+        assert found["returned"] == 1 and found["items"][0]["private"] is True
+        with native_session(setup) as session:
+            prepare_read(session, ["supply"])
+            source = (
+                session.execute(
+                    select_sources(
+                        source_type="supply", source_id=UUID(receipt["subject_id"]), include_body=True
+                    )
+                )
+                .mappings()
+                .one()
+            )
+            assert "RAW_SUPPLIER_NOTE_DO_NOT_SEND" not in source["body"]
+            assert "on_hand" not in source["body"]
+            commitment = source["structured"]["facts"]["commitments"][0]
+            assert commitment["supplier_id"] == "SYN-SUPPLIER" and commitment["quantity"] == "6"
+        client = NativeClient(receipt["subject_id"], ["supply"])
+        owner, scope, host, _adapter = fixture(setup, client)
+>       output = execute(owner, scope, host)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_business_wait_supply_pg.py:121: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/enterprise_search/test_assistant_pg.py:155: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:722: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:486: in tools
+    answers[call.id] = call_tool(index, call)
+                       ^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:421: in call_tool
+    result = ports.read(
+pdos_next/agent_kernel/host.py:139: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:189: in read_callback
+    result = computed if engine is not None else callback(scope, arguments)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/host.py:141: in <lambda>
+    callback=lambda bound, args: resume(bound, args, intent_key=intent_key),
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_adapter.py:96: in search
+    actual, missing = current(session, provisional)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_sources.py:41: in current
+    + [query.c.structured["source_refs"].label("source_refs")]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/operators.py:823: in __getitem__
+    return self.operate(getitem, index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:1598: in operate
+    return op(self.comparator, *other, **kwargs)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/operators.py:823: in __getitem__
+    return self.operate(getitem, index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/type_api.py:267: in operate
+    return op_fn(self.expr, op, *other, **addtl_kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/default_comparator.py:242: in _getitem_impl
+    _unsupported_impl(expr, op, other, **kw)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+expr = <sqlalchemy.sql.elements.ColumnClause at 0x16b5d8530; structured>
+op = <built-in function getitem>, arg = ('source_refs',), kw = {}
+
+    def _unsupported_impl(
+        expr: ColumnElement[Any], op: OperatorType, *arg: Any, **kw: Any
+    ) -> NoReturn:
+>       raise NotImplementedError(
+            "Operator '%s' is not supported on this expression" % op.__name__
+        )
+E       NotImplementedError: Operator 'getitem' is not supported on this expression
+E       During task with name 'tools' and id 'e1a61fa7-c8a4-01da-7dee-658eef97f68c'
+
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/default_comparator.py:248: NotImplementedError
+_____ test_query_count_is_constant_and_local_warm_latency_below_one_second _____
+
+setup = <isolated synthetic test scope>
+record_property = <function record_property.<locals>.append_property at 0x16e628540>
+
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+        for i in range(8):
+            index(setup, register(setup, f"D{i + 10}-01 复验", "气密性漏气问题，核对工况。"))
+        statements, durations = [], []
+    
+        def count(_conn, _cursor, statement, _parameters, _context, _executemany):
+            statements.append(statement)
+    
+        event.listen(setup.engine, "before_cursor_execute", count)
+        try:
+            for _ in range(12):
+                with session_for(setup, personal=True) as session:
+                    statements.clear()
+                    begin = time.perf_counter()
+                    result = search(
+                        session, replace(setup.ctx, category_id=None), SearchInput(query="漏气怎么复验")
+                    )
+                    durations.append(time.perf_counter() - begin)
+                    assert result["returned"] == 8
+                    # One transaction-local planner setting and four batched reads.
+                    assert len(statements) == 5, len(statements)
+        finally:
+            event.remove(setup.engine, "before_cursor_execute", count)
+        p95 = statistics.quantiles(durations, n=20)[18]
+        record_property("keyword_warm_p95_seconds", p95)
+        record_property("keyword_queries_per_request", 5)
+        record_property("keyword_source_count", 8)
+        record_property("keyword_samples", len(durations))
+>       assert p95 < 1.0
+E       assert 1.1000346558867022 < 1.0
+
+tests/enterprise_search/test_retrieval_pg.py:234: AssertionError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+  tests/enterprise_search/test_retrieval_pg.py:206: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+FAILED tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+FAILED tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+FAILED tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+4 failed, 30 warnings in 130.73s (0:02:10)

@@ -1,0 +1,1064 @@
+{
+  "source_candidate": "source-focused-run2",
+  "runs": [
+    {
+      "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+      "parent": null,
+      "state": "completed",
+      "private_context": false,
+      "data_categories": [
+        "internal"
+      ],
+      "customer_identities": [],
+      "read_sources": [
+        {
+          "product_id": null,
+          "artifact_id": "0fc90cf5-b4c5-46fa-a6d1-665960c61e49",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "15ae075b-6c6d-45e9-abc9-e55c73ff7aac",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "1b6cca05-d525-4216-b4db-14dbd1af5b76",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "6d5ecdac-4198-4c7f-bc6f-50404c9742e3",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "71ffe615-e6e8-47f4-bd0d-e719864dc171",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "7f9e402b-9c0e-41b4-9e78-b8fef1d09766",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "af0ef7b8-51af-40e8-9ee9-764f78973483",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "bc4e6626-84e2-49cd-8469-222b3ca7b8a0",
+          "expected_revision": 1
+        }
+      ],
+      "work_state": {
+        "notes": [],
+        "skills": [],
+        "missing": [],
+        "version": "agent-work-state/v1",
+        "revision": 0,
+        "citations": [],
+        "completed": [],
+        "questions": [],
+        "root_goal": {
+          "text": "比较合成项目“泊岸 K8”的8个历史轮次，只复述已登记数据，不排序好坏；保压时间不同，压降不能直接当性能排名。所有行保留来源，缺判据写未记录。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。",
+          "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c"
+        },
+        "candidates": [],
+        "exclusions": [],
+        "session_id": "6f3bbf5d-dc83-4d9a-a3b2-75feab7b62d5",
+        "unfinished": [],
+        "constraints": [],
+        "current_goal": {
+          "text": "比较合成项目“泊岸 K8”的8个历史轮次，只复述已登记数据，不排序好坏；保压时间不同，压降不能直接当性能排名。所有行保留来源，缺判据写未记录。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。",
+          "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c"
+        },
+        "focus_objects": [],
+        "search_context": {
+          "kind": "category",
+          "label": "当前品类的可读资料",
+          "scoped": false
+        },
+        "completed_count": 0,
+        "estimated_tokens": 1436,
+        "context_selection": {
+          "focus": null,
+          "status": "available",
+          "sources": [
+            {
+              "title": "泊岸 K8 S12-A v1",
+              "private": false,
+              "object_id": "15ae075b-6c6d-45e9-abc9-e55c73ff7aac",
+              "source_id": "15ae075b-6c6d-45e9-abc9-e55c73ff7aac",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "b5fe7e56822d05cdf51910409dfd05715e2a4c67172679360f8e4a188e21843c",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-B v1",
+              "private": false,
+              "object_id": "71ffe615-e6e8-47f4-bd0d-e719864dc171",
+              "source_id": "71ffe615-e6e8-47f4-bd0d-e719864dc171",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "73df2803aa3a99b6bddef6e0e0210d744e7039f216cd29e7794cd200b13bffcd",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-C v1",
+              "private": false,
+              "object_id": "7f9e402b-9c0e-41b4-9e78-b8fef1d09766",
+              "source_id": "7f9e402b-9c0e-41b4-9e78-b8fef1d09766",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "7a7ccfe7b22b83242a3f556f5127fbb9b0b1639532df73740908dd4646886804",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-D v1",
+              "private": false,
+              "object_id": "0fc90cf5-b4c5-46fa-a6d1-665960c61e49",
+              "source_id": "0fc90cf5-b4c5-46fa-a6d1-665960c61e49",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "c6d6e80556132919486fc41646a46e79b72c932a3ba0c53481fe487ceaf86191",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-E v1",
+              "private": false,
+              "object_id": "bc4e6626-84e2-49cd-8469-222b3ca7b8a0",
+              "source_id": "bc4e6626-84e2-49cd-8469-222b3ca7b8a0",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "fe09bac8b68a2ced5f31af9a5c2184592400e02a9f7dc052507ff47e5599ae05",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-F v1",
+              "private": false,
+              "object_id": "6d5ecdac-4198-4c7f-bc6f-50404c9742e3",
+              "source_id": "6d5ecdac-4198-4c7f-bc6f-50404c9742e3",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "9e90378f6dd045de3bfac5b75fac87e1771b7ffe32a3cfa064e7dadd40ad1727",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-G v1",
+              "private": false,
+              "object_id": "af0ef7b8-51af-40e8-9ee9-764f78973483",
+              "source_id": "af0ef7b8-51af-40e8-9ee9-764f78973483",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "b1141f3fb6d69432b804434dd5b722a8ff607e369318bf9ecf4d1d6970e112a0",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-H v1",
+              "private": false,
+              "object_id": "1b6cca05-d525-4216-b4db-14dbd1af5b76",
+              "source_id": "1b6cca05-d525-4216-b4db-14dbd1af5b76",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "0252b8be19d6fbdffa752503221104e00d266990da2e1a05b3807a151f9773b9",
+              "source_revision": 1,
+              "customer_original": false
+            }
+          ],
+          "version": 1,
+          "versions": [],
+          "version_mode": "any"
+        },
+        "citation_directory": {
+          "tool": "assistant.citations.read",
+          "has_more": false,
+          "next_cursor": null
+        },
+        "context_incomplete": false,
+        "search_preferences": {
+          "scope": "same_category",
+          "include_customer_private": false
+        }
+      },
+      "state_field_tokens": {
+        "notes": 1,
+        "skills": 1,
+        "missing": 1,
+        "version": 6,
+        "revision": 1,
+        "citations": 1,
+        "completed": 1,
+        "questions": 1,
+        "root_goal": 180,
+        "candidates": 1,
+        "exclusions": 1,
+        "session_id": 10,
+        "unfinished": 1,
+        "constraints": 1,
+        "current_goal": 180,
+        "focus_objects": 1,
+        "search_context": 22,
+        "completed_count": 1,
+        "estimated_tokens": 1,
+        "context_selection": 898,
+        "citation_directory": 19,
+        "context_incomplete": 2,
+        "search_preferences": 16
+      },
+      "result": {
+        "result": {
+          "assistant": {
+            "kind": "general",
+            "as_of": "2026-10-29T19:54:17.922183+00:00",
+            "lookup": "uncited",
+            "notice": "找到 8 条相关记录",
+            "sources": [],
+            "version": 1,
+            "coverage": {
+              "returned": 0,
+              "unavailable": []
+            },
+            "unknowns": [],
+            "scope_label": "当前品类的可读资料",
+            "citation_ids": [],
+            "matched_count": 8
+          }
+        },
+        "status": "completed",
+        "summary": "脚本完成真实读取控制流；不输出任务答案。",
+        "questions": [],
+        "unfinished": []
+      }
+    },
+    {
+      "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5",
+      "parent": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+      "state": "partial",
+      "private_context": false,
+      "data_categories": [
+        "internal"
+      ],
+      "customer_identities": [],
+      "read_sources": [
+        {
+          "product_id": null,
+          "artifact_id": "0fc90cf5-b4c5-46fa-a6d1-665960c61e49",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "15ae075b-6c6d-45e9-abc9-e55c73ff7aac",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "1b6cca05-d525-4216-b4db-14dbd1af5b76",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "6d5ecdac-4198-4c7f-bc6f-50404c9742e3",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "71ffe615-e6e8-47f4-bd0d-e719864dc171",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "7f9e402b-9c0e-41b4-9e78-b8fef1d09766",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "af0ef7b8-51af-40e8-9ee9-764f78973483",
+          "expected_revision": 1
+        },
+        {
+          "product_id": null,
+          "artifact_id": "bc4e6626-84e2-49cd-8469-222b3ca7b8a0",
+          "expected_revision": 1
+        }
+      ],
+      "work_state": {
+        "notes": [],
+        "skills": [],
+        "missing": [
+          "工作状态超过预算，请在本次携带中清理约束或缩小范围。",
+          "工作状态超过预算，请在本次携带中清理约束或缩小范围。"
+        ],
+        "version": "agent-work-state/v1",
+        "revision": 1,
+        "citations": [
+          {
+            "title": "泊岸 K8 S12-A v1",
+            "citation_id": "b99418a6-d0c8-5b81-9a8d-d9c0e155e75e",
+            "currentness": "current",
+            "source_type": "artifact",
+            "origin_run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "source_revision": 1,
+            "read_basis_status": "current",
+            "origin_citation_id": "9dd3a398-0ac3-598b-9913-e7a27d1a8df7"
+          },
+          {
+            "title": "泊岸 K8 S12-B v1",
+            "citation_id": "b4707072-8f54-58e1-b7f2-f43dd6034b93",
+            "currentness": "current",
+            "source_type": "artifact",
+            "origin_run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "source_revision": 1,
+            "read_basis_status": "current",
+            "origin_citation_id": "cd26f9e5-686b-5a85-9e02-9e349a696c43"
+          },
+          {
+            "title": "泊岸 K8 S12-C v1",
+            "citation_id": "fcb41f3b-bceb-547b-bbff-a5b187968405",
+            "currentness": "current",
+            "source_type": "artifact",
+            "origin_run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "source_revision": 1,
+            "read_basis_status": "current",
+            "origin_citation_id": "221b4dd2-94e9-51d5-b817-e83fefde3de3"
+          }
+        ],
+        "completed": [],
+        "questions": [],
+        "root_goal": {
+          "text": "比较合成项目“泊岸 K8”的8个历史轮次，只复述已登记数据，不排序好坏；保压时间不同，压降不能直接当性能排名。所有行保留来源，缺判据写未记录。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。",
+          "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c"
+        },
+        "candidates": [],
+        "exclusions": [],
+        "session_id": "6f3bbf5d-dc83-4d9a-a3b2-75feab7b62d5",
+        "unfinished": [],
+        "constraints": [],
+        "current_goal": {
+          "text": "最后再确认：保压时间、压降、样件数量是三个不同字段，别把数值挪列；B01到B08都要在。\n输出B01到B08八行表：轮次/样件数量/保压秒数/压降kPa/判据/来源。没有通过判据就别排名。若某行在缩减后取不回，明确哪一行未知，别凑成完整八行。",
+          "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5"
+        },
+        "focus_objects": [
+          {
+            "id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+            "kind": "category",
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "version": 1
+          }
+        ],
+        "search_context": {
+          "kind": "category",
+          "label": "当前品类的可读资料",
+          "scoped": false
+        },
+        "completed_count": 0,
+        "estimated_tokens": 1681,
+        "context_selection": {
+          "focus": null,
+          "status": "available",
+          "sources": [
+            {
+              "title": "泊岸 K8 S12-A v1",
+              "private": false,
+              "object_id": "15ae075b-6c6d-45e9-abc9-e55c73ff7aac",
+              "source_id": "15ae075b-6c6d-45e9-abc9-e55c73ff7aac",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "b5fe7e56822d05cdf51910409dfd05715e2a4c67172679360f8e4a188e21843c",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-B v1",
+              "private": false,
+              "object_id": "71ffe615-e6e8-47f4-bd0d-e719864dc171",
+              "source_id": "71ffe615-e6e8-47f4-bd0d-e719864dc171",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "73df2803aa3a99b6bddef6e0e0210d744e7039f216cd29e7794cd200b13bffcd",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-C v1",
+              "private": false,
+              "object_id": "7f9e402b-9c0e-41b4-9e78-b8fef1d09766",
+              "source_id": "7f9e402b-9c0e-41b4-9e78-b8fef1d09766",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "7a7ccfe7b22b83242a3f556f5127fbb9b0b1639532df73740908dd4646886804",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-D v1",
+              "private": false,
+              "object_id": "0fc90cf5-b4c5-46fa-a6d1-665960c61e49",
+              "source_id": "0fc90cf5-b4c5-46fa-a6d1-665960c61e49",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "c6d6e80556132919486fc41646a46e79b72c932a3ba0c53481fe487ceaf86191",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-E v1",
+              "private": false,
+              "object_id": "bc4e6626-84e2-49cd-8469-222b3ca7b8a0",
+              "source_id": "bc4e6626-84e2-49cd-8469-222b3ca7b8a0",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "fe09bac8b68a2ced5f31af9a5c2184592400e02a9f7dc052507ff47e5599ae05",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-F v1",
+              "private": false,
+              "object_id": "6d5ecdac-4198-4c7f-bc6f-50404c9742e3",
+              "source_id": "6d5ecdac-4198-4c7f-bc6f-50404c9742e3",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "9e90378f6dd045de3bfac5b75fac87e1771b7ffe32a3cfa064e7dadd40ad1727",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-G v1",
+              "private": false,
+              "object_id": "af0ef7b8-51af-40e8-9ee9-764f78973483",
+              "source_id": "af0ef7b8-51af-40e8-9ee9-764f78973483",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "b1141f3fb6d69432b804434dd5b722a8ff607e369318bf9ecf4d1d6970e112a0",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-H v1",
+              "private": false,
+              "object_id": "1b6cca05-d525-4216-b4db-14dbd1af5b76",
+              "source_id": "1b6cca05-d525-4216-b4db-14dbd1af5b76",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "0252b8be19d6fbdffa752503221104e00d266990da2e1a05b3807a151f9773b9",
+              "source_revision": 1,
+              "customer_original": false
+            }
+          ],
+          "version": 1,
+          "versions": [],
+          "version_mode": "any"
+        },
+        "citation_directory": {
+          "tool": "assistant.citations.read",
+          "has_more": true,
+          "next_cursor": "221b4dd2-94e9-51d5-b817-e83fefde3de3"
+        },
+        "context_incomplete": true,
+        "search_preferences": {
+          "scope": "same_category",
+          "include_customer_private": false
+        }
+      },
+      "state_field_tokens": {
+        "notes": 1,
+        "skills": 1,
+        "missing": 54,
+        "version": 6,
+        "revision": 1,
+        "citations": 237,
+        "completed": 1,
+        "questions": 1,
+        "root_goal": 180,
+        "candidates": 1,
+        "exclusions": 1,
+        "session_id": 10,
+        "unfinished": 1,
+        "constraints": 1,
+        "current_goal": 121,
+        "focus_objects": 33,
+        "search_context": 22,
+        "completed_count": 1,
+        "estimated_tokens": 1,
+        "context_selection": 898,
+        "citation_directory": 28,
+        "context_incomplete": 1,
+        "search_preferences": 16
+      },
+      "result": {
+        "result": {
+          "actions": [],
+          "missing": [
+            {
+              "field": "work_state.root_goal",
+              "estimated_tokens": 180
+            },
+            {
+              "field": "work_state.current_goal",
+              "estimated_tokens": 121
+            },
+            {
+              "field": "work_state.focus_objects",
+              "estimated_tokens": 33
+            },
+            {
+              "field": "work_state.citations",
+              "estimated_tokens": 237
+            }
+          ],
+          "context_incomplete": true
+        },
+        "status": "partial",
+        "summary": "context_incomplete：必需工作状态未完整载入，请核对本次携带后继续。",
+        "questions": [],
+        "unfinished": [
+          "work_state.root_goal",
+          "work_state.current_goal",
+          "work_state.focus_objects",
+          "work_state.citations"
+        ]
+      }
+    }
+  ],
+  "persisted_work_states": [
+    {
+      "revision": 1,
+      "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+      "body": {
+        "skills": [],
+        "citations": [
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "9dd3a398-0ac3-598b-9913-e7a27d1a8df7"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "cd26f9e5-686b-5a85-9e02-9e349a696c43"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "221b4dd2-94e9-51d5-b817-e83fefde3de3"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "9efd6d49-a1ce-5481-bc4d-9395ea98b400"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "1411c32b-7e65-5fc3-bf40-8fccad7f8abb"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "702f8e97-3162-5080-a5b5-6837b871be61"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "201a898c-c38f-5efe-9e06-4f21867e33cb"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "979974fc-58aa-58f8-a820-55d0302a1071"
+          }
+        ],
+        "completed": [],
+        "questions": [],
+        "root_goal": {
+          "text": "比较合成项目“泊岸 K8”的8个历史轮次，只复述已登记数据，不排序好坏；保压时间不同，压降不能直接当性能排名。所有行保留来源，缺判据写未记录。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。",
+          "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c"
+        },
+        "candidates": [],
+        "exclusions": [],
+        "unfinished": [],
+        "constraints": [],
+        "current_goal": {
+          "text": "比较合成项目“泊岸 K8”的8个历史轮次，只复述已登记数据，不排序好坏；保压时间不同，压降不能直接当性能排名。所有行保留来源，缺判据写未记录。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。",
+          "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c"
+        },
+        "focus_objects": [
+          {
+            "id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+            "kind": "category",
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "version": 1
+          },
+          {
+            "id": "0fc90cf5-b4c5-46fa-a6d1-665960c61e49",
+            "kind": "artifact",
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "version": 1
+          },
+          {
+            "id": "15ae075b-6c6d-45e9-abc9-e55c73ff7aac",
+            "kind": "artifact",
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "version": 1
+          },
+          {
+            "id": "1b6cca05-d525-4216-b4db-14dbd1af5b76",
+            "kind": "artifact",
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "version": 1
+          },
+          {
+            "id": "6d5ecdac-4198-4c7f-bc6f-50404c9742e3",
+            "kind": "artifact",
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "version": 1
+          },
+          {
+            "id": "71ffe615-e6e8-47f4-bd0d-e719864dc171",
+            "kind": "artifact",
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "version": 1
+          },
+          {
+            "id": "7f9e402b-9c0e-41b4-9e78-b8fef1d09766",
+            "kind": "artifact",
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "version": 1
+          },
+          {
+            "id": "af0ef7b8-51af-40e8-9ee9-764f78973483",
+            "kind": "artifact",
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "version": 1
+          },
+          {
+            "id": "bc4e6626-84e2-49cd-8469-222b3ca7b8a0",
+            "kind": "artifact",
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "version": 1
+          }
+        ],
+        "completed_count": 0,
+        "context_selection": {
+          "focus": null,
+          "status": "available",
+          "sources": [
+            {
+              "title": "泊岸 K8 S12-A v1",
+              "private": false,
+              "object_id": "15ae075b-6c6d-45e9-abc9-e55c73ff7aac",
+              "source_id": "15ae075b-6c6d-45e9-abc9-e55c73ff7aac",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "b5fe7e56822d05cdf51910409dfd05715e2a4c67172679360f8e4a188e21843c",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-B v1",
+              "private": false,
+              "object_id": "71ffe615-e6e8-47f4-bd0d-e719864dc171",
+              "source_id": "71ffe615-e6e8-47f4-bd0d-e719864dc171",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "73df2803aa3a99b6bddef6e0e0210d744e7039f216cd29e7794cd200b13bffcd",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-C v1",
+              "private": false,
+              "object_id": "7f9e402b-9c0e-41b4-9e78-b8fef1d09766",
+              "source_id": "7f9e402b-9c0e-41b4-9e78-b8fef1d09766",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "7a7ccfe7b22b83242a3f556f5127fbb9b0b1639532df73740908dd4646886804",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-D v1",
+              "private": false,
+              "object_id": "0fc90cf5-b4c5-46fa-a6d1-665960c61e49",
+              "source_id": "0fc90cf5-b4c5-46fa-a6d1-665960c61e49",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "c6d6e80556132919486fc41646a46e79b72c932a3ba0c53481fe487ceaf86191",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-E v1",
+              "private": false,
+              "object_id": "bc4e6626-84e2-49cd-8469-222b3ca7b8a0",
+              "source_id": "bc4e6626-84e2-49cd-8469-222b3ca7b8a0",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "fe09bac8b68a2ced5f31af9a5c2184592400e02a9f7dc052507ff47e5599ae05",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-F v1",
+              "private": false,
+              "object_id": "6d5ecdac-4198-4c7f-bc6f-50404c9742e3",
+              "source_id": "6d5ecdac-4198-4c7f-bc6f-50404c9742e3",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "9e90378f6dd045de3bfac5b75fac87e1771b7ffe32a3cfa064e7dadd40ad1727",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-G v1",
+              "private": false,
+              "object_id": "af0ef7b8-51af-40e8-9ee9-764f78973483",
+              "source_id": "af0ef7b8-51af-40e8-9ee9-764f78973483",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "b1141f3fb6d69432b804434dd5b722a8ff607e369318bf9ecf4d1d6970e112a0",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-H v1",
+              "private": false,
+              "object_id": "1b6cca05-d525-4216-b4db-14dbd1af5b76",
+              "source_id": "1b6cca05-d525-4216-b4db-14dbd1af5b76",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "0252b8be19d6fbdffa752503221104e00d266990da2e1a05b3807a151f9773b9",
+              "source_revision": 1,
+              "customer_original": false
+            }
+          ],
+          "version": 1,
+          "versions": [],
+          "version_mode": "any"
+        },
+        "search_preferences": {
+          "scope": "same_category",
+          "include_customer_private": false
+        },
+        "removed_constraints": []
+      }
+    },
+    {
+      "revision": 2,
+      "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5",
+      "body": {
+        "skills": [],
+        "citations": [
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "9dd3a398-0ac3-598b-9913-e7a27d1a8df7"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "cd26f9e5-686b-5a85-9e02-9e349a696c43"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "221b4dd2-94e9-51d5-b817-e83fefde3de3"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "9efd6d49-a1ce-5481-bc4d-9395ea98b400"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "1411c32b-7e65-5fc3-bf40-8fccad7f8abb"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "702f8e97-3162-5080-a5b5-6837b871be61"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "201a898c-c38f-5efe-9e06-4f21867e33cb"
+          },
+          {
+            "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c",
+            "citation_id": "979974fc-58aa-58f8-a820-55d0302a1071"
+          }
+        ],
+        "completed": [],
+        "questions": [],
+        "root_goal": {
+          "text": "比较合成项目“泊岸 K8”的8个历史轮次，只复述已登记数据，不排序好坏；保压时间不同，压降不能直接当性能排名。所有行保留来源，缺判据写未记录。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。\n保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。",
+          "run_id": "8d3948cf-1793-4f6d-9ee2-fb7e7be6638c"
+        },
+        "candidates": [],
+        "exclusions": [],
+        "unfinished": [
+          "work_state.root_goal",
+          "work_state.current_goal",
+          "work_state.focus_objects",
+          "work_state.citations"
+        ],
+        "constraints": [],
+        "current_goal": {
+          "text": "最后再确认：保压时间、压降、样件数量是三个不同字段，别把数值挪列；B01到B08都要在。\n输出B01到B08八行表：轮次/样件数量/保压秒数/压降kPa/判据/来源。没有通过判据就别排名。若某行在缩减后取不回，明确哪一行未知，别凑成完整八行。",
+          "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5"
+        },
+        "focus_objects": [
+          {
+            "id": "0fc90cf5-b4c5-46fa-a6d1-665960c61e49",
+            "kind": "artifact",
+            "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5",
+            "version": 1
+          },
+          {
+            "id": "15ae075b-6c6d-45e9-abc9-e55c73ff7aac",
+            "kind": "artifact",
+            "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5",
+            "version": 1
+          },
+          {
+            "id": "1b6cca05-d525-4216-b4db-14dbd1af5b76",
+            "kind": "artifact",
+            "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5",
+            "version": 1
+          },
+          {
+            "id": "6d5ecdac-4198-4c7f-bc6f-50404c9742e3",
+            "kind": "artifact",
+            "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5",
+            "version": 1
+          },
+          {
+            "id": "71ffe615-e6e8-47f4-bd0d-e719864dc171",
+            "kind": "artifact",
+            "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5",
+            "version": 1
+          },
+          {
+            "id": "7f9e402b-9c0e-41b4-9e78-b8fef1d09766",
+            "kind": "artifact",
+            "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5",
+            "version": 1
+          },
+          {
+            "id": "af0ef7b8-51af-40e8-9ee9-764f78973483",
+            "kind": "artifact",
+            "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5",
+            "version": 1
+          },
+          {
+            "id": "bc4e6626-84e2-49cd-8469-222b3ca7b8a0",
+            "kind": "artifact",
+            "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5",
+            "version": 1
+          },
+          {
+            "id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+            "kind": "category",
+            "run_id": "336a3b22-8f7d-475c-9530-60b6b19a71d5",
+            "version": 1
+          }
+        ],
+        "completed_count": 0,
+        "context_selection": {
+          "focus": null,
+          "status": "available",
+          "sources": [
+            {
+              "title": "泊岸 K8 S12-A v1",
+              "private": false,
+              "object_id": "15ae075b-6c6d-45e9-abc9-e55c73ff7aac",
+              "source_id": "15ae075b-6c6d-45e9-abc9-e55c73ff7aac",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "b5fe7e56822d05cdf51910409dfd05715e2a4c67172679360f8e4a188e21843c",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-B v1",
+              "private": false,
+              "object_id": "71ffe615-e6e8-47f4-bd0d-e719864dc171",
+              "source_id": "71ffe615-e6e8-47f4-bd0d-e719864dc171",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "73df2803aa3a99b6bddef6e0e0210d744e7039f216cd29e7794cd200b13bffcd",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-C v1",
+              "private": false,
+              "object_id": "7f9e402b-9c0e-41b4-9e78-b8fef1d09766",
+              "source_id": "7f9e402b-9c0e-41b4-9e78-b8fef1d09766",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "7a7ccfe7b22b83242a3f556f5127fbb9b0b1639532df73740908dd4646886804",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-D v1",
+              "private": false,
+              "object_id": "0fc90cf5-b4c5-46fa-a6d1-665960c61e49",
+              "source_id": "0fc90cf5-b4c5-46fa-a6d1-665960c61e49",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "c6d6e80556132919486fc41646a46e79b72c932a3ba0c53481fe487ceaf86191",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-E v1",
+              "private": false,
+              "object_id": "bc4e6626-84e2-49cd-8469-222b3ca7b8a0",
+              "source_id": "bc4e6626-84e2-49cd-8469-222b3ca7b8a0",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "fe09bac8b68a2ced5f31af9a5c2184592400e02a9f7dc052507ff47e5599ae05",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-F v1",
+              "private": false,
+              "object_id": "6d5ecdac-4198-4c7f-bc6f-50404c9742e3",
+              "source_id": "6d5ecdac-4198-4c7f-bc6f-50404c9742e3",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "9e90378f6dd045de3bfac5b75fac87e1771b7ffe32a3cfa064e7dadd40ad1727",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-G v1",
+              "private": false,
+              "object_id": "af0ef7b8-51af-40e8-9ee9-764f78973483",
+              "source_id": "af0ef7b8-51af-40e8-9ee9-764f78973483",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "b1141f3fb6d69432b804434dd5b722a8ff607e369318bf9ecf4d1d6970e112a0",
+              "source_revision": 1,
+              "customer_original": false
+            },
+            {
+              "title": "泊岸 K8 S12-H v1",
+              "private": false,
+              "object_id": "1b6cca05-d525-4216-b4db-14dbd1af5b76",
+              "source_id": "1b6cca05-d525-4216-b4db-14dbd1af5b76",
+              "product_id": null,
+              "project_id": null,
+              "category_id": "52edf926-2c60-4a0e-92cc-057df3a3e424",
+              "proposal_id": null,
+              "source_type": "artifact",
+              "content_hash": "0252b8be19d6fbdffa752503221104e00d266990da2e1a05b3807a151f9773b9",
+              "source_revision": 1,
+              "customer_original": false
+            }
+          ],
+          "version": 1,
+          "versions": [],
+          "version_mode": "any"
+        },
+        "search_preferences": {
+          "scope": "same_category",
+          "include_customer_private": false
+        },
+        "removed_constraints": []
+      }
+    }
+  ]
+}

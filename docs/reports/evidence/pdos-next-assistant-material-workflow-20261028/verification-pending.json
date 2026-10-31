@@ -1,0 +1,28 @@
+{
+  "status": "checkpoint_verified",
+  "head": "s0_0830",
+  "backup": "pdos-next/.local/material-workflow-53502-before-0830.dump",
+  "database": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "live_processes": [],
+  "completed_evidence": {
+    "interrupted_recovery": "interrupted-record-view.txt (3 passed)",
+    "alignment": "test_comparison.py (7 passed)",
+    "formats": "original-formats-first.txt (2 passed)",
+    "temporal": "comparison-temporal-first.txt (1 passed)",
+    "impact_and_revocation": "comparison-impact-race.txt (2 passed)",
+    "frontend_focused": "26 passed; production build frontend-build-verified.txt complete",
+    "migration": "migration-0830.json; history-downgrade-guard.json"
+  },
+  "pending": [
+    "Complete remaining approved designs per task_plan; real model/embedding remain disabled"
+  ],
+  "real_models": false,
+  "embedding": false,
+  "goal_complete": false,
+  "test_files": 47,
+  "expected_cases": 385,
+  "source_inputs": 226,
+  "final_result": "verification-result.json",
+  "report": "result.md"
+}

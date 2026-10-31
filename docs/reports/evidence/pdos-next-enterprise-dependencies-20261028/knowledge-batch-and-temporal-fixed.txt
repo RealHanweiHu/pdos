@@ -1,0 +1,29 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 2 items
+
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency PASSED [ 50%]
+tests/enterprise_search/test_knowledge_dependencies_temporal_pg.py::test_http_knowledge_dependency_proof_survives_durable_continuation_and_replay PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+  tests/enterprise_search/test_knowledge_dependencies_pg.py:210: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency(
+
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+tests/enterprise_search/test_knowledge_dependencies_temporal_pg.py::test_http_knowledge_dependency_proof_survives_durable_continuation_and_replay
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-enterprise-dependencies-20261028/knowledge-batch-temporal.junit.xml -
+======================== 2 passed, 8 warnings in 27.07s ========================

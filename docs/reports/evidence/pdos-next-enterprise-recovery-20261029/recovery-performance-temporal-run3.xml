@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="181.049" timestamp="2026-10-28T22:36:46.111292-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_recovery_pg" name="test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second" time="180.076"><properties><property name="search_warm_p95_seconds" value="3.2077467325376348" /><property name="search_sql_counts" value="[5]" /></properties><failure message="assert (1 == 1 and 3.2077467325376348 &lt; 1.0)&#10; +  where 1 = len({5})&#10; +    where {5} = set([5, 5, 5, 5, 5, 5, ...])">tests/enterprise_search/test_recovery_pg.py:609: in test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+    assert len(set(counts[mode])) == 1 and p95 &lt; 1.0
+E   assert (1 == 1 and 3.2077467325376348 &lt; 1.0)
+E    +  where 1 = len({5})
+E    +    where {5} = set([5, 5, 5, 5, 5, 5, ...])</failure></testcase></testsuite></testsuites>

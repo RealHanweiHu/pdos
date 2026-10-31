@@ -1,0 +1,21 @@
+✔ mobile CSS keeps ordinary candidate confirmation visible and hides only the controlled editor background (0.905666ms)
+✔ ordinary preview is modal on mobile and returns to non-modal desktop chat (1.041292ms)
+✔ snapshot is listed without a write, then one preview and one confirmation save it (31.207375ms)
+✔ lost success response restores the actual receipt on reopening without a second POST (13.490166ms)
+✔ an uncommitted request remains recoverable with exactly its original command and token (14.888875ms)
+✔ unknown saved response after the first 50 candidates can read on and restore its receipt without POST (39.765417ms)
+✔ pending candidate on a later page keeps the original request and requires an explicit replay (50.610167ms)
+✔ proposal adoption on a later page restores the proposal link from its actual receipt (33.312459ms)
+✔ failed later-page read retains the exact request and refresh can recover the saved receipt (5.057375ms)
+✔ later-page cancelled candidate keeps unknown intent and blocks replay or a new preview (3.213208ms)
+✔ later-page unavailable candidate keeps unknown intent and blocks replay or a new preview (2.943ms)
+✔ later-page authority loss removes local recovery and does not send the original command (1.93175ms)
+✔ candidate confirmation authorization failure clears private material but preserves its error (1.326292ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 203.716458

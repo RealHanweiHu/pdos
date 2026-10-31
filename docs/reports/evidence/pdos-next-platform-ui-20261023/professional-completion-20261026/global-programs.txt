@@ -1,0 +1,86 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects"
+      - generic: 项目
+    - link "项目集" [active]:
+      - /url: "?area=programs"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge"
+      - generic: 知识
+    - paragraph: 产品管理
+    - link "品类":
+      - /url: "?area=category"
+      - generic: 品类
+    - link "立项提案":
+      - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&focus=proposals"
+      - generic: 立项提案
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - generic: 项目集
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - region "项目集":
+    - heading "项目集" [level=1]
+    - paragraph: 将相关项目归类，与团队共同维护。
+    - button "刷新项目集":
+    - button "新建项目集":
+      - text: 新建项目集
+    - navigation "项目集显示方式":
+      - button "列表" [pressed]:
+        - text: 列表
+      - button "看板":
+        - text: 看板
+    - searchbox "搜索项目集"
+    - table:
+      - rowgroup:
+        - row "项目集 说明 可见项目 进展":
+          - columnheader "项目集"
+          - columnheader "说明"
+          - columnheader "可见项目"
+          - columnheader "进展"
+          - columnheader
+      - rowgroup:
+        - row "便携产品 · 合成验证 用于验证组织内项目归类，全部为本地合成资料。 1 个项目 待确认 打开便携产品 · 合成验证":
+          - cell "便携产品 · 合成验证":
+            - button "便携产品 · 合成验证"
+          - cell "用于验证组织内项目归类，全部为本地合成资料。":
+            - generic "用于验证组织内项目归类，全部为本地合成资料。"
+          - cell "1 个项目"
+          - cell "待确认":
+            - generic: 待确认
+          - cell "打开便携产品 · 合成验证":
+            - button "打开便携产品 · 合成验证":
+- button "打开小Pai工作栏":

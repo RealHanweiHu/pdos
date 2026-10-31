@@ -1,0 +1,2 @@
+isolated: port=53502 database=pdos_test head=s0_0824 bindings=12 work_products=9
+preview: port=57358 database=pdos_test head=s0_0824 bindings=0 work_products=3

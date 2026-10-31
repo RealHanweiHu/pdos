@@ -1,0 +1,53 @@
+{
+  "scope": "2026-10-22 comprehensive preview; shared files may include concurrent work",
+  "files": [
+    {
+      "path": ".gitignore",
+      "sha256": "d8930df743f4e6b0a9b8bd5aad3a27213130c61a788d9f6a3cf90f992b24daea"
+    },
+    {
+      "path": "pdos-next/tools/comprehensive_preview.py",
+      "sha256": "0f59324364fee09e32b4bf49c08ba9a8eae5cad8de403f6a15055bcc70516800"
+    },
+    {
+      "path": "pdos-next/web/next.config.ts",
+      "sha256": "0845d33e68239fc9fdb978c8b848a54d1ea8037bfbcddcfd51456f352b66f2d4"
+    },
+    {
+      "path": "pdos-next/web/tsconfig.json",
+      "sha256": "81bddf71e7d6e28149d1a785bb8a8a902b4ba257524680a6bc5a8f8d7e24f670"
+    },
+    {
+      "path": "pdos-next/web/src/app/page.tsx",
+      "sha256": "dd96262f0128900bade51037a36a04f789400232dbc65360ca6f45e66154736b"
+    },
+    {
+      "path": "pdos-next/web/src/app/preview/page.tsx",
+      "sha256": "ecfdfb73817b258502f03fed1f14fad6d1de2b2131408335796cf70ee23d42cc"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/preview-session/route.ts",
+      "sha256": "802690f7b0ab0984a17b18014b41fd91263788eab9a0d6976a66e352bcf0a702"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/preview-session/route.test.ts",
+      "sha256": "c0e3362c4da2417dd6c0a730c4bb366cc2bd57ede37911000fcd23954535adbe"
+    },
+    {
+      "path": "pdos-next/web/src/components/comprehensive-preview.tsx",
+      "sha256": "7dd69336c3b303cf06d0795c15e0897c316b1e728a3052a40f3f41bff19f4877"
+    },
+    {
+      "path": "pdos-next/web/src/components/app-shell.tsx",
+      "sha256": "3d98198894fc2a10b11e300e2cee822faaf4b39bec128d639a41707803d8c8ac"
+    },
+    {
+      "path": "pdos-next/web/src/lib/local-preview-server.ts",
+      "sha256": "0cb1eb7456da0db1985955adfa27e966b62f5ce7849df357129bf0c7457efd05"
+    },
+    {
+      "path": "pdos-next/web/src/lib/local-preview-types.ts",
+      "sha256": "bfb06e10fb8fb2c38630b780ff23ed1346821facac31c9fcbf028c3cfba7459b"
+    }
+  ]
+}

@@ -1,0 +1,1748 @@
+{
+  "version": "project-commitment-projection-qa/v1",
+  "fixture_nature": "actual HTTP/domain commands over isolated synthetic evidence",
+  "scope": {
+    "category_id": "0929d9d2-ef48-4448-94a4-7c79f7af2295",
+    "product_id": "4fcf9465-dcbf-4a04-a0fb-4538108421b7",
+    "project_id": "f7b7eba6-91d7-4e05-95d2-8dc0dd7fbf25",
+    "principal_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+    "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6"
+  },
+  "phases": [
+    {
+      "phase": "returned_open_and_fulfilled",
+      "reader_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+      "routes": {
+        "project_work": "/v1/categories/0929d9d2-ef48-4448-94a4-7c79f7af2295/products/4fcf9465-dcbf-4a04-a0fb-4538108421b7/project-work",
+        "fulfillment": "/v1/categories/0929d9d2-ef48-4448-94a4-7c79f7af2295/products/4fcf9465-dcbf-4a04-a0fb-4538108421b7/project-work/fulfillment"
+      },
+      "project_work": {
+        "project": {
+          "id": "f7b7eba6-91d7-4e05-95d2-8dc0dd7fbf25",
+          "revision": 1,
+          "name": "Synthetic named work loop",
+          "owner_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+          "visibility": "category"
+        },
+        "product_revision": 1,
+        "members": [
+          {
+            "id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "name": "Synthetic owner",
+            "can_write": true
+          },
+          {
+            "id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "name": "Synthetic peer",
+            "can_write": true
+          }
+        ],
+        "tasks": [
+          {
+            "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "version_id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+            "revision": 5,
+            "state": "submitted",
+            "status": "submitted",
+            "title": "Synthetic paired commitment projection",
+            "goal": "Keep recipient-specific promise versions and independent actual reviews readable",
+            "outcomes": [
+              {
+                "key": "drawing",
+                "text": "Required synthetic drawing",
+                "required": true
+              },
+              {
+                "key": "inspection",
+                "text": "Optional synthetic inspection",
+                "required": false
+              }
+            ],
+            "owner_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "assignee_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "plan_task": null,
+            "g0_open_item": null,
+            "sources": [
+              {
+                "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6",
+                "revision": 1
+              }
+            ],
+            "actual_start": {
+              "at": "2026-10-22T18:34:27.572123+00:00",
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "recorded_at": "2026-10-22T18:34:28.049342+00:00"
+            },
+            "submission": {
+              "at": "2026-10-22T18:34:29.422706+00:00",
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "recorded_at": "2026-10-22T18:34:30.029051+00:00",
+              "results": [
+                {
+                  "key": "drawing",
+                  "text": "Actual isolated synthetic drawing material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                },
+                {
+                  "key": "inspection",
+                  "text": "Actual isolated synthetic inspection material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                }
+              ]
+            },
+            "review": null,
+            "history": [
+              {
+                "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+                "revision": 1,
+                "action": "create",
+                "state": "proposed",
+                "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                "created_at": "2026-10-22T18:34:16.246396+00:00",
+                "receipt_id": "c8f8350f-39fc-469c-8eb3-007c7d63843f"
+              },
+              {
+                "id": "be9b4083-30b8-4bbb-9bcd-621bfc57300a",
+                "revision": 2,
+                "action": "assign",
+                "state": "assigned",
+                "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                "created_at": "2026-10-22T18:34:18.991382+00:00",
+                "receipt_id": "b48d97fe-2c0d-403a-87af-322dc059ca5f"
+              },
+              {
+                "id": "1c9dcbe2-da29-4ba7-a1da-c1562982ff39",
+                "revision": 3,
+                "action": "accept",
+                "state": "accepted",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "created_at": "2026-10-22T18:34:20.937588+00:00",
+                "receipt_id": "383e5cb0-a7df-485d-96ba-7e2643bba6d6"
+              },
+              {
+                "id": "98d3a807-4c9b-44da-9fc0-abecf5895a13",
+                "revision": 4,
+                "action": "start",
+                "state": "in_progress",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "created_at": "2026-10-22T18:34:28.057830+00:00",
+                "receipt_id": "1e65e6a8-1558-4a95-ac8b-b730ec5afada"
+              },
+              {
+                "id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+                "revision": 5,
+                "action": "submit",
+                "state": "submitted",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "created_at": "2026-10-22T18:34:30.051509+00:00",
+                "receipt_id": "b981a949-a655-4775-9605-7ae44434a915"
+              }
+            ]
+          }
+        ],
+        "g0_open_items": [],
+        "commitments": [
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 1,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 3,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "outcome_keys": [
+              "drawing",
+              "inspection"
+            ],
+            "promised_at": null,
+            "replaces": null,
+            "recorded_at": "2026-10-22T18:34:23.916539Z",
+            "id": "46cc3eaa-b39d-443a-a15f-eb76829076a8",
+            "status": "current",
+            "created_at": "2026-10-22T18:34:23.939502+00:00"
+          },
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 1,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 3,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "outcome_keys": [
+              "drawing"
+            ],
+            "promised_at": "2026-10-23T18:34:25.560281Z",
+            "replaces": null,
+            "recorded_at": "2026-10-22T18:34:26.206844Z",
+            "id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+            "status": "current",
+            "created_at": "2026-10-22T18:34:26.222870+00:00"
+          }
+        ],
+        "updates": [],
+        "as_of": "2026-10-22T18:34:36.719244+00:00"
+      },
+      "fulfillment": {
+        "project": {
+          "id": "f7b7eba6-91d7-4e05-95d2-8dc0dd7fbf25",
+          "revision": 1,
+          "name": "Synthetic named work loop",
+          "owner_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+          "visibility": "category"
+        },
+        "product_revision": 1,
+        "commitments": [
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 1,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 3,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "outcome_keys": [
+              "drawing",
+              "inspection"
+            ],
+            "promised_at": null,
+            "replaces": null,
+            "recorded_at": "2026-10-22T18:34:23.916539Z",
+            "id": "46cc3eaa-b39d-443a-a15f-eb76829076a8",
+            "status": "current",
+            "created_at": "2026-10-22T18:34:23.939502+00:00",
+            "series_id": "46cc3eaa-b39d-443a-a15f-eb76829076a8",
+            "sources": [
+              {
+                "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6",
+                "revision": 1
+              }
+            ],
+            "task": {
+              "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+              "version_id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "title": "Synthetic paired commitment projection",
+              "state": "submitted"
+            },
+            "submission": {
+              "id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "results": [
+                {
+                  "key": "drawing",
+                  "text": "Actual isolated synthetic drawing material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                },
+                {
+                  "key": "inspection",
+                  "text": "Actual isolated synthetic inspection material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                }
+              ],
+              "time": {
+                "original_timezone": "Asia/Shanghai",
+                "calendar_id": null,
+                "actual_at": "2026-10-22T18:34:29.422706Z",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "recorded_at": "2026-10-22T18:34:30.029051Z"
+              }
+            },
+            "fulfillment": {
+              "state": "open",
+              "revision": 1,
+              "review": {
+                "id": "25db1765-a944-4b83-9727-fb1c5cb382e1",
+                "revision": 1,
+                "decision": "returned",
+                "state": "open",
+                "checks": [
+                  {
+                    "key": "drawing",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  },
+                  {
+                    "key": "inspection",
+                    "reason": "The original submitted outcome is incomplete",
+                    "decision": "rejected"
+                  }
+                ],
+                "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                "recorded_at": "2026-10-22T18:34:32.431087+00:00",
+                "receipt_id": "80f31800-e21d-4b79-885b-319fe7335c1e"
+              },
+              "history": [
+                {
+                  "id": "25db1765-a944-4b83-9727-fb1c5cb382e1",
+                  "revision": 1,
+                  "decision": "returned",
+                  "state": "open",
+                  "checks": [
+                    {
+                      "key": "drawing",
+                      "reason": "Recipient checked this exact original submitted outcome",
+                      "decision": "accepted"
+                    },
+                    {
+                      "key": "inspection",
+                      "reason": "The original submitted outcome is incomplete",
+                      "decision": "rejected"
+                    }
+                  ],
+                  "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                  "recorded_at": "2026-10-22T18:34:32.431087+00:00",
+                  "receipt_id": "80f31800-e21d-4b79-885b-319fe7335c1e"
+                }
+              ]
+            },
+            "can_review": true
+          },
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 1,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 3,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "outcome_keys": [
+              "drawing"
+            ],
+            "promised_at": "2026-10-23T18:34:25.560281Z",
+            "replaces": null,
+            "recorded_at": "2026-10-22T18:34:26.206844Z",
+            "id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+            "status": "current",
+            "created_at": "2026-10-22T18:34:26.222870+00:00",
+            "series_id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+            "sources": [
+              {
+                "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6",
+                "revision": 1
+              }
+            ],
+            "task": {
+              "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+              "version_id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "title": "Synthetic paired commitment projection",
+              "state": "submitted"
+            },
+            "submission": {
+              "id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "results": [
+                {
+                  "key": "drawing",
+                  "text": "Actual isolated synthetic drawing material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                },
+                {
+                  "key": "inspection",
+                  "text": "Actual isolated synthetic inspection material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                }
+              ],
+              "time": {
+                "original_timezone": "Asia/Shanghai",
+                "calendar_id": null,
+                "actual_at": "2026-10-22T18:34:29.422706Z",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "recorded_at": "2026-10-22T18:34:30.029051Z"
+              }
+            },
+            "fulfillment": {
+              "state": "fulfilled",
+              "revision": 1,
+              "review": {
+                "id": "d02f8034-0a15-4207-825e-8b71868bdafa",
+                "revision": 1,
+                "decision": "accepted",
+                "state": "fulfilled",
+                "checks": [
+                  {
+                    "key": "drawing",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  }
+                ],
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "recorded_at": "2026-10-22T18:34:34.977612+00:00",
+                "receipt_id": "273b4f63-4003-4562-b88c-8f7daee63876"
+              },
+              "history": [
+                {
+                  "id": "d02f8034-0a15-4207-825e-8b71868bdafa",
+                  "revision": 1,
+                  "decision": "accepted",
+                  "state": "fulfilled",
+                  "checks": [
+                    {
+                      "key": "drawing",
+                      "reason": "Recipient checked this exact original submitted outcome",
+                      "decision": "accepted"
+                    }
+                  ],
+                  "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                  "recorded_at": "2026-10-22T18:34:34.977612+00:00",
+                  "receipt_id": "273b4f63-4003-4562-b88c-8f7daee63876"
+                }
+              ]
+            },
+            "can_review": false
+          }
+        ],
+        "as_of": "2026-10-22T18:34:36.964405+00:00"
+      },
+      "read_only_counts": {
+        "before": {
+          "work_task_versions": 5,
+          "work_task_currents": 1,
+          "work_commitment_versions": 2,
+          "work_commitment_currents": 2,
+          "project_status_updates": 0,
+          "action_receipts": 17,
+          "audit_entries": 17,
+          "outbox_events": 18,
+          "request_keys": 15,
+          "confirmations": 12,
+          "work_commitment_reviews": 2,
+          "work_commitment_review_currents": 2,
+          "artifact_versions": 1,
+          "original_security": 1,
+          "uploaded_originals": 1,
+          "original_scan_requests": 1,
+          "original_scan_results": 1
+        },
+        "after": {
+          "work_task_versions": 5,
+          "work_task_currents": 1,
+          "work_commitment_versions": 2,
+          "work_commitment_currents": 2,
+          "project_status_updates": 0,
+          "action_receipts": 17,
+          "audit_entries": 17,
+          "outbox_events": 18,
+          "request_keys": 15,
+          "confirmations": 12,
+          "work_commitment_reviews": 2,
+          "work_commitment_review_currents": 2,
+          "artifact_versions": 1,
+          "original_security": 1,
+          "uploaded_originals": 1,
+          "original_scan_requests": 1,
+          "original_scan_results": 1
+        },
+        "unchanged": true
+      }
+    },
+    {
+      "phase": "successor_open_predecessor_fulfilled",
+      "reader_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+      "routes": {
+        "project_work": "/v1/categories/0929d9d2-ef48-4448-94a4-7c79f7af2295/products/4fcf9465-dcbf-4a04-a0fb-4538108421b7/project-work",
+        "fulfillment": "/v1/categories/0929d9d2-ef48-4448-94a4-7c79f7af2295/products/4fcf9465-dcbf-4a04-a0fb-4538108421b7/project-work/fulfillment"
+      },
+      "project_work": {
+        "project": {
+          "id": "f7b7eba6-91d7-4e05-95d2-8dc0dd7fbf25",
+          "revision": 1,
+          "name": "Synthetic named work loop",
+          "owner_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+          "visibility": "category"
+        },
+        "product_revision": 1,
+        "members": [
+          {
+            "id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "name": "Synthetic owner",
+            "can_write": true
+          },
+          {
+            "id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "name": "Synthetic peer",
+            "can_write": true
+          }
+        ],
+        "tasks": [
+          {
+            "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "version_id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+            "revision": 5,
+            "state": "submitted",
+            "status": "submitted",
+            "title": "Synthetic paired commitment projection",
+            "goal": "Keep recipient-specific promise versions and independent actual reviews readable",
+            "outcomes": [
+              {
+                "key": "drawing",
+                "text": "Required synthetic drawing",
+                "required": true
+              },
+              {
+                "key": "inspection",
+                "text": "Optional synthetic inspection",
+                "required": false
+              }
+            ],
+            "owner_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "assignee_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "plan_task": null,
+            "g0_open_item": null,
+            "sources": [
+              {
+                "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6",
+                "revision": 1
+              }
+            ],
+            "actual_start": {
+              "at": "2026-10-22T18:34:27.572123+00:00",
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "recorded_at": "2026-10-22T18:34:28.049342+00:00"
+            },
+            "submission": {
+              "at": "2026-10-22T18:34:29.422706+00:00",
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "recorded_at": "2026-10-22T18:34:30.029051+00:00",
+              "results": [
+                {
+                  "key": "drawing",
+                  "text": "Actual isolated synthetic drawing material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                },
+                {
+                  "key": "inspection",
+                  "text": "Actual isolated synthetic inspection material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                }
+              ]
+            },
+            "review": null,
+            "history": [
+              {
+                "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+                "revision": 1,
+                "action": "create",
+                "state": "proposed",
+                "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                "created_at": "2026-10-22T18:34:16.246396+00:00",
+                "receipt_id": "c8f8350f-39fc-469c-8eb3-007c7d63843f"
+              },
+              {
+                "id": "be9b4083-30b8-4bbb-9bcd-621bfc57300a",
+                "revision": 2,
+                "action": "assign",
+                "state": "assigned",
+                "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                "created_at": "2026-10-22T18:34:18.991382+00:00",
+                "receipt_id": "b48d97fe-2c0d-403a-87af-322dc059ca5f"
+              },
+              {
+                "id": "1c9dcbe2-da29-4ba7-a1da-c1562982ff39",
+                "revision": 3,
+                "action": "accept",
+                "state": "accepted",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "created_at": "2026-10-22T18:34:20.937588+00:00",
+                "receipt_id": "383e5cb0-a7df-485d-96ba-7e2643bba6d6"
+              },
+              {
+                "id": "98d3a807-4c9b-44da-9fc0-abecf5895a13",
+                "revision": 4,
+                "action": "start",
+                "state": "in_progress",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "created_at": "2026-10-22T18:34:28.057830+00:00",
+                "receipt_id": "1e65e6a8-1558-4a95-ac8b-b730ec5afada"
+              },
+              {
+                "id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+                "revision": 5,
+                "action": "submit",
+                "state": "submitted",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "created_at": "2026-10-22T18:34:30.051509+00:00",
+                "receipt_id": "b981a949-a655-4775-9605-7ae44434a915"
+              }
+            ]
+          }
+        ],
+        "g0_open_items": [],
+        "commitments": [
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 1,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 3,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "outcome_keys": [
+              "drawing",
+              "inspection"
+            ],
+            "promised_at": null,
+            "replaces": null,
+            "recorded_at": "2026-10-22T18:34:23.916539Z",
+            "id": "46cc3eaa-b39d-443a-a15f-eb76829076a8",
+            "status": "current",
+            "created_at": "2026-10-22T18:34:23.939502+00:00"
+          },
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 1,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 3,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "outcome_keys": [
+              "drawing"
+            ],
+            "promised_at": "2026-10-23T18:34:25.560281Z",
+            "replaces": null,
+            "recorded_at": "2026-10-22T18:34:26.206844Z",
+            "id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+            "status": "superseded",
+            "created_at": "2026-10-22T18:34:26.222870+00:00"
+          },
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 2,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 5,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "outcome_keys": [
+              "drawing"
+            ],
+            "promised_at": "2026-10-23T18:34:25.560281Z",
+            "replaces": {
+              "id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+              "revision": 1
+            },
+            "recorded_at": "2026-10-22T18:34:37.605812Z",
+            "id": "8e801ff2-c4a9-4d8f-ba15-21eff463db42",
+            "status": "current",
+            "created_at": "2026-10-22T18:34:37.665469+00:00"
+          }
+        ],
+        "updates": [],
+        "as_of": "2026-10-22T18:34:39.849869+00:00"
+      },
+      "fulfillment": {
+        "project": {
+          "id": "f7b7eba6-91d7-4e05-95d2-8dc0dd7fbf25",
+          "revision": 1,
+          "name": "Synthetic named work loop",
+          "owner_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+          "visibility": "category"
+        },
+        "product_revision": 1,
+        "commitments": [
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 1,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 3,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "outcome_keys": [
+              "drawing",
+              "inspection"
+            ],
+            "promised_at": null,
+            "replaces": null,
+            "recorded_at": "2026-10-22T18:34:23.916539Z",
+            "id": "46cc3eaa-b39d-443a-a15f-eb76829076a8",
+            "status": "current",
+            "created_at": "2026-10-22T18:34:23.939502+00:00",
+            "series_id": "46cc3eaa-b39d-443a-a15f-eb76829076a8",
+            "sources": [
+              {
+                "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6",
+                "revision": 1
+              }
+            ],
+            "task": {
+              "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+              "version_id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "title": "Synthetic paired commitment projection",
+              "state": "submitted"
+            },
+            "submission": {
+              "id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "results": [
+                {
+                  "key": "drawing",
+                  "text": "Actual isolated synthetic drawing material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                },
+                {
+                  "key": "inspection",
+                  "text": "Actual isolated synthetic inspection material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                }
+              ],
+              "time": {
+                "original_timezone": "Asia/Shanghai",
+                "calendar_id": null,
+                "actual_at": "2026-10-22T18:34:29.422706Z",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "recorded_at": "2026-10-22T18:34:30.029051Z"
+              }
+            },
+            "fulfillment": {
+              "state": "open",
+              "revision": 1,
+              "review": {
+                "id": "25db1765-a944-4b83-9727-fb1c5cb382e1",
+                "revision": 1,
+                "decision": "returned",
+                "state": "open",
+                "checks": [
+                  {
+                    "key": "drawing",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  },
+                  {
+                    "key": "inspection",
+                    "reason": "The original submitted outcome is incomplete",
+                    "decision": "rejected"
+                  }
+                ],
+                "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                "recorded_at": "2026-10-22T18:34:32.431087+00:00",
+                "receipt_id": "80f31800-e21d-4b79-885b-319fe7335c1e"
+              },
+              "history": [
+                {
+                  "id": "25db1765-a944-4b83-9727-fb1c5cb382e1",
+                  "revision": 1,
+                  "decision": "returned",
+                  "state": "open",
+                  "checks": [
+                    {
+                      "key": "drawing",
+                      "reason": "Recipient checked this exact original submitted outcome",
+                      "decision": "accepted"
+                    },
+                    {
+                      "key": "inspection",
+                      "reason": "The original submitted outcome is incomplete",
+                      "decision": "rejected"
+                    }
+                  ],
+                  "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                  "recorded_at": "2026-10-22T18:34:32.431087+00:00",
+                  "receipt_id": "80f31800-e21d-4b79-885b-319fe7335c1e"
+                }
+              ]
+            },
+            "can_review": true
+          },
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 1,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 3,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "outcome_keys": [
+              "drawing"
+            ],
+            "promised_at": "2026-10-23T18:34:25.560281Z",
+            "replaces": null,
+            "recorded_at": "2026-10-22T18:34:26.206844Z",
+            "id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+            "status": "superseded",
+            "created_at": "2026-10-22T18:34:26.222870+00:00",
+            "series_id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+            "sources": [
+              {
+                "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6",
+                "revision": 1
+              }
+            ],
+            "task": {
+              "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+              "version_id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "title": "Synthetic paired commitment projection",
+              "state": "submitted"
+            },
+            "submission": {
+              "id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "results": [
+                {
+                  "key": "drawing",
+                  "text": "Actual isolated synthetic drawing material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                },
+                {
+                  "key": "inspection",
+                  "text": "Actual isolated synthetic inspection material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                }
+              ],
+              "time": {
+                "original_timezone": "Asia/Shanghai",
+                "calendar_id": null,
+                "actual_at": "2026-10-22T18:34:29.422706Z",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "recorded_at": "2026-10-22T18:34:30.029051Z"
+              }
+            },
+            "fulfillment": {
+              "state": "fulfilled",
+              "revision": 1,
+              "review": {
+                "id": "d02f8034-0a15-4207-825e-8b71868bdafa",
+                "revision": 1,
+                "decision": "accepted",
+                "state": "fulfilled",
+                "checks": [
+                  {
+                    "key": "drawing",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  }
+                ],
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "recorded_at": "2026-10-22T18:34:34.977612+00:00",
+                "receipt_id": "273b4f63-4003-4562-b88c-8f7daee63876"
+              },
+              "history": [
+                {
+                  "id": "d02f8034-0a15-4207-825e-8b71868bdafa",
+                  "revision": 1,
+                  "decision": "accepted",
+                  "state": "fulfilled",
+                  "checks": [
+                    {
+                      "key": "drawing",
+                      "reason": "Recipient checked this exact original submitted outcome",
+                      "decision": "accepted"
+                    }
+                  ],
+                  "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                  "recorded_at": "2026-10-22T18:34:34.977612+00:00",
+                  "receipt_id": "273b4f63-4003-4562-b88c-8f7daee63876"
+                }
+              ]
+            },
+            "can_review": false
+          },
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 2,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 5,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "outcome_keys": [
+              "drawing"
+            ],
+            "promised_at": "2026-10-23T18:34:25.560281Z",
+            "replaces": {
+              "id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+              "revision": 1
+            },
+            "recorded_at": "2026-10-22T18:34:37.605812Z",
+            "id": "8e801ff2-c4a9-4d8f-ba15-21eff463db42",
+            "status": "current",
+            "created_at": "2026-10-22T18:34:37.665469+00:00",
+            "series_id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+            "sources": [
+              {
+                "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6",
+                "revision": 1
+              }
+            ],
+            "task": {
+              "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+              "version_id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "title": "Synthetic paired commitment projection",
+              "state": "submitted"
+            },
+            "submission": {
+              "id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "results": [
+                {
+                  "key": "drawing",
+                  "text": "Actual isolated synthetic drawing material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                },
+                {
+                  "key": "inspection",
+                  "text": "Actual isolated synthetic inspection material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                }
+              ],
+              "time": {
+                "original_timezone": "Asia/Shanghai",
+                "calendar_id": null,
+                "actual_at": "2026-10-22T18:34:29.422706Z",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "recorded_at": "2026-10-22T18:34:30.029051Z"
+              }
+            },
+            "fulfillment": {
+              "state": "open",
+              "revision": 0,
+              "review": null,
+              "history": []
+            },
+            "can_review": false
+          }
+        ],
+        "as_of": "2026-10-22T18:34:40.154757+00:00"
+      },
+      "read_only_counts": {
+        "before": {
+          "work_task_versions": 5,
+          "work_task_currents": 1,
+          "work_commitment_versions": 3,
+          "work_commitment_currents": 2,
+          "project_status_updates": 0,
+          "action_receipts": 18,
+          "audit_entries": 18,
+          "outbox_events": 19,
+          "request_keys": 16,
+          "confirmations": 13,
+          "work_commitment_reviews": 2,
+          "work_commitment_review_currents": 2,
+          "artifact_versions": 1,
+          "original_security": 1,
+          "uploaded_originals": 1,
+          "original_scan_requests": 1,
+          "original_scan_results": 1
+        },
+        "after": {
+          "work_task_versions": 5,
+          "work_task_currents": 1,
+          "work_commitment_versions": 3,
+          "work_commitment_currents": 2,
+          "project_status_updates": 0,
+          "action_receipts": 18,
+          "audit_entries": 18,
+          "outbox_events": 19,
+          "request_keys": 16,
+          "confirmations": 13,
+          "work_commitment_reviews": 2,
+          "work_commitment_review_currents": 2,
+          "artifact_versions": 1,
+          "original_security": 1,
+          "uploaded_originals": 1,
+          "original_scan_requests": 1,
+          "original_scan_results": 1
+        },
+        "unchanged": true
+      }
+    },
+    {
+      "phase": "completed_task_independent_fulfillment_history",
+      "reader_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+      "routes": {
+        "project_work": "/v1/categories/0929d9d2-ef48-4448-94a4-7c79f7af2295/products/4fcf9465-dcbf-4a04-a0fb-4538108421b7/project-work",
+        "fulfillment": "/v1/categories/0929d9d2-ef48-4448-94a4-7c79f7af2295/products/4fcf9465-dcbf-4a04-a0fb-4538108421b7/project-work/fulfillment"
+      },
+      "project_work": {
+        "project": {
+          "id": "f7b7eba6-91d7-4e05-95d2-8dc0dd7fbf25",
+          "revision": 1,
+          "name": "Synthetic named work loop",
+          "owner_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+          "visibility": "category"
+        },
+        "product_revision": 1,
+        "members": [
+          {
+            "id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "name": "Synthetic owner",
+            "can_write": true
+          },
+          {
+            "id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "name": "Synthetic peer",
+            "can_write": true
+          }
+        ],
+        "tasks": [
+          {
+            "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "version_id": "ffd5cbf5-7542-4ef7-989c-6a758d52b7c1",
+            "revision": 6,
+            "state": "completed",
+            "status": "completed",
+            "title": "Synthetic paired commitment projection",
+            "goal": "Keep recipient-specific promise versions and independent actual reviews readable",
+            "outcomes": [
+              {
+                "key": "drawing",
+                "text": "Required synthetic drawing",
+                "required": true
+              },
+              {
+                "key": "inspection",
+                "text": "Optional synthetic inspection",
+                "required": false
+              }
+            ],
+            "owner_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "assignee_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "plan_task": null,
+            "g0_open_item": null,
+            "sources": [
+              {
+                "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6",
+                "revision": 1
+              }
+            ],
+            "actual_start": {
+              "at": "2026-10-22T18:34:27.572123+00:00",
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "recorded_at": "2026-10-22T18:34:28.049342+00:00"
+            },
+            "submission": {
+              "at": "2026-10-22T18:34:29.422706+00:00",
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "recorded_at": "2026-10-22T18:34:30.029051+00:00",
+              "results": [
+                {
+                  "key": "drawing",
+                  "text": "Actual isolated synthetic drawing material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                },
+                {
+                  "key": "inspection",
+                  "text": "Actual isolated synthetic inspection material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                }
+              ]
+            },
+            "review": {
+              "at": "2026-10-22T18:34:40.203120+00:00",
+              "original_timezone": "Asia/Shanghai",
+              "calendar_id": null,
+              "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+              "recorded_at": "2026-10-22T18:34:40.909457+00:00",
+              "decision": "accepted",
+              "checks": [
+                {
+                  "key": "drawing",
+                  "decision": "accepted",
+                  "reason": "Recipient checked this exact original submitted outcome"
+                },
+                {
+                  "key": "inspection",
+                  "decision": "accepted",
+                  "reason": "Recipient checked this exact original submitted outcome"
+                }
+              ]
+            },
+            "history": [
+              {
+                "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+                "revision": 1,
+                "action": "create",
+                "state": "proposed",
+                "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                "created_at": "2026-10-22T18:34:16.246396+00:00",
+                "receipt_id": "c8f8350f-39fc-469c-8eb3-007c7d63843f"
+              },
+              {
+                "id": "be9b4083-30b8-4bbb-9bcd-621bfc57300a",
+                "revision": 2,
+                "action": "assign",
+                "state": "assigned",
+                "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                "created_at": "2026-10-22T18:34:18.991382+00:00",
+                "receipt_id": "b48d97fe-2c0d-403a-87af-322dc059ca5f"
+              },
+              {
+                "id": "1c9dcbe2-da29-4ba7-a1da-c1562982ff39",
+                "revision": 3,
+                "action": "accept",
+                "state": "accepted",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "created_at": "2026-10-22T18:34:20.937588+00:00",
+                "receipt_id": "383e5cb0-a7df-485d-96ba-7e2643bba6d6"
+              },
+              {
+                "id": "98d3a807-4c9b-44da-9fc0-abecf5895a13",
+                "revision": 4,
+                "action": "start",
+                "state": "in_progress",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "created_at": "2026-10-22T18:34:28.057830+00:00",
+                "receipt_id": "1e65e6a8-1558-4a95-ac8b-b730ec5afada"
+              },
+              {
+                "id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+                "revision": 5,
+                "action": "submit",
+                "state": "submitted",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "created_at": "2026-10-22T18:34:30.051509+00:00",
+                "receipt_id": "b981a949-a655-4775-9605-7ae44434a915"
+              },
+              {
+                "id": "ffd5cbf5-7542-4ef7-989c-6a758d52b7c1",
+                "revision": 6,
+                "action": "review",
+                "state": "completed",
+                "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                "created_at": "2026-10-22T18:34:40.923000+00:00",
+                "receipt_id": "8200b6fc-e03f-4f30-a58c-f1cb9c9fcb5f"
+              }
+            ]
+          }
+        ],
+        "g0_open_items": [],
+        "commitments": [
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 1,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 3,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "outcome_keys": [
+              "drawing",
+              "inspection"
+            ],
+            "promised_at": null,
+            "replaces": null,
+            "recorded_at": "2026-10-22T18:34:23.916539Z",
+            "id": "46cc3eaa-b39d-443a-a15f-eb76829076a8",
+            "status": "current",
+            "created_at": "2026-10-22T18:34:23.939502+00:00"
+          },
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 1,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 3,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "outcome_keys": [
+              "drawing"
+            ],
+            "promised_at": "2026-10-23T18:34:25.560281Z",
+            "replaces": null,
+            "recorded_at": "2026-10-22T18:34:26.206844Z",
+            "id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+            "status": "superseded",
+            "created_at": "2026-10-22T18:34:26.222870+00:00"
+          },
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 2,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 5,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "outcome_keys": [
+              "drawing"
+            ],
+            "promised_at": "2026-10-23T18:34:25.560281Z",
+            "replaces": {
+              "id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+              "revision": 1
+            },
+            "recorded_at": "2026-10-22T18:34:37.605812Z",
+            "id": "8e801ff2-c4a9-4d8f-ba15-21eff463db42",
+            "status": "current",
+            "created_at": "2026-10-22T18:34:37.665469+00:00"
+          }
+        ],
+        "updates": [],
+        "as_of": "2026-10-22T18:34:45.446667+00:00"
+      },
+      "fulfillment": {
+        "project": {
+          "id": "f7b7eba6-91d7-4e05-95d2-8dc0dd7fbf25",
+          "revision": 1,
+          "name": "Synthetic named work loop",
+          "owner_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+          "visibility": "category"
+        },
+        "product_revision": 1,
+        "commitments": [
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 1,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 3,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+            "outcome_keys": [
+              "drawing",
+              "inspection"
+            ],
+            "promised_at": null,
+            "replaces": null,
+            "recorded_at": "2026-10-22T18:34:23.916539Z",
+            "id": "46cc3eaa-b39d-443a-a15f-eb76829076a8",
+            "status": "current",
+            "created_at": "2026-10-22T18:34:23.939502+00:00",
+            "series_id": "46cc3eaa-b39d-443a-a15f-eb76829076a8",
+            "sources": [
+              {
+                "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6",
+                "revision": 1
+              }
+            ],
+            "task": {
+              "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+              "version_id": "ffd5cbf5-7542-4ef7-989c-6a758d52b7c1",
+              "revision": 6,
+              "title": "Synthetic paired commitment projection",
+              "state": "completed"
+            },
+            "submission": {
+              "id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "results": [
+                {
+                  "key": "drawing",
+                  "text": "Actual isolated synthetic drawing material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                },
+                {
+                  "key": "inspection",
+                  "text": "Actual isolated synthetic inspection material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                }
+              ],
+              "time": {
+                "original_timezone": "Asia/Shanghai",
+                "calendar_id": null,
+                "actual_at": "2026-10-22T18:34:29.422706Z",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "recorded_at": "2026-10-22T18:34:30.029051Z"
+              }
+            },
+            "fulfillment": {
+              "state": "fulfilled",
+              "revision": 2,
+              "review": {
+                "id": "55c42186-21ee-4f31-8e45-43d42623ada1",
+                "revision": 2,
+                "decision": "accepted",
+                "state": "fulfilled",
+                "checks": [
+                  {
+                    "key": "drawing",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  },
+                  {
+                    "key": "inspection",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  }
+                ],
+                "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                "recorded_at": "2026-10-22T18:34:43.517475+00:00",
+                "receipt_id": "3968c548-adf0-45f7-b8dc-bf7750ed5aee"
+              },
+              "history": [
+                {
+                  "id": "25db1765-a944-4b83-9727-fb1c5cb382e1",
+                  "revision": 1,
+                  "decision": "returned",
+                  "state": "open",
+                  "checks": [
+                    {
+                      "key": "drawing",
+                      "reason": "Recipient checked this exact original submitted outcome",
+                      "decision": "accepted"
+                    },
+                    {
+                      "key": "inspection",
+                      "reason": "The original submitted outcome is incomplete",
+                      "decision": "rejected"
+                    }
+                  ],
+                  "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                  "recorded_at": "2026-10-22T18:34:32.431087+00:00",
+                  "receipt_id": "80f31800-e21d-4b79-885b-319fe7335c1e"
+                },
+                {
+                  "id": "55c42186-21ee-4f31-8e45-43d42623ada1",
+                  "revision": 2,
+                  "decision": "accepted",
+                  "state": "fulfilled",
+                  "checks": [
+                    {
+                      "key": "drawing",
+                      "reason": "Recipient checked this exact original submitted outcome",
+                      "decision": "accepted"
+                    },
+                    {
+                      "key": "inspection",
+                      "reason": "Recipient checked this exact original submitted outcome",
+                      "decision": "accepted"
+                    }
+                  ],
+                  "actor_id": "499e6ab7-6336-422b-b939-b6cf24bdd205",
+                  "recorded_at": "2026-10-22T18:34:43.517475+00:00",
+                  "receipt_id": "3968c548-adf0-45f7-b8dc-bf7750ed5aee"
+                }
+              ]
+            },
+            "can_review": false
+          },
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 1,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 3,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "outcome_keys": [
+              "drawing"
+            ],
+            "promised_at": "2026-10-23T18:34:25.560281Z",
+            "replaces": null,
+            "recorded_at": "2026-10-22T18:34:26.206844Z",
+            "id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+            "status": "superseded",
+            "created_at": "2026-10-22T18:34:26.222870+00:00",
+            "series_id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+            "sources": [
+              {
+                "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6",
+                "revision": 1
+              }
+            ],
+            "task": {
+              "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+              "version_id": "ffd5cbf5-7542-4ef7-989c-6a758d52b7c1",
+              "revision": 6,
+              "title": "Synthetic paired commitment projection",
+              "state": "completed"
+            },
+            "submission": {
+              "id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "results": [
+                {
+                  "key": "drawing",
+                  "text": "Actual isolated synthetic drawing material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                },
+                {
+                  "key": "inspection",
+                  "text": "Actual isolated synthetic inspection material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                }
+              ],
+              "time": {
+                "original_timezone": "Asia/Shanghai",
+                "calendar_id": null,
+                "actual_at": "2026-10-22T18:34:29.422706Z",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "recorded_at": "2026-10-22T18:34:30.029051Z"
+              }
+            },
+            "fulfillment": {
+              "state": "fulfilled",
+              "revision": 1,
+              "review": {
+                "id": "d02f8034-0a15-4207-825e-8b71868bdafa",
+                "revision": 1,
+                "decision": "accepted",
+                "state": "fulfilled",
+                "checks": [
+                  {
+                    "key": "drawing",
+                    "reason": "Recipient checked this exact original submitted outcome",
+                    "decision": "accepted"
+                  }
+                ],
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "recorded_at": "2026-10-22T18:34:34.977612+00:00",
+                "receipt_id": "273b4f63-4003-4562-b88c-8f7daee63876"
+              },
+              "history": [
+                {
+                  "id": "d02f8034-0a15-4207-825e-8b71868bdafa",
+                  "revision": 1,
+                  "decision": "accepted",
+                  "state": "fulfilled",
+                  "checks": [
+                    {
+                      "key": "drawing",
+                      "reason": "Recipient checked this exact original submitted outcome",
+                      "decision": "accepted"
+                    }
+                  ],
+                  "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                  "recorded_at": "2026-10-22T18:34:34.977612+00:00",
+                  "receipt_id": "273b4f63-4003-4562-b88c-8f7daee63876"
+                }
+              ]
+            },
+            "can_review": false
+          },
+          {
+            "original_timezone": "Asia/Shanghai",
+            "calendar_id": null,
+            "revision": 2,
+            "task_id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+            "task_revision": 5,
+            "promisor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "recipient_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+            "outcome_keys": [
+              "drawing"
+            ],
+            "promised_at": "2026-10-23T18:34:25.560281Z",
+            "replaces": {
+              "id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+              "revision": 1
+            },
+            "recorded_at": "2026-10-22T18:34:37.605812Z",
+            "id": "8e801ff2-c4a9-4d8f-ba15-21eff463db42",
+            "status": "current",
+            "created_at": "2026-10-22T18:34:37.665469+00:00",
+            "series_id": "d50c2397-bd87-4859-9837-7a3e72e0efda",
+            "sources": [
+              {
+                "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                "kind": "artifact",
+                "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6",
+                "revision": 1
+              }
+            ],
+            "task": {
+              "id": "4fa5952d-ccaf-4630-9727-0b043cf22d59",
+              "version_id": "ffd5cbf5-7542-4ef7-989c-6a758d52b7c1",
+              "revision": 6,
+              "title": "Synthetic paired commitment projection",
+              "state": "completed"
+            },
+            "submission": {
+              "id": "c4feb6f3-fe7a-4330-8b91-518e5ae677f5",
+              "revision": 5,
+              "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+              "results": [
+                {
+                  "key": "drawing",
+                  "text": "Actual isolated synthetic drawing material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                },
+                {
+                  "key": "inspection",
+                  "text": "Actual isolated synthetic inspection material",
+                  "status": "present",
+                  "sources": [
+                    {
+                      "id": "133afead-b4c1-43cb-bb43-0ea0d16e0671",
+                      "revision": 1,
+                      "kind": "artifact",
+                      "position": "line:1;quote_sha256:1d57c660509bd1c0c0e3a2fc722fac4b6095be2756fef92db807c95fb165acc6"
+                    }
+                  ]
+                }
+              ],
+              "time": {
+                "original_timezone": "Asia/Shanghai",
+                "calendar_id": null,
+                "actual_at": "2026-10-22T18:34:29.422706Z",
+                "actor_id": "b0858d64-a53c-48b5-a784-da79469de1e6",
+                "recorded_at": "2026-10-22T18:34:30.029051Z"
+              }
+            },
+            "fulfillment": {
+              "state": "open",
+              "revision": 0,
+              "review": null,
+              "history": []
+            },
+            "can_review": false
+          }
+        ],
+        "as_of": "2026-10-22T18:34:45.849143+00:00"
+      },
+      "read_only_counts": {
+        "before": {
+          "work_task_versions": 6,
+          "work_task_currents": 1,
+          "work_commitment_versions": 3,
+          "work_commitment_currents": 2,
+          "project_status_updates": 0,
+          "action_receipts": 20,
+          "audit_entries": 20,
+          "outbox_events": 21,
+          "request_keys": 18,
+          "confirmations": 15,
+          "work_commitment_reviews": 3,
+          "work_commitment_review_currents": 2,
+          "artifact_versions": 1,
+          "original_security": 1,
+          "uploaded_originals": 1,
+          "original_scan_requests": 1,
+          "original_scan_results": 1
+        },
+        "after": {
+          "work_task_versions": 6,
+          "work_task_currents": 1,
+          "work_commitment_versions": 3,
+          "work_commitment_currents": 2,
+          "project_status_updates": 0,
+          "action_receipts": 20,
+          "audit_entries": 20,
+          "outbox_events": 21,
+          "request_keys": 18,
+          "confirmations": 15,
+          "work_commitment_reviews": 3,
+          "work_commitment_review_currents": 2,
+          "artifact_versions": 1,
+          "original_security": 1,
+          "uploaded_originals": 1,
+          "original_scan_requests": 1,
+          "original_scan_results": 1
+        },
+        "unchanged": true
+      }
+    }
+  ],
+  "limitations": [
+    "Both actual GET JSON bodies retain their original unmodified shapes.",
+    "Paired GETs have distinct snapshots/as_of; no shared transaction is implied.",
+    "Current task/submission context adds no fixed refs to historical reviews.",
+    "Synthetic scanner facts are not production qualification; no model/external calls."
+  ]
+}

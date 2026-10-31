@@ -1,0 +1,26 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_actual_search_citation_isolated_extract_and_server_answer_are_replayable _
+
+setup = <isolated synthetic test scope>
+
+    def test_actual_search_citation_isolated_extract_and_server_answer_are_replayable(setup):
+        identity = register(
+            setup, "D16 气密记录", "接口漏气。措施：更换密封圈。\nRAW_ONLY_CHILD_MARKER\n"
+        )
+        index(setup, identity)
+        client = SyntheticClient()
+        owner, scope, host, adapter = fixture(setup, client)
+        output = execute(owner, scope, host)
+        assert output["status"] == "completed", output
+>       assert "assistant" in output["result"], [
+            row["content"] for _names, messages in client.messages for row in messages
+            if row["role"] == "tool"
+        ]
+E       AssertionError: ['{"error": {"code": "FORBIDDEN_SCOPE", "message": "只有已绑定的只读编排可接续原调用。", "detail": {"reason": "FORBIDDEN_SCOPE"}}}']
+E       assert 'assistant' in {}
+
+tests/enterprise_search/test_assistant_pg.py:171: AssertionError
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_assistant_pg.py::test_actual_search_citation_isolated_extract_and_server_answer_are_replayable
+1 failed in 5.64s

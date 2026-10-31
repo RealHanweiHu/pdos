@@ -1,0 +1,13 @@
+...F
+=================================== FAILURES ===================================
+_ test_current_authority_rechecked_and_fixed_body_never_silently_replaced[withdrawn] _
+tests/enterprise_search/test_citation_inheritance_pg.py:174: in test_current_authority_rechecked_and_fixed_body_never_silently_replaced
+    assert error.value.code == "CONVERSATION_HISTORY_REVOKED"
+E   AssertionError: assert 'FORBIDDEN_SCOPE' == 'CONVERSATION_HISTORY_REVOKED'
+E     
+E     - CONVERSATION_HISTORY_REVOKED
+E     + FORBIDDEN_SCOPE
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_citation_inheritance_pg.py::test_current_authority_rechecked_and_fixed_body_never_silently_replaced[withdrawn]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 3 passed in 78.16s (0:01:18)

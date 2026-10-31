@@ -1,0 +1,1068 @@
+{
+  "version": "context-native-observation/v1",
+  "case_id": "CTX-01",
+  "f_budget_tokens": 64000,
+  "native_binding_status": "bound",
+  "status": "native_control_checks_passed",
+  "scripted_provider": true,
+  "real_model_calls": 0,
+  "provider_dispatches": 32,
+  "context_budget": [
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 0,
+        "envelope": 610
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 31104,
+      "fixed_over_half": false,
+      "admission_tokens": 35770,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 808,
+        "envelope": 844
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 32146,
+      "fixed_over_half": false,
+      "admission_tokens": 36968,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 1475,
+        "envelope": 889
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 32858,
+      "fixed_over_half": false,
+      "admission_tokens": 37787,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 2146,
+        "envelope": 845
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 33485,
+      "fixed_over_half": false,
+      "admission_tokens": 38508,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 2351,
+        "envelope": 814
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 33659,
+      "fixed_over_half": false,
+      "admission_tokens": 38708,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 2554,
+        "envelope": 848
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 33896,
+      "fixed_over_half": false,
+      "admission_tokens": 38981,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 2751,
+        "envelope": 833
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34078,
+      "fixed_over_half": false,
+      "admission_tokens": 39190,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 2939,
+        "envelope": 838
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34271,
+      "fixed_over_half": false,
+      "admission_tokens": 39412,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3131,
+        "envelope": 865
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34490,
+      "fixed_over_half": false,
+      "admission_tokens": 39664,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3329,
+        "envelope": 842
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34665,
+      "fixed_over_half": false,
+      "admission_tokens": 39865,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3512,
+        "envelope": 832
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34838,
+      "fixed_over_half": false,
+      "admission_tokens": 40064,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3534,
+        "envelope": 844
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34872,
+      "fixed_over_half": false,
+      "admission_tokens": 40103,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3513,
+        "envelope": 868
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34875,
+      "fixed_over_half": false,
+      "admission_tokens": 40107,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3506,
+        "envelope": 909
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34909,
+      "fixed_over_half": false,
+      "admission_tokens": 40146,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3502,
+        "envelope": 904
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34900,
+      "fixed_over_half": false,
+      "admission_tokens": 40135,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3498,
+        "envelope": 970
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34962,
+      "fixed_over_half": false,
+      "admission_tokens": 40207,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3498,
+        "envelope": 1005
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34997,
+      "fixed_over_half": false,
+      "admission_tokens": 40247,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3505,
+        "envelope": 996
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34995,
+      "fixed_over_half": false,
+      "admission_tokens": 40245,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3500,
+        "envelope": 984
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34978,
+      "fixed_over_half": false,
+      "admission_tokens": 40225,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3499,
+        "envelope": 987
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34980,
+      "fixed_over_half": false,
+      "admission_tokens": 40227,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3496,
+        "envelope": 1002
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34992,
+      "fixed_over_half": false,
+      "admission_tokens": 40241,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3508,
+        "envelope": 1006
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 35008,
+      "fixed_over_half": false,
+      "admission_tokens": 40260,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3502,
+        "envelope": 993
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34989,
+      "fixed_over_half": false,
+      "admission_tokens": 40238,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3503,
+        "envelope": 1001
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34998,
+      "fixed_over_half": false,
+      "admission_tokens": 40248,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3502,
+        "envelope": 1002
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34998,
+      "fixed_over_half": false,
+      "admission_tokens": 40248,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3501,
+        "envelope": 1013
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 35008,
+      "fixed_over_half": false,
+      "admission_tokens": 40260,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3496,
+        "envelope": 981
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34971,
+      "fixed_over_half": false,
+      "admission_tokens": 40217,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3491,
+        "envelope": 978
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 34963,
+      "fixed_over_half": false,
+      "admission_tokens": 40208,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3494,
+        "envelope": 1027
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 35015,
+      "fixed_over_half": false,
+      "admission_tokens": 40268,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3491,
+        "envelope": 1045
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 35030,
+      "fixed_over_half": false,
+      "admission_tokens": 40285,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3505,
+        "envelope": 1189
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 35188,
+      "fixed_over_half": false,
+      "admission_tokens": 40467,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 2732,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 3505,
+        "envelope": 1189
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 37920,
+      "fixed_over_half": false,
+      "admission_tokens": 43608,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    }
+  ],
+  "bindings": {
+    "source_type": "artifact",
+    "source_id": "07ec5e2d-c1de-4ece-9119-f41e09fd3143",
+    "source_revision": 1,
+    "session_id": "7ccd6da0-d8f5-44f8-8ff5-284dbf6df192",
+    "history_run_ids": [
+      "98d2e8c9-87b3-45f8-8621-75dea27ed57e",
+      "0d9db0da-6032-4da4-bb5d-70a1fb23a1a6",
+      "ce64b919-92ae-4da4-9180-30d7612ed7f6",
+      "ca605521-cefe-4d46-91a2-a799d5c66b3e",
+      "40e1dc3d-3073-4eb4-a938-11ae9698d2c7",
+      "c182f2ab-d0f0-4614-be80-254972f3cbc5",
+      "379f58b1-fa11-418d-ac43-6d7ff6fa0216",
+      "c6745f4c-7bcd-459c-ad96-119ce94c90c9",
+      "f8247779-8d21-48b7-b190-b9aa6b1abc84",
+      "27692e71-13f4-4d2a-ba90-0a444f5abf72",
+      "fb5b7fef-f2fd-43f1-8707-da0e128406e5",
+      "7cdce15c-1a60-4a11-8c88-fb675b3fab3b",
+      "4c6a934c-408b-4889-b764-051658bb1cd2",
+      "4d875cb8-eb31-4e67-ade8-30558bb809e6",
+      "410d9182-2f29-44a6-afce-25705bd02d1e",
+      "60ed3ab0-44f3-48bd-9380-267eedad83a3",
+      "4682ee37-66e5-4a9c-884a-ad63c46925b3",
+      "3b26cbdf-f7a5-4768-a31c-2c67e75f4b16",
+      "8baccf91-f8ee-4c82-a673-7aaa9765b560",
+      "db0498f3-0565-46fd-9002-d5538bcc628f",
+      "7afdfd08-248a-4efb-8c42-8d9bdfb957cc",
+      "e838a13c-d9f8-4b31-8992-28d4e99799d3",
+      "0809c775-ca02-42af-abf1-59ada88079db",
+      "1d16912c-0d98-45ec-9872-0e433fc2d611",
+      "89368cc6-40c5-4bc7-8127-cb6cda97dd6f",
+      "e4b50b8c-37a4-4db6-b86b-907c413c9877",
+      "6134d749-d7e9-4f9c-b4a8-0a14673d89eb",
+      "3eaca77e-8f1e-499c-8a56-826dbf71e229",
+      "9cb48f8b-31b4-4142-b846-8aaf2896322f",
+      "8c8ea54d-d3bc-4bbf-b59d-354e6d92dc79"
+    ],
+    "history_rounds": 30,
+    "final_run_id": "0255cbc9-ffb4-4c78-94f7-0cf97e245520",
+    "raw_material_measurement": {
+      "characters": 41104,
+      "utf8_bytes": 103678,
+      "current_estimator_tokens": 33682,
+      "sha256": "685970ad2297d853771ee6a94d2128e4ff62cc841f35ce6d21e3e8eb8744d45e",
+      "messages": 61,
+      "tool_role_scenario_records": 0,
+      "expanded_input_matches": true,
+      "recorded_long_input_measurement_matches": true
+    },
+    "raw_is_not_compiled_pressure": true,
+    "early_read_run_ids": [
+      "ce64b919-92ae-4da4-9180-30d7612ed7f6",
+      "ca605521-cefe-4d46-91a2-a799d5c66b3e"
+    ],
+    "history_selector_basis": "scripted native ancestor; cursor selection quality not scored",
+    "controlled_read_bindings": [
+      {
+        "kind": "read",
+        "step": "tools",
+        "tool": "conversation.history",
+        "graph": "xiaopai",
+        "run_id": "0255cbc9-ffb4-4c78-94f7-0cf97e245520",
+        "call_key": "agent:0255cbc9-ffb4-4c78-94f7-0cf97e245520:model:10724e2f-ad83-41b3-a5d2-115097902cc4:0",
+        "isolation": "main",
+        "read_kind": "ordinary/v1",
+        "tenant_id": "9df64e88-7ad2-4872-9d91-8ad86be16b83",
+        "writer_id": "5921be04-881d-450a-906e-68eeee928a0a",
+        "product_id": null,
+        "session_id": "7ccd6da0-d8f5-44f8-8ff5-284dbf6df192",
+        "category_id": "17f7cfd8-e112-4886-b729-080bffdbdbd4",
+        "proposal_id": null,
+        "cancel_epoch": 0,
+        "requester_id": "11795951-1801-4f62-a6c0-38bca22ceb41",
+        "model_call_id": "10724e2f-ad83-41b3-a5d2-115097902cc4",
+        "model_version": "synthetic@1",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "proof_version": 1,
+        "response_index": 0,
+        "data_categories": [
+          "internal"
+        ],
+        "private_context": false,
+        "model_route_digest": "5c9c3ea0faff3e8ab855cfc882b2771bde67ccad49ce50274e515a4a71f03aa1",
+        "customer_identities": [],
+        "tool_definitions_digest": "82f3c51787e641bc5675b855176705e5be0791ba91616f1cb6bbc642a0ab2dcc"
+      }
+    ]
+  },
+  "model_quality_score": null,
+  "not_scored": [
+    "answer_correctness",
+    "citation_semantics",
+    "real_usage_latency_cost"
+  ],
+  "binding_limitations": [],
+  "usage_basis": "unmeasured_scripted_zero_only"
+}

@@ -1,0 +1,15 @@
+{
+  "pdos-next/web/src/app/ui-lab/platform/pai-candidate-shell.tsx": "94184460ce989a6291d5f2221cbfa6e692dd0a49a39dc0cc88089b653a5a897a",
+  "pdos-next/web/src/app/ui-lab/platform/proposal-pai-draft.ts": "e2a73dfce74cb463b94789bcdb929c3c202128d8d4031bf73b5d77cf66ead2a9",
+  "pdos-next/web/src/app/ui-lab/platform/proposal-pai-preview.tsx": "2ef2a5055065ec1b2f8e26c8761a9ff8c12b2d1de63efda7ced589da97e1219e",
+  "pdos-next/web/src/app/ui-lab/platform/product-preview-state.ts": "6758d113b128e69f4a1e0d92ebec9bffc673e0aee279e31b31dd2259d97bfa5f",
+  "pdos-next/web/src/app/ui-lab/platform/pai-preview-state.ts": "30d1adbba9685c97e0d072b8ac6204af426f53586e67f1e1b70c051ccfd894ea",
+  "pdos-next/web/src/app/ui-lab/platform/product-preview.tsx": "22a8c29194f27a00f7aa2da39391e9b5a54c6b8e454a0ee3c034dc7ccdc7baa4",
+  "pdos-next/web/src/app/ui-lab/platform/product-preview.module.css": "9db340d57672a7fa8f766fd59488cf84a3907f55383d1df1458f2104b51e05f3",
+  "pdos-next/web/src/app/ui-lab/platform/platform-preview.tsx": "786b59af730047f77215e56f0bfa139f592f8cf3900449604cd42fe9412b5341",
+  "pdos-next/web/src/app/ui-lab/platform/pai-preview.tsx": "8bc45429ff6957da594afb12aa541b1a46d8ce7d7f84edd8503700ee40879493",
+  "pdos-next/web/src/app/ui-lab/platform/category-pai-preview.tsx": "04db18d20552c3824d884a548628f241d66aa0384abf3bef32a4ab2ac26d3bf0",
+  "pdos-next/web/src/app/ui-lab/platform/catalog-pai-preview.tsx": "01fdab2e2fff6156af5347a239617879e1f0cbf5747f1579f184df43fa0c406f",
+  "pdos-next/web/src/app/ui-lab/platform/category-pai.module.css": "983cde46e0b355b5347b7657744820bab5048fd584a2803a7550c47af784f879",
+  "pdos-next/web/src/app/ui-lab/platform/pai-preview.module.css": "a93406811c69c2e4bbb40cacc2592b9a388cfdc91af976d5a320dd0b6b06d382"
+}

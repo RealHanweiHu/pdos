@@ -1,0 +1,31 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_unreadable_knowledge_is_removed_before_limit_and_truncation_without_reindex _
+
+setup = <isolated synthetic test scope>
+
+    def test_unreadable_knowledge_is_removed_before_limit_and_truncation_without_reindex(setup):
+>       visible = indexed_knowledge(setup, reference(register(setup, "有效依据", "漏气处理。")),
+                                    definition="漏气有效记录，核对密封圈。")
+
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = <isolated synthetic test scope>
+ref = {'type': 'artifact', 'id': 'd6429592-8a67-423a-81d1-51e70ad3886d', 'version': 1}
+definition = '漏气有效记录，核对密封圈。'
+
+    def indexed_knowledge(setup, ref, *, definition="漏气处理：更换密封圈。原知识说明。"):
+        response = post(setup, request(setup, "category.knowledge.add", {
+            "kind": "boundary", "content": {"definition": definition},
+            "source_refs": [ref],
+        }))
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"引用须为指定行的逐字片段。","detail":{"reason":"quote_not_in_source"}}
+E       assert 409 == 200
+E        +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/enterprise_search/test_knowledge_dependencies_pg.py:46: AssertionError
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_unreadable_knowledge_is_removed_before_limit_and_truncation_without_reindex
+1 failed in 3.27s

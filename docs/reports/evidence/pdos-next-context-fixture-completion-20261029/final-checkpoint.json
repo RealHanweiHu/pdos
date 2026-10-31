@@ -1,0 +1,248 @@
+{
+  "version": "context-fixture-focused-checkpoint/v1",
+  "recorded_at_utc": "2026-10-30T09:35:00.888159+00:00",
+  "status": "four_focused_checks_passed_with_explicit_scenario_gaps",
+  "candidate_dir": "native-normalized-20261030",
+  "scope": "new candidate four focused native tests only; old 24-cell statistics remain historical and unchanged",
+  "native_result": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "pytest_elapsed_seconds": 442.56,
+    "junit_suite_seconds": 442.505,
+    "warnings": 58,
+    "log": "native-normalized-20261030/native.log",
+    "xml": "native-normalized-20261030/tests.xml"
+  },
+  "end_of_run_input_verification": {
+    "inputs": 127,
+    "all_sha256_unchanged": true,
+    "verified_at_utc": "2026-10-30T09:32:16.540422+00:00",
+    "actual_native_dir": "native-normalized-20261030",
+    "actual_native_passed": 4
+  },
+  "frozen_inputs_manifest": "frozen-inputs.json",
+  "review_method": {
+    "CTX09": "Independent stdlib decoding of actual provider tool deliveries and original call ledger; validate exact canonical refs, handle digest/origin, original JSON prefix complete-object counts, actual cursor chaining and failed-call null results. No fixture helper imported.",
+    "CTX12": "Independent reconstruction of frozen question bodies; union recorded native locator intervals and cross-check passage call IDs/hash/revision/isolation plus issued citation metadata; completed budget records and real stop fields recomputed. No production helper/scorer imported.",
+    "limitation": "CTX12 evidence records locators and read-call metadata, while body equality to actual source text was asserted by the passed native test; no new database read performed by reviewer."
+  },
+  "ctx09": [
+    {
+      "focus": 48000,
+      "observation": "native-normalized-20261030/CTX-09-F48000.json",
+      "status": "native_mechanics_and_cursor_coverage_passed_single_binding_unbound",
+      "native_binding_status": "partial",
+      "distinct_current_directory_objects": 9,
+      "current_entry_version": 2,
+      "canonical_exact_artifact_reference_count": 6,
+      "metadata_only_unknown_body_ordinals": [
+        7,
+        8,
+        9
+      ],
+      "mechanical_handle_origin_items": 1,
+      "mechanical_handle_read_pages": [
+        1,
+        2
+      ],
+      "mechanical_handle_total_pages": 3,
+      "mechanical_complete_objects_after_each_delivery": [
+        0,
+        0
+      ],
+      "mechanical_read_characters": 7751,
+      "mechanical_total_characters": 11111,
+      "same_handle_digest_and_origin_recheck_verified": true,
+      "page3_failed_result": null,
+      "page3_error": "SOURCE_UNAVAILABLE",
+      "natural_delivery_format": "complete_json",
+      "natural_complete_objects_after_each_delivery": [
+        9
+      ],
+      "independent_cursor_complete_objects_after_each_delivery": [
+        3,
+        6
+      ],
+      "independent_cursor_missing_ordinals": [
+        7,
+        8,
+        9
+      ],
+      "independent_cursor_source_recheck_count": 1,
+      "three_controls_use_distinct_runs": true,
+      "same_binding_three_then_six_of_nine": false,
+      "provider_dispatches": 10,
+      "model_quality_score": null
+    },
+    {
+      "focus": 64000,
+      "observation": "native-normalized-20261030/CTX-09-F64000.json",
+      "status": "native_mechanics_and_cursor_coverage_passed_single_binding_unbound",
+      "native_binding_status": "partial",
+      "distinct_current_directory_objects": 9,
+      "current_entry_version": 2,
+      "canonical_exact_artifact_reference_count": 6,
+      "metadata_only_unknown_body_ordinals": [
+        7,
+        8,
+        9
+      ],
+      "mechanical_handle_origin_items": 1,
+      "mechanical_handle_read_pages": [
+        1,
+        2
+      ],
+      "mechanical_handle_total_pages": 3,
+      "mechanical_complete_objects_after_each_delivery": [
+        0,
+        0
+      ],
+      "mechanical_read_characters": 7751,
+      "mechanical_total_characters": 11111,
+      "same_handle_digest_and_origin_recheck_verified": true,
+      "page3_failed_result": null,
+      "page3_error": "SOURCE_UNAVAILABLE",
+      "natural_delivery_format": "complete_json",
+      "natural_complete_objects_after_each_delivery": [
+        9
+      ],
+      "independent_cursor_complete_objects_after_each_delivery": [
+        3,
+        6
+      ],
+      "independent_cursor_missing_ordinals": [
+        7,
+        8,
+        9
+      ],
+      "independent_cursor_source_recheck_count": 1,
+      "three_controls_use_distinct_runs": true,
+      "same_binding_three_then_six_of_nine": false,
+      "provider_dispatches": 10,
+      "model_quality_score": null
+    }
+  ],
+  "ctx12": [
+    {
+      "focus": 48000,
+      "observation": "native-normalized-20261030/CTX-12-F48000.json",
+      "status": "CONTEXT_INCOMPLETE",
+      "native_binding_status": "partial",
+      "binding_variant": "category_scoped_read_without_fixed_pins",
+      "distinct_sources": 8,
+      "body_chars_each": 4695,
+      "actual_body_union_chars_total": 37560,
+      "all_actual_source_body_unions_complete": true,
+      "passage_reads": 32,
+      "native_artifact_revision": 1,
+      "history_issued_citations": 8,
+      "final_issued_citations": 16,
+      "final_distinct_sources": 8,
+      "final_citation_channels": [
+        "exact_code"
+      ],
+      "completed_dispatches": 54,
+      "completed_main_budget_records": 6,
+      "completed_extract_budget_records": 48,
+      "admission_stops": [
+        {
+          "focus": 48000,
+          "window": 54048,
+          "admission_tokens": 48379,
+          "isolation": "main"
+        }
+      ],
+      "completed_extraction_ranges_at_low_stop": 8,
+      "final_answer_control_completed": false,
+      "pressure_comparison": null,
+      "model_quality_score": null
+    },
+    {
+      "focus": 64000,
+      "observation": "native-normalized-20261030/CTX-12-F64000.json",
+      "status": "native_control_checks_passed",
+      "native_binding_status": "bound",
+      "binding_variant": "category_scoped_read_without_fixed_pins",
+      "distinct_sources": 8,
+      "body_chars_each": 4695,
+      "actual_body_union_chars_total": 37560,
+      "all_actual_source_body_unions_complete": true,
+      "passage_reads": 32,
+      "native_artifact_revision": 1,
+      "history_issued_citations": 8,
+      "final_issued_citations": 16,
+      "final_distinct_sources": 8,
+      "final_citation_channels": [
+        "exact_code"
+      ],
+      "completed_dispatches": 55,
+      "completed_main_budget_records": 7,
+      "completed_extract_budget_records": 48,
+      "admission_stops": [],
+      "completed_extraction_ranges_at_low_stop": null,
+      "final_answer_control_completed": true,
+      "pressure_comparison": "not_triggered",
+      "model_quality_score": null
+    }
+  ],
+  "fixture_repairs": {
+    "scope": "fixture-only references/directory creation and strict assertions; no production permission relaxation",
+    "source_sha256": {
+      "pdos-next/server/tests/agent_kernel/eval_v0_ctx09_directory_support.py": "2754b2e786377b586e799246d0cd1a102f9c97298f18e1015a410f353607cb81",
+      "pdos-next/server/tests/agent_kernel/test_eval_v0_handle_candidate_pg.py": "67ef95b6522a3762e727a8836ec610e44b13d42431271af8a4deae3246b9508c"
+    },
+    "pure_passed": 3,
+    "ruff_passed": true
+  },
+  "historical_failed_runs": [
+    {
+      "path": "native-live/native.log",
+      "reason": "private_source_in_shared; invalid source type for shared knowledge"
+    },
+    {
+      "path": "native-final/native.log",
+      "reason": "material_version_moved; identical placeholder intent deduplicated to a lineage, then supersedes conflicted"
+    },
+    {
+      "path": "native-distinct-20261030/native.log",
+      "reason": "full source_refs equality failed because five-field fixture omitted Reference statement:null default"
+    }
+  ],
+  "remaining_gaps": [
+    "CTX09 two budgets remain partial: same READ/handle does not establish directory objects 3 then 6/9.",
+    "CTX12 F48000 retains CONTEXT_INCOMPLETE after admission 48379 exceeds focus 48000; final answer not completed.",
+    "CTX12 F64000 bound is scripted native control flow, not answer/citation quality or real model success.",
+    "Existing fixed-pins state-cap diagnostic is a separate binding and remains unchanged.",
+    "No pressure-benefit result; high focus pressure comparison not_triggered."
+  ],
+  "old_24_cell_statistics_rewritten": false,
+  "reviewer_external_actions": {
+    "database_connections": 0,
+    "model_calls": 0,
+    "embedding_calls": 0,
+    "network_calls": 0
+  },
+  "reviewer_source_edits_this_review": false,
+  "reviewer_document_writes": [
+    "result.md",
+    "final-checkpoint.json"
+  ],
+  "evidence_sha256": {
+    "frozen-inputs.json": "1a12b8d8d7f4a9f1910a585a6eef23ecda33a14e66f53c094b15f3fd5d81b8b4",
+    "native-final-input-verification.json": "c6f86fc6355c49482a415d6c5f91b4d39e1e9c793702ffc6f58823e7fb25521f",
+    "reference-normalization-pure.log": "c3acede5b83517493a3e37acf13a27fea78b785b8bacbcec5eff4fbd78a94ac1",
+    "reference-normalization-pure.xml": "8a6a4e0d2b5a03d7065418645d407db3e6ff23305e377a40379e27421aa078d3",
+    "reference-normalization-ruff.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "native-live/native.log": "a87ad9e07fcf3d37435d40dcb43f789d5c1b010049d6ed712189714f53e2e66d",
+    "native-final/native.log": "88a716d754ae812bdb60529fe051f16d3b6ae1091237a365693e938272948da4",
+    "native-distinct-20261030/native.log": "958df75975d575da76d065a791cfe777522f61e4e36f107bddc005d051004b66",
+    "native-normalized-20261030/invocation.json": "2451fd13fdfaa3231b76c2c5e13698f749c582089adb1d21d24497be0329c48b",
+    "native-normalized-20261030/native.log": "3da602980202fe43c83cc667f867c0a3b247f690dc141d77ad065f4447e7e170",
+    "native-normalized-20261030/tests.xml": "105cb416d560ddc18e30a518d31446d6866cc1a7944b86786505e763a31df61c",
+    "native-normalized-20261030/CTX-09-F48000.json": "805439a28a53dd185948d117cc5c7d4ab511c16f7b8eba8ba24ffdddb399d984",
+    "native-normalized-20261030/CTX-09-F64000.json": "e87870c489844d276988eaa165f3b0260fed1a84d886e5f229bc8d699fa5686d",
+    "native-normalized-20261030/CTX-12-F48000.json": "ff144cd882fb23be0d80e4f55ae55e4f146cf1e5ee8ab5445e64b6c2e30ad01e",
+    "native-normalized-20261030/CTX-12-F64000.json": "bb7623c218c45a05431bdec6304e4461c588f91c16544408853a1b760e97bbc0"
+  }
+}

@@ -1,0 +1,90 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 6 items
+
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_task_follows_real_answer_clarification_native_create_assign_and_fresh_work_state[setup0] PASSED [ 16%]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_uncited_private_parent_source_blocks_shared_task_before_new_run[setup0] PASSED [ 33%]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_explicit_child_read_of_new_private_b_cannot_enter_a_shared_task_candidate[setup0] PASSED [ 50%]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_native_original_withdrawal_blocks_the_already_prepared_human_create[setup0] PASSED [ 66%]
+tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0] ERROR [ 83%]
+
+==================================== ERRORS ====================================
+_ ERROR at setup of test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0] _
+file /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/test_action_taint_temporal_pg.py, line 47
+  def test_uncited_parent_customer_original_classifies_private_child_before_real_egress(
+file /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/verification_negative_fixture.py, line 37
+  @pytest.fixture
+  def private_action_work(ready_work):
+file /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/build_start/test_transactions.py, line 153
+  @pytest.fixture
+  def ready_work(operational_work):
+file /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/build_operational_facts/fixtures.py, line 187
+  @pytest.fixture
+  def operational_work(setup, known_configuration):
+E       fixture 'known_configuration' not found
+>       available fixtures: anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, configuration, definition, doctest_namespace, engines, free_tcp_port, free_tcp_port_factory, free_udp_port, free_udp_port_factory, monkeypatch, operational_work, private_action_work, project, pytestconfig, ready_work, record_property, record_testsuite_property, record_xml_attribute, recwarn, security_work, setup, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/build_operational_facts/fixtures.py:187
+=============================== warnings summary ===============================
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_task_follows_real_answer_clarification_native_create_assign_and_fresh_work_state[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_uncited_private_parent_source_blocks_shared_task_before_new_run[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_explicit_child_read_of_new_private_b_cannot_enter_a_shared_task_candidate[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_native_original_withdrawal_blocks_the_already_prepared_human_create[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_work_followup_temporal_pg.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_task_follows_real_answer_clarification_native_create_assign_and_fresh_work_state[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_uncited_private_parent_source_blocks_shared_task_before_new_run[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_explicit_child_read_of_new_private_b_cannot_enter_a_shared_task_candidate[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_native_original_withdrawal_blocks_the_already_prepared_human_create[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_task_follows_real_answer_clarification_native_create_assign_and_fresh_work_state[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_uncited_private_parent_source_blocks_shared_task_before_new_run[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_explicit_child_read_of_new_private_b_cannot_enter_a_shared_task_candidate[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_native_original_withdrawal_blocks_the_already_prepared_human_create[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_task_follows_real_answer_clarification_native_create_assign_and_fresh_work_state[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_uncited_private_parent_source_blocks_shared_task_before_new_run[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_explicit_child_read_of_new_private_b_cannot_enter_a_shared_task_candidate[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_native_original_withdrawal_blocks_the_already_prepared_human_create[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_task_follows_real_answer_clarification_native_create_assign_and_fresh_work_state[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_uncited_private_parent_source_blocks_shared_task_before_new_run[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_explicit_child_read_of_new_private_b_cannot_enter_a_shared_task_candidate[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_native_original_withdrawal_blocks_the_already_prepared_human_create[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_task_follows_real_answer_clarification_native_create_assign_and_fresh_work_state[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_uncited_private_parent_source_blocks_shared_task_before_new_run[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_explicit_child_read_of_new_private_b_cannot_enter_a_shared_task_candidate[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_native_original_withdrawal_blocks_the_already_prepared_human_create[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_task_follows_real_answer_clarification_native_create_assign_and_fresh_work_state[setup0]
+tests/enterprise_search/test_work_followup_temporal_pg.py::test_task_follows_real_answer_clarification_native_create_assign_and_fresh_work_state[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/work_management/service.py:388: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-work-followup-20261029/pg-work-taint-final-run1.xml -
+=========================== short test summary info ============================
+ERROR tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+============= 4 passed, 38 warnings, 1 error in 290.87s (0:04:50) ==============

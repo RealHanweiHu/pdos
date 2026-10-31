@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Desktop controls and density",
+    "pass": true
+  },
+  {
+    "name": "Trimmed task search returns matching NPI task",
+    "pass": true
+  },
+  {
+    "name": "Clear restores all tasks and returns focus to search",
+    "pass": true
+  },
+  {
+    "name": "Owner filter retains three matching tasks",
+    "pass": true
+  },
+  {
+    "name": "Search empty recovery is visible",
+    "pass": true
+  },
+  {
+    "name": "Escape clears search without clearing owner filter",
+    "pass": true
+  },
+  {
+    "name": "Combined owner and source filters",
+    "pass": true
+  },
+  {
+    "name": "Board view retains NPI and extra tasks",
+    "pass": true
+  },
+  {
+    "name": "390px layout keeps controls within page and rows at 44px",
+    "pass": true
+  },
+  {
+    "name": "320px layout has no page overflow",
+    "pass": true
+  },
+  {
+    "name": "1024px toolbar wraps into intentional groups without overlap",
+    "pass": true
+  },
+  {
+    "name": "NPI detail retains deliverables and fixed template phase",
+    "pass": true
+  },
+  {
+    "name": "Extra task creation preserves long title with compact single-line rendering",
+    "pass": true
+  },
+  {
+    "name": "Offline preview still prevents new task writes",
+    "pass": true
+  }
+]

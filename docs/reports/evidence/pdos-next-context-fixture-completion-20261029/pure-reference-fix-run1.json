@@ -1,0 +1,20 @@
+{
+  "argv": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "../tools/tests/test_xiaopai_context_admission.py",
+    "tests/agent_kernel/test_eval_v0_handle_candidate_pg.py",
+    "tests/enterprise_search/test_eval_v0_source_context_pg.py",
+    "-k",
+    "not test_ctx09_native_handle_page2_then_same_handle_page3_failure and not test_ctx11_native_corrected_candidate_preserves_old_pending_without_business_receipt and not test_eval_v0_native_source_context_admission"
+  ],
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+  "started_at": "2026-10-29T23:05:19.802604+00:00",
+  "finished_at": "2026-10-29T23:05:26.212734+00:00",
+  "exit_code": 0,
+  "stdout_log": "pure-reference-fix-run1.log",
+  "stdout_sha256": "8e9742ad27e71dcc705c85f0b60db877db6cc893efc0d675aaa4297856227d38",
+  "scope": "pure tests, collection or static lint only; no native execution, DB, server, Temporal or real model"
+}

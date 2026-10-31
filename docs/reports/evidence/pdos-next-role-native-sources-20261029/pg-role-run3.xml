@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="47.476" timestamp="2026-10-29T07:24:37.387192-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_manufacturing_document_sources_pg" name="test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity" time="46.557"><failure message="AssertionError: {&quot;code&quot;:&quot;FORBIDDEN_SCOPE&quot;,&quot;message&quot;:&quot;续版不能改变原owner、受众、用途或制造工序系列。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;FORBIDDEN_SCOPE&quot;}}">publication_case = namespace(setup=&lt;isolated synthetic test scope&gt;, config={'source': '119d8592-88cc-471d-a104-201157db1b94', 'project': ...930-554fe11e44f3', 'manufacturing_release': None, 'qualification': 'unknown', 'negative_enumeration_complete': False}})
+
+    def test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity(
+        publication_case,
+    ):
+        work, person = publication_case, publication_case.setup
+        publication.import_authority(work, person.human)
+        publication.save_drafts(work)
+        first = work.documents["work_instruction"]
+        for kind in ("work_instruction", "control_plan"):
+            assert apply_event(person, work.draft_receipts[kind]["id"])["processed"] == 1
+        command, _review = publication.prepare_publication(work, publication.publication_payload(work))
+        response = publication.post(person, command)
+        assert response.status_code == 200, response.text
+        receipt = response.json()
+        assert apply_event(person, receipt["id"])["processed"] == 2
+        with publication.session(work) as session:
+            links = list(
+                session.scalars(
+                    select(ManufacturingPublicationDocument).where(
+                        ManufacturingPublicationDocument.publication_id == UUID(receipt["subject_id"]),
+                    )
+                )
+            )
+            fixed = next(row for row in links if row.document_kind == "work_instruction")
+            identity, revision = fixed.id, fixed.publication_revision
+        replacement, replacement_receipt, next_draft = save(
+            work,
+&gt;           preparation.inputs(
+                work,
+                "work_instruction",
+                preparation.payload(
+                    work,
+                    "work_instruction",
+                    previous=first,
+                    revision=2,
+                ),
+            ),
+        )
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = namespace(setup=&lt;isolated synthetic test scope&gt;, config={'source': '119d8592-88cc-471d-a104-201157db1b94', 'project': ...930-554fe11e44f3', 'manufacturing_release': None, 'qualification': 'unknown', 'negative_enumeration_complete': False}})
+kind = 'work_instruction'
+body = {'project_id': '377a1b1a-1134-4ea4-a82b-b8c727a20fad', 'process': {'id': '2482ef77-21cb-432d-9d73-0ffb0e723867', 'revi...': 1}, 'title': 'Synthetic work_instruction documentation', 'previous_id': '1743a252-928a-4cc4-aa55-dae0c659f5db', ...}
+
+    def inputs(work, kind, body):
+        setup = work.setup
+        command = cmd(setup, f"npi.{kind}.record", deepcopy(body))
+        before = deepcopy(command)
+        response = setup.client.post(
+            f"/v1/categories/{setup.category}/products/{setup.product}/manufacturing-preparations/inputs",
+            headers=setup.headers,
+            json=command,
+        )
+&gt;       assert response.status_code == 200, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"code":"FORBIDDEN_SCOPE","message":"续版不能改变原owner、受众、用途或制造工序系列。","detail":{"reason":"FORBIDDEN_SCOPE"}}
+
+tests/manufacturing_preparation_transactions/fixtures.py:346: AssertionError</failure></testcase></testsuite></testsuites>

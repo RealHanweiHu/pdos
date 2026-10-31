@@ -1,0 +1,29 @@
+✔ before deep starts the UI names the actual scope, sources and longer effort without inventing an ETA (6.486208ms)
+✔ deep click delegates one native deep continuation with no extra confirmation (3.469ms)
+✔ exclusion waits for current state and actual feedback identity before collapsing (1.88875ms)
+✔ a later restored exclusion is read back and never re-collapsed from an old replay response (0.799666ms)
+✔ source cards collapse with original quotes and anchors intact and restore from current props (1.807416ms)
+✔ native journal preserves deep after a lost response, replays exact body and opens actual next Run (4.762792ms)
+✔ reload restores deep journal and an already accepted continuation opens with zero repost (1.164292ms)
+✔ native deep actions strip picker titles and preserve fixed selected versions (2.521916ms)
+✔ personal deep follows its actual native endpoint and journal without copying project scope (2.500417ms)
+✔ SSR is a small explicit chooser and never reads, corrects or starts automatically (5.719375ms)
+✔ a readable single choice is displayed, fixed, saved, reread and natively continued once (6.913834ms)
+✔ lost correction response retries the original Human key and does not start early (2.101375ms)
+✔ a later Human clear wins over an older replay and no continuation is posted (1.739375ms)
+✔ verification continuation recovery retains only the exact project selection and original read versions (1.173792ms)
+✔ recovery retains the original human lookup choice and rejects untyped authority fields (0.137417ms)
+✔ short greetings can recover while blank goals stay invalid (0.129ms)
+✔ restoring a start preserves the exact goal, intent and proposal without executing (0.168292ms)
+✔ local recovery cannot substitute another operation, proposal or policy context (0.119ms)
+✔ project start recovery retains its original project and product and rejects another page (0.082ms)
+✔ unknown skill selection restores its exact version without accepting extra authority (0.245209ms)
+✔ explicit deep and correction continuation restore their original closed requests (0.223208ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 566.73125

@@ -1,0 +1,16 @@
+✔ missing command port disables settings and does not fabricate saved configuration (10.811542ms)
+✔ non administrators cannot edit even when callbacks are supplied (1.533541ms)
+✔ masked configured state and authorizer readiness do not claim active model calls (1.373ms)
+✔ pending parent command locks edits and keeps only one preview entry (1.227625ms)
+✔ unknown or mismatched readiness stays unavailable and cannot echo secret errors (0.139542ms)
+✔ invalid numeric input is rejected before requesting a preview (0.132584ms)
+✔ input labels have unique accessible ids with both explicit protocol choices (1.53275ms)
+✔ provider creation exposes direct password entry with no stored key echo (1.911459ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 578.737375

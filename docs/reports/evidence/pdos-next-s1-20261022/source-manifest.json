@@ -1,0 +1,23 @@
+{
+  "head_at_capture": "67e2650e9fabc21161212f22b9546bf800e60043",
+  "files": {
+    "pdos-next/server/migrations/versions/s0_0812_pilot_g0_self_review.py": "37f9a24e3b9421e26b5a15ac2110574ae2936bdaaa6dd81beceae85a567beb79",
+    "pdos-next/server/pdos_next/domain/preproject/service.py": "24f533bcc0cdba6e950198505d618ee5097d965c4ffc0dc63fed88c219d87174",
+    "pdos-next/server/pdos_next/domain/preproject/api.py": "28ccac4785f0b49c391c3691b7810f2ba48634312e1b73f738f4df55e70c0f9f",
+    "pdos-next/server/pdos_next/domain/preproject/models.py": "e254004d7dededbf5b510eac2b1cc71dc67ea0d79b95d211845f00c8410e462c",
+    "pdos-next/server/pdos_next/domain/preproject/provenance.py": "6fde3476245c208983ca820aba4459f28a6214e2c3f6bd85720289dfaa4c29ff",
+    "pdos-next/server/pdos_next/providers/agent_client.py": "24506733988a2f404c37d5c6b7116c55a2565a1f370c051e6ea1fdfa00c14ce0",
+    "pdos-next/server/tests/preproject/test_g0.py": "58fa7f37298af063f997c17807cc0b6e15ff9314e2296cabd66af0f7749f1c66",
+    "pdos-next/server/tests/preproject/test_pilot_g0.py": "6a6c334ba170c3f1d699d5ecdf7f1d448274c2ef4c3510af187ceb2b4924d1fd",
+    "pdos-next/server/tests/preproject/test_review_fixes.py": "ff85e7aa8b9f05ae2de820e8b7122295d75687245e702ff00218a5597e06a31a",
+    "pdos-next/server/tests/agent_kernel/test_minimax_wire.py": "32526e5bfa59df6606e846f3bc65528a03a541e72b96b9306ce922e2d74e4ff3",
+    "pdos-next/web/src/components/preproject/proposal-document.tsx": "18330650838f57b4ca606024022ac09a5ddfc6d346e4ce26393573f9a3028cff",
+    "pdos-next/tools/acceptance_account.py": "76e18027a2cd81b0fcbe68527fa330b7b9eb54b08a6f2b7374eabae0856854d8",
+    "pdos-next/contracts/acceptance.json": "04478be94212d9e629d6938f63bbc30871e4169ae879f47a939915da4e55e2d4",
+    "pdos-next/contracts/operations.json": "d9094d5fb3497f1cc0d5eb1f61f0fafd20f3be5603c6bd4ce4b57dcff678cde9",
+    "pdos-next/contracts/events.json": "8905bc230f62961898d5ad7563484ef32dc001937a930ee8c942c4b09de0e935",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md": "3b2397ee3b36c738ce5eff1b900de6f00f7ed4ddd5063e6b82782fa8b76ac684",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md": "4c818de06a317ca5d13c2c6024847a84f02c87ba8d7d2ed25554ad052f125c65"
+  },
+  "scope": "Affected files only; not a claim of full repository validation"
+}

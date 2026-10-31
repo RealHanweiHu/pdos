@@ -1,0 +1,7 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "head": "s0_0829",
+  "existing_assistant_extract_calls": 69,
+  "downgrade_refused_before_ddl": true,
+  "history_rows_and_exact_guard_preserved": true
+}

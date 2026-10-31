@@ -1,0 +1,128 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 知识
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=6fa24f56-6650-4e57-9610-9a875785cb32&project=2053d8e3-3f53-4355-8638-ebe4ce65d0bd"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - link "项目":
+    - /url: "?area=projects"
+  - generic: Approved revision fixture
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - button "返回项目列表": Ap
+  - heading "Approved revision fixture" [level=1]
+  - button "阶段待确认":
+    - text: 阶段待确认
+  - generic: 负责人 Synthetic owner（本人）
+  - tablist "项目工作区视图":
+    - tab "概览"
+    - tab "任务"
+    - tab "计划"
+    - tab "文件"
+  - generic "更多项目视图":
+    - text: 更多
+  - tabpanel "更多项目视图":
+    - region "评审与交付":
+      - heading "评审与交付" [level=2]
+      - paragraph: 核对固定版本、用途、例外与专业结论，完成具名办理。
+      - navigation "评审与交付视图":
+        - button "发布与交付包"
+        - button "例外与专业决定" [pressed]
+        - button "外部移交"
+      - region "本项目固定发布包与专业决定":
+        - heading "固定发布包与专业决定" [level=2]
+        - button "刷新本页发布包"
+        - paragraph: 本页返回 1 条可读包版本，非项目总数。请选择固定版本后读取内容；系列当前头与专业决定分别核对。
+        - region "可选固定发布包版本":
+          - table:
+            - rowgroup:
+              - row "用途 / 固定版本 系列位置 包记录 / 适用性 读取":
+                - columnheader "用途 / 固定版本"
+                - columnheader "系列位置"
+                - columnheader "包记录 / 适用性"
+                - columnheader "读取"
+            - rowgroup:
+              - row "Verify preparation v1 f3880b4e-e87e-4b31-9c11-b795176bb29e 本系列当前头 已保存固定包 适用性未核对 读取发布包 f3880b4e-e87e-4b31-9c11-b795176bb29e v1":
+                - cell "Verify preparation v1 f3880b4e-e87e-4b31-9c11-b795176bb29e":
+                  - strong: Verify preparation
+                  - generic: v1
+                  - generic: f3880b4e-e87e-4b31-9c11-b795176bb29e
+                - cell "本系列当前头"
+                - cell "已保存固定包 适用性未核对":
+                  - text: 已保存固定包
+                  - generic: 适用性未核对
+                - cell "读取发布包 f3880b4e-e87e-4b31-9c11-b795176bb29e v1":
+                  - button "读取发布包 f3880b4e-e87e-4b31-9c11-b795176bb29e v1": 读取固定包
+        - button "回首页" [disabled]
+        - button "下一页发布包" [disabled]
+        - generic: 本页未提供下一页位置。
+        - paragraph: 尚未选择固定包，未读取包内容与专业决定。
+        - paragraph: 系列当前头不代表放行或批准；适用依据需重核不等于撤回。客户承认、外部接收与实际生效分别记录；此处不提供 DVT 或 G2 正式评审结论。
+      - button "维护记录与专业办理" [expanded] [active]:
+        - text: 维护记录与专业办理
+      - region "具名例外决定与撤回":
+        - heading "具名例外决定与撤回" [level=2]:
+          - text: 具名例外决定与撤回
+        - paragraph: 固定政策、双配置和检查范围，由本人一次确认；小Pai不能代签。
+        - button "刷新例外":
+          - text: 刷新例外
+        - button "新建例外草稿":
+          - text: 新建例外草稿
+        - text: 已保存例外决定
+        - combobox "已保存例外决定":
+          - option "明确选择一项实际记录" [selected]
+        - group "本次明确办理":
+          - generic: 本次明确办理
+          - text: 办理内容
+          - combobox "办理内容":
+            - option "本人具名例外决定" [selected]
+            - option "本人撤回所选原例外" [disabled]
+          - text: 实际已保存发布包
+          - combobox "实际已保存发布包":
+            - option "明确选择固定发布包" [selected]
+            - option "v1 · Verify preparation · f3880b4e-e87e-4b31-9c11-b795176bb29e"
+          - text: 高级材料 JSON
+          - textbox "高级材料 JSON":
+            - /placeholder: 选择固定包及原检查后，填写专业、适用范围、限制、风险控制、原件和理由
+          - generic "材料填写说明"
+        - button "读取并核对本次材料" [disabled]
+  - generic "项目资料与更多操作"
+- button "打开小Pai工作栏":

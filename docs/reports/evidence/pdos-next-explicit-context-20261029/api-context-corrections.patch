@@ -1,0 +1,28 @@
+--- a/pdos-next/server/pdos_next/agent_kernel/api.py
++++ b/pdos-next/server/pdos_next/agent_kernel/api.py
+@@ -40,6 +40,7 @@
+     search_preferences: SearchPreferences | None = None
+     verification_action: VerificationAction | None = None
+     lookup_depth: Literal["deep"] | None = None
++    context_revision: int | None = Field(default=None, ge=1, strict=True)
+ 
+ 
+ class AnswerInput(StrictModel):
+@@ -161,6 +162,7 @@
+                     | ({"search_preferences"} if data.search_preferences is None else set())
+                     | ({"verification_action"} if data.verification_action is None else set())
+                     | ({"lookup_depth"} if data.lookup_depth is None else set())
++                    | ({"context_revision"} if data.context_revision is None else set())
+                 ),
+             }
+         )
+@@ -225,6 +227,9 @@
+                 from .search_preferences import configure_start
+ 
+                 configure_start(s, ctx, row, data.search_preferences)
++                from .context_corrections import configure_start as configure_context_start
++
++                configure_context_start(s, ctx, row, data, effective, parent)
+             ref = reference(row, ctx)
+             value = {
+                 "run_id": str(row.id),

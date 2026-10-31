@@ -1,0 +1,16 @@
+{
+  "offline_export": true,
+  "route": "/v1/categories/{category_id}/model-connections",
+  "methods": [
+    "get",
+    "post"
+  ],
+  "schemas_updated": [
+    "AddConnection",
+    "ModelMetadata",
+    "PDOSFailure",
+    "Pricing"
+  ],
+  "command_metadata_has_no_api_key": true,
+  "input_key_write_only": true
+}

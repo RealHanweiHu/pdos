@@ -1,0 +1,177 @@
+E501 Line too long (105 > 100)
+   --> pdos-next/server/pdos_next/agent_kernel/work_products 2.py:153:80
+    |
+151 |             body = body.strip()
+152 |             if data.kind == "table" and not _has_markdown_table(body):
+153 |                 raise DomainError("VALIDATION_FAILED", "这段回复没有可核对的表格，请作为文档打开。", 422)
+    |                                                                                                     ^^^^^
+154 |             title = data.title.strip() if data.title else run.goal.split("\n", 1)[0].strip()[:200]
+155 |             if not title:
+    |
+
+E501 Line too long (109 > 100)
+   --> pdos-next/server/pdos_next/agent_kernel/work_products 2.py:157:101
+    |
+155 |             if not title:
+156 |                 title = "小Pai成果"
+157 |             request_sha256 = digest({"run_id": str(run.id), "kind": data.kind, "title": title, "body": body})
+    |                                                                                                     ^^^^^^^^^
+158 |             _lock(session, ctx, data.request_key)
+159 |             prior = _prior(session, ctx, data.request_key, request_sha256)
+    |
+
+E501 Line too long (102 > 100)
+   --> pdos-next/server/pdos_next/agent_kernel/work_products 2.py:200:101
+    |
+198 |                 .with_for_update()
+199 |             )
+200 |             if latest is None or latest.id != current.id or latest.revision != data.expected_revision:
+    |                                                                                                     ^^
+201 |                 raise DomainError("VERSION_CONFLICT", "成果已有新版本，请先读取后再编辑。")
+202 |             title = data.title.strip()
+    |
+
+E501 Line too long (102 > 100)
+   --> pdos-next/server/pdos_next/agent_kernel/work_products.py:192:101
+    |
+191 |                 body += "\n\n" + markdown(comparison)
+192 |             task_result = (run.result or {}).get("result", {}).get("assistant", {}).get("task_result")
+    |                                                                                                     ^^
+193 |             if isinstance(task_result, dict):
+194 |                 from pdos_next.enterprise_search.task_result import markdown as task_markdown
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos-next/server/tests/agent_kernel/test_execution_binding.py:3:1
+   |
+ 1 |   """Pure synthetic ledger/graph checks; no provider, PostgreSQL or qualification grant."""
+ 2 |
+ 3 | / from contextlib import contextmanager
+ 4 | | from copy import deepcopy
+ 5 | | from dataclasses import replace
+ 6 | | from types import SimpleNamespace
+ 7 | | from uuid import uuid4
+ 8 | |
+ 9 | | import httpx
+10 | | import pytest
+11 | | from langgraph.checkpoint.memory import InMemorySaver
+12 | | from pdos_agent_runtime.graph import registered_graph_context
+13 | |
+14 | | from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
+15 | | from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
+16 | | from pdos_next.agent_kernel.execution import (
+17 | |     finish_domain_call,
+18 | |     prepare_domain_call,
+19 | |     recover_domain_call,
+20 | |     validate_model_source,
+21 | |     validate_skill_load,
+22 | | )
+23 | | from pdos_next.agent_kernel.gateway import AgentGateway
+24 | | from pdos_next.agent_kernel.graph import AgentKernel
+25 | | from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall, TenantSkillEnablement
+26 | | from pdos_next.agent_kernel.persistence import KernelStore
+27 | | from pdos_next.agent_kernel.skills import SkillCatalog
+28 | | from pdos_next.agent_kernel.tools import default_registry
+29 | | from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+30 | | from pdos_next.errors import DomainError
+31 | | from pdos_next.models import Receipt, now
+32 | | from pdos_next.providers.agent_client import AgentProviderClient, tool_name
+33 | | from pdos_next.service import digest
+34 | | from tests.agent_kernel.test_gateway import configured_route
+35 | | from tests.agent_kernel.test_graph import Host, final, scope
+   | |____________________________________________________________^
+help: Organize imports
+   |
+13 |
+14 + from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
+15 | from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
+   - from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
+16 | from pdos_next.agent_kernel.execution import (
+   |
+
+E402 Module level import not at top of file
+   --> pdos-next/server/tests/agent_kernel/test_execution_binding.py:157:1
+    |
+157 | from pdos_next.agent_kernel.models import TenantPilotAdmission
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+158 | from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+    |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+   --> pdos-next/server/tests/agent_kernel/test_execution_binding.py:158:1
+    |
+157 | from pdos_next.agent_kernel.models import TenantPilotAdmission
+158 | from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: Move module level imports to top of file
+
+E501 Line too long (180 > 100)
+   --> pdos-next/server/tests/agent_kernel/test_execution_binding.py:200:101
+    |
+198 | …l.digest,
+199 | …
+200 | …c route"), protocol="openai-compatible", base_url="https://synthetic.invalid/v1", model="synthetic-model")
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+201 | …"}
+202 | …
+    |
+
+E501 Line too long (129 > 100)
+   --> pdos-next/server/tests/agent_kernel/test_execution_binding.py:233:101
+    |
+231 |         qualification_revoked=False, qualified_skill_version=skill.version,
+232 |         qualified_model_version=route.version, qualified_skill_digest=skill.digest,
+233 |         qualified_tool_digest=tool_identity(skill, registry), qualified_model_digest=model_identity(route), quality_paused=False,
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+234 |         review_case_refs=[str(uuid4()) for _ in range(10)],
+235 |         reviewed_by=actual.requester_id, reviewed_at=now(),
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> pdos-next/server/tests/agent_kernel/test_start_input.py:3:1
+  |
+1 |   """Short natural-language messages work; empty or oversized requests stay invalid."""
+2 |
+3 | / import pytest
+4 | | from pdos_next.agent_kernel.api import StartInput
+5 | | from pydantic import ValidationError
+  | |____________________________________^
+help: Organize imports
+  |
+3 | import pytest
+  - from pdos_next.agent_kernel.api import StartInput
+4 | from pydantic import ValidationError
+5 |
+6 + from pdos_next.agent_kernel.api import StartInput
+7 +
+8 |
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos-next/server/tests/test_scoped_dispatch.py:1:1
+   |
+ 1 | / from uuid import UUID
+ 2 | |
+ 3 | | import pytest
+ 4 | | from sqlalchemy import select, text
+ 5 | | from sqlalchemy.exc import DBAPIError
+ 6 | | from sqlalchemy.orm import Session
+ 7 | |
+ 8 | | from pdos_next.dispatch.outbox import acknowledge, claim_events, delivery_unknown
+ 9 | | from pdos_next.models import Inbox, Outbox
+10 | | from test_trusted_source_work import source
+   | |___________________________________________^
+help: Organize imports
+   |
+6  | from sqlalchemy.orm import Session
+7  + from test_trusted_source_work import source
+8  |
+9  | from pdos_next.dispatch.outbox import acknowledge, claim_events, delivery_unknown
+10 | from pdos_next.models import Inbox, Outbox
+   - from test_trusted_source_work import source
+11 |
+   |
+
+Found 11 errors.
+[*] 3 fixable with the `--fix` option.

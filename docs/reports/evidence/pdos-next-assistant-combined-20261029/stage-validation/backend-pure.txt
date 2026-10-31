@@ -1,0 +1,60 @@
+........................................................................ [ 12%]
+........................................................................ [ 24%]
+........................................................................ [ 37%]
+........................................................................ [ 49%]
+........................................................................ [ 62%]
+........................................................................ [ 74%]
+.......FFFFFF........................................................... [ 87%]
+........................................................................ [ 99%]
+..                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_network_guard_prevents_adapter_invocation_for_actual_registered_names[research.search] _
+/private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/tests/automations/test_runtime.py:267: in test_network_guard_prevents_adapter_invocation_for_actual_registered_names
+    host.read(SimpleNamespace(trigger=runtime.TRIGGER), SimpleNamespace(name=tool), {}, "call")
+/private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/pdos_next/agent_kernel/host.py:248: in read
+    if scope.isolation == "main" and spec.name in TOOLS:
+       ^^^^^^^^^^^^^^^
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'isolation'
+_ test_network_guard_prevents_adapter_invocation_for_actual_registered_names[research.read] _
+/private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/tests/automations/test_runtime.py:267: in test_network_guard_prevents_adapter_invocation_for_actual_registered_names
+    host.read(SimpleNamespace(trigger=runtime.TRIGGER), SimpleNamespace(name=tool), {}, "call")
+/private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/pdos_next/agent_kernel/host.py:248: in read
+    if scope.isolation == "main" and spec.name in TOOLS:
+       ^^^^^^^^^^^^^^^
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'isolation'
+_ test_network_guard_prevents_adapter_invocation_for_actual_registered_names[research.fanout] _
+/private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/tests/automations/test_runtime.py:267: in test_network_guard_prevents_adapter_invocation_for_actual_registered_names
+    host.read(SimpleNamespace(trigger=runtime.TRIGGER), SimpleNamespace(name=tool), {}, "call")
+/private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/pdos_next/agent_kernel/host.py:248: in read
+    if scope.isolation == "main" and spec.name in TOOLS:
+       ^^^^^^^^^^^^^^^
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'isolation'
+_ test_network_guard_prevents_adapter_invocation_for_actual_registered_names[mcp.tools.list] _
+/private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/tests/automations/test_runtime.py:267: in test_network_guard_prevents_adapter_invocation_for_actual_registered_names
+    host.read(SimpleNamespace(trigger=runtime.TRIGGER), SimpleNamespace(name=tool), {}, "call")
+/private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/pdos_next/agent_kernel/host.py:248: in read
+    if scope.isolation == "main" and spec.name in TOOLS:
+       ^^^^^^^^^^^^^^^
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'isolation'
+_ test_network_guard_prevents_adapter_invocation_for_actual_registered_names[mcp.read] _
+/private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/tests/automations/test_runtime.py:267: in test_network_guard_prevents_adapter_invocation_for_actual_registered_names
+    host.read(SimpleNamespace(trigger=runtime.TRIGGER), SimpleNamespace(name=tool), {}, "call")
+/private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/pdos_next/agent_kernel/host.py:248: in read
+    if scope.isolation == "main" and spec.name in TOOLS:
+       ^^^^^^^^^^^^^^^
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'isolation'
+_ test_network_guard_prevents_adapter_invocation_for_actual_registered_names[web.read] _
+/private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/tests/automations/test_runtime.py:267: in test_network_guard_prevents_adapter_invocation_for_actual_registered_names
+    host.read(SimpleNamespace(trigger=runtime.TRIGGER), SimpleNamespace(name=tool), {}, "call")
+/private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/pdos_next/agent_kernel/host.py:248: in read
+    if scope.isolation == "main" and spec.name in TOOLS:
+       ^^^^^^^^^^^^^^^
+E   AttributeError: 'types.SimpleNamespace' object has no attribute 'isolation'
+=========================== short test summary info ============================
+FAILED ../../../../private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/tests/automations/test_runtime.py::test_network_guard_prevents_adapter_invocation_for_actual_registered_names[research.search]
+FAILED ../../../../private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/tests/automations/test_runtime.py::test_network_guard_prevents_adapter_invocation_for_actual_registered_names[research.read]
+FAILED ../../../../private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/tests/automations/test_runtime.py::test_network_guard_prevents_adapter_invocation_for_actual_registered_names[research.fanout]
+FAILED ../../../../private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/tests/automations/test_runtime.py::test_network_guard_prevents_adapter_invocation_for_actual_registered_names[mcp.tools.list]
+FAILED ../../../../private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/tests/automations/test_runtime.py::test_network_guard_prevents_adapter_invocation_for_actual_registered_names[mcp.read]
+FAILED ../../../../private/tmp/pdos-assistant-combined-next-20261029/pdos-next/server/tests/automations/test_runtime.py::test_network_guard_prevents_adapter_invocation_for_actual_registered_names[web.read]
+6 failed, 572 passed in 41.56s

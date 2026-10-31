@@ -1,0 +1,12 @@
+{
+  "pdos-next/tools/comprehensive_preview.py": "f2ea170332a74ebd5d5f0c240e3a338503a6156241768cee37399cc690de9c10",
+  "pdos-next/server/pdos_next/agent_kernel/api.py": "012b45b2b9da224ecd4f6dbca269e9e47e4735047ab5377b53944db32516f985",
+  "pdos-next/server/pdos_next/agent_kernel/graph.py": "40be722120af0c64c838ddd8860b453274e4a6e6e882887edf52362084bec817",
+  "pdos-next/server/tests/agent_kernel/test_start_input.py": "7f173ec21f9cf50e14944b028bdd2aa3012ce88bee2c9f97f10d5066940ea147",
+  "pdos-next/server/tests/agent_kernel/test_graph.py": "7692b51f559d26463e35e277deec90636d2aa0336b61b52631fb96a78be10a85",
+  "pdos-next/web/src/components/xiaopai.tsx": "c13b1368ab54b9e4dba01896d64a8225f9ab02da1717295bb1b60ad1c770dac1",
+  "pdos-next/web/src/components/category-create/personal-xiaopai.tsx": "ef412777d6c9e94f840466e7dd321ac7edbd40a46dfcc300087accbd9190b63c",
+  "pdos-next/web/src/components/pai/run-continuation.tsx": "c4e92d2bd20aae02a10d4c5abc77b0ecda41befc5bf631700792e07176be92db",
+  "pdos-next/web/src/lib/run-start-intent.ts": "c92142610a083317517df6939a48e55ee6045ca3b9f947a81ab6d4cd52861b7e",
+  "pdos-next/web/src/lib/run-continuation.ts": "6317644a9feb9728ccd74c9a43f04d62cd54dc2dec2e67a3ba81d7a14571dec3"
+}

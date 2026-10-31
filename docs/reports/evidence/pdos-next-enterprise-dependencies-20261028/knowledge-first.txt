@@ -1,0 +1,47 @@
+F
+=================================== FAILURES ===================================
+__ test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body __
+tests/enterprise_search/test_knowledge_dependencies_pg.py:63: in test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body
+    owner, scope, adapter, client, _output, selected = knowledge(setup, {
+tests/enterprise_search/test_knowledge_dependencies_pg.py:46: in knowledge
+    output = execute(owner, scope, host)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_assistant_pg.py:179: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:729: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:291: in model
+    turn = ports.model(
+pdos_next/agent_kernel/host.py:119: in model
+    return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/gateway.py:271: in turn
+    raise DomainError(
+E   pdos_next.errors.DomainError: 原模型调用需对账。
+E   During task with name 'model' and id '4135c64c-96d3-2cf1-659f-a0b155b29432'
+=============================== warnings summary ===============================
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_knowledge_dependencies_pg.py::test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 1 warning in 6.05s

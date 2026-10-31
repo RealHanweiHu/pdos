@@ -1,0 +1,51 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____ test_query_count_is_constant_and_local_warm_latency_below_one_second _____
+
+setup = <isolated synthetic test scope>
+record_property = <function record_property.<locals>.append_property at 0x11c0237e0>
+
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+        for i in range(8):
+            index(setup, register(setup, f"D{i + 10}-01 复验", "气密性漏气问题，核对工况。"))
+        statements, durations = [], []
+    
+        def count(_conn, _cursor, statement, _parameters, _context, _executemany):
+            statements.append(statement)
+    
+        event.listen(setup.engine, "before_cursor_execute", count)
+        try:
+            for _ in range(12):
+                with session_for(setup, personal=True) as session:
+                    statements.clear()
+                    begin = time.perf_counter()
+                    result = search(
+                        session, replace(setup.ctx, category_id=None), SearchInput(query="漏气怎么复验")
+                    )
+                    durations.append(time.perf_counter() - begin)
+                    assert result["returned"] == 8
+                    # One local setting, dependency batch, combined page/health/time.
+                    assert len(statements) == 3, len(statements)
+        finally:
+            event.remove(setup.engine, "before_cursor_execute", count)
+        p95 = statistics.quantiles(durations, n=20)[18]
+        record_property("keyword_warm_p95_seconds", p95)
+        record_property("keyword_queries_per_request", 3)
+        record_property("keyword_source_count", 8)
+        record_property("keyword_samples", len(durations))
+>       assert p95 < 1.0
+E       assert 1.1087015750177671 < 1.0
+
+tests/enterprise_search/test_retrieval_pg.py:234: AssertionError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+  tests/enterprise_search/test_retrieval_pg.py:206: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+SQL_PROFILE {"tag": "set_jit", "samples": 12, "median_seconds": 0.0011025620042346418, "max_seconds": 0.0023642079904675484, "sql_chars": 17}
+SQL_PROFILE {"tag": "dependencies", "samples": 12, "median_seconds": 0.10015908349305391, "max_seconds": 0.2740624169819057, "sql_chars": 110453}
+SQL_PROFILE {"tag": "page_health", "samples": 12, "median_seconds": 0.6142865419969894, "max_seconds": 0.6517152079613879, "sql_chars": 120893}
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+1 failed, 1 warning in 17.47s

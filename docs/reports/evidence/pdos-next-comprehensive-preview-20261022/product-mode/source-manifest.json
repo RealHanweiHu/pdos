@@ -1,0 +1,33 @@
+{
+  "scope": "unified product preview; shared files may include concurrent work",
+  "files": [
+    {
+      "path": "pdos-next/web/src/app/page.tsx",
+      "sha256": "7cf759f55b2ea2fe60ca9f86ecd84ccb68154bcf4a73cbb14d078d0c3b1b7597"
+    },
+    {
+      "path": "pdos-next/web/src/app/preview/page.tsx",
+      "sha256": "9c69eb570b1f4633906c599273cbbef2b2cd580c0a371aa56e4650593ab2dd68"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/preview-session/route.ts",
+      "sha256": "ee6deebfb537d236dc4f2e4bc3b5c3275f4ae839072a50fa63a2f64e3dd8d18f"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/preview-session/route.test.ts",
+      "sha256": "08bfce9b69f9629a17540182b36eb68db00bfc530a54483d7131ad7cadb3fec8"
+    },
+    {
+      "path": "pdos-next/web/src/lib/local-preview-server.ts",
+      "sha256": "5c6bc6129e3d4a0e47b2a80912b735e87ae18c36d0d531f3c391fb8cce8973ee"
+    },
+    {
+      "path": "pdos-next/web/src/components/product-preview-entry.tsx",
+      "sha256": "3994a532914d1dfaef59f35e85fd39c1130c783c7a8b6bd8200d475ac90b8698"
+    },
+    {
+      "path": "pdos-next/web/src/components/app-shell.tsx",
+      "sha256": "0e35be3741bff03914165e744ef3115b1e11238b2ecf0e0675be284c04aecd33"
+    }
+  ]
+}

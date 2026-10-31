@@ -1,0 +1,40 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "requested_target": "s0_0832",
+  "expected_rejection": "Similar history feedback requires s0_0833",
+  "exit": 1,
+  "before": {
+    "head": "s0_0834",
+    "counts": {
+      "similar_history_feedback": 5,
+      "action_receipts": 42748,
+      "agent_runs": 4265,
+      "agent_work_products": 131
+    },
+    "source_clear_sha256": "7f8c487b8ab4d38d663a0577671fa02118032cf723b23cbcae85df437bd41866",
+    "source_clear_app_execute": true,
+    "feedback_force_rls": [
+      true,
+      true
+    ]
+  },
+  "after": {
+    "head": "s0_0834",
+    "counts": {
+      "similar_history_feedback": 5,
+      "action_receipts": 42748,
+      "agent_runs": 4265,
+      "agent_work_products": 131
+    },
+    "source_clear_sha256": "7f8c487b8ab4d38d663a0577671fa02118032cf723b23cbcae85df437bd41866",
+    "source_clear_app_execute": true,
+    "feedback_force_rls": [
+      true,
+      true
+    ]
+  },
+  "transaction_rolled_back": true,
+  "new_database": false,
+  "env_fallback": false
+}

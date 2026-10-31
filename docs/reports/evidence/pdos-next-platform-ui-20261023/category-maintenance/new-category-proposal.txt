@@ -1,0 +1,157 @@
+Browser tab: 8, Title: "PDOS · 完整体验设计", URL: "http://localhost:57859/ui-lab/platform?view=category&role=product".
+0 AXWebArea PDOS · 完整体验设计, URL: localhost:57859/ui-lab/platform?view=category&role=product
+	1 text PDOS 完整体验
+	27 text 设计预览 · 全部内容为合成示例
+	2 container
+		3 text 预览身份
+		4 pop up button (collapsed, settable) Description: 预览身份, Value: 产品经理, Secondary Actions: Expand
+			5 menu
+				6 (selected) 产品经理
+				7 项目负责人
+				8 研发工程师
+				9 品质 / 测试
+				10 制造工程 / NPI
+				11 生产执行
+				12 采购 / 供应
+				13 管理者
+				14 外部协作者
+	15 pop up button (collapsed, settable) Description: 预览状态, Value: 正常, Secondary Actions: Expand
+		16 menu
+			17 (selected) 正常
+			18 空态
+			19 读取失败
+			20 离线
+			21 版本冲突
+			22 权限失效
+	23 button 设计说明
+	24 checkbox 窄屏, Value: 0
+	25 button 切换明暗主题
+		26 image
+	28 container
+		29 text P
+		30 text PDOS
+		31 button 折叠侧栏
+			32 image
+		33 button 搜索或跳转
+			34 image
+			35 text 搜索或跳转
+			36 text ⌘ K
+		37 container 主导航
+			38 button 我的工作 2, Help: 我的工作
+				39 image
+				40 text 我的工作
+				41 text 2
+			42 button 收件箱 3, Help: 收件箱
+				43 image
+				44 text 收件箱
+				45 text 3
+			46 button 小Pai
+				47 image
+				48 text 小Pai
+			49 button 项目
+				50 image
+				51 text 项目
+			52 button 项目集
+				53 image
+				54 text 项目集
+			55 button 知识
+				56 image
+				57 text 知识
+		58 text 产品管理
+		59 button 品类
+			60 image
+			61 text 品类
+		62 button 立项提案
+			63 image
+			64 text 立项提案
+		65 text 常用项目
+		66 button P1 便携充气泵 P1, Help: 便携充气泵 P1
+			67 text P1
+			68 text 便携充气泵 P1
+		69 button S2 桨板泵 S2 派生, Help: 桨板泵 S2 派生
+			70 text S2
+			71 text 桨板泵 S2 派生
+		72 button 设置
+			73 image
+			74 text 设置
+		75 text 林
+		76 text 林悦
+		77 text 产品经理
+		78 container
+			79 text 工作空间
+			80 image
+			81 text 立项提案
+			82 button 搜索
+				83 image
+		84 container platform-main
+			210 button 全部提案
+				211 image
+				212 text 全部提案
+			213 container
+				214 heading B1 轻量骑行泵, Value: 1
+					215 text B1 轻量骑行泵
+				216 text 自行车充气泵  ·  自主新品 ·  PA-005
+				217 button 取消编辑
+				218 button 保存修订
+			219 text 草稿 v 1 负责人  林悦
+			220 image
+			221 text 私有
+			222 button 与小Pai讨论
+				223 text 与小Pai讨论
+				224 image
+			225 container 提案视图
+				226 checkbox 提案, Value: 1
+				227 checkbox 规格对标, Value: 0
+				228 checkbox 功能配置, Value: 0
+				229 checkbox 定义成熟度, Value: 0
+				230 checkbox 证据与决定, Value: 0
+			231 container
+				232 text 提案名称
+				233 text field (settable) 提案名称, Value: B1 轻量骑行泵
+				234 text 目标用户与场景
+				235 text field (settable) 目标用户与场景
+				236 text 要解决的问题
+				237 text entry area (settable) 要解决的问题
+				238 text 方案  A
+				239 text entry area (settable) 方案 A
+				240 text 方案  B
+				241 text entry area (settable) 方案 B
+				242 text 当前取舍与理由
+				243 text entry area (settable) 当前取舍与理由
+				244 container
+					245 heading 关键定义, Value: 2
+						246 text 关键定义
+					247 button 添加规格
+						248 image
+						249 text 添加规格
+				250 container
+					251 heading 待决问题, Value: 2
+						252 text 待决问题
+					253 button 添加问题
+						254 image
+						255 text 添加问题
+				256 text 草稿暂存在本次预览中；点击“保存修订”后更新版本。
+			257 container
+				258 heading 提案信息, Value: 2
+					259 text 提案信息
+				260 definition list
+					261 container 范围
+						262 text 范围
+					263 text 负责人 / 具名评审人
+					264 container 最近更新
+						265 text 最近更新
+					266 text 刚刚
+				267 heading 当前依据, Value: 2
+					268 text 当前依据
+				269 text 尚未添加依据
+				270 button 查看依据与版本
+					271 text 查看依据与版本
+					272 image
+				273 text 提交前请补齐场景、关键定义、两个方案与取舍，并为待决问题安排负责人和期限。
+		208 button Description: 打开当前页面的小Pai, Help: 小Pai · 帮你处理当前工作
+			209 image
+		157 container
+			158 text 设计原型 · 本地交互，不写入业务或调用模型
+			159 button 查看完整覆盖
+
+The focused UI element is 0 AXWebArea PDOS · 完整体验设计, URL: localhost:57859/ui-lab/platform?view=category&role=product

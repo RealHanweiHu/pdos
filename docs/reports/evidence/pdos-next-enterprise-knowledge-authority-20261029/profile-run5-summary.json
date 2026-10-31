@@ -1,0 +1,150 @@
+{
+  "ordinary_caller": {
+    "tenant_id": "9627b2fb-d72c-4958-b38b-b15e53d66896",
+    "actor_id": "bb67cec9-b3b3-4c2a-9627-50bf8dd9c8c6",
+    "requester_id": "bb67cec9-b3b3-4c2a-9627-50bf8dd9c8c6",
+    "category_id": null
+  },
+  "target": "127.0.0.1:53502/pdos_test",
+  "family_counts": {
+    "artifact": 21,
+    "knowledge": 6,
+    "issue": 4,
+    "capa": 1,
+    "change": 6,
+    "external_wait": 6,
+    "supply": 6,
+    "build": 4,
+    "test_run": 4
+  },
+  "queries": [
+    {
+      "mode": "search",
+      "index": 1,
+      "command": "SET LOCAL jit=off",
+      "wall_seconds": 0.0010577499633654952
+    },
+    {
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "wall_seconds": 0.15705212496686727,
+      "planning_ms": 24.786,
+      "execution_ms": 98.678,
+      "root_rows": 9,
+      "root_cost": 570.4,
+      "plan": "profile-run5-search-2.plan.json"
+    },
+    {
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 44500,
+      "wall_seconds": 1.1796098339837044,
+      "planning_ms": 69.78,
+      "execution_ms": 950.097,
+      "root_rows": 58,
+      "root_cost": 13444.86,
+      "plan": "profile-run5-search-3.plan.json"
+    },
+    {
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "wall_seconds": 0.04452100000344217,
+      "planning_ms": 6.664,
+      "execution_ms": 12.521,
+      "root_rows": 2,
+      "root_cost": 291.09,
+      "plan": "profile-run5-search-4.plan.json"
+    },
+    {
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 232198,
+      "wall_seconds": 2.2698668331140652,
+      "planning_ms": 122.379,
+      "execution_ms": 1896.344,
+      "root_rows": 1,
+      "root_cost": 19452.57,
+      "plan": "profile-run5-search-5.plan.json"
+    },
+    {
+      "mode": "verify_nine",
+      "index": 1,
+      "command": "SET LOCAL jit=off",
+      "wall_seconds": 0.0009855420794337988
+    },
+    {
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 181260,
+      "wall_seconds": 0.787797208991833,
+      "planning_ms": 62.065,
+      "execution_ms": 333.146,
+      "root_rows": 10,
+      "root_cost": 5343.92,
+      "plan": "profile-run5-verify_nine-2.plan.json"
+    },
+    {
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "wall_seconds": 0.02622466697357595,
+      "planning_ms": 2.954,
+      "execution_ms": 13.67,
+      "root_rows": 13,
+      "root_cost": 199.61,
+      "plan": "profile-run5-verify_nine-3.plan.json"
+    },
+    {
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "wall_seconds": 0.024901874945499003,
+      "planning_ms": 4.513,
+      "execution_ms": 10.716,
+      "root_rows": 1,
+      "root_cost": 291.09,
+      "plan": "profile-run5-verify_nine-4.plan.json"
+    },
+    {
+      "mode": "verify_expanded",
+      "index": 1,
+      "command": "SET LOCAL jit=off",
+      "wall_seconds": 0.0007353749824687839
+    },
+    {
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 182856,
+      "wall_seconds": 0.7758767920313403,
+      "planning_ms": 56.157,
+      "execution_ms": 538.582,
+      "root_rows": 48,
+      "root_cost": 5375.4,
+      "plan": "profile-run5-verify_expanded-2.plan.json"
+    },
+    {
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "wall_seconds": 0.03534549998585135,
+      "planning_ms": 4.156,
+      "execution_ms": 17.369,
+      "root_rows": 13,
+      "root_cost": 199.61,
+      "plan": "profile-run5-verify_expanded-3.plan.json"
+    },
+    {
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "wall_seconds": 0.02971816691569984,
+      "planning_ms": 5.673,
+      "execution_ms": 12.919,
+      "root_rows": 2,
+      "root_cost": 291.09,
+      "plan": "profile-run5-verify_expanded-4.plan.json"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "synthetic": true,
+  "tenant": "8f550711-31d4-4727-bc83-b25ec77362f2",
+  "human": "1ac744cf-b251-4496-b701-200a9d7b5316",
+  "category": "fd281083-4f3b-482d-8e29-e4243fb2d510",
+  "product": "c57f4c0e-2931-4e94-bbc5-0a6ba174f3c8",
+  "project": "79b00aa6-b4f6-44a1-9143-81244ff039f5",
+  "parent_run": "250e74f7-7d5d-4f93-ab61-8cc87bd75de1",
+  "build": "db127ebe-ecc1-4085-b568-6361a9c6d8cf",
+  "api": "http://127.0.0.1:58261",
+  "before": [
+    1,
+    2
+  ],
+  "parent_provider_calls": 5,
+  "after": [
+    2,
+    3
+  ],
+  "candidate_provider_calls": 12,
+  "final_provider_calls": 12,
+  "actual_sample_count": 3
+}

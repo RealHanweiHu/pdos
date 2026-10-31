@@ -1,0 +1,14 @@
+{
+  "tests": [
+    "tests/agent_kernel/test_project_work_task_context_pg.py",
+    "tests/agent_kernel/test_project_context_history_pg.py",
+    "tests/agent_kernel/test_project_current_context_pg.py",
+    "tests/agent_kernel/test_conversation_acl_pg.py",
+    "tests/agent_kernel/test_run_continuation.py",
+    "-x",
+    "--tb=short"
+  ],
+  "port": 53502,
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "model_calls": 0
+}

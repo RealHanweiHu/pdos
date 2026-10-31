@@ -1,0 +1,196 @@
+{
+  "stage": "D native role sources",
+  "base_head": "28bacbb7d8be01b50296004a66891ab9892d30f4",
+  "new_files": [
+    {
+      "path": "pdos-next/server/migrations/candidates/role_native_sources.py",
+      "sha256": "f41604c1d6d4bc3fb7730eb77c43525668bd38bdcbe5547cc426b3262bc78b6f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/role_native_audience.py",
+      "sha256": "9d287d2c3c78d44205e67ace1e93c8024abe596a166c1908e05b6b02616d8d77"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/role_native_events.py",
+      "sha256": "9790ef517778f4ad4ee7bda076f48dc5abec5482f8842b9c670e5235ca3d6698"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/role_native_navigation.py",
+      "sha256": "a1ae20ca6adacd2c03dfaa72beb1a4f01347c348923b588b7155a689e39572c7"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/role_native_relations.py",
+      "sha256": "bd33143ae78353ea853b70646277d62156a39ecbf709b556c36dd90b2fbe1a5a"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/role_native_sources.py",
+      "sha256": "734e49d568fbb7f486aac4febd09311ec592ce6df21a625e824a0d27316d6612"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/role_native_source_harness.py",
+      "sha256": "a05c08864032fa185fd625cde5feb4aec362d16baee579e656bba9bcd6240386"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_manufacturing_document_sources_pg.py",
+      "sha256": "686e890ad708d0a26959248f86023bbad2b12264d4d992af954989358ed5414b"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_project_status_sources_pg.py",
+      "sha256": "d322416922e0dcda842b15027f0a0c21ad25c09200506ad7c91d18905f8c40ab"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_role_native_source_contract.py",
+      "sha256": "4e7f2fe531c0857ac3feccc7dd8d9b7272987a77b681f07b6c459e2de8e5d59c"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_verification_handoff_sources_pg.py",
+      "sha256": "e597f31bc73725d792c970d805c450daf97b0a088c192c337cb496e5f5c4a75a"
+    }
+  ],
+  "public_patches": [
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/action_sources.py",
+      "base_sha256": "375e6da5bbeeee6f4835c720f91072700f85788148708ab163da7a68dc6797cd",
+      "review_sha256": "ac2cf9da79a4942f055c4f311c0c611e355eea7e4ec3fcd6162938aa904726a7",
+      "patch": "patches/pdos-next__server__pdos_next__enterprise_search__action_sources.py.patch",
+      "patch_sha256": "35504e9f1c18cdd772189b9dd8ae5c7a0ead0b85badad67be8e982ffedaf8178",
+      "live_sha_at_freeze": "375e6da5bbeeee6f4835c720f91072700f85788148708ab163da7a68dc6797cd",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_sources.py",
+      "base_sha256": "b0005527b05e19ec2a301f2e01067480ae14ec75dcc08f3ac6e90723769b8145",
+      "review_sha256": "4af046cb1e118d07e10bd0e2e88b241c5f1d58b4d1e55d76f1b3c83eca8ae686",
+      "patch": "patches/pdos-next__server__pdos_next__enterprise_search__assistant_sources.py.patch",
+      "patch_sha256": "477e7058ae992f34d18ece18a83454b6abead32acfcf0dc676efaba2859555da",
+      "live_sha_at_freeze": "b0005527b05e19ec2a301f2e01067480ae14ec75dcc08f3ac6e90723769b8145",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/business_events.py",
+      "base_sha256": "201ee1d69ceb863793e4349561047d17c1251c28b7a20a50a34dc06c951f3ecb",
+      "review_sha256": "cc611f596629c8c9d39ef700610fa66f84eccbad54c04fb2d3746bd46ee16c07",
+      "patch": "patches/pdos-next__server__pdos_next__enterprise_search__business_events.py.patch",
+      "patch_sha256": "0f580fa02b495ddc8fc65b69eaabb9486c807ecf3bc561e64654a8be6b0cf182",
+      "live_sha_at_freeze": "201ee1d69ceb863793e4349561047d17c1251c28b7a20a50a34dc06c951f3ecb",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/business_sources.py",
+      "base_sha256": "13b32e5786d9bd14cd08ed01967f5dab0a71f466781c6ab954a6f8d6a8eab10f",
+      "review_sha256": "8eb590826f8e901e1c7a766364aeb412d951330a173a45a224adda4f8c41c684",
+      "patch": "patches/pdos-next__server__pdos_next__enterprise_search__business_sources.py.patch",
+      "patch_sha256": "fce7b418b60a029cd832bd5265c1df8dfcf94d73ef63c48d9c13697b556e6389",
+      "live_sha_at_freeze": "13b32e5786d9bd14cd08ed01967f5dab0a71f466781c6ab954a6f8d6a8eab10f",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/navigation.py",
+      "base_sha256": "9d0fcc27669c494c52deb8f634fb7027046bf3d28a2439405b63109f54d2651a",
+      "review_sha256": "352e0b3a77ea2ffc3c82afbf87d7a4fee22255afbeff9deba8a96a770f4f0e99",
+      "patch": "patches/pdos-next__server__pdos_next__enterprise_search__navigation.py.patch",
+      "patch_sha256": "b07330f6eba40db66326d87a3c7adbd3002c9e3b5f9ac2ff8cbb209a132d8b35",
+      "live_sha_at_freeze": "9d0fcc27669c494c52deb8f634fb7027046bf3d28a2439405b63109f54d2651a",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/presence.py",
+      "base_sha256": "85b1a0b0fda9a3ebebe873f69a0ef52accbee0666459ca83e092d1d7d09caeae",
+      "review_sha256": "0160dc8c6cda321fdd3773b0bf8c5edf091bc349a87e8ae950da1df79969e081",
+      "patch": "patches/pdos-next__server__pdos_next__enterprise_search__presence.py.patch",
+      "patch_sha256": "04216e187b0760c63e29f7c346d2e0c0034e5e5e541a11c6e90bf3c6fbcb35a5",
+      "live_sha_at_freeze": "85b1a0b0fda9a3ebebe873f69a0ef52accbee0666459ca83e092d1d7d09caeae",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/relations.py",
+      "base_sha256": "cf021bed6eefe321385734de7136789c8cc5050cefb01060cdcc74182c748711",
+      "review_sha256": "5057b54ba6db567f4a625e30f1fa98e339a3bbdfcadd1d76f21ebf20d822df5d",
+      "patch": "patches/pdos-next__server__pdos_next__enterprise_search__relations.py.patch",
+      "patch_sha256": "046f8d4a9ecc5626ad905c17ed6b6cfd1a6ed44e21fc36a554d6d5311970d47f",
+      "live_sha_at_freeze": "cf021bed6eefe321385734de7136789c8cc5050cefb01060cdcc74182c748711",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/schemas.py",
+      "base_sha256": "3c06c1077a364a2f4fe275cea34f13277b62d006fa22603d8699794bf08b0da1",
+      "review_sha256": "b929f390eb0463b676b027645448ec4ee70834836d2534a4dd839d018e6f73de",
+      "patch": "patches/pdos-next__server__pdos_next__enterprise_search__schemas.py.patch",
+      "patch_sha256": "46cb648be2901abd09673fbda26287e668d9a9240d0990c8941df6c2b4a3badb",
+      "live_sha_at_freeze": "3c06c1077a364a2f4fe275cea34f13277b62d006fa22603d8699794bf08b0da1",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_field_feedback_source_contract.py",
+      "base_sha256": "79705a2f04e1f001a2ae602d931d147e034a096588c9281becb110e3aa1ee513",
+      "review_sha256": "24c46c5608119937dd427d92fd06aab208226d9534152eb3dfe76592d09d72a8",
+      "patch": "patches/pdos-next__server__tests__enterprise_search__test_field_feedback_source_contract.py.patch",
+      "patch_sha256": "4a5f9237007c9ec918240a63eba29173e0f0e41919067285f975d74466e935da",
+      "live_sha_at_freeze": "79705a2f04e1f001a2ae602d931d147e034a096588c9281becb110e3aa1ee513",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_recovery_pg.py",
+      "base_sha256": "6d13965f9c3c95c0a442295fdfbc894e92c2f4ed92a4d081cfa105a287f2c8df",
+      "review_sha256": "a55860d2a5896608f8c3ff6919a291a8b723eeabc8c2aa42d72b66020747deef",
+      "patch": "patches/pdos-next__server__tests__enterprise_search__test_recovery_pg.py.patch",
+      "patch_sha256": "fd621775dba62cb0a55f8ff6e1507bb4bdd3ad0a01d2f763edc1725b02166e80",
+      "live_sha_at_freeze": "6d13965f9c3c95c0a442295fdfbc894e92c2f4ed92a4d081cfa105a287f2c8df",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/server/tests/manufacturing_preparation_transactions/fixtures.py",
+      "base_sha256": "a2b4fdb980d0bd9fd0db21dae6f513ce0d174c80cfb680fb0549f856280cbf2c",
+      "review_sha256": "b27ec21db10a0e36b42916eb258df0441148f941eda3f283c8d07a5dee276252",
+      "patch": "patches/pdos-next__server__tests__manufacturing_preparation_transactions__fixtures.py.patch",
+      "patch_sha256": "d25f1df98491b58b3185ce892170b02b60c870057418635dd522a839ef37b0cf",
+      "live_sha_at_freeze": "a2b4fdb980d0bd9fd0db21dae6f513ce0d174c80cfb680fb0549f856280cbf2c",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/answer-sources.tsx",
+      "base_sha256": "87eb26a91b0e23f134f9a94ac675e75a2fe26a9875b3fa062b14a468d57b50a2",
+      "review_sha256": "3075b3a99f189b5d26d7a896a74c52e5194904147fa5ed7fb4b0e2ce0cc4bd26",
+      "patch": "patches/pdos-next__web__src__components__pai__answer-sources.tsx.patch",
+      "patch_sha256": "17bdaadec05b8b033bef69bc9d923101562421658a45580e6e4376ddb00e1a7b",
+      "live_sha_at_freeze": "87eb26a91b0e23f134f9a94ac675e75a2fe26a9875b3fa062b14a468d57b50a2",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/web/src/components/xiaopai.test.mjs",
+      "base_sha256": "af483dfecd9e7a4010ceef10e08e81208ffb4fc0a17eeac76444026c0be1629d",
+      "review_sha256": "c7380203abf001442e5e1a38b2d2512409f47a9487d1721f1f49b05881ed60c1",
+      "patch": "patches/pdos-next__web__src__components__xiaopai.test.mjs.patch",
+      "patch_sha256": "d28392f5fa4d8bc5010d19e53e54bdb72e66efa99bbe6073544a9d26e60a8ea7",
+      "live_sha_at_freeze": "af483dfecd9e7a4010ceef10e08e81208ffb4fc0a17eeac76444026c0be1629d",
+      "live_equals_base": true
+    },
+    {
+      "path": "pdos-next/web/src/lib/explicit-context-corrections.ts",
+      "base_sha256": "267ddc4dd911e0da24207e6e26fdbafdb54fe35016bb3533ed35f14ebbb9685b",
+      "review_sha256": "8edd49ce0a17d4a9236a76b3ec3433ad7ef830e3e6f5bc3a208e28c4fd5d83fb",
+      "patch": "patches/pdos-next__web__src__lib__explicit-context-corrections.ts.patch",
+      "patch_sha256": "412663ed91cf8b3668587db8afee9963ef8f1450480d9b45c1a0795ff466d15e",
+      "live_sha_at_freeze": "267ddc4dd911e0da24207e6e26fdbafdb54fe35016bb3533ed35f14ebbb9685b",
+      "live_equals_base": true
+    }
+  ],
+  "evidence": [
+    {
+      "path": "README.md",
+      "sha256": "90b3a7af6faa8524dfae059d1a479a7e59f0f6cf34b5cffc69beb31e7570edcb"
+    },
+    {
+      "path": "pure-result.txt",
+      "sha256": "ea328469535723df25039cd8e5611e30b6e306251397ad88eed74a5890586380"
+    },
+    {
+      "path": "pg-collect.txt",
+      "sha256": "362e207ef3dad46db1126bde5b6338e1744c58793cebecf2a6bc57e132a5cbd9"
+    },
+    {
+      "path": "ruff-result.txt",
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    }
+  ]
+}

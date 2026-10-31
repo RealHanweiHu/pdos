@@ -1,0 +1,248 @@
+................F.....................                                   [100%]
+=================================== FAILURES ===================================
+_ test_real_query_applies_fixed_filters_before_all_counts_paging_and_relations _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x138e23e30>
+
+    def test_real_query_applies_fixed_filters_before_all_counts_paging_and_relations(monkeypatch):
+        run, ctx, ref = case()
+        statements = []
+        now = datetime.now(UTC)
+        metadata = {"incomplete": False, "indexed_as_of": now, "unsafe_match": False,
+                    "as_of": now, "primary_rows": [], "related_rows": []}
+        session = SimpleNamespace(execute=lambda statement: statements.append(statement)
+            or SimpleNamespace(mappings=lambda: SimpleNamespace(one=lambda: metadata)))
+        scope = {"category_id": run.category_id, "product_id": None,
+                 "project_id": None, "proposal_id": None}
+        monkeypatch.setattr(query, "require_context", lambda *_: None)
+        monkeypatch.setattr(query, "_narrow", lambda *_: scope)
+        monkeypatch.setattr(query, "prepare_read", lambda *_: None)
+        monkeypatch.setattr(query, "source_families", lambda *_: (["issue", "capa"], now))
+        monkeypatch.setattr(query, "dependency_originals", lambda *_: set())
+        monkeypatch.setattr(query, "safe_originals", lambda *_: set())
+        query.search(session, ctx, AssistantSearchInput(query="漏气", include_history=True),
+            include_sources=[("issue", ref["source_id"], 2, ref["content_hash"])],
+            focus_object=("issue", ref["object_id"]), current_only=True)
+>       sql = str(statements[0].compile(dialect=postgresql.dialect(),
+                                       compile_kwargs={"literal_binds": True}))
+
+tests/enterprise_search/test_context_correction_filters.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:318: in compile
+    return self._compiler(dialect, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:330: in _compiler
+    return dialect.statement_compiler(dialect, self, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:1543: in __init__
+    Compiled.__init__(self, dialect, statement, **kwargs)
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:936: in __init__
+    self.string = self.process(self.statement, **compile_kwargs)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:972: in process
+    return obj._compiler_dispatch(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:5213: in visit_select
+    self._label_select_column(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:5023: in _label_select_column
+    return result_expr._compiler_dispatch(self, **column_clause_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2721: in visit_label
+    label.element._compiler_dispatch(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2584: in visit_grouping
+    return "(" + grouping.element._compiler_dispatch(self, **kwargs) + ")"
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:5272: in visit_select
+    text = self._compose_select_body(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:5426: in _compose_select_body
+    f._compiler_dispatch(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:4534: in visit_cte
+    inner = cte.element._compiler_dispatch(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:5272: in visit_select
+    text = self._compose_select_body(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:5426: in _compose_select_body
+    f._compiler_dispatch(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:4534: in visit_cte
+    inner = cte.element._compiler_dispatch(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:5272: in visit_select
+    text = self._compose_select_body(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:5439: in _compose_select_body
+    t = self._generate_delimited_and_list(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2965: in _generate_delimited_and_list
+    return clauses[0]._compiler_dispatch(self, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:3676: in visit_binary
+    return self._generate_generic_binary(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:3750: in _generate_generic_binary
+    + binary.right._compiler_dispatch(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2584: in visit_grouping
+    return "(" + grouping.element._compiler_dispatch(self, **kwargs) + ")"
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:5272: in visit_select
+    text = self._compose_select_body(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:5426: in _compose_select_body
+    f._compiler_dispatch(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:4534: in visit_cte
+    inner = cte.element._compiler_dispatch(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:5272: in visit_select
+    text = self._compose_select_body(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:5439: in _compose_select_body
+    t = self._generate_delimited_and_list(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2968: in _generate_delimited_and_list
+    return separator.join(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2970: in <genexpr>
+    for s in (c._compiler_dispatch(self, **kw) for c in clauses)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2970: in <genexpr>
+    for s in (c._compiler_dispatch(self, **kw) for c in clauses)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2584: in visit_grouping
+    return "(" + grouping.element._compiler_dispatch(self, **kwargs) + ")"
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:3669: in visit_binary
+    return disp(binary, operator_, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:3708: in visit_custom_op_binary
+    return self._generate_generic_binary(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:3750: in _generate_generic_binary
+    + binary.right._compiler_dispatch(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:3198: in visit_function
+    text = disp(func, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/base.py:2179: in visit_to_tsquery_func
+    return self._assert_pg_ts_ext(element, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/base.py:2212: in _assert_pg_ts_ext
+    return f"{element.name}{self.function_argspec(element, **kw)}"
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:3240: in function_argspec
+    return func.clause_expr._compiler_dispatch(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2584: in visit_grouping
+    return "(" + grouping.element._compiler_dispatch(self, **kwargs) + ")"
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2990: in visit_clauselist
+    return self._generate_delimited_list(clauselist.clauses, sep, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2951: in _generate_delimited_list
+    return separator.join(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2953: in <genexpr>
+    for s in (c._compiler_dispatch(self, **kw) for c in elements)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:2953: in <genexpr>
+    for s in (c._compiler_dispatch(self, **kw) for c in elements)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py:128: in _compiler_dispatch
+    return meth(self, **kw)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:4014: in visit_bindparam
+    ret = self.render_literal_bindparam(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:4153: in render_literal_bindparam
+    return self.render_literal_value(value, bindparam.type)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/base.py:2413: in render_literal_value
+    value = super().render_literal_value(value, type_)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x13908af60>
+value = 'simple', type_ = REGCONFIG()
+
+    def render_literal_value(
+        self, value: Any, type_: sqltypes.TypeEngine[Any]
+    ) -> str:
+        """Render the value of a bind parameter as a quoted literal.
+    
+        This is used for statement sections that do not accept bind parameters
+        on the target driver/database.
+    
+        This should be implemented by subclasses using the quoting services
+        of the DBAPI.
+    
+        """
+    
+        if value is None and not type_.should_evaluate_none:
+            # issue #10535 - handle NULL in the compiler without placing
+            # this onto each type, except for "evaluate None" types
+            # (e.g. JSON)
+            return self.process(elements.Null._instance())
+    
+        processor = type_._cached_literal_processor(self.dialect)
+        if processor:
+            try:
+                return processor(value)
+            except Exception as e:
+                raise exc.CompileError(
+                    f"Could not render literal value "
+                    f'"{sql_util._repr_single_value(value)}" '
+                    f"with datatype "
+                    f"{type_}; see parent stack trace for "
+                    "more detail."
+                ) from e
+    
+        else:
+>           raise exc.CompileError(
+                f"No literal value renderer is available for literal value "
+                f'"{sql_util._repr_single_value(value)}" '
+                f"with datatype {type_}"
+            )
+E           sqlalchemy.exc.CompileError: No literal value renderer is available for literal value "'simple'" with datatype REGCONFIG
+
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/compiler.py:4188: CompileError
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_context_correction_filters.py::test_real_query_applies_fixed_filters_before_all_counts_paging_and_relations
+1 failed, 37 passed in 2.55s

@@ -1,0 +1,71 @@
+........................                                                 [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_material_candidate_edits_pg.py::test_human_edits_keep_original_and_ai_provenance_and_cannot_duplicate[competitor]
+tests/agent_kernel/test_material_candidate_edits_pg.py::test_human_edits_keep_original_and_ai_provenance_and_cannot_duplicate[voice]
+tests/preproject/test_material_commands_pg.py::test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0
+tests/preproject/test_material_commands_pg.py::test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0
+tests/preproject/test_material_commands_pg.py::test_promotion_identity_preview_and_private_proof
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_material_candidate_edits_pg.py::test_human_edits_keep_original_and_ai_provenance_and_cannot_duplicate[parameter]
+tests/agent_kernel/test_material_candidate_edits_pg.py::test_downgrade_preserves_named_human_edit_history
+tests/preproject/test_material_commands_pg.py::test_parameter_versions_are_atomic_immutable_and_replayable
+tests/preproject/test_material_commands_pg.py::test_parameter_versions_are_atomic_immutable_and_replayable
+tests/preproject/test_material_commands_pg.py::test_old_parameter_reference_hints_draft_and_preserves_submitted_g0
+tests/preproject/test_material_commands_pg.py::test_old_parameter_reference_hints_draft_and_preserves_submitted_g0
+tests/preproject/test_material_commands_pg.py::test_parameter_type_and_unit_must_match_actual_dictionary
+tests/preproject/test_material_commands_pg.py::test_receipt_failure_rolls_back_version_and_current
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:535: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_domain_candidates_pg.py::test_confirmation_receipt_resolves_candidate_even_after_run_completion
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:183: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([platform])
+
+tests/agent_kernel/test_domain_candidates_pg.py::test_confirmation_receipt_resolves_candidate_even_after_run_completion
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/platforms.py:200: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([link])
+
+tests/agent_kernel/test_domain_candidates_pg.py::test_same_candidate_delivery_supports_category_proposal_and_retains_ai_authorship
+tests/agent_kernel/test_domain_candidates_pg.py::test_proposal_receipt_metadata_mismatch_rolls_back_and_history_blocks_downgrade
+tests/agent_kernel/test_domain_candidates_pg.py::test_proposal_receipt_metadata_mismatch_rolls_back_and_history_blocks_downgrade
+tests/preproject/test_material_commands_pg.py::test_old_parameter_reference_hints_draft_and_preserves_submitted_g0
+tests/preproject/test_material_commands_pg.py::test_old_parameter_reference_hints_draft_and_preserves_submitted_g0
+tests/preproject/test_material_commands_pg.py::test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0
+tests/preproject/test_material_commands_pg.py::test_promotion_identity_preview_and_private_proof
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:715: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_domain_candidates_pg.py: 19 warnings
+tests/preproject/test_material_commands_pg.py: 24 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:600: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/preproject/test_material_commands_pg.py::test_old_parameter_reference_hints_draft_and_preserves_submitted_g0
+tests/preproject/test_material_commands_pg.py::test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:880: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/preproject/test_material_commands_pg.py::test_old_parameter_reference_hints_draft_and_preserves_submitted_g0
+tests/preproject/test_material_commands_pg.py::test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:935: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/preproject/test_material_commands_pg.py::test_old_parameter_reference_hints_draft_and_preserves_submitted_g0
+tests/preproject/test_material_commands_pg.py::test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/preproject/test_material_commands_pg.py::test_old_parameter_reference_hints_draft_and_preserves_submitted_g0
+tests/preproject/test_material_commands_pg.py::test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/preproject/test_material_commands_pg.py::test_old_parameter_reference_hints_draft_and_preserves_submitted_g0
+tests/preproject/test_material_commands_pg.py::test_knowledge_withdrawal_keeps_history_and_does_not_block_fixed_g0
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+24 passed, 75 warnings in 50.86s

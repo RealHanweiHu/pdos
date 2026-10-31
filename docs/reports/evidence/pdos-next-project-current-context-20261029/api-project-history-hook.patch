@@ -1,0 +1,12 @@
+--- a/pdos-next/server/pdos_next/agent_kernel/api.py
++++ b/pdos-next/server/pdos_next/agent_kernel/api.py
+@@ -292,6 +292,9 @@
+             answer = checked_result(s, ctx, row)
+             if answer is None:
+                 answer = stored_answer(s, row)
++            from .project_current_context import checked_result as checked_project_result
++
++            answer = checked_project_result(s, ctx, row, answer)
+             conversation = s.get(AgentSession, row.session_id)
+             if conversation is None:
+                 raise DomainError("FORBIDDEN_SCOPE", "原会话不在当前可读范围。", 403)

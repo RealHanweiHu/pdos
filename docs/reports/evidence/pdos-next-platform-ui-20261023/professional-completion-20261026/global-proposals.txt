@@ -1,0 +1,104 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 知识
+    - paragraph: 产品管理
+    - link "品类":
+      - /url: "?area=category"
+      - generic: 品类
+    - link "立项提案":
+      - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&focus=proposals"
+      - generic: 立项提案
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - generic: 立项提案
+  - generic: 汽车充气泵
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - region "立项提案" [active]:
+    - heading "立项提案" [level=1]
+    - paragraph: 把想法和需求整理为可判断的产品方案。
+    - button "新建提案":
+      - text: 新建提案
+    - navigation "提案状态":
+      - button "全部" [pressed]
+      - button "草稿"
+      - button "评审中"
+      - button "已批准"
+      - combobox "其他提案状态":
+        - option "更多" [selected]
+        - option "已退回"
+        - option "不立项"
+        - option "已撤回"
+    - combobox "筛选提案品类":
+      - option "全部品类" [selected]
+      - option "汽车充气泵"
+    - searchbox "搜索提案"
+    - table:
+      - rowgroup:
+        - row "提案 品类 可见范围 状态 版本":
+          - columnheader "提案"
+          - columnheader "品类"
+          - columnheader "可见范围"
+          - columnheader "状态"
+          - columnheader "版本"
+      - rowgroup:
+        - row "便携充气泵 · 旁聊验证 私有提案 汽车充气泵 私有提案 草稿 v1":
+          - cell "便携充气泵 · 旁聊验证 私有提案":
+            - link "便携充气泵 · 旁聊验证 私有提案":
+              - /url: /categories/efcc7f95-0a5b-4c58-a1e3-67764de167eb/proposals/7ae29f9d-f839-407e-baee-58bf4ab4aa12
+              - text: 便携充气泵 · 旁聊验证
+              - img "私有提案"
+          - cell "汽车充气泵"
+          - cell "私有提案"
+          - cell "草稿":
+            - generic: 草稿
+          - cell "v1"
+        - row "Approved revision fixture 汽车充气泵 品类共享 已批准 v4":
+          - cell "Approved revision fixture":
+            - link "Approved revision fixture":
+              - /url: /categories/efcc7f95-0a5b-4c58-a1e3-67764de167eb/proposals/e80a4e15-54a0-4f2b-b05b-fdc7ea538362
+          - cell "汽车充气泵"
+          - cell "品类共享"
+          - cell "已批准":
+            - generic: 已批准
+          - cell "v4"
+- button "打开小Pai工作栏":

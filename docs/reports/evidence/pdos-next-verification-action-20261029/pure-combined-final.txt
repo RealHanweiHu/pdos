@@ -1,0 +1,109 @@
+........................................................................ [ 32%]
+........................................................................ [ 65%]
+.....................................................EEE......EEEEEEEEEE [ 98%]
+EEEE                                                                     [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_three_bound_entries_preserve_all_declared_working_context[customer_request] _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_three_bound_entries_preserve_all_declared_working_context[new_product] _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_three_bound_entries_preserve_all_declared_working_context[derivative] _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_same_original_followup_is_serialized_and_recovers_without_current_binding _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_followup_refuses_scope_changes_peer_and_unfinished_parent _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_followup_appends_current_sources_without_replacing_original_versions _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_private_personal_continuation_is_same_session_without_category_authority _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_full_memory_pagination_retains_root_constraints_and_is_not_recent_raw_chat _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_append_failure_rolls_back_new_turn_and_keeps_original_result _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_____ ERROR at setup of test_sql_continuation_cannot_rebind_existing_turn ______
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_revoking_parent_scope_hides_memory_before_model_egress _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_registered_graph_receives_persisted_task_memory_and_replay_does_not_call_model _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_cached_read_summary_requires_actual_local_result_and_guard_rechecks_it _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_newly_revoked_turn_hides_answer_and_stops_frozen_history _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_________ ERROR at setup of test_prepared_candidate_turn_keeps_answer __________
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+_ ERROR at setup of test_thirty_turn_history_stays_bounded_and_full_history_is_available _
+tests/conftest.py:25: in engines
+    admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'TEST_DATABASE_URL'
+=========================== short test summary info ============================
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_three_bound_entries_preserve_all_declared_working_context[customer_request]
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_three_bound_entries_preserve_all_declared_working_context[new_product]
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_three_bound_entries_preserve_all_declared_working_context[derivative]
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_same_original_followup_is_serialized_and_recovers_without_current_binding
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_followup_refuses_scope_changes_peer_and_unfinished_parent
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_followup_appends_current_sources_without_replacing_original_versions
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_private_personal_continuation_is_same_session_without_category_authority
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_full_memory_pagination_retains_root_constraints_and_is_not_recent_raw_chat
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_append_failure_rolls_back_new_turn_and_keeps_original_result
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_sql_continuation_cannot_rebind_existing_turn
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_revoking_parent_scope_hides_memory_before_model_egress
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_registered_graph_receives_persisted_task_memory_and_replay_does_not_call_model
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_cached_read_summary_requires_actual_local_result_and_guard_rechecks_it
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_newly_revoked_turn_hides_answer_and_stops_frozen_history
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_prepared_candidate_turn_keeps_answer
+ERROR ../../../../tmp/pdos-verification-combined-20261029/server::test_thirty_turn_history_stays_bounded_and_full_history_is_available
+203 passed, 17 errors in 28.16s

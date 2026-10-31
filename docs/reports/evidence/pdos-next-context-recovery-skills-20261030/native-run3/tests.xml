@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="23.410" timestamp="2026-10-30T02:59:08.428935-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_context_restart_pg" name="test_unquoted_search_candidate_guards_restored_notes_at_admission_and_before_model" time="22.395"><failure message="AssertionError: assert 'FORBIDDEN_SCOPE' == 'CONVERSATION_HISTORY_REVOKED'&#10;  &#10;  - CONVERSATION_HISTORY_REVOKED&#10;  + FORBIDDEN_SCOPE">tests/agent_kernel/test_context_restart_pg.py:337: in test_unquoted_search_candidate_guards_restored_notes_at_admission_and_before_model
+    assert revoked.value.code == "CONVERSATION_HISTORY_REVOKED"
+E   AssertionError: assert 'FORBIDDEN_SCOPE' == 'CONVERSATION_HISTORY_REVOKED'
+E     
+E     - CONVERSATION_HISTORY_REVOKED
+E     + FORBIDDEN_SCOPE</failure></testcase></testsuite></testsuites>

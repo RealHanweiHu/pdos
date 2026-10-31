@@ -1,0 +1,35 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0835",
+  "vector": [
+    {
+      "name": "vector",
+      "version": "0.8.6",
+      "installed": false
+    }
+  ],
+  "roles": [
+    {
+      "rolname": "pdos_enterprise_index_maintainer",
+      "rolcanlogin": false,
+      "rolbypassrls": false,
+      "rolsuper": false
+    },
+    {
+      "rolname": "pdos_next_app",
+      "rolcanlogin": true,
+      "rolbypassrls": false,
+      "rolsuper": false
+    },
+    {
+      "rolname": "pdos_next_owner",
+      "rolcanlogin": false,
+      "rolbypassrls": false,
+      "rolsuper": false
+    }
+  ],
+  "new_embedding_tables_exist": false,
+  "read_only": true,
+  "env_fallback": false
+}

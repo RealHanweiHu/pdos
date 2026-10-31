@@ -1,0 +1,13 @@
+{
+  "compared": 661,
+  "changed": {
+    "workspace": [],
+    "built_snapshot": []
+  },
+  "excluded_generated": [
+    "next-env.d.ts"
+  ],
+  "tests": 57,
+  "build": "frontend-build-verified.txt",
+  "eslint": "frontend-eslint.txt"
+}

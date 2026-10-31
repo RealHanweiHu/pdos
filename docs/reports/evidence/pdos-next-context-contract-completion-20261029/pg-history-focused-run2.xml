@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="17.913" timestamp="2026-10-29T12:24:06.269160-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_conversation_acl_pg" name="test_actual_private_cross_category_read_uses_owner_and_one_batch_then_revoke" time="8.071"><failure message="AssertionError: assert 'SOURCE_UNAVAILABLE' == 'CONVERSATION_HISTORY_REVOKED'&#10;  &#10;  - CONVERSATION_HISTORY_REVOKED&#10;  + SOURCE_UNAVAILABLE">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_actual_private_cross_category_read_uses_owner_and_one_batch_then_revoke(setup):
+        first = synthetic_artifact(setup, "本人私有资料第一品类")
+        other_category, second = uuid4(), uuid4()
+        content = "本人另一品类私有资料。"
+        with Session(setup.admin) as session, session.begin():
+            session.add(Category(id=other_category, tenant_id=setup.tenant, owner_id=setup.peer,
+                                 name="ACL合成只读品类", purpose="实际跨品类权限验证"))
+            session.flush()
+            session.add(Grant(tenant_id=setup.tenant, category_id=other_category,
+                              principal_id=setup.human, can_write=False))
+            session.add(Artifact(id=second, tenant_id=setup.tenant, category_id=other_category,
+                product_id=None, owner_id=setup.human, title="本人第二品类私有来源",
+                source_label="合成", content=content,
+                content_hash=hashlib.sha256(content.encode()).hexdigest(),
+                visibility="private", revision=1, status="active"))
+        actual = pin_personal(setup, [first, second])
+        with Session(setup.admin) as session, session.begin():
+            from pdos_next.agent_kernel.models import AgentRun
+    
+            run = session.get(AgentRun, actual.run_id)
+            assert run.state == "queued"
+            # The unmetered synthetic gateway reserves the complete wire byte bound,
+            # including the production registry. Keep that surface and its guard;
+            # give this isolated fixture the same 2m budget as the assistant PG suite.
+            run.token_limit = 2_000_000
+        provider = MaterialsProvider([first, second])
+        owner = Bootstrap(setup.engine, ports=RuntimePorts(
+            provider_client=provider, preload=lambda _: ()))
+        owner.route_for = lambda _: replace(configured_route(), context_window_tokens=200_000)
+        owner.provider_for = lambda *_: "synthetic-assistant-no-egress"
+        host = BoundHost(owner.store, replace(owner.adapters(), cost_required=False))
+        output = AgentKernel(host, owner.registry).execute(actual, goal="只依据这些资料继续核对。")
+        assert output["output"]["status"] == "completed", output
+        assert provider.calls == 2 and provider.read is not None
+        child, _ = start(setup, personal=True, continue_from_run_id=str(actual.run_id))
+        bound = scope(setup, child, personal=True)
+        frozen = owner.project_context(bound, "继续")
+        assert frozen["conversation"]["turns"][0]["outcome_state"] == "current"
+        # Both private sources were read; neither is a final citation. The history
+        # dependency must retain them and ordinary owner RLS must continue to read.
+        with Session(setup.admin) as session:
+            from pdos_next.agent_kernel.models import AgentRun
+            access = session.get(AgentRun, child).versions["conversation_access"]
+            assert {str(first), str(second)} &lt;= {item["source_id"]
+                for value in access.values() for item in value["citations"]}
+        batches = []
+        def observe(_connection, _cursor, statement, _params, _context, _many):
+            if "conversation_history_metadata" in statement:
+                batches.append(statement)
+        event.listen(setup.engine, "before_cursor_execute", observe)
+        try:
+            owner.check_conversation(bound)
+        finally:
+            event.remove(setup.engine, "before_cursor_execute", observe)
+        assert len(batches) == 1
+        assert owner.project_context(bound, "继续")["conversation"] == frozen["conversation"]
+        peer = setup.client.get(f"/v1/personal/agent-runs/{actual.run_id}",
+            headers={"Authorization": f"Bearer {setup.tokens[setup.peer]}"})
+        assert peer.status_code == 403
+        with Session(setup.admin) as session, session.begin():
+            session.delete(session.scalar(select(Grant).where(
+                Grant.category_id == other_category, Grant.principal_id == setup.human)))
+        with pytest.raises(DomainError) as failure:
+            owner.check_conversation(bound)
+&gt;       assert failure.value.reason == "CONVERSATION_HISTORY_REVOKED"
+E       AssertionError: assert 'SOURCE_UNAVAILABLE' == 'CONVERSATION_HISTORY_REVOKED'
+E         
+E         - CONVERSATION_HISTORY_REVOKED
+E         + SOURCE_UNAVAILABLE
+
+tests/agent_kernel/test_conversation_acl_pg.py:113: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_conversation_acl_pg" name="test_actual_read_without_explicit_run_sources_keeps_goal_and_hides_revoked_answer" time="9.024" /></testsuite></testsuites>

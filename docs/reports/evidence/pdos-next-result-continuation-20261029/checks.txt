@@ -1,0 +1,7 @@
+Pure command: env -u TEST_DATABASE_URL -u DATABASE_URL .venv/bin/python -m pytest tests/agent_kernel/test_result_continuation.py tests/agent_kernel/test_context_admission.py tests/agent_kernel/test_context_budget.py tests/agent_kernel/test_bound_read_host.py tests/agent_kernel/test_graph.py tests/agent_kernel/test_command_usage.py tests/agent_kernel/test_context_projection.py tests/agent_kernel/test_read_execution.py tests/agent_kernel/test_conversation_memory.py tests/agent_kernel/test_extract_pages.py tests/agent_kernel/test_mcp_transport.py tests/agent_kernel/test_extract_dispatch.py tests/agent_kernel/test_disclosure.py tests/agent_kernel/test_research_instruction.py -q --tb=short
+Database tests were not executed by this subagent; the root owns the verified pdos_test run.
+Final targeted Ruff: All checks passed.
+Final git diff --check for owned kernel modules, two child wrappers and new tests: passed.
+Long structured record change: env -u TEST_DATABASE_URL -u DATABASE_URL .venv/bin/python -m pytest tests/enterprise_search/test_structured_result_limits.py tests/agent_kernel/test_result_continuation.py tests/agent_kernel/test_context_admission.py -q --tb=short
+Result: 28 passed in 9.87s (3 new pure cases; overlaps prior 278 kernel group).
+Targeted Ruff and diff check on assistant_adapter.py and structured record tests: passed.

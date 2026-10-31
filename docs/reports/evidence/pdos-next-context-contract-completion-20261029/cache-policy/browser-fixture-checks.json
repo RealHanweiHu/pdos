@@ -1,0 +1,12 @@
+{
+  "scope": "static preparation of the root-run native protocol UI fixture",
+  "ruff": "passed",
+  "syntax": "passed",
+  "collection": {"collected": 1, "fixture_execution": false},
+  "database_operations": 0,
+  "servers_started": 0,
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "real_outbound_calls": 0,
+  "actual_ui_result": "not_run_by_subagent"
+}

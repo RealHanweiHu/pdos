@@ -1,0 +1,20 @@
+# work.* 技能与 M9 变更生效、独立验证及关闭
+
+本轮新增 `work_management` 0.1.0-draft，覆盖当前全部 13 条 work.* 命令（任务、承诺履行、状态摘要、计划、外部等待、风险跟进）；调用说明同时写入工具注册表。技能使用原生 WireAgentOutput、真实 project context、当前版本与原件引用，保留本人承接/承诺、指定接收者验收和逐接收者独立履行。当前没有任务/承诺 Agent 读取端口，缺当前引用时只能从实际页面提供，不用会话历史猜测。`change_control` 升 0.1.1-draft，补实际采用 T1、Change 独立验证与关闭 T2-prepare-only；Agent 无 T2 执行权。共 18 个技能包，work.* 与 change.* 注册命令均已覆盖。未启用租户或授予 T0 资格，未进行模型实测。
+
+M9 的完成代码此前已在 `1583fab1` 留存，本轮接续其未收口实库验证，沿用已实现领域链，并补0813数据库约束漏项。本轮首轮[实库失败](pg-completion-attempt1.txt)在新 Run 结果已保存后的首项采用材料处返回 QUALIFICATION_REQUIRED：收尾人员原资格沿用开工夹具40分钟窗口。第二轮虽补收尾人员两小时资格并保存1项采用，但28个旧资格区间在执行途中到期，第二项材料被覆盖时间水位拒绝（[第二轮失败](pg-completion-attempt2.txt)、[元数据复现](attempt2-facts.json)）。第三轮因测试实物长窗口与旧Build批准截止不一致，由主会话SIGINT中断，exit=2，[记录保留](pg-completion-attempt3.txt)。新病例从种子开始显式采用四小时外层绝对截止，成员、覆盖政策及Build批准在事前声明，实物范围早一分钟结束；已有显式两小时品质资格仍保留；默认夹具窗口保持，旧签署不续改，生产资格/来源/确认守卫均未修改。[夹具窗口检查](fixture-window-tests.txt)验证有限声明及绝对截止优先。旧 PG4 的确认超时是正确拒绝，本轮普通夹具使用进程级 caffeinate 防休眠，不修改确认期限或生产资格规则。第四轮已保存两项采用且拒绝本人自验，但独立验证预览被数据库 `ck_confirmations_decision_deadline` 拒绝（[失败日志](pg-completion-attempt4.txt)、[约束诊断](attempt4-constraint-diagnostics.json)）：应用与ORM已登记两个T2操作，实际约束仍缺它们。追加0813只补 `change.verification.record` / `change.close` 两个已有具名操作的无期限批准例外；不为T1或未知操作放开期限，也不修改旧迁移。第五轮独立T2验证已实际保存，但测试仍按原请求人计数其看不到的私有批准，误报36≠37；[原失败](pg-completion-attempt5.txt)保留。修复仅让前后计数采用真实命令调用人，未放宽RLS。[补充检查](fixture-window-tests.txt)验证有限窗口和凭据读作用域。最终新的合成病例从原生 Field 原件开始，在具名选择之前明确旧 Build 与有限继任开发 Build 采用条件，依次取得双专业批准、实际双配置实施、新 Lot/样件、新 Run 原值与结果，再分别保存两项采用、独立品质验证、单独具名关闭。旧 generic 计划与旧失败病例没有被修改为已关闭。
+
+| 验证 | 结果与证据 |
+|---|---|
+| 技能/授权/原生参数 | [前序82项通过](skill-tests.txt)，收尾按当前三份技能/披露测试[76项再核通过](skill-tests-final.txt)：包括全部13命令未加载/未启用拒绝、隔离子任务不可写、模型不可传 requester_id、任务原件示例与全技能档位/项目context检查。[最终技能源码摘要](skill-manifest.json)、[lint](lint.txt)通过；对共享conftest中已有的单条E501长行使用原样例外，未重排无关内容。 |
+| 受影响后端 | [453 项纯检查通过](completion-pure-tests.txt)，覆盖真实采用读取、新 Run 原值映射、有限图闭包、来源变化、独立性、失败/未知不可关闭及共同发布尾部。 |
+| 普通真实 HTTP/PG 整链 | [检查记录](pg-completion.json)、[完整日志](pg-completion.txt)，测试连接 `jit=off`，只验证功能、不作为性能出口。实际独立 `127.0.0.1:64245/pdos_test`、marker `f9048729-3f2a-4494-af75-56e1db7d743d`、head `s0_0813`。从本轮启动至完成不修改被检查的领域代码；源码变化范围以 manifest 为准（变化项：['pdos-next/server/tests/change_execution/test_completion_fixture_window.py', 'pdos-next/server/tests/change_execution/test_native_field_completion_chain.py']）；主测试只在执行期换行两条断言消息，[AST等价记录](final-test-format-delta.json)保留，另一个变化是未参与本条PG链的纯辅助检查文件。收尾M9领域源码仍未变化，同期共享工作区变化另见[最终范围核对](post-check-source-coverage.json)，不宣称最新共享全量候选联验。 |
+| 迁移与约束 | [0813首次升](migration-up-0813.json)、[降](migration-down-0813.json)、[最终升](migration-final-up-0813.json)及[六项实际约束正负检查](deadline-pg-tests.json)通过；[最终存储/ORM T2集合](storage-final.json)与[有历史拒退](history-downgrade-refused.json)另有核对。 |
+| 当前保存事实 | [最终核对](final-facts.json)：Change `51d743d6-26a5-53d5-9729-b0d1e8023fb9` 共 12 个连续版本，Current=closed；两项采用、一项独立验证、一项单独关闭共4条完成记录，每条都有本人proof及唯一Receipt/Audit/Outbox/RequestKey，实际来源保留。原请求即时重放及关闭后重放同回执、零重复；有资格的原请求人仍被拒绝自我验证。未创建 Issue/CAPA。 |
+| 本轮前端候选 | [81 项 BFF 通过](web-bff.json)，[封存候选生产构建与TypeScript通过](web-build.json)。沙箱DNS阻断Google字体的[失败记录](web-build-sandbox-network-failure.json)保留，同一封存源码在允许字体网络后构建成功。末次视觉核对发现关闭态仍显示通用待办缺项，现仅改完成组件：关闭态保留记录与禁用按钮、显示不再重复办理的说明并隐藏不再适用的缺项；[8项既有组件检查](completion-ui-tests.txt)和[组件lint](completion-ui-lint.txt)通过，封存候选只纳入该组件差异重新构建。Field与BFF源码保持；同期其他会话的 `/plan` 和小Pai入口改动不在本轮构建覆盖内，见[源码范围](web-source-coverage.json)。 |
+| 实际页面 | [closed 状态/刷新/按钮及双主题检查](browser-closed.json)：使用本轮保存的实际病例，经当前构建BFF/UI读取；刷新零业务POST，关闭原文保留、全部收尾按钮禁用且已关闭说明可见、旧待办缺项不再显示，1440亮色及320暗色无横向溢出。截图为 [亮色](closed-light.png) 与 [暗色窄屏](closed-dark-mobile.png)。页面本轮没有提交业务命令；保存与原键重放由上述HTTP/PG覆盖。 |
+| 收尾 | [备份与清理](backup-cleanup.json)：独立库备份 88001222 字节，SHA-256 `ef6b185e29b94a63910bd8b7a7315411491af83b820b39588eebe96814502e37`，本轮实际原件逐文件摘要并另存。自有预览/浏览器关闭、唯一短登录删除，共享数据库/Temporal及全部旧备份保留。本轮只对新增0813做必要往返，不重复全链迁移或攻防。 |
+
+范围限制：采用只覆盖已明确批准的继任开发 Build，不证明库存、在制、其他 Build 或 ERP/MES 切换。Change 的独立验证不替代 TestRun 自身专业复核/处置；Run 计算 pass 不自动生效或关闭。本轮材料、人员及资格均为合成测试，真实模型调用0、业务外发0，无 git push 或部署。S1/S5正式验收、已暂缓性能、S3真实观察与既有23514/409余项保持。
+
+剩余：其他实际生效范围、其他专业分诊、爬坡反馈、完整知识自然入口与后续小Pai领域读取；新技能真实评测/rubric及租户启用/当前资格须按原流程办理。本轮关闭的是上述本地合成闭环检查点。

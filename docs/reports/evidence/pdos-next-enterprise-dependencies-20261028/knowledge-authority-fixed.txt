@@ -1,0 +1,23 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 4 items
+
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body PASSED [ 25%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[old_root] PASSED [ 50%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[claim] PASSED [ 75%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_updated_knowledge_dependency_still_uses_actual_original_scan_proofs PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[old_root]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[claim]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_updated_knowledge_dependency_still_uses_actual_original_scan_proofs
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 4 passed, 4 warnings in 33.75s ========================

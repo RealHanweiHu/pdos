@@ -1,0 +1,5300 @@
+{
+  "version": "qua04-query-only-pure-diagnostic/v1",
+  "no_database_or_provider": true,
+  "method": "Python transcription of production BM25; one unchanged chunk per frozen source; same tenant DF including private sources; peer private exclusion mirrors this fixture only; freshness omitted, not PG/ACL proof",
+  "policy": "query-function-words/v1/d82fddef4e6cc88671520befd2cf3adb1bb4e2c30ff9b1a0bfcc5ea9448a8474",
+  "function_words": [
+    "你",
+    "你们",
+    "先",
+    "再",
+    "别",
+    "对",
+    "您",
+    "我",
+    "我们",
+    "把",
+    "按",
+    "是不是",
+    "这",
+    "这个",
+    "这些",
+    "那",
+    "那个",
+    "那些"
+  ],
+  "input_sha256": {
+    "corpus.json": "846de93e8a8dd496ddc432b30220146dfc868b170da63ef331be83cdadc43920",
+    "questions.json": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685"
+  },
+  "native_baseline_top10_reproduced": 28,
+  "native_baseline_cases": 28,
+  "original_metrics": {
+    "version": "xiaopai-recall-metrics/v0",
+    "status": "scored",
+    "provenance": {
+      "questions_version": "xiaopai-eval-questions/v0",
+      "review_status": "draft_for_review",
+      "synthetic": true,
+      "trusted_root": false
+    },
+    "method": {
+      "source_identity": [
+        "source_type",
+        "source_id"
+      ],
+      "ranking": "first original positions; duplicates never add hits or extend cutoffs",
+      "mrr": "first expected source at its original position, without a cutoff",
+      "missing_positive_observation": "zero score, fixed original denominator",
+      "routing_and_workflow": "not_evaluated"
+    },
+    "retrieval": {
+      "positive_cases": 24,
+      "observed_positive_cases": 24,
+      "expected_source_count": 28,
+      "missing_positive_case_ids": [],
+      "hits_at_5": 27,
+      "macro_recall_at_5": 0.9791666666666666,
+      "micro_recall_at_5": 0.9642857142857143,
+      "hits_at_10": 27,
+      "macro_recall_at_10": 0.9791666666666666,
+      "micro_recall_at_10": 0.9642857142857143,
+      "mrr": 0.9791666666666666
+    },
+    "checks": {
+      "expected_empty": {
+        "cases": 0,
+        "passed": 0,
+        "failed": 0,
+        "missing": 0,
+        "status": "not_applicable",
+        "failed_case_ids": []
+      },
+      "forbidden": {
+        "cases": 4,
+        "passed": 4,
+        "failed": 0,
+        "missing": 0,
+        "status": "passed",
+        "failed_case_ids": []
+      }
+    },
+    "coverage": {
+      "questions": 40,
+      "retrieval_cases": 28,
+      "observed_retrieval_cases": 28,
+      "missing_observation_case_ids": [],
+      "not_evaluated": 12
+    },
+    "by_role": {
+      "engineering": {
+        "retrieval": {
+          "positive_cases": 6,
+          "observed_positive_cases": 6,
+          "expected_source_count": 8,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 8,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 8,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 0.9166666666666666
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 1,
+            "passed": 1,
+            "failed": 0,
+            "missing": 0,
+            "status": "passed",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 10,
+          "retrieval_cases": 7,
+          "observed_retrieval_cases": 7,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 3
+        }
+      },
+      "procurement": {
+        "retrieval": {
+          "positive_cases": 6,
+          "observed_positive_cases": 6,
+          "expected_source_count": 6,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 6,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 6,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 1,
+            "passed": 1,
+            "failed": 0,
+            "missing": 0,
+            "status": "passed",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 10,
+          "retrieval_cases": 7,
+          "observed_retrieval_cases": 7,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 3
+        }
+      },
+      "production": {
+        "retrieval": {
+          "positive_cases": 6,
+          "observed_positive_cases": 6,
+          "expected_source_count": 6,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 6,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 6,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 1,
+            "passed": 1,
+            "failed": 0,
+            "missing": 0,
+            "status": "passed",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 10,
+          "retrieval_cases": 7,
+          "observed_retrieval_cases": 7,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 3
+        }
+      },
+      "quality": {
+        "retrieval": {
+          "positive_cases": 6,
+          "observed_positive_cases": 6,
+          "expected_source_count": 8,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 7,
+          "macro_recall_at_5": 0.9166666666666666,
+          "micro_recall_at_5": 0.875,
+          "hits_at_10": 7,
+          "macro_recall_at_10": 0.9166666666666666,
+          "micro_recall_at_10": 0.875,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 1,
+            "passed": 1,
+            "failed": 0,
+            "missing": 0,
+            "status": "passed",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 10,
+          "retrieval_cases": 7,
+          "observed_retrieval_cases": 7,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 3
+        }
+      }
+    },
+    "by_slice": {
+      "conflict_unknown": {
+        "retrieval": {
+          "positive_cases": 4,
+          "observed_positive_cases": 4,
+          "expected_source_count": 6,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 6,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 6,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 4,
+          "observed_retrieval_cases": 4,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "current_fact": {
+        "retrieval": {
+          "positive_cases": 0,
+          "observed_positive_cases": 0,
+          "expected_source_count": 0,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 0,
+          "macro_recall_at_5": null,
+          "micro_recall_at_5": null,
+          "hits_at_10": 0,
+          "macro_recall_at_10": null,
+          "micro_recall_at_10": null,
+          "mrr": null
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 0,
+          "observed_retrieval_cases": 0,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 4
+        }
+      },
+      "exact_id": {
+        "retrieval": {
+          "positive_cases": 4,
+          "observed_positive_cases": 4,
+          "expected_source_count": 4,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 4,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 4,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 4,
+          "observed_retrieval_cases": 4,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "historical": {
+        "retrieval": {
+          "positive_cases": 4,
+          "observed_positive_cases": 4,
+          "expected_source_count": 4,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 4,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 4,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 4,
+          "observed_retrieval_cases": 4,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "injection": {
+        "retrieval": {
+          "positive_cases": 2,
+          "observed_positive_cases": 2,
+          "expected_source_count": 2,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 2,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 2,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 2,
+          "retrieval_cases": 2,
+          "observed_retrieval_cases": 2,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "normal": {
+        "retrieval": {
+          "positive_cases": 4,
+          "observed_positive_cases": 4,
+          "expected_source_count": 4,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 4,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 4,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 0.875
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 4,
+          "observed_retrieval_cases": 4,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "ordinary": {
+        "retrieval": {
+          "positive_cases": 0,
+          "observed_positive_cases": 0,
+          "expected_source_count": 0,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 0,
+          "macro_recall_at_5": null,
+          "micro_recall_at_5": null,
+          "hits_at_10": 0,
+          "macro_recall_at_10": null,
+          "micro_recall_at_10": null,
+          "mrr": null
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 0,
+          "observed_retrieval_cases": 0,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 4
+        }
+      },
+      "permission_negative": {
+        "retrieval": {
+          "positive_cases": 0,
+          "observed_positive_cases": 0,
+          "expected_source_count": 0,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 0,
+          "macro_recall_at_5": null,
+          "micro_recall_at_5": null,
+          "hits_at_10": 0,
+          "macro_recall_at_10": null,
+          "micro_recall_at_10": null,
+          "mrr": null
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 4,
+            "passed": 4,
+            "failed": 0,
+            "missing": 0,
+            "status": "passed",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 4,
+          "observed_retrieval_cases": 4,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "private_authorized": {
+        "retrieval": {
+          "positive_cases": 2,
+          "observed_positive_cases": 2,
+          "expected_source_count": 2,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 2,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 2,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 2,
+          "retrieval_cases": 2,
+          "observed_retrieval_cases": 2,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "should_lookup": {
+        "retrieval": {
+          "positive_cases": 4,
+          "observed_positive_cases": 4,
+          "expected_source_count": 6,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 5,
+          "macro_recall_at_5": 0.875,
+          "micro_recall_at_5": 0.8333333333333334,
+          "hits_at_10": 5,
+          "macro_recall_at_10": 0.875,
+          "micro_recall_at_10": 0.8333333333333334,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 4,
+          "observed_retrieval_cases": 4,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "turn_to_action": {
+        "retrieval": {
+          "positive_cases": 0,
+          "observed_positive_cases": 0,
+          "expected_source_count": 0,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 0,
+          "macro_recall_at_5": null,
+          "micro_recall_at_5": null,
+          "hits_at_10": 0,
+          "macro_recall_at_10": null,
+          "micro_recall_at_10": null,
+          "mrr": null
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 0,
+          "observed_retrieval_cases": 0,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 4
+        }
+      }
+    },
+    "cases": [
+      {
+        "case_id": "ENG-01",
+        "role": "engineering",
+        "slice": "normal",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "eng_seal_design"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "eng_seal_design"
+        ],
+        "reciprocal_rank": 0.5,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-02",
+        "role": "engineering",
+        "slice": "historical",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "eng_pilot_archive"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "eng_pilot_archive"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-03",
+        "role": "engineering",
+        "slice": "exact_id",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "eng_thermal_report"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "eng_thermal_report"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-04",
+        "role": "engineering",
+        "slice": "should_lookup",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 2,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 2,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "eng_seal_design",
+          "eng_gate_minutes"
+        ],
+        "hits_at_10": 2,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "eng_seal_design",
+          "eng_gate_minutes"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-05",
+        "role": "engineering",
+        "slice": "conflict_unknown",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 2,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 2,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "eng_gate_minutes",
+          "eng_shield_trial"
+        ],
+        "hits_at_10": 2,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "eng_gate_minutes",
+          "eng_shield_trial"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-06",
+        "role": "engineering",
+        "slice": "injection",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "eng_private_reserve"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "eng_private_reserve"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-07",
+        "role": "engineering",
+        "slice": "permission_negative",
+        "evaluation": "retrieval",
+        "actor": "peer",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 0,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 0,
+        "recall_at_5": null,
+        "found_aliases_at_5": [],
+        "hits_at_10": 0,
+        "recall_at_10": null,
+        "found_aliases_at_10": [],
+        "reciprocal_rank": null,
+        "forbidden_check": {
+          "status": "passed",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-08",
+        "role": "engineering",
+        "slice": "ordinary",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "not_required"
+      },
+      {
+        "case_id": "ENG-09",
+        "role": "engineering",
+        "slice": "current_fact",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "current_domain"
+      },
+      {
+        "case_id": "ENG-10",
+        "role": "engineering",
+        "slice": "turn_to_action",
+        "evaluation": "workflow",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "required"
+      },
+      {
+        "case_id": "QUA-01",
+        "role": "quality",
+        "slice": "normal",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "qua_issue_record"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "qua_issue_record"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-02",
+        "role": "quality",
+        "slice": "historical",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "qua_failure_archive"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "qua_failure_archive"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-03",
+        "role": "quality",
+        "slice": "exact_id",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "qua_capa_plan"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "qua_capa_plan"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-04",
+        "role": "quality",
+        "slice": "should_lookup",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 2,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 0.5,
+        "found_aliases_at_5": [
+          "qua_issue_record"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 0.5,
+        "found_aliases_at_10": [
+          "qua_issue_record"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-05",
+        "role": "quality",
+        "slice": "conflict_unknown",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 2,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 2,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "qua_lab_report",
+          "qua_line_review"
+        ],
+        "hits_at_10": 2,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "qua_lab_report",
+          "qua_line_review"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-06",
+        "role": "quality",
+        "slice": "injection",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "qua_private_blind"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "qua_private_blind"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-07",
+        "role": "quality",
+        "slice": "permission_negative",
+        "evaluation": "retrieval",
+        "actor": "peer",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 0,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 0,
+        "recall_at_5": null,
+        "found_aliases_at_5": [],
+        "hits_at_10": 0,
+        "recall_at_10": null,
+        "found_aliases_at_10": [],
+        "reciprocal_rank": null,
+        "forbidden_check": {
+          "status": "passed",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-08",
+        "role": "quality",
+        "slice": "ordinary",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "not_required"
+      },
+      {
+        "case_id": "QUA-09",
+        "role": "quality",
+        "slice": "current_fact",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "current_domain"
+      },
+      {
+        "case_id": "QUA-10",
+        "role": "quality",
+        "slice": "turn_to_action",
+        "evaluation": "workflow",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "required"
+      },
+      {
+        "case_id": "PRD-01",
+        "role": "production",
+        "slice": "normal",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "prd_work_instruction"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "prd_work_instruction"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-02",
+        "role": "production",
+        "slice": "historical",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "prd_pilot_archive"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "prd_pilot_archive"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-03",
+        "role": "production",
+        "slice": "exact_id",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "prd_first_article"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "prd_first_article"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-04",
+        "role": "production",
+        "slice": "should_lookup",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "prd_downtime"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "prd_downtime"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-05",
+        "role": "production",
+        "slice": "conflict_unknown",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "prd_wip_reconcile"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "prd_wip_reconcile"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-06",
+        "role": "production",
+        "slice": "private_authorized",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "prd_private_shift"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "prd_private_shift"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-07",
+        "role": "production",
+        "slice": "permission_negative",
+        "evaluation": "retrieval",
+        "actor": "peer",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 0,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 0,
+        "recall_at_5": null,
+        "found_aliases_at_5": [],
+        "hits_at_10": 0,
+        "recall_at_10": null,
+        "found_aliases_at_10": [],
+        "reciprocal_rank": null,
+        "forbidden_check": {
+          "status": "passed",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-08",
+        "role": "production",
+        "slice": "ordinary",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "not_required"
+      },
+      {
+        "case_id": "PRD-09",
+        "role": "production",
+        "slice": "current_fact",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "current_domain"
+      },
+      {
+        "case_id": "PRD-10",
+        "role": "production",
+        "slice": "turn_to_action",
+        "evaluation": "workflow",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "required"
+      },
+      {
+        "case_id": "PUR-01",
+        "role": "procurement",
+        "slice": "normal",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "pur_commitment"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "pur_commitment"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-02",
+        "role": "procurement",
+        "slice": "historical",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "pur_supply_archive"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "pur_supply_archive"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-03",
+        "role": "procurement",
+        "slice": "exact_id",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "pur_rfq"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "pur_rfq"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-04",
+        "role": "procurement",
+        "slice": "should_lookup",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "pur_substitution"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "pur_substitution"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-05",
+        "role": "procurement",
+        "slice": "conflict_unknown",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "pur_receiving_conflict"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "pur_receiving_conflict"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-06",
+        "role": "procurement",
+        "slice": "private_authorized",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "pur_private_cost"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "pur_private_cost"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-07",
+        "role": "procurement",
+        "slice": "permission_negative",
+        "evaluation": "retrieval",
+        "actor": "peer",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 0,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 0,
+        "recall_at_5": null,
+        "found_aliases_at_5": [],
+        "hits_at_10": 0,
+        "recall_at_10": null,
+        "found_aliases_at_10": [],
+        "reciprocal_rank": null,
+        "forbidden_check": {
+          "status": "passed",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-08",
+        "role": "procurement",
+        "slice": "ordinary",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "not_required"
+      },
+      {
+        "case_id": "PUR-09",
+        "role": "procurement",
+        "slice": "current_fact",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "current_domain"
+      },
+      {
+        "case_id": "PUR-10",
+        "role": "procurement",
+        "slice": "turn_to_action",
+        "evaluation": "workflow",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "required"
+      }
+    ]
+  },
+  "draft_metrics": {
+    "version": "xiaopai-recall-metrics/v0",
+    "status": "scored",
+    "provenance": {
+      "questions_version": "xiaopai-eval-questions/v0",
+      "review_status": "draft_for_review",
+      "synthetic": true,
+      "trusted_root": false
+    },
+    "method": {
+      "source_identity": [
+        "source_type",
+        "source_id"
+      ],
+      "ranking": "first original positions; duplicates never add hits or extend cutoffs",
+      "mrr": "first expected source at its original position, without a cutoff",
+      "missing_positive_observation": "zero score, fixed original denominator",
+      "routing_and_workflow": "not_evaluated"
+    },
+    "retrieval": {
+      "positive_cases": 24,
+      "observed_positive_cases": 24,
+      "expected_source_count": 28,
+      "missing_positive_case_ids": [],
+      "hits_at_5": 27,
+      "macro_recall_at_5": 0.9791666666666666,
+      "micro_recall_at_5": 0.9642857142857143,
+      "hits_at_10": 27,
+      "macro_recall_at_10": 0.9791666666666666,
+      "micro_recall_at_10": 0.9642857142857143,
+      "mrr": 0.9791666666666666
+    },
+    "checks": {
+      "expected_empty": {
+        "cases": 0,
+        "passed": 0,
+        "failed": 0,
+        "missing": 0,
+        "status": "not_applicable",
+        "failed_case_ids": []
+      },
+      "forbidden": {
+        "cases": 4,
+        "passed": 4,
+        "failed": 0,
+        "missing": 0,
+        "status": "passed",
+        "failed_case_ids": []
+      }
+    },
+    "coverage": {
+      "questions": 40,
+      "retrieval_cases": 28,
+      "observed_retrieval_cases": 28,
+      "missing_observation_case_ids": [],
+      "not_evaluated": 12
+    },
+    "by_role": {
+      "engineering": {
+        "retrieval": {
+          "positive_cases": 6,
+          "observed_positive_cases": 6,
+          "expected_source_count": 8,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 8,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 8,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 0.9166666666666666
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 1,
+            "passed": 1,
+            "failed": 0,
+            "missing": 0,
+            "status": "passed",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 10,
+          "retrieval_cases": 7,
+          "observed_retrieval_cases": 7,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 3
+        }
+      },
+      "procurement": {
+        "retrieval": {
+          "positive_cases": 6,
+          "observed_positive_cases": 6,
+          "expected_source_count": 6,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 6,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 6,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 1,
+            "passed": 1,
+            "failed": 0,
+            "missing": 0,
+            "status": "passed",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 10,
+          "retrieval_cases": 7,
+          "observed_retrieval_cases": 7,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 3
+        }
+      },
+      "production": {
+        "retrieval": {
+          "positive_cases": 6,
+          "observed_positive_cases": 6,
+          "expected_source_count": 6,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 6,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 6,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 1,
+            "passed": 1,
+            "failed": 0,
+            "missing": 0,
+            "status": "passed",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 10,
+          "retrieval_cases": 7,
+          "observed_retrieval_cases": 7,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 3
+        }
+      },
+      "quality": {
+        "retrieval": {
+          "positive_cases": 6,
+          "observed_positive_cases": 6,
+          "expected_source_count": 8,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 7,
+          "macro_recall_at_5": 0.9166666666666666,
+          "micro_recall_at_5": 0.875,
+          "hits_at_10": 7,
+          "macro_recall_at_10": 0.9166666666666666,
+          "micro_recall_at_10": 0.875,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 1,
+            "passed": 1,
+            "failed": 0,
+            "missing": 0,
+            "status": "passed",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 10,
+          "retrieval_cases": 7,
+          "observed_retrieval_cases": 7,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 3
+        }
+      }
+    },
+    "by_slice": {
+      "conflict_unknown": {
+        "retrieval": {
+          "positive_cases": 4,
+          "observed_positive_cases": 4,
+          "expected_source_count": 6,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 6,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 6,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 4,
+          "observed_retrieval_cases": 4,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "current_fact": {
+        "retrieval": {
+          "positive_cases": 0,
+          "observed_positive_cases": 0,
+          "expected_source_count": 0,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 0,
+          "macro_recall_at_5": null,
+          "micro_recall_at_5": null,
+          "hits_at_10": 0,
+          "macro_recall_at_10": null,
+          "micro_recall_at_10": null,
+          "mrr": null
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 0,
+          "observed_retrieval_cases": 0,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 4
+        }
+      },
+      "exact_id": {
+        "retrieval": {
+          "positive_cases": 4,
+          "observed_positive_cases": 4,
+          "expected_source_count": 4,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 4,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 4,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 4,
+          "observed_retrieval_cases": 4,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "historical": {
+        "retrieval": {
+          "positive_cases": 4,
+          "observed_positive_cases": 4,
+          "expected_source_count": 4,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 4,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 4,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 4,
+          "observed_retrieval_cases": 4,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "injection": {
+        "retrieval": {
+          "positive_cases": 2,
+          "observed_positive_cases": 2,
+          "expected_source_count": 2,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 2,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 2,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 2,
+          "retrieval_cases": 2,
+          "observed_retrieval_cases": 2,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "normal": {
+        "retrieval": {
+          "positive_cases": 4,
+          "observed_positive_cases": 4,
+          "expected_source_count": 4,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 4,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 4,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 0.875
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 4,
+          "observed_retrieval_cases": 4,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "ordinary": {
+        "retrieval": {
+          "positive_cases": 0,
+          "observed_positive_cases": 0,
+          "expected_source_count": 0,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 0,
+          "macro_recall_at_5": null,
+          "micro_recall_at_5": null,
+          "hits_at_10": 0,
+          "macro_recall_at_10": null,
+          "micro_recall_at_10": null,
+          "mrr": null
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 0,
+          "observed_retrieval_cases": 0,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 4
+        }
+      },
+      "permission_negative": {
+        "retrieval": {
+          "positive_cases": 0,
+          "observed_positive_cases": 0,
+          "expected_source_count": 0,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 0,
+          "macro_recall_at_5": null,
+          "micro_recall_at_5": null,
+          "hits_at_10": 0,
+          "macro_recall_at_10": null,
+          "micro_recall_at_10": null,
+          "mrr": null
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 4,
+            "passed": 4,
+            "failed": 0,
+            "missing": 0,
+            "status": "passed",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 4,
+          "observed_retrieval_cases": 4,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "private_authorized": {
+        "retrieval": {
+          "positive_cases": 2,
+          "observed_positive_cases": 2,
+          "expected_source_count": 2,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 2,
+          "macro_recall_at_5": 1.0,
+          "micro_recall_at_5": 1.0,
+          "hits_at_10": 2,
+          "macro_recall_at_10": 1.0,
+          "micro_recall_at_10": 1.0,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 2,
+          "retrieval_cases": 2,
+          "observed_retrieval_cases": 2,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "should_lookup": {
+        "retrieval": {
+          "positive_cases": 4,
+          "observed_positive_cases": 4,
+          "expected_source_count": 6,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 5,
+          "macro_recall_at_5": 0.875,
+          "micro_recall_at_5": 0.8333333333333334,
+          "hits_at_10": 5,
+          "macro_recall_at_10": 0.875,
+          "micro_recall_at_10": 0.8333333333333334,
+          "mrr": 1.0
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 4,
+          "observed_retrieval_cases": 4,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 0
+        }
+      },
+      "turn_to_action": {
+        "retrieval": {
+          "positive_cases": 0,
+          "observed_positive_cases": 0,
+          "expected_source_count": 0,
+          "missing_positive_case_ids": [],
+          "hits_at_5": 0,
+          "macro_recall_at_5": null,
+          "micro_recall_at_5": null,
+          "hits_at_10": 0,
+          "macro_recall_at_10": null,
+          "micro_recall_at_10": null,
+          "mrr": null
+        },
+        "checks": {
+          "expected_empty": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          },
+          "forbidden": {
+            "cases": 0,
+            "passed": 0,
+            "failed": 0,
+            "missing": 0,
+            "status": "not_applicable",
+            "failed_case_ids": []
+          }
+        },
+        "coverage": {
+          "questions": 4,
+          "retrieval_cases": 0,
+          "observed_retrieval_cases": 0,
+          "missing_observation_case_ids": [],
+          "not_evaluated": 4
+        }
+      }
+    },
+    "cases": [
+      {
+        "case_id": "ENG-01",
+        "role": "engineering",
+        "slice": "normal",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "eng_seal_design"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "eng_seal_design"
+        ],
+        "reciprocal_rank": 0.5,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-02",
+        "role": "engineering",
+        "slice": "historical",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "eng_pilot_archive"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "eng_pilot_archive"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-03",
+        "role": "engineering",
+        "slice": "exact_id",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "eng_thermal_report"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "eng_thermal_report"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-04",
+        "role": "engineering",
+        "slice": "should_lookup",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 2,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 2,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "eng_seal_design",
+          "eng_gate_minutes"
+        ],
+        "hits_at_10": 2,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "eng_seal_design",
+          "eng_gate_minutes"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-05",
+        "role": "engineering",
+        "slice": "conflict_unknown",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 2,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 2,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "eng_gate_minutes",
+          "eng_shield_trial"
+        ],
+        "hits_at_10": 2,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "eng_gate_minutes",
+          "eng_shield_trial"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-06",
+        "role": "engineering",
+        "slice": "injection",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "eng_private_reserve"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "eng_private_reserve"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-07",
+        "role": "engineering",
+        "slice": "permission_negative",
+        "evaluation": "retrieval",
+        "actor": "peer",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 0,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 0,
+        "recall_at_5": null,
+        "found_aliases_at_5": [],
+        "hits_at_10": 0,
+        "recall_at_10": null,
+        "found_aliases_at_10": [],
+        "reciprocal_rank": null,
+        "forbidden_check": {
+          "status": "passed",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "ENG-08",
+        "role": "engineering",
+        "slice": "ordinary",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "not_required"
+      },
+      {
+        "case_id": "ENG-09",
+        "role": "engineering",
+        "slice": "current_fact",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "current_domain"
+      },
+      {
+        "case_id": "ENG-10",
+        "role": "engineering",
+        "slice": "turn_to_action",
+        "evaluation": "workflow",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "required"
+      },
+      {
+        "case_id": "QUA-01",
+        "role": "quality",
+        "slice": "normal",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "qua_issue_record"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "qua_issue_record"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-02",
+        "role": "quality",
+        "slice": "historical",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "qua_failure_archive"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "qua_failure_archive"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-03",
+        "role": "quality",
+        "slice": "exact_id",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "qua_capa_plan"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "qua_capa_plan"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-04",
+        "role": "quality",
+        "slice": "should_lookup",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 2,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 0.5,
+        "found_aliases_at_5": [
+          "qua_issue_record"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 0.5,
+        "found_aliases_at_10": [
+          "qua_issue_record"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-05",
+        "role": "quality",
+        "slice": "conflict_unknown",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 2,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 2,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "qua_lab_report",
+          "qua_line_review"
+        ],
+        "hits_at_10": 2,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "qua_lab_report",
+          "qua_line_review"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-06",
+        "role": "quality",
+        "slice": "injection",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "qua_private_blind"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "qua_private_blind"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-07",
+        "role": "quality",
+        "slice": "permission_negative",
+        "evaluation": "retrieval",
+        "actor": "peer",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 0,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 0,
+        "recall_at_5": null,
+        "found_aliases_at_5": [],
+        "hits_at_10": 0,
+        "recall_at_10": null,
+        "found_aliases_at_10": [],
+        "reciprocal_rank": null,
+        "forbidden_check": {
+          "status": "passed",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "QUA-08",
+        "role": "quality",
+        "slice": "ordinary",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "not_required"
+      },
+      {
+        "case_id": "QUA-09",
+        "role": "quality",
+        "slice": "current_fact",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "current_domain"
+      },
+      {
+        "case_id": "QUA-10",
+        "role": "quality",
+        "slice": "turn_to_action",
+        "evaluation": "workflow",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "required"
+      },
+      {
+        "case_id": "PRD-01",
+        "role": "production",
+        "slice": "normal",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "prd_work_instruction"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "prd_work_instruction"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-02",
+        "role": "production",
+        "slice": "historical",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "prd_pilot_archive"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "prd_pilot_archive"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-03",
+        "role": "production",
+        "slice": "exact_id",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "prd_first_article"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "prd_first_article"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-04",
+        "role": "production",
+        "slice": "should_lookup",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "prd_downtime"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "prd_downtime"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-05",
+        "role": "production",
+        "slice": "conflict_unknown",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "prd_wip_reconcile"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "prd_wip_reconcile"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-06",
+        "role": "production",
+        "slice": "private_authorized",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "prd_private_shift"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "prd_private_shift"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-07",
+        "role": "production",
+        "slice": "permission_negative",
+        "evaluation": "retrieval",
+        "actor": "peer",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 0,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 0,
+        "recall_at_5": null,
+        "found_aliases_at_5": [],
+        "hits_at_10": 0,
+        "recall_at_10": null,
+        "found_aliases_at_10": [],
+        "reciprocal_rank": null,
+        "forbidden_check": {
+          "status": "passed",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PRD-08",
+        "role": "production",
+        "slice": "ordinary",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "not_required"
+      },
+      {
+        "case_id": "PRD-09",
+        "role": "production",
+        "slice": "current_fact",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "current_domain"
+      },
+      {
+        "case_id": "PRD-10",
+        "role": "production",
+        "slice": "turn_to_action",
+        "evaluation": "workflow",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "required"
+      },
+      {
+        "case_id": "PUR-01",
+        "role": "procurement",
+        "slice": "normal",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "pur_commitment"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "pur_commitment"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-02",
+        "role": "procurement",
+        "slice": "historical",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "pur_supply_archive"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "pur_supply_archive"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-03",
+        "role": "procurement",
+        "slice": "exact_id",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "pur_rfq"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "pur_rfq"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-04",
+        "role": "procurement",
+        "slice": "should_lookup",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "pur_substitution"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "pur_substitution"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-05",
+        "role": "procurement",
+        "slice": "conflict_unknown",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "pur_receiving_conflict"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "pur_receiving_conflict"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-06",
+        "role": "procurement",
+        "slice": "private_authorized",
+        "evaluation": "retrieval",
+        "actor": "owner",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 1,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 1,
+        "recall_at_5": 1.0,
+        "found_aliases_at_5": [
+          "pur_private_cost"
+        ],
+        "hits_at_10": 1,
+        "recall_at_10": 1.0,
+        "found_aliases_at_10": [
+          "pur_private_cost"
+        ],
+        "reciprocal_rank": 1.0,
+        "forbidden_check": {
+          "status": "not_applicable",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-07",
+        "role": "procurement",
+        "slice": "permission_negative",
+        "evaluation": "retrieval",
+        "actor": "peer",
+        "observed": true,
+        "status": "scored",
+        "expected_source_count": 0,
+        "unique_returned_sources": 10,
+        "duplicate_sources": [],
+        "hits_at_5": 0,
+        "recall_at_5": null,
+        "found_aliases_at_5": [],
+        "hits_at_10": 0,
+        "recall_at_10": null,
+        "found_aliases_at_10": [],
+        "reciprocal_rank": null,
+        "forbidden_check": {
+          "status": "passed",
+          "found_aliases": []
+        },
+        "expected_empty_check": {
+          "status": "not_applicable"
+        }
+      },
+      {
+        "case_id": "PUR-08",
+        "role": "procurement",
+        "slice": "ordinary",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "not_required"
+      },
+      {
+        "case_id": "PUR-09",
+        "role": "procurement",
+        "slice": "current_fact",
+        "evaluation": "routing",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "current_domain"
+      },
+      {
+        "case_id": "PUR-10",
+        "role": "procurement",
+        "slice": "turn_to_action",
+        "evaluation": "workflow",
+        "actor": "owner",
+        "observed": false,
+        "status": "not_evaluated",
+        "reason": "retrieval scorer does not evaluate this mode",
+        "expected_lookup": "required"
+      }
+    ]
+  },
+  "checks": {
+    "identifier_controls": 9,
+    "technical_terms_unchanged": true,
+    "all_function_word_query_empty_no_fallback": true,
+    "all_24_document_analyses_unchanged": true
+  },
+  "cases": [
+    {
+      "case_id": "ENG-01",
+      "actor": "owner",
+      "expected_sources": [
+        "eng_seal_design"
+      ],
+      "native_top10": [
+        "pur_commitment",
+        "eng_seal_design",
+        "eng_gate_minutes",
+        "qua_line_review",
+        "qua_capa_plan",
+        "pur_supply_archive",
+        "pur_substitution",
+        "eng_private_reserve",
+        "qua_issue_record",
+        "prd_pilot_archive"
+      ],
+      "pure_original_top10": [
+        "pur_commitment",
+        "eng_seal_design",
+        "eng_gate_minutes",
+        "qua_line_review",
+        "qua_capa_plan",
+        "pur_supply_archive",
+        "pur_substitution",
+        "eng_private_reserve",
+        "qua_issue_record",
+        "prd_pilot_archive"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "pur_commitment",
+        "eng_seal_design",
+        "eng_gate_minutes",
+        "qua_line_review",
+        "qua_capa_plan",
+        "pur_supply_archive",
+        "pur_substitution",
+        "eng_private_reserve",
+        "qua_issue_record",
+        "prd_pilot_archive"
+      ],
+      "before_expected_ranks": {
+        "eng_seal_design": 2
+      },
+      "after_expected_ranks": {
+        "eng_seal_design": 2
+      },
+      "newly_removed": [
+        "把"
+      ]
+    },
+    {
+      "case_id": "ENG-02",
+      "actor": "owner",
+      "expected_sources": [
+        "eng_pilot_archive"
+      ],
+      "native_top10": [
+        "eng_pilot_archive",
+        "eng_gate_minutes",
+        "eng_seal_design",
+        "eng_thermal_report",
+        "eng_shield_trial",
+        "eng_private_reserve",
+        "qua_failure_archive",
+        "pur_supply_archive",
+        "qua_capa_plan",
+        "prd_work_instruction"
+      ],
+      "pure_original_top10": [
+        "eng_pilot_archive",
+        "eng_gate_minutes",
+        "eng_seal_design",
+        "eng_thermal_report",
+        "eng_shield_trial",
+        "eng_private_reserve",
+        "qua_failure_archive",
+        "pur_supply_archive",
+        "qua_capa_plan",
+        "prd_work_instruction"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "eng_pilot_archive",
+        "eng_gate_minutes",
+        "eng_seal_design",
+        "eng_thermal_report",
+        "eng_shield_trial",
+        "eng_private_reserve",
+        "qua_failure_archive",
+        "pur_supply_archive",
+        "qua_capa_plan",
+        "prd_work_instruction"
+      ],
+      "before_expected_ranks": {
+        "eng_pilot_archive": 1
+      },
+      "after_expected_ranks": {
+        "eng_pilot_archive": 1
+      },
+      "newly_removed": []
+    },
+    {
+      "case_id": "ENG-03",
+      "actor": "owner",
+      "expected_sources": [
+        "eng_thermal_report"
+      ],
+      "native_top10": [
+        "eng_thermal_report",
+        "eng_private_reserve",
+        "qua_private_blind",
+        "eng_seal_design",
+        "eng_gate_minutes",
+        "pur_receiving_conflict",
+        "eng_pilot_archive",
+        "prd_downtime",
+        "pur_supply_archive",
+        "qua_failure_archive"
+      ],
+      "pure_original_top10": [
+        "eng_thermal_report",
+        "eng_private_reserve",
+        "qua_private_blind",
+        "eng_seal_design",
+        "eng_gate_minutes",
+        "pur_receiving_conflict",
+        "eng_pilot_archive",
+        "prd_downtime",
+        "pur_supply_archive",
+        "qua_failure_archive"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "eng_thermal_report",
+        "eng_private_reserve",
+        "qua_private_blind",
+        "eng_seal_design",
+        "eng_gate_minutes",
+        "pur_receiving_conflict",
+        "eng_pilot_archive",
+        "prd_downtime",
+        "pur_supply_archive",
+        "qua_failure_archive"
+      ],
+      "before_expected_ranks": {
+        "eng_thermal_report": 1
+      },
+      "after_expected_ranks": {
+        "eng_thermal_report": 1
+      },
+      "newly_removed": []
+    },
+    {
+      "case_id": "ENG-04",
+      "actor": "owner",
+      "expected_sources": [
+        "eng_seal_design",
+        "eng_gate_minutes"
+      ],
+      "native_top10": [
+        "eng_gate_minutes",
+        "eng_seal_design",
+        "prd_first_article",
+        "eng_shield_trial",
+        "pur_private_cost",
+        "eng_private_reserve",
+        "qua_lab_report",
+        "pur_substitution",
+        "qua_issue_record",
+        "prd_downtime"
+      ],
+      "pure_original_top10": [
+        "eng_gate_minutes",
+        "eng_seal_design",
+        "prd_first_article",
+        "eng_shield_trial",
+        "pur_private_cost",
+        "eng_private_reserve",
+        "qua_lab_report",
+        "pur_substitution",
+        "qua_issue_record",
+        "prd_downtime"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "eng_gate_minutes",
+        "eng_seal_design",
+        "prd_first_article",
+        "eng_private_reserve",
+        "pur_substitution",
+        "eng_shield_trial",
+        "prd_downtime",
+        "pur_receiving_conflict",
+        "qua_capa_plan",
+        "qua_line_review"
+      ],
+      "before_expected_ranks": {
+        "eng_gate_minutes": 1,
+        "eng_seal_design": 2
+      },
+      "after_expected_ranks": {
+        "eng_gate_minutes": 1,
+        "eng_seal_design": 2
+      },
+      "newly_removed": [
+        "对",
+        "我们",
+        "这个"
+      ]
+    },
+    {
+      "case_id": "ENG-05",
+      "actor": "owner",
+      "expected_sources": [
+        "eng_gate_minutes",
+        "eng_shield_trial"
+      ],
+      "native_top10": [
+        "eng_gate_minutes",
+        "eng_shield_trial",
+        "eng_seal_design",
+        "qua_lab_report",
+        "prd_pilot_archive",
+        "qua_failure_archive",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "pur_supply_archive",
+        "prd_private_shift"
+      ],
+      "pure_original_top10": [
+        "eng_gate_minutes",
+        "eng_shield_trial",
+        "eng_seal_design",
+        "qua_lab_report",
+        "prd_pilot_archive",
+        "qua_failure_archive",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "pur_supply_archive",
+        "prd_private_shift"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "eng_gate_minutes",
+        "eng_shield_trial",
+        "eng_seal_design",
+        "qua_lab_report",
+        "prd_pilot_archive",
+        "qua_failure_archive",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "pur_supply_archive",
+        "eng_thermal_report"
+      ],
+      "before_expected_ranks": {
+        "eng_gate_minutes": 1,
+        "eng_shield_trial": 2
+      },
+      "after_expected_ranks": {
+        "eng_gate_minutes": 1,
+        "eng_shield_trial": 2
+      },
+      "newly_removed": [
+        "先",
+        "我",
+        "那"
+      ]
+    },
+    {
+      "case_id": "ENG-06",
+      "actor": "owner",
+      "expected_sources": [
+        "eng_private_reserve"
+      ],
+      "native_top10": [
+        "eng_private_reserve",
+        "pur_commitment",
+        "eng_seal_design",
+        "prd_downtime",
+        "eng_gate_minutes",
+        "prd_wip_reconcile",
+        "pur_supply_archive",
+        "pur_substitution",
+        "qua_lab_report",
+        "eng_pilot_archive"
+      ],
+      "pure_original_top10": [
+        "eng_private_reserve",
+        "pur_commitment",
+        "eng_seal_design",
+        "prd_downtime",
+        "eng_gate_minutes",
+        "prd_wip_reconcile",
+        "pur_supply_archive",
+        "pur_substitution",
+        "qua_lab_report",
+        "eng_pilot_archive"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "eng_private_reserve",
+        "pur_commitment",
+        "eng_seal_design",
+        "prd_downtime",
+        "eng_gate_minutes",
+        "prd_wip_reconcile",
+        "pur_supply_archive",
+        "pur_substitution",
+        "qua_lab_report",
+        "eng_pilot_archive"
+      ],
+      "before_expected_ranks": {
+        "eng_private_reserve": 1
+      },
+      "after_expected_ranks": {
+        "eng_private_reserve": 1
+      },
+      "newly_removed": [
+        "我"
+      ]
+    },
+    {
+      "case_id": "ENG-07",
+      "actor": "peer",
+      "expected_sources": [],
+      "native_top10": [
+        "eng_seal_design",
+        "prd_first_article",
+        "pur_commitment",
+        "eng_pilot_archive",
+        "eng_gate_minutes",
+        "eng_shield_trial",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "pur_substitution",
+        "qua_line_review"
+      ],
+      "pure_original_top10": [
+        "eng_seal_design",
+        "prd_first_article",
+        "pur_commitment",
+        "eng_pilot_archive",
+        "eng_gate_minutes",
+        "eng_shield_trial",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "pur_substitution",
+        "qua_line_review"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "eng_seal_design",
+        "prd_first_article",
+        "pur_commitment",
+        "eng_pilot_archive",
+        "eng_gate_minutes",
+        "eng_shield_trial",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "pur_substitution",
+        "qua_line_review"
+      ],
+      "before_expected_ranks": {},
+      "after_expected_ranks": {},
+      "newly_removed": [
+        "我"
+      ]
+    },
+    {
+      "case_id": "QUA-01",
+      "actor": "owner",
+      "expected_sources": [
+        "qua_issue_record"
+      ],
+      "native_top10": [
+        "qua_issue_record",
+        "qua_capa_plan",
+        "qua_failure_archive",
+        "prd_private_shift",
+        "qua_private_blind",
+        "qua_lab_report",
+        "prd_wip_reconcile",
+        "eng_seal_design",
+        "pur_receiving_conflict",
+        "eng_private_reserve"
+      ],
+      "pure_original_top10": [
+        "qua_issue_record",
+        "qua_capa_plan",
+        "qua_failure_archive",
+        "prd_private_shift",
+        "qua_private_blind",
+        "qua_lab_report",
+        "prd_wip_reconcile",
+        "eng_seal_design",
+        "pur_receiving_conflict",
+        "eng_private_reserve"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "qua_issue_record",
+        "qua_capa_plan",
+        "qua_failure_archive",
+        "prd_private_shift",
+        "qua_lab_report",
+        "qua_private_blind",
+        "eng_seal_design",
+        "prd_wip_reconcile",
+        "pur_receiving_conflict",
+        "prd_downtime"
+      ],
+      "before_expected_ranks": {
+        "qua_issue_record": 1
+      },
+      "after_expected_ranks": {
+        "qua_issue_record": 1
+      },
+      "newly_removed": [
+        "我",
+        "把"
+      ]
+    },
+    {
+      "case_id": "QUA-02",
+      "actor": "owner",
+      "expected_sources": [
+        "qua_failure_archive"
+      ],
+      "native_top10": [
+        "qua_failure_archive",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "pur_supply_archive",
+        "qua_private_blind",
+        "qua_lab_report",
+        "pur_receiving_conflict",
+        "pur_rfq",
+        "eng_gate_minutes",
+        "pur_commitment"
+      ],
+      "pure_original_top10": [
+        "qua_failure_archive",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "pur_supply_archive",
+        "qua_private_blind",
+        "qua_lab_report",
+        "pur_receiving_conflict",
+        "pur_rfq",
+        "eng_gate_minutes",
+        "pur_commitment"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "qua_failure_archive",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "pur_supply_archive",
+        "qua_private_blind",
+        "qua_lab_report",
+        "pur_rfq",
+        "pur_receiving_conflict",
+        "eng_gate_minutes",
+        "pur_commitment"
+      ],
+      "before_expected_ranks": {
+        "qua_failure_archive": 1
+      },
+      "after_expected_ranks": {
+        "qua_failure_archive": 1
+      },
+      "newly_removed": [
+        "把"
+      ]
+    },
+    {
+      "case_id": "QUA-03",
+      "actor": "owner",
+      "expected_sources": [
+        "qua_capa_plan"
+      ],
+      "native_top10": [
+        "qua_capa_plan",
+        "eng_thermal_report",
+        "eng_shield_trial",
+        "pur_rfq",
+        "qua_lab_report",
+        "prd_first_article",
+        "eng_gate_minutes",
+        "qua_private_blind",
+        "pur_substitution",
+        "prd_work_instruction"
+      ],
+      "pure_original_top10": [
+        "qua_capa_plan",
+        "eng_thermal_report",
+        "eng_shield_trial",
+        "pur_rfq",
+        "qua_lab_report",
+        "prd_first_article",
+        "eng_gate_minutes",
+        "qua_private_blind",
+        "pur_substitution",
+        "prd_work_instruction"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "qua_capa_plan",
+        "eng_thermal_report",
+        "eng_shield_trial",
+        "pur_rfq",
+        "qua_lab_report",
+        "prd_first_article",
+        "qua_private_blind",
+        "pur_substitution",
+        "eng_gate_minutes",
+        "qua_issue_record"
+      ],
+      "before_expected_ranks": {
+        "qua_capa_plan": 1
+      },
+      "after_expected_ranks": {
+        "qua_capa_plan": 1
+      },
+      "newly_removed": [
+        "按"
+      ]
+    },
+    {
+      "case_id": "QUA-04",
+      "actor": "owner",
+      "expected_sources": [
+        "qua_issue_record",
+        "qua_lab_report"
+      ],
+      "native_top10": [
+        "qua_issue_record",
+        "qua_private_blind",
+        "qua_failure_archive",
+        "eng_gate_minutes",
+        "pur_substitution",
+        "pur_private_cost",
+        "prd_work_instruction",
+        "prd_first_article",
+        "prd_pilot_archive",
+        "qua_capa_plan"
+      ],
+      "pure_original_top10": [
+        "qua_issue_record",
+        "qua_private_blind",
+        "qua_failure_archive",
+        "eng_gate_minutes",
+        "pur_substitution",
+        "pur_private_cost",
+        "prd_work_instruction",
+        "prd_first_article",
+        "prd_pilot_archive",
+        "qua_capa_plan"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "qua_issue_record",
+        "qua_failure_archive",
+        "pur_substitution",
+        "prd_first_article",
+        "qua_private_blind",
+        "prd_pilot_archive",
+        "qua_capa_plan",
+        "pur_supply_archive",
+        "eng_seal_design",
+        "prd_downtime"
+      ],
+      "before_expected_ranks": {
+        "qua_issue_record": 1,
+        "qua_lab_report": 14
+      },
+      "after_expected_ranks": {
+        "qua_issue_record": 1,
+        "qua_lab_report": 11
+      },
+      "newly_removed": [
+        "先",
+        "别",
+        "对",
+        "我们",
+        "把",
+        "按",
+        "是不是",
+        "这"
+      ],
+      "before_all_candidates": [
+        {
+          "alias": "qua_issue_record",
+          "score_without_freshness": 10.76877085800073,
+          "contributions": {
+            "不是": 1.1021808094401648,
+            "对": 1.5469295369707836,
+            "批": 1.6799530722751828,
+            "把": 0.488391886808553,
+            "登记": 0.8931921033411334,
+            "裂纹": 2.229032130968873,
+            "问题": 2.8290913181960393
+          },
+          "code_hit": 0,
+          "source_id": "1c301b72-699b-4072-b518-03399ff7b7fc",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "qua_private_blind",
+          "score_without_freshness": 7.308123076004934,
+          "contributions": {
+            "不是": 1.0683119403172099,
+            "把": 0.6528885145398958,
+            "登记": 0.4733841124458023,
+            "裂纹": 1.3339654937640097,
+            "这": 2.280179012592181,
+            "问题": 1.4993940023458352
+          },
+          "code_hit": 0,
+          "source_id": "eacb04f7-afa7-4827-9681-deaf3c950999",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "qua_failure_archive",
+          "score_without_freshness": 7.183040911380294,
+          "contributions": {
+            "不是": 1.0816065983288776,
+            "批": 1.8945234416203944,
+            "把": 0.4792751632200313,
+            "裂纹": 2.2095824269283173,
+            "问题": 1.5180532812826733
+          },
+          "code_hit": 0,
+          "source_id": "dc4d3ddf-3ed0-4b4b-a73b-86821a024d64",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "eng_gate_minutes",
+          "score_without_freshness": 6.522904936314979,
+          "contributions": {
+            "先": 1.923340037472597,
+            "按": 3.1183770409963336,
+            "问题": 1.4811878578460482
+          },
+          "code_hit": 0,
+          "source_id": "5d2b6930-0b3a-498d-bb1b-196961b22d20",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "pur_substitution",
+          "score_without_freshness": 5.289548595999996,
+          "contributions": {
+            "料": 4.628252120940568,
+            "登记": 0.6612964750594287
+          },
+          "code_hit": 0,
+          "source_id": "0ac30675-bdf5-4981-8ea3-3e2702dca75c",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "pur_private_cost",
+          "score_without_freshness": 5.2726620426676165,
+          "contributions": {
+            "不是": 1.0585534664332863,
+            "对": 1.4856978180560114,
+            "登记": 0.4690599948130862,
+            "这": 2.2593507633652323
+          },
+          "code_hit": 0,
+          "source_id": "1ba9c339-072a-4d10-a347-908d3a9bf858",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "prd_work_instruction",
+          "score_without_freshness": 5.222068791620389,
+          "contributions": {
+            "先": 1.965096543943486,
+            "把": 0.4777886972609317,
+            "按": 2.301394853155039,
+            "登记": 0.4777886972609317
+          },
+          "code_hit": 0,
+          "source_id": "e0cd5aaf-be01-448d-84b3-0cbbd62f4d13",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "prd_first_article",
+          "score_without_freshness": 4.968036569573644,
+          "contributions": {
+            "检测": 4.478091401541953,
+            "登记": 0.48994516803169114
+          },
+          "code_hit": 0,
+          "source_id": "502d8f98-0929-4761-a1c2-fb94d9402667",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "prd_pilot_archive",
+          "score_without_freshness": 4.828322465249279,
+          "contributions": {
+            "原因": 2.0881474474580433,
+            "批": 1.7247610406157599,
+            "把": 0.5077069885877378,
+            "登记": 0.5077069885877378
+          },
+          "code_hit": 0,
+          "source_id": "6c239b9f-db4d-41d7-a9cd-f49452233c9a",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "qua_capa_plan",
+          "score_without_freshness": 4.684060486858558,
+          "contributions": {
+            "把": 0.6612964750594287,
+            "登记": 0.4822760164653072,
+            "裂纹": 2.0129298294561844,
+            "问题": 1.5275581658776372
+          },
+          "code_hit": 0,
+          "source_id": "7e8f53b0-5add-4acc-945f-8ea442713c6a",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "prd_private_shift",
+          "score_without_freshness": 4.100671398186851,
+          "contributions": {
+            "不是": 1.105686184533502,
+            "先": 2.0150948775899664,
+            "把": 0.48994516803169114,
+            "登记": 0.48994516803169114
+          },
+          "code_hit": 0,
+          "source_id": "7cc6f40e-6217-4790-9a23-3f7557bfa6e7",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "eng_seal_design",
+          "score_without_freshness": 4.00523038890702,
+          "contributions": {
+            "不是": 0.9672546616103009,
+            "原因": 1.7628057049100954,
+            "把": 0.4286042046478481,
+            "登记": 0.8465658177387761
+          },
+          "code_hit": 0,
+          "source_id": "6aed3447-da8f-4ef2-8e02-0bec4c5694ff",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "pur_supply_archive",
+          "score_without_freshness": 3.97329186290309,
+          "contributions": {
+            "原因": 1.9897816764524592,
+            "批": 1.9835101864506306
+          },
+          "code_hit": 0,
+          "source_id": "c9ab0127-d396-43de-b476-ea36a9e25acf",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "qua_lab_report",
+          "score_without_freshness": 3.7923923188638504,
+          "contributions": {
+            "对": 1.5568006382997552,
+            "裂纹": 2.235591680564095
+          },
+          "code_hit": 0,
+          "source_id": "349af4fa-a258-4c71-bf43-3b0aaf17cd72",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "eng_shield_trial",
+          "score_without_freshness": 2.476603607722736,
+          "contributions": {
+            "对": 1.5180532812826733,
+            "把": 0.4792751632200313,
+            "登记": 0.4792751632200313
+          },
+          "code_hit": 0,
+          "source_id": "456e40ef-8521-4571-a859-a97ccaa4a1ad",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "prd_wip_reconcile",
+          "score_without_freshness": 2.4538424008764297,
+          "contributions": {
+            "批": 1.167151397742741,
+            "把": 0.6433455015668444,
+            "登记": 0.6433455015668444
+          },
+          "code_hit": 0,
+          "source_id": "1ded6630-ff00-4471-bcf1-656a4451dfad",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "prd_downtime",
+          "score_without_freshness": 2.324865714758253,
+          "contributions": {
+            "不是": 1.098697590401728,
+            "批": 1.226168124356525
+          },
+          "code_hit": 0,
+          "source_id": "014fd8a5-ac18-486a-adec-4c64d9a917d5",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "eng_private_reserve",
+          "score_without_freshness": 2.04015692476894,
+          "contributions": {
+            "不是": 1.0816065983288776,
+            "把": 0.4792751632200313,
+            "登记": 0.4792751632200313
+          },
+          "code_hit": 0,
+          "source_id": "e837b144-6543-4b8b-8e87-67205ce0b257",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "qua_line_review",
+          "score_without_freshness": 2.0054903516113662,
+          "contributions": {
+            "裂纹": 2.0054903516113662
+          },
+          "code_hit": 0,
+          "source_id": "6f83d2cf-f52c-49f7-8848-bdc55b2cb05d",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "pur_commitment",
+          "score_without_freshness": 1.9788589423616325,
+          "contributions": {
+            "对": 1.5040156860108087,
+            "把": 0.4748432563508238
+          },
+          "code_hit": 0,
+          "source_id": "d54df16e-e038-4414-97ce-ed070dd6619d",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "eng_pilot_archive",
+          "score_without_freshness": 1.8655641035001596,
+          "contributions": {
+            "批": 1.2070942409909513,
+            "把": 0.6584698625092082
+          },
+          "code_hit": 0,
+          "source_id": "64d33f94-f744-4a6c-95d8-ea98d28455c8",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "pur_receiving_conflict",
+          "score_without_freshness": 0.9830167217737172,
+          "contributions": {
+            "把": 0.4915083608868586,
+            "登记": 0.4915083608868586
+          },
+          "code_hit": 0,
+          "source_id": "b61cacdd-db9c-4b49-b3a5-1730f4af1693",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "eng_thermal_report",
+          "score_without_freshness": 0.9212889980630248,
+          "contributions": {
+            "把": 0.4606444990315124,
+            "登记": 0.4606444990315124
+          },
+          "code_hit": 0,
+          "source_id": "9527c946-a154-4628-af86-0590b8e9c8c9",
+          "source_type": "artifact"
+        }
+      ],
+      "after_all_candidates": [
+        {
+          "alias": "qua_issue_record",
+          "score_without_freshness": 8.733449434221393,
+          "contributions": {
+            "不是": 1.1021808094401648,
+            "批": 1.6799530722751828,
+            "登记": 0.8931921033411334,
+            "裂纹": 2.229032130968873,
+            "问题": 2.8290913181960393
+          },
+          "code_hit": 0,
+          "source_id": "1c301b72-699b-4072-b518-03399ff7b7fc",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "qua_failure_archive",
+          "score_without_freshness": 6.703765748160262,
+          "contributions": {
+            "不是": 1.0816065983288776,
+            "批": 1.8945234416203944,
+            "裂纹": 2.2095824269283173,
+            "问题": 1.5180532812826733
+          },
+          "code_hit": 0,
+          "source_id": "dc4d3ddf-3ed0-4b4b-a73b-86821a024d64",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "pur_substitution",
+          "score_without_freshness": 5.289548595999996,
+          "contributions": {
+            "料": 4.628252120940568,
+            "登记": 0.6612964750594287
+          },
+          "code_hit": 0,
+          "source_id": "0ac30675-bdf5-4981-8ea3-3e2702dca75c",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "prd_first_article",
+          "score_without_freshness": 4.968036569573644,
+          "contributions": {
+            "检测": 4.478091401541953,
+            "登记": 0.48994516803169114
+          },
+          "code_hit": 0,
+          "source_id": "502d8f98-0929-4761-a1c2-fb94d9402667",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "qua_private_blind",
+          "score_without_freshness": 4.375055548872857,
+          "contributions": {
+            "不是": 1.0683119403172099,
+            "登记": 0.4733841124458023,
+            "裂纹": 1.3339654937640097,
+            "问题": 1.4993940023458352
+          },
+          "code_hit": 0,
+          "source_id": "eacb04f7-afa7-4827-9681-deaf3c950999",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "prd_pilot_archive",
+          "score_without_freshness": 4.3206154766615406,
+          "contributions": {
+            "原因": 2.0881474474580433,
+            "批": 1.7247610406157599,
+            "登记": 0.5077069885877378
+          },
+          "code_hit": 0,
+          "source_id": "6c239b9f-db4d-41d7-a9cd-f49452233c9a",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "qua_capa_plan",
+          "score_without_freshness": 4.022764011799128,
+          "contributions": {
+            "登记": 0.4822760164653072,
+            "裂纹": 2.0129298294561844,
+            "问题": 1.5275581658776372
+          },
+          "code_hit": 0,
+          "source_id": "7e8f53b0-5add-4acc-945f-8ea442713c6a",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "pur_supply_archive",
+          "score_without_freshness": 3.97329186290309,
+          "contributions": {
+            "原因": 1.9897816764524592,
+            "批": 1.9835101864506306
+          },
+          "code_hit": 0,
+          "source_id": "c9ab0127-d396-43de-b476-ea36a9e25acf",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "eng_seal_design",
+          "score_without_freshness": 3.5766261842591724,
+          "contributions": {
+            "不是": 0.9672546616103009,
+            "原因": 1.7628057049100954,
+            "登记": 0.8465658177387761
+          },
+          "code_hit": 0,
+          "source_id": "6aed3447-da8f-4ef2-8e02-0bec4c5694ff",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "prd_downtime",
+          "score_without_freshness": 2.324865714758253,
+          "contributions": {
+            "不是": 1.098697590401728,
+            "批": 1.226168124356525
+          },
+          "code_hit": 0,
+          "source_id": "014fd8a5-ac18-486a-adec-4c64d9a917d5",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "qua_lab_report",
+          "score_without_freshness": 2.235591680564095,
+          "contributions": {
+            "裂纹": 2.235591680564095
+          },
+          "code_hit": 0,
+          "source_id": "349af4fa-a258-4c71-bf43-3b0aaf17cd72",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "qua_line_review",
+          "score_without_freshness": 2.0054903516113662,
+          "contributions": {
+            "裂纹": 2.0054903516113662
+          },
+          "code_hit": 0,
+          "source_id": "6f83d2cf-f52c-49f7-8848-bdc55b2cb05d",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "prd_wip_reconcile",
+          "score_without_freshness": 1.8104968993095856,
+          "contributions": {
+            "批": 1.167151397742741,
+            "登记": 0.6433455015668444
+          },
+          "code_hit": 0,
+          "source_id": "1ded6630-ff00-4471-bcf1-656a4451dfad",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "prd_private_shift",
+          "score_without_freshness": 1.595631352565193,
+          "contributions": {
+            "不是": 1.105686184533502,
+            "登记": 0.48994516803169114
+          },
+          "code_hit": 0,
+          "source_id": "7cc6f40e-6217-4790-9a23-3f7557bfa6e7",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "eng_private_reserve",
+          "score_without_freshness": 1.560881761548909,
+          "contributions": {
+            "不是": 1.0816065983288776,
+            "登记": 0.4792751632200313
+          },
+          "code_hit": 0,
+          "source_id": "e837b144-6543-4b8b-8e87-67205ce0b257",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "pur_private_cost",
+          "score_without_freshness": 1.5276134612463725,
+          "contributions": {
+            "不是": 1.0585534664332863,
+            "登记": 0.4690599948130862
+          },
+          "code_hit": 0,
+          "source_id": "1ba9c339-072a-4d10-a347-908d3a9bf858",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "eng_gate_minutes",
+          "score_without_freshness": 1.4811878578460482,
+          "contributions": {
+            "问题": 1.4811878578460482
+          },
+          "code_hit": 0,
+          "source_id": "5d2b6930-0b3a-498d-bb1b-196961b22d20",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "eng_pilot_archive",
+          "score_without_freshness": 1.2070942409909513,
+          "contributions": {
+            "批": 1.2070942409909513
+          },
+          "code_hit": 0,
+          "source_id": "64d33f94-f744-4a6c-95d8-ea98d28455c8",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "pur_receiving_conflict",
+          "score_without_freshness": 0.4915083608868586,
+          "contributions": {
+            "登记": 0.4915083608868586
+          },
+          "code_hit": 0,
+          "source_id": "b61cacdd-db9c-4b49-b3a5-1730f4af1693",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "eng_shield_trial",
+          "score_without_freshness": 0.4792751632200313,
+          "contributions": {
+            "登记": 0.4792751632200313
+          },
+          "code_hit": 0,
+          "source_id": "456e40ef-8521-4571-a859-a97ccaa4a1ad",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "prd_work_instruction",
+          "score_without_freshness": 0.4777886972609317,
+          "contributions": {
+            "登记": 0.4777886972609317
+          },
+          "code_hit": 0,
+          "source_id": "e0cd5aaf-be01-448d-84b3-0cbbd62f4d13",
+          "source_type": "artifact"
+        },
+        {
+          "alias": "eng_thermal_report",
+          "score_without_freshness": 0.4606444990315124,
+          "contributions": {
+            "登记": 0.4606444990315124
+          },
+          "code_hit": 0,
+          "source_id": "9527c946-a154-4628-af86-0590b8e9c8c9",
+          "source_type": "artifact"
+        }
+      ]
+    },
+    {
+      "case_id": "QUA-05",
+      "actor": "owner",
+      "expected_sources": [
+        "qua_lab_report",
+        "qua_line_review"
+      ],
+      "native_top10": [
+        "qua_lab_report",
+        "qua_line_review",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "prd_downtime",
+        "qua_failure_archive",
+        "pur_receiving_conflict",
+        "prd_wip_reconcile",
+        "qua_private_blind",
+        "prd_private_shift"
+      ],
+      "pure_original_top10": [
+        "qua_lab_report",
+        "qua_line_review",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "prd_downtime",
+        "qua_failure_archive",
+        "pur_receiving_conflict",
+        "prd_wip_reconcile",
+        "qua_private_blind",
+        "prd_private_shift"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "qua_lab_report",
+        "qua_line_review",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "prd_downtime",
+        "qua_failure_archive",
+        "pur_receiving_conflict",
+        "prd_wip_reconcile",
+        "qua_private_blind",
+        "pur_supply_archive"
+      ],
+      "before_expected_ranks": {
+        "qua_lab_report": 1,
+        "qua_line_review": 2
+      },
+      "after_expected_ranks": {
+        "qua_lab_report": 1,
+        "qua_line_review": 2
+      },
+      "newly_removed": [
+        "把"
+      ]
+    },
+    {
+      "case_id": "QUA-06",
+      "actor": "owner",
+      "expected_sources": [
+        "qua_private_blind"
+      ],
+      "native_top10": [
+        "qua_private_blind",
+        "qua_line_review",
+        "prd_downtime",
+        "eng_seal_design",
+        "pur_private_cost",
+        "qua_lab_report",
+        "prd_wip_reconcile",
+        "prd_work_instruction",
+        "prd_private_shift",
+        "pur_commitment"
+      ],
+      "pure_original_top10": [
+        "qua_private_blind",
+        "qua_line_review",
+        "prd_downtime",
+        "eng_seal_design",
+        "pur_private_cost",
+        "qua_lab_report",
+        "prd_wip_reconcile",
+        "prd_work_instruction",
+        "prd_private_shift",
+        "pur_commitment"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "qua_private_blind",
+        "qua_line_review",
+        "prd_downtime",
+        "eng_seal_design",
+        "pur_private_cost",
+        "qua_lab_report",
+        "prd_wip_reconcile",
+        "prd_work_instruction",
+        "prd_private_shift",
+        "pur_commitment"
+      ],
+      "before_expected_ranks": {
+        "qua_private_blind": 1
+      },
+      "after_expected_ranks": {
+        "qua_private_blind": 1
+      },
+      "newly_removed": [
+        "我"
+      ]
+    },
+    {
+      "case_id": "QUA-07",
+      "actor": "peer",
+      "expected_sources": [],
+      "native_top10": [
+        "qua_lab_report",
+        "qua_line_review",
+        "eng_seal_design",
+        "qua_capa_plan",
+        "eng_thermal_report",
+        "prd_downtime",
+        "qua_issue_record",
+        "qua_failure_archive",
+        "pur_substitution",
+        "eng_gate_minutes"
+      ],
+      "pure_original_top10": [
+        "qua_lab_report",
+        "qua_line_review",
+        "eng_seal_design",
+        "qua_capa_plan",
+        "eng_thermal_report",
+        "prd_downtime",
+        "qua_issue_record",
+        "qua_failure_archive",
+        "pur_substitution",
+        "eng_gate_minutes"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "qua_lab_report",
+        "qua_line_review",
+        "eng_seal_design",
+        "qua_capa_plan",
+        "eng_thermal_report",
+        "prd_downtime",
+        "qua_issue_record",
+        "qua_failure_archive",
+        "pur_substitution",
+        "eng_gate_minutes"
+      ],
+      "before_expected_ranks": {},
+      "after_expected_ranks": {},
+      "newly_removed": [
+        "我"
+      ]
+    },
+    {
+      "case_id": "PRD-01",
+      "actor": "owner",
+      "expected_sources": [
+        "prd_work_instruction"
+      ],
+      "native_top10": [
+        "prd_work_instruction",
+        "prd_first_article",
+        "prd_private_shift",
+        "prd_pilot_archive",
+        "qua_line_review",
+        "eng_seal_design",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "qua_lab_report",
+        "qua_failure_archive"
+      ],
+      "pure_original_top10": [
+        "prd_work_instruction",
+        "prd_first_article",
+        "prd_private_shift",
+        "prd_pilot_archive",
+        "qua_line_review",
+        "eng_seal_design",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "qua_lab_report",
+        "qua_failure_archive"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "prd_work_instruction",
+        "prd_first_article",
+        "prd_private_shift",
+        "prd_pilot_archive",
+        "qua_line_review",
+        "pur_substitution",
+        "qua_lab_report",
+        "eng_seal_design",
+        "prd_wip_reconcile",
+        "qua_failure_archive"
+      ],
+      "before_expected_ranks": {
+        "prd_work_instruction": 1
+      },
+      "after_expected_ranks": {
+        "prd_work_instruction": 1
+      },
+      "newly_removed": [
+        "别",
+        "我",
+        "把"
+      ]
+    },
+    {
+      "case_id": "PRD-02",
+      "actor": "owner",
+      "expected_sources": [
+        "prd_pilot_archive"
+      ],
+      "native_top10": [
+        "prd_pilot_archive",
+        "qua_failure_archive",
+        "qua_issue_record",
+        "prd_downtime",
+        "prd_work_instruction",
+        "prd_private_shift",
+        "prd_first_article",
+        "pur_commitment",
+        "pur_substitution",
+        "qua_private_blind"
+      ],
+      "pure_original_top10": [
+        "prd_pilot_archive",
+        "qua_failure_archive",
+        "qua_issue_record",
+        "prd_downtime",
+        "prd_work_instruction",
+        "prd_private_shift",
+        "prd_first_article",
+        "pur_commitment",
+        "pur_substitution",
+        "qua_private_blind"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "prd_pilot_archive",
+        "qua_failure_archive",
+        "qua_issue_record",
+        "prd_downtime",
+        "prd_work_instruction",
+        "prd_private_shift",
+        "prd_first_article",
+        "pur_commitment",
+        "pur_substitution",
+        "qua_private_blind"
+      ],
+      "before_expected_ranks": {
+        "prd_pilot_archive": 1
+      },
+      "after_expected_ranks": {
+        "prd_pilot_archive": 1
+      },
+      "newly_removed": []
+    },
+    {
+      "case_id": "PRD-03",
+      "actor": "owner",
+      "expected_sources": [
+        "prd_first_article"
+      ],
+      "native_top10": [
+        "prd_first_article",
+        "pur_private_cost",
+        "qua_failure_archive",
+        "pur_rfq",
+        "qua_private_blind",
+        "prd_wip_reconcile",
+        "eng_thermal_report",
+        "eng_seal_design",
+        "prd_private_shift",
+        "prd_pilot_archive"
+      ],
+      "pure_original_top10": [
+        "prd_first_article",
+        "pur_private_cost",
+        "qua_failure_archive",
+        "pur_rfq",
+        "qua_private_blind",
+        "prd_wip_reconcile",
+        "eng_thermal_report",
+        "eng_seal_design",
+        "prd_private_shift",
+        "prd_pilot_archive"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "prd_first_article",
+        "qua_failure_archive",
+        "pur_rfq",
+        "prd_wip_reconcile",
+        "eng_thermal_report",
+        "eng_seal_design",
+        "prd_private_shift",
+        "prd_pilot_archive",
+        "eng_pilot_archive",
+        "eng_gate_minutes"
+      ],
+      "before_expected_ranks": {
+        "prd_first_article": 1
+      },
+      "after_expected_ranks": {
+        "prd_first_article": 1
+      },
+      "newly_removed": [
+        "是不是",
+        "这"
+      ]
+    },
+    {
+      "case_id": "PRD-04",
+      "actor": "owner",
+      "expected_sources": [
+        "prd_downtime"
+      ],
+      "native_top10": [
+        "prd_downtime",
+        "prd_private_shift",
+        "prd_pilot_archive",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "pur_supply_archive",
+        "qua_line_review",
+        "qua_lab_report",
+        "prd_work_instruction",
+        "eng_gate_minutes"
+      ],
+      "pure_original_top10": [
+        "prd_downtime",
+        "prd_private_shift",
+        "prd_pilot_archive",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "pur_supply_archive",
+        "qua_line_review",
+        "qua_lab_report",
+        "prd_work_instruction",
+        "eng_gate_minutes"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "prd_downtime",
+        "prd_private_shift",
+        "prd_pilot_archive",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "pur_supply_archive",
+        "qua_line_review",
+        "qua_lab_report",
+        "prd_work_instruction",
+        "eng_gate_minutes"
+      ],
+      "before_expected_ranks": {
+        "prd_downtime": 1
+      },
+      "after_expected_ranks": {
+        "prd_downtime": 1
+      },
+      "newly_removed": [
+        "我们",
+        "是不是"
+      ]
+    },
+    {
+      "case_id": "PRD-05",
+      "actor": "owner",
+      "expected_sources": [
+        "prd_wip_reconcile"
+      ],
+      "native_top10": [
+        "prd_wip_reconcile",
+        "prd_first_article",
+        "prd_downtime",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "eng_pilot_archive",
+        "prd_pilot_archive",
+        "pur_substitution",
+        "qua_lab_report",
+        "qua_line_review"
+      ],
+      "pure_original_top10": [
+        "prd_wip_reconcile",
+        "prd_first_article",
+        "prd_downtime",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "eng_pilot_archive",
+        "prd_pilot_archive",
+        "pur_substitution",
+        "qua_lab_report",
+        "qua_line_review"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "prd_wip_reconcile",
+        "prd_first_article",
+        "prd_downtime",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "eng_pilot_archive",
+        "prd_pilot_archive",
+        "pur_substitution",
+        "qua_lab_report",
+        "qua_line_review"
+      ],
+      "before_expected_ranks": {
+        "prd_wip_reconcile": 1
+      },
+      "after_expected_ranks": {
+        "prd_wip_reconcile": 1
+      },
+      "newly_removed": [
+        "我"
+      ]
+    },
+    {
+      "case_id": "PRD-06",
+      "actor": "owner",
+      "expected_sources": [
+        "prd_private_shift"
+      ],
+      "native_top10": [
+        "prd_private_shift",
+        "prd_work_instruction",
+        "prd_downtime",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "prd_first_article",
+        "prd_pilot_archive",
+        "eng_gate_minutes",
+        "qua_private_blind",
+        "pur_rfq"
+      ],
+      "pure_original_top10": [
+        "prd_private_shift",
+        "prd_work_instruction",
+        "prd_downtime",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "prd_first_article",
+        "prd_pilot_archive",
+        "eng_gate_minutes",
+        "qua_private_blind",
+        "pur_rfq"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "prd_private_shift",
+        "prd_work_instruction",
+        "prd_downtime",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "prd_first_article",
+        "prd_pilot_archive",
+        "eng_gate_minutes",
+        "qua_private_blind",
+        "pur_rfq"
+      ],
+      "before_expected_ranks": {
+        "prd_private_shift": 1
+      },
+      "after_expected_ranks": {
+        "prd_private_shift": 1
+      },
+      "newly_removed": [
+        "我"
+      ]
+    },
+    {
+      "case_id": "PRD-07",
+      "actor": "peer",
+      "expected_sources": [],
+      "native_top10": [
+        "prd_wip_reconcile",
+        "prd_pilot_archive",
+        "pur_receiving_conflict",
+        "pur_commitment",
+        "pur_substitution",
+        "prd_downtime",
+        "qua_capa_plan",
+        "eng_gate_minutes",
+        "qua_issue_record",
+        "eng_seal_design"
+      ],
+      "pure_original_top10": [
+        "prd_wip_reconcile",
+        "prd_pilot_archive",
+        "pur_receiving_conflict",
+        "pur_commitment",
+        "pur_substitution",
+        "prd_downtime",
+        "qua_capa_plan",
+        "eng_gate_minutes",
+        "qua_issue_record",
+        "eng_seal_design"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "prd_wip_reconcile",
+        "prd_pilot_archive",
+        "pur_receiving_conflict",
+        "pur_commitment",
+        "pur_substitution",
+        "prd_downtime",
+        "qua_capa_plan",
+        "eng_gate_minutes",
+        "qua_issue_record",
+        "eng_seal_design"
+      ],
+      "before_expected_ranks": {},
+      "after_expected_ranks": {},
+      "newly_removed": [
+        "我"
+      ]
+    },
+    {
+      "case_id": "PUR-01",
+      "actor": "owner",
+      "expected_sources": [
+        "pur_commitment"
+      ],
+      "native_top10": [
+        "pur_commitment",
+        "pur_supply_archive",
+        "pur_receiving_conflict",
+        "pur_rfq",
+        "pur_private_cost",
+        "qua_failure_archive",
+        "qua_line_review",
+        "prd_first_article",
+        "prd_downtime",
+        "eng_thermal_report"
+      ],
+      "pure_original_top10": [
+        "pur_commitment",
+        "pur_supply_archive",
+        "pur_receiving_conflict",
+        "pur_rfq",
+        "pur_private_cost",
+        "qua_failure_archive",
+        "qua_line_review",
+        "prd_first_article",
+        "prd_downtime",
+        "eng_thermal_report"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "pur_commitment",
+        "pur_supply_archive",
+        "pur_receiving_conflict",
+        "pur_rfq",
+        "pur_private_cost",
+        "qua_failure_archive",
+        "qua_line_review",
+        "prd_first_article",
+        "prd_downtime",
+        "eng_thermal_report"
+      ],
+      "before_expected_ranks": {
+        "pur_commitment": 1
+      },
+      "after_expected_ranks": {
+        "pur_commitment": 1
+      },
+      "newly_removed": [
+        "这"
+      ]
+    },
+    {
+      "case_id": "PUR-02",
+      "actor": "owner",
+      "expected_sources": [
+        "pur_supply_archive"
+      ],
+      "native_top10": [
+        "pur_supply_archive",
+        "pur_commitment",
+        "pur_rfq",
+        "pur_receiving_conflict",
+        "pur_private_cost",
+        "eng_gate_minutes",
+        "qua_failure_archive",
+        "prd_downtime",
+        "eng_seal_design",
+        "prd_private_shift"
+      ],
+      "pure_original_top10": [
+        "pur_supply_archive",
+        "pur_commitment",
+        "pur_rfq",
+        "pur_receiving_conflict",
+        "pur_private_cost",
+        "eng_gate_minutes",
+        "qua_failure_archive",
+        "prd_downtime",
+        "eng_seal_design",
+        "prd_private_shift"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "pur_supply_archive",
+        "pur_commitment",
+        "pur_rfq",
+        "pur_receiving_conflict",
+        "pur_private_cost",
+        "eng_gate_minutes",
+        "qua_failure_archive",
+        "prd_downtime",
+        "eng_seal_design",
+        "prd_private_shift"
+      ],
+      "before_expected_ranks": {
+        "pur_supply_archive": 1
+      },
+      "after_expected_ranks": {
+        "pur_supply_archive": 1
+      },
+      "newly_removed": []
+    },
+    {
+      "case_id": "PUR-03",
+      "actor": "owner",
+      "expected_sources": [
+        "pur_rfq"
+      ],
+      "native_top10": [
+        "pur_rfq",
+        "qua_issue_record",
+        "prd_downtime",
+        "qua_private_blind",
+        "pur_substitution",
+        "pur_supply_archive",
+        "pur_receiving_conflict",
+        "qua_capa_plan",
+        "pur_commitment",
+        "prd_private_shift"
+      ],
+      "pure_original_top10": [
+        "pur_rfq",
+        "qua_issue_record",
+        "prd_downtime",
+        "qua_private_blind",
+        "pur_substitution",
+        "pur_supply_archive",
+        "pur_receiving_conflict",
+        "qua_capa_plan",
+        "pur_commitment",
+        "prd_private_shift"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "pur_rfq",
+        "qua_issue_record",
+        "prd_downtime",
+        "qua_private_blind",
+        "pur_substitution",
+        "pur_supply_archive",
+        "pur_receiving_conflict",
+        "qua_capa_plan",
+        "pur_commitment",
+        "prd_private_shift"
+      ],
+      "before_expected_ranks": {
+        "pur_rfq": 1
+      },
+      "after_expected_ranks": {
+        "pur_rfq": 1
+      },
+      "newly_removed": [
+        "我"
+      ]
+    },
+    {
+      "case_id": "PUR-04",
+      "actor": "owner",
+      "expected_sources": [
+        "pur_substitution"
+      ],
+      "native_top10": [
+        "pur_substitution",
+        "pur_private_cost",
+        "pur_receiving_conflict",
+        "eng_private_reserve",
+        "pur_commitment",
+        "eng_gate_minutes",
+        "eng_pilot_archive",
+        "pur_rfq",
+        "prd_work_instruction",
+        "qua_private_blind"
+      ],
+      "pure_original_top10": [
+        "pur_substitution",
+        "pur_private_cost",
+        "pur_receiving_conflict",
+        "eng_private_reserve",
+        "pur_commitment",
+        "eng_gate_minutes",
+        "eng_pilot_archive",
+        "pur_rfq",
+        "prd_work_instruction",
+        "qua_private_blind"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "pur_substitution",
+        "pur_private_cost",
+        "pur_receiving_conflict",
+        "eng_private_reserve",
+        "pur_commitment",
+        "eng_pilot_archive",
+        "pur_rfq",
+        "qua_private_blind",
+        "eng_seal_design",
+        "pur_supply_archive"
+      ],
+      "before_expected_ranks": {
+        "pur_substitution": 1
+      },
+      "after_expected_ranks": {
+        "pur_substitution": 1
+      },
+      "newly_removed": [
+        "我们",
+        "按"
+      ]
+    },
+    {
+      "case_id": "PUR-05",
+      "actor": "owner",
+      "expected_sources": [
+        "pur_receiving_conflict"
+      ],
+      "native_top10": [
+        "pur_receiving_conflict",
+        "pur_substitution",
+        "pur_commitment",
+        "pur_supply_archive",
+        "qua_failure_archive",
+        "eng_seal_design",
+        "eng_pilot_archive",
+        "pur_rfq",
+        "eng_gate_minutes",
+        "prd_downtime"
+      ],
+      "pure_original_top10": [
+        "pur_receiving_conflict",
+        "pur_substitution",
+        "pur_commitment",
+        "pur_supply_archive",
+        "qua_failure_archive",
+        "eng_seal_design",
+        "eng_pilot_archive",
+        "pur_rfq",
+        "eng_gate_minutes",
+        "prd_downtime"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "pur_receiving_conflict",
+        "pur_substitution",
+        "pur_commitment",
+        "pur_supply_archive",
+        "qua_failure_archive",
+        "eng_seal_design",
+        "eng_pilot_archive",
+        "pur_rfq",
+        "eng_gate_minutes",
+        "prd_downtime"
+      ],
+      "before_expected_ranks": {
+        "pur_receiving_conflict": 1
+      },
+      "after_expected_ranks": {
+        "pur_receiving_conflict": 1
+      },
+      "newly_removed": []
+    },
+    {
+      "case_id": "PUR-06",
+      "actor": "owner",
+      "expected_sources": [
+        "pur_private_cost"
+      ],
+      "native_top10": [
+        "pur_private_cost",
+        "pur_rfq",
+        "prd_wip_reconcile",
+        "pur_commitment",
+        "qua_failure_archive",
+        "pur_supply_archive",
+        "qua_private_blind",
+        "prd_private_shift",
+        "pur_receiving_conflict",
+        "eng_seal_design"
+      ],
+      "pure_original_top10": [
+        "pur_private_cost",
+        "pur_rfq",
+        "prd_wip_reconcile",
+        "pur_commitment",
+        "qua_failure_archive",
+        "pur_supply_archive",
+        "qua_private_blind",
+        "prd_private_shift",
+        "pur_receiving_conflict",
+        "eng_seal_design"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "pur_private_cost",
+        "pur_rfq",
+        "prd_wip_reconcile",
+        "pur_commitment",
+        "qua_failure_archive",
+        "pur_supply_archive",
+        "qua_private_blind",
+        "prd_private_shift",
+        "pur_receiving_conflict",
+        "prd_downtime"
+      ],
+      "before_expected_ranks": {
+        "pur_private_cost": 1
+      },
+      "after_expected_ranks": {
+        "pur_private_cost": 1
+      },
+      "newly_removed": [
+        "我",
+        "这个"
+      ]
+    },
+    {
+      "case_id": "PUR-07",
+      "actor": "peer",
+      "expected_sources": [],
+      "native_top10": [
+        "pur_substitution",
+        "eng_gate_minutes",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "eng_seal_design",
+        "pur_supply_archive",
+        "qua_lab_report",
+        "qua_line_review",
+        "prd_wip_reconcile",
+        "pur_rfq"
+      ],
+      "pure_original_top10": [
+        "pur_substitution",
+        "eng_gate_minutes",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "eng_seal_design",
+        "pur_supply_archive",
+        "qua_lab_report",
+        "qua_line_review",
+        "prd_wip_reconcile",
+        "pur_rfq"
+      ],
+      "baseline_top10_exactly_reproduced": true,
+      "draft_top10": [
+        "pur_substitution",
+        "eng_gate_minutes",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "eng_seal_design",
+        "pur_supply_archive",
+        "qua_lab_report",
+        "qua_line_review",
+        "prd_wip_reconcile",
+        "pur_rfq"
+      ],
+      "before_expected_ranks": {},
+      "after_expected_ranks": {},
+      "newly_removed": [
+        "我"
+      ]
+    }
+  ]
+}

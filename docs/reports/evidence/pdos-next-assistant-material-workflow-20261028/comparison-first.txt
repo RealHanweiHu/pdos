@@ -1,0 +1,59 @@
+F
+=================================== FAILURES ===================================
+_ test_pinned_documents_compare_without_index_and_save_verified_private_table __
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/base.py:2116: in __getattr__
+    return self._index[key][1]
+           ^^^^^^^^^^^^^^^^
+E   KeyError: 'body'
+
+The above exception was the direct cause of the following exception:
+tests/enterprise_search/test_comparison_pg.py:154: in test_pinned_documents_compare_without_index_and_save_verified_private_table
+    output = execute(owner, scope, host)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_assistant_pg.py:168: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:729: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:493: in tools
+    answers[call.id] = call_tool(index, call)
+                       ^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:428: in call_tool
+    result = ports.read(
+pdos_next/agent_kernel/host.py:139: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:189: in read_callback
+    result = computed if engine is not None else callback(scope, arguments)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/host.py:141: in <lambda>
+    callback=lambda bound, args: resume(bound, args, intent_key=intent_key),
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_adapter.py:84: in materials
+    return read(session, scope, data, call_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_materials.py:27: in read
+    func.length(source.c.body).label("body_chars"),
+                ^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/base.py:2118: in __getattr__
+    raise AttributeError(key) from err
+E   AttributeError: body
+E   During task with name 'tools' and id '3e5b522f-7729-e332-b289-2daf6decc225'
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_comparison_pg.py::test_pinned_documents_compare_without_index_and_save_verified_private_table
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 6.03s

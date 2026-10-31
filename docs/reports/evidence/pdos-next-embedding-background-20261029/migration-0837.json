@@ -1,0 +1,57 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0837",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/embedding-53502-before-0837.dump",
+  "backup_bytes": 98239533,
+  "backup_sha256": "b8aaed6ea7ce639eff6cbaee0d7c09a1cd364860551bd1d2ac80fe76999772a5",
+  "operations": [
+    {
+      "direction": "upgrade",
+      "head": "s0_0837",
+      "exit": 0,
+      "counts_unchanged": true,
+      "retirement_execute": {
+        "pdos_next_owner": true,
+        "pdos_next_app": false,
+        "pdos_agent": false,
+        "pdos_next_auth": false,
+        "pdos_next_dispatch": false
+      }
+    },
+    {
+      "direction": "downgrade",
+      "head": "s0_0836",
+      "exit": 0,
+      "counts_unchanged": true,
+      "retirement_execute": {
+        "pdos_next_owner": false,
+        "pdos_next_app": false,
+        "pdos_agent": false,
+        "pdos_next_auth": false,
+        "pdos_next_dispatch": false
+      }
+    },
+    {
+      "direction": "upgrade",
+      "head": "s0_0837",
+      "exit": 0,
+      "counts_unchanged": true,
+      "retirement_execute": {
+        "pdos_next_owner": true,
+        "pdos_next_app": false,
+        "pdos_agent": false,
+        "pdos_next_auth": false,
+        "pdos_next_dispatch": false
+      }
+    }
+  ],
+  "counts": {
+    "enterprise_embedding_profiles": 7,
+    "enterprise_embedding_calls": 8,
+    "enterprise_embedding_batches": 6,
+    "enterprise_chunk_embeddings": 8,
+    "action_receipts": 47076
+  },
+  "real_provider_accessed": false
+}

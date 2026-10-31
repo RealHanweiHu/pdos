@@ -1,0 +1,432 @@
+{
+  "dingtalk_applications": {
+    "classification": "CONTROL_CONFIGURATION",
+    "columns": {
+      "administrator_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_CONFIGURATION"
+      },
+      "service_principal_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_CONFIGURATION"
+      },
+      "revision": {
+        "sql_type": "INTEGER",
+        "nullable": false,
+        "classification": "CONTROL_CONFIGURATION"
+      },
+      "corp_id": {
+        "sql_type": "VARCHAR(160)",
+        "nullable": false,
+        "classification": "CONTROL_CONFIGURATION"
+      },
+      "client_id": {
+        "sql_type": "VARCHAR(160)",
+        "nullable": false,
+        "classification": "CONTROL_CONFIGURATION"
+      },
+      "robot_code": {
+        "sql_type": "VARCHAR(160)",
+        "nullable": false,
+        "classification": "CONTROL_CONFIGURATION"
+      },
+      "secret_arn": {
+        "sql_type": "TEXT",
+        "nullable": false,
+        "classification": "CONTROL_CONFIGURATION"
+      },
+      "secret_version": {
+        "sql_type": "VARCHAR(160)",
+        "nullable": false,
+        "classification": "CONTROL_CONFIGURATION"
+      },
+      "active": {
+        "sql_type": "BOOLEAN",
+        "nullable": false,
+        "classification": "CONTROL_CONFIGURATION"
+      },
+      "id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_CONFIGURATION"
+      },
+      "tenant_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_CONFIGURATION"
+      },
+      "created_at": {
+        "sql_type": "TIMESTAMP WITH TIME ZONE",
+        "nullable": false,
+        "classification": "CONTROL_CONFIGURATION"
+      }
+    }
+  },
+  "dingtalk_binding_nonces": {
+    "classification": "CONTROL_IDENTITY_NONCE",
+    "columns": {
+      "application_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_IDENTITY_NONCE"
+      },
+      "owner_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_IDENTITY_NONCE"
+      },
+      "app_revision": {
+        "sql_type": "INTEGER",
+        "nullable": false,
+        "classification": "CONTROL_IDENTITY_NONCE"
+      },
+      "state_sha256": {
+        "sql_type": "VARCHAR(64)",
+        "nullable": false,
+        "classification": "CONTROL_IDENTITY_NONCE"
+      },
+      "expires_at": {
+        "sql_type": "TIMESTAMP WITH TIME ZONE",
+        "nullable": false,
+        "classification": "CONTROL_IDENTITY_NONCE"
+      },
+      "consumed_at": {
+        "sql_type": "TIMESTAMP WITH TIME ZONE",
+        "nullable": true,
+        "classification": "CONTROL_IDENTITY_NONCE"
+      },
+      "id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_IDENTITY_NONCE"
+      },
+      "tenant_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_IDENTITY_NONCE"
+      },
+      "created_at": {
+        "sql_type": "TIMESTAMP WITH TIME ZONE",
+        "nullable": false,
+        "classification": "CONTROL_IDENTITY_NONCE"
+      }
+    }
+  },
+  "dingtalk_account_bindings": {
+    "classification": "CONTROL_ACCOUNT_AUDIT",
+    "columns": {
+      "application_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      },
+      "owner_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      },
+      "external_user_id": {
+        "sql_type": "VARCHAR(200)",
+        "nullable": false,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      },
+      "verified_nonce_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      },
+      "active": {
+        "sql_type": "BOOLEAN",
+        "nullable": false,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      },
+      "epoch": {
+        "sql_type": "INTEGER",
+        "nullable": false,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      },
+      "verified_at": {
+        "sql_type": "TIMESTAMP WITH TIME ZONE",
+        "nullable": false,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      },
+      "revoked_by": {
+        "sql_type": "UUID",
+        "nullable": true,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      },
+      "revoke_key": {
+        "sql_type": "UUID",
+        "nullable": true,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      },
+      "revoke_reason": {
+        "sql_type": "TEXT",
+        "nullable": true,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      },
+      "id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      },
+      "tenant_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      },
+      "created_at": {
+        "sql_type": "TIMESTAMP WITH TIME ZONE",
+        "nullable": false,
+        "classification": "CONTROL_ACCOUNT_AUDIT"
+      }
+    }
+  },
+  "dingtalk_messages": {
+    "classification": "CONTROL_RUN_REFERENCE",
+    "columns": {
+      "application_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "binding_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "binding_epoch": {
+        "sql_type": "INTEGER",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "owner_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "external_message_id": {
+        "sql_type": "VARCHAR(200)",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "envelope_sha256": {
+        "sql_type": "VARCHAR(64)",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "conversation_kind": {
+        "sql_type": "VARCHAR(16)",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "conversation_id": {
+        "sql_type": "VARCHAR(200)",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "run_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "state": {
+        "sql_type": "VARCHAR(24)",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "error_code": {
+        "sql_type": "VARCHAR(80)",
+        "nullable": true,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "lease_id": {
+        "sql_type": "UUID",
+        "nullable": true,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "lease_until": {
+        "sql_type": "TIMESTAMP WITH TIME ZONE",
+        "nullable": true,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "workflow_id": {
+        "sql_type": "VARCHAR(240)",
+        "nullable": true,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "tenant_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      },
+      "created_at": {
+        "sql_type": "TIMESTAMP WITH TIME ZONE",
+        "nullable": false,
+        "classification": "CONTROL_RUN_REFERENCE"
+      }
+    }
+  },
+  "dingtalk_share_consents": {
+    "classification": "NAMED_EXTERNAL_DECISION_METADATA",
+    "columns": {
+      "message_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "NAMED_EXTERNAL_DECISION_METADATA"
+      },
+      "owner_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "NAMED_EXTERNAL_DECISION_METADATA"
+      },
+      "request_key": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "NAMED_EXTERNAL_DECISION_METADATA"
+      },
+      "payload_sha256": {
+        "sql_type": "VARCHAR(64)",
+        "nullable": false,
+        "classification": "NAMED_EXTERNAL_DECISION_METADATA"
+      },
+      "include_citations": {
+        "sql_type": "BOOLEAN",
+        "nullable": false,
+        "classification": "NAMED_EXTERNAL_DECISION_METADATA"
+      },
+      "state": {
+        "sql_type": "VARCHAR(24)",
+        "nullable": false,
+        "classification": "NAMED_EXTERNAL_DECISION_METADATA"
+      },
+      "error_code": {
+        "sql_type": "VARCHAR(80)",
+        "nullable": true,
+        "classification": "NAMED_EXTERNAL_DECISION_METADATA"
+      },
+      "id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "NAMED_EXTERNAL_DECISION_METADATA"
+      },
+      "tenant_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "NAMED_EXTERNAL_DECISION_METADATA"
+      },
+      "created_at": {
+        "sql_type": "TIMESTAMP WITH TIME ZONE",
+        "nullable": false,
+        "classification": "NAMED_EXTERNAL_DECISION_METADATA"
+      }
+    }
+  },
+  "dingtalk_deliveries": {
+    "classification": "CONSUMING_OUTBOUND_SNAPSHOT",
+    "columns": {
+      "message_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "IMMUTABLE_RETENTION_BINDING"
+      },
+      "owner_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "IMMUTABLE_RETENTION_BINDING"
+      },
+      "consent_id": {
+        "sql_type": "UUID",
+        "nullable": true,
+        "classification": "IMMUTABLE_RETENTION_BINDING"
+      },
+      "request_key": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "IMMUTABLE_RETENTION_BINDING"
+      },
+      "phase": {
+        "sql_type": "VARCHAR(24)",
+        "nullable": false,
+        "classification": "TECHNICAL_DELIVERY_AUDIT"
+      },
+      "payload": {
+        "sql_type": "JSONB",
+        "nullable": false,
+        "classification": "BUSINESS_CONTENT_COPY"
+      },
+      "payload_sha256": {
+        "sql_type": "VARCHAR(64)",
+        "nullable": false,
+        "classification": "IMMUTABLE_RETENTION_BINDING"
+      },
+      "content_kind": {
+        "sql_type": "VARCHAR(24)",
+        "nullable": false,
+        "classification": "IMMUTABLE_RETENTION_BINDING"
+      },
+      "source_dependencies": {
+        "sql_type": "JSONB",
+        "nullable": false,
+        "classification": "IMMUTABLE_RETENTION_BINDING"
+      },
+      "state": {
+        "sql_type": "VARCHAR(24)",
+        "nullable": false,
+        "classification": "TECHNICAL_DELIVERY_AUDIT"
+      },
+      "p26": {
+        "sql_type": "JSONB",
+        "nullable": true,
+        "classification": "TECHNICAL_DELIVERY_AUDIT"
+      },
+      "provider_receipt": {
+        "sql_type": "JSONB",
+        "nullable": true,
+        "classification": "TECHNICAL_DELIVERY_AUDIT"
+      },
+      "error_code": {
+        "sql_type": "VARCHAR(80)",
+        "nullable": true,
+        "classification": "TECHNICAL_DELIVERY_AUDIT"
+      },
+      "attempts": {
+        "sql_type": "INTEGER",
+        "nullable": false,
+        "classification": "TECHNICAL_DELIVERY_AUDIT"
+      },
+      "attempt_id": {
+        "sql_type": "UUID",
+        "nullable": true,
+        "classification": "TECHNICAL_DELIVERY_AUDIT"
+      },
+      "send_started_at": {
+        "sql_type": "TIMESTAMP WITH TIME ZONE",
+        "nullable": true,
+        "classification": "TECHNICAL_DELIVERY_AUDIT"
+      },
+      "id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "TECHNICAL_DELIVERY_AUDIT"
+      },
+      "tenant_id": {
+        "sql_type": "UUID",
+        "nullable": false,
+        "classification": "TECHNICAL_DELIVERY_AUDIT"
+      },
+      "created_at": {
+        "sql_type": "TIMESTAMP WITH TIME ZONE",
+        "nullable": false,
+        "classification": "TECHNICAL_DELIVERY_AUDIT"
+      }
+    }
+  }
+}

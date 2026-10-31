@@ -1,0 +1,21 @@
+{
+  "stage": "/tmp/pdos-personal-summary-pg-fixture-stage-20261029",
+  "files": [
+    {
+      "path": "pdos-next/server/tests/automations_pg/test_personal_summary_pg.py",
+      "base_sha256": "cb646e2aa2158e037f497f5957650f9bdd3b9d98f7738802a9137aa4518da2fd",
+      "final_sha256": "b92ef8e9a4d2b8824bb4dc3328036e34308cf0b1d448630fbd10a8b76512d9a5",
+      "kind": "modified",
+      "production_change": false
+    }
+  ],
+  "patch_sha256": "d875e9083c5497b517861c39178ef36149aca098f198d2b403ff1da1fcd9be38",
+  "scope": "Two failed PG tests only; ordinary RLS authority and production code unchanged.",
+  "validation": {
+    "ruff": "passed",
+    "pure_runtime": "39 passed; no DB environment",
+    "collection": "3 PG tests collected only; no DB",
+    "patch_check": "passed against exact base SHA",
+    "actual_pg": "not run; parent owns shared DB"
+  }
+}

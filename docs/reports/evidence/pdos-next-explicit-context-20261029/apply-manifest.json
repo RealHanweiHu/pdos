@@ -1,0 +1,240 @@
+{
+  "format": 1,
+  "stage": "/private/tmp/pdos-explicit-context-corrections-stage-20261029",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/context_corrections.py",
+      "base_sha256": null,
+      "sha256": "d3887a49c421e0b7adff95dc53a6e26237db2b8f28e11acd4fb6ea3284dd4448",
+      "base_path": null,
+      "base_layer": "new_explicit_context_corrections",
+      "operation": "create"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/conversation.py",
+      "base_sha256": "66c7a34877cc9c0e543df0f329a01cf18130d17ec6bf29e69b5497ee37ff538d",
+      "sha256": "8feea34fdfb3045c8af76bea5f38f9acfac5a645b66526a55917b2de549716fb",
+      "base_path": "/tmp/pdos-explicit-context-corrections-stage-20261029/base-files/pdos-next/server/pdos_next/agent_kernel/conversation.py",
+      "base_layer": "live_verification_merged",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/work_state.py",
+      "base_sha256": "69f1e253f40c333c1f6ca6acb4593eda720b4f4f5472cb5d0147ae6c18e46694",
+      "sha256": "c8201b2ac51fb8b5d8f9f37666d72389dd435e119f11bde11d84dcf6d5d51808",
+      "base_path": "/tmp/pdos-explicit-context-corrections-stage-20261029/base-files/pdos-next/server/pdos_next/agent_kernel/work_state.py",
+      "base_layer": "retrieval_feedback",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_inheritance.py",
+      "base_sha256": "61e4b7ab60a811f06f461c1662b154d70bbd1c59ddc419fb8c909210cb4409fc",
+      "sha256": "5af04cfbea2a110bea4dc4f512b21b7288d94028b66ecc42384648358a0f2a32",
+      "base_path": "/tmp/pdos-explicit-context-corrections-stage-20261029/base-files/pdos-next/server/pdos_next/enterprise_search/assistant_inheritance.py",
+      "base_layer": "live_verification_merged",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_ledger.py",
+      "base_sha256": "cc075acff6d02f1876d2c54b62d045f4c8b9bc05ad205c273746847fa3e1cf24",
+      "sha256": "ea4906636302a48527fc1deba6cd997ee41ba05588c85935f89b5b74c7abaeb7",
+      "base_path": "/tmp/pdos-explicit-context-corrections-stage-20261029/base-files/pdos-next/server/pdos_next/enterprise_search/assistant_ledger.py",
+      "base_layer": "live_verification_merged",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_materials.py",
+      "base_sha256": "17df33a94ebcffe52e7535aaeaf63fbbe8a0b771bd8d84033c679206b4b54c5b",
+      "sha256": "3cdc640dfc72a96b6a4907230d8681c3826f1f6b78d4d3fbca0ac1ab7794ec73",
+      "base_path": "/tmp/pdos-explicit-context-corrections-stage-20261029/base-files/pdos-next/server/pdos_next/enterprise_search/assistant_materials.py",
+      "base_layer": "live_verification_merged",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_scope.py",
+      "base_sha256": "35ca2b3eb9b8dfa66e3c08711c77b96837e3e522ff3b87a7c71d911a6830f240",
+      "sha256": "42ce07f8eef73939382e55dee1f69857c952fe1487e1c1131a084b27ee52d8ba",
+      "base_path": "/tmp/pdos-explicit-context-corrections-stage-20261029/base-files/pdos-next/server/pdos_next/enterprise_search/assistant_scope.py",
+      "base_layer": "pdos-assistant-depth-stage-20261029",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/query.py",
+      "base_sha256": "f4e94817e23ea7c074e955fb63c04ea70c5ac246a3ce17a101956798e705df3e",
+      "sha256": "954b7e9aa710a95bb9340ba389e7fd603e4e1b209ee955bd5bb20fd898df2bd0",
+      "base_path": "/tmp/pdos-explicit-context-corrections-stage-20261029/base-files/pdos-next/server/pdos_next/enterprise_search/query.py",
+      "base_layer": "live_verification_merged",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/skill_packages/context-schemas.json",
+      "base_sha256": "92d0bacc1dfbc914e3c6d685454db329bfe18d777cd796028278dfb3840b3a87",
+      "sha256": "b9561b97a8070cded80f5400da1132c068e84c94347d82f652e4dd979450201b",
+      "base_path": "/tmp/pdos-explicit-context-corrections-stage-20261029/base-files/pdos-next/server/pdos_next/skill_packages/context-schemas.json",
+      "base_layer": "live_verification_merged",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_context_correction_start.py",
+      "base_sha256": null,
+      "sha256": "61da07b738234e1742f15fb31aca48650a6198b60533c21e1bc1861cfff87250",
+      "base_path": null,
+      "base_layer": "new_explicit_context_corrections",
+      "operation": "create"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_context_corrections.py",
+      "base_sha256": null,
+      "sha256": "b8644d2fd0b79de5ef09be9d110bd62f853bf2bb67b4e0b20ca3cde85ac35bd1",
+      "base_path": null,
+      "base_layer": "new_explicit_context_corrections",
+      "operation": "create"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_context_corrections_pg.py",
+      "base_sha256": null,
+      "sha256": "ceb20b4882cd172ed690b6be516f8ec561d303658a5a1805cebd4a3a8bb9da94",
+      "base_path": null,
+      "base_layer": "new_explicit_context_corrections",
+      "operation": "create"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_personal_context_pins_pg.py",
+      "base_sha256": null,
+      "sha256": "6f99020dbb78cd3afa84bdbdc142d4efea01f357d2329a46ba97968dd2135d34",
+      "base_path": null,
+      "base_layer": "new_explicit_context_corrections",
+      "operation": "create"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_assistant_depth.py",
+      "base_sha256": "9e423a08380e6f36ba5d5380f0ab331707371a7287b84616dc75eedceea5f80e",
+      "sha256": "abadcbb2883c0d29f42806b70abfe5adf56be84b01f4b1b13a84f9d2d60addad",
+      "base_path": "/tmp/pdos-explicit-context-corrections-stage-20261029/base-files/pdos-next/server/tests/enterprise_search/test_assistant_depth.py",
+      "base_layer": "pdos-assistant-depth-integration-stage-20261029",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_context_correction_filters.py",
+      "base_sha256": null,
+      "sha256": "2bec5f16631c07980f945bf40a8b67c12f6baa75da5b4e986b748c9bc77ae66f",
+      "base_path": null,
+      "base_layer": "new_explicit_context_corrections",
+      "operation": "create"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_personal_context_pins.py",
+      "base_sha256": null,
+      "sha256": "bbc4abd07e0411306f242a3d23dca0ad3f6392c99af2f8f0bd6cdf64e0ac4187",
+      "base_path": null,
+      "base_layer": "new_explicit_context_corrections",
+      "operation": "create"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "base_sha256": "5491753de598a08ffe87f6c630b41a6961034b48020d12281b2707ee2c3ff416",
+      "sha256": "b330534a457e1015267219b58364dad9e0d6a352e6a79a5b2eb9d95ae9560471",
+      "base_path": "/private/tmp/pdos-explicit-context-corrections-stage-20261029/base-rebase-files/pdos-next/web/src/app/api/[...path]/route.ts",
+      "base_layer": "live_combined83_summaries_bff_preserved",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/route-work-state.test.mjs",
+      "base_sha256": "51e7a2b50cabb75701ca025422fa77f64b5f9fdfde2d16ee000c1b824f869082",
+      "sha256": "8a3c65b98adeb524f13941a382abc7af1442ad4c0d30eca81205f7b737eb39ff",
+      "base_path": "/tmp/pdos-answer-corrections-integration-stage-20261029/pdos-next/web/src/app/api/route-work-state.test.mjs",
+      "base_layer": "answer_corrections_ui_integration",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/answer-followup-actions.test.mjs",
+      "base_sha256": "2719f546b2bedd66171101b59a80e8c7fa2582de10e3062f33e3e07f2ad3f481",
+      "sha256": "b80e49f580080e4cff2046ac624a48b6f3b807126ba5a6166a3002da17b1d0fa",
+      "base_path": "/tmp/pdos-answer-corrections-integration-stage-20261029/pdos-next/web/src/components/pai/answer-followup-actions.test.mjs",
+      "base_layer": "answer_corrections_ui_integration",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/answer-followup-actions.tsx",
+      "base_sha256": "860a03afa0ca1684114e98255149eea2e4c452451cad71eb528c373189bde559",
+      "sha256": "1a257c78f3a966882b7fc41e1fd0c0513985f93a6148984a3170d69fc49147e5",
+      "base_path": "/tmp/pdos-answer-corrections-integration-stage-20261029/pdos-next/web/src/components/pai/answer-followup-actions.tsx",
+      "base_layer": "answer_corrections_ui_integration",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/explicit-context-corrections.test.mjs",
+      "base_sha256": null,
+      "sha256": "96a9e7b079413427e8462d3d8830357c8e0b8a968ee2a12b4374e1e9952baf03",
+      "base_path": null,
+      "base_layer": "new_explicit_context_corrections",
+      "operation": "create"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/explicit-context-corrections.tsx",
+      "base_sha256": null,
+      "sha256": "f24eea3ebcf907a8b403774c4cd913a3316eecaded182a6dc55f4ab2e9f933bc",
+      "base_path": null,
+      "base_layer": "new_explicit_context_corrections",
+      "operation": "create"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/source-picker.test.mjs",
+      "base_sha256": "07b128820633206a1874607b6f804c419e016617d9877d1a2a6293ec53136cee",
+      "sha256": "629b1ff20fcdc9b9372b242ed1b04c685ac30fdabdd3d94375d745739c485ad3",
+      "base_path": "/tmp/pdos-answer-corrections-integration-stage-20261029/pdos-next/web/src/components/pai/source-picker.test.mjs",
+      "base_layer": "answer_corrections_ui_integration",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/source-picker.tsx",
+      "base_sha256": "7ed8d700af7c155572a2ae60ba2542df2d08633de3abd3aeeb2f9e2377297f08",
+      "sha256": "abbaf5e9dc3bfccd1a07ce64a7ea25782df4f346810e8c1fdfe400218f48a576",
+      "base_path": "/tmp/pdos-answer-corrections-integration-stage-20261029/pdos-next/web/src/components/pai/source-picker.tsx",
+      "base_layer": "answer_corrections_ui_integration",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/work-state-carry.tsx",
+      "base_sha256": "889df3644ea4e19d5c83bc074087faa85e1c108a5914c23b9810864773802614",
+      "sha256": "27e687d06b3c68226c9116a6b9f5c217e597935b591446663659e1421fa35c67",
+      "base_path": "/tmp/pdos-answer-corrections-integration-stage-20261029/pdos-next/web/src/components/pai/work-state-carry.tsx",
+      "base_layer": "answer_corrections_ui_integration",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/web/src/lib/explicit-context-corrections.ts",
+      "base_sha256": null,
+      "sha256": "0e43e4c603ba597c31a5139b16d178b74ead9161f168554644af226e3b092460",
+      "base_path": null,
+      "base_layer": "new_explicit_context_corrections",
+      "operation": "create"
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-continuation.ts",
+      "base_sha256": "0c5d1daf3b30cb3ea99d860aabfa6cbcf2fea67dea306ee635f6c01d60002298",
+      "sha256": "588d1cd6d082092006afc44584371f85353995eef26925b45c4c019eb560fac6",
+      "base_path": "/tmp/pdos-answer-corrections-integration-stage-20261029/pdos-next/web/src/lib/run-continuation.ts",
+      "base_layer": "answer_corrections_ui_integration",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-start-intent.test.mjs",
+      "base_sha256": "6d11e667c1f19172a3536da62cbb09fde6d19d4bc4b7a14d467b4c06b1664c9f",
+      "sha256": "88384bca58628fa1406122adaac2dd77f2262c55adc6a2287b399da4b93f0175",
+      "base_path": "/tmp/pdos-answer-corrections-integration-stage-20261029/pdos-next/web/src/lib/run-start-intent.test.mjs",
+      "base_layer": "answer_corrections_ui_integration",
+      "operation": "modify"
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-start-intent.ts",
+      "base_sha256": "4346cddbe5ceafc83fc5a6fae3c422c7e38118ccaaf008795a622a1b5fd9f07b",
+      "sha256": "310579f50f57b3d9dadd486d7a1717a3077428e5d117d6a00f66009f5ba2f94b",
+      "base_path": "/tmp/pdos-answer-corrections-integration-stage-20261029/pdos-next/web/src/lib/run-start-intent.ts",
+      "base_layer": "answer_corrections_ui_integration",
+      "operation": "modify"
+    }
+  ],
+  "api_hook": "api-context-corrections.patch",
+  "api_note": "Independent patch only; do not copy the unchanged stage api.py. Root merges checked_result/X3 hooks."
+}

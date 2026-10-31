@@ -1,0 +1,12 @@
+[
+  {
+    "runtime": "candidate-runtime-20261016.json",
+    "verified_database": "pdos_test",
+    "head": "s0_0822"
+  },
+  {
+    "runtime": "comprehensive-runtime-20261022.json",
+    "verified_database": "pdos_test",
+    "head": "s0_0822"
+  }
+]

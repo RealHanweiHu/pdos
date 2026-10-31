@@ -1,0 +1,16 @@
+{
+  "provenance": "HEAD plus /tmp/pdos-slice-a-x1-baseline.patch captured before initial implementation; current application source untouched",
+  "restored_sources": {
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "c36955f7a5e60dc37616ff7301836d6b82dbb07f48019c1e80721a3c70782c87",
+    "pdos-next/server/pdos_next/agent_kernel/conversation.py": "ec6adce1724ec21469cd6eba1cde5451658e55a6db090996902fb977ef9045ec",
+    "pdos-next/server/pdos_next/agent_kernel/graph.py": "28605ea6e92b95c898f87d6eedcb114b9581c09befa21bdadcb60876dc9ed926",
+    "pdos-next/server/pdos_next/agent_kernel/gateway.py": "23194112538d0dd6adeec35f486402388c88c122115d94f04ef79875ec2bd00e",
+    "pdos-next/server/pdos_next/providers/agent_client.py": "a88f55683670d93b88266ca08fd31ad015b3a750eb8600458f1b36bad334cfba",
+    "pdos-next/server/pdos_next/providers/types.py": "37e0b01e434be08f9c7c63e841092511c813d1095745cb5e3efded41585b8137",
+    "pdos-next/server/pdos_next/model_configuration/host.py": "bcbdf4c613b55426e1315915bee780fd6418ac29dbbf3badb3b514a60d796bc1",
+    "pdos-next/server/pdos_next/model_configuration/commands.py": "ea286cc1c7203d02da6349a6d32cd244e69ba0f8434ac5198666673e6a902d07",
+    "pdos-next/server/pdos_next/schemas/model_configuration/dto.py": "5b06b11052c1ba9f30f17b1658840b500e5941f3e4bce2607e4700b4c368ebeb",
+    "pdos-next/server/pdos_next/skill_packages/context-schemas.json": "ecfe8a103055beedb63ded86dff6837a6ee3231337b6d20b594f18a15faa11b7"
+  },
+  "unchanged_failing_test": "tests/agent_kernel/test_context_projection_pg.py"
+}

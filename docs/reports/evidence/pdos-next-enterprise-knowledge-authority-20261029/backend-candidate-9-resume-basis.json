@@ -1,0 +1,11 @@
+{
+  "retained": 710,
+  "remaining_expected": 128,
+  "total_cases": 838,
+  "delta": [
+    "pdos-next/server/pdos_next/lifecycle_access.py",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py",
+    "pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py"
+  ],
+  "scope": "Only lifecycle coverage inventory/classification for the two actual 0831/0833 metadata tables; no source guard/schema/permission change. Existing coverage true, unknown-column/unknown-table/wrong/disabled-guard rejection are verified in the remaining two lifecycle files. Other retained passes do not depend on this coverage predicate; query and source authority production code unchanged."
+}

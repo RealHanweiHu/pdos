@@ -1,0 +1,2 @@
+Command: npx tsc --noEmit
+Exit code: 0

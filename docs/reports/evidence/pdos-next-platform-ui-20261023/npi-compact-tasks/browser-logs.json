@@ -1,0 +1,29 @@
+{
+  "all": [
+    {
+      "level": "error",
+      "message": "Error: ./src/app/ui-lab/platform/npi-task-catalog.ts:2:1\nError: Module not found: Can't resolve '../../../../../../assets/cehub/deliverable-guide-manifest.json'\n  1 | import \"server-only\";\n> 2 | import manifest from \"../../../../../../assets/cehub/deliverable-guide-manifest.json\";\n    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  3 | import type { NpiTaskTemplate } from \"./project-task-data\";\n  4 |\n  5 | // Reuse the existing guide's task layer, not its individual deliverable checks.\n\n\n\nImport trace:\n  Server Component:\n    ./src/app/ui-lab/platform/npi-task-catalog.ts\n    ./src/app/ui-lab/platform/page.tsx\n\nhttps://nextjs.org/docs/messages/module-not-found\n\n\n    at <unknown> (Error: ./src/app/ui-lab/platform/npi-task-catalog.ts:2:1)\n    at <unknown> (https://nextjs.org/docs/messages/module-not-found)\n    at Object.getCompilationErrors (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/next@16.3.3_@babel+core@7.29.7_supports-color@7.2.0__@types+node@20.19.43_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1417:59)\n    at DevBundlerService.getCompilationError (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/next@16.3.3_@babel+core@7.29.7_supports-color@7.2.0__@types+node@20.19.43_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/next/dist/server/lib/dev-bundler-service.js:59:55)\n    at DevServer.getCompilationError (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/next@16.3.3_@babel+core@7.29.7_supports-color@7.2.0__@types+node@20.19.43_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/next/dist/server/dev/next-dev-server.js:754:42)\n    at DevServer.findPageComponents (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/next@16.3.3_@babel+core@7.29.7_supports-color@7.2.0__@types+node@20.19.43_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/next/dist/server/dev/next-dev-server.js:724:43)\n    at async DevServer.renderErrorToResponseImpl (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.pnpm/next@16.3.3_@babel+core@7.29.7_supports-color@7.2.0__@types+node@20.19.43_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/next/dist/server/base-server.js:1828:26)",
+      "timestamp": "2026-10-23T19:32:49.259Z",
+      "url": "http://localhost:57859/_next/static/chunks/0t_4_next_dist_client_1_p26n8._.js"
+    },
+    {
+      "level": "error",
+      "message": "./src/app/ui-lab/platform/npi-task-catalog.ts:2:1\nError: Module not found: Can't resolve '../../../../../../assets/cehub/deliverable-guide-manifest.json'\n  1 | import \"server-only\";\n> 2 | import manifest from \"../../../../../../assets/cehub/deliverable-guide-manifest.json\";\n    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  3 | import type { NpiTaskTemplate } from \"./project-task-data\";\n  4 |\n  5 | // Reuse the existing guide's task layer, not its individual deliverable checks.\n\nImport trace:\n  Server Component:\n    ./src/app/ui-lab/platform/npi-task-catalog.ts\n    ./src/app/ui-lab/platform/page.tsx\n\nhttps://nextjs.org/docs/messages/module-not-found",
+      "timestamp": "2026-10-23T19:32:49.262Z",
+      "url": "http://localhost:57859/_next/static/chunks/0t_4_next_dist_1g5kpdu._.js"
+    },
+    {
+      "level": "error",
+      "message": "./src/app/ui-lab/platform/npi-task-catalog.ts:2:1\nError: Module not found: Can't resolve '../../../../../../assets/cehub/deliverable-guide-manifest.json'\n  1 | import \"server-only\";\n> 2 | import manifest from \"../../../../../../assets/cehub/deliverable-guide-manifest.json\";\n    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  3 | import type { NpiTaskTemplate } from \"./project-task-data\";\n  4 |\n  5 | // Reuse the existing guide's task layer, not its individual deliverable checks.\n\nImport trace:\n  Server Component:\n    ./src/app/ui-lab/platform/npi-task-catalog.ts\n    ./src/app/ui-lab/platform/page.tsx\n\nhttps://nextjs.org/docs/messages/module-not-found",
+      "timestamp": "2026-10-23T19:32:49.387Z",
+      "url": "http://localhost:57859/_next/static/chunks/0t_4_next_dist_1g5kpdu._.js"
+    },
+    {
+      "level": "error",
+      "message": "./src/app/ui-lab/platform/npi-task-catalog.ts:2:1\nError: Module not found: Can't resolve '../../../../../../assets/cehub/deliverable-guide-manifest.json'\n  1 | import \"server-only\";\n> 2 | import manifest from \"../../../../../../assets/cehub/deliverable-guide-manifest.json\";\n    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  3 | import type { NpiTaskTemplate } from \"./project-task-data\";\n  4 |\n  5 | // Reuse the existing guide's task layer, not its individual deliverable checks.\n\nImport trace:\n  Server Component:\n    ./src/app/ui-lab/platform/npi-task-catalog.ts\n    ./src/app/ui-lab/platform/page.tsx\n\nhttps://nextjs.org/docs/messages/module-not-found",
+      "timestamp": "2026-10-23T19:32:49.387Z",
+      "url": "http://localhost:57859/_next/static/chunks/0t_4_next_dist_1g5kpdu._.js"
+    }
+  ],
+  "final": []
+}

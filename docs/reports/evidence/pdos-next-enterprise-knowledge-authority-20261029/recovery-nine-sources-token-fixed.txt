@@ -1,0 +1,53 @@
+E                                                                        [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables] _
+tests/enterprise_search/test_recovery_pg.py:84: in all_sources
+    demand = compute(person, work.config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_build_demand.py:41: in compute
+    receipt, _ = accepted(setup, build_command(setup, config))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_project_first_plan.py:86: in accepted
+    assert preview.status_code == 200, preview.text
+E   AssertionError: {"code":"FORBIDDEN_SCOPE","message":"当前项目不可用，计划由项目负责人建立。","detail":{"reason":"FORBIDDEN_SCOPE"}}
+E   assert 403 == 200
+E    +  where 403 = <Response [403 Forbidden]>.status_code
+=============================== warnings summary ===============================
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+10 warnings, 1 error in 79.83s (0:01:19)

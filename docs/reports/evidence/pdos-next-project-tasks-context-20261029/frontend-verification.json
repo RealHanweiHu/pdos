@@ -1,0 +1,15 @@
+{
+  "executed_by": "/root/v0_native_contracts; gpt-6.1-sol xhigh",
+  "tests_passed": 6,
+  "checks": {
+    "node --test src/components/pai/project-current-basis.test.mjs": 0,
+    "eslint both changed files": 0,
+    "tsc --noEmit --incremental false": 0
+  },
+  "source_sha256": {
+    "pdos-next/web/src/components/pai/project-current-basis.tsx": "bb3a4bc7ea95bd22498b68e6620de490dd7827c049ac23bd8b31e1add9751547",
+    "pdos-next/web/src/components/pai/project-current-basis.test.mjs": "3a0fd67d6e90fd22e117b1909867e3d1ac958127cc77f888e96162fbe92c653d"
+  },
+  "root_verified_hashes": true,
+  "browser_or_build_repeated": false
+}

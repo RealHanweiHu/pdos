@@ -1,0 +1,55 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 29 items / 15 deselected / 14 selected
+
+tests/test_supply_execution.py::test_canonical_kit_is_t0_and_unknown_supply_never_authorizes_start PASSED [  7%]
+tests/test_supply_execution.py::test_committed_kit_replay_rechecks_current_scope_and_evidence[grant] PASSED [ 14%]
+tests/test_supply_execution.py::test_committed_kit_replay_rechecks_current_scope_and_evidence[source] PASSED [ 21%]
+tests/test_supply_execution.py::test_old_snapshots_cannot_start_new_kit_but_saved_kit_replays_as_history PASSED [ 28%]
+tests/test_supply_execution.py::test_agent_has_neither_human_api_session_nor_supply_write_qualification PASSED [ 35%]
+tests/test_supply_execution.py::test_unknown_source_quantity_stays_null_and_pool_scope_stays_incomplete PASSED [ 42%]
+tests/test_supply_execution.py::test_payload_cannot_assert_release_availability_or_complete_authority[quality-released] PASSED [ 50%]
+tests/test_supply_execution.py::test_payload_cannot_assert_release_availability_or_complete_authority[availability-available] PASSED [ 57%]
+tests/test_supply_execution.py::test_payload_cannot_assert_release_availability_or_complete_authority[supply_scope_complete-True] PASSED [ 64%]
+tests/test_supply_execution.py::test_source_quote_must_locate_actual_original_text PASSED [ 71%]
+tests/test_supply_execution.py::test_final_receipt_failure_rolls_back_domain_pointer_token_and_outbox[supply.snapshot.record] PASSED [ 78%]
+tests/test_supply_execution.py::test_final_receipt_failure_rolls_back_domain_pointer_token_and_outbox[supply.kit.compute] PASSED [ 85%]
+tests/test_supply_execution.py::test_supply_history_is_immutable_scoped_and_agent_has_zero_direct_writes PASSED [ 92%]
+tests/test_supply_execution.py::test_current_pointer_cannot_move_build_or_rewind_valid_history PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/test_supply_execution.py: 14 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/test_supply_execution.py: 42 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/test_supply_execution.py: 14 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/test_supply_execution.py: 14 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/test_supply_execution.py: 14 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/test_supply_execution.py: 14 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/test_supply_execution.py: 14 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-enterprise-knowledge-authority-20261029/backend-candidate-10-remaining.xml -
+========= 14 passed, 15 deselected, 126 warnings in 124.07s (0:02:04) ==========

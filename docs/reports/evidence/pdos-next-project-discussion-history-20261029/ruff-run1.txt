@@ -1,0 +1,30 @@
+F401 [*] `sqlalchemy.exists` imported but unused
+ --> pdos_next/agent_kernel/session_presentation.py:7:30
+  |
+6 | from pydantic import Field, model_validator
+7 | from sqlalchemy import and_, exists, func, or_, select, text
+  |                              ^^^^^^
+8 |
+9 | from pdos_next.errors import DomainError
+  |
+help: Remove unused import: `sqlalchemy.exists`
+  |
+6 | from pydantic import Field, model_validator
+  - from sqlalchemy import and_, exists, func, or_, select, text
+7 + from sqlalchemy import and_, func, or_, select, text
+8 |
+  |
+
+E501 Line too long (104 > 100)
+  --> tests/agent_kernel/test_session_presentation.py:90:101
+   |
+88 |     assert "agent_sessions.project_id =" in sql
+89 |     assert "EXISTS (SELECT projects.id" in sql
+90 |     assert "agent_runs.project_id IS NOT DISTINCT FROM presentation_readable_sessions.project_id" in sql
+   |                                                                                                     ^^^^
+91 |     assert "LIMIT" not in sql
+92 |     assert "agent_runs.result" not in sql
+   |
+
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.

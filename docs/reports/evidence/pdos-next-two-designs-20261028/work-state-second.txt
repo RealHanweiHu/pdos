@@ -1,0 +1,363 @@
+....F...............F..................F..............                   [100%]
+=================================== FAILURES ===================================
+______ test_source_exclusion_and_revoke_hide_state_and_stop_frozen_egress ______
+
+setup = <isolated synthetic test scope>
+
+    def test_source_exclusion_and_revoke_hide_state_and_stop_frozen_egress(setup):
+        artifact = synthetic_artifact(setup, "只供合成测试的资料")
+        parent, original = start(setup, sources=[{"artifact_id": artifact, "expected_revision": 1}])
+        complete(setup, parent)
+        state = read(setup, original["session_id"])
+        response = setup.client.post(
+            path(setup, original["session_id"]),
+            headers=setup.headers,
+            json={
+                "request_key": str(uuid4()),
+                "expected_revision": state["revision"],
+                "action": "exclude_source",
+                "item_id": artifact,
+            },
+        )
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"FORBIDDEN_SCOPE","message":"只能排除当前已携带且可读的资料。","detail":{"reason":"FORBIDDEN_SCOPE"}}
+E       assert 403 == 200
+E        +  where 403 = <Response [403 Forbidden]>.status_code
+
+tests/agent_kernel/test_work_state_pg.py:206: AssertionError
+_ test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked _
+
+setup = <isolated synthetic test scope>
+
+    def test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked(setup):
+        owner, scope, host = host_for(setup)
+        first = load(host, scope, "public_research")
+        initial = host.skill_context(scope, "Synthetic focused research", bindings=(first,))
+        assert "proposal" not in initial["context"]
+        assert initial == host.skill_context(scope, "Synthetic focused research", bindings=(first,))
+        second = load(host, scope, "proposal_drafting")
+        expanded = host.skill_context(scope, "Synthetic focused research", bindings=(first, second))
+        assert expanded["context"]["proposal"]["id"] == str(scope.proposal_id)
+        assert expanded["context_ref"] != initial["context_ref"]
+        messages = [{"role": "user", "content": json.dumps(initial)}]
+        check_messages(owner.store, scope, messages, (first, second))
+        tampered = deepcopy(initial)
+        tampered["context"]["goal"] = "Changed after projection"
+        with pytest.raises(DomainError) as failure:
+            check_messages(owner.store, scope, [{"role": "user", "content": json.dumps(tampered)}],
+                           (first, second))
+        assert failure.value.code == "SOURCE_STALE"
+        with Session(setup.admin) as session:
+            row = session.get(AgentRun, scope.run_id)
+            assert len(row.versions["context_snapshots"]) == 2
+            assert "Synthetic context target" not in str(row.versions["context_snapshots"])
+            for value in row.versions["context_snapshots"].values():
+                assert value["read_set"] == row.read_sources
+                assert value["scope"]["proposal_id"] == str(scope.proposal_id)
+                assert value["scope"]["requester_id"] == str(scope.requester_id)
+                assert value["scope"]["data_categories"] == ["internal"]
+        response = setup.client.get(
+            f"/v1/categories/{setup.category}/agent-runs/{scope.run_id}/process", headers=setup.headers,
+        )
+        assert response.status_code == 200
+        steps = [step for step in response.json()["steps"] if step["kind"] == "context_projected"]
+>       assert len(steps) == 2 and steps[-1]["context_fields"][-1] == "sources"
+E       AssertionError: assert (2 == 2 and 'work_state' == 'sources'
+E        +  where 2 = len([{'id': '521c1edc-3d8d-45b2-a6fc-0954b4d4e34c', 'sequence': 3, 'at': '2026-10-28T17:56:29.246293+00:00', 'kind': 'cont...6c-4129-a4e7-97e29ae6fb3c', 'sequence': 5, 'at': '2026-10-28T17:56:29.528392+00:00', 'kind': 'context_projected', ...}])
+E         
+E         - sources
+E         + work_state)
+
+tests/agent_kernel/test_context_projection_pg.py:89: AssertionError
+_ test_terminal_time_is_atomic_and_stable_after_refresh_and_original_cancel_replay _
+
+self = <sqlalchemy.engine.base.Connection object at 0x169b82990>
+dialect = <sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x130380620>
+context = <sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x158193110>
+statement = <sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x137e0ad80>
+parameters = [{'versions': Jsonb({'checkpoint_layout': 'session-run- ... (100 chars)), 'agent_runs_id': UUID('fe87d051-4e87-45ad-b76c-a7cb8841c198')}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -> CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+>                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=53502 user=pdos_next_app database=pdos_test) at 0x158020650>
+query = 'UPDATE agent_runs SET versions=%(versions)s::JSONB WHERE agent_runs.id = %(agent_runs_id)s::UUID'
+params = {'versions': Jsonb({'checkpoint_layout': 'session-run- ... (100 chars)), 'agent_runs_id': UUID('fe87d051-4e87-45ad-b76c-a7cb8841c198')}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -> Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+>           raise ex.with_traceback(None)
+E           psycopg.errors.RaiseException: Kernel run binding immutable
+E           CONTEXT:  PL/pgSQL function kernel_run_guard() line 17 at RAISE
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: RaiseException
+
+The above exception was the direct cause of the following exception:
+
+setup = <isolated synthetic test scope>
+
+    def test_terminal_time_is_atomic_and_stable_after_refresh_and_original_cancel_replay(setup):
+        start = now()
+        with using_clock(lambda: start):
+            store, scope = run(setup)
+        with using_clock(lambda: start + timedelta(seconds=65)):
+            with human_session(setup) as session:
+>               cancel_run(session, setup.ctx, scope.run_id)
+
+tests/agent_kernel/test_process_view.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/persistence.py:728: in cancel_run
+    record_finish(session, run, run.result or {})
+pdos_next/agent_kernel/work_state.py:209: in record_finish
+    _append(
+pdos_next/agent_kernel/work_state.py:110: in _append
+    session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+<sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush>:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:84: in _save_obj
+    _emit_update_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:916: in _emit_update_statements
+    c = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=53502 user=pdos_next_app database=pdos_test) at 0x158020650>
+query = 'UPDATE agent_runs SET versions=%(versions)s::JSONB WHERE agent_runs.id = %(agent_runs_id)s::UUID'
+params = {'versions': Jsonb({'checkpoint_layout': 'session-run- ... (100 chars)), 'agent_runs_id': UUID('fe87d051-4e87-45ad-b76c-a7cb8841c198')}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -> Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+>           raise ex.with_traceback(None)
+E           sqlalchemy.exc.ProgrammingError: (psycopg.errors.RaiseException) Kernel run binding immutable
+E           CONTEXT:  PL/pgSQL function kernel_run_guard() line 17 at RAISE
+E           [SQL: UPDATE agent_runs SET versions=%(versions)s::JSONB WHERE agent_runs.id = %(agent_runs_id)s::UUID]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/f405)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: ProgrammingError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_context_projection_pg.py::test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[development]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[test]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[production]
+tests/agent_kernel/test_context_projection_pg.py::test_registered_graph_progressively_adds_context_and_replay_never_calls_provider
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service.py:242: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:174: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([chain])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:199: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([attempt])
+
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_work_state_pg.py::test_source_exclusion_and_revoke_hide_state_and_stop_frozen_egress
+FAILED tests/agent_kernel/test_context_projection_pg.py::test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked
+FAILED tests/agent_kernel/test_process_view.py::test_terminal_time_is_atomic_and_stable_after_refresh_and_original_cancel_replay
+3 failed, 51 passed, 16 warnings in 124.33s (0:02:04)

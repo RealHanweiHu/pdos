@@ -1,0 +1,67 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 1 item
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference RELATED_PROFILE {"samples": 12, "returned_sources": [6], "queries_per_request": [7], "p95_seconds": 1.4566492312180344, "max_seconds": 1.428520124987699, "durations_seconds": [1.34219487500377, 1.3035407500574365, 1.428520124987699, 1.2285474159289151, 1.1744645839789882, 1.348151250043884, 1.1421036249957979, 1.1257852079579607, 1.1205290000652894, 1.0549078340409324, 1.2589357079705223, 1.0520383330294862], "sql_profile": {"direct_page": {"samples": 12, "median_seconds": 0.3939121249713935, "max_seconds": 0.5532396249473095, "sql_chars": 110631}, "set_jit": {"samples": 12, "median_seconds": 0.001194291515275836, "max_seconds": 0.0018836669623851776, "sql_chars": 17}, "presence": {"samples": 12, "median_seconds": 0.016996229416690767, "max_seconds": 0.02298016706481576, "sql_chars": 799}, "related_metadata": {"samples": 12, "median_seconds": 0.47404312499566004, "max_seconds": 0.6379931248957291, "sql_chars": 108367}}, "real_models": false, "embedding": false, "scope": "one Build and its actual registered execution/TestRun records, not all-source scale"}
+FAILED
+
+=================================== FAILURES ===================================
+_ test_registered_build_parent_expands_unindexed_records_without_text_inference _
+/tmp/pdos_relations_profiler.py:55: in pytest_runtest_call
+    assert result['p95_seconds']<1.0
+E   assert 1.4566492312180344 < 1.0
+=============================== warnings summary ===============================
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_relations_pg.py: 13 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/query.py:145: SADeprecationWarning: Type object <class 'sqlalchemy.sql.sqltypes.ARRAY'> does not include operator 'inv' in its operator classes.  Using built-in operators (not including custom or overridden operators) outside of a type's stated operator classes is deprecated and will raise InvalidRequestError in a future release
+    func.bool_or(~matched.c.original_ids.op("<@")(array(sorted(safe), type_=PGUUID))), False
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/query.py:145: SADeprecationWarning: Type object <class 'sqlalchemy.dialects.postgresql.array.ARRAY'> does not include operator 'inv' in its operator classes.  Using built-in operators (not including custom or overridden operators) outside of a type's stated operator classes is deprecated and will raise InvalidRequestError in a future release
+    func.bool_or(~matched.c.original_ids.op("<@")(array(sorted(safe), type_=PGUUID))), False
+
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/_pytest/runner.py:250: PluggyTeardownRaisedWarning: A plugin raised an exception during an old-style hookwrapper teardown.
+  Plugin: pdos_relations_profiler, Hook: pytest_runtest_call
+  AssertionError: assert 1.4566492312180344 < 1.0
+  For more information see https://pluggy.readthedocs.io/en/stable/api_reference.html#pluggy.PluggyTeardownRaisedWarning
+    lambda: runtest_hook(item=item, **kwds),
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+================== 1 failed, 25 warnings in 98.99s (0:01:38) ===================

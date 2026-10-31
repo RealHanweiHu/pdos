@@ -1,0 +1,154 @@
+[
+  {
+    "path": "pdos-next/web/src/app/globals.css",
+    "sha256": "6ba093d9bb7cc0494ea9466dd5e6b55df859498a70d2dbc83df90006dffe60d6"
+  },
+  {
+    "path": "pdos-next/web/src/components/app-shell.tsx",
+    "sha256": "5bab837b06565e916ceb48ff089d14a13f46848b57f15e00ad8d236da4d47c2e"
+  },
+  {
+    "path": "pdos-next/web/src/components/app-shell.module.css",
+    "sha256": "90f7cb09549c6d7a8d71d0ac2a60bd21676664faf89e199c6e82d3b3a8539cfd"
+  },
+  {
+    "path": "pdos-next/web/src/components/category-workspace.tsx",
+    "sha256": "8094ca5dd1e9723d45eb3b316b85fa160c5c2d9cf31abc7cac84056645d425c4"
+  },
+  {
+    "path": "pdos-next/web/src/components/category-home.tsx",
+    "sha256": "29ce7bba8158287a05b9b65d48f1351be66194d964e0f623f79df3478db671f8"
+  },
+  {
+    "path": "pdos-next/web/src/components/category-home.module.css",
+    "sha256": "ac3cc80dffa75bdf3bd65bcf28e81428d103c967eabf1eae804b008bada527b6"
+  },
+  {
+    "path": "pdos-next/web/src/components/category-home.test.mjs",
+    "sha256": "ff86098f2fd240cb6927d9ee05dc562256b17530437e88e7012ca6d0649b4847"
+  },
+  {
+    "path": "pdos-next/web/src/components/category-metadata-editor.tsx",
+    "sha256": "c5d910dbc57bee9d1a5ffc05ce4645d6afe893b5b037bab69503408746440d40"
+  },
+  {
+    "path": "pdos-next/web/src/components/pai-conversation.tsx",
+    "sha256": "84f423de2ca6713cae711d187641012f9de1faf542953444f33508453ff46acd"
+  },
+  {
+    "path": "pdos-next/web/src/components/pai-conversation.module.css",
+    "sha256": "1d355e5b372911e364bc5fd54febea1578566faf2bd8b82dbc88915d557b306f"
+  },
+  {
+    "path": "pdos-next/web/src/components/xiaopai.tsx",
+    "sha256": "db7c0e528da06587af743bcaef8fb5b489080fa5f2f5d01c8c7ad58ed89942c0"
+  },
+  {
+    "path": "pdos-next/web/src/components/xiaopai.test.mjs",
+    "sha256": "9eb532afa46232a30c83387250dec11fe8dcb9c784d1a1ac404232525e9ae8c9"
+  },
+  {
+    "path": "pdos-next/web/src/components/category-create/personal-xiaopai.tsx",
+    "sha256": "369c66aba7284b5eebc96a271d6ff92358382124e8b7bc5b6714e7884a9efeba"
+  },
+  {
+    "path": "pdos-next/web/src/components/pai-rail.tsx",
+    "sha256": "5e1865da6b17aec8fcb10e21cb3b836c1bfc2fa4350b76ffd19b9006dd21ab66"
+  },
+  {
+    "path": "pdos-next/web/src/components/pai/session-history.tsx",
+    "sha256": "36913ed20a8cda5855d2d1df7c878b2e60286ff3ad8c7e502dfb5af911e1007a"
+  },
+  {
+    "path": "pdos-next/web/src/components/pai/session-history.module.css",
+    "sha256": "c445d795816d5ce46046165d079cd619773a74943bde226686d4b08310b41ec9"
+  },
+  {
+    "path": "pdos-next/web/src/components/pai/session-history.test.mjs",
+    "sha256": "721aedf5c7a64b611a22db1eb550cbc086a2c1a373bd20ea8a10f970ac69a790"
+  },
+  {
+    "path": "pdos-next/web/src/components/proposals/proposal-list.tsx",
+    "sha256": "b84508029129664f8c39045bae329e4625859d145decd6e85d4e6c8f593dbbcf"
+  },
+  {
+    "path": "pdos-next/web/src/components/proposals/proposal-list.module.css",
+    "sha256": "7afbfd610fd895a954ff2015e83d1484fbb37df5e3273cb73af607dea0d16f4d"
+  },
+  {
+    "path": "pdos-next/web/src/components/preproject/proposal-document.tsx",
+    "sha256": "6279cfed36f4b7e9fe5cc5059adc3852002a532093e8bf93cf34225940e51bbc"
+  },
+  {
+    "path": "pdos-next/web/src/components/preproject/proposal-document.module.css",
+    "sha256": "ba9f5dc9f780dbc0dfb5c11448f71d6d9e4cd1dd725f638bfd60a861aa6c74b2"
+  },
+  {
+    "path": "pdos-next/web/src/components/preproject/proposal-document.test.mjs",
+    "sha256": "63e29db613ab8d84a7c0b057a2381b96dfb821065951c873d52c9518ab25e32f"
+  },
+  {
+    "path": "pdos-next/web/src/components/preproject/proposal-views.tsx",
+    "sha256": "3c916bf7e10581cb23dfc1bf0bbda65d65effae6668233add54f90fa62b39952"
+  },
+  {
+    "path": "pdos-next/web/src/components/preproject/proposal-pai.tsx",
+    "sha256": "356e9be73118eb6aac876cb6372ed664d63963a857ad3ac535a83ab07c38226c"
+  },
+  {
+    "path": "pdos-next/web/src/components/preproject/proposal-item-table.tsx",
+    "sha256": "808a79f3e9400dcb8be47d4d9873df6f6f41cc33b9ee6095ef2db52ffb8e02c2"
+  },
+  {
+    "path": "pdos-next/web/src/components/my-work.tsx",
+    "sha256": "59e18831fd926b6b66b0cacdb214301a7f22374322f3b75ddfaa9818cbe55de1"
+  },
+  {
+    "path": "pdos-next/web/src/components/my-work.module.css",
+    "sha256": "3300fede9adff5d63865981e38ae223b0c8cbfac97b0b1622dc32eb0fa42b2e0"
+  },
+  {
+    "path": "pdos-next/web/src/components/my-work.test.mjs",
+    "sha256": "a3b0b0d1a9fee707fbccd31247320b106737be04c09e7434e7a23cab647432b9"
+  },
+  {
+    "path": "pdos-next/web/src/components/my-work-list.tsx",
+    "sha256": "69ef40dab578297ffa8e70e18b4251d21f7a384feb7b19779fcf2522599db9f2"
+  },
+  {
+    "path": "pdos-next/web/src/components/my-work-list.module.css",
+    "sha256": "da82cea048f1ccc301abb96787f0478053d4c77b6ce6600f6c97d093f8bb785b"
+  },
+  {
+    "path": "pdos-next/web/src/components/inbox.tsx",
+    "sha256": "1801e3f131aa56cc99fc08855ec30d14a1447f620a7b2febdc61e7c64c70f8d4"
+  },
+  {
+    "path": "pdos-next/web/src/components/inbox.module.css",
+    "sha256": "b19373338180d63414c48e9c092160df9280a7371e6fdc592307cd6160701e26"
+  },
+  {
+    "path": "pdos-next/web/src/components/inbox.test.mjs",
+    "sha256": "5e0a72a4f39be18cdf0e20a79665e0edf61ba2066dcefceb85dccff5314199da"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/project-list.tsx",
+    "sha256": "4ee231f56e1af2f1ca5185cd4607af81688ca8eef44e55a50730682097ab4f12"
+  },
+  {
+    "path": "pdos-next/web/src/components/projects/project-views.module.css",
+    "sha256": "92b683a2e60218dda3099be7ffc6a5ebce63eeb532ddd2f014d0309b3afb7877"
+  },
+  {
+    "path": "pdos-next/web/src/components/knowledge/knowledge-library.module.css",
+    "sha256": "d21ff50ed12c92289edcb840b4bdb9c67bf3111a16580e3a26ff73e42056410c"
+  },
+  {
+    "path": "pdos-next/server/pdos_next/api.py",
+    "sha256": "5baf04b0758e27167de4b36a3a33a273e8726c836f316372709f1c1999867a84"
+  },
+  {
+    "path": "pdos-next/server/tests/preproject/test_category_metadata.py",
+    "sha256": "b6217b96ee8c6f3bf132d24e4c594371849160cfb58c11bd8ba587c8e49f8de9"
+  }
+]

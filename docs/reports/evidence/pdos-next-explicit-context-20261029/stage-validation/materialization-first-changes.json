@@ -1,0 +1,50 @@
+[
+  {
+    "path": "pdos-next/server/pdos_next/skill_packages/context-schemas.json",
+    "actual_base_drift": false,
+    "old_base": "/tmp/pdos-retrieval-feedback-stage-20261029/pdos-next/server/pdos_next/skill_packages/context-schemas.json",
+    "correct_base": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/skill_packages/context-schemas.json"
+  },
+  {
+    "path": "pdos-next/server/pdos_next/enterprise_search/query.py",
+    "actual_base_drift": false,
+    "old_base": "/tmp/pdos-retrieval-feedback-stage-20261029/pdos-next/server/pdos_next/enterprise_search/query.py",
+    "correct_base": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/query.py"
+  },
+  {
+    "path": "pdos-next/server/pdos_next/enterprise_search/assistant_inheritance.py",
+    "actual_base_drift": false,
+    "old_base": "/tmp/pdos-retrieval-feedback-stage-20261029/pdos-next/server/pdos_next/enterprise_search/assistant_inheritance.py",
+    "correct_base": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/assistant_inheritance.py"
+  },
+  {
+    "path": "pdos-next/server/pdos_next/enterprise_search/assistant_scope.py",
+    "actual_base_drift": true,
+    "old_base": "/tmp/pdos-retrieval-feedback-stage-20261029/pdos-next/server/pdos_next/enterprise_search/assistant_scope.py",
+    "correct_base": "/tmp/pdos-assistant-depth-stage-20261029/pdos-next/server/pdos_next/enterprise_search/assistant_scope.py"
+  },
+  {
+    "path": "pdos-next/server/pdos_next/enterprise_search/assistant_ledger.py",
+    "actual_base_drift": false,
+    "old_base": "/tmp/pdos-retrieval-feedback-stage-20261029/pdos-next/server/pdos_next/enterprise_search/assistant_ledger.py",
+    "correct_base": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/assistant_ledger.py"
+  },
+  {
+    "path": "pdos-next/server/pdos_next/enterprise_search/assistant_materials.py",
+    "actual_base_drift": false,
+    "old_base": "/tmp/pdos-retrieval-feedback-stage-20261029/pdos-next/server/pdos_next/enterprise_search/assistant_materials.py",
+    "correct_base": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/assistant_materials.py"
+  },
+  {
+    "path": "pdos-next/server/pdos_next/agent_kernel/work_state.py",
+    "actual_base_drift": false,
+    "old_base": "/tmp/pdos-retrieval-feedback-stage-20261029/pdos-next/server/pdos_next/agent_kernel/work_state.py",
+    "correct_base": "/tmp/pdos-retrieval-feedback-stage-20261029/pdos-next/server/pdos_next/agent_kernel/work_state.py"
+  },
+  {
+    "path": "pdos-next/server/pdos_next/agent_kernel/conversation.py",
+    "actual_base_drift": false,
+    "old_base": "/tmp/pdos-retrieval-feedback-stage-20261029/pdos-next/server/pdos_next/agent_kernel/conversation.py",
+    "correct_base": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/conversation.py"
+  }
+]

@@ -1,0 +1,154 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work&category=0b1261de-e54b-4520-bd59-45764f4c56f3"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox&category=0b1261de-e54b-4520-bd59-45764f4c56f3"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects&category=0b1261de-e54b-4520-bd59-45764f4c56f3"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs&category=0b1261de-e54b-4520-bd59-45764f4c56f3"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge&category=0b1261de-e54b-4520-bd59-45764f4c56f3"
+      - generic: 知识
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Shared synthetic project":
+        - /url: "?area=cockpit&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4"
+        - generic: Sh
+        - generic: Shared synthetic project
+  - link "设置":
+    - /url: "?area=settings&category=0b1261de-e54b-4520-bd59-45764f4c56f3"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - link "项目":
+    - /url: "?area=projects"
+  - generic: Shared synthetic project
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - button "返回项目列表": Sh
+  - heading "Shared synthetic project" [level=1]
+  - button "阶段待确认":
+    - text: 阶段待确认
+  - generic: 负责人 Synthetic owner（本人）
+  - tablist "项目工作区视图":
+    - tab "概览"
+    - tab "任务"
+    - tab "计划"
+    - tab "文件"
+  - generic "更多项目视图":
+    - text: 更多
+  - tabpanel "更多项目视图":
+    - region "产品与工程":
+      - heading "产品与工程" [level=2]
+      - paragraph: 规格、配置和制品在同一处核对，正式基线独立保留。
+      - navigation "产品与工程视图":
+        - button "产品定义"
+        - button "工程配置与 BOM"
+        - button "平台与差异"
+        - button "制造准备" [pressed]
+        - button "制造发布"
+        - button "物料齐套"
+        - button "成本"
+      - region "本项目制造准备资料":
+        - heading "制造准备资料" [level=2]
+        - button "刷新制造资料"
+        - paragraph: 历史首页：本页重新取得当前版本及单页历史，不累加前页内容或不可读条数。
+        - paragraph: 本次可读的当前版本 3 条，按各资料系列分别保留；当前仅指该系列版本头。以下均为草稿资料，不能据此判断正式发布或当前就绪。
+        - article "制造准备资料 c330d0a0-ca8f-4f9c-8f0c-9487855e2ed2":
+          - heading "Synthetic control_plan documentation" [level=3]
+          - generic: 控制计划草稿 · v1
+          - paragraph: 本系列当前版本 · 来源状态：需重核
+          - term: 固定制造配置
+          - definition:
+            - text: Shared manufacturing fixed draft · v1
+            - generic: b3a6f6fb-fbee-4186-88b0-0db55a4308f5
+          - term: 固定工序
+          - definition:
+            - text: Synthetic assembly
+            - generic: assembly
+          - paragraph:
+            - text: 保存原时点：
+            - time: 2026-10-17T21:19:16.119537+00:00
+          - generic "控制检查与判据（1 项）"
+          - generic "保存时缺项（5 项，原记录）"
+          - generic "固定身份、保存原因与回执"
+        - article "制造准备资料 f9147107-c311-4ac0-94c8-af108ca9c66a":
+          - heading "Synthetic manufacturing_baseline documentation" [level=3]
+          - generic: 制造基线草稿 · v1
+          - paragraph: 本系列当前版本 · 来源状态：需重核
+          - term: 固定制造配置
+          - definition:
+            - text: Shared manufacturing fixed draft · v1
+            - generic: b3a6f6fb-fbee-4186-88b0-0db55a4308f5
+          - term: 固定工序
+          - definition: 本版基线内各工序（见下方）
+          - paragraph:
+            - text: 保存原时点：
+            - time: 2026-10-17T21:19:24.804219+00:00
+          - generic "基线固定文档引用（1 道工序）"
+          - generic "保存时缺项（6 项，原记录）"
+          - generic "固定身份、保存原因与回执"
+        - article "制造准备资料 3f7b16f7-5ec2-4587-bcce-7c92f3eb5372":
+          - heading "Synthetic work_instruction documentation" [level=3]
+          - generic: 作业指导书草稿 · v1
+          - paragraph: 本系列当前版本 · 来源状态：需重核
+          - term: 固定制造配置
+          - definition:
+            - text: Shared manufacturing fixed draft · v1
+            - generic: b3a6f6fb-fbee-4186-88b0-0db55a4308f5
+          - term: 固定工序
+          - definition:
+            - text: Synthetic assembly
+            - generic: assembly
+          - paragraph:
+            - text: 保存原时点：
+            - time: 2026-10-17T21:19:10.448883+00:00
+          - generic "作业步骤与参数（1 步）"
+          - generic "保存时缺项（5 项，原记录）"
+          - generic "固定身份、保存原因与回执"
+        - generic "本次返回的历史版本（0 条）"
+        - button "回历史首页" [disabled]
+        - button "下一页历史" [disabled]
+        - generic: 本页未提供下一页历史位置。
+        - paragraph: 保存时缺项不会在此自动重算。正式发布、人员、工装、物料与库存资格不在本次读集内；未读取不等于未登记或未满足。
+      - button "维护记录与专业办理" [expanded] [active]:
+        - text: 维护记录与专业办理
+      - heading "制造准备资料" [level=2]:
+        - text: 制造准备资料
+      - button "重试读取当前事实":
+        - text: 重试读取当前事实
+      - paragraph: 为固定制造配置保留作业指导书、控制计划和整版制造基线草稿。填写或保存不构成发布、工装验收、试产准入或正式放行。
+      - heading "选择真实项目与固定制造配置" [level=3]
+      - text: 当前可读项目
+      - combobox "当前可读项目" [disabled]:
+        - option "明确选择项目"
+        - option "Shared synthetic project · v1" [selected]
+      - text: 本项目定义对应的固定制造配置
+      - combobox "本项目定义对应的固定制造配置":
+        - option "明确选择固定配置" [selected]
+        - option "Shared manufacturing fixed draft · v1"
+      - paragraph: 固定用途：Verify preparation。用途与专业范围由服务器真实项目绑定，不能在本表单改写。
+  - generic "项目资料与更多操作"
+- button "打开小Pai工作栏":

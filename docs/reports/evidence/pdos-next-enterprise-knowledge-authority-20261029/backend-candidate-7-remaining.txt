@@ -1,0 +1,133 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 231 items
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second PASSED [  0%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body PASSED [  0%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_primary_revision_change_never_offers_a_replacement_body_as_the_old_fixed_snippet PASSED [  1%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[old_root] PASSED [  1%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[claim] PASSED [  2%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_updated_knowledge_dependency_still_uses_actual_original_scan_proofs PASSED [  2%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_registered_snapshot_dependency_is_signed_without_original_text_and_cannot_be_retargeted PASSED [  3%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency PASSED [  3%]
+tests/enterprise_search/test_recovery_temporal_pg.py::test_nine_family_fixed_batches_survive_worker_restart_without_replanning PASSED [  3%]
+tests/enterprise_search/test_relations.py::test_bidirectional_graph_reads_each_native_rls_table_once_under_bound_tenant PASSED [  4%]
+tests/enterprise_search/test_relations.py::test_change_links_preserve_fixed_revision_scope_and_capa_key_in_each_direction PASSED [  4%]
+tests/enterprise_search/test_relations.py::test_build_parent_links_retain_each_scope_join_and_artifact_is_never_a_seed_kind PASSED [  5%]
+tests/enterprise_search/test_relations.py::test_catalog_and_graph_share_one_live_rls_source_across_family_combinations PASSED [  5%]
+tests/enterprise_search/test_relations.py::test_shared_sql_alias_never_binds_a_principal_and_exact_identity_keeps_table_indexes PASSED [  6%]
+tests/enterprise_search/test_relations.py::test_cached_authority_statement_binds_source_keys_at_each_execution PASSED [  6%]
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation PASSED [  6%]
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference PASSED [  7%]
+tests/enterprise_search/test_relations_temporal_pg.py::test_registered_relationship_reaches_fixed_source_and_continues_without_new_search PASSED [  7%]
+tests/enterprise_search/test_retrieval_pg.py::test_or_recall_identifier_priority_and_no_raw_text_in_http_result PASSED [  8%]
+tests/enterprise_search/test_retrieval_pg.py::test_authoritative_private_scope_and_tenant_filter_precede_returned_counts PASSED [  8%]
+tests/enterprise_search/test_retrieval_pg.py::test_outbox_replay_and_full_rebuild_do_not_duplicate_df_or_business_facts PASSED [  9%]
+tests/enterprise_search/test_retrieval_pg.py::test_withdrawal_and_membership_revocation_take_effect_without_reindex PASSED [  9%]
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second FAILED [  9%]
+
+=================================== FAILURES ===================================
+_____ test_query_count_is_constant_and_local_warm_latency_below_one_second _____
+tests/enterprise_search/test_retrieval_pg.py:226: in test_query_count_is_constant_and_local_warm_latency_below_one_second
+    assert len(statements) == 3, len(statements)
+E   AssertionError: 4
+E   assert 4 == 3
+E    +  where 4 = len(['SET LOCAL jit=off', 'SELECT %(param_1)s::VARCHAR AS source_type, EXISTS (SELECT 1 \nFROM artifact_versions \nWHERE artifact_versions.tenant_id = %(tenant_id_1)s::UUID) AS present, transaction_timestamp() AS as_of UNION ALL SELECT %(param_2)s::VARCHAR AS source_type, (EXISTS (SELECT 1 \nFROM builds \nWHERE builds.tenant_id = %(tenant_id_2)s::UUID)) OR (EXISTS (SELECT 1 \nFROM build_starts \nWHERE build_starts.tenant_id = %(tenant_id_3)s::UUID)) OR (EXISTS (SELECT 1 \nFROM actual_configurations \nWHERE actual_configurations.tenant_id = %(tenant_id_4)s::UUID)) OR (EXISTS (SELECT 1 \nFROM build_lots \nWHERE build_lots.tenant_id = %(tenant_id_5)s::UUID)) AS present, transaction_timestamp() AS as_of UNION ALL SELECT %(param_3)s::VARCHAR AS source_type, EXISTS (SELECT 1 \nFROM quality_issue_versions \nWHERE quality_issue_versions.tenant_id = %(tenant_id_6)s::UUID) AS present, transaction_timestamp() AS as_of UNION ALL SELECT %(param_4)s::VARCHAR AS source_type, EXISTS (SELECT 1 \nFROM change_request_versions \nWHERE change_request_versions.tenant_id = %(tenant_id_7)s::UUID) AS present, transaction_timestamp() AS as_of UNION ALL SELECT %(param_5)s::VARCHAR AS source_type, EXISTS (SELEC...se_search_sources.source_id = scoped_enterprise_sources.source_id \nWHERE scoped_enterprise_sources.tenant_id = %(tenant_id_3)s::UUID AND scoped_enterprise_sources.source_type IN (%(source_type_2_1)s::VARCHAR, %(source_type_2_2)s::VARCHAR, %(source_type_2_3)s::VARCHAR, %(source_type_2_4)s::VARCHAR, %(source_type_2_5)s::VARCHAR, %(source_type_2_6)s::VARCHAR, %(source_type_2_7)s::VARCHAR, %(source_type_2_8)s::VARCHAR, %(source_type_2_9)s::VARCHAR)), \nunsafe_matches AS \n(SELECT coalesce(bool_or(NOT (readable_keyword_matches.original_ids <@ ARRAY[]::UUID[])), %(coalesce_10)s) AS unsafe_match \nFROM readable_keyword_matches)\n SELECT enterprise_index_health.incomplete, enterprise_index_health.indexed_as_of, unsafe_matches.unsafe_match, transaction_timestamp() AS as_of, (SELECT coalesce(jsonb_agg(to_jsonb(enterprise_page) ORDER BY enterprise_page.exact_match DESC, enterprise_page.code_hit DESC, enterprise_page.score DESC, enterprise_page.source_id, enterprise_page.chunk_id), CAST(%(param_1)s::VARCHAR AS JSONB)) AS coalesce_1 \nFROM enterprise_page) AS primary_rows, CAST(%(param_20)s::VARCHAR AS JSONB) AS related_rows \nFROM enterprise_index_health JOIN unsafe_matches ON %(param_21)s'])
+=============================== warnings summary ===============================
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_temporal_pg.py::test_nine_family_fixed_batches_survive_worker_restart_without_replanning
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_temporal_pg.py::test_registered_relationship_reaches_fixed_source_and_continues_without_new_search
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py: 3 warnings
+tests/enterprise_search/test_recovery_temporal_pg.py: 3 warnings
+tests/enterprise_search/test_relations_pg.py: 6 warnings
+tests/enterprise_search/test_relations_temporal_pg.py: 3 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_temporal_pg.py::test_nine_family_fixed_batches_survive_worker_restart_without_replanning
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_temporal_pg.py::test_registered_relationship_reaches_fixed_source_and_continues_without_new_search
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_temporal_pg.py::test_nine_family_fixed_batches_survive_worker_restart_without_replanning
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_temporal_pg.py::test_registered_relationship_reaches_fixed_source_and_continues_without_new_search
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_temporal_pg.py::test_nine_family_fixed_batches_survive_worker_restart_without_replanning
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_temporal_pg.py::test_registered_relationship_reaches_fixed_source_and_continues_without_new_search
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_temporal_pg.py::test_nine_family_fixed_batches_survive_worker_restart_without_replanning
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_temporal_pg.py::test_registered_relationship_reaches_fixed_source_and_continues_without_new_search
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_temporal_pg.py::test_nine_family_fixed_batches_survive_worker_restart_without_replanning
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_temporal_pg.py::test_registered_relationship_reaches_fixed_source_and_continues_without_new_search
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_recovery_pg.py: 6 warnings
+tests/enterprise_search/test_knowledge_dependencies_pg.py: 11 warnings
+tests/enterprise_search/test_recovery_temporal_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+tests/enterprise_search/test_recovery_temporal_pg.py::test_nine_family_fixed_batches_survive_worker_restart_without_replanning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  tests/enterprise_search/test_recovery_pg.py:521: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second(
+
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+  tests/enterprise_search/test_knowledge_dependencies_pg.py:244: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency(
+
+tests/enterprise_search/test_recovery_temporal_pg.py::test_nine_family_fixed_batches_survive_worker_restart_without_replanning
+  tests/enterprise_search/test_recovery_temporal_pg.py:38: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.skipif(
+
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+  tests/enterprise_search/test_retrieval_pg.py:206: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-enterprise-knowledge-authority-20261029/backend-candidate-7-remaining.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+============ 1 failed, 22 passed, 74 warnings in 589.25s (0:09:49) =============

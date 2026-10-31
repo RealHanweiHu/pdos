@@ -1,0 +1,282 @@
+{
+  "version": "xiaopai-v0-final-manifest/1",
+  "created_at": "2026-10-29T18:46:25.210379+00:00",
+  "counts": {
+    "role_questions": 40,
+    "context_questions": 12,
+    "synthetic_documents": 24,
+    "retrieval_observations": 28
+  },
+  "checks": {
+    "published_metrics_recomputed": true,
+    "baseline_input_hashes_match": true,
+    "protected_state_unchanged": true,
+    "ruff_files": 7,
+    "ruff": "passed",
+    "json_documents_parsed": 15,
+    "markdown_file_links_checked": 84,
+    "xml": {
+      "pure-final.xml": {
+        "passed": 32,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "native-candidate2/native.xml": {
+        "passed": 1,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "identifier-regression.xml": {
+        "passed": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "context_inputs_reproduced": true
+  },
+  "retrieval": {
+    "positive_cases": 24,
+    "observed_positive_cases": 24,
+    "expected_source_count": 28,
+    "missing_positive_case_ids": [],
+    "hits_at_5": 27,
+    "macro_recall_at_5": 0.9791666666666666,
+    "micro_recall_at_5": 0.9642857142857143,
+    "hits_at_10": 27,
+    "macro_recall_at_10": 0.9791666666666666,
+    "micro_recall_at_10": 0.9642857142857143,
+    "mrr": 0.9791666666666666
+  },
+  "negative_checks": {
+    "cases": 4,
+    "passed": 4,
+    "failed": 0,
+    "missing": 0,
+    "status": "passed",
+    "failed_case_ids": []
+  },
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "answer_quality": "not_run",
+  "human_review": "not_recorded",
+  "files": [
+    {
+      "path": "docs/evaluations/xiaopai-v0/README.md",
+      "bytes": 1621,
+      "sha256": "916f07118e0037c9e990fedadd4fee394ed52db4db2e9727c6bfb0fa8446dfba"
+    },
+    {
+      "path": "docs/evaluations/xiaopai-v0/context-questions.json",
+      "bytes": 277513,
+      "sha256": "494fdf3d14d76f2586a093c8af6c9af6aa6b5c0fd8e56a3aace06d48bd22d69a"
+    },
+    {
+      "path": "docs/evaluations/xiaopai-v0/corpus.json",
+      "bytes": 21826,
+      "sha256": "846de93e8a8dd496ddc432b30220146dfc868b170da63ef331be83cdadc43920"
+    },
+    {
+      "path": "docs/evaluations/xiaopai-v0/question-bank.md",
+      "bytes": 12735,
+      "sha256": "5a8b264873f331d9bc2edec52a1caa7cad826e62dff0a7fafc35188e1115e0df"
+    },
+    {
+      "path": "docs/evaluations/xiaopai-v0/question-review.md",
+      "bytes": 6916,
+      "sha256": "a9fd06a8d678a6a7789de8cb2b1fae91114e31a166f03878c8f57559e4785089"
+    },
+    {
+      "path": "docs/evaluations/xiaopai-v0/questions.json",
+      "bytes": 37129,
+      "sha256": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685"
+    },
+    {
+      "path": "docs/evaluations/xiaopai-v0/rubric.md",
+      "bytes": 14462,
+      "sha256": "90eab4d3aa33cb92a09cf5da204e7e0a34813c44a34b12d58546362175a31b95"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/context-expanded-inputs.json",
+      "bytes": 219170,
+      "sha256": "c5e9c56b87bbaa2736c7f0ae97e2212b99e89e3606aa3402cb20b1bf13f92cd8"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/context-input-validation.json",
+      "bytes": 3374,
+      "sha256": "2192a42df8e57b4e5fd936d940024145a9f13fcb1a4e5c9135451d5715afa349"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/context-validation.log",
+      "bytes": 480,
+      "sha256": "45046869995037bcb796dca54da2e8946d3af9115036d030ea635fd6585f80a8"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/identifier-regression.xml",
+      "bytes": 1224,
+      "sha256": "e067c414aa30f2a1e29fb81782984ddac97846b1a870c2cf4870b9c9252735a4"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/identifier-rule-delta.json",
+      "bytes": 761,
+      "sha256": "fa9418c986b544af7bc2c516407275ce3fb774723573cb11de04813f3f447297"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/identifier-rule.patch",
+      "bytes": 883,
+      "sha256": "cd7f57c2ec944a5fb4fbd9edd2802e515ec9e4dcaf48ba4169c2878a28bbe2fc"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/independent-input-review.json",
+      "bytes": 548,
+      "sha256": "4b0046a475d780299d6c3d4da106a2af194ab88a4f7a8a678ada358ab4ec3d41"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/labels-before-scope-correction/question-review.md",
+      "bytes": 7788,
+      "sha256": "5a16a5a8dcdb7068c2ee1f8d8e6a5a8f4adbab02bdacb22b27fed1f3be214453"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/labels-before-scope-correction/questions.json",
+      "bytes": 36760,
+      "sha256": "241fbba006f7918ea5e709ed27d0bebed740c94d9e7126b9d0429db7c67c8152"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/labels-scope-correction.json",
+      "bytes": 5013,
+      "sha256": "e07eeb904bef7d6b60be369a37e19592b23b27fe778b1df76d6deeed2b9bc147"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/metrics-unit.log",
+      "bytes": 99,
+      "sha256": "cdf51e5c680baeb49e2b88f7c365e2d38bc9bd2601753b595585fb2e3097055a"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/metrics-unit.xml",
+      "bytes": 3153,
+      "sha256": "70a3b65c71df7313b20b3d218de0bca559c67ef8d7beb41f0a254044e71ac322"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate1/baseline.json",
+      "bytes": 377340,
+      "sha256": "8b9eed51c96e9f6ea96b2cc0019e1408d9b07148f33e08730105ecde6002f877"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate1/bound-sources.json",
+      "bytes": 11072,
+      "sha256": "48d781f62d5602a715b933041195012af15a4b914c8dd6c373ea1337ce1f1ac0"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate1/native.log",
+      "bytes": 1254,
+      "sha256": "ef88692c7b6311b3cb10a8e07f264c725c11acd7d4efa237cc047fa3178c24ce"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate1/native.xml",
+      "bytes": 396124,
+      "sha256": "357e950bc6dffb950cbc1b2481bc7c28d1be4ab7dbfb6053331fe74ff7be015e"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate1/observations.json",
+      "bytes": 296827,
+      "sha256": "1ea4e835dd738788be2b7296e573c4ef64c9dcfe0dc28db716212c85916f457a"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate2/baseline.json",
+      "bytes": 379022,
+      "sha256": "66512e55749c9f63bfd01a89d70e4b7849e5e9712a72b557629e248079aad3a8"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate2/bound-sources.json",
+      "bytes": 12018,
+      "sha256": "1d652c6caec3af84a147c2fb69a9dd3e3caa0ad30031525abcae645ca996489b"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate2/native.log",
+      "bytes": 1254,
+      "sha256": "90fbc6eaf655b08b63ac41eab4433f44703cade4779b47bb8e3af8dea19fdeb4"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate2/native.xml",
+      "bytes": 398102,
+      "sha256": "ea53d7beaa5f6af3725205b99f7d4e1d0465f526233ff01f82888c912c6b75c4"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate2/observations.json",
+      "bytes": 297236,
+      "sha256": "358de5381b838c9576688bf82b8e17f12846b2e84e4fdb1ba23494d810a3148f"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/pure-final.log",
+      "bytes": 99,
+      "sha256": "6e697312fcbe145853d561db09ea5bb8115f443361db974abb308472c2e54eb2"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/pure-final.xml",
+      "bytes": 4393,
+      "sha256": "d0ccf7bf317cf6a8720211c8fb44e64b7c756335a4a198ad3fc29699a0853489"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/result.md",
+      "bytes": 5211,
+      "sha256": "0a144dc2b87ed32e1947be3d77f4a275bec82ab8859d0316af98ee1e8ea1a9e6"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/ruff-final.log",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/ruff.log",
+      "bytes": 19,
+      "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/tokenizer-before.py",
+      "bytes": 2730,
+      "sha256": "fb9516e29634ceda7175e279006178eaac55a1f714491a22b10aec3b5fcd4fa2"
+    },
+    {
+      "path": "docs/reports/evidence/pdos-next-eval-v0-20261029/validate-context-inputs.py",
+      "bytes": 3374,
+      "sha256": "03cbc05d05d36d56338af3c1fa76d7bd7e49cb14c7fa74eb6ae85ca548786e6c"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/tokenizer.py",
+      "bytes": 2925,
+      "sha256": "029845ab0af72b1af70e9747f281f6452b847cbb09ccf5474ba706f96d49016d"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_identifier_upgrade_pg.py",
+      "bytes": 2226,
+      "sha256": "5f4c8f48c3f955ae73754a1d7afdce1bdeaf40097c36bea84011081116f06b65"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_keyword.py",
+      "bytes": 2666,
+      "sha256": "259fc5f5fb64b9b0057cc4354f021b7f566338aa2ebdc8fbfd9b7db8a6333c3e"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_question_set_v0_pg.py",
+      "bytes": 9695,
+      "sha256": "1aa7498959f3be7981c1b6228e28677b9a8bfd4294e262e68bfe7404315cfce9"
+    },
+    {
+      "path": "pdos-next/tools/tests/test_xiaopai_recall_metrics.py",
+      "bytes": 12603,
+      "sha256": "d7b9274af0eb1763eaaf2fd3ca56e788043d62e47c0dabaad1391a292e91f2ea"
+    },
+    {
+      "path": "pdos-next/tools/xiaopai_recall_baseline.py",
+      "bytes": 2137,
+      "sha256": "46891ce7fae385cfe8ec940fd9793adabd0e5591ed07de37577bb77410dd5be7"
+    },
+    {
+      "path": "pdos-next/tools/xiaopai_recall_metrics.py",
+      "bytes": 14421,
+      "sha256": "81cf6f318b626a3a7b98236cc430169725fc0c65ced23372b95db1e1d8795072"
+    }
+  ]
+}

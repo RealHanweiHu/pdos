@@ -1,0 +1,225 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 213 items / 4 deselected / 209 selected
+
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second PASSED [  0%]
+tests/enterprise_search/test_retrieval_pg.py::test_missing_or_corrupt_projection_is_partial_and_never_leaks_wrong_scope PASSED [  0%]
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex PASSED [  1%]
+tests/enterprise_search/test_retrieval_pg.py::test_projection_failure_is_recorded_then_same_event_recovers PASSED [  1%]
+tests/enterprise_search/test_retrieval_pg.py::test_projection_rejects_forged_envelopes_and_revoked_background_actor PASSED [  2%]
+tests/enterprise_search/test_retrieval_pg.py::test_personal_rebuild_derives_each_category_from_actual_readable_sources PASSED [  2%]
+tests/enterprise_search/test_retrieval_pg.py::test_search_parameters_only_narrow_and_never_accept_policy_facts PASSED [  3%]
+tests/enterprise_search/test_retrieval_pg.py::test_concurrent_source_batches_keep_corpus_df_consistent_without_cross_source_deadlock PASSED [  3%]
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope PASSED [  4%]
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice PASSED [  4%]
+tests/enterprise_search/test_scope_policy.py::test_threshold_follows_source_recheck_and_never_changes_model_selectors[3-False-same_category-1] PASSED [  5%]
+tests/enterprise_search/test_scope_policy.py::test_threshold_follows_source_recheck_and_never_changes_model_selectors[3-True-same_category-2] PASSED [  5%]
+tests/enterprise_search/test_scope_policy.py::test_threshold_follows_source_recheck_and_never_changes_model_selectors[2-False-current-1] PASSED [  6%]
+tests/enterprise_search/test_scope_policy.py::test_threshold_follows_source_recheck_and_never_changes_model_selectors[0-False-same_category-2] PASSED [  6%]
+tests/enterprise_search/test_scope_policy.py::test_lookup_choices_are_strict_human_fields_and_not_model_tool_arguments PASSED [  7%]
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation PASSED [  7%]
+tests/enterprise_search/test_similar_history.py::test_structured_quality_fields_do_not_promote_hypotheses_or_action_completion PASSED [  8%]
+tests/enterprise_search/test_similar_history.py::test_change_cards_read_actual_plan_implementation_verification_and_effectivity PASSED [  8%]
+tests/enterprise_search/test_similar_history.py::test_differences_compare_only_read_structural_values_and_label_unknowns PASSED [  9%]
+tests/enterprise_search/test_similar_history.py::test_feedback_rejects_authority_private_text_and_unregistered_actions[patch0] PASSED [  9%]
+tests/enterprise_search/test_similar_history.py::test_feedback_rejects_authority_private_text_and_unregistered_actions[patch1] PASSED [ 10%]
+tests/enterprise_search/test_similar_history.py::test_feedback_rejects_authority_private_text_and_unregistered_actions[patch2] PASSED [ 10%]
+tests/enterprise_search/test_similar_history.py::test_feedback_rejects_authority_private_text_and_unregistered_actions[patch3] PASSED [ 11%]
+tests/enterprise_search/test_similar_history.py::test_feedback_rejects_authority_private_text_and_unregistered_actions[patch4] PASSED [ 11%]
+tests/enterprise_search/test_similar_history.py::test_feedback_rejects_authority_private_text_and_unregistered_actions[patch5] PASSED [ 11%]
+tests/enterprise_search/test_similar_history.py::test_explicit_feedback_uses_server_versions_and_replays_original_key PASSED [ 12%]
+tests/enterprise_search/test_similar_history.py::test_page_service_rejects_agent_and_borrowed_scope_before_source_reads PASSED [ 12%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_reads_metadata_fields_and_never_creates_run_or_business_write PASSED [ 13%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_explicit_not_relevant_feedback_is_private_append_only_and_idempotent PASSED [ 13%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_merged_and_already_linked_logical_objects_are_excluded PASSED [ 14%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_page_warm_latency_and_sql_count PASSED [ 14%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_agent_has_no_feedback_sql_privileges[SELECT] PASSED [ 15%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_agent_has_no_feedback_sql_privileges[INSERT] PASSED [ 15%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_agent_has_no_feedback_sql_privileges[UPDATE] PASSED [ 16%]
+tests/enterprise_search/test_similar_history_pg.py::test_actual_agent_has_no_feedback_sql_privileges[DELETE] PASSED [ 16%]
+tests/enterprise_search/test_structured_passage_pg.py::test_fixed_structured_record_can_be_paged_to_the_last_registered_field PASSED [ 17%]
+tests/enterprise_search/test_structured_passage_pg.py::test_long_registered_wait_uses_real_kernel_result_continuation_and_final_verification PASSED [ 17%]
+tests/enterprise_search/test_structured_result_limits.py::test_two_legal_domain_fields_keep_full_values_across_bounded_result_fragments PASSED [ 18%]
+tests/enterprise_search/test_structured_result_limits.py::test_continuation_never_relaxes_native_field_size_constraints[request_content] PASSED [ 18%]
+tests/enterprise_search/test_structured_result_limits.py::test_continuation_never_relaxes_native_field_size_constraints[closure_condition] PASSED [ 19%]
+tests/enterprise_search/test_task_result.py::test_all_registered_results_use_exact_spans_and_explicit_missing_cells[blockers-next_step] PASSED [ 19%]
+tests/enterprise_search/test_task_result.py::test_all_registered_results_use_exact_spans_and_explicit_missing_cells[cases-measures] PASSED [ 20%]
+tests/enterprise_search/test_task_result.py::test_all_registered_results_use_exact_spans_and_explicit_missing_cells[review-key_changes] PASSED [ 20%]
+tests/enterprise_search/test_task_result.py::test_all_registered_results_use_exact_spans_and_explicit_missing_cells[commitments-follow_up] PASSED [ 21%]
+tests/enterprise_search/test_task_result.py::test_unread_text_and_unextracted_fields_are_downgraded_per_cell[selector0] PASSED [ 21%]
+tests/enterprise_search/test_task_result.py::test_unread_text_and_unextracted_fields_are_downgraded_per_cell[selector1] PASSED [ 22%]
+tests/enterprise_search/test_task_result.py::test_unread_text_and_unextracted_fields_are_downgraded_per_cell[selector2] PASSED [ 22%]
+tests/enterprise_search/test_task_result.py::test_structured_values_are_selected_by_exact_path_and_keep_dates_unchanged PASSED [ 22%]
+tests/enterprise_search/test_task_result.py::test_author_or_a_name_in_text_cannot_become_responsibility[selector0] PASSED [ 23%]
+tests/enterprise_search/test_task_result.py::test_author_or_a_name_in_text_cannot_become_responsibility[selector1] PASSED [ 23%]
+tests/enterprise_search/test_task_result.py::test_author_or_a_name_in_text_cannot_become_responsibility[selector2] PASSED [ 24%]
+tests/enterprise_search/test_task_result.py::test_missing_empty_composite_and_metadata_are_not_recorded_cells[path0] PASSED [ 24%]
+tests/enterprise_search/test_task_result.py::test_missing_empty_composite_and_metadata_are_not_recorded_cells[path1] PASSED [ 25%]
+tests/enterprise_search/test_task_result.py::test_missing_empty_composite_and_metadata_are_not_recorded_cells[path2] PASSED [ 25%]
+tests/enterprise_search/test_task_result.py::test_missing_empty_composite_and_metadata_are_not_recorded_cells[path3] PASSED [ 26%]
+tests/enterprise_search/test_task_result.py::test_zero_is_a_recorded_value_and_escaped_pointer_is_exact PASSED [ 26%]
+tests/enterprise_search/test_task_result.py::test_grounded_analysis_is_separate_from_the_literal_evidence_and_private_save PASSED [ 27%]
+tests/enterprise_search/test_task_result.py::test_bounded_structured_subrecord_can_support_analysis_without_replacing_dates PASSED [ 27%]
+tests/enterprise_search/test_task_result.py::test_source_and_extraction_proofs_cannot_be_forged_or_reused_after_invalidity[unissued] PASSED [ 28%]
+tests/enterprise_search/test_task_result.py::test_source_and_extraction_proofs_cannot_be_forged_or_reused_after_invalidity[withdrawn] PASSED [ 28%]
+tests/enterprise_search/test_task_result.py::test_source_and_extraction_proofs_cannot_be_forged_or_reused_after_invalidity[altered_values] PASSED [ 29%]
+tests/enterprise_search/test_task_result.py::test_source_and_extraction_proofs_cannot_be_forged_or_reused_after_invalidity[altered_span] PASSED [ 29%]
+tests/enterprise_search/test_task_result.py::test_malformed_structures_fail_closed_without_leaking_the_proposed_content[value0] PASSED [ 30%]
+tests/enterprise_search/test_task_result.py::test_malformed_structures_fail_closed_without_leaking_the_proposed_content[value1] PASSED [ 30%]
+tests/enterprise_search/test_task_result.py::test_malformed_structures_fail_closed_without_leaking_the_proposed_content[value2] PASSED [ 31%]
+tests/enterprise_search/test_task_result.py::test_malformed_structures_fail_closed_without_leaking_the_proposed_content[value3] PASSED [ 31%]
+tests/enterprise_search/test_task_result.py::test_empty_table_stays_honest_and_ordinary_dialogue_cannot_forge_a_task_table PASSED [ 32%]
+tests/enterprise_search/test_task_result.py::test_private_markdown_preserves_literal_cells_escaping_unknowns_and_source_identity PASSED [ 32%]
+tests/enterprise_search/test_task_result_pg.py::test_four_tables_replay_actual_citations_and_save_the_same_private_cells[blockers-next_step] PASSED [ 33%]
+tests/enterprise_search/test_task_result_pg.py::test_four_tables_replay_actual_citations_and_save_the_same_private_cells[cases-measures] PASSED [ 33%]
+tests/enterprise_search/test_task_result_pg.py::test_four_tables_replay_actual_citations_and_save_the_same_private_cells[review-key_changes] PASSED [ 33%]
+tests/enterprise_search/test_task_result_pg.py::test_four_tables_replay_actual_citations_and_save_the_same_private_cells[commitments-follow_up] PASSED [ 34%]
+tests/enterprise_search/test_task_result_pg.py::test_forged_cell_reference_is_partial_and_cannot_be_saved_as_a_fact PASSED [ 34%]
+tests/enterprise_search/test_task_result_pg.py::test_withdrawn_table_sources_remove_the_table_and_dependent_analysis PASSED [ 35%]
+tests/enterprise_search/test_task_result_pg.py::test_real_wait_responsibility_state_and_date_come_only_from_registered_fields PASSED [ 35%]
+tests/enterprise_search/test_temporal_pg.py::test_projection_retries_after_worker_restart_without_model_or_raw_temporal_payload PASSED [ 36%]
+tests/external_wait_pg/test_workflow.py::test_actual_delivery_transfer_history_and_exact_replay_are_one_t0_loop PASSED [ 36%]
+tests/external_wait_pg/test_workflow.py::test_adopt_actual_project_plan_calendar_without_inventing_native_records PASSED [ 37%]
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response PASSED [ 37%]
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck PASSED [ 38%]
+tests/knowledge_pg/test_publication.py::test_actual_planned_build_result_becomes_scoped_candidate_and_named_rule PASSED [ 38%]
+tests/preproject/test_lifecycle_guard_repair_pg.py::test_restored_guards_are_enabled_and_keep_original_before_after_timing FAILED [ 39%]
+
+=================================== FAILURES ===================================
+____ test_restored_guards_are_enabled_and_keep_original_before_after_timing ____
+tests/preproject/test_lifecycle_guard_repair_pg.py:15: in test_restored_guards_are_enabled_and_keep_original_before_after_timing
+    assert schema_covered(session)
+E   assert False
+E    +  where False = schema_covered(<sqlalchemy.orm.session.Session object at 0x15bbae690>)
+=============================== warnings summary ===============================
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+  tests/enterprise_search/test_retrieval_pg.py:206: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_scope_business_pg.py: 2 warnings
+tests/enterprise_search/test_scope_pg.py: 1 warning
+tests/enterprise_search/test_scope_temporal_pg.py: 1 warning
+tests/enterprise_search/test_similar_history_pg.py: 4 warnings
+tests/enterprise_search/test_structured_passage_pg.py: 2 warnings
+tests/enterprise_search/test_task_result_pg.py: 1 warning
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_scope_business_pg.py: 6 warnings
+tests/enterprise_search/test_scope_pg.py: 3 warnings
+tests/enterprise_search/test_scope_temporal_pg.py: 3 warnings
+tests/enterprise_search/test_similar_history_pg.py: 12 warnings
+tests/enterprise_search/test_structured_passage_pg.py: 6 warnings
+tests/enterprise_search/test_task_result_pg.py: 3 warnings
+tests/external_wait_pg/test_workflow.py: 6 warnings
+tests/field_feedback_pg/test_field_chain.py: 3 warnings
+tests/knowledge_pg/test_publication.py: 6 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_scope_business_pg.py: 2 warnings
+tests/enterprise_search/test_scope_pg.py: 1 warning
+tests/enterprise_search/test_scope_temporal_pg.py: 1 warning
+tests/enterprise_search/test_similar_history_pg.py: 4 warnings
+tests/enterprise_search/test_structured_passage_pg.py: 2 warnings
+tests/enterprise_search/test_task_result_pg.py: 1 warning
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_scope_business_pg.py: 2 warnings
+tests/enterprise_search/test_scope_pg.py: 1 warning
+tests/enterprise_search/test_scope_temporal_pg.py: 1 warning
+tests/enterprise_search/test_similar_history_pg.py: 4 warnings
+tests/enterprise_search/test_structured_passage_pg.py: 2 warnings
+tests/enterprise_search/test_task_result_pg.py: 1 warning
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_scope_business_pg.py: 2 warnings
+tests/enterprise_search/test_scope_pg.py: 1 warning
+tests/enterprise_search/test_scope_temporal_pg.py: 1 warning
+tests/enterprise_search/test_similar_history_pg.py: 4 warnings
+tests/enterprise_search/test_structured_passage_pg.py: 2 warnings
+tests/enterprise_search/test_task_result_pg.py: 1 warning
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_scope_business_pg.py: 2 warnings
+tests/enterprise_search/test_scope_pg.py: 1 warning
+tests/enterprise_search/test_scope_temporal_pg.py: 1 warning
+tests/enterprise_search/test_similar_history_pg.py: 4 warnings
+tests/enterprise_search/test_structured_passage_pg.py: 2 warnings
+tests/enterprise_search/test_task_result_pg.py: 1 warning
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_scope_business_pg.py: 2 warnings
+tests/enterprise_search/test_scope_pg.py: 1 warning
+tests/enterprise_search/test_scope_temporal_pg.py: 1 warning
+tests/enterprise_search/test_similar_history_pg.py: 4 warnings
+tests/enterprise_search/test_structured_passage_pg.py: 2 warnings
+tests/enterprise_search/test_task_result_pg.py: 1 warning
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+  tests/enterprise_search/test_scope_pg.py:36: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice(
+
+tests/enterprise_search/test_similar_history_pg.py: 17 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/similar_history_context.py:47: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    ).distinct(GovernanceEvent.project_id).order_by(
+
+tests/enterprise_search/test_structured_passage_pg.py: 2 warnings
+tests/enterprise_search/test_task_result_pg.py: 1 warning
+tests/external_wait_pg/test_workflow.py: 13 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/field_feedback/service.py:323: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck
+tests/knowledge_pg/test_publication.py::test_actual_planned_build_result_becomes_scoped_candidate_and_named_rule
+tests/knowledge_pg/test_publication.py::test_actual_planned_build_result_becomes_scoped_candidate_and_named_rule
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/knowledge/service.py:420: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-enterprise-knowledge-authority-20261029/backend-candidate-8-remaining.xml -
+=========================== short test summary info ============================
+FAILED tests/preproject/test_lifecycle_guard_repair_pg.py::test_restored_guards_are_enabled_and_keep_original_before_after_timing
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+===== 1 failed, 81 passed, 4 deselected, 189 warnings in 692.51s (0:11:32) =====

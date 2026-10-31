@@ -1,0 +1,47 @@
+{
+  "depth_search": [
+    {
+      "tool": "assistant.search",
+      "state": "completed",
+      "keys": [
+        "as_of",
+        "items",
+        "scope",
+        "version",
+        "coverage",
+        "returned",
+        "truncated",
+        "query_trace",
+        "direct_returned",
+        "ranking_version",
+        "related_returned",
+        "related_truncated"
+      ],
+      "items": 0,
+      "coverage": {
+        "notice": null,
+        "status": "current",
+        "indexed_as_of": null
+      }
+    }
+  ],
+  "materials": {
+    "run_id": "00956270-60a0-477b-aa05-67990ac40e3e",
+    "comparison_calls": [
+      {
+        "tool": "assistant.compare",
+        "state": "completed",
+        "marker_paths": [
+          {
+            "path": ".rows[0].new.quote",
+            "length": 28
+          },
+          {
+            "path": ".rows[0].old.quote",
+            "length": 28
+          }
+        ]
+      }
+    ]
+  }
+}

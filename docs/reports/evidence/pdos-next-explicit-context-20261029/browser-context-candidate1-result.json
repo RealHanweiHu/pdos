@@ -1,0 +1,14 @@
+{
+  "runs": 2,
+  "child_state": "completed",
+  "child_run": "dc86b868-73d1-47e4-b59e-e32e29a2c3ba",
+  "selected": [
+    {
+      "product_id": null,
+      "artifact_id": "1f18a238-ac48-425a-adc7-c2b69444c4e7",
+      "expected_revision": 1
+    }
+  ],
+  "provider_calls": 10,
+  "real_model_calls": 0
+}

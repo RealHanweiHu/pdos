@@ -1,0 +1,45 @@
+{
+  "call_lookup": "$.bindings.calls[?id == control.original_read_call_id]",
+  "characters": 9325,
+  "chunks_if_serialized_for_paging": 1,
+  "continuation_page_cap": 3936,
+  "control_json_path": "$.bindings.natural_single_binding_control",
+  "database_calls": 0,
+  "estimated_tokens": 2451,
+  "fragment_payload_budget": 3716,
+  "input": "docs/reports/evidence/pdos-next-context-fixture-completion-20261029/native-normalized-20261030/CTX-09-F48000.json",
+  "model_calls": 0,
+  "native_binding_status": "partial",
+  "network_calls": 0,
+  "original_read_call_id": "02112c8c-babd-4d4f-8b0e-812387e5d0f0",
+  "per_item_estimated_tokens": [
+    281,
+    281,
+    281,
+    281,
+    281,
+    281,
+    241,
+    241,
+    241
+  ],
+  "prefixes_through_complete_item": {
+    "3": {
+      "characters": 3341,
+      "estimated_tokens": 881
+    },
+    "6": {
+      "characters": 6530,
+      "estimated_tokens": 1723
+    },
+    "9": {
+      "characters": 9302,
+      "estimated_tokens": 2445
+    }
+  },
+  "production_tool_cap": 4000,
+  "result_total_items": 9,
+  "run_id": "dd4cc51e-1dfb-4e0c-99eb-a6b79d9aa3cc",
+  "scenario_status": "needs_case_revision",
+  "source_sha_verified": true
+}

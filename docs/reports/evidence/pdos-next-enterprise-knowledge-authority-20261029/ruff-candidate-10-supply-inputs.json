@@ -1,0 +1,13 @@
+{
+  "exit_code": 0,
+  "command": [
+    "pdos-next/server/.venv/bin/python",
+    "-m",
+    "ruff",
+    "check",
+    "pdos-next/server/tests/test_supply_execution.py"
+  ],
+  "sha256": {
+    "pdos-next/server/tests/test_supply_execution.py": "9ff13db852b21fb90056d85fcda4a2d82ab6a03212d6d05a7869bb162d5c1c8a"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "stage": "/tmp/pdos-context-option-paging-stage-20261029",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/context_option_safety.py",
+      "kind": "new",
+      "base_sha256": null,
+      "final_sha256": "11cbdc9b90fc2ef1feca9a3f397c5d4534860667dbfb80b76649adefa3cd8255",
+      "bytes": 1623
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_context_option_safety.py",
+      "kind": "new",
+      "base_sha256": null,
+      "final_sha256": "19b8d145ca155b79bb964b683579abf86cc33ff772dfe4493bbd628e70275aa7",
+      "bytes": 7835
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_context_option_safety_pg.py",
+      "kind": "new",
+      "base_sha256": null,
+      "final_sha256": "89a5241ba08bde97eadb04b9c582830f2bf50262613179f7f30fcfd05aa785ef",
+      "bytes": 7607
+    }
+  ],
+  "patch_only": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/context_corrections.py",
+      "base_sha256": "d6c5cc70114ca2bc8e0932cc167df4b0bf75ac17186a676058cb987019536f02",
+      "final_sha256": "8b33efac182b2c29efab05340aa71970068f1951b4c6a21c3714437b9ec16df6",
+      "hook": "options-safety-hook.patch",
+      "instruction": "Only apply the two-line options hook patch. Full target copy is validation-only; never overwrite owner/recheck implementation."
+    }
+  ],
+  "patches": {
+    "options-safety-hook.patch": "ebc09225376cf8cd138db73c36d68bb8e6ee7ba91cfcf130655c0a7f871329e1",
+    "context-option-paging.patch": "be4817b730fc934b55486b0bf149464ea8fbb86c943459194c55091b8088dfa2"
+  },
+  "validation": {
+    "pure": "26 passed; 9 new option contracts plus 17 existing corrections, no DB/Temporal environment",
+    "catalog": "Actual nine-family metadata and page SQL compile; no duplicate CTE collision",
+    "ruff": "3 new files passed",
+    "syntax": "3 new + patched target AST parsed",
+    "pg": "3 actual PG cases collected only; not executed",
+    "replay": "Exact current owner-fix base check/apply in scratch, every final SHA verified"
+  },
+  "scope": "No live/DB/model/scan/outbound/migration/build operation. No resolve/recheck edits.",
+  "frozen_conflicts": []
+}

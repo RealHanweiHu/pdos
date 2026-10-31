@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="53.993" timestamp="2026-10-29T07:54:25.925116-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_action_taint_temporal_pg" name="test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0]" time="53.005"><failure message="assert (not True)&#10; +  where True = &lt;pdos_next.agent_kernel.models.AgentRun object at 0x142392480&gt;.private_context">private_action_work = namespace(setup=&lt;isolated synthetic test scope&gt;, config={'source': 'e1e7eb7d-3b1a-41a5-bc25-ff6ea8baa89d', 'project': ...ind': 'qualification', 'series_id': 'a7570ce3-18dc-4dcf-a64d-65fb7c63232f'}}}, quality=&lt;isolated synthetic test scope&gt;)
+security_work = namespace(setup=&lt;isolated synthetic test scope&gt;, store=&lt;pdos_next.object_journal.store.JournaledLocalObjectStore objec...700&gt;, parser=&lt;function parse_original at 0x116962a20&gt;), client=&lt;starlette.testclient.TestClient object at 0x132f2ae10&gt;)
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1325e2150&gt;
+
+    def test_uncited_parent_customer_original_classifies_private_child_before_real_egress(
+        private_action_work, security_work, monkeypatch,
+    ):
+        person, selection, public, execution = materials(private_action_work)
+        original = uploaded(
+            security_work, title="Uncited customer private discussion",
+            content="漏气：更换密封圈。CUSTOMER_ONLY_PARENT\n".encode(),
+        )
+        customer_artifact = parsed(security_work, original)
+        index(person, customer_artifact)
+        provider = VerificationClient(execution, private_action_work.scope.purpose)
+        provider.parent = ParentClient(public["artifact_id"])
+        actual_egress, observations = gateway.egress, []
+    
+        def observed(session, scope, provider_key, **kwargs):
+            try:
+                return actual_egress(session, scope, provider_key, **kwargs)
+            except DomainError as error:
+                observations.append((
+                    scope.run_id, kwargs.get("data_categories"), deepcopy(error.detail),
+                ))
+                raise
+    
+        monkeypatch.setattr(gateway, "egress", observed)
+    
+        async def actual():
+            async with actual_runtime(person, provider, monkeypatch) as runtime:
+                parent, _handle = await start(runtime, {
+                    "goal": "以前漏气怎么处理？", "idempotency_key": str(uuid4()),
+                    "product_id": str(person.product), "project_id": selection["project_id"],
+                    "search_preferences": {"scope": "same_category", "include_customer_private": True},
+                }, accepted_statuses=("completed", "partial"))
+                response = await runtime.http.get(runtime.path + f"/{parent}", headers=person.headers)
+                assert response.status_code == 200, response.text
+                answer = response.json()["result"]["result"]["assistant"]
+                customer_cid = provider.parent.source_cids[str(customer_artifact)]
+                assert customer_cid not in answer["citation_ids"]
+                assert answer["citation_ids"] == [provider.parent.source_cids[public["artifact_id"]]]
+                # The parent dynamically searched/read the original; initial Run scope
+                # has not silently acquired it as a selected business input.
+                with Session(person.admin) as session:
+                    row = session.get(AgentRun, parent)
+                    assert not row.private_context and "customer_original" not in row.data_categories
+                    assert str(customer_artifact) not in {
+                        ref["artifact_id"] for ref in row.read_sources
+                    }
+                # P26: an actual registered agreement may constrain the already
+                # classified data. No real provider is invoked by this fixture.
+                with tenant_session(
+                    person.engine, person.tenant, actor_id=person.human,
+                    requester_id=person.human, category_id=person.category,
+                ) as session:
+                    register_agreement(session, person.ctx, AgreementInput(
+                        provider="synthetic-assistant-no-egress", expected_revision=0,
+                        data_categories=["internal"], signed_on=now() - timedelta(minutes=1),
+                        expires_at=now() + timedelta(hours=1), retention_terms="synthetic-only",
+                        training_terms="synthetic-only", decision="批准", idempotency_key=str(uuid4()),
+                    ))
+                provider.phase = "action"
+                before_calls = provider.calls
+                child, _handle = await start(
+                    runtime, action_payload(parent, answer, selection, execution),
+                    accepted_statuses=("failed", "partial"),
+                )
+                assert provider.calls == before_calls
+                rejected = [row for row in observations if row[0] == child]
+                assert rejected and all("customer_original" in row[1] for row in rejected)
+                assert all(row[2]["reason_key"] == "provider_agreement_category" for row in rejected)
+                with Session(person.admin) as session:
+                    row = session.get(AgentRun, child)
+                    assert row.private_context and "customer_original" in row.data_categories
+                    action = row.versions["verification_action"]
+                    assert action["source_proof"]["taint"] == {
+                        "private": True, "customer_original": True,
+                    }
+                    assert action["citation_ids"] == answer["citation_ids"]
+                    assert str(customer_artifact) not in {
+                        ref["artifact_id"] for ref in row.read_sources
+                    }
+                    assert all(ref["source_id"] != str(customer_artifact) for ref in
+                               row.versions["requested_context_selection"]["sources"])
+                    assert session.scalars(select(AgentToolCall).where(
+                        AgentToolCall.run_id == child, AgentToolCall.tool == "model",
+                    )).all() == []
+&gt;       asyncio.run(actual())
+
+tests/enterprise_search/test_action_taint_temporal_pg.py:132: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def actual():
+        async with actual_runtime(person, provider, monkeypatch) as runtime:
+            parent, _handle = await start(runtime, {
+                "goal": "以前漏气怎么处理？", "idempotency_key": str(uuid4()),
+                "product_id": str(person.product), "project_id": selection["project_id"],
+                "search_preferences": {"scope": "same_category", "include_customer_private": True},
+            }, accepted_statuses=("completed", "partial"))
+            response = await runtime.http.get(runtime.path + f"/{parent}", headers=person.headers)
+            assert response.status_code == 200, response.text
+            answer = response.json()["result"]["result"]["assistant"]
+            customer_cid = provider.parent.source_cids[str(customer_artifact)]
+            assert customer_cid not in answer["citation_ids"]
+            assert answer["citation_ids"] == [provider.parent.source_cids[public["artifact_id"]]]
+            # The parent dynamically searched/read the original; initial Run scope
+            # has not silently acquired it as a selected business input.
+            with Session(person.admin) as session:
+                row = session.get(AgentRun, parent)
+&gt;               assert not row.private_context and "customer_original" not in row.data_categories
+E               assert (not True)
+E                +  where True = &lt;pdos_next.agent_kernel.models.AgentRun object at 0x142392480&gt;.private_context
+
+tests/enterprise_search/test_action_taint_temporal_pg.py:90: AssertionError</failure></testcase></testsuite></testsuites>

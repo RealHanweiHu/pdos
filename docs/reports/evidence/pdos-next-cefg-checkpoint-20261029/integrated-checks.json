@@ -1,0 +1,65 @@
+{
+  "frontend_build": "frontend-cefg-candidate1-build-result.json",
+  "frontend_node_tests": {
+    "passed": 43,
+    "files": [
+      "src/components/pai/work-followup-flow.test.mjs",
+      "src/lib/run-start-intent.test.mjs",
+      "src/components/pai/project-current-basis.test.mjs",
+      "src/components/pai/answer-sources.test.mjs",
+      "src/components/xiaopai.test.mjs"
+    ]
+  },
+  "contract_export": {
+    "implemented_payloads": 128,
+    "offline_db_connect_forbidden": true,
+    "catalog_operations": 87,
+    "events": 92,
+    "acceptance_ids": 63
+  },
+  "contract_sha256": {
+    "payloads.schema.json": "87a792adc9044ad7a2fb0c3a6432120279dfe83d68bc66caf38e95a207882db6",
+    "events.json": "6bc01278cbcd469fef18abe05366ccbef681b0bb4f009beae8ac80b1d5c41733",
+    "acceptance.json": "833d896ed00900efea684e11559588a808fa1eb4d8da4a76b17c05ade62e0252",
+    "auxiliary-operations.json": "f33bf502845b310ffbf346990f5c60c83f73fbe9671dbc61fa0e1fde1db1ab7b",
+    "openapi.json": "738409d071f55bc1234679eb22c38df8a82b66e4354d3f100b85d3fbdade14d1",
+    "operations.json": "0dac77457becaf9a52cc36deabfe5da67022a45b0db711ecc3ff762374f958c6"
+  },
+  "real_model_or_embedding_calls": 0,
+  "final_frontend_inputs_unchanged_from_build_and_browser": true,
+  "final_frontend_input_count": 747,
+  "final_ruff": {
+    "files": 65,
+    "exit": 0,
+    "log": "ruff-integrated-final2.txt",
+    "additional_delta": {
+      "files": 1,
+      "path": "pdos-next/server/pdos_next/enterprise_search/query.py",
+      "exit": 0,
+      "log": "../pdos-next-search-performance-20261029/ruff-query-state.txt"
+    },
+    "total_unique_files_segmented": 66
+  },
+  "frontend_eslint": {
+    "scope": "src with existing tsconfig exclusions **/* 2.* and **/* 3.*",
+    "errors": 0,
+    "warnings": 6,
+    "log": "eslint-compiler-scope-run1.txt",
+    "unfiltered_scan": "fails on previously excluded backup use-work-products 2.ts; eslint-full-run1.txt"
+  },
+  "pure_integrated_final": {
+    "passed": 145,
+    "junit": "pure-integrated-final.xml"
+  },
+  "four_history_guards": "final-history-guards.json",
+  "own_browser_processes": "API/worker fixture closed; dedicated web stopped; fresh storage.json removed; Playwright session closed",
+  "final_python_inputs": "final-python-inputs.json",
+  "search_metadata_delta": {
+    "pure_passed": 26,
+    "pure_junit": "../pdos-next-search-performance-20261029/pure-state-metadata-run1.xml",
+    "native_passed": 5,
+    "native_junit": "../pdos-next-search-performance-20261029/pg-state-metadata-run1.xml",
+    "overlap_with_145_integrated_pure": 0,
+    "unique_pure_segmented": 171
+  }
+}

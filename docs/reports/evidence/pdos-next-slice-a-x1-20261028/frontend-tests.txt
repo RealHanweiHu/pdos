@@ -1,0 +1,229 @@
+✔ rendering makes no model or write requests and preserves sealed source reading (33.728917ms)
+✔ manual create previews key/name/purpose then separately confirms with server token (42.712833ms)
+✔ whole-group adoption preserves sealed content, original run and digest across failed create retry (26.871916ms)
+✔ snapshot-dependent knowledge cannot survive omission of research group (0.473125ms)
+✔ revoked run cannot preview and malformed events cannot become candidates (1.948416ms)
+✔ definite expired confirmation allows explicit new preview; uncertain outcomes retain original request (26.646667ms)
+✔ refresh and reopen read actual adoption receipt and open the saved category editor beside the conversation (65.396459ms)
+✔ an adoption from another run cannot suppress the current run candidate (5.3435ms)
+✔ committed creation awaiting signal delivery renders success and cannot submit again (3.506916ms)
+✔ switching away while creation is pending cannot navigate using the old run response (3.982ms)
+✔ personalApi preserves real HTTP status for permission cleanup (3.481791ms)
+✔ personal parent binds continuation identity and permission cleanup (5.396125ms)
+✔ skill utility buttons are explicit non-submit controls (1.493042ms)
+✔ personal start retries the identical request and never fans out another model call (5.143792ms)
+✔ successful personal start followed by read failure cannot resend start (3.2645ms)
+✔ personal skill choice is pinned to the original pending start and clears after acceptance (9.228459ms)
+✔ clarification exposes actual recommendation reasons and dependencies without selecting an answer (0.978875ms)
+✔ panel visibility excludes background, detached, hidden and offscreen panels (0.138417ms)
+✔ only a new live visible interrupt opens; closing, repeat polls and hidden delivery preserve inline answers (21.636709ms)
+✔ history and manual refresh restore unanswered questions inline without opening old dialogs (9.070875ms)
+✔ closed dialog answers use the actual original run and preserve a failed answer request for retry (10.683708ms)
+✔ late poll for a previous run cannot open or replace the current run questions (14.117167ms)
+✔ failed run refresh hides material but restores the original confirmation token and creation key (12.742959ms)
+✔ dialog dismissal returns keyboard focus to inline answering without submitting (0.439291ms)
+✔ personal background keeps the original run, issues no request and leaves later questions inline (7.8375ms)
+✔ 个人对话的输入区停止仍只取消本人当前运行 (4.184916ms)
+✖ category creation preset sends the current enabled skill explicitly (1.2865ms)
+✖ unavailable preset skills do not block a personal request (0.86125ms)
+✔ missing command port disables settings and does not fabricate saved configuration (9.931083ms)
+✔ non administrators cannot edit even when callbacks are supplied (1.317458ms)
+✔ masked configured state and authorizer readiness do not claim active model calls (1.221ms)
+✔ pending parent command locks edits and keeps only one preview entry (1.2705ms)
+✔ unknown or mismatched readiness stays unavailable and cannot echo secret errors (0.124ms)
+✔ invalid numeric input is rejected before requesting a preview (0.137042ms)
+✖ input labels have unique accessible ids with both explicit protocol choices (2.013458ms)
+✔ provider creation exposes direct password entry with no stored key echo (11.485833ms)
+✖ optional context window renders and validates configured and empty values (24.891875ms)
+✔ opening only reads actual target; file controls have no nested form or required constraint (199.926542ms)
+✔ new upload keeps private scope and persists only pointer before the original POST, then reads authoritative receipt (153.143041ms)
+✔ readable source uses Artifact revision and explicit manual picker guidance, without creating a Run (64.433125ms)
+✔ target write denial disables chooser while preserving honest read-only state (108.029041ms)
+✔ identity, scope or API changes while file encoding is pending cannot issue a POST (249.926625ms)
+✔ committed pointer reload only reads GET and a failed receipt read cannot resend a known accepted upload (29.574625ms)
+✔ reserved response keeps nonce and original metadata; retry requires reselected matching bytes and never follows target revision (16.238375ms)
+✔ storage failure permits explicit upload with a memory-only warning and keeps the same nonce (10.518417ms)
+✔ explicit rejection plus not_observed permits reselection but a lone not_observed never invents failure (9.921042ms)
+✔ known POST response followed by GET403 preserves the pointer and uses read-back wording (7.181875ms)
+✔ nonJSON500 stays unknown with reserved record; explicit same-byte retry retains the original nonce (44.390542ms)
+✔ scope switch after intent persistence but before library hash validation completes also gates the actual POST (7.860791ms)
+✔ abandoned is a terminal preparation record; starting another file only removes the local pointer (4.745458ms)
+✔ corrupt local pointer is retained and cannot be overwritten by a new POST (1.2285ms)
+✔ human edits remain separate from the original, save keeps the workspace and opens the same document (154.690583ms)
+✔ unknown writes restore the edited content and replay exactly without automatic resubmission (79.931666ms)
+✔ storage failure prevents a write; a mismatched preview never enables confirmation (102.721792ms)
+✔ permission loss clears document and context even if the parent has not yet unmounted (33.429ms)
+✔ a forged preview cannot replace the sealed source or human edits (24.558792ms)
+✔ actual partial evidence shows source, exact quote, uncovered work and original failure (10.512875ms)
+✔ missing evidence is absent; inconsistent counts and malformed records are visible failures (0.422083ms)
+✔ unavailable work remains visible without fabricated sources (0.305083ms)
+✔ source URL cannot become an executable link and quotes stay escaped (0.452ms)
+✔ mobile CSS keeps ordinary candidate confirmation visible and hides only the controlled editor background (0.939167ms)
+✔ ordinary preview is modal on mobile and returns to non-modal desktop chat (0.886125ms)
+✔ snapshot is listed without a write, then one preview and one confirmation save it (73.565833ms)
+✔ lost success response restores the actual receipt on reopening without a second POST (64.312375ms)
+✔ an uncommitted request remains recoverable with exactly its original command and token (71.961875ms)
+✔ unknown saved response after the first 50 candidates can read on and restore its receipt without POST (109.469459ms)
+✔ pending candidate on a later page keeps the original request and requires an explicit replay (130.489ms)
+✔ proposal adoption on a later page restores the proposal link from its actual receipt (65.459292ms)
+✔ failed later-page read retains the exact request and refresh can recover the saved receipt (19.304458ms)
+✔ later-page cancelled candidate keeps unknown intent and blocks replay or a new preview (7.960916ms)
+✔ later-page unavailable candidate keeps unknown intent and blocks replay or a new preview (5.526084ms)
+✔ later-page authority loss removes local recovery and does not send the original command (4.428333ms)
+✔ candidate confirmation authorization failure clears private material but preserves its error (4.385625ms)
+✔ continuation 401 clears page draft, original request and storage (28.942541ms)
+✔ continuation 403 clears page draft, original request and storage (5.128917ms)
+✔ an unknown continuation keeps and replays the original material snapshot (11.518916ms)
+✔ chat composer reads eligibility without sending, then continues the exact original run (14.558458ms)
+✔ chat composer includes explicitly selected additional fixed sources (4.314125ms)
+✔ a running conversation leaves a single disabled composer and makes no continuation call (1.393ms)
+✔ chat composer permission failure removes the draft without a write (1.814167ms)
+✔ chat composer stays usable after development effect cleanup and replay (6.428083ms)
+✔ chat composer opens an existing continuation without sending again (4.271166ms)
+✔ running composer swaps send for an accessible non-submit stop control (4.757542ms)
+✔ terminal runs do not offer stop even with a stale handler (2.595042ms)
+✔ 反馈历史保留实际版本和问题类别，文本转义且不冒充业务批准 (36.907916ms)
+✔ 关闭反馈入口不读取或保存，不伪造模型版本 (7.528292ms)
+✔ 过程保留真实部分结果与提交回执，绑定依据转义且不渲染模型原文 (20.775125ms)
+✔ 空过程与旧终态如实显示，等待不会误显示已完成 (1.110542ms)
+✔ 对话过程配对实际工具开始与返回，保留未返回步骤，不读取模型正文或参数 (0.305042ms)
+✔ 对话中进行时展开、终态收起，详细步骤和提交回执不混进简短过程 (1.515333ms)
+✔ 分页边界中的工具返回仍保留，未知事件不生成推测性的过程 (0.124ms)
+✔ 多轮处理合并连续动作，不重复堆叠相同的过渡文字 (0.085667ms)
+✔ title-only history opens the latest run with one selection and read GET metadata without changing original goals or identities (31.646958ms)
+✔ server search includes historic matched_run; Unicode limit counts characters and old search replies stay hidden (18.119083ms)
+✔ permission denial invokes private cleanup; unavailable reads keep ordinary recovery (5.692125ms)
+✔ permission or protocol failure in Session runs hides the old goals; explicit 503 retains only verified list metadata (9.307542ms)
+✔ switching Session discards late work heads; accepted continuation refresh does not clear parent's newly read Run (8.23825ms)
+✔ explicit paging deduplicates changed snapshots; invalid cursor requires a fresh list and can be retried (36.338417ms)
+✔ API, principal and category changes hide previous private metadata during render and ignore late responses (3.666792ms)
+✔ missing principal resolves actual identity with GET before reading personal Sessions (1.714791ms)
+✔ rename, reset, pin, archive and restore use exact server revisions and reread Current; goals stay immutable (21.607ms)
+✔ search and presentation management retain the current conversation; explicit selection changes it (11.407083ms)
+✔ unknown write survives same-identity refresh; read recovery never resubmits and explicit retry preserves exact original body (13.323958ms)
+✔ original receipt recovery is read-only and refreshes actual Current, even if Current has a newer name (13.643208ms)
+✔ 409 clears mutation pointer and only refreshes; failed scope reads hide cached rows (4.771833ms)
+✔ refresh and identity transitions discard late mutation receipts, original request state and editor by the appropriate boundary (12.228875ms)
+✔ unknown original pointers cannot cross principal, category, proposal, project, transport or unmount (18.19175ms)
+✔ a late read recovery after refresh cannot apply its receipt or clear the retained original pointer (6.564416ms)
+✔ conversation history follows server-owned previous links in chronological display order, without writes (1.872416ms)
+✔ conversation changes hide a late old chain and a revoked source clears already loaded messages (0.71875ms)
+✔ picker opens with GET only, distinguishes Artifact/original versions and copies the selected fixed version (22.057209ms)
+✔ unavailable source explains the server reason and stays unselectable; text registration needs no upload (4.332792ms)
+✔ refresh or read failure clears selected versions and old names instead of silently following Current (9.551792ms)
+✔ scope and API switches hide old source names immediately and a late page cannot restore them (1.931209ms)
+✔ catalog paging remains explicit, deduplicates repeated heads and hides the catalog on cursor failure (17.832042ms)
+✔ Run bindings read actual scope and fixed refs, current null never falls back to selected title (1.644542ms)
+✔ Run binding refresh failure hides prior source names and only non503 notifies parent scope failure (2.090792ms)
+✔ Run binding identity/protocol mismatch is rejected, with no stale fixed source details (1.708166ms)
+✔ composer drafts restore per session and never cross scope or principal (37.512208ms)
+✔ setter identity is stable and page actions target the new conversation (0.993708ms)
+✔ clear removes only the current draft and unavailable storage keeps memory (1.152459ms)
+✔ existing results open without another write and revisions keep the AI original (21.345834ms)
+✔ conflict reload opens the latest revision without another create (1.079875ms)
+✔ unknown create replays its request key and late completion cannot cross sessions (2.930292ms)
+✔ permission failure clears current work products (0.839584ms)
+✔ human edit uses exact current revision and returns to the saved reading state (21.063125ms)
+✔ unknown save keeps the exact request and replays it without a duplicate (10.224709ms)
+✔ a version conflict reloads the latest product and preserves the human draft (24.047209ms)
+✔ permission loss clears the editor and calls the shared cleanup (8.956ms)
+✔ table reading uses the actual markdown cells (1.6335ms)
+✔ 小Pai初次呈现不调用API，实际技能记录才生成chips (24.363084ms)
+✔ 转后台只收起同一运行，从历史返回只读原记录 (34.894083ms)
+✔ 会话入口携带真实范围，失败刷新清除旧正文和技能，携带区保留来源语义 (4.543416ms)
+✔ 提案页恢复同一绑定链的空提案祖先并拒绝其他运行 (12.76775ms)
+✔ 会话与Run不匹配拒绝结果，身份和API切换同步清除原线程 (9.018709ms)
+✔ 展开与缩回工作区保留同一小Pai组件、范围、运行和挂载key (0.915375ms)
+✔ 明确续接仍打开同Session的具体Run，更新会话列表不会清除已读child结果 (7.395875ms)
+✔ 搜索或切换清理线程后，旧Run迟到详情不能恢复结果、候选或技能 (6.496708ms)
+✔ new Run submits exactly pinned Artifact versions; next prop revision cannot silently update them (18.242833ms)
+✔ definite 409 start rejection clears pinned sources and catalog, while 503 retains exact original request (38.85675ms)
+✔ restored unknown start shows original fixed product and sources without posting or borrowing the composer selection (9.186208ms)
+✔ accepted new Run followed by GET403 keeps acceptance truthful and never exposes or resends the old request (9.859208ms)
+✔ file upload stays scoped to the new-work composer and does not add files to Run start or continuation payloads (8.135209ms)
+✔ manual methods stay pinned across an unknown start and exact original retry (9.048083ms)
+✔ personal rail explicitly selects a project without inference, then resets on identity/page change (0.850208ms)
+✔ material editor survives folding and continuation; denied reads clear it and fresh authorized reads recover (40.078416ms)
+✔ 实际回复与失败保持真实，消息和材料使用同一简洁对话表面 (0.924542ms)
+✔ 输入区停止只取消当前运行，不发送新消息，终态恢复普通输入 (9.085833ms)
+✔ only completed server-grounded general replies show the lookup note (0.894292ms)
+ℹ tests 149
+ℹ suites 0
+ℹ pass 145
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2461.478167
+
+✖ failing tests:
+
+test at src/components/category-create/components.test.mjs:492:1
+✖ category creation preset sends the current enabled skill explicitly (1.2865ms)
+  ReferenceError: document is not defined
+      at /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/category-create/personal-xiaopai.tsx:280:9
+      at file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/category-create/components.test.mjs:81:86
+      at Array.map (<anonymous>)
+      at file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/category-create/components.test.mjs:81:72
+      at Array.flatMap (<anonymous>)
+      at Object.mountEffects (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/category-create/components.test.mjs:81:41)
+      at TestContext.<anonymous> (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/category-create/components.test.mjs:501:33)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+
+test at src/components/category-create/components.test.mjs:507:1
+✖ unavailable preset skills do not block a personal request (0.86125ms)
+  ReferenceError: document is not defined
+      at /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/category-create/personal-xiaopai.tsx:280:9
+      at file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/category-create/components.test.mjs:81:86
+      at Array.map (<anonymous>)
+      at file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/category-create/components.test.mjs:81:72
+      at Array.flatMap (<anonymous>)
+      at Object.mountEffects (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/category-create/components.test.mjs:81:41)
+      at TestContext.<anonymous> (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/category-create/components.test.mjs:516:33)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+
+test at src/components/model_configuration/render.test.mjs:87:1
+✖ input labels have unique accessible ids with both explicit protocol choices (2.013458ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  12 !== 11
+  
+      at TestContext.<anonymous> (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/model_configuration/render.test.mjs:90:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 12,
+    expected: 11,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at src/components/model_configuration/render.test.mjs:110:1
+✖ optional context window renders and validates configured and empty values (24.891875ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /上下文窗口：<!-- -->200000/. Input:
+  
+  '<section class="grid min-w-0 gap-4 rounded-lg border border-border bg-card p-4" aria-label="租户模型配置"><div><h2 class="text-base font-semibold">模型设置</h2><p class="mt-1 text-sm text-muted-foreground">支持任意提供 OpenAI 兼容 Chat Completions API 的服务商，也保留 Anthropic 原生协议。填写服务商的基础 URL 和模型 ID，密钥由服务端安全绑定。</p><p class="mt-1 text-sm text-muted-foreground">配置用于当前租户。保存或启用后，仍须核对用途资格、本次材料授权与预算。</p></div><div class="grid gap-1 text-sm"><p>当前版本：2 · 已启用配置</p><p>密钥：已绑定 ••••</p><p>上下文窗口：200000</p><p class="break-all text-muted-foreground">synthetic-model · v1</p></div><p role="status" class="text-sm">当前调用检查接口待接入</p><form class="grid min-w-0 gap-3"><fieldset class="grid min-w-0 gap-3 sm:grid-cols-2"><label for="_R_4_-protocol" class="grid gap-1 text-sm">协议<select id="_R_4_-protocol" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"><option value="openai-compatible" selected="">OpenAI 兼容</option><option value="anthropic-native">Anthropic 原生</option></select></label><label for="_R_4_-base" class="grid gap-1 text-sm">服务端点（基础 URL）<input id="_R_4_-base" type="url" required="" maxLength="500" autoComplete="off" placeholder="https://api.example.com/v1" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="https://synthetic.invalid/v1"/></label><label for="_R_4_-model" class="grid gap-1 text-sm">模型 ID<input id="_R_4_-model" required="" maxLength="200" autoComplete="off" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="synthetic-model"/></label><label for="_R_4_-version" class="grid gap-1 text-sm">模型版本<input id="_R_4_-version" required="" maxLength="200" autoComplete="off" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="v1"/></label><label for="_R_4_-tokens" class="grid gap-1 text-sm">最大输出 tokens<input id="_R_4_-tokens" type="number" required="" min="1" max="32768" step="1" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="2048"/></label><label for="_R_4_-context-window" class="grid gap-1 text-sm">上下文窗口（tokens）<input id="_R_4_-context-window" type="number" min="1024" max="10000000" step="1" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="200000"/><span class="text-xs text-muted-foreground">不填时按 32,000 估算</span></label><label for="_R_4_-parameter" class="grid gap-1 text-sm">OpenAI 输出参数<select id="_R_4_-parameter" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"><option value="max_completion_tokens" selected="">max_completion_tokens</option><option value="max_tokens">max_tokens</option></select></label><label for="_R_4_-format" class="grid gap-1 text-sm">OpenAI 响应格式<select id="_R_4_-format" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"><option value="auto" selected="">原有适配（兼容已保存配置）</option><option value="tools">工具调用（无需 JSON Schema 扩展）</option><option value="json_schema">JSON Schema</option><option value="json_object">JSON 对象</option><option value="text">JSON 文本（无需格式扩展）</option></select></label><label for="_R_4_-streaming" class="flex items-center gap-2 text-sm"><input id="_R_4_-streaming" type="checkbox" checked=""/>接口支持流式响应</label><label for="_R_4_-timeout" class="grid gap-1 text-sm">超时（秒）<input id="_R_4_-timeout" type="number" required="" min="1" max="90" step="any" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="30"/></label><label for="_R_4_-bytes" class="grid gap-1 text-sm">响应上限（字节）<input id="_R_4_-bytes" type="number" required="" min="1024" max="2097152" step="1" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="1048576"/></label><label for="_R_4_-enabled" class="flex items-center gap-2 text-sm sm:col-span-2"><input id="_R_4_-enabled" type="checkbox" checked=""/>启用此配置</label></fieldset><p class="text-sm text-muted-foreground">密钥由服务端安全绑定，此处仅显示掩码。任何配置或密钥版本变更都需重新核对资格。</p><button data-slot="button" data-variant="default" data-size="default" class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,transform] duration-150 outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 bg-primary text-primary-foreground hover:bg-primary/80 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 w-fit" type="submit">核对并预览</button></form></section>'
+  
+      at TestContext.<anonymous> (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/model_configuration/render.test.mjs:115:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '<section class="grid min-w-0 gap-4 rounded-lg border border-border bg-card p-4" aria-label="租户模型配置"><div><h2 class="text-base font-semibold">模型设置</h2><p class="mt-1 text-sm text-muted-foreground">支持任意提供 OpenAI 兼容 Chat Completions API 的服务商，也保留 Anthropic 原生协议。填写服务商的基础 URL 和模型 ID，密钥由服务端安全绑定。</p><p class="mt-1 text-sm text-muted-foreground">配置用于当前租户。保存或启用后，仍须核对用途资格、本次材料授权与预算。</p></div><div class="grid gap-1 text-sm"><p>当前版本：2 · 已启用配置</p><p>密钥：已绑定 ••••</p><p>上下文窗口：200000</p><p class="break-all text-muted-foreground">synthetic-model · v1</p></div><p role="status" class="text-sm">当前调用检查接口待接入</p><form class="grid min-w-0 gap-3"><fieldset class="grid min-w-0 gap-3 sm:grid-cols-2"><label for="_R_4_-protocol" class="grid gap-1 text-sm">协议<select id="_R_4_-protocol" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"><option value="openai-compatible" selected="">OpenAI 兼容</option><option value="anthropic-native">Anthropic 原生</option></select></label><label for="_R_4_-base" class="grid gap-1 text-sm">服务端点（基础 URL）<input id="_R_4_-base" type="url" required="" maxLength="500" autoComplete="off" placeholder="https://api.example.com/v1" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="https://synthetic.invalid/v1"/></label><label for="_R_4_-model" class="grid gap-1 text-sm">模型 ID<input id="_R_4_-model" required="" maxLength="200" autoComplete="off" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="synthetic-model"/></label><label for="_R_4_-version" class="grid gap-1 text-sm">模型版本<input id="_R_4_-version" required="" maxLength="200" autoComplete="off" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="v1"/></label><label for="_R_4_-tokens" class="grid gap-1 text-sm">最大输出 tokens<input id="_R_4_-tokens" type="number" required="" min="1" max="32768" step="1" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="2048"/></label><label for="_R_4_-context-window" class="grid gap-1 text-sm">上下文窗口（tokens）<input id="_R_4_-context-window" type="number" min="1024" max="10000000" step="1" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="200000"/><span class="text-xs text-muted-foreground">不填时按 32,000 估算</span></label><label for="_R_4_-parameter" class="grid gap-1 text-sm">OpenAI 输出参数<select id="_R_4_-parameter" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"><option value="max_completion_tokens" selected="">max_completion_tokens</option><option value="max_tokens">max_tokens</option></select></label><label for="_R_4_-format" class="grid gap-1 text-sm">OpenAI 响应格式<select id="_R_4_-format" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60"><option value="auto" selected="">原有适配（兼容已保存配置）</option><option value="tools">工具调用（无需 JSON Schema 扩展）</option><option value="json_schema">JSON Schema</option><option value="json_object">JSON 对象</option><option value="text">JSON 文本（无需格式扩展）</option></select></label><label for="_R_4_-streaming" class="flex items-center gap-2 text-sm"><input id="_R_4_-streaming" type="checkbox" checked=""/>接口支持流式响应</label><label for="_R_4_-timeout" class="grid gap-1 text-sm">超时（秒）<input id="_R_4_-timeout" type="number" required="" min="1" max="90" step="any" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="30"/></label><label for="_R_4_-bytes" class="grid gap-1 text-sm">响应上限（字节）<input id="_R_4_-bytes" type="number" required="" min="1024" max="2097152" step="1" class="w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60" value="1048576"/></label><label for="_R_4_-enabled" class="flex items-center gap-2 text-sm sm:col-span-2"><input id="_R_4_-enabled" type="checkbox" checked=""/>启用此配置</label></fieldset><p class="text-sm text-muted-foreground">密钥由服务端安全绑定，此处仅显示掩码。任何配置或密钥版本变更都需重新核对资格。</p><button data-slot="button" data-variant="default" data-size="default" class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,box-shadow,transform] duration-150 outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 bg-primary text-primary-foreground hover:bg-primary/80 h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 w-fit" type="submit">核对并预览</button></form></section>',
+    expected: /上下文窗口：<!-- -->200000/,
+    operator: 'match',
+    diff: 'simple'
+  }

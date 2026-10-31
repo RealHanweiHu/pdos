@@ -1,0 +1,103 @@
+{
+  "enterprise_embedding_profile_heads": {
+    "covered_columns": [
+      "tenant_id",
+      "profile_id",
+      "revision",
+      "enabled"
+    ],
+    "non_consuming": true,
+    "classification": "configuration_or_accounting_identity",
+    "basis": "Tenant/profile/budget/egress/cost identity only; no adopted original content or source reference creates business authority."
+  },
+  "enterprise_embedding_profiles": {
+    "covered_columns": [
+      "profile_id",
+      "revision",
+      "budget_revision",
+      "metadata_json",
+      "enabled",
+      "binding_digest",
+      "secret_json",
+      "created_by",
+      "id",
+      "tenant_id",
+      "created_at"
+    ],
+    "non_consuming": true,
+    "classification": "configuration_or_accounting_identity",
+    "basis": "Tenant/profile/budget/egress/cost identity only; no adopted original content or source reference creates business authority."
+  },
+  "enterprise_embedding_budgets": {
+    "covered_columns": [
+      "tenant_id",
+      "revision",
+      "limit_micro_usd",
+      "held_micro_usd",
+      "spent_micro_usd"
+    ],
+    "non_consuming": true,
+    "classification": "configuration_or_accounting_identity",
+    "basis": "Tenant/profile/budget/egress/cost identity only; no adopted original content or source reference creates business authority."
+  },
+  "enterprise_embedding_batches": {
+    "covered_columns": [
+      "profile_version_id",
+      "category_id",
+      "manifest",
+      "work_key",
+      "state",
+      "attempts",
+      "last_error",
+      "id",
+      "tenant_id",
+      "created_at"
+    ],
+    "non_consuming": true,
+    "classification": "derived_projection",
+    "basis": "Same rule as enterprise_search_chunks/sources: manifest/vector is derived from actual sources; every use rechecks current catalog/source identity/revision/hash/scan/RLS; authoritative facts keep original-consumption guards."
+  },
+  "enterprise_embedding_calls": {
+    "covered_columns": [
+      "batch_id",
+      "category_id",
+      "revision",
+      "attempt",
+      "state",
+      "profile_digest",
+      "input_digest",
+      "source_count",
+      "character_count",
+      "data_categories",
+      "egress",
+      "pricing",
+      "reserved_tokens",
+      "reserved_micro_usd",
+      "charged_micro_usd",
+      "input_tokens",
+      "provider_request_id",
+      "evidence_ref",
+      "id",
+      "tenant_id",
+      "created_at"
+    ],
+    "non_consuming": true,
+    "classification": "configuration_or_accounting_identity",
+    "basis": "Tenant/profile/budget/egress/cost identity only; no adopted original content or source reference creates business authority."
+  },
+  "enterprise_chunk_embeddings": {
+    "covered_columns": [
+      "tenant_id",
+      "chunk_id",
+      "profile_version_id",
+      "category_id",
+      "chunk_hash",
+      "dimensions",
+      "vector",
+      "norm"
+    ],
+    "non_consuming": true,
+    "classification": "derived_projection",
+    "basis": "Same rule as enterprise_search_chunks/sources: manifest/vector is derived from actual sources; every use rechecks current catalog/source identity/revision/hash/scan/RLS; authoritative facts keep original-consumption guards."
+  }
+}

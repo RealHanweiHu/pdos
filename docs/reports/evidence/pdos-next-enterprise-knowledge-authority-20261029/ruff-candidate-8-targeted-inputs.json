@@ -1,0 +1,23 @@
+{
+  "command": [
+    "pdos-next/server/.venv/bin/python",
+    "-m",
+    "ruff",
+    "check",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_sources.py",
+    "pdos-next/server/tests/enterprise_search/test_authority_query_cache_pg.py",
+    "pdos-next/server/tests/enterprise_search/test_relations.py",
+    "pdos-next/server/tests/enterprise_search/test_retrieval_pg.py",
+    "pdos-next/server/tests/enterprise_search/test_recovery_pg.py",
+    "pdos-next/server/tests/enterprise_search/test_assistant_temporal_pg.py"
+  ],
+  "exit_code": 0,
+  "sha256": {
+    "pdos-next/server/pdos_next/enterprise_search/assistant_sources.py": "6cb53d53e459dcb597447de3e68495618e1d3909b68d6bc15323673f9f80a8f8",
+    "pdos-next/server/tests/enterprise_search/test_authority_query_cache_pg.py": "e415251eca8ee11567bfcf86563b1cdcf54912d93afc5de0e00aecb2e5c2ceea",
+    "pdos-next/server/tests/enterprise_search/test_relations.py": "07bcd4a1bf962dbd579892d3687621146fef466ceb95faebc217b6911ebd7553",
+    "pdos-next/server/tests/enterprise_search/test_retrieval_pg.py": "83ef942e154ea77a9b2345081eee1ed96feaa7dd75670a645046f1fdb926620e",
+    "pdos-next/server/tests/enterprise_search/test_recovery_pg.py": "37bc30be21705aa7c77abd270b7306ac879906884a097ab1a09e4018f0efd0fc",
+    "pdos-next/server/tests/enterprise_search/test_assistant_temporal_pg.py": "fb3b2db0857bc93beee2e1ef63e99170145a1b7d883b3ecefc5d8b9dc0545254"
+  }
+}

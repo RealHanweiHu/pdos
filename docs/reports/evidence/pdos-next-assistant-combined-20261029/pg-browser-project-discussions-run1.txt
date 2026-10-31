@@ -1,0 +1,90 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /tmp/pdos-project-discussion-browser-20261029
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 1 item
+
+../../../../../../tmp/pdos-project-discussion-browser-20261029/browser_fixture.py::test_browser_project_discussions[setup0] FAILED
+
+=================================== FAILURES ===================================
+___________________ test_browser_project_discussions[setup0] ___________________
+
+setup = <isolated synthetic test scope>
+
+    @pytest.mark.parametrize("setup", [{"test_authorization_hours": 4}], indirect=True)
+    def test_browser_project_discussions(setup):  # noqa: F811 -- actual pytest fixture injection
+        """Root only; nothing runs until this exact native test is explicitly executed."""
+        folder = private_folder(os.environ["PDOS_BROWSER_DIR"])
+>       ready = prepare_case(setup, local_web(os.environ["PDOS_BROWSER_WEB_URL"]))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/tmp/pdos-project-discussion-browser-20261029/browser_fixture.py:319: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/pdos-project-discussion-browser-20261029/browser_fixture.py:208: in prepare_case
+    "ports": no_dispatch_ports(person.client.app),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+app = <fastapi.applications.FastAPI object at 0x138f30800>
+
+    def no_dispatch_ports(app):
+        """Inspect the original app's native API closures; do not replace its ports."""
+        targets = [route for route in app.routes
+                   if getattr(route, "path", None) == "/v1/categories/{category_id}/agent-runs"
+                   and "POST" in (getattr(route, "methods", None) or ())]
+>       assert len(targets) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+/tmp/pdos-project-discussion-browser-20261029/browser_fixture.py:122: AssertionError
+=============================== warnings summary ===============================
+browser_fixture.py::test_browser_project_discussions[setup0]
+browser_fixture.py::test_browser_project_discussions[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+browser_fixture.py::test_browser_project_discussions[setup0]
+browser_fixture.py::test_browser_project_discussions[setup0]
+browser_fixture.py::test_browser_project_discussions[setup0]
+browser_fixture.py::test_browser_project_discussions[setup0]
+browser_fixture.py::test_browser_project_discussions[setup0]
+browser_fixture.py::test_browser_project_discussions[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+browser_fixture.py::test_browser_project_discussions[setup0]
+browser_fixture.py::test_browser_project_discussions[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+browser_fixture.py::test_browser_project_discussions[setup0]
+browser_fixture.py::test_browser_project_discussions[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+browser_fixture.py::test_browser_project_discussions[setup0]
+browser_fixture.py::test_browser_project_discussions[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+browser_fixture.py::test_browser_project_discussions[setup0]
+browser_fixture.py::test_browser_project_discussions[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+browser_fixture.py::test_browser_project_discussions[setup0]
+browser_fixture.py::test_browser_project_discussions[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+browser_fixture.py::test_browser_project_discussions[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/session_presentation.py:98: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(presentation.session_id)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-project-discussion-history-20261029/pg-browser-run1.xml -
+=========================== short test summary info ============================
+FAILED ../../../../../../tmp/pdos-project-discussion-browser-20261029/browser_fixture.py::test_browser_project_discussions[setup0]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+======================= 1 failed, 19 warnings in 26.69s ========================

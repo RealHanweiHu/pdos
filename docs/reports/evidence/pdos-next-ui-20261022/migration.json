@@ -1,0 +1,18 @@
+{
+  "database": "127.0.0.1:64245/pdos_test",
+  "marker_verified": true,
+  "head_before": "s0_0813",
+  "head_after": "s0_0814",
+  "unused_column_round_trip": "passed",
+  "round_trip_visibility": "single transaction",
+  "business_data_deleted": false,
+  "guard_checks": {
+    "default_is_bounded": true,
+    "bounded_calls_rejected": true,
+    "development_calls_retained": true,
+    "development_negative_still_rejected": true,
+    "used_history_refuses_downgrade": true,
+    "column_matches_orm": true
+  },
+  "negative_probe_note": "Initial collector caught IntegrityError only; existing monotonic guard raised ProgrammingError before CHECK. Broadened collector to DBAPIError; no product guard changed."
+}

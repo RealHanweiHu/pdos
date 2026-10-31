@@ -1,0 +1,8 @@
+{
+  "file": "pdos-next/server/tests/dingtalk/test_summary_delivery_pg.py",
+  "before": "dfbadf1ea339332c2329f14cbcdab2384cb852dc7c75d2c4eb29ff8936972738",
+  "after": "097d6427c2e892d1e738a5053d1d31466bd6421157957ffd5cb2a6ca66aa536e",
+  "reason": "New native test expected raw status phrase even though fixed summary displays project-level first-inclusion text. Verify every actual displayed item title/change/relationship/next-step/continue URL and exact original Run/category link instead. Production compose unchanged.",
+  "initial_failure": "../pdos-next-assistant-combined-20261029/pg-summary-dingtalk-run2.txt",
+  "passed": "pg-summary-dingtalk-run3.xml"
+}

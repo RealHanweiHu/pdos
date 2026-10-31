@@ -1,0 +1,11 @@
+{
+  "source": "/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-558/test_actual_page_reads_metadat0/result-originals",
+  "test_copy": "/tmp/pdos-final-designs-browser-20261029/result-originals",
+  "sha256": {
+    "originals/cc6efe61d99841b386daaded48308ea3/v1/09a2f3730115cf28e9b2fe276da083e5fcab929b83734327f5112e725a9473d6": "09a2f3730115cf28e9b2fe276da083e5fcab929b83734327f5112e725a9473d6",
+    "originals/65c39dc39de34589bf20a6a35fbc9548/v1/f6ac8f0d07c7ac315a401b156be67e338e2cec62b8c3785fb7b98a68d884994c": "f6ac8f0d07c7ac315a401b156be67e338e2cec62b8c3785fb7b98a68d884994c"
+  },
+  "bytes_unchanged": true,
+  "new_scans": 0,
+  "new_facts": 0
+}

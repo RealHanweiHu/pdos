@@ -1,0 +1,73 @@
+Browser tab: 4, Title: "PDOS · 研发工作区", URL: "http://localhost:57859/?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb".
+0 AXWebArea PDOS · 研发工作区, URL: localhost:57859/?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb
+	1 container
+		2 text PDOS · 研发工作区
+		3 link Description: 跳到工作内容, Value: localhost:57859/?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb#workspace-content
+		138 text PDOS
+		139 button 收起侧栏
+			140 image
+		141 button Description: 搜索或跳转, Help: 搜索或跳转（⌘K / Ctrl K）
+			142 text 搜索或跳转
+			143 text ⌘ K
+		144 container 工作区导航
+			145 link Description: 我的工作, Value: localhost:57859/?area=work&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb
+			146 link Description: 收件箱, Value: localhost:57859/?area=inbox&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb
+			147 link Description: 小Pai, Value: localhost:57859/?area=pai
+			148 link Description: 项目, Value: localhost:57859/?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb
+			149 link Description: 项目集, Value: localhost:57859/?area=programs&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb
+			150 link Description: 知识, Value: localhost:57859/?area=knowledge&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb
+			151 text 产品管理
+			152 link Description: 品类, Value: localhost:57859/?area=category
+			153 link Description: 立项提案, Value: localhost:57859/?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&focus=proposals
+			154 container 最近的在办项目
+				155 text 常用项目
+				156 link Description: Approved revision fixture, Value: localhost:57859/?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e
+		157 link Description: 设置, Value: localhost:57859/?area=settings&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb
+		158 text Synthetic owner
+		159 text 本地合成环境
+		26 text 工作空间 项目
+		29 button 切换明暗主题
+			160 image
+		31 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			32 image
+		33 container workspace-content
+			161 container
+				162 heading 项目, Value: 1
+					163 text 项目
+				164 text 查看阶段、负责人和下一门禁。
+				165 button 从提案开始
+			166 container 项目视图
+				167 checkbox 列表, Value: 1
+				168 checkbox 看板, Value: 0
+				169 checkbox 时间轴, Value: 0
+			172 table
+				173 row
+					174 cell
+						175 text 项目
+					176 cell
+						177 text 阶段
+					178 cell
+						179 text 健康度
+					180 cell
+						181 text 负责人
+					182 cell
+						183 text 下一门禁
+					184 cell
+						185 text 承诺 / 预测
+				186 row
+					187 cell
+						188 button Approved revision fixture
+					189 cell
+						190 text 设计
+					191 cell
+						192 text 待核对
+					193 cell
+						194 text Synthetic owner
+					195 cell
+						196 text 设计出口
+					197 cell
+						198 text 承诺未知 / 未知
+			171 text 阶段表示所在位置。看板用于查看；推进阶段需进入门禁评审。
+		137 button Description: 打开小Pai工作栏, Help: 在当前范围打开小Pai
+
+The focused UI element is 0 AXWebArea PDOS · 研发工作区, URL: localhost:57859/?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb

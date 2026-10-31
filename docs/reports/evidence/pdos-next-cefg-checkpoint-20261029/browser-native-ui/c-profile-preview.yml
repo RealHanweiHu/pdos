@@ -1,0 +1,241 @@
+- generic [ref=e1]:
+  - alert [ref=e4]
+  - generic [ref=e5]:
+    - link "跳到工作内容" [ref=e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=e7]:
+      - generic [ref=e8]:
+        - generic [aria-hidden] [ref=e9]: P
+        - generic [ref=e10]: PDOS
+        - button "收起侧栏" [ref=e11]
+      - button "搜索或跳转" [ref=e12] [cursor=pointer]:
+        - generic [ref=e16]: ⌘ K
+      - navigation "工作区导航" [ref=e17]:
+        - link "我的工作" [ref=e19] [cursor=pointer]:
+          - /url: "?area=work&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - link "收件箱" [ref=e24] [cursor=pointer]:
+          - /url: "?area=inbox&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - link "小Pai" [ref=e29] [cursor=pointer]:
+          - /url: "?area=pai"
+        - link "项目" [ref=e34] [cursor=pointer]:
+          - /url: "?area=projects&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - link "项目集" [ref=e39] [cursor=pointer]:
+          - /url: "?area=programs&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - link "知识" [ref=e44] [cursor=pointer]:
+          - /url: "?area=knowledge&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - generic "最近的在办项目" [ref=e48]:
+          - paragraph [ref=e49]: 常用项目
+          - link "浏览器本人摘要项目" [ref=e50] [cursor=pointer]:
+            - /url: "?area=cockpit&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6&project=f6a3778e-633a-40fb-9618-795303070b97"
+            - generic [aria-hidden] [ref=e51]: 浏览
+      - generic [ref=e53]:
+        - link "设置" [ref=e54] [cursor=pointer]:
+          - /url: "?area=settings&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - generic [ref=e58]:
+          - generic [aria-hidden] [ref=e59]: S
+          - generic [ref=e60]:
+            - paragraph [ref=e61]: Synthetic owner
+            - paragraph [ref=e62]: 本地合成环境
+    - generic [ref=e63]:
+      - banner [ref=e64]:
+        - generic [ref=e65]:
+          - generic [ref=e66]: 工作空间
+          - generic [ref=e69]: 设置
+        - generic [ref=e70]:
+          - button "切换明暗主题" [ref=e71]
+          - button "搜索对象" [ref=e73]
+      - main [ref=e74]:
+        - region "设置" [ref=e75]:
+          - generic [ref=e77]:
+            - heading "设置" [level=1] [ref=e78]
+            - paragraph [ref=e79]: 低频配置集中管理，日常工作保持简洁。
+          - navigation "设置视图" [ref=e80]:
+            - button "个人偏好" [ref=e81] [cursor=pointer]
+            - button "成员与范围" [ref=e82] [cursor=pointer]
+            - button "小Pai与模型" [pressed] [ref=e83] [cursor=pointer]
+            - button "集成与治理" [ref=e84] [cursor=pointer]
+          - generic [ref=e166]:
+            - text: 品类范围
+            - combobox "品类范围" [ref=e167]:
+              - option "汽车充气泵" [selected]
+          - generic [ref=e168]:
+            - navigation "小Pai设置" [ref=e169]:
+              - button "模型配置" [pressed] [ref=e170] [cursor=pointer]
+              - button "技能与资格" [ref=e171] [cursor=pointer]
+              - button "预算与用量" [ref=e172] [cursor=pointer]
+              - button "自动化规则" [ref=e173] [cursor=pointer]
+            - generic [ref=e175]:
+              - generic [ref=e176]:
+                - button "读取当前模型设置" [ref=e177]
+                - region "已保存的模型服务商" [ref=e178]:
+                  - generic [ref=e179]:
+                    - heading "模型服务商" [level=2] [ref=e180]
+                    - button "添加服务商" [ref=e181]
+                  - list [ref=e182]:
+                    - listitem [ref=e183]:
+                      - generic [ref=e184]:
+                        - paragraph [ref=e185]: synthetic-model
+                        - paragraph [ref=e186]: synthetic-model · https://synthetic.invalid/v1
+                        - paragraph [ref=e187]: 服务器已绑定 •••• · 已填写计费资料
+                      - button "切换使用" [ref=e188]
+                - region "租户模型配置" [ref=e190]:
+                  - generic [ref=e191]:
+                    - heading "模型设置" [level=2] [ref=e192]
+                    - paragraph [ref=e193]: 支持任意提供 OpenAI 兼容 Chat Completions API 的服务商，也保留 Anthropic 原生协议。填写服务商的基础 URL 和模型 ID，密钥由服务端安全绑定。
+                    - paragraph [ref=e194]: 配置用于当前租户。保存或启用后，仍须核对用途资格、本次材料授权与预算。
+                  - paragraph [ref=e195]: 尚未保存模型配置。
+                  - status [ref=e196]: 尚未配置模型
+                  - generic [ref=e197]:
+                    - group [ref=e198]:
+                      - generic [ref=e199]:
+                        - text: 协议
+                        - combobox "协议" [ref=e200]:
+                          - option "OpenAI 兼容" [selected]
+                          - option "Anthropic 原生"
+                      - generic [ref=e201]:
+                        - text: 服务端点（基础 URL）
+                        - textbox "服务端点（基础 URL）" [ref=e202]:
+                          - /placeholder: https://api.example.com/v1
+                      - generic [ref=e203]:
+                        - text: 模型 ID
+                        - textbox "模型 ID" [ref=e204]
+                      - generic [ref=e205]:
+                        - text: 模型版本
+                        - textbox "模型版本" [ref=e206]
+                      - generic [ref=e207]:
+                        - text: 最大输出 tokens
+                        - spinbutton "最大输出 tokens" [ref=e208]: "2048"
+                      - generic [ref=e209]:
+                        - text: 上下文窗口（tokens）
+                        - spinbutton "上下文窗口（tokens） 不填时按 32,000 估算" [ref=e210]
+                        - text: 不填时按 32,000 估算
+                      - generic [ref=e211]:
+                        - text: OpenAI 输出参数
+                        - combobox "OpenAI 输出参数" [ref=e212]:
+                          - option "max_completion_tokens" [selected]
+                          - option "max_tokens"
+                      - generic [ref=e213]:
+                        - text: OpenAI 响应格式
+                        - combobox "OpenAI 响应格式" [ref=e214]:
+                          - option "原有适配（兼容已保存配置）"
+                          - option "工具调用（无需 JSON Schema 扩展）" [selected]
+                          - option "JSON Schema"
+                          - option "JSON 对象"
+                          - option "JSON 文本（无需格式扩展）"
+                      - generic [ref=e215]:
+                        - checkbox "接口支持流式响应" [checked] [ref=e216]
+                        - text: 接口支持流式响应
+                      - generic [ref=e217]:
+                        - text: 超时（秒）
+                        - spinbutton "超时（秒）" [ref=e218]: "30"
+                      - generic [ref=e219]:
+                        - text: 响应上限（字节）
+                        - spinbutton "响应上限（字节）" [ref=e220]: "1048576"
+                      - generic [ref=e221]:
+                        - checkbox "启用此配置" [ref=e222]
+                        - text: 启用此配置
+                    - paragraph [ref=e223]: 密钥由服务端安全绑定，此处仅显示掩码。任何配置或密钥版本变更都需重新核对资格。
+                    - button "核对并预览" [ref=e224]
+              - region "独立 Embedding 索引设置" [ref=e225]:
+                - generic [ref=e226]:
+                  - heading "企业资料 Embedding" [level=2] [ref=e227]
+                  - button "读取配置与费用" [ref=e228]
+                - paragraph [ref=e229]: 独立配置后台语义索引。当前默认使用关键词检索；打开本页只读取设置与记录。
+                - generic [ref=e230]:
+                  - heading "当前配置版本" [level=3] [ref=e231]
+                  - paragraph [ref=e232]: 尚未保存独立 Embedding 配置。
+                - generic [ref=e233]:
+                  - generic "选择或新增独立 Embedding 连接" [ref=e234]:
+                    - generic [ref=e235]:
+                      - heading "独立凭据连接" [level=4] [ref=e236]
+                      - button "新增独立连接 / 换 Key" [disabled]
+                    - paragraph [ref=e238]: 选择已保存且已核对支持 /embeddings 的 OpenAI 兼容连接，或添加一份独立连接。不会自动沿用当前聊天模型的 Key。要停止后台索引，请取消下方启用并预览确认。
+                    - status [ref=e322]: 独立连接已安全保存，当前聊天模型保持原选择。已带入配置表单；填写维度后再预览确认。
+                    - generic [ref=e239]:
+                      - generic [ref=e240]:
+                        - text: 已保存连接
+                        - combobox "已保存连接" [disabled] [ref=e241]:
+                          - option "明确选择一份连接"
+                          - option "Browser independent embedding · browser-embedding-model · 已填计量" [selected]
+                      - button "带入配置表单" [disabled]
+                    - paragraph [ref=e324]: https://custom.invalid/v1 · browser-embedding@1 · 服务商 custom.invalid。接口兼容和已填计量不代表服务可用或已获质量资格。
+                    - button "重新读取已保存连接" [disabled]
+                  - generic [ref=e243]:
+                    - heading "新增独立 Embedding 配置" [level=3] [ref=e244]
+                    - group [ref=e245]:
+                      - generic [ref=e246]:
+                        - text: Embedding 服务端点
+                        - textbox "Embedding 服务端点" [disabled] [ref=e247]:
+                          - /placeholder: https://api.example.com/v1
+                          - text: https://custom.invalid/v1
+                      - generic [ref=e248]:
+                        - text: Embedding 模型 ID
+                        - textbox "Embedding 模型 ID" [disabled] [ref=e249]: browser-embedding-model
+                      - generic [ref=e250]:
+                        - text: 模型版本
+                        - textbox "模型版本" [disabled] [ref=e251]: browser-embedding@1
+                      - generic [ref=e252]:
+                        - text: 向量维度
+                        - spinbutton "向量维度" [disabled] [ref=e253]: "2"
+                      - generic [ref=e254]:
+                        - text: 独立凭据连接 ID
+                        - textbox "独立凭据连接 ID 填写服务器登记的公开连接 ID；独立凭据由服务器安全绑定，聊天连接不会自动复用。" [disabled] [ref=e255]:
+                          - /placeholder: 已登记的独立 Embedding 连接 ID
+                          - text: 46aaf053-b2a7-523a-a7c7-ec4640870df2
+                        - text: 填写服务器登记的公开连接 ID；独立凭据由服务器安全绑定，聊天连接不会自动复用。
+                      - generic [ref=e256]:
+                        - text: 租户索引预算（USD）
+                        - textbox "租户索引预算（USD） 跨品类共用，包含已发生和保守占账费用。" [disabled] [ref=e257]: "1"
+                        - text: 跨品类共用，包含已发生和保守占账费用。
+                      - generic [ref=e258]:
+                        - paragraph [ref=e259]: 允许后台索引的数据类别
+                        - generic [ref=e260]:
+                          - checkbox "公开资料" [disabled] [ref=e261]
+                          - text: 公开资料
+                        - generic [ref=e262]:
+                          - checkbox "合成资料" [disabled] [ref=e263]
+                          - text: 合成资料
+                        - generic [ref=e264]:
+                          - checkbox "内部资料" [checked] [disabled] [ref=e265]
+                          - text: 内部资料
+                        - generic [ref=e266]:
+                          - checkbox "客户资料" [disabled] [ref=e267]
+                          - text: 客户资料
+                      - generic [ref=e268]:
+                        - checkbox "另行包含客户原件 确认启用后，可读且符合出站类别限制的客户原件会发送给此 Embedding 服务商。" [disabled] [ref=e269]
+                        - generic [ref=e270]:
+                          - text: 另行包含客户原件
+                          - generic [ref=e271]: 确认启用后，可读且符合出站类别限制的客户原件会发送给此 Embedding 服务商。
+                      - generic [ref=e272]:
+                        - checkbox "启用后台 Embedding 索引 保存停用配置不会出站。启用须在下一步核对服务商、数据类别、预计来源与费用，再一次确认。" [disabled] [ref=e273]
+                        - generic [ref=e274]:
+                          - text: 启用后台 Embedding 索引
+                          - generic [ref=e275]: 保存停用配置不会出站。启用须在下一步核对服务商、数据类别、预计来源与费用，再一次确认。
+                    - button "核对配置并预览" [disabled]
+                - generic [ref=e277]:
+                  - generic [ref=e278]:
+                    - heading "索引预算与批次" [level=3] [ref=e279]
+                    - paragraph [ref=e280]: 尚未建立租户索引预算。
+                    - paragraph [ref=e281]: 批次与调用记录显示当前品类；预算在租户内累计。
+                    - paragraph [ref=e282]: 当前品类尚无后台索引批次。
+                  - group [ref=e283]:
+                    - generic "查看后台调用与费用记录（0 条已读取）" [ref=e284] [cursor=pointer]
+                - dialog "一次确认 Embedding 设置或费用" [ref=e325]:
+                  - generic [ref=e326]:
+                    - generic [ref=e327]:
+                      - heading "一次确认：保存停用的 Embedding 配置" [level=3] [ref=e328]
+                      - paragraph [ref=e329]: 保存为第 1 版。停止新批次与向量召回，退役向量进入清理；检索使用关键词。
+                      - paragraph [ref=e330]: 服务商端点：https://custom.invalid/v1
+                      - paragraph [ref=e331]: 服务商身份：custom.invalid
+                      - paragraph [ref=e332]: 模型：browser-embedding-model · 版本 browser-embedding@1 · 2 维
+                      - paragraph [ref=e333]: 数据类别：内部资料
+                      - paragraph [ref=e334]: 客户原件：不包含
+                      - paragraph [ref=e335]: 独立凭据：已绑定
+                      - paragraph [ref=e336]: 预计来源：停用保存不估算
+                      - paragraph [ref=e337]: 预计费用：停用保存不估算 · 租户索引预算 1 USD
+                      - paragraph [ref=e338]: 估算限当前本人可读来源，实际批次分别核对和计费。默认检索仍为关键词；混合检索须按同题集实测收益决定。
+                      - paragraph [ref=e339]: 本次确认有效至 2026/10/29 07:36:37。
+                    - generic [ref=e340]:
+                      - button "返回修改" [active] [ref=e341]
+                      - button "本人一次确认保存" [ref=e342]
+    - button "打开小Pai工作栏" [ref=e162] [cursor=pointer]

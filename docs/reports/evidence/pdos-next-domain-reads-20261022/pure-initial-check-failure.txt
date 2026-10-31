@@ -1,0 +1,83 @@
+........................................................................ [ 34%]
+........................................................................ [ 68%]
+..........................F..................F.....EEE...........        [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_three_bound_entries_preserve_all_declared_working_context[customer_request] _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+pdos-next/server/tests/conftest.py:25: KeyError
+_ ERROR at setup of test_three_bound_entries_preserve_all_declared_working_context[new_product] _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+pdos-next/server/tests/conftest.py:25: KeyError
+_ ERROR at setup of test_three_bound_entries_preserve_all_declared_working_context[derivative] _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+pdos-next/server/tests/conftest.py:25: KeyError
+=================================== FAILURES ===================================
+____________ test_written_notes_never_claim_an_unregistered_effect _____________
+
+    def test_written_notes_never_claim_an_unregistered_effect():
+        for _name, usage in registry().items():
+            if usage.produces is not None:
+                assert usage.produces and "." in usage.produces
+>           assert usage.source in {"v1.1 附录 A", "DC-11 档位政策"}
+E           AssertionError: assert 'S2/S3 领域结构读取端口 v1' in {'DC-11 档位政策', 'v1.1 附录 A'}
+E            +  where 'S2/S3 领域结构读取端口 v1' = Usage(when='在服务器绑定项目内分页查找批次及实际配置关系的 id、revision 和记录状态；可按精确对象筛选。', produces=None, limit='仅结构元数据；basis_status=not_assessed，不证明来源仍有效、样件可用、当前适用或获准执行。私有资料须有服务器绑定的私有项目/型号范围；不返回正文或测量原值。', tier='READ', source='S2/S3 领域结构读取端口 v1').source
+
+pdos-next/server/tests/agent_kernel/test_command_usage.py:47: AssertionError
+______________ test_module_imports_cleanly_from_every_entry_point ______________
+
+    def test_module_imports_cleanly_from_every_entry_point():
+        """pdos_next.service reaches this module through contracts -> snapshot_command.
+    
+        A module-level ``from pdos_next.service import digest`` here is a circular
+        import that pytest's own import order hides, so check it in a fresh
+        interpreter the way a worker or an offline script would import it.
+        """
+        import subprocess
+        import sys
+    
+        for module in (
+            "pdos_next.service",
+            "pdos_next.contracts",
+            "pdos_next.agent_kernel.disclosure",
+            "pdos_next.agent_kernel.snapshot_command",
+            "pdos_next.agent_kernel.skills",
+        ):
+            done = subprocess.run(
+                [sys.executable, "-c", f"import {module}"],
+                capture_output=True, text=True, timeout=120,
+            )
+>           assert done.returncode == 0, f"{module} does not import alone:\n{done.stderr[-800:]}"
+E           AssertionError: pdos_next.service does not import alone:
+E             Traceback (most recent call last):
+E               File "<string>", line 1, in <module>
+E             ModuleNotFoundError: No module named 'pdos_next'
+E             
+E           assert 1 == 0
+E            +  where 1 = CompletedProcess(args=['/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python', '-c', 'impo...most recent call last):\n  File "<string>", line 1, in <module>\nModuleNotFoundError: No module named \'pdos_next\'\n').returncode
+
+pdos-next/server/tests/agent_kernel/test_disclosure.py:269: AssertionError
+=========================== short test summary info ============================
+FAILED pdos-next/server/tests/agent_kernel/test_command_usage.py::test_written_notes_never_claim_an_unregistered_effect
+FAILED pdos-next/server/tests/agent_kernel/test_disclosure.py::test_module_imports_cleanly_from_every_entry_point
+ERROR pdos-next/server/tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[customer_request]
+ERROR pdos-next/server/tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[new_product]
+ERROR pdos-next/server/tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[derivative]
+2 failed, 204 passed, 3 errors in 27.75s

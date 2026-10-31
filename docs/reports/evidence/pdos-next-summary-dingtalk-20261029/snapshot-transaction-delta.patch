@@ -1,0 +1,12 @@
+--- a/pdos-next/server/pdos_next/dingtalk/summary_delivery.py
++++ b/pdos-next/server/pdos_next/dingtalk/summary_delivery.py
+@@ -131,7 +131,8 @@
+             actor_id=owner,
+             requester_id=owner,
+             category_id=meta["category_id"],
+-            read_snapshot=True,
++            # Current unique-writer validation uses FOR SHARE; keep RR with row locks.
++            repeatable_read=True,
+         ) as session:
+             run = session.get(AgentRun, meta["run_id"])
+             if (

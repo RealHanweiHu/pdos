@@ -1,0 +1,97 @@
+{
+  "run_id": "3ef4c1eb-1012-40c7-b6cd-6d31ec1c54d5",
+  "goal": "请用 proposal_drafting 技能为当前提案起草一个新的说明章节。仅用当前合成演示资料，新增 key 为 use_case 的 section，描述家庭车主在日常停车或短途出行时检查轮胎与应急补气的使用场景，约100字。不要改写已有人工条目、不要编造数值或研究事实，不需要联网、不需要提问。请实际调用 proposal.item.patch 产生一次供本人确认的候选，然后收尾说明尚未保存。",
+  "session_id": "5f2e923f-54c0-49c5-855e-1ef11a39524c",
+  "conversation": {
+    "previous_run_id": null,
+    "next_run_id": null
+  },
+  "product_id": null,
+  "proposal_id": "3c1cd7aa-a6a4-4fe9-b432-021f491d7a2d",
+  "project_id": null,
+  "status": "failed",
+  "result": null,
+  "error_code": "FORBIDDEN_SCOPE",
+  "reconciliation": null,
+  "process": {
+    "run_id": "3ef4c1eb-1012-40c7-b6cd-6d31ec1c54d5",
+    "status": "failed",
+    "reverted": false,
+    "error_code": "FORBIDDEN_SCOPE",
+    "started_at": "2026-10-22T12:10:05.975761+00:00",
+    "observed_at": "2026-10-22T12:15:51.874026+00:00",
+    "last_recorded_at": "2026-10-22T12:10:06.772581+00:00",
+    "ended_at": "2026-10-22T12:10:06.772581+00:00",
+    "elapsed_seconds": 0.79682,
+    "call_counts": {
+      "total": 0,
+      "completed": 0,
+      "pending": 0,
+      "failed": 0
+    },
+    "source_count": 0,
+    "sources": [],
+    "next_source_cursor": null,
+    "business_receipt_count": 0,
+    "receipts": [],
+    "next_receipt_cursor": null,
+    "steps": [
+      {
+        "id": "9896c901-5beb-443c-be0a-49a1d17a3dd7",
+        "sequence": 1,
+        "at": "2026-10-22T12:10:05.984202+00:00",
+        "kind": "accepted",
+        "tool": null,
+        "skill": null,
+        "version": null,
+        "status": null
+      },
+      {
+        "id": "8ac642a5-b128-4a3e-9c05-dbb4fcf3f383",
+        "sequence": 2,
+        "at": "2026-10-22T12:10:06.702927+00:00",
+        "kind": "skill_loaded",
+        "tool": null,
+        "skill": "proposal_drafting",
+        "version": "0.2.3-draft",
+        "status": null
+      },
+      {
+        "id": "bba9f597-31a3-4de5-9416-89d1a6b3a0d1",
+        "sequence": 3,
+        "at": "2026-10-22T12:10:06.772581+00:00",
+        "kind": "run_state",
+        "tool": null,
+        "skill": null,
+        "version": null,
+        "status": "failed"
+      }
+    ],
+    "next_before": null
+  },
+  "versions": {
+    "proposal_context": {
+      "kind": "proposal-context/v1",
+      "tenant_id": "4046073e-d405-42f1-8f3e-a742e6e47164",
+      "references": [
+        {
+          "id": "69f1c732-2201-4c0f-a064-41bc207f8363",
+          "line": null,
+          "type": "human",
+          "quote": null,
+          "version": 1,
+          "statement": "具名产品决定"
+        }
+      ],
+      "category_id": "b24a8a71-981e-49cc-a32c-496641be611d",
+      "proposal_id": "3c1cd7aa-a6a4-4fe9-b432-021f491d7a2d",
+      "requester_id": "69f1c732-2201-4c0f-a064-41bc207f8363"
+    },
+    "checkpoint_layout": "session-run-ns/v1"
+  },
+  "reverted": false,
+  "reverted_at": null,
+  "reverted_by": null,
+  "revert_receipt_id": null,
+  "cancel_epoch": 0
+}

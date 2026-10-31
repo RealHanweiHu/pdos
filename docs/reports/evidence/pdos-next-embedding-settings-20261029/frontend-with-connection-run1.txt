@@ -1,0 +1,31 @@
+✔ selector accepts exact explicit managed OpenAI connections and excludes unselectable host defaults (14.2565ms)
+✔ selection copies only public route fields into profile, leaving credentials and chat settings out (1.210916ms)
+✔ secure registration is a separate request and never implicitly creates or enables a profile/chat command (1.139167ms)
+✔ embedding pricing requires explicit source/rates/billing confirmation and carries only input/request prices (1.4905ms)
+✔ invalid key and route errors never echo entered credential material (0.843875ms)
+✔ native registration form explains no chat switch and keeps key solely in password input (33.969208ms)
+✔ page render does not choose chat credentials or submit registration/profile commands (3.500208ms)
+✔ profile keeps registration beside its form and original preview boundary (2.638291ms)
+✔ independent metadata accepts explicit endpoint/connection and enforces original selection (2.336584ms)
+✔ USD conversion is exact to microdollars without floating rounding or silent overflow (0.394834ms)
+✔ COMMON commands bind true category revision with no product, reads or inferred chat credential (8.27075ms)
+✔ preview retains exact original command and rejects substituted scope, budget, categories and expired proof (23.728792ms)
+✔ enabled preview must expose source/price estimate and independently bound credential (0.260709ms)
+✔ restoration keeps the same confirmed request and rejects altered envelope or extra secret fields (0.580792ms)
+✔ receipt binding requires matching human, operation, subject revision and profile result (0.22275ms)
+✔ new profile defaults to internal only, customer originals off and disabled with no secret input (20.198ms)
+✔ disabled editor cannot submit and preview hides public connection id while showing real decision fields (79.130458ms)
+✔ only unknown calls expose original-fee reconciliation; no raw error/vector/storage field renders (2.405666ms)
+✔ reconciliation preview binds exact original call revision, usage and evidence with no reissue operation (0.655208ms)
+✔ page BFF forwards only metadata GET with explicit category/pagination and never embedding/body (65.579167ms)
+✔ BFF rejects arbitrary scope, query embeddings, duplicate cursors and methods before upstream (11.376583ms)
+✔ BFF keeps session/domain denial and service errors visible without retries or fallback (50.345ms)
+✔ exact Next 16 route awaits params and exports GET only (3.475542ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1138.750291

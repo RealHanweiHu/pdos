@@ -1,0 +1,16 @@
+{
+  "results": [
+    {
+      "case": "test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice",
+      "properties": {
+        "scope_warm_p95_seconds": "0.4278299754310865",
+        "scope_queries_per_request": "[12]",
+        "scope_samples": "12",
+        "scope_returned_sources": "2"
+      },
+      "passed": true
+    }
+  ],
+  "synthetic_models_only": true,
+  "scope": "one actual G0 project, no in-project Artifact, two readable same-category internal Artifacts; private customer original filtered before paging"
+}

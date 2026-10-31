@@ -1,0 +1,10 @@
+.........                                                                [100%]
+=============================== warnings summary ===============================
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+9 passed, 3 warnings in 28.71s
