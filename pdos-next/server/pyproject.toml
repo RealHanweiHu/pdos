@@ -23,6 +23,7 @@ dependencies = [
   "jsonschema>=4.23,<5",
   "referencing>=0.35,<1",
   "mcp>=1.30,<2",
+  "jieba==0.42.1",
 ]
 [dependency-groups]
 dev = ["pytest>=9,<10", "httpx>=0.28,<1", "ruff>=0.15,<1"]
