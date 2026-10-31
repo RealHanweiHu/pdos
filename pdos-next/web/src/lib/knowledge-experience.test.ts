@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { blankCandidateDraft, blankKnowledgeLocal, candidateOperation, knowledgeBindingCurrent, knowledgeDraftCurrent, knowledgePrepared, knowledgePreviewCurrent, knowledgeSemantic, knowledgeStorageKey, newKnowledgeCommand, parseKnowledgePayload, parseKnowledgeView, publishRuleDraft, restoreKnowledgeLocal, reviseCandidateDraft, reviseRuleDraft, ruleOperation, runKnowledgeRequest, validKnowledgeCommand, type CandidateDraft, type CandidatePayload, type KnowledgeCandidate, type KnowledgeCommand, type KnowledgePending, type KnowledgeRule, type KnowledgeScope, type KnowledgeView, type RuleDraft, type RulePayload } from "./knowledge-experience";
+import { blankCandidateDraft, blankKnowledgeLocal, candidateOperation, knowledgeBindingCurrent, knowledgeDraftCurrent, knowledgePrepared, knowledgePreviewCurrent, knowledgeRoot, knowledgeSemantic, knowledgeStorageKey, newKnowledgeCommand, parseKnowledgePayload, parseKnowledgeView, publishRuleDraft, restoreKnowledgeLocal, reviseCandidateDraft, reviseRuleDraft, ruleOperation, runKnowledgeRequest, validKnowledgeCommand, type CandidateDraft, type CandidatePayload, type KnowledgeCandidate, type KnowledgeCommand, type KnowledgePending, type KnowledgeRule, type KnowledgeScope, type KnowledgeView, type RuleDraft, type RulePayload } from "./knowledge-experience";
 import type { ProjectWorkApi } from "./project-work";
 
 // The transport and source metadata below are explicit substitutes. These checks
@@ -21,6 +21,22 @@ function receipt(c: KnowledgeCommand) { const p = c.payload as RulePayload & Can
 test("candidate is a T0 draft and records no fabricated qualification, author, origin or standard", () => {
   const c = command(); assert.equal(c.operation, candidateOperation); assert.equal(c.payload.project_id, null); assert.equal("approval_token" in c.payload, false); assert.equal("origin" in c.payload, false); assert.equal("author_id" in c.payload, false); assert.deepEqual((c.payload as CandidatePayload).result_receipts, []);
   for (const key of ["approved", "origin", "author_id", "standard", "approval_token", "confirmation_token"]) assert.throws(() => parseKnowledgePayload({ ...c.payload, [key]: true }, candidateOperation, scope));
+});
+
+test("category form keeps nil product and real category revision, with no publication or cross-scope recovery", () => {
+  const categoryScope = { ...scope, productId: null };
+  const categoryView = { product_revision: 7, projects: [], configurations: [], candidates: [], rules: [], as_of: at };
+  const c = newKnowledgeCommand(categoryScope, categoryView, candidateDraft());
+  assert.equal(c.product_id, null); assert.equal(c.expected_revision, 7);
+  assert.equal(knowledgeRoot(categoryScope), `v1/categories/${scope.categoryId}/experience`);
+  assert.equal(validKnowledgeCommand(c, categoryScope), true);
+  assert.equal(validKnowledgeCommand(c, scope), false);
+  assert.throws(() => newKnowledgeCommand(categoryScope, categoryView, ruleDraft()));
+  assert.throws(() => parseKnowledgeView(view(), categoryScope));
+  assert.throws(() => parseKnowledgePayload({ ...c.payload, project_id: id(3) }, candidateOperation, categoryScope));
+  const pending = { ...blankKnowledgeLocal(categoryScope), pending: { stage: "inputs" as const, command: c } };
+  assert.ok(restoreKnowledgeLocal(pending, categoryScope));
+  assert.equal(restoreKnowledgeLocal(pending, scope), null);
 });
 test("actual candidate and rule history, fixed candidate version, authorship and usability survive reads", () => {
   const actual = parseKnowledgeView(view(), scope); assert.equal(actual.candidates[0].origin, "ai"); assert.equal(actual.candidates[0].author_id, id(11)); assert.equal(actual.rules[0].applicability.assessor_id, scope.principalId); assert.equal(actual.rules[0].usability.state, "needs_recheck"); assert.equal(actual.rules[0].applicability.valid_until, null);

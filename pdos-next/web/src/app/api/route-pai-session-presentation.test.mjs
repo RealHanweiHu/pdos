@@ -41,13 +41,21 @@ test("static management transports preserve exact private scope, body and no-sto
 });
 test("list and presentation query allowlists reject duplicates, scope forgery and malformed paths before network", async () => {
  const h = harness();
- for (const query of ["view=all", "view=active&view=archived", "page_size=01", "page_size=51", "q=a&q=b", "cursor=bad", "principal_id=x", "project_id="+key, "category_id="+key, "proposal_id=bad"]) assert.equal((await h.list(query, category)).status, 422, query);
+ for (const query of ["view=all", "view=active&view=archived", "page_size=01", "page_size=51", "q=a&q=b", "cursor=bad", "principal_id=x", "project_id=bad", "category_id="+key, "proposal_id=bad"]) assert.equal((await h.list(query, category)).status, 422, query);
  for (const query of ["view=active", "page_size=1", "q=name", "cursor="+key, "proposal_id="+proposal+"&proposal_id="+proposal, "principal_id="+key]) {
   assert.equal((await h.post(original, query)).status, 422); assert.equal((await h.recover(query)).status, 422);
  }
  assert.equal((await h.list(`proposal_id=${proposal}`)).status, 422); assert.equal((await h.exports.paiPresentation(h.request("GET"), undefined, session, key)).status, 200); assert.equal((await h.exports.paiPresentation(h.request("POST", `proposal_id=${proposal}`), undefined, session)).status, 422);
  const prior = h.calls.length; assert.equal((await h.post(original,"","bad")).status,404); assert.equal((await h.post(original,"",category,"bad")).status,404); assert.equal((await h.recover("",category,session,"bad")).status,404); assert.equal(h.calls.length, prior);
  assert.equal((await h.list(new URLSearchParams({q:"😀".repeat(160)}).toString())).status,200); assert.equal((await h.list(new URLSearchParams({q:"😀".repeat(161)}).toString())).status,422);
+});
+test("project conversation list filters stay category-bound and cannot widen presentation writes", async () => {
+ const h = harness(); assert.equal((await h.list(`project_id=${key}`, category)).status, 200);
+ assert.equal(new URL(h.calls[0].url).searchParams.get("project_id"), key);
+ assert.equal((await h.list(`project_id=${key}`)).status, 422);
+ assert.equal((await h.list(`project_id=${key}&project_id=${proposal}`, category)).status, 422);
+ assert.equal((await h.post(original, `project_id=${key}`)).status, 422);
+ assert.equal((await h.recover(`project_id=${key}`)).status, 422); assert.equal(h.calls.length, 1);
 });
 test("mutations require same origin, live auth and exact JSON body schema", async () => {
  const h = harness();

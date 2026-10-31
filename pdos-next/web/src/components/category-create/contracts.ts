@@ -13,6 +13,7 @@ export type CategoryCandidate = {
   snapshots: Record<string, unknown>[];
 };
 export type CategoryCreateDTO = CategoryInput & {
+  human_edits?: { name: string; purpose: string };
   deidentified_confirmed: boolean;
   prepared_by_run_id?: string;
   candidate_digest?: string;
@@ -62,8 +63,9 @@ export async function personalApi<T>(path: string, body?: unknown): Promise<T> {
   const result = await response.json();
   if (!response.ok) {
     const message = typeof result.message === "string" ? result.message : "请求未完成，请重试或检查当前权限。";
-    throw [403, 422].includes(response.status) || result.code === "CONFIRMATION_REQUIRED"
+    const error = [403, 422].includes(response.status) || result.code === "CONFIRMATION_REQUIRED"
       ? new RequestRejected(message) : new Error(message);
+    throw Object.assign(error, { status: response.status });
   }
   return result;
 }

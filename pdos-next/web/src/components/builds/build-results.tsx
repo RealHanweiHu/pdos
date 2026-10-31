@@ -1,4 +1,5 @@
 "use client";
+import { useProfessionalSelection } from "@/components/projects/professional-target";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, CheckSquare, FileText, Flask, ShieldCheck, WarningCircle } from "@phosphor-icons/react";
@@ -155,6 +156,8 @@ function ResultsPanel({ product, principalId, api, onSaved, projectId = "" }: Pr
   let pairs: { sample_id: string; item_id: string }[] = []; if (run) { try { pairs = resultsPairs(run); } catch { /* Missing server scope leaves mapping closed. */ } }
   const updateSelection = (index: number, patch: Partial<ResultsWork["selections"][number]>) => edit({ selections: work.selections.map((row, position) => position === index ? { ...row, ...patch } : row) });
 
+  useProfessionalSelection("build", builds.map(r=>r.id), local.selectedBuildId, loading || busy || !!pending || !!preview, id=>select({selectedBuildId:id,selectedRunId:"",selectedRunVersionId:""}));
+  useProfessionalSelection("run", runChoices.map(r=>r.id), local.selectedRunId, loading || busy || !!pending || !!preview, id=>{change({selectedRunId:id,selectedRunVersionId:""});setInputs(null);});
   return <section className="panel min-w-0 space-y-5 [&_*]:min-w-0 [overflow-wrap:anywhere]">
     <header className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="flex items-center gap-2 text-xl font-semibold"><Flask/>原报告、结果与专业处置</h2><p className="subtle mt-2">同一已开测运行：原值逐字保存，确定性判定、品质复核与具名处置各自留痕。报告返回不再预约资源或恢复已消费样件。</p></div><Button type="button" variant="outline" disabled={busy} onClick={reread}><ArrowClockwise/>刷新本轮事实</Button></header>
     {synthetic && <p className="rounded-lg border border-primary p-3 text-sm">{syntheticWarning}</p>}

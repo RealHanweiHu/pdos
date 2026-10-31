@@ -1,0 +1,27 @@
+.panel { max-width:800px; margin-block:28px; padding-top:24px; border-top:1px solid var(--border); }
+.panel h2 { font-weight:600; margin-bottom:8px; }
+.note { color:var(--text-subtle); line-height:1.7; margin-block:10px 18px; }
+.fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; border:0; padding:0; }
+.fields label,.searchLabel { display:grid; gap:6px; min-width:0; }
+.fields :is(input,select),.search input { width:100%; min-height:38px; border:1px solid var(--border); border-radius:8px; padding:8px 10px; background:var(--background); color:var(--foreground); margin:0; }
+.fields :is(input,select):focus-visible,.search input:focus-visible,.options input:focus-visible,.saved a:focus-visible { outline:2px solid var(--ring); outline-offset:2px; }
+.favorites { min-width:0; border:0; border-top:1px solid var(--border); padding:16px 0; }
+.favorites legend { padding-right:8px; font-weight:500; }
+.favorites legend span { font-weight:400; color:var(--text-subtle); margin-left:8px; }
+.search { display:flex; gap:10px; align-items:end; margin-bottom:12px; }
+.searchLabel { flex:1; }
+.options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px 16px; }
+.options label { display:flex; align-items:center; gap:8px; min-height:34px; min-width:0; }
+.options label span { overflow-wrap:anywhere; }
+.options input { width:16px; height:16px; margin:0; flex:none; accent-color:var(--primary); }
+.actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:18px; }
+.saved { margin-top:24px; line-height:1.8; }
+.saved h3 { font-weight:500; margin-bottom:6px; }
+.saved a { display:inline-block; margin-right:12px; color:var(--primary); text-decoration:underline; text-underline-offset:3px; }
+.saved ul { padding-left:18px; list-style:disc; }
+.welcomeNavigation { border-top:1px solid var(--border); padding-top:14px; }
+.welcomeNavigation a { display:flex; align-items:center; gap:12px; min-height:34px; font-size:12px; color:var(--text-subtle); }
+.welcomeNavigation a:hover { color:var(--foreground); }
+.welcomeNavigation a:focus-visible { outline:2px solid var(--ring); outline-offset:3px; }
+@media(max-width:540px) { .fields,.options { grid-template-columns:1fr; } .panel { margin-top:20px; } .options label { min-height:44px; } }
+@media(pointer:coarse) { .fields :is(input,select),.search input { min-height:44px; } }

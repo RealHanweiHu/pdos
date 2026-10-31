@@ -1,0 +1,30 @@
+.toolbar { display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px; border-bottom:1px solid var(--border); }
+.tabs { display:flex; align-items:center; gap:24px; margin-right:auto; }
+.tabs > button { padding:7px 0 11px; border-bottom:2px solid transparent; color:var(--text-subtle); font-size:12px; cursor:pointer; white-space:nowrap; }
+.tabs > button[aria-pressed=true] { color:var(--foreground); border-color:var(--primary); }
+.toolbar select { height:30px; width:124px; padding:0 24px 0 9px; border-radius:8px; margin:0 0 8px; color:var(--text-subtle); font-size:12px; }
+.tabs select { width:65px; border-color:transparent; padding-left:0; margin:0; }
+.search { display:flex; align-items:center; gap:7px; width:176px; height:30px; padding:0 9px; margin:0 0 8px; border:1px solid var(--border); border-radius:8px; color:var(--text-subtle); }
+.search input { width:100%; min-width:0; height:100%; padding:0; margin:0; border:0; background:transparent; font-size:12px; outline:none; }
+.search:focus-within { outline:2px solid var(--ring); outline-offset:2px; }
+.tableScroll { overflow-x:auto; }
+.table { width:100%; min-width:640px; border-collapse:collapse; text-align:left; font-size:12px; }
+.table th { height:30px; padding:4px 16px 4px 0; border-bottom:1px solid var(--border); color:var(--text-subtle); font-size:11px; font-weight:400; }
+.table td { height:44px; padding:10px 16px 10px 0; border-bottom:1px solid var(--border); color:var(--text-subtle); }
+.table th:first-child { width:38%; }
+.table a { display:flex; align-items:center; gap:8px; color:var(--foreground); text-decoration:none; }
+.table a svg { color:var(--text-subtle); flex-shrink:0; }
+.table tbody tr:hover { background:var(--sidebar); }
+.state { display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
+.state::before { content:""; width:5px; height:5px; border-radius:50%; background:var(--text-subtle); }
+.state[data-state=approved]::before { background:#227147; }
+.state[data-state=in_review]::before { background:var(--primary); }
+@media(max-width:700px) { .tabs { gap:16px; width:100%; } .toolbar { gap:8px; } .search { flex:1; } }
+
+.finder { margin-top:16px; }
+.finderRow { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:14px 0; border-bottom:1px solid var(--border); font-size:12px; }
+.finderRow > span:first-child { min-width:0; overflow-wrap:anywhere; }
+.finderRow > span:last-child { flex-shrink:0; font-size:11px; color:var(--text-subtle); }
+.finderRow small { display:block; margin-top:5px; color:var(--text-subtle); font-size:11px; }
+.finderRow:hover { color:var(--primary); }
+.finderRow:focus-visible { outline:2px solid var(--ring); outline-offset:3px; }

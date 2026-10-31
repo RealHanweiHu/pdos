@@ -1,0 +1,52 @@
+.surface { min-width:0; }
+.heading { margin-bottom:20px; }
+.heading h2 { font-size:19px; font-weight:600; letter-spacing:-.02em; }
+.heading p { margin-top:6px; font-size:12px; line-height:1.65; color:var(--text-subtle); }
+.tabs { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:24px; }
+.tabs button { padding:6px 10px; min-height:30px; border-radius:6px; font-size:12px; color:var(--text-subtle); cursor:pointer; }
+.tabs button:hover { color:var(--foreground); background:var(--muted); }
+.tabs button[aria-pressed=true] { background:var(--muted); color:var(--foreground); font-weight:500; }
+.tabs button:focus-visible { outline:2px solid var(--ring); outline-offset:2px; }
+.body { min-width:0; font-size:12px; line-height:1.65; }
+.body[hidden] { display:none; }
+.body :global(.workspace-panel) > section,
+.body :global(.workspace-panel) > div > section { border:0; border-radius:0; padding:0; box-shadow:none; background:transparent; }
+.body :global(.workspace-panel) > section > header h2 { font-size:14px; }
+.body :global(.panel) { border-radius:8px; padding:16px; }
+.body :global(.workspace-panel) h3 { font-size:13px; font-weight:550; }
+.body :global(.workspace-panel) label { font-size:12px; }
+.body :global(.workspace-panel) :is(input,select,textarea) { font-size:12px; }
+.body :global(.workspace-panel) table { font-size:12px; }
+.body :global(.workspace-panel) th { font-size:11px; font-weight:500; color:var(--text-subtle); }
+.body :global(.workspace-panel) :is(th,td) { padding:9px 10px; }
+.body :global(.workspace-panel) details { border-radius:6px; }
+.body :global(.workspace-panel) summary { cursor:pointer; font-size:12px; }
+@media(max-width:640px) { .tabs { gap:4px; } .tabs button { min-height:36px; } .heading h2 { font-size:18px; } .body :global(.panel) { padding:12px; } }
+@media(pointer:coarse) { .tabs button { min-height:44px; } }
+.editorToggle { display:flex; align-items:center; justify-content:space-between; width:100%; margin:24px 0 16px; padding:12px 0; border-block:1px solid var(--border); font-size:12px; cursor:pointer; text-align:left; }
+.editorToggle[aria-expanded=true] svg { transform:rotate(180deg); }
+.editorToggle:focus-visible { outline:2px solid var(--ring); outline-offset:3px; }
+
+.records { min-width:0; }
+.recordToolbar { display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap; margin:0 0 16px; }
+.recordToolbar label { font-size:11px; color:var(--text-subtle); margin:0; min-width:0; }
+.recordToolbar :is(input,select) { margin-top:6px; font-size:12px; min-height:32px; }
+.recordToolbar >label { flex:1 1 180px; }
+.recordToolbar .historyToggle { flex:0 1 auto; display:flex; align-items:center; gap:6px; min-height:32px; }
+.historyToggle input { width:auto; margin:0; min-height:0; }
+.recordScroll { max-width:100%; overflow:auto; }
+.recordScroll table { border-collapse:collapse; width:100%; min-width:620px; font-size:12px; text-align:left; }
+.recordScroll th { font-weight:400; color:var(--text-subtle); font-size:11px; }
+.recordScroll :is(th,td) { padding:10px 12px; border-bottom:1px solid var(--border); max-width:360px; overflow-wrap:anywhere; }
+.recordScroll :is(th,td):first-child { padding-left:0; }
+.recordLink { display:flex; align-items:center; gap:8px; text-align:left; cursor:pointer; font-weight:500; }
+.recordLink:hover { color:var(--primary); }
+.recordLink:focus-visible { outline:2px solid var(--ring); outline-offset:4px; }
+.readNotice { margin:16px 0; font-size:12px; color:var(--text-subtle); line-height:1.7; }
+.recordDetail { margin-top:20px; padding-top:16px; border-top:1px solid var(--border); font-size:12px; }
+.recordDetail header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.recordDetail h3 { font-size:14px; font-weight:600; }
+.recordDetail dl { margin:16px 0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.recordDetail dt { color:var(--text-subtle); margin-bottom:5px; }
+.recordDetail dd { white-space:pre-wrap; overflow-wrap:anywhere; }
+@media(max-width:640px) { .recordToolbar >label { flex-basis:100%; } .recordDetail dl { grid-template-columns:minmax(0,1fr); } .recordToolbar :is(input,select) { min-height:40px; } }

@@ -101,7 +101,8 @@ test("four groups retain per-card blocking, real source facts and actual externa
     if (queue === "external") { value.kind = "external_handoff"; value.id = `${value.kind}:${value.source.id}`; value.source.epoch = 3; value.responsibility = "original_owner"; value.details = { coverage_count: 3, sent_state: "succeeded", accepted_state: "unknown", effective_state: "not_recorded", command_body: "不可泄露的原始内容" }; value.blocked = { code: "DELIVERY_UNKNOWN", message: "当前外部接收结果未知" }; value.valid_until = "2030-10-18T12:00:00Z"; }
     env.respond(env.pending(`queue=${queue}`), page(queue, [value]));
   }
-  await env.flush(); const html = env.html();
+  await env.flush(); let html = env.html();
+  for (const name of ["要我接收", "要我验证", "等外部回复"]) { await click(env, `${name}`); html += env.html(); }
   for (const expected of ["要我决定", "要我接收", "要我验证", "等外部回复", "当前责任人", "本人关系", "具名接收人", "来源版本 v2", "当前水位 3", "当前办理授权有效至", "原移交负责人", "待补范围 3 项", "已成功", "结果未知", "未登记", "DELIVERY_UNKNOWN", "查看原项目"]) assert.ok(html.includes(expected), expected);
-  assert.equal((html.match(/aria-label=/g) ?? []).length, 4); assert.doesNotMatch(html, /不可泄露的原始内容|可审批|批准通过|独立阻塞队列/); assert.ok(env.calls.every(call => call.body === undefined));
+  assert.ok(html.includes("待办类型")); assert.doesNotMatch(html, /不可泄露的原始内容|可审批|批准通过|独立阻塞队列/); assert.ok(env.calls.every(call => call.body === undefined));
 });

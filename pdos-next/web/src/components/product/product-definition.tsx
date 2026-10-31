@@ -10,7 +10,7 @@ import { DefinitionDraftActions } from "./definition-draft-actions";
 import { ReadingPanel, ReadingRecord } from "./reading";
 
 type Product = { id: string; name: string; purpose: string; revision: number };
-type Props = { product: Product; principalId: string; sources: DefinitionSource[]; api: DefinitionApi; onSaved: () => void | Promise<void>; onAccessDenied?: () => void };
+type Props = { compact?: boolean; product: Product; principalId: string; sources: DefinitionSource[]; api: DefinitionApi; onSaved: () => void | Promise<void>; onAccessDenied?: () => void };
 type Pending = { command_id: string; idempotency_key: string; operation: "product.definition.draft"; product_id: string; expected_revision: number; source_read_set: { artifact_id: string; expected_revision: number }[]; payload: DefinitionPayload };
 type LocalDraft = { payload: DefinitionPayload; pending: Pending | null };
 const listFields = [ ["use_cases", "使用场景"], ["requirements", "要求"], ["constraints", "成本 / 市场 / 专业约束"], ["unknowns", "仍待确认的事项"], ["exclusions", "本轮排除范围"] ] as const;
@@ -72,7 +72,7 @@ export function ProductDefinition(props: Props) {
   return <DefinitionPanel key={`${props.principalId}:${props.product.id}`} {...props}/>;
 }
 
-function DefinitionPanel({ product, principalId, sources, api, onSaved, onAccessDenied }: Props) {
+function DefinitionPanel({ compact = false, product, principalId, sources, api, onSaved, onAccessDenied }: Props) {
   const storageKey = `pdos-next:definition:${principalId}:${product.id}`;
   const [items, setItems] = useState<DefinitionRevision[]>([]);
   const [payload, setPayload] = useState(() => emptyPayload(product));
@@ -236,8 +236,8 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved, onAccess
           <details><summary className="cursor-pointer text-sm font-medium"><FileText className="mr-1 inline-block size-4"/>原文依据与版本</summary><ul className="mt-3 space-y-3">{item.sources.map(ref => <li key={referenceKey(ref)} className="min-w-0 border-l-2 border-border pl-3"><p className="subtle">{ref.title} · v{ref.expected_revision} · 第{ref.line}行 · {ref.status === "active" ? "当前来源有效" : "来源待重核"}</p><blockquote className="mt-1 break-words text-sm">{ref.quote}</blockquote></li>)}</ul></details>
           <p className="subtle break-words">本版原因：{item.change_reason}{item.parent_definition_id ? " · 固定前一草稿，历史未覆盖" : " · 首版"}</p>
           {item.differences.length > 0 && <details><summary className="cursor-pointer text-sm font-medium">与固定父版的变化 · {item.differences.length}处</summary><div className="mt-3 space-y-3">{item.differences.map(change => <div key={change.path} className="min-w-0 rounded-lg border border-border p-3"><p className="mb-2 text-sm font-medium">{pathLabels[change.path] ?? `规格 ${change.path.replace("specs/", "")}`}</p><div className="grid gap-3 sm:grid-cols-2"><div><p className="subtle">前版</p><div className="break-words whitespace-pre-wrap text-sm">{changeValue(change.before)}</div></div><div><p className="subtle">此版</p><div className="break-words whitespace-pre-wrap text-sm">{change.after == null ? "从新版本移除，前版保留" : changeValue(change.after)}</div></div></div></div>)}</div></details>}
-          <DefinitionDraftActions definition={item} product={product} principalId={principalId} sources={sources}
-            api={api} onSaved={definitionSaved} isLatest={isLatestDefinition(item, items)} onAccessDenied={clearPrivate}/>
+          {compact ? <details className="border-t border-border pt-3"><summary className="cursor-pointer text-xs font-medium">维护定义与条目</summary><div className="mt-3"><DefinitionDraftActions definition={item} product={product} principalId={principalId} sources={sources} api={api} onSaved={definitionSaved} isLatest={isLatestDefinition(item, items)} onAccessDenied={clearPrivate}/></div></details> : <DefinitionDraftActions definition={item} product={product} principalId={principalId} sources={sources}
+            api={api} onSaved={definitionSaved} isLatest={isLatestDefinition(item, items)} onAccessDenied={clearPrivate}/>}
         </ReadingRecord>)}</div>}
         {hasMore && <p className="subtle mt-4">显示最近100个可见版本，历史仍保留。</p>}
       </ReadingPanel>

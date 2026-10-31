@@ -8,11 +8,9 @@ import styles from "./project-activity.module.css";
 
 const person = (value: { id: string; name: string | null }) => value.name ? `${value.name} · ${value.id}` : value.id;
 function Moment({ value }: { value: string }) { return <time dateTime={value}>{value}</time>; }
-function Activity({ item, scope, onOpenRun }: { item: ProjectActivityItem; scope: WorkScope; onOpenRun?: (id: string) => void }) {
+function Activity({ item, scope, onOpenRun, compact = false }: { item: ProjectActivityItem; scope: WorkScope; onOpenRun?: (id: string) => void; compact?: boolean }) {
   const runEvent = item.record_kind === "run_event";
-  return <li className={styles.item}>
-    <div className={styles.line}><span className={styles.badge}>{runEvent ? "本人项目运行" : item.actor.kind === "ai" ? <><Sparkle size={13} aria-hidden="true"/>小Pai 实际操作</> : item.actor.kind === "human" ? "具名操作" : "已登记操作"}</span><span className={styles.clock}><Clock size={13} aria-hidden="true"/>记录于 <Moment value={item.recorded_at}/></span></div>
-    <h3>{item.summary}</h3>
+  const detail = <>
     {item.subject.title && item.subject.title !== item.summary && <p className={styles.title}>{item.subject.title}</p>}
     <dl className={styles.facts}>
       <dt>{runEvent ? "绑定执行身份" : "执行人"}</dt><dd>{person(item.actor)}</dd><dt>请求人</dt><dd>{person(item.requester)}</dd>
@@ -25,15 +23,23 @@ function Activity({ item, scope, onOpenRun }: { item: ProjectActivityItem; scope
       {item.task_refs.length > 0 && <ul aria-label="固定任务版本">{item.task_refs.map(ref => <li key={`${ref.id}:${ref.revision}`}>任务 {ref.id} · v{ref.revision}</li>)}</ul>}
       {item.sources.length > 0 ? <ul aria-label="来源引用">{item.sources.map((source, index) => <li key={`${source.kind}:${source.id}:${source.revision}:${index}`}>{source.kind} · {source.id} · v{source.revision}{source.position !== undefined && <> · {source.position}</>}</li>)}</ul> : <p>本条未登记原文引用。</p>}
     </details>
-    <div className={styles.actions}>{item.link && <a href={projectActivityHref(scope, item.link.view)}>{item.link.label}<ArrowRight size={14} aria-hidden="true"/></a>}{item.run_id && (onOpenRun ? <Button variant="outline" onClick={() => onOpenRun(item.run_id!)}>打开本次小Pai运行</Button> : <span className={styles.run}>运行 {item.run_id}</span>)}</div>
+    <div className={styles.actions}>{item.link && <a href={projectActivityHref(scope, item.link.view)}>{item.link.label}<ArrowRight size={14} aria-hidden="true"/></a>}{item.run_id && (onOpenRun ? <Button variant="outline" onClick={() => onOpenRun(item.run_id!)}>查看当时讨论与结果</Button> : <span className={styles.run}>运行 {item.run_id}</span>)}</div>
+  </>;
+  if (compact) return <li className={styles.compactItem}><details>
+    <summary className={styles.compactSummary}><span className={styles.actorMark} aria-hidden="true">{item.actor.kind === "ai" ? <Sparkle size={13}/> : (item.actor.name ?? "?").slice(0, 1)}</span><span className={styles.compactText}><span className={styles.actorName}>{item.actor.name ?? "身份待核对"}</span><span>{item.summary}</span></span><time dateTime={item.recorded_at} title={`记录于 ${item.recorded_at}`}>{new Date(item.recorded_at).toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}</time></summary>
+    <div className={styles.expanded}><p className={styles.note}>记录于 <Moment value={item.recorded_at}/></p>{detail}</div>
+  </details></li>;
+  return <li className={styles.item}>
+    <div className={styles.line}><span className={styles.badge}>{runEvent ? "本人项目运行" : item.actor.kind === "ai" ? <><Sparkle size={13} aria-hidden="true"/>小Pai 实际操作</> : item.actor.kind === "human" ? "具名操作" : "已登记操作"}</span><span className={styles.clock}><Clock size={13} aria-hidden="true"/>记录于 <Moment value={item.recorded_at}/></span></div>
+    <h3>{item.summary}</h3>{detail}
   </li>;
 }
-export function ProjectActivity({ api, scope, readVersion = 0, onOpenRun }: { api: ProjectWorkApi; scope: WorkScope; readVersion?: number; onOpenRun?: (id: string) => void }) {
+export function ProjectActivity({ api, scope, readVersion = 0, onOpenRun, compact = false }: { api: ProjectWorkApi; scope: WorkScope; readVersion?: number; onOpenRun?: (id: string) => void; compact?: boolean }) {
   const state = useProjectActivity(api, scope, readVersion);
-  return <section className={styles.root} aria-label="项目动态" aria-busy={state.status === "loading" || state.loadingMore}>
-    <header className={styles.heading}><div><h2>项目动态</h2><p>本项目的实际业务记录、具名回执，以及本人绑定本项目的小Pai运行。</p></div><Button variant="outline" onClick={state.refresh}><ArrowClockwise size={14} aria-hidden="true"/>刷新动态</Button></header>
+  return <section className={`${styles.root} ${compact ? styles.compact : ""}`} aria-label="项目动态" aria-busy={state.status === "loading" || state.loadingMore}>
+    <header className={styles.heading}><div><h2>项目动态</h2>{!compact && <p>本项目的实际业务记录、具名回执，以及本人绑定本项目的小Pai运行。</p>}</div><Button size={compact ? "xs" : "default"} variant={compact ? "ghost" : "outline"} onClick={state.refresh}><ArrowClockwise size={14} aria-hidden="true"/>刷新动态</Button></header>
     {state.status === "loading" && <p className={styles.notice} role="status">正在读取项目动态…</p>}
     {state.status === "error" && <p className={styles.error} role="alert">项目动态读取失败：{state.error}</p>}
-    {state.status === "ready" && state.page && <><p className={styles.note}>读取时点 <Moment value={state.page.as_of}/> · {state.page.project.name} v{state.page.project.revision}</p>{state.page.items.length === 0 ? <p className={styles.notice}>当前权限下尚无可读的项目活动。</p> : <ol className={styles.list}>{state.page.items.map(item => <Activity key={item.id} item={item} scope={scope} onOpenRun={onOpenRun}/>)}</ol>}{state.moreError && <p className={styles.error} role="alert">加载更多失败：{state.moreError}</p>}{state.page.next_cursor && <div><Button variant="outline" disabled={state.loadingMore} onClick={() => void state.loadMore()}>{state.loadingMore ? "正在加载…" : state.moreError ? "重试加载更多" : "加载更多动态"}</Button></div>}</>}
+    {state.status === "ready" && state.page && <>{!compact && <p className={styles.note}>读取时点 <Moment value={state.page.as_of}/> · {state.page.project.name} v{state.page.project.revision}</p>}{state.page.items.length === 0 ? <p className={styles.notice}>当前权限下尚无可读的项目活动。</p> : <ol className={styles.list}>{state.page.items.map(item => <Activity key={item.id} item={item} scope={scope} onOpenRun={onOpenRun} compact={compact}/>)}</ol>}{state.moreError && <p className={styles.error} role="alert">加载更多失败：{state.moreError}</p>}{state.page.next_cursor && <div><Button size={compact ? "xs" : "default"} variant={compact ? "ghost" : "outline"} disabled={state.loadingMore} onClick={() => void state.loadMore()}>{state.loadingMore ? "正在加载…" : state.moreError ? "重试加载更多" : "加载更多动态"}</Button></div>}{compact && <details className={styles.readDetails}><summary>记录范围与读取时点</summary><p>本项目的实际业务记录、具名回执，以及本人绑定本项目的小Pai运行。</p><p>读取时点 <Moment value={state.page.as_of}/> · {state.page.project.name} v{state.page.project.revision}</p></details>}</>}
   </section>;
 }

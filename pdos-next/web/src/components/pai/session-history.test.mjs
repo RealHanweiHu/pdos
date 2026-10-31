@@ -75,13 +75,13 @@ function elements(tree, predicate) {
   if (Array.isArray(tree)) return tree.flatMap(item => elements(item, predicate));
   return [...(predicate(tree) ? [tree] : []), ...elements(tree.props?.children, predicate)];
 }
-const text = tree => !tree || typeof tree === "boolean" ? "" : typeof tree !== "object" ? String(tree) : Array.isArray(tree) ? tree.map(text).join("") : text(tree.props?.children);
-function component(initial) {
+const text = tree => !tree || typeof tree === "boolean" ? "" : typeof tree !== "object" ? String(tree) : Array.isArray(tree) ? tree.map(text).join("") : ["PaiResponse", "PaiHiddenResponse", "PaiGoal"].includes(tree.type?.name) ? text(tree.type(tree.props)) : text(tree.props?.children);
+function component(initial, Root = SessionHistory) {
   let props = { principalId: principal, scope, onClearSelection() {}, onSelectRun() {}, ...initial };
   const levels = [];
   function render(next) {
     if (next) props = { ...props, ...next };
-    let call = SessionHistory, input = props, depth = 0;
+    let call = Root, input = props, depth = 0;
     try { for (;;) {
       const key = input.__key ?? "root";
       if (!levels[depth] || levels[depth].key !== key) {
@@ -90,20 +90,20 @@ function component(initial) {
       }
       hooks = levels[depth]; hooks.index = 0; hooks.effects = [];
       const tree = call(input);
-      if (!tree || typeof tree.type !== "function" || !/HistoryIdentity|HistoryPages/.test(tree.type.name)) return tree;
+      if (!tree || typeof tree.type !== "function" || !/^(HistoryIdentity|HistoryPages|History)$/.test(tree.type.name)) return tree;
       call = tree.type; input = { ...tree.props, __key: tree.key }; depth++;
     } } finally { hooks = null; }
   }
   function effects() { levels.forEach(state => { const scheduled = state.effects; state.effects = []; scheduled.forEach(effect => effect()); }); }
   return { render, unmount() { levels.forEach(state => state?.values.forEach(value => value?.cleanup?.())); levels.length = 0; }, async flush() { render(); effects(); await tick(); const tree = render(); effects(); return tree; }, effects };
 }
-const namedButton = (c, label) => elements(c.render(), e => e.props?.onClick && text(e) === label)[0];
+const namedButton = (c, label) => elements(c.render(), e => e.props?.onClick && (text(e) === label || e.props?.["aria-label"] === label))[0];
 async function click(c, label) { const target = namedButton(c, label); assert.ok(target, label); target.props.onClick(); return c.flush(); }
 const sessionButton = (c, index = 0) => elements(c.render(), e => e.type === "button" && e.props.className === "session")[index];
 const runButton = c => elements(c.render(), e => e.type === "button" && e.props.className === "run")[0];
 const search = c => elements(c.render(), e => e.type === "input" && e.props.type === "search")[0];
 
-test("opening and two explicit selections only read GET metadata; original goals, readable counts and identities stay distinct", async () => {
+test("title-only history opens the latest run with one selection and read GET metadata without changing original goals or identities", async () => {
   const calls = [], selected = []; let cleared = 0;
   const api = async (path, body) => { calls.push({ path, body }); return path.includes("/runs?") ? runs() : list(); };
   const c = component({ api, onClearSelection() { cleared++; }, onSelectRun(...value) { selected.push(value); }, currentSessionId: sid, currentRunId: runId });
@@ -111,13 +111,46 @@ test("opening and two explicit selections only read GET metadata; original goals
   assert.equal(calls.length, 0); await c.flush();
   assert.equal(calls.length, 1); assert.ok(calls[0].path.startsWith(`v1/categories/${category}/agent-conversations?`));
   assert.equal(new URLSearchParams(calls[0].path.split("?")[1]).get("proposal_id"), proposal);
-  assert.match(text(c.render()), /最新原目标核对原目标1 项可读工作/);
+  assert.equal(text(sessionButton(c)), "核对原目标");
   assert.equal(selected.length, 0); assert.equal(runButton(c), undefined);
-  const card = sessionButton(c); assert.ok(card.props.title.includes(sid)); assert.ok(!text(card).includes(sid));
-  card.props.onClick(); await c.flush(); assert.equal(calls.length, 2); assert.equal(selected.length, 0); assert.equal(cleared, 1);
+  const card = sessionButton(c); assert.equal(card.props.title, "核对原目标"); assert.ok(!text(card).includes(sid));
+  card.props.onClick(); await c.flush(); assert.equal(calls.length, 2); assert.equal(selected.length, 1); assert.equal(cleared, 1);
   assert.equal(text(runButton(c)).includes(runId), false); assert.ok(text(c.render()).includes(runId)); // collapsed identity details retain the exact original record.
-  runButton(c).props.onClick(); assert.deepEqual(selected, [[runId, sid]]);
+  runButton(c).props.onClick(); assert.deepEqual(selected, [[runId, sid], [runId, sid]]);
   assert.ok(calls.every(call => call.body === undefined)); assert.ok(!calls.some(call => /agent-runs|commands/.test(call.path)));
+});
+
+test("hidden history keeps a goal-only selection and labels its actual record clock", async () => {
+ const selected = [], hidden = { ...head(), status: "hidden", created_at: null, recorded_at: time,
+  reverted: null, history_hidden: true, hidden_message: "原回答所依据的资料已不可读，保留你的原话。" };
+ const raw = runs(sid, [hidden]); raw.items[0].conversation.links_unavailable = true;
+ const c = component({ api: async path => path.includes("/runs?") ? raw : list([item(sid, hidden)]), onSelectRun: (...args) => selected.push(args) });
+ await c.flush(); sessionButton(c).props.onClick(); await c.flush();
+ assert.deepEqual(selected, [[runId, sid]]);
+ assert.ok(text(c.render()).includes("核对原目标")); assert.ok(text(c.render()).includes("原回答已隐藏"));
+ assert.ok(text(c.render()).includes("记录时间：")); assert.ok(text(c.render()).includes(hidden.hidden_message));
+ assert.equal(elements(c.render(), e => e.type === "time")[0].props.dateTime, time);
+ assert.equal(elements(c.render(), e => e.props?.onClick && /继续|撤回|成果|事件/.test(text(e))).length, 0);
+ c.unmount();
+});
+
+test("project history carries actual project through list and Run reads and clears earlier project content", async () => {
+  const calls = [], selected = [], project = uuid(500), other = uuid(501);
+  const api = async (path, body) => {
+    calls.push({ path, body }); const bound = new URLSearchParams(path.split("?")[1]).get("project_id");
+    assert.ok([project, other].includes(bound));
+    const result = path.includes("/runs?") ? runs() : list([item(sid, head(runId, bound === project ? "当前项目讨论" : "另一项目讨论"))]);
+    result.scope.project_id = bound;
+    if (result.session) result.session.scope.project_id = bound; else result.items.forEach(row => { row.scope.project_id = bound; });
+    return result;
+  };
+  const c = component({ api, scope: { ...scope, projectId: project }, onSelectRun: (...args) => selected.push(args) });
+  await c.flush(); assert.equal(text(sessionButton(c)), "当前项目讨论");
+  sessionButton(c).props.onClick(); await c.flush(); assert.deepEqual(selected, [[runId, sid]]);
+  assert.ok(calls.some(call => call.path.includes("/runs?") && call.path.includes(`project_id=${project}`)));
+  assert.ok(!text(c.render({ scope: { ...scope, projectId: other } })).includes("当前项目讨论"));
+  c.effects(); await c.flush(); assert.equal(text(sessionButton(c)), "另一项目讨论");
+  assert.ok(calls.every(call => call.body === undefined)); c.unmount();
 });
 
 test("server search includes historic matched_run; Unicode limit counts characters and old search replies stay hidden", async () => {
@@ -132,12 +165,20 @@ test("server search includes historic matched_run; Unicode limit counts characte
   await c.flush(); search(c).props.onChange({ target: { value: "旧搜索" } }); await c.flush();
   assert.equal(sessionButton(c), undefined);
   search(c).props.onChange({ target: { value: "😀".repeat(160) } }); await c.flush();
-  assert.match(text(c.render()), /命中原目标：历史原目标（历史工作）/);
+  assert.equal(text(sessionButton(c)), "核对原目标"); // Search matches remain server-side; the compact row displays only its title.
   assert.equal([...new URLSearchParams(calls.at(-1).split("?")[1]).get("q")].length, 160);
   assert.equal(search(c).props.maxLength, undefined);
   late(list([item(sid, head(runId, "不能回来"))])); await tick(); assert.ok(!text(c.render()).includes("不能回来"));
   const count = calls.length; search(c).props.onChange({ target: { value: "😀".repeat(161) } }); await c.flush();
   assert.equal(calls.length, count); assert.match(text(c.render()), /最多 160 个字符/); assert.equal(sessionButton(c), undefined);
+});
+
+test("permission denial invokes private cleanup; unavailable reads keep ordinary recovery", async () => {
+  let denied = 0, cleared = 0;
+  const c = component({ api: async () => { throw Object.assign(Error("denied"), { status: 403 }); }, onPermissionDenied() { denied++; }, onClearSelection() { cleared++; } });
+  await c.flush(); assert.equal(denied, 1); assert.equal(cleared, 0);
+  const unavailable = component({ api: async () => { throw Object.assign(Error("offline"), { status: 503 }); }, onPermissionDenied() { denied++; }, onClearSelection() { cleared++; } });
+  await unavailable.flush(); assert.equal(denied, 1); assert.equal(cleared, 1);
 });
 
 test("permission or protocol failure in Session runs hides the old goals; explicit 503 retains only verified list metadata", async () => {
@@ -213,17 +254,33 @@ test("rename, reset, pin, archive and restore use exact server revisions and rer
     const view = new URLSearchParams(path.split("?")[1]).get("view"); return list(p.archived === (view === "archived") ? [item(sid, head(), p)] : []);
   };
   const c = component({ api }); await c.flush(); await rename(c, "  我的名称  "); await c.flush();
-  assert.match(text(sessionButton(c)), /会话名称我的名称最新原目标：核对原目标/);
+  assert.match(text(sessionButton(c)), /^我的名称$/);
   assert.deepEqual(Object.keys(calls.find(x => x.body).body).sort(), ["action", "expected_revision", "request_key", "title"]);
   assert.equal(calls.find(x => x.body).body.title, "我的名称"); assert.equal(calls.find(x => x.body).body.expected_revision, 0);
-  await click(c, "重命名"); await click(c, "恢复原目标名称"); await c.flush(); assert.match(text(sessionButton(c)), /最新原目标核对原目标/);
-  await click(c, "置顶"); await c.flush(); assert.match(text(sessionButton(c)), /已置顶/);
-  await click(c, "取消置顶"); await c.flush(); assert.ok(!text(sessionButton(c)).includes("已置顶"));
+  await click(c, "重命名"); await click(c, "恢复原目标名称"); await c.flush(); assert.match(text(sessionButton(c)), /^核对原目标$/);
+  await click(c, "置顶"); await c.flush(); assert.match(text(sessionButton(c)), /^· /); assert.ok(namedButton(c, "取消置顶"));
+  await click(c, "取消置顶"); await c.flush(); assert.equal(text(sessionButton(c)), "核对原目标");
   await click(c, "归档"); await c.flush(); assert.equal(sessionButton(c), undefined);
   await click(c, "已归档"); assert.ok(sessionButton(c)); await click(c, "恢复会话"); await c.flush(); assert.equal(sessionButton(c), undefined);
-  await click(c, "未归档"); assert.ok(sessionButton(c));
+  await click(c, "最近"); assert.ok(sessionButton(c));
   assert.deepEqual(calls.filter(x => x.body).map(x => x.body.expected_revision), [0, 1, 2, 3, 4, 5]);
   assert.ok(calls.every(x => !/delete|cancel|agent-runs|commands/.test(x.path))); assert.ok(calls.filter(x => x.body).every(x => new URLSearchParams(x.path.split("?")[1]).get("proposal_id") === proposal));
+});
+
+test("search and presentation management retain the current conversation; explicit selection changes it", async () => {
+  let cleared = 0, p = presentation();
+  const api = async (path, body) => {
+    if (body) { const result = receipt(body, { ...p, title: body.action === "rename" ? body.title : p.title, pinned: body.action === "pin" }); p = result.presentation; return result; }
+    if (path.includes("/runs?")) return runs();
+    const q = new URLSearchParams(path.split("?")[1]).get("q");
+    return list([{ ...item(sid, head(), p), matched_run: q ? { ...head(), match_kind: "goal" } : null }]);
+  };
+  const c = component({ api, currentSessionId: sid, currentRunId: runId, onClearSelection() { cleared++; } });
+  await c.flush();
+  search(c).props.onChange({ target: { value: "核对" } }); await c.flush(); assert.equal(cleared, 0, text(c.render()));
+  await rename(c, "保留当前会话"); await c.flush(); assert.equal(cleared, 0);
+  await click(c, "置顶"); await c.flush(); assert.equal(cleared, 0);
+  sessionButton(c).props.onClick(); await c.flush(); assert.equal(cleared, 1);
 });
 
 test("unknown write survives same-identity refresh; read recovery never resubmits and explicit retry preserves exact original body", async () => {
@@ -239,7 +296,7 @@ test("unknown write survives same-identity refresh; read recovery never resubmit
   await click(c, "刷新会话"); assert.ok(namedButton(c, "查询原请求回执")); assert.equal(nameInput(c), undefined); assert.equal(calls.filter(x => x.body).length, 1);
   await click(c, "查询原请求回执"); assert.equal(calls.filter(x => x.body).length, 1); assert.ok(calls.at(-1).path.includes(`/requests/${saved.request_key}?`));
   assert.match(text(c.render()), /尚未查到原请求回执/); await click(c, "重试原请求"); await c.flush(); assert.equal(calls.filter(x => x.body).length, 2);
-  assert.equal(namedButton(c, "查询原请求回执"), undefined); assert.match(text(sessionButton(c)), /最新原目标核对原目标/); // receipt never overwrites server Current.
+  assert.equal(namedButton(c, "查询原请求回执"), undefined); assert.match(text(sessionButton(c)), /^核对原目标$/); // receipt never overwrites server Current.
 });
 
 test("original receipt recovery is read-only and refreshes actual Current, even if Current has a newer name", async () => {
@@ -266,7 +323,7 @@ test("409 clears mutation pointer and only refreshes; failed scope reads hide ca
 
 test("refresh and identity transitions discard late mutation receipts, original request state and editor by the appropriate boundary", async () => {
   let complete, body, reads = 0;
-  const api = async (path, value) => { if (value) { body = value; return new Promise(resolve => { complete = resolve; }); } reads++; return list(); };
+  const api = async (path, value) => { if (value) { body = value; return new Promise(resolve => { complete = resolve; }); } reads++; const response = list(), project = new URLSearchParams(path.split("?")[1]).get("project_id"); if (project) { response.scope.project_id = project; response.items.forEach(row => { row.scope.project_id = project; }); } return response; };
   const c = component({ api }); await c.flush(); await rename(c, "迟到名称"); await click(c, "刷新会话");
   assert.ok(namedButton(c, "查询原请求回执")); const prior = reads; complete(receipt(body)); await tick(); await c.flush();
   assert.equal(reads, prior); assert.ok(namedButton(c, "查询原请求回执"));
@@ -291,4 +348,39 @@ test("a late read recovery after refresh cannot apply its receipt or clear the r
   const api = async (path, body) => { if (body) { original = body; throw Object.assign(Error("结果未知"), { status: 503 }); } if (path.includes("/requests/")) return new Promise(resolve => { finish = resolve; }); reads++; return list(); };
   const c = component({ api }); await c.flush(); await click(c, "置顶"); await click(c, "查询原请求回执"); await click(c, "刷新会话");
   const prior = reads; finish(receipt(original)); await tick(); await c.flush(); assert.equal(reads, prior); assert.ok(namedButton(c, "查询原请求回执")); assert.ok(text(c.render()).includes(original.request_key));
+});
+
+const { ConversationHistory } = load(path.join(directory, "conversation-history.tsx"));
+test("hidden HTTP history shows the original goal and record time without result or action readers", async () => {
+ const hidden = { run_id: runId, session_id: sid, goal: "原始委派保留", status: "hidden", history_hidden: true,
+  hidden_reason: "source_unavailable", hidden_message: "原回答所依据的资料已不可读，保留你的原话。",
+  error_code: null, created_at: null, recorded_at: time, result: null, versions: {}, product_id: null, project_id: null,
+  proposal_id: null, session_proposal_id: null, conversation: { previous_run_id: null, next_run_id: null, links_unavailable: true },
+  reconciliation: null, process: null, reverted: null, reverted_at: null, reverted_by: null, revert_receipt_id: null, cancel_epoch: null };
+ const calls = []; let materials = 0;
+ const c = component({ api: async (...args) => { calls.push(args); return hidden; }, root: "v1/personal/agent-runs", sessionId: sid,
+  previousRunId: runId, onOpen() { throw Error("Hidden history cannot open results"); }, onUnavailable() {},
+  renderMaterials() { materials++; return "Hidden material"; } }, ConversationHistory);
+ await c.flush(); assert.equal(calls.length, 1); assert.equal(calls[0].length, 1);
+ assert.ok(text(c.render()).includes(hidden.goal)); assert.ok(text(c.render()).includes("记录时间："));
+ assert.ok(text(c.render()).includes(hidden.hidden_message)); assert.equal(materials, 0);
+ assert.equal(elements(c.render(), e => typeof e.props?.onClick === "function").length, 0);
+ assert.equal(elements(c.render(), e => ["RunProcess", "ResearchResult", "PaiReplyDetails"].includes(e.type?.name)).length, 0);
+ c.unmount();
+});
+test("conversation history follows server-owned previous links in chronological display order, without writes", async () => {
+ const calls = [], opened = [];
+ const api = async (path, body) => { calls.push({path,body}); const id=path.split('/').at(-1); return {run_id:id,session_id:sid,goal:`Goal ${id}`,status:'completed',reverted:false,conversation:{previous_run_id:id==='turn2'?'turn1':null},result:{summary:`Result ${id}`}}; };
+ const c=component({api,root:'v1/agent-runs',sessionId:sid,previousRunId:'turn2',onOpen:id=>opened.push(id),onUnavailable(){}},ConversationHistory);
+ await c.flush(); const result=text(c.render());
+ assert.ok(result.indexOf('Result turn1')<result.indexOf('Result turn2'));assert.equal(calls.length,2);assert.ok(calls.every(call=>call.body===undefined));
+ await click(c,'查看本轮成果与记录');assert.deepEqual(opened,['turn1']);c.unmount();
+});
+test("conversation changes hide a late old chain and a revoked source clears already loaded messages",async()=>{
+ let late, denied=0;
+ const api=async path=>path.endsWith('old')?new Promise(resolve=>{late=resolve;}):Promise.reject(Object.assign(new Error('Revoked'),{status:403}));
+ const c=component({api,root:'v1/agent-runs',sessionId:sid,previousRunId:'old',onOpen(){},onUnavailable(){denied++;}},ConversationHistory);
+ await c.flush();c.render({previousRunId:'new'});c.effects();await c.flush();
+ late({run_id:'old',session_id:sid,goal:'Hidden',status:'completed',conversation:{previous_run_id:null},result:{summary:'Private old result'}});await c.flush();
+ assert.ok(!text(c.render()).includes('Private old result'));assert.equal(denied,1);c.unmount();
 });

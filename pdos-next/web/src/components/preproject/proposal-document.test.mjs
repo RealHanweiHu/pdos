@@ -99,7 +99,8 @@ function component(props) {
   };
 }
 function environment(t, props = { categoryId: "category-a", proposalId: "proposal-a" }) {
-  const saved = { fetch: globalThis.fetch, window: globalThis.window, document: globalThis.document };
+  const saved = { fetch: globalThis.fetch, window: globalThis.window, document: globalThis.document, localStorage: globalThis.localStorage };
+  const store = new Map(); globalThis.localStorage = { getItem: key => store.get(key) ?? null, setItem: (key, value) => store.set(key, value), removeItem: key => store.delete(key) };
   const calls = [], windowEvents = new EventTarget(), documentEvents = new EventTarget();
   documentEvents.visibilityState = "visible";
   globalThis.window = windowEvents; globalThis.document = documentEvents;
@@ -108,10 +109,10 @@ function environment(t, props = { categoryId: "category-a", proposalId: "proposa
   t.after(() => { mounted.unmount(); Object.assign(globalThis, saved); });
   function respond(call, value, status = 200) {
     assert.ok(call, "Expected an actual pending request"); call.done = true;
-    call.resolve({ ok: status >= 200 && status < 300, json: async () => value });
+    call.resolve({ ok: status >= 200 && status < 300, status, json: async () => value });
   }
   const pending = predicate => calls.find(call => !call.done && predicate(call));
-  return { ...mounted, calls, respond, pending, windowEvents, documentEvents };
+  return { ...mounted, calls, respond, pending, windowEvents, documentEvents, store };
 }
 function proposal({ id = "proposal-a", frozen = false } = {}) {
   const items = [{ item_id: "section-one", version: 1, kind: "section", content: { key: "worth_it", text: "Synthetic document text" }, source_refs: [], origin: "human" }];
@@ -144,8 +145,8 @@ async function ready(env, doc = proposal(), actor = "owner") {
   await env.flush(); return doc;
 }
 async function click(env, label) {
-  const button = elements(env.tree(), element => element.props?.children === label && element.props?.onClick)[0];
-  assert.ok(button, label); button.props.onClick(); await env.flush();
+  const button = elements(env.tree(), element => (element.props?.children === label || element.props?.["aria-label"] === label) && element.props?.onClick)[0];
+  assert.ok(button, label); button.props.onClick({ currentTarget: { closest: () => null } }); await env.flush();
 }
 const view = env => elements(env.tree(), element => element.type === ProposalViews)[0];
 
@@ -185,7 +186,7 @@ test("a late view response cannot replace a newer selected view", async t => {
 test("same frozen identity refresh hides old sources and fetches fresh redaction", async t => {
   const env = environment(t), doc = proposal({ frozen: true }); await ready(env, doc, "reviewer");
   assert.ok(env.html().includes("VISIBLE_SOURCE"));
-  await click(env, "刷新文档与视图");
+  await click(env, "刷新提案");
   assert.equal(env.html().includes("VISIBLE_SOURCE"), false);
   await loadDocument(env, doc, "reviewer");
   const fresh = env.pending(call => !call.options.signal.aborted && call.url.includes("/views/"));
@@ -284,9 +285,9 @@ test("foreground refresh is read-only, hidden pages do not refresh, and cleanup 
 
 test("superseded same-scope reload cannot replace a newer source projection", async t => {
   const env = environment(t), doc = await ready(env);
-  await click(env, "刷新文档与视图");
+  await click(env, "刷新提案");
   const oldReads = env.calls.filter(call => !call.done);
-  await click(env, "刷新文档与视图");
+  await click(env, "刷新提案");
   assert.ok(oldReads.every(call => call.options.signal.aborted));
   await loadDocument(env, doc);
   env.respond(env.pending(call => !call.options.signal.aborted && call.url.includes("/views/")), response(doc, "spec-benchmark", null)); await env.flush();
@@ -339,12 +340,12 @@ test("document chips switch only returned item groups and never submit a domain 
   );
   await ready(env, doc, "reviewer");
   const chips = () => elements(env.tree(), item => item.props?.["aria-label"] === "提案文档视图")[0];
-  assert.equal(elements(chips(), item => item.type === "button").length, 8);
+  assert.equal(elements(chips(), item => item.type === "button").length, 10);
   assert.equal(env.html().includes("RETURNED_RISK"), false);
-  elements(chips(), item => item.type === "button" && item.props.children[0] === "风险")[0].props.onClick(); await env.flush();
+  await click(env, "风险");
   const content = renderToStaticMarkup(elements(env.tree(), item => item.props?.className === "documentContent")[0]);
   assert.ok(content.includes("RETURNED_RISK")); assert.equal(content.includes("RETURNED_OPTION"), false);
-  elements(chips(), item => item.type === "button" && item.props.children[0] === "用户声音")[0].props.onClick(); await env.flush();
+  await click(env, "用户声音");
   const voices = elements(env.tree(), item => item.type === ProposalVoices)[0];
   assert.ok(voices);
   assert.equal(voices.props.categoryId, "category-a");
@@ -362,7 +363,7 @@ test("key specification table preserves decimal bounds, false, unknowns and retu
     { item_id: "unknown", version: 1, kind: "spec", content: { parameter: "温升", value_type: "number", availability: "unknown", item_status: "unknown" }, source_refs: [], origin: "human" },
   );
   await ready(env, doc, "reviewer"); const html = env.html();
-  for (const text of ["≥123.45678901234567890", "SPEC_EXACT_SOURCE", "值未知", ">无 ", "字典版本", "工况未定"]) assert.ok(html.includes(text), text);
+  for (const text of ["≥123.45678901234567890", "SPEC_EXACT_SOURCE", "待完善", ">否", "字典", "工况未定"]) assert.ok(html.includes(text), text);
   assert.equal(html.includes("确认此条"), false); assert.ok(env.calls.every(call => call.options.method === "GET"));
 });
 
@@ -372,8 +373,70 @@ test("document-tab changes retain the named G0 form and immutable prepared reque
   elements(env.tree(), item => item.type === "form")[0].props.onSubmit({ preventDefault() {} }); await env.flush();
   const preview = env.pending(call => call.url.endsWith("/commands/preview"));
   const command = JSON.parse(preview.options.body); env.respond(preview, { command, review: {} }); await env.flush();
-  const chips = elements(env.tree(), item => item.props?.["aria-label"] === "提案文档视图")[0];
-  elements(chips, item => item.type === "button" && item.props.children[0] === "证据")[0].props.onClick(); await env.flush();
+  await click(env, "证据与决定");
   assert.ok(env.html().includes("PRESERVED_REASON")); await click(env, "确认办理");
   assert.deepEqual(JSON.parse(env.pending(call => call.url.endsWith("/commands")).options.body), command);
+});
+
+const { ProposalSpecEditor } = load(path.join(directory, "proposal-spec-editor.tsx"));
+const { ProposalPai } = load(path.join(directory, "proposal-pai.tsx"));
+const specs = env => elements(env.tree(), element => element.type === ProposalSpecEditor)[0];
+test("row drafts retain their original version through refresh and only the saved row clears, while Pai stays mounted", async t => {
+ const env = environment(t), doc = await ready(env);
+ const row = { item_id: "pressure", version: 1, kind: "spec", content: { parameter: "Pressure" }, source_refs: [], origin: "human" };
+ const first = { item: row, values: { first: "5", condition: "PRIVATE_DRAFT" } };
+ specs(env).props.onDraft(row.item_id, first);
+ specs(env).props.onDraft("other", { item: { ...row, item_id: "other" }, values: { first: "10" } }); await env.flush();
+ await click(env, "刷新提案");
+ assert.ok(elements(env.tree(), node => node.type === ProposalPai).length);
+ await loadDocument(env, doc); assert.deepEqual(specs(env).props.drafts.pressure, first);
+ const saving = specs(env).props.mutate([{ op: "upsert", item_id: row.item_id, base_version: 1, kind: "spec", content: row.content, source_refs: [] }]); await env.flush();
+ const request = env.pending(call => call.options.method === "POST"); assert.ok(request);
+ assert.deepEqual(JSON.parse([...env.store.values()][0]).command, JSON.parse(request.options.body));
+ env.respond(request, { id: "receipt", operation: "proposal.item.patch" }); await env.flush();
+ assert.ok(elements(env.tree(), node => node.type === ProposalPai).length);
+ await loadDocument(env, doc); await saving; await env.flush();
+ assert.equal(specs(env).props.drafts.pressure, undefined); assert.equal(specs(env).props.drafts.other.values.first, "10");
+});
+test("unknown proposal saves retry the original command and authority failures clear private material", async t => {
+ const env = environment(t); await ready(env);
+ const saving = specs(env).props.mutate([{ op: "upsert", kind: "spec", content: {}, source_refs: [] }]); await env.flush();
+ const original = env.pending(call => call.options.method === "POST"); original.done = true; original.reject(new Error("Lost response")); await saving; await env.flush();
+ assert.equal(env.store.size, 1); await click(env, "按原请求核对保存结果");
+ const retry = env.pending(call => call.options.method === "POST"); assert.equal(retry.options.body, original.options.body);
+ env.respond(retry, { message: "Access revoked" }, 403); await env.flush();
+ assert.equal(env.store.size, 0); assert.equal(specs(env), undefined); assert.equal(elements(env.tree(), node => node.type === ProposalPai).length,0);
+});
+
+const { ProposalItemTable } = load(path.join(directory, "proposal-item-table.tsx"));
+test("in-flight row saves lock their inputs so later typing cannot be discarded by a receipt", () => {
+ const spec = { item_id: "pressure", version: 1, kind: "spec", content: { parameter: "Pressure", value_type: "number", lower: "5", upper: null }, source_refs: [], origin: "human" };
+ const common = { editable: true, busy: true, mutate: async () => true, onDraft() {} };
+ const html = renderToStaticMarkup(React.createElement(ProposalSpecEditor, { ...common, categoryId: "cat", items: [spec], drafts: { pressure: { item: spec, values: { first: "6" } } } }));
+ assert.match(html, /<input[^>]*disabled/); assert.equal((html.match(/<input/g) ?? []).length, (html.match(/<input[^>]*disabled/g) ?? []).length);
+ const item = { ...spec, item_id: "question", kind: "question", content: { question: "Frozen assignment", owner_id: "owner", due_date: "2030-01-01", status: "answered", answer: "Result" } };
+ const questionHtml = renderToStaticMarkup(React.createElement(ProposalItemTable, { ...common, kind: "question", people: [{id:"owner", name:"Owner"}], items:[item], drafts:{question:{item,values:{}}} }));
+ assert.equal((questionHtml.match(/<(?:input|select)\b/g) ?? []).length, (questionHtml.match(/<(?:input|select)\b[^>]*disabled/g) ?? []).length);
+ assert.match(questionHtml, /<select[^>]*disabled/); assert.match(questionHtml, /<input[^>]*disabled/);
+});
+
+test("dictionary picker searches, selects all matching parameters, clears selection and submits one fixed-version batch", async t => {
+ const env = environment(t); const submitted = [];
+ const state = { slots: [], index: 0, effects: [], dirty: true, disposed: false }; let tree;
+ const render = () => { state.index = 0; state.effects = []; state.dirty = false; hooks = state;
+  try { tree = ProposalSpecEditor({ categoryId:"category-a", items:[], editable:true, busy:false, mutate:async ops => { submitted.push(ops); return true; } }); } finally { hooks = null; }
+  state.effects.forEach(effect => effect());
+ };
+ const flush = async () => { for(let n=0;n<8;n++){await tick(); if(state.dirty)render();} };
+ const words = tree => typeof tree === "string" || typeof tree === "number" ? String(tree) : Array.isArray(tree) ? tree.map(words).join("") : tree && typeof tree === "object" ? words(tree.props?.children) : "";
+ const press = async label => { const button = elements(tree, element => element.props?.onClick && words(element.props.children) === label)[0]; assert.ok(button,label); assert.ok(!button.props.disabled); button.props.onClick(); await flush(); };
+ render(); t.after(() => { state.slots.forEach(slot=>slot?.cleanup?.());state.disposed=true; });
+ await press("新增规格");
+ const rows = [{parameter_id:"pressure",version:3,key:"pressure",name:"压力",unit:"kPa",value_type:"number"},{parameter_id:"pressure_max",version:2,key:"pressure_max",name:"最大压力",unit:"kPa",value_type:"number"},{parameter_id:"weight",version:1,key:"weight",name:"重量",unit:"kg",value_type:"number"}];
+ env.respond(env.pending(call=>call.url.includes("/parameters")),{items:rows,next_cursor:null});await flush();
+ elements(tree,node=>node.props?.["aria-label"]==="搜索参数")[0].props.onChange({target:{value:"压力"}});await flush();
+ await press("全选搜索结果");assert.equal(elements(tree,node=>node.type==="input"&&node.props.type==="checkbox"&&node.props.checked).length,2);
+ await press("清空已选");assert.equal(elements(tree,node=>node.type==="input"&&node.props.type==="checkbox"&&node.props.checked).length,0);
+ await press("全选搜索结果");await press("添加 2 项");assert.equal(submitted.length,1);assert.deepEqual(submitted[0].map(op=>[op.content.parameter_id,op.content.parameter_version]),[["pressure",3],["pressure_max",2]]);
+ assert.ok(submitted[0].every(op=>op.content.availability==="unknown"));
 });

@@ -1,0 +1,20 @@
+.progress { margin: 0 0 16px; color: var(--text-subtle); font-size: 12px; }
+.progress > summary { display: flex; align-items: center; gap: 7px; min-height: 30px; width: fit-content; max-width: 100%; list-style: none; cursor: pointer; }
+.progress > summary::-webkit-details-marker { display: none; }
+.progress > summary > span { min-width: 0; overflow-wrap: anywhere; }
+.progress > summary > svg { flex: none; }
+.progress > summary > small { font-size: 10px; white-space: nowrap; }
+.progress[open] > summary > svg:last-child { transform: rotate(180deg); }
+.progress > summary:focus-visible, .more:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; border-radius: 3px; }
+.transcript { padding-top: 8px; }
+.transcript > ol { display: flex; flex-direction: column; gap: 16px; margin: 0; padding: 0; list-style: none; }
+.narration > p { margin: 0; color: var(--foreground); font-size: 12px; line-height: 1.8; overflow-wrap: anywhere; }
+.tools { display: flex; align-items: flex-start; gap: 8px; line-height: 1.8; }
+.tools > svg { flex: none; margin-top: 4px; }
+.tools > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px 14px; min-width: 0; }
+.tools span { overflow-wrap: anywhere; }
+.tools small { margin-left: 5px; font-size: 10px; }
+.more { display: block; min-height: 28px; padding: 0; margin-bottom: 10px; font-size: 11px; cursor: pointer; }
+.more:hover { color: var(--foreground); }
+.more:disabled { opacity: .6; cursor: wait; }
+.empty { margin: 0; line-height: 1.8; }

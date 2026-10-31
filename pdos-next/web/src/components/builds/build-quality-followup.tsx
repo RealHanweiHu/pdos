@@ -1,4 +1,5 @@
 "use client";
+import { useProfessionalSelection } from "@/components/projects/professional-target";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, ArrowRight, CheckCircle, ClipboardText, GitBranch, Plus, WarningCircle, X } from "@phosphor-icons/react";
@@ -119,6 +120,8 @@ function FollowupPanel({ product, principalId, api, onSaved, projectId = "" }: P
   async function addSource() { if (!unlocked) return; try { const source = context.sources.find(row => row.id === sourceId); if (!source) throw new Error("请选择当前有效原文。"); const value = await followupSource(source, sourceLine); if (!alive.current) return; setAddedRefs(previous => [...new Map([...previous, value.ref].map(ref => [followupSourceKey(ref), ref])).values()]); } catch (failure) { setError(failure instanceof Error ? failure.message : "原文定位待核对。"); } }
   function exactSource(ref: FollowupSource): FollowupExactSource | null { const source = context.sources.find(row => row.id === ref.id && row.revision === ref.revision), option = data?.source_options.find(row => followupSourceKey(row.source) === followupSourceKey(ref)), line = Number(ref.position.split(";")[0].slice(5)), quote = source ? sourceLines(source.content)[line - 1] : option?.quote; return typeof quote === "string" ? { artifact_id: ref.id, expected_revision: ref.revision, line, quote } : null; }
   const chosenSource = context.sources.find(row => row.id === sourceId), historical = !!data && (data.issue.id !== data.current.version_id || data.issue.revision !== data.current.revision), finalWithoutRoot = !!data && completesWithoutRoot(data, work);
+  useProfessionalSelection("build", context.builds.map(r=>r.id), local.selectedBuildId, !unlocked, chooseBuild);
+  useProfessionalSelection("issue", uniqueIssues, local.selectedIssueId, !unlocked, id=>choose(id));
   return <section className="panel min-w-0 space-y-5 [&_*]:min-w-0 [overflow-wrap:anywhere]">
     <header className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="flex items-center gap-2 text-xl font-semibold"><GitBranch/>根因、本人整改与独立复验回链</h2><p className="subtle mt-2">保留原失败与假设 → 具名根因 → 本人实际完成 → 固定新输出与新复验分支。有效性、问题关闭和正式变更批准仍未开放。</p></div><Button type="button" variant="outline" disabled={busy} onClick={reread}><ArrowClockwise/>刷新当前整改事实</Button></header>
     {synthetic && <p className="rounded-lg border border-primary p-3 text-sm">本地合成演练：根因、完成与复验回链用于验证流程，不代表真实整改有效、生产放行或人工出口通过。</p>}

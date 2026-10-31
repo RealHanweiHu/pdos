@@ -15,7 +15,7 @@ const { renderToStaticMarkup } = dependency("react-dom/server");
 let hooks = null;
 const same = (a, b) => !!a && !!b && a.length === b.length && a.every((v, i) => Object.is(v, b[i]));
 /* eslint-disable react-hooks/rules-of-hooks, react-hooks/exhaustive-deps -- Isolated hook dispatcher, never product implementation. */
-const react = { ...React,
+const react = { ...React, useContext(context) { return context._currentValue; },
   useState(initial) {
     if (!hooks) return React.useState(initial);
     const own = hooks, index = own.index++;

@@ -1,4 +1,5 @@
 "use client";
+import { useProfessionalSelection } from "@/components/projects/professional-target";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, CalendarBlank, ClipboardText, Flask, Plus, ShieldCheck, Trash, WarningCircle } from "@phosphor-icons/react";
@@ -79,6 +80,7 @@ function ProfessionalPanel({ product, principalId, api, onSaved, projectId = "" 
   function prepareMethods(element: HTMLElement) { attempt(() => { if (!request || !canMethod || draft.methodVersion !== request.id) throw new Error("请基于当前请求版重新准备逐项方法核对。"); const payload = professionalMethods(request, draft.methods, draft.methodReason), reads = professionalReads(request.required_source_read_set, professionalAuthorityReads(request.authority?.method_prepare), professionalReferenceReads(payload.assessments.flatMap(row => row.sources))); void perform({ stage: "preview", command: professionalCommand(product, "verification.method.prepare", payload, reads, crypto.randomUUID(), crypto.randomUUID()) }, element); }); }
   function saveWindow(element: HTMLElement) { attempt(() => { if (!request || !canSchedule || draft.scheduleVersion !== request.id) throw new Error("请基于当前请求版重新准备资源意向窗口。"); const payload = professionalSchedule(request, draft.schedule), refs = [...payload.sources, ...(payload.duration_basis ? [payload.duration_basis] : []), ...(payload.calendar_source ? [payload.calendar_source] : [])], reads = professionalReads(request.required_source_read_set, professionalAuthorityReads(request.authority?.schedule_propose), professionalReferenceReads(refs)); void perform({ stage: "execute", command: professionalCommand(product, "verification.schedule.propose", payload, reads, crypto.randomUUID(), crypto.randomUUID()) }, element); }); }
   function chooseRequest(requestId: string) { update({ requestId, versionId: "", methodVersion: "", scheduleVersion: "", methods: [], schedule: blankProfessionalSchedule() }); }
+  useProfessionalSelection("request", currentRequests.map(r=>r.request_id), draft.requestId, !editing, chooseRequest);
   return <section className="panel mb-6 min-w-0 [&_*]:min-w-0">
     <div className="flex flex-wrap items-start justify-between gap-3"><h2 className="flex items-center gap-2 font-semibold"><ShieldCheck/>专业验证前置办理</h2><Button size="sm" variant="outline" disabled={busy || loading} onClick={() => { if (lock.current) return; lock.current = true; setBusy(true); setError(""); void refresh().catch(failure => { if (alive.current) setError(failure.message); }).finally(() => { lock.current = false; if (alive.current) setBusy(false); }); }}><ArrowClockwise/>刷新请求与资格</Button></div>
     <p className="subtle my-3">从固定准备版本建立正式草稿请求，分别记录方法适用与资源意向。品类写权限不授予专业职责；真实样件、品质接收、正式预约、开测及测试结果仍需独立办理。</p>

@@ -8,7 +8,7 @@ import { ProjectBuildOutput } from "./project-build-output";
 import { ProjectBuildReadiness } from "./project-build-readiness";
 import styles from "./project-build-summary.module.css";
 
-type Props = ProjectBuildScope & { api: ProjectBuildApi; principalId: string; readVersion: number };
+type Props = ProjectBuildScope & { api: ProjectBuildApi; principalId: string; readVersion: number; initialBuild?: string };
 type BuildReading = Awaited<ReturnType<typeof readProjectBuilds>>;
 type TestReading = Awaited<ReturnType<typeof readBuildTestSummary>>;
 const typeNames: Record<string, string> = { prototype: "原型验证", tool_trial: "试模 / 工装试验", pilot: "试产验证" };
@@ -16,19 +16,20 @@ const runStates: Record<string, string> = { planned: "已固定测试计划", ru
 const resultNames: Record<string, string> = { pending: "尚未形成判定", pass: "固定范围数值判定通过", fail: "固定范围数值判定未通过", indeterminate: "缺项，不能确定", invalid: "已明确记录为无效" };
 const print = (value: unknown) => value === null || value === undefined || value === "" ? "未登记" : typeof value === "object" ? JSON.stringify(value) : String(value);
 const sourceState = (value: unknown) => value === "current" ? "来源当前可读" : value === "needs_recheck" ? "来源需重核" : "来源状态未提供";
-function workHref(scope: ProjectBuildScope, buildId: string, view: string, task: string) {
-  return `/?${new URLSearchParams({ area: "category", category: scope.categoryId, bench: "projects", product: scope.productId, project: scope.projectId, build: buildId, view, task })}`;
+function workHref(scope: ProjectBuildScope, buildId: string, view: string, task: string, target: {request?:string;run?:string} = {}) {
+  return `/?${new URLSearchParams({ area: "category", category: scope.categoryId, bench: "projects", product: scope.productId, project: scope.projectId, build: buildId, view, task, ...target })}`;
 }
 export function ProjectBuildSummary(props: Props) {
   return <ScopedBuildSummary key={JSON.stringify([props.principalId, props.categoryId, props.productId, props.projectId, props.readVersion])} {...props}/>;
 }
-function ScopedBuildSummary({ api, categoryId, productId, projectId }: Props) {
+function ScopedBuildSummary({ api, categoryId, productId, projectId, initialBuild }: Props) {
   const [attempt, setAttempt] = useState(0);
   const [reading, setReading] = useState<{ api: ProjectBuildApi; attempt: number; data: BuildReading | null; error: string } | null>(null);
-  const [selection, setSelection] = useState<{ api: ProjectBuildApi; attempt: number; id: string } | null>(null);
+  const [selection, setSelection] = useState<{ api: ProjectBuildApi; attempt: number; id: string; target?: string } | null>(null);
   const current = reading?.api === api && reading.attempt === attempt ? reading : null;
   const data = current?.data ?? null, error = current?.error ?? "";
-  const selected = selection?.api === api && selection.attempt === attempt ? data?.items.find(item => item.id === selection.id) : undefined;
+  const selectedId = selection?.api === api && selection.attempt === attempt && selection.target === initialBuild ? selection.id : initialBuild;
+  const selected = data?.items.find(item => item.id === selectedId);
   const rejectAccess = useCallback((message: string) => setReading({ api, attempt, data: null, error: message }), [api, attempt]);
   const scope = { categoryId, productId, projectId };
   useEffect(() => {
@@ -43,7 +44,7 @@ function ScopedBuildSummary({ api, categoryId, productId, projectId }: Props) {
       {error ? <div className={styles.notice} role="alert"><p>项目轮次暂不可读：{error}</p><Button type="button" variant="outline" size="xs" onClick={() => setAttempt(value => value + 1)}>重新读取项目轮次</Button></div> : !data ? <p className={styles.notice} role="status">正在读取本项目轮次…</p> : <>
         <p className={styles.note}>已读取 {data.items.length} 条可读轮次。{data.unavailableCount > 0 && ` ${data.unavailableCount} 条记录暂不可读。`}{data.hasMore && " 读集尚未完整。"}请选择需要核对的轮次。</p>
         {data.items.length > 0 ? <div className={styles.scroll}><table className={styles.table}><thead><tr><th>Build / 目的</th><th>固定工程配置</th><th>固定制造配置</th><th>计划数量</th><th>计划窗口</th><th>记录状态</th><th>办理</th></tr></thead><tbody>{data.items.map(item => <tr key={item.id} data-selected={selected?.id === item.id}>
-          <td><button type="button" className={styles.name} aria-label={`查看 ${item.name} 轮次摘要`} aria-pressed={selected?.id === item.id} onClick={() => setSelection({ api, attempt, id: item.id })}>{item.name}</button><small>{typeNames[item.type] ?? item.type} · v{item.revision}</small><small>{item.purpose}</small></td>
+          <td><button type="button" className={styles.name} aria-label={`查看 ${item.name} 轮次摘要`} aria-pressed={selected?.id === item.id} onClick={() => setSelection({ api, attempt, id: item.id, target: initialBuild })}>{item.name}</button><small>{typeNames[item.type] ?? item.type} · v{item.revision}</small><small>{item.purpose}</small></td>
           <td>{item.engineering_configuration.name}<small>固定 v{item.engineering_configuration.revision}</small></td><td>{item.manufacturing_configuration.name}<small>固定 v{item.manufacturing_configuration.revision}</small></td>
           <td className={styles.mono}>{item.planned_quantity} {item.unit}</td><td><span>{print(item.planned_start)}</span><small>至 {print(item.planned_end)}</small></td><td>{item.status === "planned" ? "计划已登记" : item.status}<small>{item.source_status === "current" ? "来源当前可读" : "来源需重核"}</small></td>
           <td><a className={styles.link} href={workHref(scope, item.id, "builds", "prepare")}>进入办理<ArrowRight size={12} aria-hidden="true"/></a></td>
@@ -77,7 +78,7 @@ function SelectedBuild({ api, scope, build, builds, onAccessRejected }: { api: P
       <dl className={styles.facts}><div><dt>Build</dt><dd>{fixed.name} · 固定 v{fixed.revision}</dd></div><div><dt>目的</dt><dd>{fixed.purpose}</dd></div><div><dt>计划数量</dt><dd className={styles.mono}>{fixed.planned_quantity} {fixed.unit}</dd></div><div><dt>前轮</dt><dd>{fixed.previous_build_id ? previous?.name ?? "已登记前轮，名称未取得" : "未登记前轮"}</dd></div><div><dt>固定工程配置</dt><dd>{fixed.engineering_configuration.name} · v{fixed.engineering_configuration.revision}</dd></div><div><dt>固定制造配置</dt><dd>{fixed.manufacturing_configuration.name} · v{fixed.manufacturing_configuration.revision}</dd></div><div className={styles.full}><dt>验证目标</dt><dd>{print(fixed.verification_objectives)}</dd></div><div className={styles.full}><dt>处置要求</dt><dd>{print(fixed.disposition_plan)}</dd></div></dl>
       <details className={styles.details}><summary>固定双配置、版本与来源状态</summary><p>本轮按下列固定引用核对。</p><dl className={styles.identityFacts}><div><dt>Build 标识</dt><dd>{fixed.id} · v{fixed.revision}</dd></div><div><dt>原固定项目版本</dt><dd>v{fixed.project_revision}</dd></div>{[["工程配置", fixed.engineering_configuration], ["制造配置", fixed.manufacturing_configuration]].map(([label, value]) => { const config = value as ProjectBuildRecord["engineering_configuration"]; return <div key={String(label)}><dt>{String(label)}</dt><dd>{config.name} · 固定 v{config.revision}<small>{config.id} · {sourceState(config.source_status)}</small></dd></div>; })}<div><dt>前轮标识</dt><dd>{print(fixed.previous_build_id)}</dd></div></dl></details>
       <div className={styles.actions}><a className={styles.link} href={workHref(scope, fixed.id, "builds", "prepare")}>办理本轮 Build<ArrowRight size={12}/></a><a className={styles.link} href={workHref(scope, fixed.id, "verification", "results")}>测试结果与处置<ArrowRight size={12}/></a><a className={styles.link} href={workHref(scope, fixed.id, "verification", "handoff")}>交样与接收<ArrowRight size={12}/></a></div>
-      <p className={styles.note}>进入工作台后请核对并选择本轮 Build；测试 Run 仍需在原页面选择。</p>
+      <p className={styles.note}>进入办理会带入本轮；从测试记录进入时，同时带入对应请求与运行。</p>
       <ProjectBuildReadiness scope={scope} build={fixed}/>
       <ProjectBuildOutput api={api} scope={scope} build={fixed} onAccessRejected={onAccessRejected}/>
       <header className={styles.heading}><h3>本轮当前测试记录</h3><span>{data.unavailableCount > 0 || data.hasMore || data.unindexedRunCount > 0 ? "读集未完整" : `${data.runs.length} 个当前运行`}</span></header>
@@ -92,7 +93,7 @@ function SelectedBuild({ api, scope, build, builds, onAccessRejected }: { api: P
           {([ ["实际开测", run.runSnapshot.actual_start], ["实际结束", run.runSnapshot.actual_end], ["最终结果返回", run.runSnapshot.final_result] ] as const).map(([label, clock]) => <div key={label}><dt>{label}原时点</dt><dd>{clock ? <><time dateTime={clock.occurred_at}>{clock.occurred_at}</time> · {clock.original_timezone}<small>系统收到记录：{clock.received_at}</small></> : "尚未登记"}</dd></div>)}</dl>
           {run.runSnapshot.measurements.length > 0 ? <div className={styles.scroll}><table className={styles.measurements}><thead><tr><th>样件标识</th><th>测试项标识</th><th>原值 / 单位</th><th>观测原时点</th></tr></thead><tbody>{run.runSnapshot.measurements.map(value => <tr key={value.id}><td>{value.coverage.sample_id}</td><td>{value.coverage.item_id}</td><td>{value.raw_value ?? "原值未登记"} {value.unit ?? "单位未登记"}</td><td>{value.observed_at ?? "尚未登记"}<small>{value.observed_timezone ?? "原时区未登记"}</small></td></tr>)}</tbody></table></div> : <p>本运行尚无已登记测量原值。</p>}
           {([ ["具名专业结论", run.runSnapshot.professional_conclusion], ["具名处置意见", run.runSnapshot.disposition] ] as const).map(([label, conclusion]) => conclusion && typeof conclusion.text === "string" && typeof conclusion.actor_id === "string" ? <div className={styles.statement} key={label}><p>{label}：{conclusion.text}</p><small>具名人员标识：{conclusion.actor_id}</small></div> : null)}
-          <a className={styles.link} href={workHref(scope, fixed.id, "verification", "results")}>查看原测试工作台的完整记录<ArrowRight size={12}/></a>
+          <a className={styles.link} href={workHref(scope, fixed.id, "verification", "results", {request:run.request.id,run:run.runId})}>查看原测试工作台的完整记录<ArrowRight size={12}/></a>
         </details>
       </article>)}</div> : <p className={styles.notice}>{data.unavailableCount > 0 || data.hasMore || data.unindexedRunCount > 0 ? "当前没有可展示的测试运行，读取范围尚不完整。" : "当前可读范围内尚无本轮测试 Run。"}</p>}
       <p className={styles.note}>已有判定只适用于对应固定测试范围，不代表整轮完成、阶段通过或制造放行。</p>

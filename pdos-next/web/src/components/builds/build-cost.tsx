@@ -1,7 +1,10 @@
 "use client";
+import { restoreProjectBuildDraft } from "@/lib/project-draft-recovery";
+import { useProfessionalSelection } from "@/components/projects/professional-target";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, Calculator, ClipboardText, Plus, Trash, WarningCircle } from "@phosphor-icons/react";
+import { projectBuildsPath } from "@/lib/project-build-scope";
 import { Button } from "@/components/ui/button";
 import { CostBreakdown } from "@/components/supply_cost";
 import { originalLocation } from "@/lib/original-location";
@@ -11,7 +14,7 @@ import { utcText } from "@/lib/project-plan-view";
 import { isObject, materialsFromBuild } from "@/lib/build-supply-view";
 import { blankCost, blankPrice, blankRate, bomOptions, categoryNames, checkCostPrepared, costCanCompute, costDraftFromCapture, costIdentityLabel, costNames, costResultDisplay, costSubjects, createCostCapture, emptyCosts, estimatePayload, operationOptions, restoreCost, type CostApi, type CostCapture, type CostCommand, type CostDraft, type CostList, type CostLocal, type CostPreview, type CostWaiting, type PreparedCost, type PriceDraft, type ProcessDraft, type RateDraft } from "@/lib/build-cost-view";
 
-type Props = { product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: CostApi; onSaved: () => void | Promise<void> };
+type Props = { projectId?: string; product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: CostApi; onSaved: () => void | Promise<void> };
 type Receipt = { id: string; subject_id: string; subject_type: string };
 const names: Record<string, string> = {
   cost_scope: "本版成本口径", currency: "币种", tax_basis: "税口径", tax_rate: "税率（比例）", freight_basis: "运费口径", coverage: "本版估算范围", rate_purpose: "汇率用途", max_rate_age_days: "汇率最长时效（天）", nre_policy: "一次性费用政策", nre_volume: "一次费摊销量", assumptions: "成本口径说明", prices: "整版价格记录", price_id: "价格稳定标识", subject_kind: "价格类别", subject_id: "对应固定对象", stage: "价格阶段", basis: "计价依据", amount: "原币金额", price_quantity: "计价数量分母", unit: "来源单位", valid_from: "报价有效起点", valid_until: "报价有效终点", minimum_quantity: "数量阶梯下限", maximum_quantity: "数量阶梯上限", scope_assumption: "本条价格口径说明", material_prices: "每条固定 BOM 的价格选择", bom_item_id: "固定 BOM 行", process: "每合格成品工艺口径", operations: "固定工序", operation_id: "固定工序", quantity_per_product: "每合格成品计价用量", loss_rate: "损耗（比例）", assumption: "工艺口径说明", rates: "直接汇率来源", rate_id: "汇率稳定标识", from_currency: "汇率原币", to_currency: "汇率目标币", rate: "直接汇率", purpose: "汇率用途", observed_at: "原来源实际观察时点", nre_price_ids: "本版一次费价格选择", sources: "精确原文依据", reason: "整版保存原因", captured_at: "服务器捕获时点", freshness: "当前依据状态", freshness_reasons: "需重核事项", previous_input_id: "固定前版成本输入", previous_revision: "固定前版版本", visibility: "可见范围", comparison: "与前版的服务器比较", before: "前版", after: "本版", changes: "变更", field: "变更字段", path: "对应字段", validity: "报价与汇率时效核对", eligible: "当前时效是否符合口径", eligibility: "当前时效核对", status: "依据状态", message: "核对说明", code: "核对标识", warnings: "需补事项", deltas: "前后变化", label: "比较项目", before_revision: "前版版本", after_revision: "本版版本", quote_eligibility: "报价有效期核对", rate_eligibility: "汇率时效核对", binding: "固定工程与 Build", build: "固定 Build", bom: "固定 BOM", engineering_configuration: "固定工程配置", manufacturing_configuration: "固定制造配置", source_id: "固定来源", version: "固定来源版本", ref: "固定来源依据", state: "来源状态", build_id: "固定 Build", build_revision: "固定 Build 版本", quantity: "固定计划数量", product_unit: "成品单位", as_of: "计算依据时点", revision: "输入版本", expires_at: "确认有效期", input_snapshot: "完整固定成本输入",
@@ -31,9 +34,9 @@ function Value({ value, field, sources, identities }: { value: unknown; field?: 
 }
 function SourceChoices({ label, choices, selected, sources, onChange }: { label: string; choices: DefinitionReference[]; selected: DefinitionReference[]; sources: DefinitionSource[]; onChange: (next: DefinitionReference[]) => void }) { return <fieldset className="mt-3 rounded-lg border border-border p-3"><legend className="px-1 text-sm font-medium">{label} · 独立选择精确依据</legend>{choices.map(ref => <label key={referenceKey(ref)} className="flex items-start gap-2"><input type="checkbox" className="!mt-1 !w-auto shrink-0" checked={selected.some(item => referenceKey(item) === referenceKey(ref))} onChange={event => onChange(event.target.checked ? [...selected, plainReference(ref)] : selected.filter(item => referenceKey(item) !== referenceKey(ref)))}/><span className="text-sm [overflow-wrap:anywhere]">{sources.find(source => source.id === ref.artifact_id)?.title ?? "固定资料"} · v{ref.expected_revision} · 第 {ref.line} 行 · {ref.quote}</span></label>)}{!choices.length && <p className="subtle">先在上方加入可选精确原文。</p>}</fieldset>; }
 
-export function BuildCost(props: Props) { return <CostPanel key={`${props.principalId}:${props.product.id}`} {...props}/>; }
-function CostPanel({ product, principalId, api, onSaved }: Props) {
-  const storageKey = `pdos-next:build-cost:${principalId}:${product.id}`;
+export function BuildCost(props: Props) { return <CostPanel key={`${props.principalId}:${props.product.id}:${props.projectId ?? ""}`} {...props}/>; }
+function CostPanel({ product, principalId, api, onSaved, projectId = "" }: Props) {
+  const storageKey = `pdos-next:build-cost:${principalId}:${product.id}${projectId ? `:project:${projectId}` : ""}`;
   const [local, setLocal] = useState<CostLocal>({ buildId: "", drafts: {}, prepared: {}, pending: null });
   const localRef = useRef(local), alive = useRef(true), lock = useRef(false), dialog = useRef<HTMLDialogElement>(null), trigger = useRef<HTMLElement | null>(null);
   const [builds, setBuilds] = useState<Build[]>([]), [data, setData] = useState<CostList>(emptyCosts), [sources, setSources] = useState<DefinitionSource[]>([]);
@@ -58,15 +61,15 @@ function CostPanel({ product, principalId, api, onSaved }: Props) {
   function closePreview() { dialog.current?.close(); setPreview(null); trigger.current?.focus(); }
   function makeCommand(operation: CostCommand["operation"], payload: CostCommand["payload"], reads: CostCommand["source_read_set"], revision = product.revision): CostCommand { return { command_id: crypto.randomUUID(), idempotency_key: crypto.randomUUID(), product_id: product.id, expected_revision: revision, operation, source_read_set: reads.map(read => ({ ...read })), payload }; }
   const refresh = useCallback(async () => {
-    const results = await Promise.allSettled([api<BuildList>(`v1/products/${product.id}/builds`), api<CostList>(`v1/products/${product.id}/costs`), api<{ sources: DefinitionSource[] }>(`v1/products/${product.id}/workspace`)]);
+    const results = await Promise.allSettled([api<BuildList>(projectBuildsPath(product.id, projectId)), api<CostList>(`v1/products/${product.id}/costs`), api<{ sources: DefinitionSource[] }>(`v1/products/${product.id}/workspace`)]);
     if (!alive.current) return;
     const failures: string[] = [];
     const built = results[0]; if (built.status === "fulfilled") setBuilds(built.value.items); else { setBuilds([]); failures.push(built.reason?.message ?? "固定 Build 暂时无法读取。"); }
     const cost = results[1]; if (cost.status === "fulfilled") setData(cost.value); else { setData(emptyCosts); failures.push(cost.reason?.message ?? "成本输入暂时无法读取。"); }
     const workspace = results[2]; if (workspace.status === "fulfilled") setSources(workspace.value.sources); else { setSources([]); failures.push(workspace.reason?.message ?? "原文依据暂时无法读取。"); }
     setLoading(false); setReadFailed(failures.length > 0); if (failures.length) throw new Error(failures.join(" "));
-  }, [api, product.id]);
-  useEffect(() => { alive.current = true; void Promise.resolve().then(() => { if (alive.current) return refresh(); }).catch(failure => { if (alive.current) setError(failure.message); }); void Promise.resolve().then(() => { if (!alive.current) return; try { const saved = restoreCost(JSON.parse(localStorage.getItem(storageKey) ?? "null"), product.id); if (saved) { localRef.current = saved; setLocal(saved); } } catch { /* Invalid local drafts are not restored. */ } setReady(true); }); return () => { alive.current = false; }; }, [refresh, storageKey, product.id]);
+  }, [api, product.id, projectId]);
+  useEffect(() => { alive.current = true; void Promise.resolve().then(() => { if (alive.current) return refresh(); }).catch(failure => { if (alive.current) setError(failure.message); }); void Promise.resolve().then(async () => { if (!alive.current) return; try { const saved = await restoreProjectBuildDraft(localStorage, storageKey, `pdos-next:build-cost:${principalId}:${product.id}`, value => restoreCost(value, product.id), api, product.id, projectId, () => alive.current); if (!alive.current) return; if (saved) { localRef.current = saved; setLocal(saved); } setReady(true); } catch { if (alive.current) { setReady(false); setError("本机旧草稿或原请求尚未恢复，已暂停新办理。请保留浏览器记录并重新加载页面核对。"); } } }); return () => { alive.current = false; }; }, [refresh, storageKey, product.id, principalId, projectId, api]);
   useEffect(() => { if (preview) dialog.current?.showModal(); }, [preview]);
   async function commandRequest(wait: Extract<CostWaiting, { command: CostCommand }>) {
     waiting(wait); const request = wait.command;
@@ -84,6 +87,7 @@ function CostPanel({ product, principalId, api, onSaved }: Props) {
   function changeProcess(index: number, changes: Partial<ProcessDraft>) { edit({ ...draft, process: draft.process.map((row, position) => position === index ? { ...row, ...changes } : row) }); }
   function changeRate(index: number, changes: Partial<RateDraft>) { edit({ ...draft, rates: draft.rates.map((row, position) => position === index ? { ...row, ...changes } : row) }); }
   function dropReference(ref: DefinitionReference) { const without = (refs: DefinitionReference[]) => refs.filter(item => referenceKey(item) !== referenceKey(ref)); edit({ ...draft, references: without(draft.references), scopeSources: without(draft.scopeSources), processSources: without(draft.processSources), prices: draft.prices.map(row => ({ ...row, sources: without(row.sources) })), process: draft.process.map(row => ({ ...row, sources: without(row.sources) })), rates: draft.rates.map(row => ({ ...row, sources: without(row.sources) })) }); }
+  useProfessionalSelection("build", builds.map(r=>r.id), local.buildId, !editable || loading, id=>update(v=>({...v,buildId:id,drafts:{...v.drafts,...(!v.drafts[id]?{[id]:blankCost(builds.find(r=>r.id===id))}:{})}})));
   return <section className="min-w-0 space-y-5 [&_*]:min-w-0 [&_dd]:[overflow-wrap:anywhere] [&_p]:[overflow-wrap:anywhere]" aria-label="固定Build成本输入与估算">
     <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">整版成本口径、原来源报价与确定性估算</p><h2 className="mt-1 text-lg font-semibold">成本输入与估算</h2></div><Button variant="outline" disabled={busy || !!preview} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新输入与结果</Button></header>
     {error && <p role="alert" className="rounded-lg border border-destructive p-3 text-sm text-destructive [overflow-wrap:anywhere]">{error}</p>}{notice && <p role="status" className="rounded-lg border border-border p-3 text-sm">{notice}</p>}

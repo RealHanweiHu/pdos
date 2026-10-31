@@ -28,3 +28,26 @@ test("registration dates, explicit data categories and provider metadata must be
   assert.equal(validateAgreement(original, instant), null);
   for (const changed of [{ provider: " " }, { data_categories: [] }, { retention_terms: " " }, { training_terms: " " }, { signed_on: "invalid" }, { signed_on: "2026-12-01T00:00:00Z" }, { expires_at: original.signed_on }, { expected_revision: 0.5 }]) assert.ok(validateAgreement({ ...original, ...changed }, instant));
 });
+
+test("cache choices survive recovery exactly and must match the named receipt", () => {
+  for (const choice of [true, false, null]) {
+    const request = { ...original, prompt_cache_allowed: choice };
+    assert.deepEqual(parseAgreementPending(JSON.stringify(request)), request);
+    const same = { ...receipt, result: { ...receipt.result, prompt_cache_allowed: choice } };
+    assert.equal(matchAgreementReceipt(same, request, "human", "category"), true);
+    assert.equal(matchAgreementReceipt({ ...same, result: { ...same.result, prompt_cache_allowed: choice === true ? false : true } }, request, "human", "category"), false);
+  }
+  assert.equal(matchAgreementReceipt(receipt, { ...original, prompt_cache_allowed: null }, "human", "category"), true);
+  assert.equal(matchAgreementReceipt(receipt, { ...original, prompt_cache_allowed: true }, "human", "category"), false);
+  assert.equal(matchAgreementReceipt(receipt, { ...original, prompt_cache_allowed: false }, "human", "category"), false);
+});
+
+test("cache permission uses a strict choice rather than coercing retention text", () => {
+  const instant = Date.parse("2026-10-16T00:00:00Z");
+  for (const choice of [0, 1, "true", "false", "禁止缓存", {}, []]) {
+    const invalid = { ...original, prompt_cache_allowed: choice } as AgreementRequest;
+    assert.ok(validateAgreement(invalid, instant));
+    assert.throws(() => parseAgreementPending(JSON.stringify(invalid)));
+  }
+  assert.equal(validateAgreement({ ...original, prompt_cache_allowed: true, retention_terms: "禁止缓存的原始条款，管理员另行核对" }, instant), null);
+});

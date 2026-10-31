@@ -1,4 +1,5 @@
 "use client";
+import { useProfessionalSelection } from "@/components/projects/professional-target";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, ClipboardText, Copy, Flask, Plus, Trash, WarningCircle } from "@phosphor-icons/react";
@@ -65,6 +66,7 @@ function VerificationPanel({ product, principalId, api, onSaved, projectId = "" 
   function changeItem(index: number, changes: Partial<TestPreparationDraft>) { edit({ ...draft, items: draft.items.map((value, position) => position === index ? { ...value, ...changes } : value) }); }
   function changeDocument(index: number, changes: Partial<DocumentPreparationDraft>) { edit({ ...draft, documents: draft.documents.map((value, position) => position === index ? { ...value, ...changes } : value) }); }
   function removeReference(ref: DefinitionReference) { const key = referenceKey(ref), keep = (value: string) => value === key ? "" : value; edit({ ...draft, references: draft.references.filter(value => referenceKey(value) !== key), items: draft.items.map(item => ({ ...item, drawingRef: keep(item.drawingRef), methodRef: keep(item.methodRef), numericRef: keep(item.numericRef), qualitativeRef: keep(item.qualitativeRef) })), documents: draft.documents.map(doc => ({ ...doc, sourceRef: keep(doc.sourceRef) })) }); }
+  useProfessionalSelection("build", builds.map(r=>r.id), local.buildId, !editable || loading, id=>update(v=>({...v,buildId:id,selectedRequestId:"",selectedPreparationId:"",drafts:{...v.drafts,...(!v.drafts[id]?{[id]:blankVerification(crypto.randomUUID())}:{})}})));
   return <section className="min-w-0 space-y-5 [&_*]:min-w-0 [&_p]:[overflow-wrap:anywhere] [&_dd]:[overflow-wrap:anywhere]" aria-label="固定Build验证准备与品质交接缺项">
     <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">固定计划、方法与资料来源，提前准备品质验证</p><h2 className="mt-1 text-lg font-semibold">验证准备与品质交接</h2></div><Button variant="outline" disabled={busy || !!preview} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新准备与缺项</Button></header>
     {error && <p role="alert" className="rounded-lg border border-destructive p-3 text-sm text-destructive">{error}</p>}{notice && <p role="status" className="rounded-lg border border-border p-3 text-sm">{notice}</p>}

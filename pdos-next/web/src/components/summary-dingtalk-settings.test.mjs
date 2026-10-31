@@ -1,0 +1,12 @@
+import assert from "node:assert/strict";
+import { existsSync, readFileSync } from "node:fs";
+import Module, { createRequire } from "node:module";
+import path from "node:path";
+import test from "node:test";
+import { fileURLToPath } from "node:url";
+const dir = path.dirname(fileURLToPath(import.meta.url)), root = path.resolve(dir, "../.."), dep = createRequire(path.join(root, "package.json")), ts = dep("typescript"), React = dep("react"), { renderToStaticMarkup } = dep("react-dom/server");
+function load(filename) { if (!path.extname(filename)) filename = [".ts", ".tsx"].map(e => filename + e).find(existsSync); const loaded = new Module(filename); loaded.require = name => name === "@/components/ui/button" ? { Button: props => React.createElement("button", props) } : name.startsWith("@/") ? load(path.join(root, "src", name.slice(2))) : name.startsWith(".") ? load(path.resolve(path.dirname(filename), name)) : dep(name); loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText, filename); return loaded.exports; }
+const { SummaryDingTalkSettings } = load(path.join(dir, "summary-dingtalk-settings.tsx"));
+const id = n => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`, choice = { followed_project_ids: [], category_ids: [], groups: [], excluded_kinds: [], max_items: 100 };
+test("real settings defaults to station only and does not read or write without an explicit event", () => { let calls = 0, changes = 0; const api = async () => { calls++; throw Error("no automatic transport"); }; const html = renderToStaticMarkup(React.createElement(SummaryDingTalkSettings, { api, principalId: id(1), choice, change: () => changes++ })); assert.match(html, /仅站内摘要|读取本人钉钉绑定|只查询原回执/); assert.match(html, /<option value="" selected="">仅站内摘要/); assert.equal(calls, 0); assert.equal(changes, 0); assert.doesNotMatch(html, /<input[^>]+type="password"/); });
+test("an existing explicit binding is preserved until current metadata is deliberately reread", () => { let changed = false; const html = renderToStaticMarkup(React.createElement(SummaryDingTalkSettings, { api: async () => { throw Error("explicit read required"); }, principalId: id(1), choice: { ...choice, dingtalk_binding_id: id(2) }, change: () => changed = true })); assert.match(html, /原本人绑定（请重新读取核对）/); assert.match(html, new RegExp(`value="${id(2)}" selected`)); assert.equal(changed, false); });

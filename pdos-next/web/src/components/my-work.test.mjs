@@ -78,99 +78,58 @@ test("task periods keep overdue visible, use calendar weeks, and never invent a 
   assert.equal(taskPeriod(null, "2026-10-17"), "later");
 });
 
-test("paused runs retain their own navigation and task clicks retain exact scope", async () => {
-  const fixture = apiFixture(), opened = [];
-  const component = driver({ ...defaultProps(fixture.api), onOpenProject: (...args) => opened.push(args) });
-  component.render(); component.mount(); await tick(); const tree = component.render(), html = markup(tree);
-  assert.match(html, /合成风险/); assert.match(html, /任务今日/); assert.doesNotMatch(html, /任务他人|任务已完/);
-  assert.match(markup(section(tree, "运行与项目风险")), /需要答复的合成工作/);
-  assert.doesNotMatch(markup(section(tree, "通知与运行动态")), /需要答复的合成工作/);
-  assert.doesNotMatch(markup(section(tree, "办理类型")), /要我决定|要我接收/);
-  assert.equal(elements(tree, element => element.type === "input" && element.props.type === "checkbox").length, 0);
-  elements(tree, element => element.type === "button" && element.props.children === "任务今日")[0].props.onClick();
-  assert.deepEqual(opened, [["cat", "project"]]);
-  assert.equal(fixture.calls.length, 6); assert.ok(fixture.calls.every(call => call.body === undefined));
-});
 
-test("period filtering and collapsing only change the local view of authorized tasks", async () => {
-  const fixture = apiFixture(), component = driver(defaultProps(fixture.api));
-  component.render(); component.mount(); await tick(); let tree = component.render();
-  elements(section(tree, "任务期限筛选"), element => element.type === "button" && element.props.children === "稍后")[0].props.onClick();
-  tree = component.render(); const tasks = section(tree, "我的任务");
-  assert.match(markup(tasks), /任务稍后/); assert.match(markup(tasks), /任务未定/); assert.doesNotMatch(markup(tasks), /任务今日|任务逾期/);
-  const group = elements(tasks, element => element.props?.["aria-controls"] === "my-work-tasks-later")[0];
-  group.props.onClick(); tree = component.render();
-  assert.equal(elements(tree, element => element.props?.id === "my-work-tasks-later")[0].props.hidden, true);
-  assert.equal(fixture.calls.length, 6); assert.ok(fixture.calls.every(call => call.body === undefined));
+const list = tree => elements(tree, item=>item.type?.name === "MyWorkList")[0];
+const rows = tree => list(tree).props.rows;
+test("one responsibility list combines real tasks, risks and paused conversations with exact navigation", async () => {
+  const fixture=apiFixture(),opened=[],component=driver({...defaultProps(fixture.api),onOpenProject:(...args)=>opened.push(args),onOpenRun:(...args)=>opened.push(args)});
+  component.render();component.mount();await tick();const tree=component.render(),items=rows(tree);
+  assert.ok(items.some(item=>item.title==="合成风险"));assert.ok(items.some(item=>item.title==="任务今日"));
+  assert.equal(items.some(item=>/任务他人|任务已完/.test(item.title)),false);
+  const run=items.find(item=>item.kind==="pai");assert.equal(run.title,"需要答复的合成工作");
+  list(tree).props.onOpenRun(run.target.runId,run.target.categoryId);
+  const task=items.find(item=>item.title==="任务今日");list(tree).props.onOpenProject(task.target.categoryId,task.target.projectId);
+  assert.deepEqual(opened,[["waiting","cat"],["cat","project"]]);
+  assert.equal(elements(tree,item=>item.type?.name==="PersonalAttention" || item.type?.name==="PersonalProjectWorkQueue").length,0);
+  assert.ok(fixture.calls.every(item=>item.body===undefined));assert.equal(fixture.calls.some(item=>item.url.startsWith("v1/personal/g0-reviews")),false);
 });
-
-test("answer and risk filters preserve run and project navigation without classifying runs as decisions", async () => {
-  const fixture = apiFixture(), opened = [], component = driver({ ...defaultProps(fixture.api), onOpenRun: (...args) => opened.push(args) });
-  component.render(); component.mount(); await tick(); let tree = component.render();
-  elements(section(tree, "办理类型"), element => element.type === "button" && markup(element).includes("暂停的运行"))[0].props.onClick();
-  tree = component.render(); const triage = section(tree, "运行与项目风险");
-  assert.doesNotMatch(markup(triage), /合成风险/);
-  elements(triage, element => element.props?.children?.some?.(child => child === "查看运行"))[0].props.onClick();
-  assert.deepEqual(opened, [["waiting", "cat"]]); assert.ok(fixture.calls.every(call => call.body === undefined));
+test("recent project history remains private and is filtered against current authorized reads",async()=>{
+ const previous=globalThis.localStorage,values=new Map([["pdos-next:my-work:recent-projects:me",JSON.stringify(["revoked","project"])],["pdos-next:my-work:recent-projects:other",'["other-project"]']]);
+ globalThis.localStorage={getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value)};
+ try{const fixture=apiFixture(),opened=[],component=driver({...defaultProps(fixture.api),onOpenProject:(...args)=>opened.push(args)});component.render();component.mount();await tick();const recents=section(component.render(),"继续项目");assert.match(markup(recents),/合成项目/);assert.doesNotMatch(markup(recents),/revoked|other-project/);elements(recents,item=>item.type==="button")[0].props.onClick();assert.deepEqual(opened,[["cat","project"]]);assert.equal(values.get("pdos-next:my-work:recent-projects:other"),'["other-project"]');}finally{globalThis.localStorage=previous}
 });
-
-test("recent project history is per person and filtered against the current authorized read set", async () => {
-  const previous = globalThis.localStorage, values = new Map([["pdos-next:my-work:recent-projects:me", JSON.stringify(["revoked", "project"])], ["pdos-next:my-work:recent-projects:other", JSON.stringify(["other-project"])]]);
-  globalThis.localStorage = { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) };
-  try {
-    const fixture = apiFixture(), opened = [], component = driver({ ...defaultProps(fixture.api), onOpenProject: (...args) => opened.push(args) });
-    component.render(); component.mount(); await tick(); const tree = component.render(), recents = section(tree, "最近访问的项目");
-    assert.match(markup(recents), /合成项目/); assert.doesNotMatch(markup(recents), /revoked|other-project/);
-    elements(recents, element => element.type === "button")[0].props.onClick();
-    assert.deepEqual(opened, [["cat", "project"]]);
-    assert.equal(JSON.parse(values.get("pdos-next:my-work:recent-projects:me"))[0], "project");
-    assert.equal(values.get("pdos-next:my-work:recent-projects:other"), JSON.stringify(["other-project"]));
-  } finally { if (previous === undefined) delete globalThis.localStorage; else globalThis.localStorage = previous; }
+test("failed and partial reads expose uncertainty without erasing independently available work",async()=>{
+ let fail=true;const fixture=apiFixture({fail:()=>fail}),component=driver(defaultProps(fixture.api));component.render();component.mount();await tick();let tree=component.render();assert.ok(list(tree).props.readings.some(item=>item.error.includes("合成读取失败")));
+ fail=false;elements(tree,item=>item.props?.["aria-label"]==="刷新我的工作")[0].props.onClick();component.render();component.mount();await tick();assert.ok(rows(component.render()).some(item=>item.title==="任务今日"));
+ const partial=driver(defaultProps(apiFixture({unavailable:1}).api));partial.render();partial.mount();await tick();assert.ok(list(partial.render()).props.readings.some(item=>item.error.includes("不可读")));
 });
-
-test("failed and partial reads keep unknown totals and retry instead of claiming empty queues", async () => {
-  let fail = true; const fixture = apiFixture({ fail: () => fail }), component = driver(defaultProps(fixture.api));
-  component.render(); component.mount(); await tick(); let tree = component.render();
-  assert.match(markup(tree), /合成读取失败/); assert.doesNotMatch(markup(tree), /当前没有需要你答复/);
-  assert.match(markup(section(tree, "任务期限筛选")), /—/);
-  fail = false; elements(tree, element => element.props?.children?.some?.(child => child === "刷新"))[0].props.onClick();
-  component.render(); component.mount(); await tick(); tree = component.render();
-  assert.match(markup(tree), /任务今日/); assert.doesNotMatch(markup(tree), /合成读取失败/);
-  const partial = driver(defaultProps(apiFixture({ unavailable: 1 }).api));
-  partial.render(); partial.mount(); await tick(); tree = partial.render();
-  assert.match(markup(section(tree, "任务期限筛选")), /—/); assert.match(markup(tree), /列表可能不完整/);
+test("principal changes synchronously hide every previous private row before effects run",async()=>{
+ const fixture=apiFixture({promiseItems:[promiseItem]}),component=driver(defaultProps(fixture.api));component.render();component.mount();await tick();assert.ok(rows(component.render()).length>0);
+ component.setProps({session:{name:"另一人",principal_id:"other"}});const next=component.render();assert.deepEqual(rows(next),[]);assert.ok(list(next).props.readings.every(item=>item.loading));assert.doesNotMatch(markup(next),/合成项目|任务今日/);
 });
-
-test("the shared attention queues stay separate from paused runs and do not issue an obsolete standalone G0 read", async () => {
-  const fixture = apiFixture(), component = driver(defaultProps(fixture.api));
-  component.render(); component.mount(); await tick(); const tree = component.render();
-  assert.equal(elements(tree, element => element.type?.name === "PersonalAttention").length, 1);
-  assert.equal(fixture.calls.some(call => call.url.startsWith("v1/personal/g0-reviews")), false);
-  assert.match(markup(section(tree, "运行与项目风险")), /需要答复的合成工作|合成风险/);
-  assert.ok(fixture.calls.every(call => call.body === undefined));
+test("commitments share one list while test-start recipient gaps and original times stay visible",async()=>{
+ const fixture=apiFixture({promiseItems:[promiseItem]}),component=driver(defaultProps(fixture.api));component.render();component.mount();await tick();const active=component.render();assert.equal(rows(active).some(item=>item.kind==="test"),false);
+ elements(section(active,"我的工作视图"),item=>item.type==="button"&&item.props.children==="承诺")[0].props.onClick();const tree=component.render(),items=rows(tree);assert.equal(items.length,1);assert.equal(items[0].kind,"test");assert.match(JSON.stringify(items[0].facts),/Asia\/Shanghai|Asia\\\/Shanghai/);assert.match(JSON.stringify(items[0].facts),/尚未记录|配对 6/);assert.match(items[0].target.href,/project=project/);
 });
-
-test("principal changes synchronously hide every previous private project, run and promise before effects run", async () => {
-  const fixture = apiFixture({ g0Items: [g0Item], promiseItems: [promiseItem] }), component = driver(defaultProps(fixture.api));
-  component.render(); component.mount(); await tick(); const loaded = markup(component.render());
-  for (const text of ["任务今日", "合成项目", "需要答复的合成工作", "已完成的合成工作", "合成承诺Build"]) assert.ok(loaded.includes(text));
-  component.setProps({ session: { name: "另一合成人员", principal_id: "other" } }); const pending = markup(component.render());
-  for (const text of ["任务今日", "合成项目", "需要答复的合成工作", "已完成的合成工作", "合成承诺Build"]) assert.equal(pending.includes(text), false, text);
-  assert.match(pending, /正在读取/); assert.equal(fixture.calls.length, 6);
+test("a test-start read failure does not erase tasks or paused conversations",async()=>{
+ const component=driver(defaultProps(apiFixture({promisesFail:()=>true}).api));component.render();component.mount();await tick();const active=component.render();assert.ok(rows(active).some(item=>item.kind==="pai"));assert.ok(rows(active).some(item=>item.kind==="task"));
+ elements(section(active,"我的工作视图"),item=>item.type==="button"&&item.props.children==="承诺")[0].props.onClick();assert.ok(list(component.render()).props.readings.some(item=>item.error.includes("合成开测承诺读取失败")));
 });
-
-test("test-start promise records stay outside triage counts and retain explicit receiver and coverage gaps", async () => {
-  const fixture = apiFixture({ g0Items: [g0Item], promiseItems: [promiseItem] }), component = driver(defaultProps(fixture.api));
-  component.render(); component.mount(); await tick(); const tree = component.render(), panel = markup(section(tree, "承诺与外部等待"));
-  assert.match(panel, /我作出的开测承诺记录（已接测试）/); assert.match(panel, /Asia\/Shanghai/); assert.match(panel, /接收方尚未记录/); assert.match(panel, /外部等待与其他通用承诺仍未接入/); assert.match(panel, /进入后仍需选择上述 Build、请求与 Run/);
-  assert.match(markup(elements(section(tree, "办理类型"), item => item.type === "button")[0]), />2</);
-  assert.equal(elements(section(tree, "办理类型"), item => item.props?.disabled).length, 0); assert.ok(fixture.calls.every(call => call.body === undefined));
+const workItems=load(path.join(webRoot,"src/lib/my-work-items.ts"));
+test("task attention deduplicates the same task, never its independent commitment or a similarly named task",()=>{
+ const task={id:"task",task:{id:"task",title:"同名工作",state:"assigned",revision:2},category:{id:"cat",name:"品类"},project:{id:"project",name:"项目"},assignee:null,recipient:null,commitment:{id:"promise",promised_at:"2026-10-25T01:00:00Z",original_timezone:"America/Los_Angeles",outcome_keys:["proof"]},timing:"pending"};
+ const attention={id:"task:task",kind:"task",queue:"receive",source:{id:"task"},details:{},category:task.category,project:task.project,title:task.task.title,state:"assigned",reason:"本人承接",responsible:{name:"本人"},due_at:null,valid_until:null,target:"project"};
+ const combined=workItems.responsibilityRows([attention],[task,{...task,id:"other",task:{...task.task,id:"other"}}],[],[]);assert.equal(combined.length,2);assert.equal(combined.filter(item=>item.kind==="receive").length,1);
+ const promises=workItems.commitmentRows([task],[]);assert.equal(promises.length,1);assert.equal(promises[0].due,"2026-10-24");assert.match(JSON.stringify(promises[0].facts),/不代替承诺履行结论/);
+ assert.equal(workItems.workDate(null),null);assert.equal(workItems.workDate("2026-10-25","America/Los_Angeles"),"2026-10-25");
 });
-
-test("test-start promise read failure leaves tasks and run activity intact", async () => {
-  const fixture = apiFixture({ g0Items: [g0Item], promisesFail: () => true }), component = driver(defaultProps(fixture.api));
-  component.render(); component.mount(); await tick(); const tree = component.render(), rendered = markup(tree);
-  assert.match(markup(section(tree, "承诺与外部等待")), /合成开测承诺读取失败/);
-  for (const text of ["任务今日", "需要答复的合成工作", "已完成的合成工作"]) assert.ok(rendered.includes(text));
-  assert.doesNotMatch(markup(section(tree, "承诺与外部等待")), /全部 <b>0/);
+const {MyWorkList}=load(path.join(directory,"my-work-list.tsx"));
+test("list filters only local records, preserves scope navigation and offers all outstanding pages",async()=>{
+ const row={id:"one",title:"压力验证",project:"项目甲",kind:"task",state:"进行中",due:day(9),dateKind:"期限",facts:[],target:{categoryId:"cat",projectId:"project"}},opened=[],pages=[];
+ const props={rows:[row,{...row,id:"two",title:"噪声",kind:"risk",due:day(-1)}],readings:[{name:"任务",more:true,loading:false,error:"",retry(){},loadMore:async()=>pages.push("tasks")},{name:"风险",more:true,loading:false,error:"",retry(){},loadMore:async()=>pages.push("risk")}],onOpenProject:(...args)=>opened.push(args),onOpenRun(){}};
+ const state={index:0,values:[],effects:[]};const render=()=>{hooks=state;state.index=0;try{return MyWorkList(props)}finally{hooks=null}};let tree=render();
+ elements(tree,item=>item.props?.["aria-label"]==="工作期限")[0].props.onChange({target:{value:"later"}});tree=render();assert.match(markup(tree),/压力验证/);assert.doesNotMatch(markup(tree),/>噪声</);
+ elements(tree,item=>item.props?.children==="进入项目办理")[0].props.onClick();assert.deepEqual(opened,[["cat","project"]]);
+ elements(tree,item=>item.props?.children==="加载更多工作")[0].props.onClick();await tick();assert.deepEqual(pages,["tasks","risk"]);
+ elements(tree,item=>item.props?.["aria-label"]==="搜索我的工作")[0].props.onChange({target:{value:"未匹配"}});assert.match(markup(render()),/部分资料尚未取得/);
 });

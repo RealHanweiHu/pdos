@@ -41,6 +41,14 @@ test("search literal characters are encoded and proposal scope stays category-bo
   assert.equal((await h.send("q=history", category, session)).status, 422);
   assert.equal(h.calls.length, 1);
 });
+test("actual project is preserved for Session and Run pages and rejected in personal routes", async () => {
+ const h = harness();
+ for (const sid of [undefined, session]) assert.equal((await h.send(`project_id=${cursor}`, category, sid)).status, 200);
+ assert.ok(h.calls.every(call => new URL(call.url).searchParams.get("project_id") === cursor && call.init.method === "GET"));
+ assert.equal((await h.send(`project_id=${cursor}`)).status, 422);
+ assert.equal((await h.send(`project_id=${cursor}&project_id=${session}`, category)).status, 422);
+ assert.equal(h.calls.length, 2);
+});
 test("search length matches the API Unicode-character bound", async () => {
   const h = harness();
   assert.equal((await h.send(new URLSearchParams({ q: "🧪".repeat(160) }).toString(), category)).status, 200);

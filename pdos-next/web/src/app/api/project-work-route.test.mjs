@@ -41,3 +41,11 @@ for(const query of ["","?project_id="+id(4)+"&project_id="+id(5),"?project_id="+
 for(const operation of operations)test(operation+" exact original forwarded once",async()=>{const h=harness(),body=command(operation);assert.equal((await h.send(inputs,{method:"POST",body})).status,200);assert.equal(h.calls.length,1);assert.deepEqual(JSON.parse(h.calls[0].init.body),body);});
 for(const fault of ["owner_id","visibility","actor_id","authority","policy","category","product","reads","extra","json"])test("work rejects "+fault,async()=>{const h=harness(),body=command(operations[0]);if(["owner_id","visibility","actor_id","authority","policy"].includes(fault))body.payload[fault]=id(8);if(fault==="category")body.category_id=id(8);if(fault==="product")body.product_id=id(8);if(fault==="reads")body.source_read_set=[{artifact_id:id(9),expected_revision:1},{artifact_id:id(9),expected_revision:2}];if(fault==="extra")body.bypass=true;assert.equal((await h.send(inputs,{method:"POST",body,...(fault==="json"?{raw:"{"}:{})})).status,422);assert.equal(h.calls.length,0);});
 test("work keeps auth origin and unknown send single attempt",async()=>{const h=harness();assert.equal((await h.send(inputs,{method:"POST",body:command(operations[0]),origin:"https://other.invalid"})).status,403);assert.equal(h.calls.length,0);const anon=harness({loggedIn:false});assert.equal((await anon.send(root+"?project_id="+id(4))).status,401);const down=harness({unavailable:true});assert.equal((await down.send(inputs,{method:"POST",body:command(operations[0])})).status,503);assert.equal(down.calls.length,1);});
+
+const planning = product + "/projects/" + id(4);
+for (const suffix of ["/plan-comparison", "/plan-comparison?proposal_id="+id(5), "/governance", "/governance/review-inputs?package_id="+id(6)]) test("scoped planning read "+suffix, async()=>{
+  const h=harness(); assert.equal((await h.send(planning+suffix)).status,200); assert.equal(h.calls.length,1); assert.ok(h.calls[0].url.endsWith(planning+suffix));
+});
+for (const suffix of ["/governance?proposal_id="+id(5), "/governance/review-inputs?package_id=bad", "/plan-comparison?proposal_id="+id(5)+"&proposal_id="+id(6), "/plan-comparison?scope=all"]) test("planning read rejects "+suffix,async()=>{
+  const h=harness();assert.equal((await h.send(planning+suffix)).status,422);assert.equal(h.calls.length,0);
+});

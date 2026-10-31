@@ -1,5 +1,6 @@
 "use client";
 
+import { useProfessionalSelection } from "@/components/projects/professional-target";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, CheckCircle, SealCheck } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
@@ -47,7 +48,7 @@ function PublicationPanel({ categoryId, projectId = "", product, principalId, ap
   const refresh = useCallback(async () => {
     const epoch = ++request.current; setReading(true); setFailed(true);
     try {
-      const context = await api<ProjectList>(`v1/products/${product.id}/projects`);
+      const context = await api<ProjectList>(projectId?`v1/products/${product.id}/projects/${projectId}`:`v1/products/${product.id}/projects`);
       if (!Array.isArray(context.items) || !context.items.every(p => mpUuid(p.id) && typeof p.name === "string")) throw new Error("项目读取不完整，请重试。");
       const selection = current.current.project;
       let selected: MpVersion[] = [], published: PublicationVersion[] = [], nextCursor: string | null = null;
@@ -63,7 +64,7 @@ function PublicationPanel({ categoryId, projectId = "", product, principalId, ap
       setProjects(context.items); setBaselines(selected); setVersions(published); setCursor(nextCursor); setFailed(false);
     } catch (error) { if (alive.current && epoch === request.current) failure(error); }
     finally { if (alive.current && epoch === request.current) setReading(false); }
-  }, [api, product.id, failure]);
+  }, [api, product.id, projectId, failure]);
   useEffect(() => {
     alive.current = true;
     void Promise.resolve().then(async () => {
@@ -136,6 +137,7 @@ function PublicationPanel({ categoryId, projectId = "", product, principalId, ap
   }
   const disabled = busy || reading || denied;
   const previousUnavailable = !!local.previous && !local.pending && !local.receipt && !failed && !reading && !versions.some(v => v.id === local.previous!.id && v.revision === local.previous!.revision && v.project_id === local.project && v.is_current);
+  useProfessionalSelection("publication",versions.map(row=>row.id),fixed?.id??"",disabled||failed||!!local.pending,id=>{const row=versions.find(row=>row.id===id);if(row)void readFixed(row);});
   return <section aria-label="制造基线正式发布" className="min-w-0 space-y-4 rounded-lg border border-border p-4 [overflow-wrap:anywhere]">
     <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="flex items-center gap-2 text-lg font-semibold"><SealCheck size={20}/>制造基线发布</h2><p className="subtle">固定本轮工艺和资料，由有权本人核对并具名发布。</p></div><Button variant="outline" size="sm" disabled={disabled} onClick={() => void refresh()}><ArrowClockwise/>刷新发布资料</Button></div>
     {notice && <p role="status" className="text-sm">{notice}</p>}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { CategoryMetadataEditor } from "../category-metadata-editor";
 import { Button } from "@/components/ui/button";
 import { emptyGroups, groupKeys, groupNames, personalApi, RequestRejected, selectedInput } from "./contracts";
 import type { Api, CategoryCandidate, CategoryConfirmationDraft, CategoryCreateDTO, CategoryPreview, CreatedCategory, Groups } from "./contracts";
@@ -12,8 +13,8 @@ export function CategoryCreateForm({ candidate, runId, disabled = false, api = p
 }) {
   const restored = draft?.request.prepared_by_run_id === runId && draft?.request.candidate_digest === candidate?.candidate_digest ? draft : undefined;
   const [key, setKey] = useState("");
-  const [name, setName] = useState("");
-  const [purpose, setPurpose] = useState("");
+  const [name, setName] = useState(restored?.request.human_edits?.name ?? candidate?.input.name ?? "");
+  const [purpose, setPurpose] = useState(restored?.request.human_edits?.purpose ?? candidate?.input.purpose ?? "");
   const [selected, setSelected] = useState<Record<keyof Groups, boolean>>(() => ({
     knowledge: restored ? restored.request.groups.knowledge.length > 0 : true,
     parameters: restored ? restored.request.groups.parameters.length > 0 : true,
@@ -41,7 +42,7 @@ export function CategoryCreateForm({ candidate, runId, disabled = false, api = p
         if (candidate && !runId) throw new Error("候选缺少实际运行，无法采用。");
         const input = candidate ? selectedInput(candidate, selected) : { key, name, purpose, groups: emptyGroups() };
         request.current = { ...input, deidentified_confirmed: true, idempotency_key: crypto.randomUUID(),
-          ...(candidate ? { prepared_by_run_id: runId, candidate_digest: candidate.candidate_digest } : {}) };
+          ...(candidate ? { prepared_by_run_id: runId, candidate_digest: candidate.candidate_digest, ...((name !== candidate.input.name || purpose !== candidate.input.purpose) ? { human_edits: { name: name.trim(), purpose: purpose.trim() } } : {}) } : {}) };
         setHasRequest(true);
         onDraftChange?.({ request: request.current, preview: null, attempted: false, rejected: false });
       }
@@ -63,7 +64,7 @@ export function CategoryCreateForm({ candidate, runId, disabled = false, api = p
       const result = await api<{ subject_id: string; id?: string; continuation_state?: string }>("v1/categories", request.current);
       if (!active.current) return;
       if (!result.subject_id) throw new Error("创建结果不完整，请使用原请求重试。");
-      const category = { id: result.subject_id, name: request.current.name, purpose: request.current.purpose,
+      const category = { id: result.subject_id, name: request.current.human_edits?.name ?? request.current.name, purpose: request.current.human_edits?.purpose ?? request.current.purpose,
         ...(result.id ? { receiptId: result.id } : {}), ...(result.continuation_state ? { continuationState: result.continuation_state } : {}) };
       setCreated(category);
       onDraftChange?.(null);
@@ -78,17 +79,16 @@ export function CategoryCreateForm({ candidate, runId, disabled = false, api = p
 
   if (created) return <section className="panel space-y-3">
     <p role="status">品类「{created.name}」已创建。{created.continuationState === "awaiting_delivery" ? "小 Pai 的后续通知等待派送，创建回执已保存。" : ""}</p>
-    {created.receiptId && <p className="break-all text-sm">创建回执：{created.receiptId}</p>}
-    <Button onClick={() => onCreated(created)}>进入已创建品类</Button>
+    <CategoryMetadataEditor key={created.id} categoryId={created.id} api={api} embedded/>
+    {created.receiptId && <details className="text-xs text-muted-foreground"><summary>创建记录</summary><p className="break-all">{created.receiptId}</p></details>}
+    <Button asChild variant="outline"><a href={`/?area=category&category=${created.id}`}>进入已创建品类</a></Button>
   </section>;
 
   return <section className="panel space-y-4">
     <h2 className="font-semibold">{candidate ? "核对并采用品类候选" : "手动建立品类"}</h2>
     {candidate ? <>
-      <h3 className="text-lg font-medium">{candidate.input.name}</h3>
-      <p className="text-sm text-muted-foreground">品类键：{candidate.input.key}</p>
-      <p className="whitespace-pre-wrap">{candidate.input.purpose}</p>
-      <p className="text-sm text-muted-foreground">以下内容已由服务器封存。每组可完整采用或取消，不能在页面改写。</p>
+      <fieldset disabled={frozen || disabled} className="space-y-3"><label className="block text-sm">品类名称<input required maxLength={160} value={name} onChange={event => setName(event.target.value)}/></label><label className="block text-sm">主要场景<textarea required rows={3} maxLength={4000} value={purpose} onChange={event => setPurpose(event.target.value)}/></label></fieldset>
+      <p className="text-xs text-muted-foreground">原小Pai候选保留，你的修改随确认一起保存。初始资料可按组采用，保存后逐项维护。</p>
       <fieldset disabled={frozen || disabled} className="space-y-3">
         <legend className="sr-only">采用的完整组</legend>
         {groupKeys.map(group => <div key={group} className="rounded-lg border p-3">
@@ -126,7 +126,7 @@ export function CategoryCreateForm({ candidate, runId, disabled = false, api = p
       {groupKeys.map(group => <p key={group} className="text-sm">{groupNames[group]}：{preview.groups[group].selected_count} / {preview.groups[group].available_count} 项</p>)}
       <p className="text-sm text-muted-foreground">确认有效期至 {new Date(preview.expires_at).toLocaleString()}，提交时再次核对权限与来源。</p>
       <Button type="button" disabled={busy || disabled} onClick={() => void create()}>{busy ? "正在提交…" : attempted ? "使用原请求重试创建" : "本人确认并创建品类"}</Button>
-    </div> : <Button type="button" disabled={busy || disabled || !deidentified || (!candidate && (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(key) || !name.trim() || !purpose.trim()))}
+    </div> : <Button type="button" disabled={busy || disabled || !deidentified || !name.trim() || !purpose.trim() || (!candidate && (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(key) || !name.trim() || !purpose.trim()))}
       onClick={() => void review()}>{busy ? "正在核对…" : hasRequest ? "重试原预览请求" : "查看创建预览"}</Button>}
     {hasRequest && !busy && (!attempted || rejected) && <Button type="button" variant="ghost" onClick={() => {
       request.current = null; setHasRequest(false); setPreview(null); setError(""); setAttempted(false); setRejected(false);

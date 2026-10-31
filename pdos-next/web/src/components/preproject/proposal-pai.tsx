@@ -5,19 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Xiaopai } from "@/components/xiaopai";
 import { browserApi } from "@/lib/browser-api";
 import { categoryTransport } from "@/lib/category-transport";
-import { Sparkle } from "@phosphor-icons/react";
+import type { MaterialContext } from "@/components/category-material-editor";
+import { X } from "@phosphor-icons/react";
 import styles from "./proposal-document.module.css";
 
-export function ProposalPai({ categoryId, proposalId, principalId, proposalTitle }: {
-  categoryId: string; proposalId: string; principalId: string; proposalTitle?: string;
+export function ProposalPai({ categoryId, proposalId, principalId, proposalTitle, materialContext, onClose }: {
+  onClose?: () => void;
+  categoryId: string; proposalId: string; principalId: string; proposalTitle?: string; materialContext?: MaterialContext;
 }) {
-  const [open, setOpen] = useState(true);
   const [compose, setCompose] = useState(false);
   const transport = useMemo(() => categoryTransport(categoryId, browserApi), [categoryId]);
   return <section className={styles.pai} aria-label="当前提案的小Pai">
-    <header className={styles.paiHeading}><span className={styles.agent}><Sparkle size={15} aria-hidden="true"/>小Pai</span><h2>本案助手</h2><Button size="xs" variant="ghost" aria-expanded={open} onClick={() => setOpen(value => !value)}>{open ? "收起" : "展开"}</Button></header>
-    {open && <div className={styles.paiBody}><Xiaopai key={`${principalId}:${categoryId}:${proposalId}`} api={transport}
+    {<div className={styles.paiBody}><Xiaopai headerActions={onClose && <Button size="icon" variant="ghost" aria-label="关闭提案小Pai" onClick={onClose}><X/></Button>} key={`${principalId}:${categoryId}:${proposalId}`} api={transport}
       categoryId={categoryId} principalId={principalId} proposalId={proposalId} proposalTitle={proposalTitle}
-      productId="" sources={[]} composeOpen={compose} onComposeChange={setCompose} /></div>}
+      materialContext={materialContext} productId="" sources={[]} composeOpen={compose} onComposeChange={setCompose} /></div>}
   </section>;
 }

@@ -44,7 +44,7 @@ function queryFor(request: NextRequest, categoryId: string | undefined, list: bo
   const query = new URLSearchParams();
   for (const [key, value] of request.nextUrl.searchParams) {
     if (query.has(key)) return error("会话参数必须唯一。", 422);
-    const valid = key === "proposal_id" ? categoryId !== undefined && uuid.test(value)
+    const valid = key === "proposal_id" || list && key === "project_id" ? categoryId !== undefined && uuid.test(value)
       : !list ? false : key === "view" ? value === "active" || value === "archived"
       : key === "q" ? [...value].length <= 160 : key === "cursor" ? uuid.test(value)
       : key === "page_size" ? /^(?:[1-9]|[1-4][0-9]|50)$/.test(value) : false;

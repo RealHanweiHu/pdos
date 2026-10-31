@@ -114,8 +114,8 @@
 .activitySlot > section > header h2 { font-size:12.5px; }
 .activitySlot > section > header p { font-size:10.5px; }
 .activitySlot > section > header button { min-height:26px; padding:4px 8px; font-size:10.5px; }
-.activitySlot > section > ol { gap:8px; }
-.activitySlot > section > ol > li { gap:8px; padding:10px; }
+.activitySlot > section > ol { gap:0; }
+.activitySlot > section > ol > li { padding:0; }
 .activitySlot > section > ol > li h3 { font-size:11.5px; }
 .activitySlot > section > ol > li > dl { font-size:10.5px; }
 .maturity { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
@@ -132,3 +132,65 @@
   .views button,.filterButton,.mine,.select,.refresh,.tabs button,.outlineLink,.back,.rowActions button,.groupTitle { min-height:44px; }
   .title { min-height:44px; } .search input,.select select { min-height:40px; }
 }
+
+.workspaceTitle h1 { font-size: 22px; }
+.workspaceHead { gap: 12px; margin-bottom: 18px; }
+.tabBar { display: flex; align-items: stretch; gap: 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.tabs { gap: 22px; flex-wrap: nowrap; min-width: 0; margin: 0; overflow-x: auto; }
+.tabs button { min-height: 38px; padding: 0 0 10px; border: 0; border-bottom: 2px solid transparent; border-radius: 0; font-size: 12px; }
+.tabs button[aria-selected=true] { color: var(--foreground); background: none; border-bottom-color: var(--foreground); font-weight: 550; }
+.more { position: relative; flex-shrink: 0; }
+.more summary { display: flex; align-items: center; gap: 5px; min-height: 38px; padding-bottom: 10px; font-size: 12px; color: var(--text-subtle); list-style: none; cursor: pointer; }
+.more summary::-webkit-details-marker { display: none; }
+.more > div { position: absolute; z-index: 12; top: 100%; right: 0; min-width: 180px; padding: 5px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); }
+.more button { display: block; width: 100%; padding: 7px 9px; text-align: left; font-size: 12px; border-radius: 5px; cursor: pointer; }
+.more button:hover { background: var(--surface-2); }
+.planView { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; min-width: 0; }
+.planView > * { min-width: 0; }
+@media (max-width: 640px) { .workspaceTitle h1 { font-size: 20px; } .tabs { gap: 16px; } .tabs button, .more summary { min-height: 44px; } .more > div { right: 0; } }
+
+.workspaceTitle h1 { font-size:22px; font-weight:600; }
+.tabs button[aria-selected=true] { border-bottom-color:var(--primary); }
+.tabBar { justify-content:flex-start; gap:24px; }
+.tabBar .tabs { flex:0 1 auto; width:auto; }
+.more > div { left:0; right:auto; }
+.more summary[data-active=true] { color:var(--foreground); border-bottom:2px solid var(--primary); }
+.more button[aria-current=page] { background:var(--muted); }
+.planView { gap:16px; }
+.planHeading h2 { font-size:16px; font-weight:600; }
+.planHeading p { margin-top:5px; color:var(--text-subtle); font-size:12px; }
+.more summary:focus-visible { outline:2px solid var(--ring); outline-offset:3px; }
+
+/* The formal workspace follows the same compact header and flat sections as ui-lab. */
+.workspaceHead { margin:0 0 18px; }
+.workspaceTitle { gap:12px; flex-wrap:nowrap; }
+.workspaceTitle h1 { font-size:19px; font-weight:600; overflow-wrap:anywhere; }
+.monogram { flex-shrink:0; display:grid; place-items:center; width:37px; height:37px; border:1px solid var(--border); border-radius:8px; font:12px var(--font-geist-mono),monospace; color:var(--text-subtle); cursor:pointer; }
+.monogram:hover { background:var(--muted); }
+.projectIdentity { min-width:0; }
+.stageLink { display:flex; align-items:center; gap:8px; margin-top:5px; font-size:11px; color:var(--text-subtle); cursor:pointer; }
+.stageUnknown { width:28px; height:4px; border:1px solid var(--border); }
+.projectLead { margin-left:auto; font-size:11px; color:var(--text-subtle); white-space:nowrap; }
+.tabBar { gap:26px; margin:0 0 24px; }
+.tabs { gap:26px; }
+.tabs button { padding-bottom:12px; min-height:30px; }
+.more { margin-left:auto; }
+.more summary { min-height:30px; padding-bottom:12px; }
+.more > div { left:auto; right:0; }
+.professionalSlot[hidden] { display:none; }
+.workspaceGrid { grid-template-columns:minmax(0,1fr) 250px; gap:40px; }
+.section { border:0; border-radius:0; background:transparent; margin-bottom:24px; }
+.section h2 { padding:0 0 12px; border:0; font-size:13px; }
+.sectionBox { padding:0; }
+.action { padding:12px 0; }
+.panelEmpty,.panelFoot { padding:12px 0; }
+.activitySlot { padding:0; border:0; border-radius:0; }
+.projectDetails { margin-top:32px; border-top:1px solid var(--border); padding-top:12px; font-size:11px; color:var(--text-subtle); }
+.projectDetails summary { cursor:pointer; width:fit-content; }
+.projectDetails[open] summary { margin-bottom:14px; }
+.projectDetails .readTime { text-align:left; }
+@media(max-width:1000px) { .workspaceGrid { grid-template-columns:minmax(0,1fr); gap:24px; } }
+@media(max-width:640px) { .workspaceTitle h1 { font-size:17px; } .projectLead { display:none; } .tabs { gap:20px; } .tabBar { gap:12px; } .more { margin-left:0; } .tabs button,.more summary { min-height:40px; } }
+
+.overviewBuildSelect { display:grid; gap:6px; font-size:12px; color:var(--text-subtle); margin-bottom:14px; }
+.overviewBuildSelect select { width:100%; min-width:0; font-size:12px; color:var(--foreground); }

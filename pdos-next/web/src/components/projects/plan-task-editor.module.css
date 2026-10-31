@@ -1,0 +1,16 @@
+.scroll { min-width:0; overflow-x:auto; }
+.table { width:100%; min-width:640px; border-collapse:collapse; font-size:12px; }
+.table th { color:var(--text-subtle); font-size:11px; font-weight:450; text-align:left; height:30px; padding:4px 6px; border-bottom:1px solid var(--border); }
+.table td { padding:5px 6px; border-bottom:1px solid var(--border-soft); vertical-align:top; }
+.table td:first-child { width:40%; }
+.table td:nth-child(2) { width:90px; }
+.table td:nth-child(3),.table td:nth-child(4) { width:84px; }
+.table input,.table select { width:100%; min-height:28px; font-size:12px; padding:4px 6px; margin:0; border:1px solid transparent; border-radius:4px; background:transparent; }
+.table input:hover,.table input:focus,.table select:hover { border-color:var(--border); }
+.table summary { cursor:pointer; white-space:nowrap; padding-top:6px; font-size:11px; }
+.popover { min-width:200px; max-width:320px; padding:10px 0; }
+.popover strong,.popover label { font-size:11px; font-weight:450; }
+.popover textarea { min-height:58px; font-size:12px; }
+.dependencies { max-height:140px; overflow:auto; padding-top:5px; }
+.dependencies label { display:flex; gap:6px; align-items:center; margin:0; padding-block:4px; }
+.dependencies input { width:12px; min-height:12px; }

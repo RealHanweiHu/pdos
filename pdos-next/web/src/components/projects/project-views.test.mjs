@@ -11,7 +11,7 @@ const ts = dependency("typescript"), React = dependency("react");
 const { renderToStaticMarkup } = dependency("react-dom/server");
 let hooks = null;
 /* eslint-disable react-hooks/rules-of-hooks, react-hooks/exhaustive-deps -- Isolated component state harness; SSR delegates unchanged. */
-const reactShim = { ...React, useState(initial) {
+const reactShim = { ...React, useMemo(factory, dependencies) { return hooks ? factory() : React.useMemo(factory, dependencies); }, useCallback(callback, dependencies) { return hooks ? callback : React.useCallback(callback, dependencies); }, useState(initial) {
   if (!hooks) return React.useState(initial);
   const own = hooks, index = own.index++;
   if (!(index in own.values)) own.values[index] = typeof initial === "function" ? initial() : initial;
@@ -27,15 +27,18 @@ function load(filename) {
   loaded.require = specifier => specifier === "react" ? reactShim
     : specifier === "@phosphor-icons/react" ? new Proxy({}, { get: () => () => React.createElement("svg") })
     : specifier === "./project-build-summary" ? { ProjectBuildSummary: props => React.createElement("div", { "data-project-build-summary": props.projectId }) }
+    : specifier === "@/components/workspace" ? { Workspace: props => React.createElement("div", { "data-editor-panel": props.embeddedPanel, "data-product": props.fixedProductId }) }
     : specifier.startsWith("@/") ? load(path.join(webRoot, "src", specifier.slice(2)))
     : specifier.startsWith(".") ? load(path.resolve(path.dirname(filename), specifier)) : dependency(specifier);
-  loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2017, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText, filename);
+  loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { fileName: filename, compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2017, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText, filename);
   return loaded.exports;
 }
 const presentation = load(path.join(webRoot, "src/lib/project-presentation.ts"));
 const { ProjectList } = load(path.join(directory, "project-list.tsx"));
+const { ProjectDirectoryView } = load(path.join(directory, "project-directory-view.tsx"));
 const { ProjectWorkspace } = load(path.join(directory, "project-workspace.tsx"));
 const { ProjectCockpit } = load(path.join(directory, "project-cockpit.tsx"));
+const { ProjectProfessional } = load(path.join(directory, "project-professional.tsx"));
 const { ProjectActivity } = load(path.join(directory, "project-activity.tsx"));
 function entry(id, owner = "me", earliest = "2026-10-24T00:00:00Z", latest = "2026-10-28T00:00:00Z") {
   return { category: { id: "cat", name: "合成品类" }, product: { id: "model", name: "合成型号" },
@@ -63,7 +66,7 @@ test("project filters retain the authorized identity, and ownership is not infer
 });
 test("missing stage templates do not become a six-stage plan or a health decision", () => {
   const before = structuredClone(entries), groups = presentation.groupProjects(entries, "stage");
-  assert.equal(groups.length, 1); assert.match(groups[0].label, /待接入/);
+  assert.equal(groups.length, 1); assert.equal(groups[0].label, "阶段未采用");
   assert.deepEqual(entries, before);
 });
 test("unknown, single-sided and reversed finish bounds cannot be drawn as a fabricated interval", () => {
@@ -75,51 +78,60 @@ test("unknown, single-sided and reversed finish bounds cannot be drawn as a fabr
   assert.equal(presentation.forecastAxis([unavailable]), null);
   assert.deepEqual(presentation.projectForecast(entry("invalid", "me", "bad date", null)), { earliest: null, latest: null });
 });
-test("switching list/board/timeline and filtering consumes the same GET read set, without business writes", async () => {
-  const calls = [];
-  const component = driver(ProjectList, { principalId: "me", onOpenProject() {}, onOpenWorkbench() {}, api: async (path, body) => { calls.push({ path, body }); return { items: entries, next_cursor: null, unavailable_count: 0, as_of: "2026-10-17T00:00:00Z" }; } });
+test("the approved three views use one authorized read set and open the correct project or plan", async () => {
+  const calls = [], opened = [];
+  const component = driver(ProjectList, { principalId: "me", onOpenProject: (...scope) => opened.push(["project", ...scope]), onOpenPlan: (...scope) => opened.push(["plan", ...scope]), api: async (path, body) => { calls.push({ path, body }); return { items: entries, next_cursor: null, unavailable_count: 0, as_of: "2026-10-17T00:00:00Z" }; } });
   component.render(); component.mount(); await tick();
-  let tree = component.render(); assert.match(markup(tree), /合成项目 one/); assert.match(markup(tree), /合成项目 two/);
+  const page = driver(ProjectDirectoryView, component.render().props);
+  let tree = page.render(); assert.match(markup(tree), /合成项目 one/); assert.match(markup(tree), /合成项目 two/);
+  assert.doesNotMatch(markup(tree), /我负责的|项目数据说明|读取于/);
   const viewButtons = () => elements(tree, e => e.type === "button" && e.props["aria-pressed"] !== undefined);
-  viewButtons()[1].props.onClick(); tree = component.render(); assert.match(markup(tree), /看板只展示/);
-  viewButtons()[2].props.onClick(); tree = component.render();
+  viewButtons()[1].props.onClick(); tree = page.render(); assert.match(markup(tree), /看板用于查看/);
+  elements(tree, e => e.type === "button" && e.props.className === undefined && elements(e, child => child.type === "h2").length > 0)[0].props.onClick();
+  assert.deepEqual(opened.pop(), ["project", "cat", "one"]);
+  viewButtons()[2].props.onClick(); tree = page.render();
   for (const label of ["基线", "预测", "承诺", "实际"]) assert.ok(markup(tree).includes(label));
+  elements(tree, e => e.type === "button" && e.props.className === "textLink")[0].props.onClick();
+  assert.deepEqual(opened.pop(), ["plan", "cat", "one"]);
   assert.equal(elements(tree, e => e.props?.draggable).length, 0);
-  elements(tree, e => e.type === "input" && e.props.type === "checkbox")[0].props.onChange({ target: { checked: true } });
-  tree = component.render(); assert.match(markup(tree), /合成项目 one/); assert.doesNotMatch(markup(tree), /合成项目 two/);
   assert.deepEqual(calls, [{ path: "v1/personal/projects?page_size=100", body: undefined }]);
 });
-test("project read errors keep retry and filters, and never masquerade as an empty portfolio", async () => {
+test("project read errors retain retry without masquerading as an empty portfolio", async () => {
   let fail = true; const calls = [];
-  const component = driver(ProjectList, { onOpenProject() {}, onOpenWorkbench() {}, api: async (path, body) => { calls.push({ path, body }); if (fail) throw new Error("合成读取失败"); return { items: entries, next_cursor: null, unavailable_count: 0 }; } });
+  const component = driver(ProjectList, { onOpenProject() {}, api: async (path, body) => { calls.push({ path, body }); if (fail) throw new Error("合成读取失败"); return { items: entries, next_cursor: null, unavailable_count: 0 }; } });
   component.render(); component.mount(); await tick(); let tree = component.render();
   assert.match(markup(tree), /合成读取失败/); assert.doesNotMatch(markup(tree), /暂无可见项目/);
-  elements(tree, e => e.type === "input" && e.props["aria-label"] === "搜索项目")[0].props.onChange({ target: { value: "two" } });
-  fail = false; tree = component.render(); elements(tree, e => e.type === "button" && e.props["aria-label"] === "刷新项目")[0].props.onClick();
+  fail = false; elements(tree, e => e.props?.children === "重新读取")[0].props.onClick();
   component.render(); component.mount(); await tick(); tree = component.render();
-  assert.match(markup(tree), /合成项目 two/); assert.doesNotMatch(markup(tree), /合成项目 one/);
+  assert.match(markup(tree), /合成项目 one/); assert.match(markup(tree), /合成项目 two/);
   assert.ok(calls.every(call => call.body === undefined));
 });
+test("directory identity changes hide prior entries before the next read completes", async () => {
+  const component = driver(ProjectList, { principalId: "me", onOpenProject() {}, api: async () => ({ items: entries, next_cursor: null, unavailable_count: 0 }) });
+  component.render(); component.mount(); await tick(); assert.match(markup(component.render()), /合成项目 one/);
+  component.setProps({ principalId: "other" });
+  const html = markup(component.render()); assert.match(html, /正在读取/); assert.doesNotMatch(html, /合成项目 one/);
+});
 test("workspace retains Build and commitments, separates maturity, and all execution links keep project scope", () => {
-  const props = { entry: entries[0], api: async () => {}, session: { name: "合成人员", principal_id: "me" }, today: "2026-10-17", readVersion: 3, onBack() {}, onOpenWorkbench() {} };
+  const props = { entry: entries[0], api: async () => {}, session: { name: "合成人员", principal_id: "me" }, today: "2026-10-17", readVersion: 3, initialView: "now", onBack() {}, onOpenWorkbench() {} };
   const component = driver(ProjectWorkspace, props); let tree = component.render();
-  assert.match(markup(tree), /下一 Build/); assert.match(markup(tree), /关键承诺/);
+  assert.match(markup(tree), /试制轮次/); assert.match(markup(tree), /关键承诺/);
   for (const anchor of elements(tree, e => e.type === "a")) {
     const params = new URLSearchParams(anchor.props.href); assert.equal(params.get("project"), "one"); assert.equal(params.get("product"), "model");
   }
   elements(tree, e => e.props?.id === "project-tab-gates")[0].props.onClick(); tree = component.render();
-  for (const label of ["产品验证", "制造", "交付适用性", "下一阶段进入条件"]) assert.ok(markup(tree).includes(label));
+  const governance = elements(tree, e => e.type?.name === "ProjectGovernance")[0]; assert.ok(governance); assert.equal(governance.props.projectId, "one"); assert.equal(governance.props.categoryId, "cat");
   assert.doesNotMatch(markup(tree), /EVT|DVT|PVT|READY|BLOCKED/);
   elements(tree, e => e.props?.id === "project-tab-builds")[0].props.onClick(); tree = component.render();
   const summary = elements(tree, e => e.props?.projectId === "one" && e.props?.principalId === "me")[0]; assert.ok(summary); assert.equal(summary.props.api, props.api); assert.equal(summary.props.categoryId, "cat"); assert.equal(summary.props.productId, "model"); assert.equal(summary.props.readVersion, 3);
 });
-test("one real activity stream occupies the now right column after the status entry, and leaves when the tab changes", () => {
-  const props = { entry: entries[0], api: async () => {}, session: { name: "本人", principal_id: "me" }, today: "2026-10-18", readVersion: 5, onBack() {}, onOpenWorkbench() {} };
+test("one real activity stream occupies the overview main column and leaves when the tab changes", () => {
+  const props = { entry: entries[0], api: async () => {}, session: { name: "本人", principal_id: "me" }, today: "2026-10-18", readVersion: 5, initialView: "now", onBack() {}, onOpenWorkbench() {} };
   const component = driver(ProjectWorkspace, props); let tree = component.render();
   const activity = elements(tree, e => e.type === ProjectActivity); assert.equal(activity.length, 1);
-  const grid = elements(tree, e => e.props?.className === "workspaceGrid")[0], right = grid.props.children[1], children = React.Children.toArray(right.props.children);
-  const promptIndex = children.findIndex(e => e.props?.className === "updatePrompt"), slotIndex = children.findIndex(e => e.props?.className === "activitySlot");
-  assert.ok(promptIndex >= 0); assert.equal(slotIndex, promptIndex + 1); assert.equal(elements(children[slotIndex], e => e.type === ProjectActivity).length, 1);
+  const grid = elements(tree, e => e.props?.className === "workspaceGrid")[0], main = grid.props.children[0], right = grid.props.children[1];
+  assert.equal(elements(main, e => e.type === ProjectActivity).length, 1);
+  assert.equal(elements(right, e => e.props?.className === "updatePrompt").length, 1);
   assert.equal(activity[0].props.api, props.api); assert.equal(activity[0].props.readVersion, 5); assert.deepEqual(activity[0].props.scope, { categoryId: "cat", productId: "model", projectId: "one", principalId: "me" });
   assert.doesNotMatch(markup(tree), /项目已建立|更早的具名更新可进入工作与计划查看/);
   elements(tree, e => e.props?.id === "project-tab-plan")[0].props.onClick(); tree = component.render(); assert.equal(elements(tree, e => e.type === ProjectActivity).length, 0);
@@ -135,47 +147,33 @@ test("cockpit delegates activity to the workspace instead of appending a duplica
   assert.equal(tree.type, ProjectWorkspace); assert.equal(elements(tree, e => e.type === ProjectActivity).length, 0); assert.equal(tree.props.api, api); assert.equal(tree.props.session, session); assert.equal(tree.props.onOpenWorkbench, onOpenWorkbench); assert.equal(tree.props.readVersion, 0);
   tree.props.onRefresh(); assert.match(markup(component.render()), /正在读取项目经营总览/); component.mount(); await tick(); tree = component.render(); assert.equal(tree.type, ProjectWorkspace); assert.equal(tree.props.readVersion, 1); assert.ok(calls.every(call => call.body === undefined));
 });
-test("engineering, manufacturing preparation and pilot readings stay in their project tab with the current identity and refresh binding", () => {
-  const api = async () => {}, props = { entry: entries[0], api, session: { name: "本人", principal_id: "me" }, today: "2026-10-18", readVersion: 7, onBack() {}, onOpenWorkbench() {} };
-  const component = driver(ProjectWorkspace, props);
-  let tree = component.render();
-  assert.equal(elements(tree, e => e.type?.name === "ProjectManufacturingPreparation").length, 0);
-  assert.equal(elements(tree, e => e.type?.name === "ProjectBuildEngineering").length, 0);
-  assert.equal(elements(tree, e => e.type?.name === "ProjectPilots").length, 0);
-  elements(tree, e => e.props?.id === "project-tab-prep")[0].props.onClick(); tree = component.render();
-  const [panel] = elements(tree, e => e.type?.name === "ProjectManufacturingPreparation");
-  assert.ok(panel); assert.equal(panel.props.api, api); assert.equal(panel.props.categoryId, "cat"); assert.equal(panel.props.productId, "model"); assert.equal(panel.props.projectId, "one"); assert.equal(panel.props.principalId, "me"); assert.equal(panel.props.readVersion, 7);
-  const [engineering] = elements(tree, e => e.type?.name === "ProjectBuildEngineering");
-  assert.ok(engineering); assert.deepEqual(engineering.props, panel.props);
-  const [pilots] = elements(tree, e => e.type?.name === "ProjectPilots"); assert.ok(pilots); assert.deepEqual(pilots.props, panel.props);
-  assert.match(markup(tree), /草稿不代替当前准备度或正式发布/);
-  assert.equal(elements(tree, e => e.type === ProjectActivity).length, 0);
-  elements(tree, e => e.props?.id === "project-tab-now")[0].props.onClick(); tree = component.render();
-  assert.equal(elements(tree, e => e.type?.name === "ProjectManufacturingPreparation").length, 0);
-  assert.equal(elements(tree, e => e.type?.name === "ProjectBuildEngineering").length, 0);
-  assert.equal(elements(tree, e => e.type?.name === "ProjectPilots").length, 0);
+test("professional summaries retain explicit project scope while maintenance is mounted only on demand", () => {
+  const scope = { api: async () => {}, categoryId: "cat", productId: "model", projectId: "one", principalId: "me", readVersion: 9 };
+  for (const [view, panel, componentName] of [["prep", "build", "ProjectBuildEngineering"], ["prep", "manufacturing", "ProjectManufacturingPreparation"], ["builds", "pilots", "ProjectPilots"], ["review", "packages", "ProjectReleasePackages"], ["review", "external", "ProjectExternalHandoffs"]]) {
+    const component = driver(ProjectProfessional, { ...scope, view, initialPanel: panel });
+    let tree = component.render();
+    const summary = elements(tree, e => e.type?.name === componentName)[0];
+    assert.ok(summary); assert.deepEqual(summary.props, scope);
+    assert.equal(elements(tree, e => e.props?.embeddedPanel).length, 0);
+    elements(tree, e => e.props?.className === "editorToggle")[0].props.onClick();
+    tree = component.render();
+    const editor = elements(tree, e => e.props?.embeddedPanel === panel)[0];
+    assert.ok(editor); assert.equal(editor.props.fixedProductId, scope.productId); assert.equal(editor.props.projectId, scope.projectId); assert.equal(editor.props.categoryId, scope.categoryId);
+    editor.props.onSaved(); tree = component.render();
+    assert.equal(elements(tree, e => e.type?.name === componentName)[0].props.readVersion, scope.readVersion + 1);
+    assert.equal(elements(tree, e => e.props?.embeddedPanel === panel)[0].key, editor.key);
+  }
 });
-test("fixed release packages and external handoffs load only in review, preserve refresh identity, and retain scoped professional actions", () => {
-  const api = async () => {}, props = { entry: entries[0], api, session: { name: "本人", principal_id: "me" }, today: "2026-10-18", readVersion: 9, onBack() {}, onOpenWorkbench() {} };
+test("the main project view delegates professional work without losing scope across tab changes", () => {
+  const props = { entry: entries[0], api: async () => {}, session: { name: "本人", principal_id: "me" }, today: "2026-10-18", readVersion: 7, onBack() {}, onOpenWorkbench() {} };
   const component = driver(ProjectWorkspace, props); let tree = component.render();
-  const panes = current => elements(current, e => e.type?.name === "ProjectReleasePackages");
-  const handoffs = current => elements(current, e => e.type?.name === "ProjectExternalHandoffs");
-  assert.equal(panes(tree).length, 0);
-  assert.equal(handoffs(tree).length, 0);
-  elements(tree, e => e.props?.id === "project-tab-review")[0].props.onClick(); tree = component.render();
-  assert.equal(panes(tree).length, 1);
-  assert.deepEqual(panes(tree)[0].props, { api, categoryId: "cat", productId: "model", projectId: "one", principalId: "me", readVersion: 9 });
-  assert.equal(handoffs(tree).length, 1); assert.deepEqual(handoffs(tree)[0].props, panes(tree)[0].props);
-  assert.match(markup(tree), /阶段正式评审读集尚未接入/);
-  const anchors = elements(tree, e => e.type === "a"); assert.equal(anchors.length, 3);
-  for (const anchor of anchors) { const params = new URLSearchParams(anchor.props.href); assert.equal(params.get("project"), "one"); assert.equal(params.get("category"), "cat"); assert.equal(params.get("product"), "model"); }
-  const release = anchors.find(e => e.props.children === "发布包、专业决定与外部移交办理"); assert.equal(new URLSearchParams(release.props.href).get("view"), "builds"); assert.equal(new URLSearchParams(release.props.href).get("task"), "prepare");
-  const next = entry("next"), nextApi = async () => {}; next.category.id = "next-cat"; next.product.id = "next-model";
-  component.setProps({ entry: next, api: nextApi, session: { name: "另一人", principal_id: "other" }, readVersion: 10 }); tree = component.render();
-  assert.deepEqual(panes(tree)[0].props, { api: nextApi, categoryId: "next-cat", productId: "next-model", projectId: "next", principalId: "other", readVersion: 10 });
-  assert.deepEqual(handoffs(tree)[0].props, panes(tree)[0].props);
-  elements(tree, e => e.props?.id === "project-tab-now")[0].props.onClick(); tree = component.render(); assert.equal(panes(tree).length, 0);
-  assert.equal(handoffs(tree).length, 0);
+  assert.equal(elements(tree, e => e.type === ProjectProfessional).length, 0);
+  elements(tree, e => e.props?.id === "project-tab-prep")[0].props.onClick(); tree = component.render();
+  const pane = elements(tree, e => e.type === ProjectProfessional)[0];
+  assert.equal(pane.props.projectId, "one"); assert.equal(pane.props.productId, "model"); assert.equal(pane.props.categoryId, "cat"); assert.equal(pane.props.principalId, "me"); assert.equal(pane.props.api, props.api);
+  elements(tree, e => e.props?.id === "project-tab-now")[0].props.onClick(); tree = component.render();
+  const retained = elements(tree, e => e.props?.className === "professionalSlot")[0];
+  assert.equal(retained.props.hidden, true); assert.equal(elements(retained, e => e.type === ProjectProfessional).length, 1);
 });
 test("cockpit task read failures remain unknown rather than claiming zero risks or no conflicts", async () => {
   const unreadable = entry("one"); unreadable.openItemsError = "合成任务权限待核对";

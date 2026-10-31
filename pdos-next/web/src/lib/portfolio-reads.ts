@@ -1,3 +1,4 @@
+import type { GovernanceSummary } from "./project-governance";
 import type { Project, PlanForecast } from "@/lib/project-plan-view";
 import type { NamedProjectUpdate } from "@/lib/project-status-update";
 
@@ -8,6 +9,7 @@ export type OpenItem = { id: string; kind: string; title: string; owner_id: stri
 export type PortfolioProject = {
   project: Pick<Project, "id" | "name" | "purpose" | "scope" | "owner_id" | "visibility" | "revision" | "status" | "source_status" | "created_at" | "definition" | "work_packages"> & {
     plan: { id: string; revision: number; status: string; forecast: Pick<PlanForecast, "earliest_finish" | "latest_finish"> } | null;
+    governance?: GovernanceSummary;
     plan_state: "available" | "not_created" | "unavailable";
     task_count: number | null;
     owner_name?: string | null;
@@ -28,7 +30,7 @@ export type MyOpenItem = OpenItem & { projectId: string; projectName: string; ca
 export type DueState = "overdue" | "soon" | "scheduled" | "none";
 
 type ProjectPage = { items: PortfolioProject[]; next_cursor: string | null; unavailable_count: number; as_of: string };
-export type ActivityRun = { run_id: string; goal: string; status: string; created_at: string; product_id: string | null; scope: "personal" | "category"; categoryId: string; categoryName: string };
+export type ActivityRun = { reading_token?: string; run_id: string; goal: string; status: string; created_at: string; product_id: string | null; scope: "personal" | "category"; categoryId: string; categoryName: string };
 type ActivityPage = { items: ActivityRun[]; next_cursor: string | null; as_of: string };
 
 /** 服务端按当前权限投影，连续读取全部页；单项目直接读取，避免扫描其他项目。 */

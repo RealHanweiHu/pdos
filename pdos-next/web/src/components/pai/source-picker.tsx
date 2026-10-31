@@ -69,7 +69,7 @@ function ScopedSourcePicker({ api, scope, value, onChange, disabled }: PickerPro
     {selected.length > 0 && <div className={styles.selected} aria-label="下次新工作固定来源">{selected.map(source => <span className={styles.chip} key={source.artifact_id}>{source.title} · v{source.expected_revision}<button type="button" disabled={disabled} aria-label={`移除来源 ${source.title}`} onClick={() => onChange({ scope: key, items: selected.filter(item => item.artifact_id !== source.artifact_id) })}><X size={11} aria-hidden="true" /></button></span>)}</div>}
     {open && <section className={styles.panel} aria-label="选择已登记来源">
       <div className={styles.heading}><strong>选择已登记来源</strong><Button type="button" variant="ghost" size="sm" disabled={disabled || loading} onClick={() => void load()}>刷新来源</Button></div>
-      <p className={styles.hint}>只随下次新工作发送固定版本；继续现有工作沿用原绑定来源。</p>
+      <p className={styles.hint}>所选资料会限定下次回答的检索范围；可在回答下解除资料条件。</p>
       <p className={styles.hint}>{scope.proposalId ? "为本提案选择当前品类的可读资料；提案自动携带的资料以运行绑定记录为准。" : scope.productId ? "当前品类及关联型号的可读登记资料。" : "当前品类的可读登记资料；关联型号后可选择该型号资料。"}此处不上传新文件。</p>
       {loading && <p role="status">正在读取登记来源…</p>}{error && <p role="alert">{error}</p>}
       <div className={styles.list}>{reading?.items.map(source => <div className={styles.option} key={source.artifact_id}>
