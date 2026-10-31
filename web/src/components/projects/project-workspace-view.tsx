@@ -41,6 +41,7 @@ import type {
   RiskStatus,
   TaskCreateInput,
   TaskTransitionInput,
+  TaskUpdateInput,
 } from "./project-work-item-types";
 
 export type ProjectWorkspaceTab =
@@ -122,6 +123,7 @@ export function ProjectWorkspaceView({
   onTransitionRisk,
   onTransitionTask,
   onUpdate,
+  onUpdateTask,
   projects,
   productEngineering,
   gateSurface,
@@ -159,6 +161,7 @@ export function ProjectWorkspaceView({
   onTransitionRisk: (risk: ProjectRisk, toStatus: RiskStatus) => Promise<boolean>;
   onTransitionTask: (task: ProjectTask, input: TaskTransitionInput) => Promise<boolean>;
   onUpdate: (project: Project, values: ProjectFormValues) => Promise<ProjectSubmissionResult>;
+  onUpdateTask: (task: ProjectTask, input: TaskUpdateInput) => Promise<boolean>;
   projects: Project[];
   productEngineering: ProductEngineeringWorkspaceProps;
   gateSurface: {
@@ -276,7 +279,19 @@ export function ProjectWorkspaceView({
             ) : null}
             {activeTab === "timeline" ? <ProjectTimeline activities={activities} activityError={activityError} highlightedEntityId={highlightedEntityId} highlightedEventId={highlightedEventId} project={selectedProject} /> : null}
             {activeTab === "tasks" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
-            {activeTab === "tasks" && workItems ? <TaskPanel busy={workItemBusy} onCreate={onCreateTask} onTransition={onTransitionTask} tasks={workItems.tasks} /> : null}
+            {activeTab === "tasks" && workItems ? (
+              <TaskPanel
+                busy={workItemBusy}
+                currentStageId={selectedProject.current_stage.id}
+                currentUserId={identity.user.id}
+                members={workItems.members}
+                onCreate={onCreateTask}
+                onTransition={onTransitionTask}
+                onUpdate={onUpdateTask}
+                stages={selectedProject.workflow.stages}
+                tasks={workItems.tasks}
+              />
+            ) : null}
             {activeTab === "issues" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
             {activeTab === "issues" && workItems ? <IssuePanel busy={workItemBusy} issues={workItems.issues} onCreate={onCreateIssue} onTransition={onTransitionIssue} /> : null}
             {activeTab === "risks" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}

@@ -17,6 +17,7 @@ from app.auth.repository import AuthContext
 from app.auth.roles import Action
 from app.db.engine import get_engine
 from app.domain.tasks import (
+    ProjectMemberRecord,
     TaskDateOrderError,
     TaskDependenciesIncompleteError,
     TaskDependencyCycleError,
@@ -60,6 +61,22 @@ class TaskListResponse(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     items: list[TaskResponse]
+
+
+class ProjectMemberResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    user_id: UUID
+    display_name: str
+    role: str
+    is_active: bool
+    assignable: bool
+
+
+class ProjectMemberListResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    items: list[ProjectMemberResponse]
 
 
 class TaskCreateRequest(BaseModel):
@@ -250,6 +267,41 @@ def task_error(error: Exception) -> HTTPException:
             detail={"code": "TASK_DATE_ORDER", "message": "Due date precedes start date"},
         )
     raise error
+
+
+def member_response(record: ProjectMemberRecord) -> ProjectMemberResponse:
+    return ProjectMemberResponse(
+        user_id=record.user_id,
+        display_name=record.display_name,
+        role=record.role,
+        is_active=record.is_active,
+        assignable=record.assignable,
+    )
+
+
+@router.get("/members", response_model=ProjectMemberListResponse)
+def list_project_members(
+    project_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> ProjectMemberListResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine,
+        context=context,
+        project_id=project_id,
+        action=Action.WORK_ITEM_VIEW,
+    )
+    return ProjectMemberListResponse(
+        items=[
+            member_response(record)
+            for record in TaskService(engine).list_members(
+                tenant_id=context.tenant.id,
+                project_id=project_id,
+            )
+        ]
+    )
 
 
 @router.get("/tasks", response_model=TaskListResponse)

@@ -4,6 +4,7 @@ import type {
   IssueCreateInput,
   IssueStatus,
   ProjectIssue,
+  ProjectMember,
   ProjectRisk,
   ProjectTask,
   ProjectWorkItems,
@@ -11,6 +12,7 @@ import type {
   RiskStatus,
   TaskCreateInput,
   TaskTransitionInput,
+  TaskUpdateInput,
 } from "./project-work-item-types";
 
 const priorities = ["low", "medium", "high", "critical"] as const;
@@ -86,6 +88,17 @@ export function isProjectRisk(value: unknown): value is ProjectRisk {
   );
 }
 
+export function isProjectMember(value: unknown): value is ProjectMember {
+  return (
+    isRecord(value) &&
+    typeof value.user_id === "string" &&
+    typeof value.display_name === "string" &&
+    typeof value.role === "string" &&
+    typeof value.is_active === "boolean" &&
+    typeof value.assignable === "boolean"
+  );
+}
+
 async function errorMessage(response: Response): Promise<string> {
   try {
     const body = await responseBody(response);
@@ -118,13 +131,24 @@ function collectionUrl(projectId: string, collection: "tasks" | "issues" | "risk
   return `/api/projects/${encodeURIComponent(projectId)}/${collection}`;
 }
 
-function mutation(body: object): RequestInit {
+function mutation(body: object, method: "POST" | "PATCH" = "POST"): RequestInit {
   return {
-    method: "POST",
+    method,
     credentials: "same-origin",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   };
+}
+
+export async function requestProjectMembers(projectId: string): Promise<ProjectMember[]> {
+  return readList(
+    await fetch(`/api/projects/${encodeURIComponent(projectId)}/members`, {
+      cache: "no-store",
+      credentials: "same-origin",
+    }),
+    isProjectMember,
+    "Project member",
+  );
 }
 
 export async function requestProjectWorkItems(projectId: string): Promise<ProjectWorkItems> {
@@ -133,12 +157,15 @@ export async function requestProjectWorkItems(projectId: string): Promise<Projec
     fetch(collectionUrl(projectId, "issues"), { cache: "no-store", credentials: "same-origin" }),
     fetch(collectionUrl(projectId, "risks"), { cache: "no-store", credentials: "same-origin" }),
   ]);
-  const [tasks, issues, risks] = await Promise.all([
+  // Members only label and pick assignees, so a failure degrades to "unknown member"
+  // instead of hiding the work items themselves.
+  const [tasks, issues, risks, members] = await Promise.all([
     readList(tasksResponse, isProjectTask, "Task"),
     readList(issuesResponse, isProjectIssue, "Issue"),
     readList(risksResponse, isProjectRisk, "Risk"),
+    requestProjectMembers(projectId).catch(() => []),
   ]);
-  return { tasks, issues, risks };
+  return { tasks, issues, risks, members };
 }
 
 export async function requestProjectRisks(projectId: string): Promise<ProjectRisk[]> {
@@ -151,6 +178,17 @@ export async function requestProjectRisks(projectId: string): Promise<ProjectRis
 
 export async function createTask(projectId: string, input: TaskCreateInput) {
   return readItem(await fetch(collectionUrl(projectId, "tasks"), mutation(input)), isProjectTask, "Task");
+}
+
+export async function updateTask(projectId: string, taskId: string, input: TaskUpdateInput) {
+  return readItem(
+    await fetch(
+      `${collectionUrl(projectId, "tasks")}/${encodeURIComponent(taskId)}`,
+      mutation(input, "PATCH"),
+    ),
+    isProjectTask,
+    "Task",
+  );
 }
 
 export async function createIssue(projectId: string, input: IssueCreateInput) {

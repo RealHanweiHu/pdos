@@ -641,3 +641,75 @@ def test_work_items_fail_closed_for_roles_scope_and_failed_transactions(
             )
     finally:
         engine.dispose()
+
+
+def test_project_members_list_supports_assignee_picking_without_leaking_scope(
+    client: TestClient,
+    isolated_work_item_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    scope = seed_project(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        owner_id=owner_id,
+        label="MEMBERS",
+    )
+    other_scope = seed_project(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        owner_id=owner_id,
+        label="MEMBERS-OTHER",
+    )
+    project_id = scope["project_id"]
+    engineer_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="engineer",
+        role=Role.ENGINEER,
+    )
+    supplier_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="supplier",
+        role=Role.SUPPLIER,
+    )
+    seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=other_scope["project_id"],
+        added_by_user_id=owner_id,
+        username="outsider",
+        role=Role.ENGINEER,
+    )
+    members_url = f"/api/projects/{project_id}/members"
+
+    response = client.get(members_url, headers=bearer_headers(client, username="engineer"))
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "no-store"
+    items = response.json()["items"]
+    assert [item["display_name"] for item in items] == ["Engineer", "Initial Owner", "Supplier"]
+    by_user = {item["user_id"]: item for item in items}
+    assert set(by_user) == {str(owner_id), str(engineer_id), str(supplier_id)}
+    assert by_user[str(owner_id)]["assignable"] is True
+    assert by_user[str(engineer_id)]["assignable"] is True
+    assert by_user[str(engineer_id)]["role"] == "engineer"
+    assert by_user[str(supplier_id)]["assignable"] is False
+    assert all(item["is_active"] is True for item in items)
+    assert set(items[0]) == {"user_id", "display_name", "role", "is_active", "assignable"}
+
+    assert client.get(members_url, headers=bearer_headers(client)).status_code == 200
+    assert (
+        client.get(members_url, headers=bearer_headers(client, username="supplier")).status_code
+        == 403
+    )
+    assert (
+        client.get(members_url, headers=bearer_headers(client, username="outsider")).status_code
+        == 403
+    )
+    assert client.get(members_url).status_code == 401

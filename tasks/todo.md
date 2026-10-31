@@ -1377,3 +1377,21 @@
 | Production smoke 的基础设施入口未继承测试 URL 中的非默认端口 | 1 | 默认 `55432` 与 CEHub 冲突后停止；按现有 PDOS 端口 `57432` 恢复本机容器并以显式 `PDOS_POSTGRES_PORT=57432` 重跑，未连接 CEHub 或生产库 |
 | 沙箱内完整测试无法访问本机 PostgreSQL 和临时 HTTP socket | 1 | lint/type 先完成；随后在获批本机运行边界外以同一 `pdos_test` 重跑，Server 354、Web 121 与 production build 全绿 |
 | 依赖升级后的旧 Compose 2.17 对共享 API image 发起多服务重复构建，首次 metadata 超时、串行模式随后无进展 | 2 | 中止并确认零容器残留；production smoke 与 ECS build 入口均固化为只构建唯一 `api web`，再按原顺序启动服务，避免五个后端服务并行争用同一 image，所有验收断言保持不变 |
+
+## Post-Cutover 优化：PM-1 任务排期与负责人（计划外，2026-10-31 经人授权在分支 `claude/project-task-planning-ui` 实现）
+
+> 不改动 canonical 执行计划与 checkbox；无 schema 变更、无新迁移；未 push、未部署。
+
+**Acceptance criteria**
+
+- [x] 任务创建可填负责人、所属阶段（默认当前阶段）、开始/截止日期；前端拦截截止早于开始
+- [x] 未完成任务可编辑标题/描述/优先级/负责人/阶段/日期/前置任务，PATCH 只发送变更字段；前置候选排除已依赖本任务的任务（防环）
+- [x] 任务行显示负责人、阶段、截止日期与“逾期 N 天”；支持状态/负责人/阶段筛选与“截止日期优先 / 最近更新”排序
+- [x] 概览“进行中任务”口径更正为“未完成任务”，并提示逾期数量
+- [x] 新增只读 `GET /api/projects/{id}/members`（`work_item.view`，仅 display_name/role/is_active/assignable，不含邮箱/用户名）与同源 BFF；成员加载失败只降级为“未知成员”，不影响工作项
+
+**Verification**
+
+- [x] Server：`test_work_items_api.py` 新增成员接口角色/范围/401 用例；完整 389 tests（`pdos_test`）、ruff、format、mypy 全绿
+- [x] Web：139 tests、eslint、typecheck、production build 全绿
+- [x] 本地真实浏览器：390px 无横向滚动、亮/暗主题、console warning/error 为 0

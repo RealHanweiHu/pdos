@@ -84,6 +84,15 @@ class TaskUpdate:
     dependency_task_ids: tuple[UUID, ...] | None = None
 
 
+@dataclass(frozen=True)
+class ProjectMemberRecord:
+    user_id: UUID
+    display_name: str
+    role: str
+    is_active: bool
+    assignable: bool
+
+
 TASK_TRANSITIONS = {
     "todo": frozenset({"in_progress", "blocked", "skipped"}),
     "in_progress": frozenset({"blocked", "done"}),
@@ -93,6 +102,8 @@ TASK_TRANSITIONS = {
     "pending_approval": frozenset(),
 }
 TERMINAL_TASK_STATUSES = frozenset({"done", "skipped"})
+# Roles that may own project work; mirrored by the members listing's `assignable` flag.
+ASSIGNABLE_MEMBER_ROLES = frozenset({"owner", "admin", "project_manager", "engineer", "quality"})
 
 
 def _task_statement() -> Any:
@@ -305,9 +316,7 @@ class TaskService:
                 tables.project_members.c.tenant_id == tenant_id,
                 tables.project_members.c.project_id == project_id,
                 tables.project_members.c.user_id == user_id,
-                tables.users.c.role.in_(
-                    {"owner", "admin", "project_manager", "engineer", "quality"}
-                ),
+                tables.users.c.role.in_(ASSIGNABLE_MEMBER_ROLES),
             )
         ).scalar_one_or_none()
         if found is None:
@@ -419,6 +428,38 @@ class TaskService:
                 project_id=project_id,
                 task_id=task_id,
             )
+
+    def list_members(self, *, tenant_id: UUID, project_id: UUID) -> list[ProjectMemberRecord]:
+        """Project members with the identity fields needed to show and pick assignees."""
+        with self._engine.connect() as connection:
+            rows = connection.execute(
+                select(
+                    tables.users.c.id,
+                    tables.users.c.display_name,
+                    tables.users.c.role,
+                    tables.users.c.is_active,
+                )
+                .join(
+                    tables.project_members,
+                    (tables.project_members.c.tenant_id == tables.users.c.tenant_id)
+                    & (tables.project_members.c.user_id == tables.users.c.id),
+                )
+                .where(
+                    tables.project_members.c.tenant_id == tenant_id,
+                    tables.project_members.c.project_id == project_id,
+                )
+                .order_by(tables.users.c.display_name, tables.users.c.id)
+            ).mappings()
+            return [
+                ProjectMemberRecord(
+                    user_id=row["id"],
+                    display_name=row["display_name"],
+                    role=row["role"],
+                    is_active=row["is_active"],
+                    assignable=row["role"] in ASSIGNABLE_MEMBER_ROLES,
+                )
+                for row in rows
+            ]
 
     def list(self, *, tenant_id: UUID, project_id: UUID) -> list[TaskRecord]:
         with self._engine.connect() as connection:

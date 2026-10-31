@@ -1,6 +1,7 @@
 import { ProjectForm, type ProjectFormValues, type ProjectSubmissionResult } from "./project-form";
 import { ProjectStatusActions } from "./project-status-actions";
 import { projectStatusLabels } from "./project-list";
+import { isTaskOpen, isTaskOverdue, localIsoDate } from "./project-task-planning";
 import type { Project } from "./project-types";
 import type { ProjectWorkItems } from "./project-work-item-types";
 
@@ -25,7 +26,9 @@ export function ProjectOverview({
   saving: boolean;
   workItems: ProjectWorkItems | null;
 }) {
-  const activeTasks = workItems?.tasks.filter((task) => !["done", "skipped"].includes(task.status)).length;
+  const today = localIsoDate();
+  const openTasks = workItems?.tasks.filter(isTaskOpen).length;
+  const overdueTasks = workItems?.tasks.filter((task) => isTaskOverdue(task, today)).length ?? 0;
   const openIssues = workItems?.issues.filter((issue) => issue.status !== "closed").length;
   const openRisks = workItems?.risks.filter((risk) => risk.status !== "closed").length;
   return (
@@ -55,10 +58,15 @@ export function ProjectOverview({
           <section aria-label="工作项汇总" className="overflow-hidden rounded-lg border bg-card">
             <h3 className="border-b px-4 py-3 font-semibold">执行快照</h3>
             <div className="grid grid-cols-3 divide-x py-4 text-center">
-              <div><strong className="font-mono text-2xl" data-metric="task">{activeTasks ?? "—"}</strong><p className="mt-1 text-[11px] text-muted-foreground">进行中任务</p></div>
+              <div><strong className="font-mono text-2xl" data-metric="task">{openTasks ?? "—"}</strong><p className="mt-1 text-[11px] text-muted-foreground">未完成任务</p></div>
               <div><strong className="font-mono text-2xl" data-metric="issue">{openIssues ?? "—"}</strong><p className="mt-1 text-[11px] text-muted-foreground">开放问题</p></div>
               <div><strong className="font-mono text-2xl" data-metric="risk">{openRisks ?? "—"}</strong><p className="mt-1 text-[11px] text-muted-foreground">开放风险</p></div>
             </div>
+            {overdueTasks > 0 ? (
+              <p className="border-t px-4 py-2 text-xs font-medium text-destructive" data-metric="overdue-task">
+                其中 {overdueTasks} 项任务已逾期
+              </p>
+            ) : null}
           </section>
         ) : (
           <section className="rounded-lg border bg-card p-4">

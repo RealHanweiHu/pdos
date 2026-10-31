@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -263,10 +263,17 @@ const ncr = {
   ...workItemTimestamps,
 };
 
+const members = [
+  { user_id: "user-1", display_name: "Initial Owner", role: "owner", is_active: true, assignable: true },
+  { user_id: "user-2", display_name: "Erin Engineer", role: "engineer", is_active: true, assignable: true },
+  { user_id: "user-3", display_name: "Sam Supplier", role: "supplier", is_active: true, assignable: false },
+];
+
 function workItemResponse(path: string) {
   if (path.endsWith("/tasks")) return jsonResponse({ items: [waitingTask] });
   if (path.endsWith("/issues")) return jsonResponse({ items: [openIssue] });
   if (path.endsWith("/risks")) return jsonResponse({ items: [openRisk] });
+  if (path.endsWith("/members")) return jsonResponse({ items: members });
   return null;
 }
 
@@ -653,7 +660,12 @@ describe("ProjectWorkspace", () => {
       "/api/projects/project-1/tasks",
       expect.objectContaining({
         method: "POST",
-        body: JSON.stringify({ title: "Review DVT report", priority: "medium", dependency_task_ids: [] }),
+        body: JSON.stringify({
+          title: "Review DVT report",
+          priority: "medium",
+          dependency_task_ids: [],
+          stage_id: "stage-1",
+        }),
       }),
     );
 
@@ -702,6 +714,127 @@ describe("ProjectWorkspace", () => {
 
     await waitFor(() => expect(screen.queryByText("等待前置")).not.toBeInTheDocument());
     expect(screen.getByRole("button", { name: "开始任务" })).toBeInTheDocument();
+  });
+
+  it("plans tasks with owner, stage and due date, surfaces overdue work, and edits minimally", async () => {
+    const user = userEvent.setup();
+    const overdueTask = {
+      ...foundationTask,
+      assignee_user_id: "user-2",
+      stage_id: "stage-1",
+      due_date: "2000-01-03",
+    };
+    const laterTask = {
+      ...waitingTask,
+      assignee_user_id: "user-1",
+      stage_id: "stage-2",
+      due_date: "2999-12-31",
+    };
+    const doneTask = {
+      ...foundationTask,
+      id: "task-4",
+      title: "Archive concept notes",
+      status: "done",
+      readiness: "complete",
+      due_date: "2000-01-01",
+    };
+    fetchMock.mockImplementation(async (input, init) => {
+      const path = String(input);
+      if (path === "/api/session/me") return jsonResponse(identity);
+      if (path === "/api/projects") return jsonResponse({ items: [project] });
+      if (path.endsWith("/tasks") && !init?.method) {
+        return jsonResponse({ items: [laterTask, overdueTask, doneTask] });
+      }
+      if (path.endsWith("/tasks") && init?.method === "POST") {
+        return jsonResponse({ ...laterTask, id: "task-5", title: "Book EMC lab", due_date: "2026-12-01" }, 201);
+      }
+      if (path === "/api/projects/project-1/tasks/task-1" && init?.method === "PATCH") {
+        return jsonResponse({ ...overdueTask, assignee_user_id: "user-1", due_date: "2999-01-15" });
+      }
+      const response = workItemResponse(path);
+      if (response) return response;
+      throw new Error(`unexpected request: ${path}`);
+    });
+
+    render(<ProjectWorkspace />);
+    await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
+    expect(await screen.findByText("其中 1 项任务已逾期")).toBeInTheDocument();
+    expect(screen.getByText("2", { selector: "[data-metric='task']" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("tab", { name: "任务" }));
+    const taskSection = screen.getByRole("region", { name: "项目任务" });
+    let rows = within(taskSection).getAllByRole("listitem");
+    expect(rows).toHaveLength(2);
+    expect(rows[0]).toHaveTextContent("Prepare motor validation fixture");
+    expect(rows[0]).toHaveTextContent(/逾期 \d+ 天/);
+    expect(rows[0]).toHaveTextContent("负责人：Erin Engineer");
+    expect(rows[0]).toHaveTextContent("阶段：概念阶段");
+    expect(rows[1]).toHaveTextContent("负责人：Initial Owner（我）");
+    expect(rows[1]).not.toHaveTextContent("逾期");
+    expect(screen.getByTestId("task-visible-count")).toHaveTextContent("显示 2 / 3");
+
+    await user.selectOptions(screen.getByLabelText("负责人筛选"), "me");
+    rows = within(taskSection).getAllByRole("listitem");
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toHaveTextContent("Integrate validation fixture");
+    await user.selectOptions(screen.getByLabelText("负责人筛选"), "all");
+    await user.selectOptions(screen.getByLabelText("状态"), "closed");
+    rows = within(taskSection).getAllByRole("listitem");
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toHaveTextContent("Archive concept notes");
+    expect(rows[0]).not.toHaveTextContent("逾期");
+    expect(within(rows[0]).queryByRole("button", { name: /编辑任务/ })).not.toBeInTheDocument();
+    await user.selectOptions(screen.getByLabelText("状态"), "open");
+
+    const assignee = screen.getByLabelText("负责人");
+    expect(within(assignee).getByRole("option", { name: "Erin Engineer" })).toBeInTheDocument();
+    expect(within(assignee).queryByRole("option", { name: "Sam Supplier" })).not.toBeInTheDocument();
+    expect(screen.getByLabelText("所属阶段")).toHaveValue("stage-1");
+
+    await user.type(screen.getByLabelText("任务标题"), "Book EMC lab");
+    await user.selectOptions(assignee, "user-2");
+    fireEvent.change(screen.getByLabelText("开始日期"), { target: { value: "2026-12-05" } });
+    fireEvent.change(screen.getByLabelText("截止日期"), { target: { value: "2026-12-01" } });
+    await user.click(screen.getByRole("button", { name: "创建任务" }));
+    expect(screen.getByRole("alert")).toHaveTextContent("截止日期不能早于开始日期。");
+    expect(fetchMock).not.toHaveBeenCalledWith("/api/projects/project-1/tasks", expect.objectContaining({ method: "POST" }));
+
+    fireEvent.change(screen.getByLabelText("开始日期"), { target: { value: "" } });
+    await user.click(screen.getByRole("button", { name: "创建任务" }));
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/projects/project-1/tasks",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({
+          title: "Book EMC lab",
+          priority: "medium",
+          dependency_task_ids: [],
+          assignee_user_id: "user-2",
+          stage_id: "stage-1",
+          due_date: "2026-12-01",
+        }),
+      }),
+    );
+    expect(await screen.findByRole("status")).toHaveTextContent("任务已创建");
+
+    await user.click(screen.getByRole("button", { name: "编辑任务 Prepare motor validation fixture" }));
+    const editForm = screen.getByRole("form", { name: "编辑任务 Prepare motor validation fixture" });
+    expect(within(editForm).getByLabelText("任务标题")).toHaveValue("Prepare motor validation fixture");
+    expect(within(editForm).getByText("Archive concept notes")).toBeInTheDocument();
+    expect(within(editForm).queryByText("Integrate validation fixture")).not.toBeInTheDocument();
+    await user.selectOptions(within(editForm).getByLabelText("负责人"), "user-1");
+    fireEvent.change(within(editForm).getByLabelText("截止日期"), { target: { value: "2999-01-15" } });
+    await user.click(within(editForm).getByRole("button", { name: "保存任务" }));
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/projects/project-1/tasks/task-1",
+      expect.objectContaining({
+        method: "PATCH",
+        body: JSON.stringify({ assignee_user_id: "user-1", due_date: "2999-01-15" }),
+      }),
+    );
+    expect(await screen.findByRole("status")).toHaveTextContent("任务已更新");
+    expect(screen.queryByRole("form", { name: "编辑任务 Prepare motor validation fixture" })).not.toBeInTheDocument();
+    expect(within(taskSection).queryByText(/逾期 \d+ 天/)).not.toBeInTheDocument();
   });
 
   it("does not expose or request work items for external project members", async () => {

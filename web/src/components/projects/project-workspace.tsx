@@ -44,6 +44,7 @@ import {
   transitionIssue,
   transitionRisk,
   transitionTask,
+  updateTask,
 } from "./project-work-item-api";
 import type {
   IssueCreateInput,
@@ -56,6 +57,7 @@ import type {
   RiskStatus,
   TaskCreateInput,
   TaskTransitionInput,
+  TaskUpdateInput,
 } from "./project-work-item-types";
 import { ProjectWorkspaceError, ProjectWorkspaceLoading } from "./project-workspace-state";
 import {
@@ -410,6 +412,14 @@ export function ProjectWorkspace() {
     );
   }
 
+  async function editTask(task: ProjectTask, input: TaskUpdateInput) {
+    return mutateWorkItem(
+      () => updateTask(task.project_id, task.id, input),
+      (items, updated) => ({ ...items, tasks: items.tasks.map((item) => item.id === task.id ? updated as ProjectTask : item) }),
+      "任务已更新",
+    );
+  }
+
   async function addIssue(input: IssueCreateInput) {
     if (!actions.selectedProject) return false;
     return mutateWorkItem(
@@ -624,6 +634,7 @@ export function ProjectWorkspace() {
       onTransitionRisk={moveRisk}
       onTransitionTask={moveTask}
       onUpdate={actions.updateProject}
+      onUpdateTask={editTask}
       projects={actions.projects}
       productEngineering={{
         busy: productEngineeringBusy,
