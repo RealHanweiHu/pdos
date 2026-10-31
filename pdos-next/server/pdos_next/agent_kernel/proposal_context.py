@@ -3,9 +3,6 @@
 from types import SimpleNamespace
 from uuid import UUID
 
-from sqlalchemy import select
-from sqlalchemy.orm import load_only
-
 from pdos_next.contracts import SourceRead
 from pdos_next.database import tenant_session
 from pdos_next.domain.preproject import baseline
@@ -18,6 +15,8 @@ from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.models import Artifact, Claim, Product
 from pdos_next.request_proof import request_proof, scoped_rows
 from pdos_next.service import Context, source_for
+from sqlalchemy import select
+from sqlalchemy.orm import load_only
 
 from .execution import check_run_binding
 from .m3_object_reads import _references
@@ -58,6 +57,26 @@ def reference_key(ref):
     return ("original" if ref.type == "artifact" else ref.type, str(ref.id), ref.version)
 
 
+def _projected_references(value):
+    """Consume owner-projected refs, not the adjacent EvidenceLink description.
+
+    project_items already resolves an active Link's real locator under current
+    RLS into source_refs. Its immutable evidence_links metadata deliberately has
+    no quote and cannot serve as a second body proof. The generic command-input
+    walker remains unchanged; this helper accepts only server-owned projections.
+    """
+    if isinstance(value, dict):
+        yield from _references(
+            {key: child for key, child in value.items() if not isinstance(child, (dict, list))}
+        )
+        for key, child in value.items():
+            if key != "evidence_links" and isinstance(child, (dict, list)):
+                yield from _projected_references(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from _projected_references(child)
+
+
 def collect(session, ctx, row, value, *, extra_value=None):
     """Use the ordinary fixed-tree validator; no model-supplied scope or privacy facts."""
     roots = list(
@@ -69,8 +88,8 @@ def collect(session, ctx, row, value, *, extra_value=None):
             )
         )
     )
-    refs = list(_references(value))
-    refs.extend(_references(extra_value))
+    refs = list(_projected_references(value))
+    refs.extend(_projected_references(extra_value))
     if row.baseline_definition_id:
         refs.append(
             Reference(
@@ -330,7 +349,7 @@ def validate(session, scope, run, *, extra_value=None):
             (root.source_type, str(root.source_id), root.source_version) not in keys
             for root in roots
         )
-        or not {reference_key(ref) for ref in _references(extra_value)} <= keys
+        or not {reference_key(ref) for ref in _projected_references(extra_value)} <= keys
     ):
         _outbound_unavailable()
     # Once per read snapshot, shared by metadata, item and history projections.

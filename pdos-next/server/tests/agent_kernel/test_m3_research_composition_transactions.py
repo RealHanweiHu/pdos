@@ -98,7 +98,7 @@ def test_actual_instruction_capture_is_locked_once_and_has_real_research_skill_e
         assert session.scalar(select(func.count()).select_from(AgentEvent).where(
             AgentEvent.run_id == run.id, AgentEvent.body["key"].astext == "public_research",
         )) == 1
-    assert f.bootstrap.default_preload(f.scope) == ("category_framing",)
+    assert f.bootstrap.default_preload(f.scope) == ()
 
 
 @pytest.mark.parametrize("change", ["version", "content", "disabled", "cancelled"])

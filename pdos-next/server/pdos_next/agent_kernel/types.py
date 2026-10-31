@@ -9,7 +9,7 @@ from pydantic import Field
 from pdos_next.schema_base import StrictModel
 
 Tier = Literal["READ", "T0", "T1", "T2-prepare-only"]
-Isolation = Literal["main", "research", "extract", "mcp"]
+Isolation = Literal["main", "research", "extract", "mcp", "assistant_extract", "assistant_compare"]
 
 
 @dataclass(frozen=True)
@@ -28,13 +28,17 @@ class RunScope:
     customer_identities: tuple[str, ...] = field(default=(), repr=False)
     isolation: Isolation = "main"
     artifact_ids: frozenset[UUID] = frozenset()
+    citation_ids: frozenset[UUID] = field(default=frozenset(), kw_only=True)
     trigger: str = "conversation"
     project_id: UUID | None = field(default=None, kw_only=True)
 
-    def child(self, isolation: Isolation, *, artifact_ids=frozenset()):
+    def child(self, isolation: Isolation, *, artifact_ids=frozenset(), citation_ids=frozenset()):
         from dataclasses import replace
 
-        return replace(self, isolation=isolation, artifact_ids=frozenset(artifact_ids))
+        return replace(
+            self, isolation=isolation, artifact_ids=frozenset(artifact_ids),
+            citation_ids=frozenset(citation_ids),
+        )
 
 
 class ToolCall(StrictModel):

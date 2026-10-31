@@ -180,6 +180,7 @@ def view(row):
         "id": str(row.id),
         "revision": row.revision,
         "active": row.active,
+        "development_unlimited": row.development_unlimited,
         "created_at": row.created_at.isoformat(),
         "receipt_id": str(row.receipt_id) if row.receipt_id else None,
         **{
@@ -254,8 +255,11 @@ def reading(session, ctx, page):
     )
     category = session.get(Category, ctx.category_id)
     revision = control_revision(session, ctx)
+    from .development_budget import current as development_budget
+
     return {
         "can_edit": bool(admin and write),
+        "development_unlimited": development_budget(session, ctx),
         "category_revision": category.revision,
         "requester_id": str(ctx.requester_id),
         "active_digest": watermark(active, revision),

@@ -108,6 +108,7 @@ def test_claim_withdraw_example_is_actual_t1_without_confirmation_fabrication():
 
 
 PROJECT_SKILLS = (
+    "work_management",
     "build_execution",
     "quality_issue",
     "test_verification",
@@ -150,7 +151,7 @@ def test_project_skills_cover_the_registered_manufacturing_chain():
     authorized = set()
     for entry in catalog.index:
         authorized |= catalog.configuration(entry["key"]).operations
-    families = ("build.", "npi.", "supply.", "cost.", "quality.", "test.", "verification.",
+    families = ("work.", "build.", "npi.", "supply.", "cost.", "quality.", "test.", "verification.",
                 "change.", "release.", "integration.", "engineering.")
     registered = {
         definition["name"] for definition in default_registry().definitions()

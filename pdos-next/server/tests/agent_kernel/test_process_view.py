@@ -1,7 +1,7 @@
 """Actual public process projection and terminal timestamps; zero model calls."""
 
 from datetime import timedelta
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import pytest
 from sqlalchemy import event, func, select
@@ -60,6 +60,29 @@ def test_process_reads_actual_call_receipt_and_selected_events_without_raw_conte
     assert "agent_tool_calls.result" not in sql and "agent_tool_calls.execution_binding" not in sql
     assert "agent_runs.result" not in sql and "agent_runs.versions" not in sql
     assert "agent_run_events.body," not in sql and " LIMIT " in sql
+
+
+def test_service_run_process_checks_binding_without_exposing_fixed_goal(setup):
+    from pdos_next.domain.automations import service_runtime
+    from pdos_next.domain.automations.service_models import AutomationServiceAttempt
+    from tests.automations_pg.test_service_automation_pg import _activate, _ready, _spec
+
+    spec = _spec(setup, _ready(setup))
+    _, reference = _activate(setup, spec)
+    service_runtime.tick(setup.engine, reference)
+    with Session(setup.admin) as session:
+        identity = session.scalar(select(AutomationServiceAttempt.run_id).where(
+            AutomationServiceAttempt.service_grant_id == UUID(reference["grant_id"]),
+        ))
+    resource = f"/v1/categories/{setup.category}/agent-runs/{identity}/process"
+    response = setup.client.get(resource, headers=setup.headers)
+    assert response.status_code == 200, response.text
+    assert response.json()["run_id"] == str(identity)
+    assert response.json()["business_receipt_count"] == 0
+    assert spec["goal"] not in response.text
+    assert setup.client.get(resource, headers={
+        "Authorization": "Bearer " + setup.tokens[setup.peer],
+    }).status_code == 403
 
 
 def test_terminal_time_is_atomic_and_stable_after_refresh_and_original_cancel_replay(setup):

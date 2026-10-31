@@ -4,8 +4,6 @@
 import json
 from dataclasses import replace
 from types import SimpleNamespace
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-
 from uuid import UUID, uuid4
 
 import pytest
@@ -16,10 +14,12 @@ from sqlalchemy.orm import Session
 
 from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
 from pdos_next.agent_kernel.bootstrap import Bootstrap
+from pdos_next.agent_kernel.disclosure import binding_operations, disclosure
 from pdos_next.agent_kernel.graph import AgentKernel
 from pdos_next.agent_kernel.host import BoundHost
 from pdos_next.agent_kernel.models import TenantSkillEnablement
 from pdos_next.agent_kernel.proposal_context import KEY
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
 from pdos_next.agent_kernel.types import ModelTurn, ToolCall
 from pdos_next.contracts import Command
 from pdos_next.domain.preproject.models import ProposalItemVersion
@@ -31,6 +31,7 @@ from tests.agent_kernel.test_domain_adapter_transactions import counts
 from tests.agent_kernel.test_gateway import Client, configured_route
 from tests.agent_kernel.test_m3_original_binding_pg import actual_run
 from tests.agent_kernel.test_proposal_context_pg import agree, read
+from tests.confirmation_fixture import confirmation_clock  # noqa: F401
 from tests.preproject.test_g0 import create, payload, post, request
 from tests.preproject.test_g0 import work as work
 from tests.preproject.test_m3_lifecycle_catalog import scoped as lifecycle_session
@@ -139,7 +140,9 @@ def prepared(f, tool, args):
     binding = ModelBinding(
         model_version=f.route.version,
         model_route_digest=f.route.digest,
-        tool_definitions_digest=digest(f.registry.definitions()),
+        tool_definitions_digest=digest(
+            disclosure(f.registry, "main", binding_operations(f.owner.catalog, f.loaded.values()))
+        ),
         prompt_digest=digest("Synthetic frozen source writeback prefix"),
         isolation="main",
         cancel_epoch=0,
@@ -186,6 +189,7 @@ def current(f):
 
 
 @pytest.mark.parametrize("human", [False, True])
+@pytest.mark.usefixtures("confirmation_clock")
 def test_category_run_records_adopts_reads_and_replays_product_source(work, human):
     f = bound(work, human=human)
     original = current(f)

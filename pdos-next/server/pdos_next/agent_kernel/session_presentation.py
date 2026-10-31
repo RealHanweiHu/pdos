@@ -4,7 +4,7 @@ from typing import Literal
 from uuid import UUID
 
 from pydantic import Field, model_validator
-from sqlalchemy import and_, exists, func, or_, select, text
+from sqlalchemy import and_, func, or_, select, text
 
 from pdos_next.errors import DomainError
 from pdos_next.schema_base import StrictModel
@@ -30,6 +30,7 @@ class ConversationPage(StrictModel):
     cursor: UUID | None = None
     page_size: int = Field(default=20, ge=1, le=50)
     proposal_id: UUID | None = None
+    project_id: UUID | None = None
     q: str = Field(default="", max_length=160)
     view: Literal["active", "archived"] = "active"
 
@@ -51,34 +52,9 @@ class PresentationInput(StrictModel):
         return self
 
 
-def _visible_sessions(ctx, proposal_id):
-    from pdos_next.domain.projects.models import Project
-
-    readable = _sessions(ctx, proposal_id)
-    return (
-        select(*readable.c, AgentSession.project_id)
-        .join(
-            AgentSession,
-            and_(
-                AgentSession.tenant_id == readable.c.tenant_id,
-                AgentSession.id == readable.c.session_id,
-            ),
-        )
-        .where(
-            or_(
-                AgentSession.project_id.is_(None),
-                exists(
-                    select(Project.id).where(
-                        Project.tenant_id == AgentSession.tenant_id,
-                        Project.category_id == AgentSession.category_id,
-                        Project.product_id == AgentSession.product_id,
-                        Project.id == AgentSession.project_id,
-                    )
-                ),
-            )
-        )
-        .cte("presentation_readable_sessions")
-    )
+def _visible_sessions(ctx, proposal_id, project_id=None):
+    readable = _sessions(ctx, proposal_id, project_id)
+    return select(*readable.c).cte("presentation_readable_sessions")
 
 
 def _visible_runs(sessions):
@@ -96,7 +72,7 @@ def _visible_runs(sessions):
 
 
 def _eligible(ctx, page):
-    sessions = _visible_sessions(ctx, page.proposal_id)
+    sessions = _visible_sessions(ctx, page.proposal_id, page.project_id)
     runs = _visible_runs(sessions)
     ranked = select(
         *runs.c,
@@ -176,7 +152,7 @@ def _list_presentation(row):
 
 
 def read_list(session, ctx, page):
-    _human(session, ctx, page.proposal_id)
+    _human(session, ctx, page.proposal_id, page.project_id)
     eligible = _eligible(ctx, page)
     query = select(eligible)
     if page.cursor is not None:
@@ -232,7 +208,7 @@ def read_list(session, ctx, page):
     return {
         "version": "agent-conversation-list/v1",
         "principal_id": str(ctx.requester_id),
-        "scope": _scope(ctx, page.proposal_id),
+        "scope": _scope(ctx, page.proposal_id, page.project_id),
         "as_of": session.scalar(select(func.transaction_timestamp())).isoformat(),
         "items": items,
         "next_cursor": items[-1]["session_id"] if len(rows) > page.page_size else None,

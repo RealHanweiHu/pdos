@@ -226,6 +226,27 @@ def test_four_ports_export_selectors_without_authority_fields(port):
                 schema.model_validate({**args, authority: str(UUID(int=99))})
 
 
+@pytest.mark.parametrize(
+    "name,args",
+    [
+        ("category.list", {"status": "PRIVATE_INVALID_STATUS"}),
+        ("category.read", {"category_id": "PRIVATE_SCOPE_INJECTION"}),
+        ("proposal.read", {"proposal_id": "PRIVATE_NOT_UUID"}),
+        (
+            "proposal.items.read",
+            {"proposal_id": str(PROPOSAL), "include_history": "PRIVATE_BOOLEAN"},
+        ),
+    ],
+)
+def test_invalid_model_read_arguments_are_safe_tool_errors_before_database(port, name, args):
+    with pytest.raises(DomainError) as caught:
+        port.reads.call(port.scope, args, name=name)
+    assert caught.value.code == "VALIDATION_FAILED"
+    assert caught.value.detail["fields"]
+    assert "PRIVATE_" not in str(caught.value.payload())
+    assert not port.calls
+
+
 def test_personal_category_list_keeps_real_actor_requester_and_sql_intersection(port):
     port.scope = replace(port.scope, category_id=None, proposal_id=None)
     port.run.category_id = port.run.proposal_id = None

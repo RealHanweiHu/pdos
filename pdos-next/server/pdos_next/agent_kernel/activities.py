@@ -7,7 +7,9 @@ from threading import Event, Thread
 from uuid import UUID
 
 from langgraph.checkpoint.postgres import PostgresSaver
+from psycopg import OperationalError as CheckpointUnavailable
 from sqlalchemy import text
+from sqlalchemy.exc import OperationalError
 from temporalio import activity
 
 from pdos_next.database import tenant_session
@@ -93,10 +95,14 @@ class KernelActivities:
             if row.state in {"completed", "partial", "failed", "cancelled"}:
                 return {"run_id": str(row.id), "status": row.state}
             writer, goal = row.writer_id, row.goal
+            summary_run = False
             if row.trigger in {"automation_manual", "automation_service"}:
                 from pdos_next.domain.automations.runtime import binding
 
                 _, rule_spec = binding(s, row)
+                from pdos_next.personal_summary_runtime import selected
+
+                summary_run = selected(rule_spec)
                 goal += (
                     f"\n\n用途：{rule_spec.purpose}\n停止条件：{rule_spec.stop_condition}"
                     "\n本规则只读取资料并返回结果，禁止联网、MCP 和业务写入。"
@@ -114,7 +120,7 @@ class KernelActivities:
                 return self.scope_failure(run_id)
             raise
         adapters = getattr(self.engine, "_pdos_agent_kernel_adapters", None)
-        if adapters is None:
+        if adapters is None and not summary_run:
             with self.store.transaction(scope, lock=True) as (session, row):
                 row.state, row.error_code = "waiting_input", "SOURCE_UNAVAILABLE"
                 from .process_view import record_state
@@ -127,11 +133,13 @@ class KernelActivities:
                 "error_code": "SOURCE_UNAVAILABLE",
             }
         answer = None
-        host = BoundHost(self.store, adapters)
+        host = None if summary_run else BoundHost(self.store, adapters)
         with self.store.transaction(scope, lock=True) as (_, row):
             row.state, row.error_code = "running", None
-        kernel = AgentKernel(
-            host, adapters.tool_registry or default_registry(), catalog=host.catalog
+        kernel = (
+            None if summary_run else AgentKernel(
+                host, adapters.tool_registry or default_registry(), catalog=host.catalog
+            )
         )
         stopped = Event()
         heartbeat_context = copy_context()
@@ -142,7 +150,7 @@ class KernelActivities:
 
         thread = Thread(target=lambda: heartbeat_context.run(heartbeat), daemon=True)
         try:
-            if reference.get("answer_ref"):
+            if reference.get("answer_ref") and not summary_run:
                 from .category_adoption import resolve
 
                 answer = resolve(self.engine, scope, reference["answer_ref"])
@@ -154,19 +162,28 @@ class KernelActivities:
             with PostgresSaver.from_conn_string(
                 verified_checkpoint_url(self.checkpoint_url)
             ) as saver:
-                result = kernel.execute(
-                    scope,
-                    goal=goal,
-                    answer=answer,
-                    checkpointer=saver,
-                    preload=self.preload(scope, adapters),
-                )
+                if summary_run:
+                    from pdos_next.personal_summary_graph import execute
+
+                    result = execute(self.store, scope, checkpointer=saver)
+                else:
+                    result = kernel.execute(
+                        scope,
+                        goal=goal,
+                        answer=answer,
+                        checkpointer=saver,
+                        preload=self.preload(scope, adapters),
+                    )
             if result.get("__interrupt__"):
                 with self.store.transaction(scope, lock=True) as (_, row):
                     row.state = "waiting_input"
                 return {"run_id": str(scope.run_id), "status": "needs_input"}
             return {"run_id": str(scope.run_id), "status": result["output"]["status"]}
         except Exception as exc:
+            if summary_run and isinstance(exc, (OperationalError, CheckpointUnavailable)):
+                # No inference or external/business write occurred. Let the same
+                # Temporal Activity retry its persisted graph/terminal result.
+                raise
             if not isinstance(exc, DomainError):
                 # Unexpected worker failures remain visible and never retry a model from here.
                 # Frames and exception type are diagnostic; values/SQL parameters stay private.
@@ -180,12 +197,18 @@ class KernelActivities:
             if exc.code != "CANCELLED_RUN":
                 try:
                     with self.store.transaction(scope, lock=True) as (session, row):
+                        if summary_run and row.state in {"completed", "partial"}:
+                            return {"run_id": str(scope.run_id), "status": row.state}
                         row.error_code = exc.code
                         row.state = (
                             "waiting_input" if exc.code == "EXTERNAL_OUTCOME_UNKNOWN" else "failed"
                         )
                         from .process_view import record_state
 
+                        if row.state == "failed":
+                            from .work_state import record_finish
+
+                            record_finish(session, row, row.result or {})
                         record_state(session, row)
                     if exc.code == "EXTERNAL_OUTCOME_UNKNOWN":
                         from .run_reconciliation import mark_required
@@ -207,17 +230,20 @@ class KernelActivities:
             stopped.set()
             if thread.is_alive():
                 thread.join(timeout=1)
-            host.gateway.close()
+            if host is not None:
+                host.gateway.close()
 
     def preload(self, scope, adapters):
         from pdos_next.domain.automations.runtime import preload
+
+        from .requested_skills import preload as requested_preload
 
         fallback = (
             ()
             if scope.trigger in {"automation_manual", "automation_service"}
             else (tuple(adapters.preload(scope)) if adapters.preload else ())
         )
-        return preload(self.store, scope, fallback)
+        return preload(self.store, scope, requested_preload(self.store, scope, fallback))
 
     @activity.defn(name="reconcile_xiaopai_run")
     def reconcile(self, reference):

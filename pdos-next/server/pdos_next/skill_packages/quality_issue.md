@@ -1,6 +1,6 @@
 ---
 key: quality_issue
-version: 0.1.0-draft
+version: 0.1.1-draft
 purpose: 按来源明确的测量或观察建立与分诊品质问题，登记围堵措施，起草 CAPA 的假设与措施，按固定规则登记复发观察，并为根因结论与 CAPA 有效性复核准备具名决定材料；根因与有效性结论本身由专业本人作出。
 input_schema:
   type: object
@@ -14,7 +14,7 @@ output_schema:
   type: object
   required: [bound_objects, prepared, unknowns]
   properties:
-    bound_objects: {type: array, items: {object_type: string, id: string, revision: integer, basis: "page|trigger|user_message"}}
+    bound_objects: {type: array, items: {object_type: string, id: string, revision: integer, basis: "page|trigger|user_message|domain_read"}}
     prepared: {type: array, items: {operation: string, tier: string, payload_summary: string, sources: "Citation[]"}}
     hypotheses: {type: array, items: {statement: string, nature: "ai_hypothesis", basis: "Citation[]", disconfirming: string}, description: "假设永远标 ai_hypothesis，不升级为结论"}
     duplicates: {type: array, items: {issue: string, same_basis: string, decision: "merge_candidate|separate", reason: string}}
@@ -29,6 +29,11 @@ context_requirements:
   - 本问题涉及的实际配置与批次/样件范围
 allowed_operations:
   - {tool: conversation.history, tier: READ}
+  - {tool: quality.issue.read, tier: READ, note: "当前项目结构元数据、id 与 revision；不代表依据适用"}
+  - {tool: test.run.read, tier: READ, note: "当前项目结构元数据、id 与 revision；不代表依据适用"}
+  - {tool: build.read, tier: READ, note: "当前项目结构元数据、id 与 revision；不代表依据适用"}
+  - {tool: build.lot.read, tier: READ, note: "当前项目结构元数据、id 与 revision；不代表依据适用"}
+  - {tool: build.sample.read, tier: READ, note: "当前项目结构元数据、id 与 revision；不代表依据适用"}
   - {tool: evidence.search, tier: READ, note: "已登记的测量原件、照片、报告"}
   - {tool: product.baseline.read, tier: READ, note: "判据与关键特性来自已发布定义"}
   - {tool: calc.spec_compare, tier: READ, kind: compute, note: "读数与判据的数值比较交计算工具"}
@@ -52,7 +57,7 @@ evidence_policy: |
 failure_policy: |
   缺 run/measurement/event 来源：不建立问题，交回"需要指定失败记录"，并列出已核对到的线索。
   已存在同依据的问题：给合并候选与依据，不新建第二个问题。
-  缺 issue 当前版本：只提问该版本，其余只读工作继续。
+  缺 issue 当前版本：先用 quality.issue.read 核对，仍缺时只提问该版本，其余只读工作继续。
   措施未实际完成：不登记完成；列出缺的产出引用与责任人。
 budget:
   status: 建议值（待真实模型实测后调整）
@@ -72,7 +77,7 @@ preload_when:
 
 ## 工具
 
-1. 固定来源：建立问题必须有 `run_id`、`measurement_id`、`event_id`（来自测试结果页面或触发事件）。本技能没有 Issue/测量的领域读取端口，缺任何一项就提问。
+1. 固定来源：建立问题必须有 `run_id`、`measurement_id`、`event_id`（来自测试结果页面或触发事件）。可用 `quality.issue.read` 与 `test.run.read` 发现当前项目问题/测试 Run 的 id 和 revision；样件关系用 `build.lot.read` / `build.sample.read` 核对。端口不返回测量原值或失败事件，缺 measurement/event 仍须读取已绑定来源或提问，不从 Run 状态推定失败。
 2. 读依据：`evidence.search` 取已登记的测量原件与报告；`product.baseline.read` 取判据与关键特性；数值比较交 `calc.spec_compare`。
 3. 办理顺序：`quality.issue.create`（T0）→ `quality.issue.triage`（T1）→ 必要时 `quality.issue.containment.record`（T1）→ `quality.capa.draft`（T0）→ 措施完成与关联（T1）→ 复发观察（T1）→ 有效性复核候选（T1）→ 根因与复核结论只准备材料。
 4. 需要改设计或改制造时加载 `change_control`；需要新一轮实物复测时加载 `build_execution`。
@@ -112,3 +117,5 @@ preload_when:
 **输出要求**：
 - reply 第一句给问题身份与当前处置状态（例如"已按该测量建立问题候选，同依据无重复，建议先登记围堵"——示意）。
 - 假设 ≤5 条，每条带依据与证伪线索；重复候选、未知与阻塞各一列表。
+
+读取边界：`build.read`、`build.lot.read`、`build.sample.read`、`quality.issue.read`、`test.run.read` 返回 `structural_metadata/v1`，只读记录身份、当前指针和固定关系；`basis_status=not_assessed`。不从记录状态、存在的样件身份或计划摘要推断已就绪、未消耗、依据仍有效、专业批准或可执行；来源与当前适用性由领域命令重新核对。私有元数据须已由服务器在受理本运行时绑定当前项目和内部资料类别，当前 RLS 逐次重验；旧运行缺绑定时发起新运行。无 id 时分页读取 `next_cursor`，多对象匹配时由用户明确目标，不取第一条代替选择。

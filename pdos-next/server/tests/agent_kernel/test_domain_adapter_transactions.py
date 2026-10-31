@@ -9,6 +9,7 @@ from sqlalchemy import event, func, select
 from sqlalchemy.orm import Session
 
 from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
+from pdos_next.agent_kernel.disclosure import binding_operations, disclosure_digest
 from pdos_next.agent_kernel.domain_adapter import DomainCommands
 from pdos_next.agent_kernel.models import (
     AgentEvent,
@@ -16,6 +17,7 @@ from pdos_next.agent_kernel.models import (
     AgentToolCall,
     TenantSkillEnablement,
 )
+from pdos_next.agent_kernel.qualification_binding import tool_identity
 from pdos_next.contracts import Command
 from pdos_next.database import tenant_session
 from pdos_next.errors import DomainError
@@ -23,7 +25,6 @@ from pdos_next.models import Artifact, Audit, Claim, Grant, Outbox, Receipt, Req
 from pdos_next.safety import verify_test_target
 from pdos_next.service import digest, execute
 from tests.agent_kernel.test_execution_binding import ledger
-from pdos_next.agent_kernel.qualification_binding import tool_identity
 
 
 def fixture(setup, *, artifact_id=None, proposal_id=None, skill_key="public_research"):
@@ -81,7 +82,7 @@ def fixture(setup, *, artifact_id=None, proposal_id=None, skill_key="public_rese
         "tenant_id", "requester_id", "writer_id", "category_id", "product_id", "proposal_id",
     ):
         setattr(run, name, getattr(f.scope, name))
-    run.trigger, run.goal = "page", "Synthetic actual common domain adapter"
+    run.trigger, run.goal = f.scope.trigger, "Synthetic actual common domain adapter"
     run.intent_key, run.intent_digest = str(uuid4()), digest(str(uuid4()))
     run.read_sources = [
         {"artifact_id": str(artifact_id), "expected_revision": 1, "product_id": None}
@@ -89,7 +90,9 @@ def fixture(setup, *, artifact_id=None, proposal_id=None, skill_key="public_rese
     binding = ModelBinding(
         model_version=f.route.version,
         model_route_digest=f.route.digest,
-        tool_definitions_digest=digest(f.registry.definitions()),
+        tool_definitions_digest=disclosure_digest(
+            f.registry, "main", binding_operations(f.catalog, (bound,))
+        ),
         prompt_digest=digest("prefix"),
         isolation="main",
         cancel_epoch=0,
@@ -280,7 +283,7 @@ def test_actual_read_tools_keep_root_metadata_and_exact_isolated_source_scope(se
     reads = DomainReads(KernelStore(setup.engine), f.adapter)
     category = reads.call(f.scope, {}, name="category.read")
     assert category["id"] == str(setup.category)
-    metadata = reads.call(f.scope, {}, name="evidence.search")
+    metadata = reads.call(f.scope, {}, name="evidence.search")["items"]
     assert [row["artifact_id"] for row in metadata] == [f.arguments["artifact_id"]]
     assert all("content" not in row and "lines" not in row for row in metadata)
     identity = UUID(f.arguments["artifact_id"])

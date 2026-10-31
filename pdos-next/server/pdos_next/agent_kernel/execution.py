@@ -65,6 +65,9 @@ def command_run(session, ctx, product_id):
     ):
         raise DomainError("FORBIDDEN_SCOPE", "命令未绑定实际小 Pai 运行和调用。", 403)
     check_run_binding(run, scope_for_run(run))
+    from pdos_next.dingtalk.guards import read_only
+
+    read_only(session, run)
     if run.trigger in {"automation_manual", "automation_service"}:
         raise DomainError("FORBIDDEN_SCOPE", "当前只读规则没有业务写入权限。", 403)
     if run.used_tokens > run.token_limit:

@@ -50,6 +50,8 @@ def _usage(body: dict, protocol: str) -> ProviderUsage:
         raise ValueError("Usage required")
     if protocol == "openai-compatible":
         details = value.get("prompt_tokens_details", {})
+        if details is None:
+            details = {}
         if not isinstance(details, dict):
             raise ValueError("Invalid cache usage")
         return ProviderUsage(

@@ -64,10 +64,14 @@ def test_admin_registers_and_member_reads_current_head_and_receipt_atom(setup):
     assert current["items"][0]["revision"] == 2 and current["can_edit"] is True
     store, bound = run(setup, private_context=True, data_categories=("customer_original",))
     from pdos_next.agent_kernel.policy import egress
-    from pdos_next.errors import DomainError
 
-    with store.transaction(bound) as (session, _), pytest.raises(DomainError):
-        egress(session, bound, data.provider)
+    with store.transaction(bound) as (session, _):
+        # P26: a disabled latest agreement is optional governance, not an
+        # outbound prerequisite. It also cannot retain an old cache restriction.
+        decision = egress(session, bound, data.provider)
+        assert decision.agreement_id is decision.agreement_revision is None
+        assert decision.data_categories == ("customer_original",)
+        assert decision.prompt_cache_allowed is True
 
 
 def test_recovery_is_read_only_exact_and_survives_admin_revocation(setup):

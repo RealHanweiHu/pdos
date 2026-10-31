@@ -76,8 +76,14 @@ def submit(setup, client, command, *, preview=True):
     return client.post(path, json=command, headers=setup.headers), command
 
 
-def test_actual_configuration_save_recovery_and_default_agent_route(setup):
+@pytest.mark.parametrize("compatibility", [
+    {}, {"context_window_tokens": 200000},
+    {"openai_response_mode": "tools", "streaming": False},
+    {"openai_response_mode": "json_object", "streaming": True},
+])
+def test_actual_configuration_save_recovery_and_default_agent_route(setup, compatibility):
     client, ports, command = configured(setup)
+    command["payload"]["metadata"].update(compatibility)
     path = f"/v1/categories/{setup.category}/model-configuration"
     empty = client.get(path, headers=setup.headers)
     assert empty.status_code == 200 and empty.json()["configuration"] is None
@@ -88,12 +94,16 @@ def test_actual_configuration_save_recovery_and_default_agent_route(setup):
     assert result.json()["result"]["requires_requalification"] is True
     saved = client.get(path, headers=setup.headers)
     assert saved.status_code == 200 and saved.json()["configuration"]["revision"] == 1
+    for key, value in compatibility.items():
+        assert saved.json()["configuration"]["metadata"][key] == value
     assert "synthetic-fixture-only" not in saved.text
     assert "secret_reference" not in saved.text and "secret_version" not in saved.text
     _, scope = run(setup)
     bootstrap = Bootstrap(setup.engine, ports=ports)
     route = bootstrap.route_for(scope)
     assert route.version == "synthetic@1" and route.configuration_digest
+    for key, value in compatibility.items():
+        assert getattr(route, key) == value
     ports.secrets.binding = replace(ports.secrets.binding, version=uuid4())
     with pytest.raises(DomainError) as failure:
         bootstrap.route_for(scope)

@@ -5,7 +5,7 @@ from functools import partial
 from typing import Literal
 from uuid import UUID
 
-from pydantic import Field
+from pydantic import Field, ValidationError
 from sqlalchemy import func, or_, select
 
 from pdos_next.clock import now
@@ -21,6 +21,7 @@ from pdos_next.domain.preproject.models import (
     ProposalSubmission,
 )
 from pdos_next.domain.preproject.schemas import ItemInput, Reference
+from pdos_next.errors import DomainError
 from pdos_next.models import Category, Grant, Principal, Product
 from pdos_next.schema_base import StrictModel
 from pdos_next.service import require_access
@@ -282,7 +283,22 @@ class M3ObjectReads:
         self.store, self.commands = store, commands
 
     def call(self, scope, args, *, name):
-        payload = SCHEMAS[name].model_validate(args)
+        try:
+            payload = SCHEMAS[name].model_validate(args)
+        except ValidationError as error:
+            # Invalid model arguments are a tool rejection, not an unexpected worker
+            # failure. Do not expose the submitted values in the diagnostic.
+            raise DomainError(
+                "VALIDATION_FAILED",
+                "读取参数不符合要求，请按工具定义修正。",
+                422,
+                detail={
+                    "fields": [
+                        {"path": ".".join(str(part) for part in item["loc"]), "type": item["type"]}
+                        for item in error.errors(include_input=False, include_url=False)
+                    ]
+                },
+            ) from error
         if name != "category.list" and scope.category_id is None:
             fail("FORBIDDEN_SCOPE", "category_run_required", "此读取须绑定当前品类。", 403)
         with tenant_session(

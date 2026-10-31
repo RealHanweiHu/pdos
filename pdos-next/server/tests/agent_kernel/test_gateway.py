@@ -24,6 +24,7 @@ def configured_route():
         "synthetic-model",
         SecretStr("synthetic-not-a-real-secret"),
         "synthetic@1",
+        context_window_tokens=200_000,
     )
 
 
@@ -69,8 +70,15 @@ def test_provider_call_requires_registered_graph_and_replays_saved_request(setup
     restored = turn(gateway, scope)
     assert first.structured == restored.structured == {"ok": True} and client.calls == 1
     assert first.continuation == restored.continuation == continuation
-    with store.transaction(scope) as (_, row):
+    with store.transaction(scope) as (session, row):
         assert row.held_tokens == 0 and row.used_tokens == 15
+        saved = session.scalar(select(AgentToolCall.result).where(
+            AgentToolCall.run_id == row.id, AgentToolCall.tool == "model"))
+        assert set(saved["context_budget"]["segments"]) == {
+            "system", "tools", "skills", "envelope", "history", "loop",
+        }
+        assert saved["context_budget"]["window"] == 200_000
+        assert saved["context_budget"]["window_configured"] is True
     changed = AgentGateway(
         store, route_for=lambda _: replace(configured_route(), version="synthetic@2"), client=client
     )
@@ -140,7 +148,7 @@ def test_generic_capability_graph_cannot_bypass_registered_xiaopai_gateway(setup
     assert error.value.code == "FORBIDDEN_SCOPE" and client.calls == 0
 
 
-def test_prompt_and_tool_prefixes_are_fixed_per_isolation_across_restart(setup):
+def test_prompt_is_fixed_and_tool_disclosure_only_grows_per_isolation(setup):
     store, scope = run(setup)
     client = Client(lambda _: ModelTurn(structured={"ok": True}, usage=ProviderUsage(1, 1)))
     gateway = AgentGateway(
@@ -155,20 +163,26 @@ def test_prompt_and_tool_prefixes_are_fixed_per_isolation_across_restart(setup):
             tools=[{"name": "research.read"}],
             output_schema={},
         )
-        for changes in ({"system": "changed"}, {"tools": [{"name": "different"}]}):
+        # The trusted graph progressively discloses tools after loading a skill.
+        # Extending an empty main list is allowed; shrinking it or changing the
+        # system prefix remains a conflict, independently of the child list.
+        gateway.turn(scope, system="frozen",
+            messages=[{"role": "user", "content": "synthetic"}],
+            tools=[{"name": "different"}], output_schema={})
+        for changes in ({"system": "changed"}, {"tools": []}):
             with pytest.raises(DomainError) as error:
                 gateway.turn(
                     scope,
                     **{
                         "system": "frozen",
                         "messages": [{"role": "user", "content": "synthetic"}],
-                        "tools": [],
+                        "tools": [{"name": "different"}],
                         "output_schema": {},
                         **changes,
                     },
                 )
             assert error.value.code == "VERSION_CONFLICT"
-    assert client.calls == 2
+    assert client.calls == 3
 
 
 def test_scope_revocation_during_call_frees_slot_without_revealing_result(setup):

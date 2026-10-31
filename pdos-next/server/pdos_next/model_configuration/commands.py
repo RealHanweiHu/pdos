@@ -43,7 +43,15 @@ def owner(session, ctx):
 
 
 def semantic(payload):
-    return payload.model_dump(mode="json", exclude={"confirmation_token"})
+    value = payload.model_dump(mode="json", exclude={"confirmation_token"})
+    if payload.metadata.context_window_tokens is None:
+        value["metadata"].pop("context_window_tokens")
+    # Requests confirmed before connection selection existed must retain their original hash.
+    if payload.metadata.connection_id is None and (
+        "connection_id" not in payload.metadata.model_fields_set
+    ):
+        value["metadata"].pop("connection_id", None)
+    return value
 
 
 @command_inputs_once

@@ -5,13 +5,12 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import event, func, select
-from sqlalchemy.orm import Session
-
 from pdos_next.agent_kernel.models import AgentEvent, AgentInput, AgentToolCall
 from pdos_next.agent_kernel.skills import SkillCatalog
 from pdos_next.clock import now
 from pdos_next.models import Grant, Receipt
+from sqlalchemy import event, func, select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_transactions import run
 
 
@@ -234,11 +233,7 @@ def test_private_feedback_does_not_enter_process_or_model_projected_context(setu
         url(setup, scope).removesuffix("/feedback") + "/process", headers=setup.headers
     )
     assert "PRIVATE-FEEDBACK" not in process.text
-    host = object.__new__(Bootstrap)
-    host.engine = setup.engine
-    from pdos_next.agent_kernel.persistence import KernelStore
-
-    host.store = KernelStore(setup.engine)
+    host = Bootstrap(setup.engine)
     assert "PRIVATE-FEEDBACK" not in str(host.project_context(scope, "Synthetic public goal"))
 
 

@@ -273,3 +273,29 @@ def test_native_name_encoding_is_bijective_for_underscores_and_dots(name):
     from pdos_next.providers.agent_client import business_name
 
     assert business_name(tool_name(name)) == name
+
+
+@pytest.mark.parametrize("single", [False, True])
+def test_anthropic_caches_envelope_and_latest_message_without_mutating_input(single):
+    from copy import deepcopy
+
+    messages = [{"role": "user", "content": "envelope"}]
+    if not single:
+        messages += [
+            {"role": "user", "content": "skill"},
+            {"role": "assistant", "content": "", "tool_calls": [
+                {"id": "c1", "name": "category.read", "arguments": {}}]},
+            {"role": "tool", "tool_call_id": "c1", "content": "read result"},
+        ]
+    original = deepcopy(messages)
+    body = request_body(route("anthropic-native"), "fixed", messages, TOOLS, SCHEMA, False)
+    assert body["system"][-1]["cache_control"] == {"type": "ephemeral"}
+    assert body["messages"][0]["content"][-1]["cache_control"] == {"type": "ephemeral"}
+    assert body["messages"][-1]["content"][-1]["cache_control"] == {"type": "ephemeral"}
+    for message in body["messages"][1:-1]:
+        assert "cache_control" not in json.dumps(message)
+    assert json.dumps(body).count('"cache_control"') == (2 if single else 3)
+    openai = request_body(route("openai-compatible"), "fixed", messages, TOOLS, SCHEMA, False)
+    assert "cache_control" not in json.dumps(openai)
+    assert openai["messages"][1]["content"] == "envelope"
+    assert messages == original

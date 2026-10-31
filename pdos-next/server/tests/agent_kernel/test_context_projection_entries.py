@@ -6,11 +6,13 @@ import pytest
 from pdos_next.agent_kernel.context_projection import combine_contracts, project
 from pdos_next.agent_kernel.skills import SkillCatalog
 from tests.agent_kernel.test_proposal_context_pg import start
+from tests.confirmation_fixture import confirmation_clock  # noqa: F401
 from tests.preproject.test_g0 import work as work
 from tests.test_original_security import security_work as security_work
 
 
 @pytest.mark.parametrize("entry", ["customer_request", "new_product", "derivative"])
+@pytest.mark.usefixtures("confirmation_clock")
 def test_three_bound_entries_preserve_all_declared_working_context(work, security_work, entry):
     owner, scope = start(work, security_work, entry)
     catalog = SkillCatalog()

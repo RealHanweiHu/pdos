@@ -1,6 +1,6 @@
 ---
 key: change_control
-version: 0.1.0-draft
+version: 0.1.1-draft
 purpose: 办理同时穿透产品与制造的工程变更：按来源建立变更请求，用确定性工具算显式影响并与 AI 待核线索分栏，准备变更单与实施计划，登记实际实施事实，维护工程配置/BOM 与派生变体版本，并为逐项取舍与专业批准准备具名决定材料；取舍与批准由专业本人作出。
 input_schema:
   type: object
@@ -42,6 +42,9 @@ allowed_operations:
   - {tool: product.definition.draft, tier: T0, note: "定义草稿；人工值不覆盖"}
   - {tool: product.definition.item.patch, tier: T0, note: "条目级补丁；只改 AI 起草且无人工值的条目"}
   - {tool: change.order.prepare, tier: T1, note: "变更单与实施计划，带评估依据"}
+  - {tool: change.effectivity.record, tier: T1, note: "仅明确批准的继任开发 Build 实际 Lot/样件采用；不代表库存或 ERP/MES 切换"}
+  - {tool: change.verification.record, tier: T2-prepare-only, note: "只准备全部计划项与实际新 Run/样件/方法对应，交独立品质人员具名验证"}
+  - {tool: change.close, tier: T2-prepare-only, note: "只准备分别关闭材料；由本次独立复核人重核采用与验证后具名关闭"}
   - {tool: change.implementation.record, tier: T1, note: "登记实际实施事实，关联具体条目"}
   - {tool: engineering.configuration.create, tier: T1, note: "按固定定义与 BOM 版本建立工程配置"}
   - {tool: engineering.bom.revise, tier: T1, note: "BOM 新版本，逐行带来源"}
@@ -82,6 +85,8 @@ preload_when:
 3. 取舍与批准：`change.selection.decide` 与 `change.order.approve` 只准备材料；`change.order.prepare`（T1）形成变更单与实施计划。
 4. 版本落地：`engineering.bom.revise`、`engineering.configuration.create`（T1）；派生与基线 `product.variant.derive`、`product.variant.rebase`（T1）；定义草稿与条目补丁按 T0。
 5. 实施与复验：`change.implementation.record`（T1）登记实际实施；复验轮次加载 `build_execution`，复验计划加载 `test_verification`。
+6. 实际采用：`change.effectivity.record`（T1）消费实际 lot 与 sample_refs；仅在批准计划明确旧 Build 和有限继任开发 Build 条件时使用。新配置创建或新 Run 计算通过均不自动生效。
+7. 独立验证与关闭：`change.verification.record`、`change.close` 均只准备 T2 材料。逐计划项映射固定新 Run、真实样件、测试项、方法及验证要求；服务器重读原值/执行人/来源，独立品质人员具名验证。通过后仍须分别关闭；不代替 Run 自身专业复核。
 
 ## 数据语义
 
@@ -118,3 +123,5 @@ preload_when:
 **输出要求**：
 - reply 第一句给变更身份与当前位置（例如"已按该问题建立变更候选，显式影响 6 条，待核线索 3 条"——示意）。
 - 显式影响与待核线索必须是两个列表；受影响对象、未知与阻塞各一列表。
+
+生效与收尾限制：当前没有 Change/完成目录的 Agent 读取工具，缺精确 lot/样件/Run/当前变更版时请用户从实际页面选择，不从聊天补造。未明确批准的生效范围、部分采用、来源漂移或失败/未知不能关闭；原请求未知只按原命令/原键恢复，不能重发外部动作。

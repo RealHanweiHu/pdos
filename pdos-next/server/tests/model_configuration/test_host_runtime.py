@@ -190,6 +190,7 @@ def test_provider_and_decimal_rate_card_require_exact_tenant_model_and_current_b
         model_version="synthetic@1",
     ).route(SecretStr("synthetic-only-key"), "synthetic@1")
     assert host.provider_for(scope, route) == "synthetic@1"
+    assert host.output_limit_for(scope, route) == 2048
     card = host.rate_card_for(scope, route)
     assert (
         card.actual(
@@ -205,13 +206,15 @@ def test_provider_and_decimal_rate_card_require_exact_tenant_model_and_current_b
     ]:
         with pytest.raises(DomainError):
             host.provider_for(other_scope, other_route)
+        with pytest.raises(DomainError):
+            host.output_limit_for(other_scope, other_route)
     value["models"][0]["pricing"]["valid_until"] = (now() - timedelta(seconds=1)).isoformat()
     write_config(path, value)
     with pytest.raises(DomainError):
         host.rate_card_for(scope, route)
 
 
-def test_default_bootstrap_loads_one_host_for_all_three_ports_and_explicit_injection_still_wins(
+def test_default_bootstrap_loads_one_host_for_all_ports_and_explicit_injection_still_wins(
     monkeypatch, tmp_path
 ):
     monkeypatch.delenv("PDOS_TENANT_RUNTIME_CONFIG", raising=False)
@@ -222,8 +225,71 @@ def test_default_bootstrap_loads_one_host_for_all_three_ports_and_explicit_injec
     assert isinstance(owner.ports.secrets, TenantRuntime)
     assert owner.ports.provider_for.__self__ is owner.ports.secrets
     assert owner.ports.rate_card_for.__self__ is owner.ports.secrets
+    assert owner.ports.output_limit_for.__self__ is owner.ports.secrets
+    assert owner.ports.development_budget_for.__self__ is owner.ports.secrets
     explicit = RuntimePorts()
     assert Bootstrap(SimpleNamespace(), ports=explicit).ports is explicit
+
+
+@pytest.mark.parametrize("limit", [None, 1, 8192, 32768])
+def test_bootstrap_binds_host_output_cap_to_exact_registered_route(tmp_path, monkeypatch, limit):
+    tenant, sdk = uuid4(), KmsSdk()
+    value = document(tenant)
+    if limit is not None:
+        value["models"][0]["max_output_tokens"] = limit
+    path = write_config(tmp_path / "runtime.json", value)
+    host = TenantRuntime(path, kms_factory=lambda *_: AliyunKms("r", "e", client=sdk))
+    metadata = ModelMetadata.model_validate({
+        key: value["models"][0][key]
+        for key in ("protocol", "base_url", "model", "model_version")
+    })
+    version = SimpleNamespace(metadata=metadata, enabled=True,
+        secret=host.current(tenant, metadata.protocol), binding_digest="a" * 64)
+    monkeypatch.setattr(
+        "pdos_next.agent_kernel.bootstrap.SessionConfigurationStore",
+        lambda _: SimpleNamespace(current=lambda _: version),
+    )
+    session = SimpleNamespace(scalar=lambda *_: 1)
+    owner = Bootstrap(SimpleNamespace(), ports=RuntimePorts(
+        secrets=host, output_limit_for=host.output_limit_for,
+    ))
+    route = owner.route(session, SimpleNamespace(tenant_id=tenant))
+    assert route.max_output_tokens == (2048 if limit is None else limit)
+    assert route.configuration_digest == version.binding_digest
+    assert route.digest != replace(route, max_output_tokens=2047).digest
+    # Reloaded host policy changes the route binding without changing the secret or model.
+    value["models"][0]["max_output_tokens"] = 4096
+    write_config(path, value)
+    updated = owner.route(session, SimpleNamespace(tenant_id=tenant))
+    assert updated.max_output_tokens == 4096 and updated.digest != route.digest
+
+
+@pytest.mark.parametrize("limit", [0, -1, 32769, True, 1.5, "8192", None])
+def test_invalid_host_output_cap_is_rejected_before_secret_or_provider_access(tmp_path, limit):
+    tenant, sdk = uuid4(), KmsSdk()
+    value = document(tenant)
+    value["models"][0]["max_output_tokens"] = limit
+    host = TenantRuntime(write_config(tmp_path / "runtime.json", value),
+        kms_factory=lambda *_: AliyunKms("r", "e", client=sdk))
+    with pytest.raises(DomainError) as failed:
+        host.current(tenant, "openai-compatible")
+    assert failed.value.code == "SOURCE_UNAVAILABLE" and sdk.calls == []
+
+
+def test_minimax_documented_output_boundary_and_development_policy_are_server_owned(tmp_path):
+    value = document(uuid4())
+    row = value["models"][0]
+    row.update(base_url="https://api.minimax.cn/v1", model="MiniMax-M3", provider="minimax",
+        max_output_tokens=524288, development_unlimited_budget=True)
+    host = TenantRuntime(write_config(tmp_path / "runtime.json", value))
+    configured = host.configuration().models[0]
+    assert configured.max_output_tokens == 524288 and configured.development_unlimited_budget
+    for field, invalid in [("provider", "other"), ("base_url", "https://synthetic.invalid/v1"),
+                           ("max_output_tokens", 524289), ("development_unlimited_budget", "true")]:
+        bad = deepcopy(value)
+        bad["models"][0][field] = invalid
+        with pytest.raises(DomainError):
+            TenantRuntime(write_config(tmp_path / "bad.json", bad)).configuration()
 
 
 def test_relative_metadata_path_cannot_select_different_api_and_worker_files(tmp_path, monkeypatch):

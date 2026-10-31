@@ -1,5 +1,6 @@
 """Trusted composition. Missing business adapters fail visibly, never fake a result."""
 
+from contextvars import ContextVar
 from dataclasses import dataclass, field
 
 from pdos_next.errors import DomainError
@@ -14,6 +15,8 @@ from .models import AgentToolCall
 from .persistence import KernelStore
 from .read_execution import ReadSource, build_read_binding, verify_read_source
 from .skills import SkillCatalog
+
+_ADMITTED_MESSAGES = ContextVar("admitted_context_messages", default=None)
 
 
 @dataclass(frozen=True)
@@ -36,6 +39,8 @@ class KernelAdapters:
     read_restores: dict = field(default_factory=dict)
     read_resumes: dict = field(default_factory=dict)
     context_guard: object | None = None
+    citation_guard: object | None = None
+    source_action_guard: object | None = None
 
 
 class BoundHost:
@@ -49,7 +54,9 @@ class BoundHost:
             rate_card_for=adapters.rate_card_for,
             cost_required=adapters.cost_required,
             client=adapters.provider_client,
-            context_guard=adapters.context_guard,
+            context_guard=self.context_guard,
+            data_categories_for=adapters.citation_guard,
+            context_admitter=self.admit_context,
         )
 
     def current(self, scope):
@@ -64,6 +71,8 @@ class BoundHost:
         return self.skill_context(scope, goal, bindings=())["context"]
 
     def skill_context(self, scope, goal, *, bindings):
+        from pdos_next.personal_preferences import context_preferences
+
         from .context_projection import combine_contracts, project, snapshot
 
         self.current(scope)
@@ -73,10 +82,32 @@ class BoundHost:
             raise DomainError("VERSION_CONFLICT", "已加载方法的资料合同已变化。")
         schema = combine_contracts(self.catalog, skills)
         raw = self.adapters.project_context(scope, goal, frozenset(schema["properties"]))
+        with self.store.transaction(scope, lock=True) as (session, run):
+            preferences = run.versions.get("personal_preferences_context")
+            if preferences is None:
+                preferences = context_preferences(session, scope)
+                run.versions = {**run.versions, "personal_preferences_context": preferences}
+            raw = {**raw, "personal_preferences": preferences}
+            action = run.versions.get("verification_action")
+            if action is not None:
+                from pdos_next.enterprise_search.verification_actions import context_value
+
+                raw["verification_action"] = context_value(action)
+            work_action = run.versions.get("work_followup_action")
+            if work_action is not None:
+                from pdos_next.enterprise_search.work_followup_actions import context_value
+
+                raw["work_followup_action"] = context_value(work_action)
+            from pdos_next.enterprise_search.assistant_depth import context_value as depth_context
+
+            depth = depth_context(run)
+            if depth is not None:
+                raw["assistant_depth"] = depth
         value, omitted, issues = project(raw, schema)
         reference = snapshot(self.store, scope, value=value, schema=schema, bindings=bindings,
                              omitted=omitted, issues=issues)
-        return {"context": value, "context_ref": reference}
+        return {"context": value, "context_ref": reference,
+                "omitted_fields": [entry["field"] for entry in omitted]}
 
     def enabled(self, scope, skill):
         from pdos_next.domain.automations.runtime import permitted_skill
@@ -91,6 +122,8 @@ class BoundHost:
         if route is None:
             return False
         with self.store.transaction(scope) as (session, run):
+            if run.versions.get("work_followup_action") is not None:
+                return False  # This explicit answer action always prepares for its Human.
             if route.version != run.versions.get(
                 "model_version"
             ) or route.digest != run.versions.get("model_route_digest"):
@@ -108,16 +141,137 @@ class BoundHost:
             )
 
     def model(self, scope, **kwargs):
+        turn, _ = self.model_step(scope, **kwargs)
+        return turn
+
+    def model_step(self, scope, **kwargs):
+        """Return actual admitted messages for the next durable graph checkpoint.
+
+        Capture is local to this invocation, including concurrent child graphs;
+        no gateway configuration, ModelTurn schema or tool ledger is mutated.
+        """
+        from .context_observability import record_call, record_failed
+
         if scope.isolation == "main":
             from .context_projection import check_messages
 
             check_messages(self.store, scope, kwargs["messages"], kwargs.get("loaded_skills", ()))
-        return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+        capture = []
+        token = _ADMITTED_MESSAGES.set(capture)
+        try:
+            turn = self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+        except DomainError as error:
+            if capture and error.code != "CANCELLED_RUN":
+                admitted, admission_budget = capture[-1]
+                record_failed(self.store, scope, error, admitted, admission_budget)
+            raise
+        finally:
+            _ADMITTED_MESSAGES.reset(token)
+        admitted = capture[-1][0] if capture else kwargs["messages"]
+        record_call(self.store, scope, turn, admitted)
+        return turn, admitted
+
+    def runtime_budget(self, scope):
+        with self.store.transaction(scope) as (_, run):
+            return max(0, run.token_limit - run.used_tokens - run.held_tokens)
+
+    def context_guard(self, scope):
+        from pdos_next.personal_preferences import recheck_context_preferences
+
+        if self.adapters.context_guard is not None:
+            self.adapters.context_guard(scope)
+        with self.store.transaction(scope) as (session, run):
+            preferences = run.versions.get("personal_preferences_context")
+            if preferences is not None and not recheck_context_preferences(
+                session, scope, preferences,
+            ):
+                raise DomainError(
+                    "CONVERSATION_HISTORY_REVOKED", "本次携带中的导航对象已无权读取，请重新发起。",
+                )
+
+    def admit_context(self, scope, *, route, system, tools, messages, output_schema, loaded_skills,
+                      calibration=None):
+        from .context_budget import fit_messages, measure
+        from .context_projection import combine_contracts, project, snapshot
+        from .context_runtime import compact_fragment_view
+        from .tools import default_registry
+
+        registry = self.adapters.tool_registry or default_registry()
+
+        def compact(name, value):
+            spec = registry.get(name)
+            if spec.tier != "READ" or not value.get("execution_ref"):
+                return None
+            return self.tool_message(scope, spec, value, force=True)
+
+        try:
+            reduced, budget = fit_messages(
+                route, system, tools, messages, output_schema,
+                compact_tool=compact, allow_envelope=scope.isolation == "main",
+                calibration=calibration,
+                compact_fragment=lambda value: compact_fragment_view(
+                    self.store, scope, registry, value,
+                ),
+            )
+        except DomainError as error:
+            if error.reason == "CONTEXT_INCOMPLETE":
+                from .context_observability import record_incomplete
+
+                record_incomplete(self.store, scope, error, messages)
+            raise
+        if budget["reductions"] and reduced and reduced[0] != messages[0]:
+            import json
+
+            envelope = json.loads(reduced[0]["content"])
+            with self.store.transaction(scope) as (_, run):
+                saved = run.versions.get("context_snapshots", {})
+                original = next((entry for entry in saved.values()
+                                 if entry["event_id"] == envelope["context_ref"]), None)
+                if original is None:
+                    raise DomainError("SOURCE_STALE", "缩减前的资料快照不可核对。")
+                previous_omitted = original["omitted"]
+            skills = [self.catalog.load(binding.key, scope, self.enabled)
+                      for binding in loaded_skills]
+            schema = combine_contracts(self.catalog, skills)
+            value, omitted, issues = project(envelope["context"], schema)
+            omissions = {entry["field"]: entry for entry in [*previous_omitted, *omitted]}
+            omitted = list(omissions.values())
+            envelope["context_ref"] = snapshot(
+                self.store, scope, value=value, schema=schema, bindings=loaded_skills,
+                omitted=omitted, issues=issues,
+            )
+            envelope["omitted_fields"] = [entry["field"] for entry in omitted]
+            reduced[0]["content"] = json.dumps(envelope, ensure_ascii=False)
+            budget = {**budget, **measure(route, system, tools, reduced, output_schema,
+                                          calibration=calibration)}
+        capture = _ADMITTED_MESSAGES.get()
+        if capture is not None:
+            capture.append((reduced, budget))
+        return reduced, budget
 
     def read(self, scope, spec, arguments, intent_key, *, source: ReadSource | None = None):
+        from pdos_next.enterprise_search.assistant_depth import TOOLS, mode_for
+
+        if scope.isolation == "main" and spec.name in TOOLS:
+            with self.store.transaction(scope) as (_, run):
+                mode = mode_for(run)
+            if mode is not None:
+                # Serialize claims plus source I/O across processes. A later
+                # request sees the first settled claim; retries keep its ID.
+                with self.store.composition_lock(scope, "assistant-depth/v1", wait=True):
+                    return self._registered_read(scope, spec, arguments, intent_key, source=source)
+        return self._registered_read(scope, spec, arguments, intent_key, source=source)
+
+    def _registered_read(self, scope, spec, arguments, intent_key, *, source):
         from pdos_next.domain.automations.runtime import guard_tool
 
         guard_tool(self.store, scope, spec.name)
+        if spec.name == "result.read":
+            return self.read_result(scope, spec, arguments, intent_key, source=source)
+        if self.adapters.source_action_guard is not None and spec.name in {
+            "research.search", "research.fanout", "mcp.read",
+        }:
+            self.adapters.source_action_guard(scope, spec.name)
         callback = self.adapters.read_tools.get(spec.name)
         if callback is None:
             raise DomainError(
@@ -139,6 +293,72 @@ class BoundHost:
             callback=callback, engine=engine,
             restore=(lambda previous: restore(scope, arguments, previous)) if restore else None,
         )
+
+    def read_result(self, scope, spec, arguments, intent_key, *, source, original_reader=None):
+        from pydantic import ValidationError
+
+        from .result_continuation import ResultReadInput
+
+        try:
+            data = ResultReadInput.model_validate(arguments)
+        except ValidationError:
+            raise DomainError("VALIDATION_FAILED", "结果续读需要有效句柄和正整数页码。") from None
+        with self.store.composition_lock(scope, intent_key, wait=True):
+            return self.read_callback(
+                scope, spec, arguments, intent_key, source=source,
+                callback=lambda bound, _: self.continue_result(
+                    bound, data, original_reader=original_reader,
+                ), resume_started=True,
+            )
+
+    def continue_result(self, scope, data, *, original_reader=None):
+        from .result_continuation import durable_read, page_view
+        from .tools import default_registry
+
+        registry = self.adapters.tool_registry or default_registry()
+        spec, arguments, intent, source, fingerprint = durable_read(
+            self.store, scope, data.handle, registry,
+        )
+        # Re-enter the original registered adapter, including its restore/source
+        # guards. A handle never turns historical JSON into current permission.
+        current = (original_reader or self.read)(scope, spec, arguments, intent, source=source)
+        raw = {key: value for key, value in current.items() if key != "execution_ref"}
+        if digest(raw) != fingerprint:
+            raise DomainError("SOURCE_STALE", "原结果已变化，请重新读取资料。")
+        return page_view(current, data.handle, data.page, min(spec.max_result_tokens, 4_000) - 64)
+
+    def tool_message(self, scope, spec, value, *, force=False):
+        from .context_budget import estimate_tokens
+        from .result_continuation import handle_for, page_view, serialized
+
+        if not force and estimate_tokens(serialized(value)) <= spec.max_result_tokens:
+            return value
+        reference = value.get("execution_ref") if isinstance(value, dict) else None
+        if spec.tier != "READ" or spec.name in {"skill.load", "result.read"} or not reference:
+            # Receipts, skill bodies and errors are required content. The call
+            # budget guard will report them explicitly rather than silently cut.
+            return value
+        from uuid import UUID
+
+        with self.store.transaction(scope) as (session, _):
+            call = session.get(AgentToolCall, UUID(reference["call_id"]))
+            raw = {key: child for key, child in value.items() if key != "execution_ref"}
+            if (
+                not call or call.tenant_id != scope.tenant_id or call.run_id != scope.run_id
+                or call.tool != spec.name or call.state != "completed"
+                or call.error_code is not None or call.receipt_id is not None
+                or call.result != raw
+                or call.execution_binding.get("isolation") != scope.isolation
+            ):
+                raise DomainError("FORBIDDEN_SCOPE", "超长结果缺少当前运行的可信读取账本。")
+            handle = handle_for(call.id, call.result)
+        result = page_view(value, handle, 1, min(spec.max_result_tokens, 4_000) - 64)
+        if force:
+            result = {key: child for key, child in result.items() if key != "preview"}
+            result.update(omitted=True, read_more={
+                "tool": "result.read", "arguments": {"handle": handle, "page": 1},
+            })
+        return result
 
     def read_callback(
         self, scope, spec, arguments, intent_key, *, source, callback,
@@ -175,6 +395,13 @@ class BoundHost:
             **({"resume_started": True} if resume_started else {}),
         )
         try:
+            if previous is None and scope.isolation == "main" and spec.name in {
+                "assistant.search", "assistant.extract",
+            }:
+                from pdos_next.enterprise_search.assistant_depth import admit_call
+
+                with self.store.transaction(scope, lock=True) as (session, run):
+                    admit_call(session, scope, run, call_id, spec.name, arguments)
             if previous is not None and restore is not None:
                 result = restore(previous)
             else:
@@ -197,17 +424,31 @@ class BoundHost:
                 self.store.release_call(scope, call_id, error="SOURCE_UNAVAILABLE")
             raise
 
-    def prepare(self, scope, spec, arguments, intent_key):
+    def prepare(self, scope, spec, arguments, intent_key, *, source: WriteSource | None = None):
         from pdos_next.domain.automations.runtime import guard_tool
 
         guard_tool(self.store, scope, writing=True)
+        from pdos_next.dingtalk.guards import guard_writing
+
+        guard_writing(self.store, scope)
+        if self.adapters.source_action_guard is not None:
+            self.adapters.source_action_guard(scope, spec.name)
         self.current(scope)
+        if spec.name == "verification.preparation.record":
+            return self.adapters.prepare_candidate(
+                scope, spec, arguments, intent_key, source=source,
+            )
         return self.adapters.prepare_candidate(scope, spec, arguments, intent_key)
 
     def write(self, scope, spec, arguments, intent_key, *, source: WriteSource):
         from pdos_next.domain.automations.runtime import guard_tool
 
         guard_tool(self.store, scope, writing=True)
+        from pdos_next.dingtalk.guards import guard_writing
+
+        guard_writing(self.store, scope)
+        if self.adapters.source_action_guard is not None:
+            self.adapters.source_action_guard(scope, spec.name)
         self.current(scope)
         if spec.tier != "T0" or scope.isolation != "main":
             raise DomainError("NAMED_DECISION_REQUIRED", "该工具没有 AI 自动执行权。")
@@ -218,6 +459,8 @@ class BoundHost:
         ):
             raise DomainError("FORBIDDEN_SCOPE", "执行引用须由服务器实际模型账本生成。")
         with self.store.transaction(scope) as (session, run):
+            if run.versions.get("work_followup_action") is not None:
+                raise DomainError("NAMED_DECISION_REQUIRED", "资料跟进须由本人核对后创建。")
             verify_source(
                 session, scope, run, spec, arguments, source, catalog=self.catalog,
                 registry=self.adapters.tool_registry or default_registry(),

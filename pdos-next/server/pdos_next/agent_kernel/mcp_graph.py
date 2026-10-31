@@ -136,7 +136,17 @@ class McpGraph:
             def model(self, bound, **kwargs):
                 return host.model(bound, **kwargs)
 
+            def tool_message(self, bound, registered, value):
+                view = getattr(host, "tool_message", None)
+                return view(bound, registered, value) if callable(view) else value
+
             def read(self, bound, registered, arguments, intent_key, *, source=None):
+                self.current(bound)
+                if registered.name == "result.read":
+                    return host.read_result(
+                        bound, registered, arguments, intent_key,
+                        source=source, original_reader=self.read,
+                    )
                 if registered.name != "mcp.result.read":
                     raise DomainError("FORBIDDEN_SCOPE", "MCP 子任务只可读取固定结果。")
                 return host.read_callback(

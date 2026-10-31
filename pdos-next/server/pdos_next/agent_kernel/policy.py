@@ -20,6 +20,7 @@ class EgressDecision:
     agreement_id: str | None
     agreement_revision: int | None
     checked_at: datetime
+    prompt_cache_allowed: bool = True
 
 
 def egress(session, scope, provider, *, data_categories=None):
@@ -49,12 +50,16 @@ def egress(session, scope, provider, *, data_categories=None):
             "资料类别超出该服务商已登记协议的许可范围。",
             detail={"reason_key": "provider_agreement_category"},
         )
+    # This typed field is the named agreement fact. Never interpret retention prose
+    # or make tenant policy depend on access to the administrator's private receipt.
+    cache_allowed = not current or agreement.prompt_cache_allowed is True
     return EgressDecision(
         provider,
         tuple(sorted(categories)),
         str(agreement.id) if current else None,
         agreement.revision if current else None,
         now(),
+        cache_allowed,
     )
 
 

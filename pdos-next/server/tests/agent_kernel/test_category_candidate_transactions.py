@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, execution_key
 from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
 from pdos_next.agent_kernel.host import BoundHost, KernelAdapters
 from pdos_next.agent_kernel.models import (
     AgentEvent,
@@ -53,7 +54,7 @@ def personal_fixture(setup, tmp_path, *, sources=True):
         "proposal_id",
     ):
         setattr(f.run, name, getattr(f.scope, name))
-    f.run.trigger, f.run.goal = "dialogue", "合成个人新品类研究"
+    f.run.trigger, f.run.goal = f.scope.trigger, "合成个人新品类研究"
     f.run.intent_key, f.run.intent_digest = str(uuid4()), digest(str(uuid4()))
     f.run.read_sources = []
     skill = f.catalog._skills["category_framing"]
@@ -63,7 +64,7 @@ def personal_fixture(setup, tmp_path, *, sources=True):
     binding = ModelBinding(
         model_version=f.route.version,
         model_route_digest=f.route.digest,
-        tool_definitions_digest=digest(f.registry.definitions()),
+        tool_definitions_digest=digest(disclosure(f.registry, "main", skill_operations([skill]))),
         prompt_digest=digest("prefix"),
         isolation="main",
         cancel_epoch=0,

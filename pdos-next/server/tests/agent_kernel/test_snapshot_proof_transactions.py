@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from pdos_next.agent_kernel.bindings import ModelBinding, WriteSource, execution_key
 from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent_kernel.disclosure import binding_operations, disclosure_digest
 from pdos_next.agent_kernel.host import BoundHost
 from pdos_next.agent_kernel.m3_calculators import ENGINES
 from pdos_next.agent_kernel.models import AgentRun, PublicWebSnapshot, TenantSkillEnablement
@@ -24,7 +25,6 @@ from pdos_next.models import Receipt, now
 from pdos_next.research.service import ResearchChild, ResearchService
 from pdos_next.research.types import ReadPage, ResearchTask, Snapshot
 from pdos_next.research.web import ResourceLimits
-from pdos_next.service import digest
 from tests.agent_kernel.research.test_research import service as synthetic_service
 from tests.agent_kernel.test_read_proof_transactions import read_fixture
 from tests.preproject.test_g0 import create
@@ -33,11 +33,14 @@ from tests.preproject.test_g0 import read as read_proposal
 
 def model_for(f, tool, arguments, *, isolation="main"):
     scope = f.scope.child(isolation)
-    binding = ModelBinding.model_validate(f.model.execution_binding).model_copy(update={
+    previous = ModelBinding.model_validate(f.model.execution_binding)
+    loaded = () if isolation != "main" else previous.loaded_skills
+    binding = previous.model_copy(update={
         "isolation": isolation,
-        "tool_definitions_digest": digest(f.registry.definitions(isolation)),
-        "loaded_skills": () if isolation != "main" else
-            ModelBinding.model_validate(f.model.execution_binding).loaded_skills,
+        "tool_definitions_digest": disclosure_digest(
+            f.registry, isolation, binding_operations(f.catalog, loaded),
+        ),
+        "loaded_skills": loaded,
     })
     with f.store.transaction(scope, lock=True) as (_, run):
         run.versions = {

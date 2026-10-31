@@ -2,7 +2,7 @@
 
 SHAPE = """COALESCE(
   jsonb_typeof(execution_binding)='object'
-  AND execution_binding->>'kind' IN ('unbound','read','model','domain_t0')
+  AND execution_binding->>'kind' IN ('unbound','read','model','domain_t0','embedding_query')
   AND (execution_binding->>'kind' NOT IN ('model','domain_t0') OR (
     execution_binding ?& ARRAY['model_version','model_route_digest',
       'tool_definitions_digest','cancel_epoch']
@@ -17,7 +17,8 @@ SHAPE = """COALESCE(
     execution_binding ?& ARRAY['prompt_digest','loaded_skills','isolation']
     AND execution_binding->>'prompt_digest' ~ '^[a-f0-9]{64}$'
     AND jsonb_typeof(execution_binding->'loaded_skills')='array'
-    AND execution_binding->>'isolation' IN ('main','research','extract','mcp')
+    AND execution_binding->>'isolation' IN
+      ('main','research','extract','mcp','assistant_extract','assistant_compare')
     AND tool='model'
   ))
   AND (execution_binding->>'kind'<>'domain_t0' OR (

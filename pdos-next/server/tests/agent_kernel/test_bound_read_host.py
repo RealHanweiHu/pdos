@@ -82,7 +82,7 @@ def make_host(*, isolation="main", engine=None):
     )
     registry = ToolRegistry([spec])
     values = asdict(scope)
-    for key in ("isolation", "artifact_ids", "trigger"):
+    for key in ("isolation", "artifact_ids", "citation_ids", "trigger"):
         values.pop(key)
     values["id"] = values.pop("run_id")
     values["data_categories"] = list(values["data_categories"])
@@ -281,7 +281,7 @@ def test_actual_graph_passes_server_model_provenance_into_bound_host(monkeypatch
     ])
     context_ref = str(uuid4())
     f.run.versions["context_snapshots"] = {"synthetic-read-host": {
-        "event_id": context_ref, "content_digest": digest({}), "skills": [],
+        "event_id": context_ref, "content_digest": digest({}), "skills": [], "omitted": [],
     }}
     monkeypatch.setattr(f.host, "skill_context", lambda *_, **__: {
         "context": {}, "context_ref": context_ref,

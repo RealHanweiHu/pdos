@@ -79,6 +79,24 @@ def test_search_compiles_with_current_actual_parents_and_project_before_paginati
     assert "agent_runs.result" not in sql and "agent_runs.read_sources" not in sql
 
 
+def test_project_conversation_selector_precedes_title_search_counts_and_cursor():
+    project = uuid4()
+    page = service.ConversationPage(project_id=project, q="saved discussion")
+    compiled = select(service._eligible(context(), page)).compile(dialect=postgresql.dialect())
+    sql = str(compiled)
+    assert project in compiled.params.values()
+    assert "agent_sessions.project_id =" in sql
+    assert "EXISTS (SELECT projects.id" in sql
+    assert (
+        "agent_runs.project_id IS NOT DISTINCT FROM presentation_readable_sessions.project_id"
+        in sql
+    )
+    assert "LIMIT" not in sql
+    assert "agent_runs.result" not in sql
+    # Read filtering does not change the original presentation write/receipt contract.
+    assert "project_id" not in service.PresentationScope.model_fields
+
+
 class WriteSession:
     def __init__(self, previous=None):
         self.previous = previous

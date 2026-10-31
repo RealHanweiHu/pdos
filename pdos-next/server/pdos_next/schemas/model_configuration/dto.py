@@ -6,7 +6,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, SecretStr, field_validator, model_validator
 
-from pdos_next.providers.types import ProviderRoute
+from pdos_next.providers.types import OpenAIResponseMode, ProviderRoute
 
 
 class ClosedDTO(BaseModel):
@@ -19,9 +19,13 @@ class ModelMetadata(ClosedDTO):
     model: str = Field(min_length=1, max_length=200)
     model_version: str = Field(min_length=1, max_length=200)
     max_output_tokens: int = Field(default=2048, ge=1, le=32768)
+    context_window_tokens: int | None = Field(default=None, strict=True, ge=1024, le=10_000_000)
     openai_output_parameter: Literal["max_tokens", "max_completion_tokens"] = (
         "max_completion_tokens"
     )
+    openai_response_mode: OpenAIResponseMode = "auto"
+    streaming: bool = True
+    connection_id: UUID | None = Field(default=None, strict=False)
     timeout_seconds: float = Field(default=30.0, ge=1, le=90, allow_inf_nan=False)
     response_bytes: int = Field(default=1_048_576, ge=1024, le=2_097_152)
 
@@ -49,10 +53,27 @@ class ModelMetadata(ClosedDTO):
             api_key=credential,
             version=provider_version,
             max_output_tokens=self.max_output_tokens,
+            context_window_tokens=self.context_window_tokens,
             openai_output_parameter=self.openai_output_parameter,
+            openai_response_mode=self.openai_response_mode,
+            streaming=self.streaming,
+            connection_id=self.connection_id,
             timeout_seconds=self.timeout_seconds,
             response_bytes=self.response_bytes,
         )
+
+    def binding_metadata(self):
+        """New default options must not invalidate previously saved configurations."""
+        value = self.model_dump(mode="json")
+        if self.context_window_tokens is None:
+            value.pop("context_window_tokens")
+        if self.openai_response_mode == "auto":
+            value.pop("openai_response_mode")
+        if self.streaming:
+            value.pop("streaming")
+        if self.connection_id is None:
+            value.pop("connection_id")
+        return value
 
 
 class SaveConfiguration(ClosedDTO):

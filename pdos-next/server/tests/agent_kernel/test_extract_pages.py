@@ -111,7 +111,7 @@ def test_registry_has_new_schema_and_version_only_in_extract_isolation():
     actual = registry.get("evidence.artifact.read")
     assert actual.version == "2" and actual.input_schema == ArtifactReadInput.model_json_schema()
     assert not any(row["name"] == actual.name for row in registry.definitions("main"))
-    assert [row["name"] for row in registry.definitions("extract")] == [actual.name]
+    assert [row["name"] for row in registry.definitions("extract")] == [actual.name, "result.read"]
 
 
 def test_multiline_native_quote_keeps_literal_crlf_separators_across_wire_blocks():

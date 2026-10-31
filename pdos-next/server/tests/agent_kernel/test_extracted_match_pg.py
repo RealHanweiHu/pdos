@@ -11,6 +11,7 @@ from sqlalchemy import select
 from test_durable_evidence import upload_input
 
 from pdos_next.agent_kernel.bindings import SkillBinding, execution_key
+from pdos_next.agent_kernel.disclosure import binding_operations, disclosure
 from pdos_next.agent_kernel.models import AgentToolCall
 from pdos_next.agent_kernel.read_execution import ReadSource
 from pdos_next.agent_kernel.types import ModelTurn, ToolCall
@@ -134,7 +135,9 @@ def prepare(work, security_work, *, missing=False, kind="spec"):
             scope,
             system="frozen synthetic main prefix",
             messages=[{"role": "user", "content": json.dumps(context, ensure_ascii=False)}],
-            tools=owner.registry.definitions(),
+            tools=disclosure(
+                owner.registry, operations=binding_operations(owner.catalog, (binding,)),
+            ),
             output_schema={"type": "object"},
             loaded_skills=(binding,),
         )
