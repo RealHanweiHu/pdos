@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterator
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 from uuid import UUID, uuid4
@@ -996,5 +997,217 @@ def test_project_members_are_managed_with_guards_events_and_audit(
                 ("PROJECT_MEMBER_REMOVED", str(engineer_id)),
             ]
             assert list(audits) == ["project.member.add", "project.member.remove"]
+    finally:
+        engine.dispose()
+
+
+def test_resource_and_cost_register_lifecycle_permissions_and_load(
+    client: TestClient,
+    isolated_work_item_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    scope = seed_project(isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id)
+    other = seed_project(
+        isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id, label="OTHER"
+    )
+    project_id = scope["project_id"]
+    engineer_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="engineer",
+        role=Role.ENGINEER,
+    )
+    supplier_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="supplier",
+        role=Role.SUPPLIER,
+    )
+    owner_headers = bearer_headers(client)
+    engineer_headers = bearer_headers(client, username="engineer")
+    costs_url = f"/api/projects/{project_id}/costs"
+    resources_url = f"/api/projects/{project_id}/resources"
+
+    first = client.post(
+        costs_url,
+        headers=owner_headers,
+        json={"cost_type": "tooling", "amount": "1200.50", "description": "  Mould deposit  "},
+    )
+    assert first.status_code == 201
+    cost = first.json()
+    assert (cost["code"], cost["status"], cost["currency"], cost["amount"]) == (
+        "COST-001",
+        "estimate",
+        "CNY",
+        "1200.50",
+    )
+    assert cost["description"] == "Mould deposit"
+    second = client.post(
+        costs_url, headers=owner_headers, json={"cost_type": "labor", "amount": "80"}
+    ).json()
+    assert second["code"] == "COST-002"
+    assert (
+        client.post(
+            costs_url, headers=owner_headers, json={"cost_type": "labor", "amount": "-1"}
+        ).status_code
+        == 422
+    )
+
+    cost_url = f"{costs_url}/{cost['id']}"
+    edited = client.patch(cost_url, headers=owner_headers, json={"amount": "1500"})
+    assert edited.status_code == 200
+    assert edited.json()["amount"] == "1500.00"
+    skip = client.post(
+        f"{cost_url}/transitions", headers=owner_headers, json={"to_status": "actual"}
+    )
+    assert skip.status_code == 409
+    assert skip.json()["detail"]["code"] == "REGISTER_INVALID_TRANSITION"
+    for target in ("approved", "actual"):
+        moved = client.post(
+            f"{cost_url}/transitions", headers=owner_headers, json={"to_status": target}
+        )
+        assert moved.status_code == 200
+        assert moved.json()["status"] == target
+    locked = client.patch(cost_url, headers=owner_headers, json={"amount": "1"})
+    assert locked.status_code == 409
+    assert locked.json()["detail"]["code"] == "REGISTER_RECORD_LOCKED"
+
+    assert client.get(costs_url, headers=engineer_headers).status_code == 403
+    assert client.get(resources_url, headers=engineer_headers).status_code == 200
+    assert (
+        client.post(
+            resources_url,
+            headers=engineer_headers,
+            json={"name": "Self", "resource_type": "person"},
+        ).status_code
+        == 403
+    )
+
+    outsider = client.post(
+        resources_url,
+        headers=owner_headers,
+        json={"name": "Vendor", "resource_type": "person", "assigned_user_id": str(supplier_id)},
+    )
+    assert outsider.status_code == 404
+    assert outsider.json()["detail"]["code"] == "REGISTER_ASSIGNEE_NOT_MEMBER"
+    backwards = client.post(
+        resources_url,
+        headers=owner_headers,
+        json={
+            "name": "Backwards",
+            "resource_type": "equipment",
+            "start_date": "2026-12-01",
+            "end_date": "2026-11-01",
+        },
+    )
+    assert backwards.status_code == 422
+
+    resource = client.post(
+        resources_url,
+        headers=owner_headers,
+        json={
+            "name": "Firmware engineer",
+            "resource_type": "person",
+            "assigned_user_id": str(engineer_id),
+            "allocation_percent": "60",
+        },
+    ).json()
+    assert (resource["code"], resource["status"], resource["allocation_percent"]) == (
+        "RES-001",
+        "planned",
+        "60.00",
+    )
+    assert resource["assignee_active_allocation_percent"] == "0.00"
+    resource_url = f"{resources_url}/{resource['id']}"
+    assert (
+        client.post(
+            f"{resource_url}/transitions", headers=owner_headers, json={"to_status": "active"}
+        ).status_code
+        == 200
+    )
+    with create_engine(psycopg_database_url(isolated_work_item_database)).begin() as connection:
+        connection.execute(
+            tables.project_members.insert(),
+            {
+                "id": uuid4(),
+                "tenant_id": tenant_id,
+                "project_id": other["project_id"],
+                "user_id": engineer_id,
+                "added_by_user_id": owner_id,
+            },
+        )
+    other_resource = client.post(
+        f"/api/projects/{other['project_id']}/resources",
+        headers=owner_headers,
+        json={
+            "name": "Test support",
+            "resource_type": "person",
+            "assigned_user_id": str(engineer_id),
+            "allocation_percent": "50",
+        },
+    ).json()
+    client.post(
+        f"/api/projects/{other['project_id']}/resources/{other_resource['id']}/transitions",
+        headers=owner_headers,
+        json={"to_status": "active"},
+    )
+    listed = client.get(resources_url, headers=engineer_headers).json()["items"]
+    assert [Decimal(item["assignee_active_allocation_percent"]) for item in listed] == [
+        Decimal(110)
+    ]
+
+    blocked = client.delete(
+        f"/api/projects/{project_id}/members/{engineer_id}", headers=owner_headers
+    )
+    assert blocked.status_code == 409
+    assert blocked.json()["detail"]["open_work"] == {"resources": 1}
+
+    assert (
+        client.post(
+            f"{resource_url}/transitions", headers=owner_headers, json={"to_status": "released"}
+        ).status_code
+        == 200
+    )
+    assert (
+        client.patch(resource_url, headers=owner_headers, json={"name": "Late"}).status_code == 409
+    )
+
+    engine = create_engine(psycopg_database_url(isolated_work_item_database))
+    try:
+        with engine.connect() as connection:
+            event_counts: dict[str, int] = dict(
+                (row[0], row[1])
+                for row in connection.execute(
+                    select(tables.events.c.event_type, func.count())
+                    .where(
+                        tables.events.c.project_id == project_id,
+                        tables.events.c.event_type.in_(
+                            ["COST_RECORD_CHANGED", "RESOURCE_RECORD_CHANGED"]
+                        ),
+                    )
+                    .group_by(tables.events.c.event_type)
+                ).all()
+            )
+            audit_actions = set(
+                connection.execute(
+                    select(tables.audit_log.c.action).where(
+                        tables.audit_log.c.project_id == project_id
+                    )
+                ).scalars()
+            )
+        assert event_counts == {"COST_RECORD_CHANGED": 5, "RESOURCE_RECORD_CHANGED": 3}
+        assert {
+            "cost.create",
+            "cost.update",
+            "cost.transition",
+            "resource.create",
+            "resource.transition",
+        } <= audit_actions
     finally:
         engine.dispose()

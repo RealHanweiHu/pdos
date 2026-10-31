@@ -31,6 +31,7 @@ import { ProjectDocumentPanel } from "./project-document-panel";
 import { ProjectGatePanel } from "./project-gate-panel";
 import type { ProjectDocument, ProjectGate } from "./project-gate-document-types";
 import { IssuePanel, RiskPanel, TaskPanel } from "./project-work-items";
+import { ProjectRegisterPanel } from "./project-register-panel";
 import type {
   IssueCreateInput,
   IssueStatus,
@@ -52,6 +53,7 @@ export type ProjectWorkspaceTab =
   | "tasks"
   | "issues"
   | "risks"
+  | "resources"
   | "product-engineering"
   | "gates"
   | "documents"
@@ -77,6 +79,7 @@ const tabs: { key: ProjectWorkspaceTab; label: string; internalOnly?: boolean }[
   { key: "tasks", label: "任务", internalOnly: true },
   { key: "issues", label: "问题", internalOnly: true },
   { key: "risks", label: "风险", internalOnly: true },
+  { key: "resources", label: "资源与成本", internalOnly: true },
   { key: "product-engineering", label: "产品工程", internalOnly: true },
   { key: "gates", label: "Gate", internalOnly: true },
   { key: "documents", label: "文档", internalOnly: true },
@@ -316,6 +319,16 @@ export function ProjectWorkspaceView({
             {activeTab === "issues" && workItems ? <IssuePanel busy={workItemBusy} issues={workItems.issues} onCreate={onCreateIssue} onTransition={onTransitionIssue} /> : null}
             {activeTab === "risks" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
             {activeTab === "risks" && workItems ? <RiskPanel busy={workItemBusy} onCreate={onCreateRisk} onTransition={onTransitionRisk} risks={workItems.risks} /> : null}
+            {activeTab === "resources" && workItemUnavailable ? <WorkItemState onRetry={onRetryWorkItems} state={workItemState} /> : null}
+            {activeTab === "resources" && workItems ? (
+              <ProjectRegisterPanel
+                canEdit={canEdit}
+                currentUserId={identity.user.id}
+                key={selectedProject.id}
+                members={workItems.members}
+                projectId={selectedProject.id}
+              />
+            ) : null}
             {activeTab === "product-engineering" ? (
               <ProductEngineeringPanel {...productEngineering} />
             ) : null}

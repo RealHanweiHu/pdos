@@ -77,6 +77,7 @@ const deepLinkTabs = new Set<ProjectWorkspaceTab>([
   "tasks",
   "issues",
   "risks",
+  "resources",
   "product-engineering",
   "gates",
   "documents",

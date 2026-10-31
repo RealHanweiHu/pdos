@@ -12,7 +12,7 @@ type WorkItemMethod = "GET" | "PATCH" | "POST";
 type ForwardWorkItemOptions<T extends { projectId: string }> = {
   request: Request;
   context: { params: Promise<T> };
-  collection: "tasks" | "issues" | "risks";
+  collection: "tasks" | "issues" | "risks" | "costs" | "resources";
   method: WorkItemMethod;
   itemParam?: keyof T;
   transition?: boolean;

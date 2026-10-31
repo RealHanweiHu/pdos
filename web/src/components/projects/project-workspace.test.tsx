@@ -406,7 +406,7 @@ describe("ProjectWorkspace", () => {
     render(<ProjectWorkspace />);
     await user.click(await screen.findByRole("button", { name: "打开项目 PRJ-001" }));
 
-    expect(await screen.findAllByRole("tab")).toHaveLength(10);
+    expect(await screen.findAllByRole("tab")).toHaveLength(11);
     expect(screen.getByRole("tab", { name: "AI 对话" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "产品工程" })).toBeInTheDocument();
     expect(screen.getByRole("tab", { name: "质量 / CAPA" })).toBeInTheDocument();

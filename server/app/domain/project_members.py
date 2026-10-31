@@ -60,6 +60,7 @@ _OPEN_WORK: tuple[tuple[str, Table, str, frozenset[str]], ...] = (
     ("complaints", tables.complaints, "owner_user_id", frozenset({"resolved", "closed"})),
     ("ncrs", tables.nonconformance_reports, "owner_user_id", frozenset({"closed"})),
     ("capa_actions", tables.capa_actions, "owner_user_id", frozenset({"completed"})),
+    ("resources", tables.resources, "assigned_user_id", frozenset({"released"})),
 )
 
 

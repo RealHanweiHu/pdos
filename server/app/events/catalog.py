@@ -85,6 +85,22 @@ _DEFINITIONS = (
         payload_schema=_payload_schema(user_id="string", role="string"),
     ),
     EventDefinition(
+        event_type="COST_RECORD_CHANGED",
+        version=1,
+        entity="cost",
+        producer="resource_cost_service",
+        consumers=("timeline_projection",),
+        payload_schema=_payload_schema(code="string", action="string", status="string"),
+    ),
+    EventDefinition(
+        event_type="RESOURCE_RECORD_CHANGED",
+        version=1,
+        entity="resource",
+        producer="resource_cost_service",
+        consumers=("timeline_projection",),
+        payload_schema=_payload_schema(code="string", action="string", status="string"),
+    ),
+    EventDefinition(
         event_type="SPECIFICATION_CREATED",
         version=1,
         entity="specification",
