@@ -5,8 +5,6 @@ from dataclasses import dataclass
 from hashlib import sha256
 from uuid import uuid4
 
-from sqlalchemy import select
-
 from pdos_next.agent_kernel.models import TenantSkillEnablement, ValidationBudget
 from pdos_next.agent_kernel.skills import SkillCatalog
 from pdos_next.domain.preproject.access import human
@@ -14,6 +12,7 @@ from pdos_next.errors import DomainError
 from pdos_next.models import now
 from pdos_next.request_proof import command_inputs_once
 from pdos_next.service import EVENTS, command_digest, digest, require_access
+from sqlalchemy import select
 
 from .models import AutomationRuleCurrent as Current
 from .models import AutomationRuleVersion as Version
@@ -74,6 +73,14 @@ def spec_current(s, ctx, spec, *, enabled=False):
         Bootstrap(s.bind).binding_for(
             s, ctx, SimpleNamespace(product_id=spec.product_id, proposal_id=None, sources=[])
         )
+    if spec.personal_summary is not None and spec.personal_summary.dingtalk_binding_id is not None:
+        from pdos_next.personal_summary_channels import selected
+
+        selected(s, ctx, spec.personal_summary.dingtalk_binding_id)
+    if spec.walletless_summary:
+        # A model wallet/skill grants no authority to this registered deterministic branch.
+        # Human scope and the unique actual writer were checked above and remain mandatory.
+        return
     catalog = SkillCatalog()
     for ref in spec.skill_keys:
         actual = catalog.configuration(ref.key)
@@ -170,6 +177,13 @@ def prepared(s, ctx, command, scope, payload):
         "after": after,
         "effect": EFFECT if spec.trigger_kind == "manual" else SERVICE_EFFECT,
     }
+    if spec.walletless_summary:
+        review["deterministic_summary"] = {
+            "mode": "personal-summary/v1", "model_calls": False,
+            "query_embeddings": False, "generic_tools": False,
+            "model_budget": None, "max_runs": spec.max_runs,
+            "cooldown_seconds": spec.cooldown_seconds,
+        }
     if command.operation == ACTIVATE and spec.trigger_kind != "manual":
         from pdos_next.agent_kernel.bootstrap import Bootstrap
 

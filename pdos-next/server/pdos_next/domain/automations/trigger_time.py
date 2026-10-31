@@ -1,9 +1,18 @@
 """Deterministic due slots; Temporal owns waiting and only actual owners supply milestones."""
 
 from datetime import UTC, datetime, timedelta
+from typing import Literal
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import (
+    AwareDatetime,
+    BaseModel,
+    ConfigDict,
+    Field,
+    field_validator,
+    model_serializer,
+    model_validator,
+)
 
 MICROSECONDS_PER_SECOND = 1_000_000
 
@@ -34,9 +43,17 @@ class Schedule(BaseModel):
     )
 
     first_at: AwareDatetime
+    calendar: Literal["weekly_monday", "weekdays"] | None = None
     original_timezone: str = Field(min_length=1, max_length=160)
     interval_seconds: int | None = Field(default=None, gt=0, strict=True)
     expires_at: AwareDatetime | None = None
+
+    @model_serializer(mode="wrap")
+    def saved_shape(self, handler):
+        value = handler(self)
+        if value.get("calendar") is None:
+            value.pop("calendar", None)
+        return value
 
     @field_validator("original_timezone")
     @classmethod
@@ -50,6 +67,14 @@ class Schedule(BaseModel):
     @model_validator(mode="after")
     def actual_offsets(self):
         _offset_matches(self.first_at, self.original_timezone)
+        if self.calendar is not None:
+            if self.interval_seconds is not None:
+                raise ValueError("Calendar schedules cannot also use a UTC interval")
+            local = self.first_at.astimezone(ZoneInfo(self.original_timezone))
+            if local.weekday() not in self._weekdays():
+                raise ValueError("The first slot must be an actual selected local weekday")
+            if self._slot(local.date()) != _utc(self.first_at):
+                raise ValueError("The first local slot must be the unambiguous canonical instant")
         if self.expires_at is not None:
             _offset_matches(self.expires_at, self.original_timezone)
         return self
@@ -61,6 +86,17 @@ class Schedule(BaseModel):
             raise ValueError("The supervision bound cannot precede its server instant")
         if point < first:
             return min(bound, first)
+        if self.calendar is not None:
+            local = point.astimezone(ZoneInfo(self.original_timezone))
+            for offset in range(15):
+                try:
+                    day = local.date() + timedelta(days=offset)
+                except OverflowError:
+                    break
+                candidate = self._slot(day)
+                if candidate is not None and candidate > point and candidate >= first:
+                    return min(bound, candidate)
+            return bound
         if self.interval_seconds is None:
             return bound
         elapsed, window = point - first, bound - point
@@ -75,6 +111,23 @@ class Schedule(BaseModel):
         return bound if remaining > window_us else point + timedelta(microseconds=remaining)
 
     def due(self, now: datetime, *, last_due: datetime | None = None) -> datetime | None:
+        if self.calendar is not None:
+            point, first = _utc(now), _utc(self.first_at)
+            previous = _utc(last_due) if last_due is not None else None
+            if previous is not None and previous > point:
+                raise ValueError("The persisted due watermark is later than the server instant")
+            if point < first or (self.expires_at is not None and point >= _utc(self.expires_at)):
+                return None
+            local = point.astimezone(ZoneInfo(self.original_timezone))
+            for offset in range(15):
+                try:
+                    day = local.date() - timedelta(days=offset)
+                except OverflowError:
+                    break
+                candidate = self._slot(day)
+                if candidate is not None and first <= candidate <= point:
+                    return candidate if previous is None or candidate > previous else None
+            return None
         return next_due(
             self.first_at,
             self.interval_seconds,
@@ -82,6 +135,25 @@ class Schedule(BaseModel):
             last_due,
             expires_at=self.expires_at,
         )
+
+    def _weekdays(self):
+        return {0} if self.calendar == "weekly_monday" else {0, 1, 2, 3, 4}
+
+    def _slot(self, day):
+        if day.weekday() not in self._weekdays():
+            return None
+        zone = ZoneInfo(self.original_timezone)
+        wall = self.first_at.astimezone(zone).replace(
+            year=day.year, month=day.month, day=day.day, fold=0,
+        )
+        # A missing local wall time is skipped, never shifted. A repeated wall
+        # time uses its earlier UTC instant once, so repeated ticks share a key.
+        candidates = []
+        for fold in (0, 1):
+            instant = wall.replace(fold=fold).astimezone(UTC)
+            if instant.astimezone(zone).replace(tzinfo=None) == wall.replace(tzinfo=None):
+                candidates.append(instant)
+        return min(candidates) if candidates else None
 
 
 def next_due(

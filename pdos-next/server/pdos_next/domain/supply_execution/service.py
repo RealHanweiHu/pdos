@@ -219,7 +219,7 @@ def _visibility(build, sources_private, previous=None):
             or sources_private
             or (previous is not None and previous.visibility == "private")
         )
-        else "product"
+        else build.visibility
     )
 
 

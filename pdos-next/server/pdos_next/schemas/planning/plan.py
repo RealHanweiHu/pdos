@@ -71,6 +71,7 @@ class PlanTask(_DTO):
     duration_min_minutes: int | None = Field(default=None, ge=0, le=525600, strict=True)
     duration_max_minutes: int | None = Field(default=None, ge=0, le=525600, strict=True)
     estimate_source: str | None = Field(default=None, min_length=1, max_length=2000)
+    not_before: AwareDatetime | None = None
 
     @model_validator(mode="after")
     def coherent_duration(self) -> Self:
@@ -112,6 +113,7 @@ class TaskSchedule(_DTO):
     duration_min_minutes: int | None
     duration_max_minutes: int | None
     estimate_source: str | None
+    not_before: AwareDatetime | None = None
     earliest_start: AwareDatetime | None
     earliest_finish: AwareDatetime | None
     latest_start: AwareDatetime | None

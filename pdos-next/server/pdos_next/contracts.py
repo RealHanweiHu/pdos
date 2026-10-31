@@ -522,3 +522,16 @@ PAYLOADS.update(KNOWLEDGE_PAYLOADS)
 from pdos_next.domain.field_feedback.schemas import PAYLOADS as FIELD_PAYLOADS  # noqa: E402
 
 PAYLOADS.update(FIELD_PAYLOADS)
+
+from pdos_next.domain.project_governance.schemas import OPERATIONS as GOVERNANCE_OPERATIONS
+PAYLOADS.update({op: value[0] for op, value in GOVERNANCE_OPERATIONS.items()})
+
+from pdos_next.enterprise_search.embedding_schemas import (  # noqa: E402
+    ReconcileEmbeddingCall,
+    SaveEmbeddingProfile,
+)
+
+PAYLOADS.update({
+    "embedding.profile.save": SaveEmbeddingProfile,
+    "embedding.call.reconcile": ReconcileEmbeddingCall,
+})

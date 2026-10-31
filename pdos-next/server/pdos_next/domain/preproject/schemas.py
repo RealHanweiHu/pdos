@@ -180,6 +180,7 @@ class PreparedContent(StrictModel):
 
 
 class ProposalCreate(PreparedContent):
+    human_edits: dict | None = None
     title: str = Field(min_length=1)
     entry_kind: Literal["customer_request", "new_product", "derivative"]
     target_kind: Literal["new_product", "new_variant"] = "new_product"
@@ -214,6 +215,7 @@ class PatchOp(ItemInput):
 
 
 class ItemPatch(PreparedContent):
+    human_edits: dict | None = None
     proposal_id: UUID
     ops: list[PatchOp] = Field(min_length=1)
     source_refs: list[Reference] = Field(default_factory=list)

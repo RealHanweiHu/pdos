@@ -1122,6 +1122,8 @@ for _name in (
 # The Agent kernel owns its category scope and composite identity constraints.
 import pdos_next.agent_kernel.models  # noqa: E402,F401
 import pdos_next.agent_kernel.session_presentation_models  # noqa: E402,F401
+import pdos_next.agent_kernel.work_state_models  # noqa: E402,F401
+import pdos_next.enterprise_search.models  # noqa: E402,F401
 
 # Tenant model metadata is part of the actual shared schema; credentials stay in host ports.
 import pdos_next.model_configuration.persistence  # noqa: E402,F401
@@ -1175,3 +1177,22 @@ import pdos_next.domain.project_risk.models  # noqa: E402,F401
 from pdos_next.domain.field_feedback.models import (  # noqa: E402,F401
     FieldFeedbackVersion, FieldFeedbackCurrent, FieldResponseRecord,
 )
+
+import pdos_next.inbox.models  # noqa: E402,F401
+
+import pdos_next.project_sets.models  # noqa: E402,F401
+
+from pdos_next.domain.project_governance import models as _governance_models  # noqa: F401, E402
+
+import pdos_next.personal_preference_models  # noqa: E402,F401
+
+import pdos_next.enterprise_search.similar_history_models  # noqa: E402,F401
+
+import pdos_next.enterprise_search.embedding_models  # noqa: E402,F401
+
+# Knowledge review/provenance uses real native versions, not another knowledge body.
+import pdos_next.domain.knowledge.assistant_models  # noqa: E402,F401
+
+import pdos_next.dingtalk.models  # noqa: E402,F401
+
+import pdos_next.dingtalk.summary_models  # noqa: E402,F401

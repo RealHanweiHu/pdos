@@ -341,6 +341,9 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
             prep.snapshot_sha256 != payload.preparation_sha256
         ):
             raise DomainError("VERSION_CONFLICT", "指定准备版与摘要不一致。")
+        from pdos_next.enterprise_search.verification_adoption import recheck_request
+
+        recheck_request(s, ctx, prep)
         base, previous = preparation_service._snapshot(prep), None
     else:
         previous = _version(

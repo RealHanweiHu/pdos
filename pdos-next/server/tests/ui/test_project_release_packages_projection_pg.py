@@ -318,6 +318,21 @@ def test_actual_release_reads_keep_named_decisions_on_old_package_after_renewal_
     assert original["current"]["version"] == original_ref and original["current"]["epoch"] == 1
     assert {row["discipline"] for row in original["decisions"]} == {"engineering", "manufacturing"}
     original_decisions = {row["discipline"]: row for row in original["decisions"]}
+    # The stage read consumes the same actual package and separate named
+    # signatures, while unknown physical delivery scope remains unknown.
+    def stage_projection(reference):
+        from pdos_next.domain.project_governance.service import gate
+
+        stage = {"id": str(uuid4()), "rules": ["engineering", "manufacturing", "delivery"]}
+        body = {"stages": [stage], "position": 0, "baseline": None}
+        with upstream.session(work) as session:
+            project = session.get(Project, work.project_id)
+            return gate(session, setup.ctx, setup.product, project, body, reference=reference)
+
+    stage = stage_projection(original_ref)
+    assert stage["maturity"]["engineering"]["state"] == "READY"
+    assert stage["maturity"]["manufacturing"]["state"] == "READY"
+    assert stage["maturity"]["delivery"]["state"] == "UNKNOWN"
     for discipline, actor in (("engineering", setup.human), ("manufacturing", setup.peer)):
         row = original_decisions[discipline]
         assert row["receipt_id"] == receipts[discipline + "_decision"]["id"]
@@ -346,6 +361,10 @@ def test_actual_release_reads_keep_named_decisions_on_old_package_after_renewal_
         "revision": receipts["package_v2"]["subject_revision"],
     }
     assert current_ref["revision"] == 2 and current_ref["id"] != original_ref["id"]
+    for reference in (original_ref, current_ref):
+        stage = stage_projection(reference)
+        assert stage["maturity"]["engineering"]["state"] == "UNKNOWN"
+        assert stage["maturity"]["manufacturing"]["state"] == "UNKNOWN"
     other_setup = copy(setup)
     other_project = create_g0_project(other_setup, name="Synthetic other-model release read scope")
     renewed = _phase(

@@ -491,8 +491,14 @@ def test_canonical_kit_is_t0_and_unknown_supply_never_authorizes_start(setup, su
         assert coverage["input_snapshot"]["supply_scope_complete"] is False
         build = session.get(Build, UUID(supply_work["build_id"]))
         assert build.status == "planned"
-    assert post(setup, {**command, "operation": "build.start"}).status_code == 422
-    assert post(setup, {**command, "operation": "release.manufacturing.approve"}).status_code == 403
+    for operation in ("build.start", "release.manufacturing.approve"):
+        # A kit payload is invalid for either operation; it never reaches approval.
+        refused = post(setup, {**command, "operation": operation})
+        assert refused.status_code == 422, refused.text
+        assert refused.json()["code"] == "VALIDATION_FAILED"
+        assert refused.json()["detail"]["reason"] == "INVALID_PAYLOAD"
+        assert count(setup, Receipt, operation=operation) == 0
+    assert count(setup, Confirmation) == before_confirmations
 
 
 @pytest.mark.parametrize("change", ["grant", "source"])

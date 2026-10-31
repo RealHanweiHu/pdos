@@ -1005,3 +1005,28 @@ def test_registered_graph_protected_t0_becomes_t1_candidate():
     )
     assert len(host.prepared) == 1
     assert result["tool_results"][0]["value"]["requires_human"]
+
+
+def test_invalid_stored_model_candidate_returns_safe_field_feedback_without_writes(work):
+    from pdos_next.domain.preproject.models import PreparedCandidate
+
+    proposal_id, _ = create(work)
+    arguments = {
+        "proposal_id": proposal_id,
+        "ops": [{"op": "upsert", "item_id": "", "kind": "section",
+                 "content": {"key": "summary", "text": "PRIVATE_SYNTHETIC_CANDIDATE"}}],
+    }
+    f = agent_fixture(work, "proposal.item.patch", arguments, proposal_id=proposal_id)
+    with pytest.raises(DomainError) as caught, agent_session(work, f) as s:
+        prepare_candidate(s, f.scope, f.spec.name, arguments, f.source,
+                          catalog=f.catalog, registry=f.registry, route=f.route)
+    assert caught.value.code == "VALIDATION_FAILED"
+    assert caught.value.detail["fields"] == [{"path": ["ops", 0, "item_id"],
+                                              "type": "uuid_parsing"}]
+    assert "PRIVATE_SYNTHETIC_CANDIDATE" not in str(caught.value.payload())
+    with Session(work.admin) as s:
+        assert s.scalar(select(func.count()).select_from(PreparedCandidate).where(
+            PreparedCandidate.run_id == f.scope.run_id,
+        )) == 0
+    assert all(row["content"].get("key") != "summary"
+               for row in read(work, proposal_id).json()["items"])

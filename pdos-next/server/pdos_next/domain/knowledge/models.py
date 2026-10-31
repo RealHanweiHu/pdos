@@ -86,8 +86,13 @@ def _fact():
         CheckConstraint(
             "jsonb_typeof(command)='object' AND jsonb_typeof(body)='object' "
             "AND jsonb_typeof(source_basis)='object' AND jsonb_typeof(sources)='array' "
-            "AND jsonb_typeof(reads)='array' AND jsonb_array_length(sources)>0 "
-            "AND jsonb_array_length(reads)>0"
+            "AND jsonb_typeof(reads)='array' AND ("
+            "(jsonb_array_length(sources)>0 AND jsonb_array_length(reads)>0) OR "
+            "(operation='knowledge.candidate.create' AND "
+            "(coalesce(jsonb_typeof(command->'envelope'->'payload'->'answer_origin')="
+            "'object',false) OR "
+            "coalesce(jsonb_typeof(command->'envelope'->'payload'->'candidate')='object',false))))",
+            name="knowledge_source_body_shape",
         ),
         CheckConstraint(
             "body_sha256 ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$' "

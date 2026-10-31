@@ -136,6 +136,8 @@ class PlanProposal(Row, Base):
     status: Mapped[str] = mapped_column(String(16), default="proposed")
     owner_id: Mapped[UUID]
     visibility: Mapped[str] = mapped_column(String(16))
+    base_plan_id: Mapped[UUID | None]
+    resource_demands: Mapped[list] = mapped_column(JSONB, default=list, server_default="[]")
     input_snapshot: Mapped[dict] = mapped_column(JSONB)
     forecast: Mapped[dict] = mapped_column(JSONB)
     reason: Mapped[str] = mapped_column(Text)
@@ -144,6 +146,17 @@ class PlanProposal(Row, Base):
         UniqueConstraint("tenant_id", "project_id", "revision"),
         project_fk(),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+        ForeignKeyConstraint(
+            ["tenant_id", "product_id", "project_id", "base_plan_id"],
+            [
+                "plan_revisions.tenant_id",
+                "plan_revisions.product_id",
+                "plan_revisions.project_id",
+                "plan_revisions.id",
+            ],
+            name="fk_plan_proposal_base",
+            use_alter=True,
+        ),
         CheckConstraint("status = 'proposed' AND revision > 0 AND project_revision > 0"),
         CheckConstraint("visibility IN ('private','category','audience')"),
     )

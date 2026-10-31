@@ -2738,6 +2738,34 @@ COVERED_COLUMNS = {
         "tenant_id",
         "created_at",
     ),
+    "agent_session_bindings": (
+        "session_id",
+        "owner_id",
+        "category_id",
+        "proposal_id",
+        "receipt_id",
+        "id",
+        "tenant_id",
+        "created_at",
+    ),
+    "agent_work_products": (
+        "session_id",
+        "run_id",
+        "root_id",
+        "supersedes_id",
+        "owner_id",
+        "category_id",
+        "kind",
+        "title",
+        "body",
+        "revision",
+        "origin",
+        "request_key",
+        "request_sha256",
+        "id",
+        "tenant_id",
+        "created_at",
+    ),
     "agent_tool_calls": (
         "run_id",
         "call_key",
@@ -2812,6 +2840,7 @@ COVERED_COLUMNS = {
         "data_categories",
         "retention_terms",
         "training_terms",
+        "prompt_cache_allowed",
         "expires_at",
         "registered_by",
         "active",
@@ -4912,6 +4941,11 @@ for _table, _columns in {
     )
 
 # Owner display metadata contains no consuming original-material reference.
+COVERED_COLUMNS["agent_work_states"] = (
+    "session_id", "owner_id", "run_id", "revision", "origin", "request_key",
+    "request_sha256", "body", "id", "tenant_id", "created_at",
+)
+
 COVERED_COLUMNS["agent_session_presentations"] = (
     "session_id",
     "owner_id",
@@ -4927,3 +4961,415 @@ COVERED_COLUMNS["agent_session_presentations"] = (
     "tenant_id",
     "created_at",
 )
+
+# Rebuildable search projection; original consumption remains on authoritative facts.
+COVERED_COLUMNS['enterprise_search_chunks'] = (
+    'category_id',
+    'source_type',
+    'source_id',
+    'source_revision',
+    'product_id',
+    'project_id',
+    'proposal_id',
+    'content_hash',
+    'chunk_hash',
+    'work_key',
+    'ordinal',
+    'nature',
+    'text',
+    'locator',
+    'terms',
+    'term_counts',
+    'title_counts',
+    'token_count',
+    'codes',
+    'code_families',
+    'parser_version',
+    'chunker_version',
+    'tokenizer_version',
+    'code_rule_version',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['enterprise_search_sources'] = (
+    'category_id',
+    'source_type',
+    'source_id',
+    'original_id',
+    'original_ids',
+    'source_revision',
+    'content_hash',
+    'work_key',
+    'chunk_count',
+    'status',
+    'last_error',
+    'event_id',
+    'checked_at',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['enterprise_search_corpus'] = (
+    'tenant_id',
+    'chunk_count',
+    'token_count',
+)
+COVERED_COLUMNS['enterprise_search_terms'] = (
+    'tenant_id',
+    'term',
+    'document_count',
+)
+
+# Personal display settings and private feedback contain no adopted original references.
+COVERED_COLUMNS["personal_preferences"] = (
+    "owner_id", "revision", "body", "updated_at", "id", "tenant_id", "created_at",
+)
+COVERED_COLUMNS["similar_history_feedback"] = (
+    "category_id", "product_id", "project_id", "owner_id", "issue_id",
+    "issue_version_id", "issue_revision", "change_id", "change_version_id", "change_revision",
+    "candidate_kind", "candidate_source_id",
+    "candidate_revision", "ranking_version", "action", "request_key", "request_sha256",
+    "id", "tenant_id", "created_at",
+)
+
+# Reviewed existing inbox/grouping metadata and source-consuming governance facts.
+COVERED_COLUMNS["inbox_conversations"] = (
+    "category_id",
+    "owner_id",
+    "member_ids",
+    "title",
+    "request_key",
+    "request_sha256",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["inbox_messages"] = (
+    "conversation_id",
+    "sender_id",
+    "sequence",
+    "body",
+    "request_key",
+    "request_sha256",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["inbox_states"] = (
+    "owner_id",
+    "kind",
+    "target_id",
+    "revision",
+    "read_through",
+    "archived",
+    "followed",
+    "request_key",
+    "request_sha256",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["project_set_versions"] = (
+    "set_id",
+    "revision",
+    "name",
+    "description",
+    "author_id",
+    "request_key",
+    "request_sha256",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["project_set_links"] = (
+    "project_id",
+    "set_id",
+    "revision",
+    "author_id",
+    "request_key",
+    "request_sha256",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["project_governance_events"] = (
+    "product_id",
+    "project_id",
+    "owner_id",
+    "actor_id",
+    "visibility",
+    "revision",
+    "previous_id",
+    "operation",
+    "status",
+    "body",
+    "review",
+    "command_id",
+    "receipt_id",
+    "confirmation_id",
+    "id",
+    "tenant_id",
+    "created_at",
+    "category_id",
+)
+
+# s0_0820 already installs both actual lifecycle triggers on this business fact.
+GUARDED = (*GUARDED, "project_governance_events")
+
+# s0_0819 resource alternatives retain the existing PlanProposal source guards;
+# the validation budget flag is configuration and grants no business write right.
+COVERED_COLUMNS["plan_proposals"] = (
+    *COVERED_COLUMNS["plan_proposals"], "base_plan_id", "resource_demands",
+)
+COVERED_COLUMNS["agent_validation_budgets"] = (
+    *COVERED_COLUMNS["agent_validation_budgets"], "development_unlimited",
+)
+
+# Independent embedding configuration/accounting and rebuildable source projections.
+COVERED_COLUMNS['enterprise_embedding_profile_heads'] = (
+    'tenant_id',
+    'profile_id',
+    'revision',
+    'enabled',
+)
+COVERED_COLUMNS['enterprise_embedding_profiles'] = (
+    'profile_id',
+    'revision',
+    'budget_revision',
+    'metadata_json',
+    'enabled',
+    'binding_digest',
+    'secret_json',
+    'created_by',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['enterprise_embedding_budgets'] = (
+    'tenant_id',
+    'revision',
+    'limit_micro_usd',
+    'held_micro_usd',
+    'spent_micro_usd',
+)
+COVERED_COLUMNS['enterprise_embedding_batches'] = (
+    'profile_version_id',
+    'category_id',
+    'manifest',
+    'work_key',
+    'state',
+    'attempts',
+    'last_error',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['enterprise_embedding_calls'] = (
+    'batch_id',
+    'category_id',
+    'revision',
+    'attempt',
+    'state',
+    'profile_digest',
+    'input_digest',
+    'source_count',
+    'character_count',
+    'data_categories',
+    'egress',
+    'pricing',
+    'reserved_tokens',
+    'reserved_micro_usd',
+    'charged_micro_usd',
+    'input_tokens',
+    'provider_request_id',
+    'evidence_ref',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['enterprise_chunk_embeddings'] = (
+    'tenant_id',
+    'chunk_id',
+    'profile_version_id',
+    'category_id',
+    'chunk_hash',
+    'dimensions',
+    'vector',
+    'norm',
+)
+
+# Fixed answer provenance and explicitly shared knowledge contributions.
+COVERED_COLUMNS['knowledge_answer_reviews'] = (
+    'category_id',
+    'subject_kind',
+    'subject_id',
+    'responsible_id',
+    'applicability_scope',
+    'review_due_at',
+    'origin_run_id',
+    'answer_digest',
+    'source_proof',
+    'basis_count',
+    'verified_by',
+    'command_id',
+    'receipt_id',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['knowledge_gap_submissions'] = (
+    'category_id',
+    'owner_id',
+    'recipient_id',
+    'run_id',
+    'feedback_id',
+    'request_key',
+    'request_sha256',
+    'kind',
+    'question',
+    'answer',
+    'search_scope',
+    'source_proof',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['knowledge_gap_attributions'] = (
+    'category_id',
+    'submission_id',
+    'actor_id',
+    'request_key',
+    'reason',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['category_knowledge_entries'] += ('answer_sources',)
+M3_GUARDED += ('knowledge_answer_reviews', 'knowledge_gap_submissions')
+GUARDED += ('knowledge_answer_reviews', 'knowledge_gap_submissions')
+
+# G immutable outbound snapshots retain their fixed source footprint.
+COVERED_COLUMNS['dingtalk_applications'] = (
+    'administrator_id',
+    'service_principal_id',
+    'revision',
+    'corp_id',
+    'client_id',
+    'robot_code',
+    'secret_arn',
+    'secret_version',
+    'active',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['dingtalk_binding_nonces'] = (
+    'application_id',
+    'owner_id',
+    'app_revision',
+    'state_sha256',
+    'expires_at',
+    'consumed_at',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['dingtalk_account_bindings'] = (
+    'application_id',
+    'owner_id',
+    'external_user_id',
+    'verified_nonce_id',
+    'active',
+    'epoch',
+    'verified_at',
+    'revoked_by',
+    'revoke_key',
+    'revoke_reason',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['dingtalk_messages'] = (
+    'application_id',
+    'binding_id',
+    'binding_epoch',
+    'owner_id',
+    'external_message_id',
+    'envelope_sha256',
+    'conversation_kind',
+    'conversation_id',
+    'run_id',
+    'state',
+    'error_code',
+    'lease_id',
+    'lease_until',
+    'workflow_id',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['dingtalk_share_consents'] = (
+    'message_id',
+    'owner_id',
+    'request_key',
+    'payload_sha256',
+    'include_citations',
+    'state',
+    'error_code',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+COVERED_COLUMNS['dingtalk_deliveries'] = (
+    'message_id',
+    'owner_id',
+    'consent_id',
+    'request_key',
+    'phase',
+    'payload',
+    'payload_sha256',
+    'content_kind',
+    'source_dependencies',
+    'state',
+    'p26',
+    'provider_receipt',
+    'error_code',
+    'attempts',
+    'attempt_id',
+    'send_started_at',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+GUARDED += ("dingtalk_deliveries",)
+
+COVERED_COLUMNS['dingtalk_summary_deliveries'] = (
+    'category_id',
+    'owner_id',
+    'run_id',
+    'attempt_id',
+    'service_grant_id',
+    'published_version_id',
+    'application_id',
+    'application_revision',
+    'binding_id',
+    'binding_epoch',
+    'cancel_epoch',
+    'summary_sha256',
+    'source_ids',
+    'request_key',
+    'payload',
+    'payload_sha256',
+    'state',
+    'p26',
+    'provider_receipt',
+    'error_code',
+    'attempts',
+    'send_attempt_id',
+    'send_started_at',
+    'id',
+    'tenant_id',
+    'created_at',
+)
+GUARDED += ('dingtalk_summary_deliveries',)

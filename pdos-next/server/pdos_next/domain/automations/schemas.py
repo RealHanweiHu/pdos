@@ -4,13 +4,19 @@ from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
-from pydantic import ConfigDict, Field, field_validator, model_serializer, model_validator
-
+from pdos_next.personal_summary_schemas import Selection as PersonalSummarySelection
 from pdos_next.schema_base import StrictModel
+from pydantic import ConfigDict, Field, field_validator, model_serializer, model_validator
 
 from .trigger_time import Schedule
 
 MAX_INTEGER = 2_147_483_647
+ZERO_MODEL_BUDGET = {
+    "limit_micro_usd": 0,
+    "input_token_limit": 0,
+    "output_token_limit": 0,
+    "call_limit": 0,
+}
 DRAFT_SAVE = "ai.automation.draft.save"
 ACTIVATE = "ai.automation.activate"
 PAUSE = "ai.automation.pause"
@@ -30,9 +36,9 @@ class SkillRef(DTO):
 
 class BudgetLimits(DTO):
     limit_micro_usd: int = Field(ge=0, strict=True)
-    input_token_limit: int = Field(ge=1, strict=True)
-    output_token_limit: int = Field(ge=1, strict=True)
-    call_limit: int = Field(ge=1, strict=True)
+    input_token_limit: int = Field(ge=0, strict=True)
+    output_token_limit: int = Field(ge=0, strict=True)
+    call_limit: int = Field(ge=0, strict=True)
 
 
 class EventTrigger(DTO):
@@ -105,12 +111,13 @@ class AutomationSpec(DTO):
     stop_condition: str = Field(min_length=1, max_length=2000)
     trigger_kind: Literal["manual", "schedule", "domain_event", "relative_milestone"]
     trigger_config: dict | None = None
+    personal_summary: PersonalSummarySelection | None = None
     conditions: Conditions = Field(default_factory=Conditions)
     max_cascade_depth: int = Field(default=3, ge=0, le=MAX_INTEGER, strict=True)
     external_sources_enabled: Literal[False] = False
     product_id: UUID | None = None
-    skill_keys: list[SkillRef] = Field(min_length=1, max_length=12)
-    validation_budget_id: UUID
+    skill_keys: list[SkillRef] = Field(max_length=12)
+    validation_budget_id: UUID | None
     token_limit: int = Field(ge=1, le=MAX_INTEGER, strict=True)
     budget: BudgetLimits
     cooldown_seconds: int = Field(ge=0, le=MAX_INTEGER, strict=True)
@@ -119,9 +126,16 @@ class AutomationSpec(DTO):
     mcp_tools: list[str] = Field(default_factory=list, max_length=0)
     cross_object_write: Literal[False] = False
 
+    @property
+    def walletless_summary(self):
+        return self.personal_summary is not None and self.validation_budget_id is None
+
     @model_serializer(mode="wrap")
     def saved_shape(self, handler):
         value = handler(self)
+        # An omitted new selection cannot change any installed rule's digest.
+        if value.get("personal_summary") is None:
+            value.pop("personal_summary", None)
         # Preserve the canonical request digest of installed manual rules and
         # their original idempotency keys. New optional defaults add no authority.
         if self.trigger_kind == "manual":
@@ -147,8 +161,31 @@ class AutomationSpec(DTO):
 
     @model_validator(mode="after")
     def distinct_skills(self):
+        if self.walletless_summary:
+            if (
+                self.skill_keys
+                or self.token_limit != 1
+                or self.budget.model_dump() != ZERO_MODEL_BUDGET
+            ):
+                raise ValueError(
+                    "Deterministic summaries have no skills or model spending capacity"
+                )
+        elif (
+            self.validation_budget_id is None
+            or not self.skill_keys
+            and self.personal_summary is None
+            or min(
+                self.budget.input_token_limit,
+                self.budget.output_token_limit,
+                self.budget.call_limit,
+            )
+            < 1
+        ):
+            raise ValueError("Model rules require fixed skills and an actual model budget")
         if len({ref.key for ref in self.skill_keys}) != len(self.skill_keys):
             raise ValueError("Each skill key must pin exactly one version and digest")
+        if self.personal_summary is not None and self.trigger_kind == "manual":
+            raise ValueError("Personal summaries require the actual automatic service grant")
         if self.trigger_kind == "manual":
             if self.trigger_config is not None:
                 raise ValueError("Manual rules have no automatic trigger configuration")

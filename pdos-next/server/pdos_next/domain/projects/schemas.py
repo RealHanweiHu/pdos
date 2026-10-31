@@ -1,4 +1,4 @@
-from typing import Self
+from typing import Literal, Self
 from uuid import UUID
 
 from pydantic import Field, model_validator
@@ -7,9 +7,20 @@ from pdos_next.schema_base import StrictModel
 from pdos_next.schemas.planning import ScheduleInput
 
 
+class ResourceDemand(StrictModel):
+    task_key: str = Field(min_length=1, max_length=80)
+    resource_id: UUID
+    kind: Literal["person", "resource"]
+    coordinator_id: UUID
+    purpose: str = Field(min_length=3, max_length=500)
+    units: int = Field(default=1, ge=1, le=10000, strict=True)
+
+
 class PlanProposePayload(StrictModel):
     project_id: UUID
     expected_project_revision: int = Field(ge=1)
+    base_plan_id: UUID | None = None
+    resource_demands: tuple[ResourceDemand, ...] = Field(default=(), max_length=1000)
     schedule: ScheduleInput
     reason: str = Field(min_length=3, max_length=2000)
 
@@ -23,6 +34,13 @@ class PlanProposePayload(StrictModel):
             for task in self.schedule.tasks
         ):
             raise ValueError("已知工时须注明估计依据，未知工时保留空值")
+        keys = {task.key for task in self.schedule.tasks}
+        if any(d.task_key not in keys for d in self.resource_demands):
+            raise ValueError("资源需求须对应本候选的真实任务")
+        if len({(d.task_key, d.kind, d.resource_id) for d in self.resource_demands}) != len(
+            self.resource_demands
+        ):
+            raise ValueError("同一任务的资源需求不得重复")
         return self
 
 

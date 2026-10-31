@@ -48,6 +48,9 @@ def task_view(row, history):
         "assignee_id": str(snapshot.assignee_id) if snapshot.assignee_id else None,
         "recipient_id": str(snapshot.recipient_id) if snapshot.recipient_id else None,
         "plan_task": snapshot.plan_task.model_dump(mode="json") if snapshot.plan_task else None,
+        "npi_template": snapshot.npi_template.model_dump(mode="json")
+        if snapshot.npi_template
+        else None,
         "g0_open_item": snapshot.g0_open_item.model_dump(mode="json")
         if snapshot.g0_open_item
         else None,

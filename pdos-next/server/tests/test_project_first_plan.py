@@ -418,7 +418,9 @@ def test_named_baseline_approval_is_not_opened_by_a_plan_preview(setup, definiti
     command = deepcopy(proposal_command(setup, definition, project))
     command["operation"] = "work.baseline.approve"
     refused = post(setup, command, True)
-    assert refused.status_code == 403
+    # Baseline approval now has its own named contract; a plan proposal payload
+    # still cannot be relabelled into an approval or create an approval receipt.
+    assert refused.status_code == 422
     with tenant_session(
         setup.engine,
         setup.tenant,

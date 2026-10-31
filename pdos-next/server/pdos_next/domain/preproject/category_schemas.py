@@ -6,12 +6,23 @@ from uuid import UUID
 
 from pydantic import Field, model_serializer, model_validator
 
+from pdos_next.domain.knowledge.assistant_schemas import (
+    AnswerOrigin,
+    KnowledgeReview,
+    VerifiedAnswerContent,
+)
 from pdos_next.schema_base import StrictModel
 
 from .schemas import Reference
 
 KnowledgeKind = Literal[
-    "boundary", "segment", "competitor", "voice", "regulation", "research_question"
+    "boundary",
+    "segment",
+    "competitor",
+    "voice",
+    "regulation",
+    "research_question",
+    "verified_answer",
 ]
 
 
@@ -122,6 +133,7 @@ CONTENT_TYPES = {
     "voice": VoiceContent,
     "regulation": RegulationContent,
     "research_question": ResearchQuestionContent,
+    "verified_answer": VerifiedAnswerContent,
 }
 
 
@@ -129,6 +141,20 @@ class Candidate(StrictModel):
     prepared_by_run_id: UUID | None = None
     candidate_digest: str | None = None
     confirmation_token: str | None = None
+    # Human edits travel beside the sealed model payload, never replace it.
+    human_edits: dict | None = None
+
+    @model_serializer(mode="wrap")
+    def preserve_candidate_contract(self, handler):
+        result = handler(self)
+        if self.human_edits is None:
+            result.pop("human_edits", None)
+        if isinstance(self, KnowledgePromote) and self.supersedes is None:
+            result.pop("supersedes", None)
+        for key in ("knowledge_review", "answer_origin"):
+            if getattr(self, key, None) is None:
+                result.pop(key, None)
+        return result
 
 
 class Supersedes(StrictModel):
@@ -137,6 +163,8 @@ class Supersedes(StrictModel):
 
 
 class KnowledgeAdd(Candidate):
+    knowledge_review: KnowledgeReview | None = None
+    answer_origin: AnswerOrigin | None = None
     kind: KnowledgeKind
     content: dict
     regions: list[str] = Field(default_factory=list)
@@ -146,6 +174,8 @@ class KnowledgeAdd(Candidate):
     @model_validator(mode="after")
     def typed_content(self):
         self.content = CONTENT_TYPES[self.kind].model_validate(self.content).model_dump(mode="json")
+        if self.kind == "verified_answer" and self.knowledge_review is None:
+            raise ValueError("核实答案须有负责人、适用范围和复核日期")
         return self
 
 
@@ -161,6 +191,9 @@ class SourceItemRef(StrictModel):
 
 
 class KnowledgePromote(Candidate):
+    supersedes: Supersedes | None = None
+    knowledge_review: KnowledgeReview | None = None
+    answer_origin: AnswerOrigin | None = None
     source_proposal_id: UUID
     source_proposal_revision: int = Field(gt=0)
     source_item_refs: list[SourceItemRef] = Field(default_factory=list)
@@ -171,6 +204,8 @@ class KnowledgePromote(Candidate):
     @model_validator(mode="after")
     def typed_content(self):
         self.content = CONTENT_TYPES[self.kind].model_validate(self.content).model_dump(mode="json")
+        if self.kind == "verified_answer" and self.knowledge_review is None:
+            raise ValueError("核实答案须有负责人、适用范围和复核日期")
         return self
 
 

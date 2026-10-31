@@ -4,9 +4,11 @@ from datetime import UTC
 from typing import Literal, Self
 from uuid import UUID
 
-from pydantic import AwareDatetime, Field, field_validator, model_validator
+from pydantic import AwareDatetime, Field, field_validator, model_serializer, model_validator
 
 from pdos_next.domain.work_management.schemas import DTO, SourceRef, Text, VersionRef
+
+from .assistant_schemas import AnswerOrigin, KnowledgeReview
 
 CANDIDATE_OP = "knowledge.candidate.create"
 RULE_OP = "knowledge.rule.publish"
@@ -16,7 +18,20 @@ class ResultRef(DTO):
     receipt_id: UUID
 
 
-class CandidatePayload(DTO):
+class ReviewFields(DTO):
+    knowledge_review: KnowledgeReview | None = None
+    answer_origin: AnswerOrigin | None = None
+
+    @model_serializer(mode="wrap")
+    def old_digest(self, handler):
+        value = handler(self)
+        for name in ("knowledge_review", "answer_origin"):
+            if getattr(self, name) is None:
+                value.pop(name, None)
+        return value
+
+
+class CandidatePayload(ReviewFields):
     candidate: VersionRef | None = None
     project_id: UUID | None = None
     visibility: Literal["private", "category"] = "private"
@@ -25,8 +40,16 @@ class CandidatePayload(DTO):
     evidence_summary: Text
     applicability_hypothesis: Text
     result_receipts: tuple[ResultRef, ...] = ()
-    sources: tuple[SourceRef, ...] = Field(min_length=1)
+    sources: tuple[SourceRef, ...]
     reason: Text
+
+    @model_validator(mode="after")
+    def actual_sources(self):
+        if not self.sources and self.answer_origin is None and self.candidate is None:
+            raise ValueError("须有精确原件或实际回答来源")
+        if self.answer_origin is not None and self.knowledge_review is None:
+            raise ValueError("回答候选须有实际负责人、适用范围和复核日期")
+        return self
 
     @field_validator("sources")
     @classmethod
@@ -70,7 +93,7 @@ class Applicability(DTO):
         return self
 
 
-class RulePublishPayload(DTO):
+class RulePublishPayload(ReviewFields):
     project_id: UUID
     candidate: VersionRef
     rule: VersionRef | None = None

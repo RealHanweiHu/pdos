@@ -226,6 +226,9 @@ def _inputs(s, ctx, command, product, payload):
     require_access(s, ctx, product.id, write=True, lock=write)
     if product.tenant_id != ctx.tenant_id or command.product_id != product.id:
         raise DomainError("FORBIDDEN_SCOPE", "验证准备不在当前型号范围。", 403)
+    from pdos_next.enterprise_search.verification_adoption import recheck_preparation
+
+    recheck_preparation(s, ctx, command)
     build = _build(s, ctx, product.id, payload.build_id)
     _, engineering, manufacturing, planned_reads = _linked(
         s, ctx, product.id, build, new_consumption=True

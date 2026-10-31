@@ -116,7 +116,10 @@ def authority_fact(work, role, kind, **changes):
         "purposes": [work.scope.purpose],
         "state": "active",
         "valid_from": (work.at - timedelta(minutes=10)).isoformat(),
-        "valid_until": (work.at + timedelta(minutes=40)).isoformat(),
+        "valid_until": (
+            getattr(work.setup, "test_authorization_until", None)
+            or work.at + timedelta(minutes=40)
+        ).isoformat(),
         "approval": {
             "system": "Synthetic named authority",
             "external_id": f"SYN-{role}-{kind}",
@@ -187,7 +190,8 @@ def authorization_command(work, role, *, previous=None, action="approve", **chan
         "action": action,
         "previous_decision_id": previous["id"] if previous else None,
         "expected_previous_revision": previous["revision"] if previous else 0,
-        "valid_until": (work.at + timedelta(minutes=25)).isoformat(),
+        "valid_until": (getattr(work.setup, "test_authorization_until", None)
+                        or work.at + timedelta(minutes=25)).isoformat(),
         "sources": [reference(work)],
         "reason": "Synthetic named fixed-purpose decision",
         "accepted_controls": sorted(CONTROLS) if action == "approve" else [],
@@ -196,7 +200,8 @@ def authorization_command(work, role, *, previous=None, action="approve", **chan
                 "rule_id": rule,
                 "status": "applicable",
                 "sources": [reference(work)],
-                "valid_until": (work.at + timedelta(minutes=25)).isoformat(),
+                "valid_until": (getattr(work.setup, "test_authorization_until", None)
+                        or work.at + timedelta(minutes=25)).isoformat(),
                 "reason": "Explicit named synthetic applicability",
             }
             for rule in PROFESSIONAL_RULES[role]

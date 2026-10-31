@@ -24,6 +24,7 @@ from pdos_next.errors import DomainError
 from pdos_next.models import Artifact, Category, Principal, Product
 from pdos_next.original_security import source_status
 from pdos_next.project_work_summaries import latest as latest_work_updates
+from pdos_next.domain.project_governance.projection import summary as governance_summary
 from pdos_next.schema_base import StrictModel
 from pdos_next.service import Context
 
@@ -323,6 +324,7 @@ def projects(session, ctx, *, cursor=None, page_size=50, project_id=None):
                     "status": row.status,
                     "created_at": row.created_at.isoformat(),
                     "latest_status_update": updates.get(row.id),
+                    "governance": governance_summary(session, ctx, row),
                     "source_status": state,
                     "definition": {
                         "id": str(definition.id),
@@ -388,6 +390,7 @@ def run_activity(session, ctx, *, cursor=None, page_size=50, waiting=False):
             "proposal_id",
             "goal",
             "state",
+            "cancel_epoch",
             "created_at",
         ),
     )
@@ -400,6 +403,7 @@ def run_activity(session, ctx, *, cursor=None, page_size=50, waiting=False):
                 "run_id": str(row.id),
                 "goal": row.goal,
                 "status": row.state,
+                "reading_token": f"{row.state}:{row.cancel_epoch}",
                 "created_at": row.created_at.isoformat(),
                 "product_id": str(row.product_id) if row.product_id else None,
                 "scope": "category" if row.category_id else "personal",

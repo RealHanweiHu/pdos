@@ -77,9 +77,29 @@ def workspace(s, ctx, pid, project_id=None):
             query = query.where(
                 or_(pointer_model.project_id == project_id, pointer_model.project_id.is_(None))
             )
-        for pointer in s.scalars(
-            query.order_by(pointer_model.created_at.desc(), pointer_model.id).limit(100)
-        ):
+        pointers = list(
+            s.scalars(query.order_by(pointer_model.created_at.desc(), pointer_model.id).limit(100))
+        )
+        from .assistant_models import KnowledgeAnswerReview
+        from .assistant_reviews import status
+
+        annotations = (
+            {
+                entry.subject_id: entry
+                for entry in s.scalars(
+                    select(KnowledgeAnswerReview).where(
+                        KnowledgeAnswerReview.subject_kind
+                        == ("candidate" if key == "candidate_id" else "rule"),
+                        KnowledgeAnswerReview.subject_id.in_(
+                            [pointer.version_id for pointer in pointers]
+                        ),
+                    )
+                )
+            }
+            if pointers
+            else {}
+        )
+        for pointer in pointers:
             row = owner.retained(s, ctx, s.get(version_model, pointer.version_id))
             histories = list(
                 s.scalars(
@@ -106,6 +126,12 @@ def workspace(s, ctx, pid, project_id=None):
                 "sources": row.sources,
                 "history": _history(histories),
             }
+            annotation = annotations.get(row.id)
+            if annotation:
+                value["knowledge_review"] = {
+                    **status(annotation),
+                    "basis_count": annotation.basis_count,
+                }
             if key == "candidate_id":
                 value["can_revise"] = row.owner_id == ctx.requester_id and row.product_id == pid
             else:

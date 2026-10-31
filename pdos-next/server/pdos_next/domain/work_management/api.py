@@ -40,3 +40,15 @@ def register_routes(app, engine, auth_dependency):
         _query(request, set())
         with session(ctx) as s:
             return inputs(s, ctx, product_id, data)
+
+    @app.get("/v1/categories/{category_id}/products/{product_id}/project-work/templates")
+    def work_templates(
+        request: Request, product_id: UUID, project_id: UUID, ctx: Context = auth_dependency
+    ):
+        from .owner import project
+        from .templates import catalog
+
+        _query(request, {"project_id"})
+        with session(ctx, reading=True) as s:
+            project(s, ctx, product_id, project_id)
+            return catalog()

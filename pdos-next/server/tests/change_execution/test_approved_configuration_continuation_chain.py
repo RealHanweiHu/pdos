@@ -56,7 +56,8 @@ def new_person(work, name):
                 category_id=work.setup.category,
                 principal_id=identity,
                 can_write=True,
-                expires_at=now() + timedelta(hours=1),
+                expires_at=now() + (getattr(work.setup, "test_authorization_window", None)
+                                    or timedelta(hours=1)),
             )
         )
         stored.add(
@@ -64,7 +65,8 @@ def new_person(work, name):
                 tenant_id=work.setup.tenant,
                 principal_id=identity,
                 token_hash=digest(token),
-                expires_at=now() + timedelta(hours=1),
+                expires_at=now() + (getattr(work.setup, "test_authorization_window", None)
+                                    or timedelta(hours=1)),
             )
         )
     return handoff.caller(work.setup, identity, token)

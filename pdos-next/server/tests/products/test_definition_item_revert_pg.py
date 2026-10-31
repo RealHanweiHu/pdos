@@ -6,8 +6,6 @@ qualification is made, and all commands use the registered domain execution port
 
 from copy import deepcopy
 from dataclasses import replace
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-
 from uuid import uuid4
 
 import pytest
@@ -15,6 +13,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from pdos_next.agent_kernel.bindings import SkillBinding, execution_key
+from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
 from pdos_next.agent_kernel.domain_adapter import DomainCommands
 from pdos_next.agent_kernel.models import (
     AgentRun,
@@ -22,6 +21,7 @@ from pdos_next.agent_kernel.models import (
     AgentToolCall,
     TenantSkillEnablement,
 )
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
 from pdos_next.database import tenant_session
 from pdos_next.domain.preproject.provenance import prepare_candidate
 from pdos_next.domain.products.models import DefinitionRevision, DefinitionSpecRow
@@ -48,6 +48,7 @@ def agent_fixture(
     skill_key="gap_check",
     product_bound=True,
     proposal_id=None,
+    parent_id=None,
     goal="Synthetic definition item regression",
 ):
     fixture = ledger()
@@ -80,6 +81,13 @@ def agent_fixture(
     fixture.model.execution_binding = {
         **fixture.model.execution_binding,
         "loaded_skills": [bound.model_dump(mode="json")],
+        "tool_definitions_digest": digest(
+            disclosure(fixture.registry, "main", skill_operations([skill]))
+        ),
+    }
+    fixture.run.versions = {
+        **fixture.run.versions,
+        "tool_definitions": {"main": fixture.model.execution_binding["tool_definitions_digest"]},
     }
     fixture.event.body = {
         "type": "skill_loaded",
@@ -101,16 +109,25 @@ def agent_fixture(
     fixture.model.result = {"calls": [{"name": operation, "arguments": arguments}]}
     fixture.arguments, fixture.spec = arguments, fixture.registry.get(operation)
     with Session(setup.admin) as session, session.begin():
-        session.add(
-            AgentSession(
-                id=fixture.scope.session_id,
-                tenant_id=setup.tenant,
-                category_id=setup.category,
-                product_id=fixture.scope.product_id,
-                proposal_id=fixture.scope.proposal_id,
-                owner_id=setup.human,
+        if parent_id is None:
+            session.add(
+                AgentSession(
+                    id=fixture.scope.session_id,
+                    tenant_id=setup.tenant,
+                    category_id=setup.category,
+                    product_id=fixture.scope.product_id,
+                    proposal_id=fixture.scope.proposal_id,
+                    owner_id=setup.human,
+                )
             )
-        )
+        else:
+            parent = session.get(AgentRun, parent_id)
+            assert parent is not None and parent.state in {
+                "completed", "partial", "failed", "cancelled"
+            }
+            fixture.scope = replace(fixture.scope, session_id=parent.session_id)
+            fixture.run.session_id = parent.session_id
+            fixture.run.continued_from_id = parent.id
         session.flush()
         session.add(fixture.run)
         session.flush()

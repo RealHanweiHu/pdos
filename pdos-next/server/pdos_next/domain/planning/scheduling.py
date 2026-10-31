@@ -96,7 +96,7 @@ def schedule(request: ScheduleInput | dict) -> ScheduleResult:
         )
         if missing:
             return None, None, missing
-        point = max([origin, *(getattr(result[key], f"{side}_finish") for key in task.depends_on)])
+        point = max([origin, task.not_before or origin, *(getattr(result[key], f"{side}_finish") for key in task.depends_on)])
         duration = task.duration_max_minutes if maximum else task.duration_min_minutes
         milestone = task.duration_min_minutes == task.duration_max_minutes == 0
         begin = ceil_minute(point) if milestone else engine.snap(point)

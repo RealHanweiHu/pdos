@@ -63,6 +63,8 @@ def semantic(payload):
     data = payload.model_dump(mode="json")
     data.pop("confirmation_token", None)
     data.pop("approval_token", None)
+    if data.get("human_edits") is None:
+        data.pop("human_edits", None)
     return data
 
 
@@ -249,6 +251,9 @@ def validate(s, ctx, command, scope, payload):
     if isinstance(payload, (G0Submit, G0Decide)):
         human(s, ctx)
     path = writing_path(s, ctx, command, payload)
+    from .material_candidate_edits import effective
+
+    payload = effective(payload)
     reference_privacy = {}
     baseline = None
 
@@ -528,6 +533,9 @@ def _audience_changes(s, row, payload):
 
 
 def preview_view(s, ctx, command, scope, payload):
+    from .material_candidate_edits import effective
+
+    payload = effective(payload)
     if isinstance(payload, ProposalCreate):
         from .derivation import prepare_create
 
@@ -679,6 +687,10 @@ def _sources(s, ctx, row, added, removed=(), *, reference_privacy):
 
 
 def apply_validated(s, ctx, command, scope, payload, validated):
+    from .material_candidate_edits import effective
+
+    edits = getattr(payload, "human_edits", None)
+    payload = effective(payload)
     provenance = validated.provenance
     receipt_id = uuid4()
     changed = []
@@ -966,7 +978,9 @@ def apply_validated(s, ctx, command, scope, payload, validated):
     row.prepared_by_run_id = provenance["run_id"]
     row.action_result = {
         **getattr(row, "action_result", {}),
+        "title": document(s, row)["title"],
         "proposal_url": f"/categories/{ctx.category_id}/proposals/{row.id}",
+        **({"human_edits": edits, "edited_by": str(ctx.actor_id)} if edits is not None else {}),
         **(
             {
                 "prepared_candidate_id": str(provenance["prepared_candidate_id"]),
@@ -1053,6 +1067,10 @@ def _check_document_references(s, ctx, doc, *, approved=False):
 
 
 def finalize_receipt(s, ctx, command, scope, payload, subject, receipt):
+    if isinstance(payload, ProposalCreate) and receipt.agent_run_id:
+        from pdos_next.agent_kernel.session_bindings import bind_saved_proposal
+
+        bind_saved_proposal(s, ctx, receipt, subject)
     if isinstance(payload, G0Decide) and payload.outcome == "approved":
         s.add(
             Outbox(

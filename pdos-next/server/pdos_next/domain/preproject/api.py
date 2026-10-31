@@ -10,6 +10,7 @@ from sqlalchemy import select, text
 from pdos_next.database import tenant_session
 from pdos_next.service import Context, require_access
 
+from .category_metadata import CategoryMetadata
 from .standard_match import StandardMatchInput
 
 
@@ -23,6 +24,21 @@ def register_routes(app, engine, auth_dependency):
             category_id=ctx.category_id,
             read_snapshot=True,
         )
+
+    @app.get("/v1/categories/{category_id}/metadata")
+    def category_metadata_read(ctx: Context = auth_dependency):
+        from .category_metadata import read
+
+        with scope(ctx) as session:
+            return read(session, ctx)
+
+    @app.post("/v1/categories/{category_id}/metadata")
+    def category_metadata_update(data: CategoryMetadata, ctx: Context = auth_dependency):
+        from pdos_next.database import category_transaction
+
+        from .category_metadata import update
+
+        return category_transaction(engine, ctx, lambda session: update(session, ctx, data))
 
     @app.post("/v1/categories/{category_id}/standard-match")
     def standard_match(payload: StandardMatchInput, ctx: Context = auth_dependency):
@@ -206,6 +222,10 @@ def register_routes(app, engine, auth_dependency):
     @app.get("/v1/categories/{category_id}/proposals")
     def proposals(
         cursor: UUID | None = None,
+        q: str = Query(default="", max_length=160),
+        status: str | None = Query(
+            default=None, pattern="^(draft|returned|in_review|approved|rejected|withdrawn)$"
+        ),
         page_size: int = Query(default=50, ge=1, le=200),
         ctx: Context = auth_dependency,
     ):
@@ -216,6 +236,10 @@ def register_routes(app, engine, auth_dependency):
             require_access(s, ctx, None)
             installed(s)
             query = select(Proposal).order_by(Proposal.id).limit(page_size + 1)
+            if q.strip():
+                query = query.where(Proposal.title.icontains(q.strip(), autoescape=True))
+            if status:
+                query = query.where(Proposal.status == status)
             if cursor:
                 query = query.where(Proposal.id > cursor)
             rows = list(s.scalars(query))
@@ -255,6 +279,29 @@ def register_routes(app, engine, auth_dependency):
             return {
                 "items": items(s, proposal(s, ctx, proposal_id), include_history=include_history)
             }
+
+    @app.get("/v1/categories/{category_id}/participants")
+    def category_participants(ctx: Context = auth_dependency):
+        from pdos_next.clock import now
+        from pdos_next.models import Grant, Principal
+
+        with scope(ctx) as s:
+            require_access(s, ctx, None)
+            rows = s.execute(
+                select(Principal)
+                .join(
+                    Grant,
+                    (Grant.tenant_id == Principal.tenant_id) & (Grant.principal_id == Principal.id),
+                )
+                .where(
+                    Grant.category_id == ctx.category_id,
+                    Principal.active.is_(True),
+                    Principal.kind == "human",
+                    Grant.expires_at.is_(None) | (Grant.expires_at > now()),
+                )
+                .order_by(Principal.name, Principal.id)
+            ).scalars()
+            return {"items": [{"id": str(person.id), "name": person.name} for person in rows]}
 
     @app.get("/v1/categories/{category_id}/proposals/{proposal_id}/participants")
     def proposal_participants(proposal_id: UUID, ctx: Context = auth_dependency):

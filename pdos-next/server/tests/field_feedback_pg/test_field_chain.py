@@ -11,6 +11,7 @@ from copy import deepcopy
 from datetime import timedelta
 from uuid import UUID, uuid4
 
+import pytest
 from knowledge_pg.test_publication import (
     command,
     configuration,  # noqa: F401 -- explicit fixture dependency
@@ -25,6 +26,7 @@ from knowledge_pg.test_publication import (
     snapshot as native_snapshot,
 )
 from sqlalchemy import func, select, text, update
+from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 
 from pdos_next.domain.change_execution.models import (
@@ -304,6 +306,24 @@ def test_unknown_field_to_real_change_impact_and_retained_response(knowledge_wor
     )
     assert unknown["location"] is None and unknown["product_id"] is unknown["project_id"] is None
     assert len(unknown["history"]) == 1
+    # Fault injection is limited to this synthetic fixture and rolled back: the
+    # generic lifecycle fence must independently reject arbitrary scope movement.
+    with Session(work.setup.admin) as session:
+        try:
+            session.execute(text(
+                "ALTER TABLE public.field_feedback_currents DISABLE TRIGGER field_current_guard"
+            ))
+            with pytest.raises(DBAPIError, match="Reference scope cannot be reassigned"):
+                session.execute(
+                    update(FieldFeedbackCurrent)
+                    .where(
+                        FieldFeedbackCurrent.tenant_id == work.setup.tenant,
+                        FieldFeedbackCurrent.feedback_id == UUID(feedback_id),
+                    )
+                    .values(product_id=work.setup.product, project_id=work.project_id)
+                )
+        finally:
+            session.rollback()
     with Session(work.setup.admin) as session:
         assert (
             session.scalar(

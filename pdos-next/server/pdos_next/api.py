@@ -5,7 +5,7 @@ from fastapi import Depends, FastAPI, Header, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, ConfigDict, ValidationError
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -74,6 +74,7 @@ def create_app(
     capa_fact_material_owner=None,
     agent_runtime_ports=None,
     agent_api_ports=None,
+    embedding_ports=None,
 ):
     # Host startup choices are explicit; reject ambiguous choices before touching
     # any engine, issuer registry or other integration configuration.
@@ -408,6 +409,9 @@ def create_app(
             ports=agent_api_ports or kernel_bootstrap.api_ports(kernel_temporal),
         )
     )
+    from pdos_next.dingtalk.api import register_routes as register_dingtalk
+
+    register_dingtalk(app, engine, auth_engine, auth_dependency, kernel_bootstrap)
     from pdos_next.domain.change_execution.api import register_routes as register_change_routes
     from pdos_next.domain.quality_execution.api import register_routes as register_quality_routes
 
@@ -422,9 +426,23 @@ def create_app(
     from pdos_next.personal_views import register_routes as register_personal_routes
 
     register_personal_routes(app, engine, auth_dependency)
+    from pdos_next.inbox.api import register_routes as register_inbox
+
+    register_inbox(app, engine, auth_dependency)
+    from pdos_next.project_sets.api import register_routes as register_project_sets
+
+    register_project_sets(app, engine, auth_dependency)
     from pdos_next.personal_attention_api import register_routes as register_attention
 
     register_attention(app, engine, auth_dependency)
+    from pdos_next.personal_preferences_api import register_routes as register_preferences
+
+    register_preferences(app, engine, auth_dependency)
+    from pdos_next.enterprise_search.similar_history_api import (
+        register_routes as register_similar_history,
+    )
+
+    register_similar_history(app, engine, auth_dependency)
     from pdos_next.agent_kernel.management_api import register_routes as register_governance_routes
 
     register_governance_routes(app, engine, auth_dependency)
@@ -470,6 +488,7 @@ def create_app(
     @app.get("/v1/categories")
     def categories(ctx: Context = auth_dependency):
         from pdos_next.category_capabilities import product_management_categories
+        from pdos_next.domain.preproject.models import Proposal
         from pdos_next.models import Category
 
         with tenant_session(
@@ -477,6 +496,18 @@ def create_app(
         ) as s:
             visible = list(s.scalars(select(Category).order_by(Category.created_at)))
             product_management = product_management_categories(s, ctx, [c.id for c in visible])
+            category_ids = [c.id for c in visible]
+            # All aggregates use the caller's RLS session and only visible roots.
+            owners = dict(s.execute(select(Principal.id, Principal.name).where(
+                Principal.id.in_([c.owner_id for c in visible])
+            )).all())
+            product_counts = dict(s.execute(select(Product.category_id, func.count()).where(
+                Product.category_id.in_(category_ids)
+            ).group_by(Product.category_id)).all())
+            draft_counts = dict(s.execute(select(Proposal.category_id, func.count()).where(
+                Proposal.category_id.in_(category_ids), Proposal.owner_id == ctx.actor_id,
+                Proposal.status == "draft",
+            ).group_by(Proposal.category_id)).all())
             return [
                 {
                     "id": str(c.id),
@@ -486,6 +517,9 @@ def create_app(
                     "revision": c.revision,
                     "status": c.status,
                     "capabilities": {"product_management": c.id in product_management},
+                    "owner_name": owners.get(c.owner_id),
+                    "readable_product_count": product_counts.get(c.id, 0),
+                    "my_draft_count": draft_counts.get(c.id, 0),
                 }
                 for c in visible
             ]
@@ -628,10 +662,22 @@ def create_app(
             )
             return receipt_view(r)
 
+    from pdos_next.enterprise_search.embedding_composition import bind_session, configured_ports
+
+    embedding_host = embedding_ports if embedding_ports is not None else configured_ports(
+        kernel_bootstrap.ports,
+    )
+    from pdos_next.enterprise_search.embedding_api import (
+        register_routes as register_embedding_routes,
+    )
+
+    register_embedding_routes(app, engine, auth_dependency)
+
     @app.post("/v1/categories/{category_id}/commands")
     def command(data: Command, ctx: Context = auth_dependency):
         def apply_command(s):
             s.info["model_configuration_secrets"] = kernel_bootstrap.ports.secrets
+            bind_session(s, embedding_host)
             return execute(s, ctx, data, synthetic_mode=synthetic_mode)
 
         result = category_transaction(engine, ctx, apply_command)
@@ -658,6 +704,7 @@ def create_app(
     def material_preview(data: Command, ctx: Context = auth_dependency):
         def preview(s):
             s.info["model_configuration_secrets"] = kernel_bootstrap.ports.secrets
+            bind_session(s, embedding_host)
             return preview_command(s, ctx, data)
 
         return category_transaction(engine, ctx, preview)
@@ -675,6 +722,12 @@ def create_app(
         ) as s:
             s.info["model_configuration_secrets"] = kernel_bootstrap.ports.secrets
             return reading(s, ctx)
+
+    from pdos_next.model_configuration.connections import (
+        register_routes as register_model_connections,
+    )
+
+    register_model_connections(app, engine, auth_dependency, kernel_bootstrap)
 
     @app.get("/v1/categories/{category_id}/products/{product_id}/workspace")
     def workspace(product_id: UUID, ctx: Context = auth_dependency):
@@ -879,6 +932,14 @@ def create_app(
             category_id=ctx.category_id,
         ) as s:
             return compare(s, ctx, product_id, variant_id, parent_definition_id)
+
+    from pdos_next.domain.projects.api import register_routes as register_planning_routes
+
+    register_planning_routes(app, engine, auth_dependency)
+    from pdos_next.domain.project_governance.api import (
+        register_routes as register_governance_routes,
+    )
+    register_governance_routes(app, engine, auth_dependency)
 
     def read_project_planning(product_id, project_id, ctx):
         from pdos_next.domain.projects.service import list_projects

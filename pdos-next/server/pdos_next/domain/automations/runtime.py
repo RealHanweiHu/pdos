@@ -3,14 +3,13 @@
 from types import SimpleNamespace
 from uuid import uuid4
 
-from sqlalchemy import case, func, select, text
-
 from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall
 from pdos_next.agent_kernel.persistence import create_run
 from pdos_next.domain.preproject.access import human
 from pdos_next.errors import DomainError
 from pdos_next.models import now
 from pdos_next.service import digest, require_access
+from sqlalchemy import case, func, select, text
 
 from .models import AutomationRuleVersion as Version
 from .models import AutomationTriggerOccurrence as Occurrence
@@ -80,7 +79,12 @@ def preload(store, scope, fallback=()):
 
 
 def guard_tool(store, scope, name=None, *, writing=False):
-    if scope_binding(store, scope) is not None and (
+    value = scope_binding(store, scope)
+    if value is not None and value[1].personal_summary is not None:
+        raise DomainError(
+            "FORBIDDEN_SCOPE", "确定性本人摘要不能调用模型、query embedding 或通用工具。", 403
+        )
+    if value is not None and (
         writing
         or name
         in {
@@ -100,6 +104,10 @@ def guard_tool(store, scope, name=None, *, writing=False):
 
 def reserve(s, run, *, reservation, cost_lease):
     value = binding(s, run)
+    if value is not None and value[1].personal_summary is not None:
+        raise DomainError(
+            "FORBIDDEN_SCOPE", "确定性本人摘要不领取任何通用工具或模型调用。", 403
+        )
     if value is None or cost_lease is None:
         return
     occurrence, spec = value
