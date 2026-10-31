@@ -12,6 +12,10 @@
 - **AI 写入分级**：[DC-11 T0/T1/T2 政策](2026-09-20-ai-direct-write-tier-policy.md)（已批准，实施中）。AI 身份经受控领域服务写入，`pdos_agent` 对业务表零直接写权限，永不取得 T2 执行权。
 - **现行方向**：[DC-13 设计方向整合](2026-09-28-pdos-design-direction-integration.md)——原合同是领域基线，V2 设计包仅作体验层来源；AI 默认模式为"AI 先完成、引擎校验、人管例外"。执行顺序上产品经理开发第一（覆盖 DC-13 原 D14-04 先行顺序）。
 - **对话式 Agent**：[DC-12 小Pai](2026-09-28-xiaopai-conversational-agent.md)（已批准，实施中）；入口与统一输入见[统一对话与文件输入](2026-09-11-unified-conversation-and-file-input.md)、[立项前改造](2026-10-05-preproject-redesign.md)。
+- **基础模型接入（P28/P29，用户 2026-10-26）**：任意 OpenAI 兼容 Chat Completions API，不限 MiniMax；页面直接填写 API Key、Base URL 与模型名称，保存多份独立连接并确认切换；密钥入 KMS/Keychain，原 Anthropic 原生支持保留。见[确认稿 P28/P29](2026-10-08-pdos-next-design-confirmation.md#p29-在界面添加密钥与切换模型服务商用户-2026-10-26)和[配置手册](../runbooks/pdos-next-tenant-model-runtime.md)。
+- **日常问答与企业检索（P30，用户 2026-10-27）**：日常问答是小Pai的基础能力，一般知识回答标“未查公司资料”；后台索引 embedding 出站须管理员一次确认 profile 与数据类别，客户原件默认不含；向量是否默认参与召回按同题集相对 jieba 基线的实测收益决定。见[确认稿 P30](2026-10-08-pdos-next-design-confirmation.md#p30-小pai日常问答进入产品范围后台索引-embedding-出站须一次确认启用混合检索按实测决定默认用户-2026-10-27)和[实施设计](2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md)。
+- **钉钉只读入口（P31，用户 2026-10-28）**：小Pai可在钉钉单聊与群内 @ 时回答，按提问人本人权限；群内默认私发，引文须受众覆盖全部成员才贴出；客户原件及其派生内容默认不进钉钉；业务动作跳回 PDOS；每次投递记出站回执。见[确认稿 P31](2026-10-08-pdos-next-design-confirmation.md#p31-钉钉只读入口纳入小pai范围按提问人权限默认私发用户-2026-10-28)和[实施设计](2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md) §11.9。
+- **会话历史保留（P32，用户 2026-10-28）**：每轮用户原话与小Pai回答作为历史运行记录保留并标 as_of；来源撤权、撤回或扫描失效才隐藏回答正文，来源更新只标注；运行内冻结历史，只复核权限；服务器维护的会话工作状态承担“按任务保存可恢复摘要”。见[确认稿 P32](2026-10-08-pdos-next-design-confirmation.md#p32-会话记录按历史运行记录保留撤权才隐藏更新只标注运行内冻结历史用户-2026-10-28)和[小Pai上下文设计](2026-10-28-xiaopai-context-design.md)。
 - **UI 基线**：[UI 基线文档](2026-08-09-ui-baseline.md)（滚动更新至 v0.7.1）：shadcn/ui + Tailwind v4 + Geist，橙 `#c2410c`/`#fb923c`，圆角 8px，双主题，Phosphor 图标。
 - **冻结共同合同**：对象合同 `docs/contracts/pdos-v1/`（N0-01），运行与授权政策 `docs/contracts/pdos-runtime-v1/`（N0-02，含 DC 冻结登记台账 freeze-record.md）。两者并行生效、作用域不同。
 
@@ -27,6 +31,7 @@
 | [2026-10-02-pdos-complete-target-architecture-v1.md](2026-10-02-pdos-complete-target-architecture-v1.md) | **已被 v1.1 取代（2026-10-08）**，保留作历史对照。 |
 | [2026-10-02-pdos-next-execution-plan.md](2026-10-02-pdos-next-execution-plan.md) | pdos-next 执行方案（G0–G5 切片与加速规则） |
 | [2026-10-07-agent-runtime-convergence.md](2026-10-07-agent-runtime-convergence.md) | Agent 运行架构收口合同（LangGraph + Temporal，已实施，两线共用） |
+| [2026-10-23-local-development-minimax-policy.md](2026-10-23-local-development-minimax-policy.md) | 用户批准的本地开发 MiniMax 不限额策略；真实账本、停止控制及非开发环境预算保留 |
 
 **导读**：[PDOS-next 架构设计整理稿](2026-10-08-pdos-next-architecture-overview.md)（2026-10-08）汇总上述权威文档与唯一清单实现现状，作为 pdos-next 架构的统一阅读入口；不新增权威、不改变任何文档效力，活动状态仍以唯一清单为准。
 
@@ -95,6 +100,10 @@
 
 | 文档 | 状态 |
 |---|---|
+| [2026-10-28-slice-a-x1-implementation-handoff.md](2026-10-28-slice-a-x1-implementation-handoff.md) | **实施交接，待执行。** RAG 切片 A 与上下文切片 X1 的逐步操作说明（供代码执行代理使用）：10 个任务的改动位置、改法、测试、命令、完成判据与停止条件。 |
+| [2026-10-28-xiaopai-context-design.md](2026-10-28-xiaopai-context-design.md) | **设计 v0.2，§13 已确认为 P32；未实施。** 小Pai上下文的加载、保留、压缩与聚焦：分段布局与预算、会话保留规则、工作状态、固定缩减顺序与 `context_incomplete`、单条结果上限与续读、缓存与可观测；含安全/功能/体验取舍；会话历史撤权才隐藏、更新只标注，运行内冻结历史（P32）。 |
+| [2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md](2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md) | **实施设计 v0.4，P30（2026-10-27）、P31、P32（2026-10-28）已确认；未实施。** v0.4 并入体验评审：同品类补查与背景条、资料三入口与资料比较、按任务的结果结构、“继续处理”直出候选、当场纠正、摘要四问三组、进度与结果保存、首期三场景与验收故事。 细化全岗位小Pai日常问答、权威当前事实、jieba 关键词（OR + IDF）、编号通道与向量混合检索、隔离子任务读原文、引用与四态依据标注、跨轮引用、后台 embedding 出站、索引恢复及 A–D 切片；v0.3 增加主动呈现（相似历史、定时摘要，切片 E）、知识沉淀（核实答案、缺口报表，切片 F）与钉钉只读入口（切片 G）；不改变单 Agent、T0/T1/T2 或 v1.1 验收状态。 |
+| [2026-10-23-pdos-full-product-ui-candidate.md](2026-10-23-pdos-full-product-ui-candidate.md) | **完整体验设计候选，供预览选择。** 扩展 S1 到九岗位、17 页面与全流程交互；遵循 Linear 简洁原则和原 UI 基线。仅本地合成原型，未替换真实界面，不修改 v1.1 或阶段验收。 |
 | [2026-10-22-pdos-v1.1-gap-analysis-and-competitive-review.md](2026-10-22-pdos-v1.1-gap-analysis-and-competitive-review.md) | **分析稿，不构成合同，未改 v1.1。** 对照海外 PLM/NPI 厂商、国内 IM 平台与国产 PLM、AI-native 工作工具期待清单及 2025–2026 用户调研，列出 44 条缺口 G-01–G-44（入口与交互面、信任控制与运维、领域对象与业务闭环、小Pai 技能与自动化、设计内部张力、国内约束与合规、商业）并分 P0–P3；其中 11 条改变范围或既有决定，须以决策记录（建议 P27 起）确认后方可进入建设。 |
 | [2026-10-08-m2-skill-tool-delivery-proposal.md](2026-10-08-m2-skill-tool-delivery-proposal.md) | **待评审，仅文档，未实施。** M2 主循环 106 个工具与约 167 KB 定义的下发审查；建议固定窄入口与按技能追加 schema，具备资格时采用原生工具追加；包含缓存边界、可信调用证明、恢复及验证方案，未改 v1.1 冻结条款。其载荷数字（106 个 / 167 KB、并集 3.7%）已被下条 2026-10-17 实测取代。 |
 | [2026-10-17-m2-tool-surface-decision.md](2026-10-17-m2-tool-surface-decision.md) | **C 已于 2026-10-18 经用户确认实施（未 push）；T2 门禁与 B 升级待决策。** 细化并取代上条的载荷数字：10-18 实测 137 个工具 / 291,811 B（17 个技能，39 个工具无技能归属）；区分缓存可解决的费用问题与缓存不解决的可见面问题；对比 A 窄入口 / B 原生 defer_loading+tool_addition / C 按技能组固定 / D tool search 的实际代价，含放弃原生 schema 的五条风险（含拆掉 §09 资格测量与重建写入证明）；建议并已实施 C 作底座（披露规则为 authorize 的前置镜像，实测下发由 137 个降至 45–62 个）、排除 D；修订节更正了 T2-prepare-only 必须保持披露这一规则错误，并记录 B 的优先级因执行类技能组增大与会话权限维度而提高。未改 v1.1 冻结条款。 |
