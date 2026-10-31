@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Annotated, Self
+from typing import Annotated, Literal, Self
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
@@ -40,6 +40,7 @@ from app.domain.projects import (
     StageRecord,
     WorkflowRecord,
 )
+from app.domain.workflow_templates import WORKFLOW_TEMPLATES
 
 router = APIRouter(prefix="/api/projects", tags=["projects"])
 
@@ -95,6 +96,7 @@ class ProjectCreateRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     development_case_id: UUID
+    workflow_template: Literal["npd", "obt"] = "npd"
     code: str = Field(min_length=1, max_length=64)
     name: str = Field(min_length=1, max_length=256)
     description: str | None = Field(default=None, max_length=20_000)
@@ -288,7 +290,8 @@ def create_project(
             tenant_id=context.tenant.id,
             actor_user_id=context.user.id,
             actor_role=context.user.role,
-            draft=ProjectDraft(**payload.model_dump()),
+            draft=ProjectDraft(**payload.model_dump(exclude={"workflow_template"})),
+            template=WORKFLOW_TEMPLATES[payload.workflow_template],
         )
     except DevelopmentCaseNotFoundForProjectError as error:
         raise HTTPException(

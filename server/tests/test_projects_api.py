@@ -250,6 +250,51 @@ def test_project_creation_atomically_instantiates_workflow_stages_and_case_trans
     assert project_audits == {"project.create", "development_case.transition"}
 
 
+def test_project_creation_can_choose_the_obt_template_and_its_gate_policy(
+    client: TestClient,
+    isolated_project_database: str,
+) -> None:
+    client.post("/api/setup", json=SETUP_PAYLOAD)
+    headers = bearer_headers(client)
+    case = approved_case(client, headers, suffix="OBT")
+
+    created = client.post(
+        "/api/projects",
+        headers=headers,
+        json={
+            "development_case_id": case["id"],
+            "workflow_template": "obt",
+            "code": "OBT-001",
+            "name": "Design transfer",
+        },
+    )
+    assert created.status_code == 201
+    project = created.json()
+    assert project["workflow"]["code"] == f"obt-{project['id']}"
+    assert project["current_stage"]["code"] == "intake"
+    assert [stage["code"] for stage in project["workflow"]["stages"]] == [
+        "intake",
+        "sample",
+        "pvt",
+        "mp",
+    ]
+    gates = client.get(f"/api/projects/{project['id']}/gates", headers=headers)
+    assert gates.status_code == 200
+    assert [gate["code"] for gate in gates.json()["items"]] == ["intake", "sample", "pvt", "mp"]
+
+    invalid = client.post(
+        "/api/projects",
+        headers=headers,
+        json={
+            "development_case_id": approved_case(client, headers, suffix="BAD")["id"],
+            "workflow_template": "waterfall",
+            "code": "BAD-001",
+            "name": "Unknown template",
+        },
+    )
+    assert invalid.status_code == 422
+
+
 def test_project_state_stage_and_member_permissions(
     client: TestClient,
     isolated_project_database: str,

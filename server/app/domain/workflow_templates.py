@@ -61,3 +61,9 @@ OBT_WORKFLOW_TEMPLATE = WorkflowTemplate(
         ),
     ),
 )
+
+
+WORKFLOW_TEMPLATES: dict[str, WorkflowTemplate] = {
+    NPD_WORKFLOW_TEMPLATE.code: NPD_WORKFLOW_TEMPLATE,
+    OBT_WORKFLOW_TEMPLATE.code: OBT_WORKFLOW_TEMPLATE,
+}
