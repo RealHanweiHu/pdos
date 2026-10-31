@@ -4,6 +4,11 @@ export type ProjectStage = {
   name: string;
   description: string | null;
   sequence: number;
+  /** Plan baseline and actual dates; absent on payloads from before migration 0031. */
+  planned_start_date?: string | null;
+  planned_end_date?: string | null;
+  entered_at?: string | null;
+  exited_at?: string | null;
 };
 
 export type ProjectWorkflow = {
@@ -26,7 +31,7 @@ export type Project = {
   code: string;
   name: string;
   description: string | null;
-  status: "draft" | "proposed" | "approved" | "active" | "on_hold" | "completed" | "archived";
+  status: "draft" | "proposed" | "approved" | "active" | "on_hold" | "completed" | "cancelled" | "archived";
   start_date: string | null;
   target_date: string | null;
   created_at: string;

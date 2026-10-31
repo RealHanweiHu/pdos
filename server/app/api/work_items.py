@@ -16,7 +16,18 @@ from app.auth.project_access import ProjectAccessService, SqlProjectAccessReposi
 from app.auth.repository import AuthContext
 from app.auth.roles import Action
 from app.db.engine import get_engine
+from app.domain.project_members import (
+    ProjectMemberArchivedError,
+    ProjectMemberExistsError,
+    ProjectMemberNotFoundError,
+    ProjectMemberOpenWorkError,
+    ProjectMemberOwnerError,
+    ProjectMemberProjectNotFoundError,
+    ProjectMemberService,
+    ProjectMemberUserNotFoundError,
+)
 from app.domain.tasks import (
+    ProjectMemberRecord,
     TaskDateOrderError,
     TaskDependenciesIncompleteError,
     TaskDependencyCycleError,
@@ -60,6 +71,42 @@ class TaskListResponse(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     items: list[TaskResponse]
+
+
+class ProjectMemberResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    user_id: UUID
+    display_name: str
+    role: str
+    is_active: bool
+    assignable: bool
+
+
+class ProjectMemberListResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    items: list[ProjectMemberResponse]
+
+
+class MemberCandidateResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    user_id: UUID
+    display_name: str
+    role: str
+
+
+class MemberCandidateListResponse(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
+    items: list[MemberCandidateResponse]
+
+
+class ProjectMemberAddRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    user_id: UUID
 
 
 class TaskCreateRequest(BaseModel):
@@ -250,6 +297,175 @@ def task_error(error: Exception) -> HTTPException:
             detail={"code": "TASK_DATE_ORDER", "message": "Due date precedes start date"},
         )
     raise error
+
+
+def member_response(record: ProjectMemberRecord) -> ProjectMemberResponse:
+    return ProjectMemberResponse(
+        user_id=record.user_id,
+        display_name=record.display_name,
+        role=record.role,
+        is_active=record.is_active,
+        assignable=record.assignable,
+    )
+
+
+@router.get("/members", response_model=ProjectMemberListResponse)
+def list_project_members(
+    project_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> ProjectMemberListResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine,
+        context=context,
+        project_id=project_id,
+        action=Action.WORK_ITEM_VIEW,
+    )
+    return _members(engine, tenant_id=context.tenant.id, project_id=project_id)
+
+
+def member_error(error: Exception) -> HTTPException:
+    if isinstance(error, ProjectMemberProjectNotFoundError):
+        return HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "PROJECT_NOT_FOUND", "message": "Project was not found"},
+        )
+    if isinstance(error, ProjectMemberUserNotFoundError):
+        return HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "PROJECT_MEMBER_USER_NOT_FOUND",
+                "message": "User is not an active member of this tenant",
+            },
+        )
+    if isinstance(error, ProjectMemberNotFoundError):
+        return HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"code": "PROJECT_MEMBER_NOT_FOUND", "message": "User is not a project member"},
+        )
+    if isinstance(error, ProjectMemberExistsError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={"code": "PROJECT_MEMBER_EXISTS", "message": "User is already a project member"},
+        )
+    if isinstance(error, ProjectMemberOwnerError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "PROJECT_OWNER_MEMBERSHIP_REQUIRED",
+                "message": "The project owner must remain a member",
+            },
+        )
+    if isinstance(error, ProjectMemberArchivedError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={"code": "PROJECT_ARCHIVED", "message": "Archived project membership is frozen"},
+        )
+    if isinstance(error, ProjectMemberOpenWorkError):
+        return HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={
+                "code": "PROJECT_MEMBER_HAS_OPEN_WORK",
+                "message": "Reassign the member's unfinished work before removing them",
+                "open_work": error.open_work,
+            },
+        )
+    raise error
+
+
+def _members(engine: Engine, *, tenant_id: UUID, project_id: UUID) -> ProjectMemberListResponse:
+    return ProjectMemberListResponse(
+        items=[
+            member_response(record)
+            for record in TaskService(engine).list_members(
+                tenant_id=tenant_id, project_id=project_id
+            )
+        ]
+    )
+
+
+@router.get("/members/candidates", response_model=MemberCandidateListResponse)
+def list_member_candidates(
+    project_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> MemberCandidateListResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine,
+        context=context,
+        project_id=project_id,
+        action=Action.PROJECT_MEMBERS_MANAGE,
+    )
+    return MemberCandidateListResponse(
+        items=[
+            MemberCandidateResponse(
+                user_id=item.user_id, display_name=item.display_name, role=item.role
+            )
+            for item in ProjectMemberService(engine).candidates(
+                tenant_id=context.tenant.id, project_id=project_id
+            )
+        ]
+    )
+
+
+@router.post(
+    "/members", response_model=ProjectMemberListResponse, status_code=status.HTTP_201_CREATED
+)
+def add_project_member(
+    project_id: UUID,
+    body: ProjectMemberAddRequest,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> ProjectMemberListResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine,
+        context=context,
+        project_id=project_id,
+        action=Action.PROJECT_MEMBERS_MANAGE,
+    )
+    try:
+        ProjectMemberService(engine).add(
+            tenant_id=context.tenant.id,
+            actor_user_id=context.user.id,
+            project_id=project_id,
+            user_id=body.user_id,
+        )
+    except Exception as error:
+        raise member_error(error) from error
+    return _members(engine, tenant_id=context.tenant.id, project_id=project_id)
+
+
+@router.delete("/members/{user_id}", response_model=ProjectMemberListResponse)
+def remove_project_member(
+    project_id: UUID,
+    user_id: UUID,
+    response: Response,
+    context: Annotated[AuthContext, Depends(current_context)],
+    engine: Annotated[Engine, Depends(get_engine)],
+) -> ProjectMemberListResponse:
+    no_store(response)
+    authorize_project(
+        engine=engine,
+        context=context,
+        project_id=project_id,
+        action=Action.PROJECT_MEMBERS_MANAGE,
+    )
+    try:
+        ProjectMemberService(engine).remove(
+            tenant_id=context.tenant.id,
+            actor_user_id=context.user.id,
+            project_id=project_id,
+            user_id=user_id,
+        )
+    except Exception as error:
+        raise member_error(error) from error
+    return _members(engine, tenant_id=context.tenant.id, project_id=project_id)
 
 
 @router.get("/tasks", response_model=TaskListResponse)

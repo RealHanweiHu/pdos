@@ -8,6 +8,7 @@ import {
   transitionIssue,
   transitionRisk,
   transitionTask,
+  updateTask,
 } from "./project-work-item-api";
 
 function jsonResponse(body: object, status = 200) {
@@ -76,13 +77,22 @@ const risk = {
   ...timestamps,
 };
 
+const member = {
+  user_id: "user-1",
+  display_name: "Initial Owner",
+  role: "owner",
+  is_active: true,
+  assignable: true,
+};
+
 describe("project work-item API", () => {
-  it("loads and validates all three project-scoped collections", async () => {
+  it("loads and validates the project-scoped collections and members", async () => {
     const fetchMock = vi.fn<typeof fetch>(async (input) => {
       const path = String(input);
       if (path.endsWith("/tasks")) return jsonResponse({ items: [task] });
       if (path.endsWith("/issues")) return jsonResponse({ items: [issue] });
       if (path.endsWith("/risks")) return jsonResponse({ items: [risk] });
+      if (path.endsWith("/members")) return jsonResponse({ items: [member] });
       throw new Error(`unexpected request: ${path}`);
     });
     vi.stubGlobal("fetch", fetchMock);
@@ -91,12 +101,52 @@ describe("project work-item API", () => {
       tasks: [task],
       issues: [issue],
       risks: [risk],
+      members: [member],
     });
     expect(fetchMock.mock.calls.map(([input]) => String(input))).toEqual([
       "/api/projects/project%2Fwith%20spaces/tasks",
       "/api/projects/project%2Fwith%20spaces/issues",
       "/api/projects/project%2Fwith%20spaces/risks",
+      "/api/projects/project%2Fwith%20spaces/members",
     ]);
+    vi.unstubAllGlobals();
+  });
+
+  it("keeps work items available when the member list cannot be loaded", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn<typeof fetch>(async (input) => {
+        const path = String(input);
+        if (path.endsWith("/tasks")) return jsonResponse({ items: [task] });
+        if (path.endsWith("/issues")) return jsonResponse({ items: [] });
+        if (path.endsWith("/risks")) return jsonResponse({ items: [] });
+        return jsonResponse({ detail: { code: "PROJECT_ACCESS_DENIED", message: "denied" } }, 403);
+      }),
+    );
+
+    await expect(requestProjectWorkItems("project-1")).resolves.toEqual({
+      tasks: [task],
+      issues: [],
+      risks: [],
+      members: [],
+    });
+    vi.unstubAllGlobals();
+  });
+
+  it("patches only the supplied task fields", async () => {
+    const fetchMock = vi.fn<typeof fetch>(async () => jsonResponse({ ...task, due_date: "2026-09-30" }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(
+      updateTask("project-1", "task/1", { due_date: "2026-09-30", assignee_user_id: null }),
+    ).resolves.toMatchObject({ due_date: "2026-09-30" });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/projects/project-1/tasks/task%2F1",
+      expect.objectContaining({
+        method: "PATCH",
+        body: JSON.stringify({ due_date: "2026-09-30", assignee_user_id: null }),
+      }),
+    );
     vi.unstubAllGlobals();
   });
 

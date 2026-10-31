@@ -64,16 +64,40 @@ export type ProjectRisk = {
   updated_at: string;
 };
 
+export type ProjectMember = {
+  user_id: string;
+  display_name: string;
+  role: string;
+  is_active: boolean;
+  assignable: boolean;
+};
+
 export type ProjectWorkItems = {
   tasks: ProjectTask[];
   issues: ProjectIssue[];
   risks: ProjectRisk[];
+  members: ProjectMember[];
 };
 
 export type TaskCreateInput = {
   title: string;
   priority: WorkItemPriority;
   dependency_task_ids: string[];
+  assignee_user_id?: string;
+  stage_id?: string;
+  start_date?: string;
+  due_date?: string;
+};
+
+export type TaskUpdateInput = {
+  title?: string;
+  description?: string | null;
+  priority?: WorkItemPriority;
+  assignee_user_id?: string | null;
+  stage_id?: string | null;
+  start_date?: string | null;
+  due_date?: string | null;
+  dependency_task_ids?: string[];
 };
 
 export type IssueCreateInput = {

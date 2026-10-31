@@ -61,6 +61,10 @@ class ProjectTerminalError(ValueError):
     """Raised when content mutation is attempted on an archived Project."""
 
 
+class ProjectStagePlanError(ValueError):
+    """Raised when a stage plan names a foreign stage or ends before it starts."""
+
+
 @dataclass(frozen=True)
 class StageRecord:
     id: UUID
@@ -68,6 +72,17 @@ class StageRecord:
     name: str
     description: str | None
     sequence: int
+    planned_start_date: date | None = None
+    planned_end_date: date | None = None
+    entered_at: datetime | None = None
+    exited_at: datetime | None = None
+
+
+@dataclass(frozen=True)
+class StagePlan:
+    stage_id: UUID
+    planned_start_date: date | None
+    planned_end_date: date | None
 
 
 @dataclass(frozen=True)
@@ -115,14 +130,17 @@ class ProjectUpdate:
 
 
 PROJECT_TRANSITIONS = {
-    "draft": frozenset({"proposed"}),
-    "proposed": frozenset({"approved"}),
-    "approved": frozenset({"active"}),
-    "active": frozenset({"on_hold", "completed"}),
-    "on_hold": frozenset({"active"}),
+    "draft": frozenset({"proposed", "cancelled"}),
+    "proposed": frozenset({"approved", "cancelled"}),
+    "approved": frozenset({"active", "cancelled"}),
+    "active": frozenset({"on_hold", "completed", "cancelled"}),
+    "on_hold": frozenset({"active", "cancelled"}),
     "completed": frozenset({"archived"}),
+    "cancelled": frozenset({"archived"}),
     "archived": frozenset(),
 }
+# Stage plans are frozen once a Project is closed out either way.
+PLAN_LOCKED_STATUSES = frozenset({"cancelled", "archived"})
 
 
 def _project_statement() -> Any:
@@ -160,6 +178,25 @@ def _stage_from_row(row: RowMapping) -> StageRecord:
         name=row["name"],
         description=row["description"],
         sequence=row["sequence"],
+        planned_start_date=row["planned_start_date"],
+        planned_end_date=row["planned_end_date"],
+        entered_at=row["entered_at"],
+        exited_at=row["exited_at"],
+    )
+
+
+def _stage_statement() -> Any:
+    return select(
+        tables.stages.c.id,
+        tables.stages.c.workflow_id,
+        tables.stages.c.code,
+        tables.stages.c.name,
+        tables.stages.c.description,
+        tables.stages.c.sequence,
+        tables.stages.c.planned_start_date,
+        tables.stages.c.planned_end_date,
+        tables.stages.c.entered_at,
+        tables.stages.c.exited_at,
     )
 
 
@@ -170,13 +207,7 @@ def _stages_for_workflow(
     workflow_id: UUID,
 ) -> tuple[StageRecord, ...]:
     rows = connection.execute(
-        select(
-            tables.stages.c.id,
-            tables.stages.c.code,
-            tables.stages.c.name,
-            tables.stages.c.description,
-            tables.stages.c.sequence,
-        )
+        _stage_statement()
         .where(
             tables.stages.c.tenant_id == tenant_id,
             tables.stages.c.workflow_id == workflow_id,
@@ -186,17 +217,42 @@ def _stages_for_workflow(
     return tuple(_stage_from_row(row) for row in rows)
 
 
+def _stages_by_workflow(
+    connection: Connection,
+    *,
+    tenant_id: UUID,
+    workflow_ids: list[UUID],
+) -> dict[UUID, tuple[StageRecord, ...]]:
+    """Stages for many workflows in one query (list views)."""
+    grouped: dict[UUID, list[StageRecord]] = {workflow_id: [] for workflow_id in workflow_ids}
+    if not workflow_ids:
+        return {}
+    rows = connection.execute(
+        _stage_statement()
+        .where(
+            tables.stages.c.tenant_id == tenant_id,
+            tables.stages.c.workflow_id.in_(workflow_ids),
+        )
+        .order_by(tables.stages.c.sequence, tables.stages.c.id)
+    ).mappings()
+    for row in rows:
+        grouped[row["workflow_id"]].append(_stage_from_row(row))
+    return {workflow_id: tuple(stages) for workflow_id, stages in grouped.items()}
+
+
 def _record_from_row(
     connection: Connection,
     *,
     tenant_id: UUID,
     row: RowMapping,
+    stages: tuple[StageRecord, ...] | None = None,
 ) -> ProjectRecord:
-    stages = _stages_for_workflow(
-        connection,
-        tenant_id=tenant_id,
-        workflow_id=row["workflow_id"],
-    )
+    if stages is None:
+        stages = _stages_for_workflow(
+            connection,
+            tenant_id=tenant_id,
+            workflow_id=row["workflow_id"],
+        )
     current_stage = next(
         (stage for stage in stages if stage.id == row["current_stage_id"]),
         None,
@@ -316,9 +372,20 @@ class ProjectService:
             tables.projects.c.id.desc(),
         )
         with self._engine.connect() as connection:
+            rows = list(connection.execute(statement).mappings())
+            stages = _stages_by_workflow(
+                connection,
+                tenant_id=tenant_id,
+                workflow_ids=list({row["workflow_id"] for row in rows}),
+            )
             return [
-                _record_from_row(connection, tenant_id=tenant_id, row=row)
-                for row in connection.execute(statement).mappings()
+                _record_from_row(
+                    connection,
+                    tenant_id=tenant_id,
+                    row=row,
+                    stages=stages[row["workflow_id"]],
+                )
+                for row in rows
             ]
 
     def create(
@@ -393,6 +460,7 @@ class ProjectService:
                             "name": stage.name,
                             "description": stage.description,
                             "sequence": stage.sequence,
+                            "entered_at": occurred_at if stage.sequence == 1 else None,
                             "created_at": occurred_at,
                             "updated_at": occurred_at,
                         }
@@ -589,6 +657,7 @@ class ProjectService:
         actor_user_id: UUID,
         project_id: UUID,
         to_status: str,
+        reason: str | None = None,
     ) -> ProjectRecord:
         occurred_at = datetime.now(UTC)
         with self._engine.begin() as connection:
@@ -632,6 +701,7 @@ class ProjectService:
                     action="project.transition",
                     before_snapshot=_project_snapshot(before),
                     after_snapshot=_project_snapshot(after),
+                    context={"reason": reason} if reason is not None else {},
                 ),
             )
             return after
@@ -700,6 +770,19 @@ class ProjectService:
                 )
                 .values(current_stage_id=to_stage_id, updated_at=occurred_at)
             )
+            connection.execute(
+                tables.stages.update()
+                .where(
+                    tables.stages.c.tenant_id == tenant_id,
+                    tables.stages.c.id == locked["current_stage_id"],
+                )
+                .values(exited_at=occurred_at, updated_at=occurred_at)
+            )
+            connection.execute(
+                tables.stages.update()
+                .where(tables.stages.c.tenant_id == tenant_id, tables.stages.c.id == to_stage_id)
+                .values(entered_at=occurred_at, updated_at=occurred_at)
+            )
             after = self._get_record(connection, tenant_id=tenant_id, project_id=project_id)
             EventAuditWriter(
                 connection,
@@ -722,6 +805,124 @@ class ProjectService:
                     action="project.stage.transition",
                     before_snapshot=_project_snapshot(before),
                     after_snapshot=_project_snapshot(after),
+                ),
+            )
+            return after
+
+    def update_stage_plan(
+        self,
+        *,
+        tenant_id: UUID,
+        actor_user_id: UUID,
+        project_id: UUID,
+        plans: tuple[StagePlan, ...],
+    ) -> ProjectRecord:
+        occurred_at = datetime.now(UTC)
+        with self._engine.begin() as connection:
+            locked = (
+                connection.execute(
+                    select(tables.projects.c.status, tables.projects.c.workflow_id)
+                    .where(
+                        tables.projects.c.tenant_id == tenant_id,
+                        tables.projects.c.id == project_id,
+                    )
+                    .with_for_update()
+                )
+                .mappings()
+                .one_or_none()
+            )
+            if locked is None:
+                raise ProjectNotFoundError
+            if locked["status"] in PLAN_LOCKED_STATUSES:
+                raise ProjectTerminalError
+            before = self._get_record(connection, tenant_id=tenant_id, project_id=project_id)
+            stages = {stage.id: stage for stage in before.workflow.stages}
+            if len({plan.stage_id for plan in plans}) != len(plans):
+                raise ProjectStagePlanError
+            for plan in plans:
+                if plan.stage_id not in stages:
+                    raise ProjectStagePlanError
+                if (
+                    plan.planned_start_date is not None
+                    and plan.planned_end_date is not None
+                    and plan.planned_end_date < plan.planned_start_date
+                ):
+                    raise ProjectStagePlanError
+            changed = [
+                plan
+                for plan in plans
+                if (
+                    stages[plan.stage_id].planned_start_date,
+                    stages[plan.stage_id].planned_end_date,
+                )
+                != (plan.planned_start_date, plan.planned_end_date)
+            ]
+            if not changed:
+                return before
+            for plan in changed:
+                connection.execute(
+                    tables.stages.update()
+                    .where(
+                        tables.stages.c.tenant_id == tenant_id,
+                        tables.stages.c.workflow_id == locked["workflow_id"],
+                        tables.stages.c.id == plan.stage_id,
+                    )
+                    .values(
+                        planned_start_date=plan.planned_start_date,
+                        planned_end_date=plan.planned_end_date,
+                        updated_at=occurred_at,
+                    )
+                )
+            connection.execute(
+                tables.projects.update()
+                .where(
+                    tables.projects.c.tenant_id == tenant_id,
+                    tables.projects.c.id == project_id,
+                )
+                .values(updated_at=occurred_at)
+            )
+            after = self._get_record(connection, tenant_id=tenant_id, project_id=project_id)
+
+            def plan_snapshot(record: ProjectRecord) -> dict[str, object]:
+                return {
+                    stage.code: {
+                        "planned_start_date": (
+                            stage.planned_start_date.isoformat()
+                            if stage.planned_start_date is not None
+                            else None
+                        ),
+                        "planned_end_date": (
+                            stage.planned_end_date.isoformat()
+                            if stage.planned_end_date is not None
+                            else None
+                        ),
+                    }
+                    for stage in record.workflow.stages
+                }
+
+            EventAuditWriter(
+                connection,
+                tenant_id=tenant_id,
+                actor_user_id=actor_user_id,
+                project_id=project_id,
+            ).record(
+                EventDraft(
+                    event_id=f"project:{project_id}:stage-plan:{uuid4()}",
+                    event_type="PROJECT_UPDATED",
+                    source="project_service",
+                    entity_id=project_id,
+                    payload={
+                        "changed_fields": sorted(
+                            f"stage_plan.{stages[plan.stage_id].code}" for plan in changed
+                        ),
+                        "status": after.status,
+                    },
+                    occurred_at=occurred_at,
+                ),
+                AuditDraft(
+                    action="project.stage_plan.update",
+                    before_snapshot={"stage_plan": plan_snapshot(before)},
+                    after_snapshot={"stage_plan": plan_snapshot(after)},
                 ),
             )
             return after

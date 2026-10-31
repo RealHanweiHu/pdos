@@ -213,6 +213,7 @@ describe("CaseWorkspace", () => {
 
     render(<CaseWorkspace />);
     await user.click(await screen.findByRole("button", { name: "打开开发案例 CASE-001" }));
+    await user.selectOptions(screen.getByLabelText("流程模板"), "obt");
     await user.type(screen.getByLabelText("项目编号"), "PRJ-001");
     const projectName = screen.getByLabelText("项目名称");
     await user.clear(projectName);
@@ -225,6 +226,7 @@ describe("CaseWorkspace", () => {
         method: "POST",
         body: JSON.stringify({
           development_case_id: "case-1",
+          workflow_template: "obt",
           code: "PRJ-001",
           name: "Next pump platform",
           description: "Evaluate the next pump platform.",

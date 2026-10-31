@@ -11,6 +11,7 @@ export const projectStatusLabels: Record<Project["status"], string> = {
   active: "进行中",
   on_hold: "已暂停",
   completed: "已完成",
+  cancelled: "已取消",
   archived: "已归档",
 };
 

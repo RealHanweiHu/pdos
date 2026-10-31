@@ -44,6 +44,7 @@ import {
   transitionIssue,
   transitionRisk,
   transitionTask,
+  updateTask,
 } from "./project-work-item-api";
 import type {
   IssueCreateInput,
@@ -56,6 +57,7 @@ import type {
   RiskStatus,
   TaskCreateInput,
   TaskTransitionInput,
+  TaskUpdateInput,
 } from "./project-work-item-types";
 import { ProjectWorkspaceError, ProjectWorkspaceLoading } from "./project-workspace-state";
 import {
@@ -75,6 +77,7 @@ const deepLinkTabs = new Set<ProjectWorkspaceTab>([
   "tasks",
   "issues",
   "risks",
+  "resources",
   "product-engineering",
   "gates",
   "documents",
@@ -410,6 +413,14 @@ export function ProjectWorkspace() {
     );
   }
 
+  async function editTask(task: ProjectTask, input: TaskUpdateInput) {
+    return mutateWorkItem(
+      () => updateTask(task.project_id, task.id, input),
+      (items, updated) => ({ ...items, tasks: items.tasks.map((item) => item.id === task.id ? updated as ProjectTask : item) }),
+      "任务已更新",
+    );
+  }
+
   async function addIssue(input: IssueCreateInput) {
     if (!actions.selectedProject) return false;
     return mutateWorkItem(
@@ -615,15 +626,18 @@ export function ProjectWorkspace() {
       onCreateRisk={addRisk}
       onCreateTask={addTask}
       onLogout={() => void logout()}
+      onMembersChange={(members) => setWorkItems((current) => current === null ? current : { ...current, members })}
       onRetryWorkItems={() => { if (actions.selectedProject) void loadWorkItems(actions.selectedProject.id); }}
       onSelect={selectProject}
       onStageTransition={(project, stageId) => void actions.transitionStage(project, stageId)}
-      onStatusTransition={(project, status) => void actions.transitionStatus(project, status)}
+      onStatusTransition={(project, status, reason) => void actions.transitionStatus(project, status, reason)}
       onTabChange={changeTab}
       onTransitionIssue={moveIssue}
       onTransitionRisk={moveRisk}
       onTransitionTask={moveTask}
       onUpdate={actions.updateProject}
+      onUpdateStagePlan={actions.updateStagePlan}
+      onUpdateTask={editTask}
       projects={actions.projects}
       productEngineering={{
         busy: productEngineeringBusy,

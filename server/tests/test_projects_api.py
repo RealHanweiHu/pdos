@@ -250,6 +250,51 @@ def test_project_creation_atomically_instantiates_workflow_stages_and_case_trans
     assert project_audits == {"project.create", "development_case.transition"}
 
 
+def test_project_creation_can_choose_the_obt_template_and_its_gate_policy(
+    client: TestClient,
+    isolated_project_database: str,
+) -> None:
+    client.post("/api/setup", json=SETUP_PAYLOAD)
+    headers = bearer_headers(client)
+    case = approved_case(client, headers, suffix="OBT")
+
+    created = client.post(
+        "/api/projects",
+        headers=headers,
+        json={
+            "development_case_id": case["id"],
+            "workflow_template": "obt",
+            "code": "OBT-001",
+            "name": "Design transfer",
+        },
+    )
+    assert created.status_code == 201
+    project = created.json()
+    assert project["workflow"]["code"] == f"obt-{project['id']}"
+    assert project["current_stage"]["code"] == "intake"
+    assert [stage["code"] for stage in project["workflow"]["stages"]] == [
+        "intake",
+        "sample",
+        "pvt",
+        "mp",
+    ]
+    gates = client.get(f"/api/projects/{project['id']}/gates", headers=headers)
+    assert gates.status_code == 200
+    assert [gate["code"] for gate in gates.json()["items"]] == ["intake", "sample", "pvt", "mp"]
+
+    invalid = client.post(
+        "/api/projects",
+        headers=headers,
+        json={
+            "development_case_id": approved_case(client, headers, suffix="BAD")["id"],
+            "workflow_template": "waterfall",
+            "code": "BAD-001",
+            "name": "Unknown template",
+        },
+    )
+    assert invalid.status_code == 422
+
+
 def test_project_state_stage_and_member_permissions(
     client: TestClient,
     isolated_project_database: str,
@@ -489,3 +534,143 @@ def test_project_errors_are_tenant_safe_and_transactional(
             )
     finally:
         engine.dispose()
+
+
+def test_project_cancellation_requires_reason_and_records_stage_actuals_and_plan(
+    client: TestClient,
+    isolated_project_database: str,
+) -> None:
+    client.post("/api/setup", json=SETUP_PAYLOAD)
+    headers = bearer_headers(client)
+    project = create_project(
+        client, headers, approved_case(client, headers, suffix="PLAN")["id"], code="PRJ-PLAN"
+    ).json()
+    project_url = f"/api/projects/{project['id']}"
+    stages = project["workflow"]["stages"]
+    assert stages[0]["entered_at"] is not None
+    assert all(stage["entered_at"] is None for stage in stages[1:])
+    assert all(stage["planned_start_date"] is None for stage in stages)
+
+    plan = client.put(
+        f"{project_url}/stage-plan",
+        headers=headers,
+        json={
+            "stages": [
+                {
+                    "stage_id": stages[0]["id"],
+                    "planned_start_date": "2026-08-15",
+                    "planned_end_date": "2026-09-30",
+                },
+                {
+                    "stage_id": stages[1]["id"],
+                    "planned_start_date": "2026-10-01",
+                    "planned_end_date": "2026-11-15",
+                },
+            ]
+        },
+    )
+    assert plan.status_code == 200
+    planned = plan.json()["workflow"]["stages"]
+    assert (planned[0]["planned_start_date"], planned[0]["planned_end_date"]) == (
+        "2026-08-15",
+        "2026-09-30",
+    )
+    assert planned[1]["planned_end_date"] == "2026-11-15"
+    assert planned[2]["planned_start_date"] is None
+
+    backwards = client.put(
+        f"{project_url}/stage-plan",
+        headers=headers,
+        json={
+            "stages": [
+                {
+                    "stage_id": stages[0]["id"],
+                    "planned_start_date": "2026-09-30",
+                    "planned_end_date": "2026-08-15",
+                }
+            ]
+        },
+    )
+    assert backwards.status_code == 422
+    assert backwards.json()["detail"]["code"] == "PROJECT_STAGE_PLAN_INVALID"
+    foreign = client.put(
+        f"{project_url}/stage-plan",
+        headers=headers,
+        json={"stages": [{"stage_id": str(uuid4()), "planned_end_date": "2026-09-30"}]},
+    )
+    assert foreign.status_code == 422
+
+    transition_url = f"{project_url}/transitions"
+    for state in ("proposed", "approved", "active"):
+        assert (
+            client.post(transition_url, headers=headers, json={"to_status": state}).status_code
+            == 200
+        )
+    with create_engine(psycopg_database_url(isolated_project_database)).begin() as connection:
+        connection.execute(
+            tables.gates.update()
+            .where(
+                tables.gates.c.project_id == UUID(project["id"]),
+                tables.gates.c.stage_id == UUID(stages[0]["id"]),
+            )
+            .values(status="approved")
+        )
+    advanced = client.post(
+        f"{project_url}/stage-transitions", headers=headers, json={"to_stage_id": stages[1]["id"]}
+    ).json()
+    advanced_stages = advanced["workflow"]["stages"]
+    assert advanced_stages[0]["exited_at"] is not None
+    assert advanced_stages[1]["entered_at"] == advanced_stages[0]["exited_at"]
+    assert advanced["current_stage"]["entered_at"] == advanced_stages[1]["entered_at"]
+
+    missing_reason = client.post(transition_url, headers=headers, json={"to_status": "cancelled"})
+    assert missing_reason.status_code == 422
+    stray_reason = client.post(
+        transition_url, headers=headers, json={"to_status": "on_hold", "reason": "No"}
+    )
+    assert stray_reason.status_code == 422
+    cancelled = client.post(
+        transition_url,
+        headers=headers,
+        json={"to_status": "cancelled", "reason": "  Customer withdrew the program  "},
+    )
+    assert cancelled.status_code == 200
+    assert cancelled.json()["status"] == "cancelled"
+    assert (
+        client.post(transition_url, headers=headers, json={"to_status": "active"}).status_code
+        == 409
+    )
+    locked = client.put(
+        f"{project_url}/stage-plan",
+        headers=headers,
+        json={"stages": [{"stage_id": stages[2]["id"], "planned_end_date": "2027-01-01"}]},
+    )
+    assert locked.status_code == 409
+    assert locked.json()["detail"]["code"] == "PROJECT_PLAN_LOCKED"
+    archived = client.post(transition_url, headers=headers, json={"to_status": "archived"})
+    assert archived.status_code == 200
+
+    with create_engine(psycopg_database_url(isolated_project_database)).connect() as connection:
+        audit = connection.execute(
+            select(tables.audit_log.c.action, tables.audit_log.c.context)
+            .where(
+                tables.audit_log.c.project_id == UUID(project["id"]),
+                tables.audit_log.c.action.in_(["project.transition", "project.stage_plan.update"]),
+            )
+            .order_by(tables.audit_log.c.id)
+        ).all()
+        plan_event = connection.execute(
+            select(tables.events.c.payload).where(
+                tables.events.c.project_id == UUID(project["id"]),
+                tables.events.c.event_id.like("project:%:stage-plan:%"),
+            )
+        ).scalar_one()
+    assert audit[0].action == "project.stage_plan.update"
+    assert [row.context.get("reason") for row in audit if row.action == "project.transition"] == [
+        None,
+        None,
+        None,
+        "Customer withdrew the program",
+        None,
+    ]
+    assert plan_event["changed_fields"] == ["stage_plan.concept", "stage_plan.planning"]

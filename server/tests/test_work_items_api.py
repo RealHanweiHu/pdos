@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterator
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 from uuid import UUID, uuid4
@@ -10,7 +11,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, func, select, text
+from sqlalchemy import create_engine, event, func, select, text
 
 from app.auth.passwords import PasswordService
 from app.auth.roles import Role
@@ -639,5 +640,574 @@ def test_work_items_fail_closed_for_roles_scope_and_failed_transactions(
                 connection.scalar(select(func.count()).select_from(tables.audit_log))
                 == baseline["audits"]
             )
+    finally:
+        engine.dispose()
+
+
+def test_project_members_list_supports_assignee_picking_without_leaking_scope(
+    client: TestClient,
+    isolated_work_item_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    scope = seed_project(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        owner_id=owner_id,
+        label="MEMBERS",
+    )
+    other_scope = seed_project(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        owner_id=owner_id,
+        label="MEMBERS-OTHER",
+    )
+    project_id = scope["project_id"]
+    engineer_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="engineer",
+        role=Role.ENGINEER,
+    )
+    supplier_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="supplier",
+        role=Role.SUPPLIER,
+    )
+    seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=other_scope["project_id"],
+        added_by_user_id=owner_id,
+        username="outsider",
+        role=Role.ENGINEER,
+    )
+    members_url = f"/api/projects/{project_id}/members"
+
+    response = client.get(members_url, headers=bearer_headers(client, username="engineer"))
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "no-store"
+    items = response.json()["items"]
+    assert [item["display_name"] for item in items] == ["Engineer", "Initial Owner", "Supplier"]
+    by_user = {item["user_id"]: item for item in items}
+    assert set(by_user) == {str(owner_id), str(engineer_id), str(supplier_id)}
+    assert by_user[str(owner_id)]["assignable"] is True
+    assert by_user[str(engineer_id)]["assignable"] is True
+    assert by_user[str(engineer_id)]["role"] == "engineer"
+    assert by_user[str(supplier_id)]["assignable"] is False
+    assert all(item["is_active"] is True for item in items)
+    assert set(items[0]) == {"user_id", "display_name", "role", "is_active", "assignable"}
+
+    assert client.get(members_url, headers=bearer_headers(client)).status_code == 200
+    assert (
+        client.get(members_url, headers=bearer_headers(client, username="supplier")).status_code
+        == 403
+    )
+    assert (
+        client.get(members_url, headers=bearer_headers(client, username="outsider")).status_code
+        == 403
+    )
+    assert client.get(members_url).status_code == 401
+
+
+def test_task_list_query_count_does_not_grow_with_tasks(
+    client: TestClient,
+    isolated_work_item_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    scope = seed_project(isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id)
+    headers = bearer_headers(client)
+    project_id = scope["project_id"]
+    first = post_task(client, headers, project_id, {"title": "Root task"}).json()
+
+    statements: list[str] = []
+
+    def record(*args: Any) -> None:
+        statements.append(str(args[2]))
+
+    def measure() -> int:
+        statements.clear()
+        event.listen(get_engine(), "before_cursor_execute", record)
+        try:
+            response = client.get(f"/api/projects/{project_id}/tasks", headers=headers)
+        finally:
+            event.remove(get_engine(), "before_cursor_execute", record)
+        assert response.status_code == 200
+        return len(statements)
+
+    baseline = measure()
+    for index in range(5):
+        created = post_task(
+            client,
+            headers,
+            project_id,
+            {"title": f"Dependent {index}", "dependency_task_ids": [first["id"]]},
+        )
+        assert created.status_code == 201
+    assert measure() == baseline
+
+
+def post_risk(
+    client: TestClient,
+    headers: dict[str, str],
+    project_id: UUID,
+    title: str,
+    likelihood: int,
+    impact: int,
+) -> dict[str, object]:
+    response = client.post(
+        f"/api/projects/{project_id}/risks",
+        headers=headers,
+        json={"title": title, "likelihood": likelihood, "impact": impact},
+    )
+    assert response.status_code == 201
+    return dict(response.json())
+
+
+def test_portfolio_risks_rank_open_risks_within_visible_projects(
+    client: TestClient,
+    isolated_work_item_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    mine = seed_project(isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id)
+    other = seed_project(
+        isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id, label="OTHER"
+    )
+    seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=mine["project_id"],
+        added_by_user_id=owner_id,
+        username="engineer",
+        role=Role.ENGINEER,
+    )
+    seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=mine["project_id"],
+        added_by_user_id=owner_id,
+        username="supplier",
+        role=Role.SUPPLIER,
+    )
+    owner_headers = bearer_headers(client)
+    low = post_risk(client, owner_headers, mine["project_id"], "Low risk", 1, 2)
+    high = post_risk(client, owner_headers, mine["project_id"], "High risk", 5, 4)
+    closed = post_risk(client, owner_headers, mine["project_id"], "Closed risk", 5, 5)
+    hidden = post_risk(client, owner_headers, other["project_id"], "Other project", 3, 3)
+    closed_transitions = f"/api/projects/{mine['project_id']}/risks/{closed['id']}/transitions"
+    for target in ("mitigating", "closed"):
+        assert (
+            client.post(
+                closed_transitions, headers=owner_headers, json={"to_status": target}
+            ).status_code
+            == 200
+        )
+
+    owner_view = client.get("/api/portfolio/risks", headers=owner_headers)
+    assert owner_view.status_code == 200
+    assert owner_view.headers["cache-control"] == "no-store"
+    assert [item["id"] for item in owner_view.json()["items"]] == [
+        high["id"],
+        hidden["id"],
+        low["id"],
+    ]
+
+    engineer_view = client.get(
+        "/api/portfolio/risks", headers=bearer_headers(client, username="engineer")
+    )
+    assert [item["id"] for item in engineer_view.json()["items"]] == [high["id"], low["id"]]
+
+    supplier_view = client.get(
+        "/api/portfolio/risks", headers=bearer_headers(client, username="supplier")
+    )
+    assert supplier_view.status_code == 403
+    assert client.get("/api/portfolio/risks").status_code == 401
+
+
+def test_my_tasks_lists_only_my_unfinished_tasks_in_visible_projects(
+    client: TestClient,
+    isolated_work_item_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    scope = seed_project(isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id)
+    project_id = scope["project_id"]
+    engineer_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="engineer",
+        role=Role.ENGINEER,
+    )
+    owner_headers = bearer_headers(client)
+    engineer_headers = bearer_headers(client, username="engineer")
+
+    def task(title: str, assignee: UUID, due: str | None) -> dict[str, object]:
+        body: dict[str, object] = {"title": title, "assignee_user_id": str(assignee)}
+        if due is not None:
+            body["due_date"] = due
+        response = post_task(client, owner_headers, project_id, body)
+        assert response.status_code == 201
+        return dict(response.json())
+
+    later = task("Later", engineer_id, "2026-12-01")
+    no_due = task("No due date", engineer_id, None)
+    sooner = task("Sooner", engineer_id, "2026-11-01")
+    done = task("Already done", engineer_id, "2026-10-01")
+    task("Owner work", owner_id, "2026-10-15")
+    transitions = f"/api/projects/{project_id}/tasks/{done['id']}/transitions"
+    for target in ("in_progress", "done"):
+        assert (
+            client.post(transitions, headers=owner_headers, json={"to_status": target}).status_code
+            == 200
+        )
+
+    response = client.get("/api/portfolio/my-tasks", headers=engineer_headers)
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "no-store"
+    assert [item["id"] for item in response.json()["items"]] == [
+        sooner["id"],
+        later["id"],
+        no_due["id"],
+    ]
+    owner_items = client.get("/api/portfolio/my-tasks", headers=owner_headers).json()["items"]
+    assert [item["title"] for item in owner_items] == ["Owner work"]
+
+
+def test_project_members_are_managed_with_guards_events_and_audit(
+    client: TestClient,
+    isolated_work_item_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    scope = seed_project(isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id)
+    project_id = scope["project_id"]
+    other = seed_project(
+        isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id, label="OTHER"
+    )
+    manager_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="manager",
+        role=Role.PROJECT_MANAGER,
+    )
+    engineer_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=other["project_id"],
+        added_by_user_id=owner_id,
+        username="engineer",
+        role=Role.ENGINEER,
+    )
+    manager_headers = bearer_headers(client, username="manager")
+    engineer_headers = bearer_headers(client, username="engineer")
+    members_url = f"/api/projects/{project_id}/members"
+
+    candidates = client.get(f"{members_url}/candidates", headers=manager_headers)
+    assert candidates.status_code == 200
+    assert [item["user_id"] for item in candidates.json()["items"]] == [str(engineer_id)]
+    assert set(candidates.json()["items"][0]) == {"user_id", "display_name", "role"}
+
+    # Engineers can see work but cannot manage membership, even in their own project.
+    assert (
+        client.get(
+            f"/api/projects/{other['project_id']}/members/candidates", headers=engineer_headers
+        ).status_code
+        == 403
+    )
+    assert client.get(members_url, headers=engineer_headers).status_code == 403
+
+    added = client.post(members_url, headers=manager_headers, json={"user_id": str(engineer_id)})
+    assert added.status_code == 201
+    assert str(engineer_id) in {item["user_id"] for item in added.json()["items"]}
+    assert client.get(members_url, headers=engineer_headers).status_code == 200
+    duplicate = client.post(
+        members_url, headers=manager_headers, json={"user_id": str(engineer_id)}
+    )
+    assert duplicate.status_code == 409
+    assert duplicate.json()["detail"]["code"] == "PROJECT_MEMBER_EXISTS"
+    unknown = client.post(members_url, headers=manager_headers, json={"user_id": str(uuid4())})
+    assert unknown.status_code == 404
+
+    task = post_task(
+        client,
+        manager_headers,
+        project_id,
+        {"title": "Engineer work", "assignee_user_id": str(engineer_id)},
+    ).json()
+    blocked = client.delete(f"{members_url}/{engineer_id}", headers=manager_headers)
+    assert blocked.status_code == 409
+    assert blocked.json()["detail"]["code"] == "PROJECT_MEMBER_HAS_OPEN_WORK"
+    assert blocked.json()["detail"]["open_work"] == {"tasks": 1}
+
+    owner_removal = client.delete(f"{members_url}/{owner_id}", headers=manager_headers)
+    assert owner_removal.status_code == 409
+    assert owner_removal.json()["detail"]["code"] == "PROJECT_OWNER_MEMBERSHIP_REQUIRED"
+
+    assert (
+        client.patch(
+            f"/api/projects/{project_id}/tasks/{task['id']}",
+            headers=manager_headers,
+            json={"assignee_user_id": str(manager_id)},
+        ).status_code
+        == 200
+    )
+    removed = client.delete(f"{members_url}/{engineer_id}", headers=manager_headers)
+    assert removed.status_code == 200
+    assert str(engineer_id) not in {item["user_id"] for item in removed.json()["items"]}
+    assert client.get(members_url, headers=engineer_headers).status_code == 403
+    assert client.delete(f"{members_url}/{engineer_id}", headers=manager_headers).status_code == 404
+
+    engine = create_engine(psycopg_database_url(isolated_work_item_database))
+    try:
+        with engine.connect() as connection:
+            events = connection.execute(
+                select(tables.events.c.event_type, tables.events.c.payload)
+                .where(
+                    tables.events.c.project_id == project_id,
+                    tables.events.c.event_type.like("PROJECT_MEMBER_%"),
+                )
+                .order_by(tables.events.c.id)
+            ).all()
+            audits = connection.execute(
+                select(tables.audit_log.c.action)
+                .where(
+                    tables.audit_log.c.project_id == project_id,
+                    tables.audit_log.c.action.like("project.member.%"),
+                )
+                .order_by(tables.audit_log.c.id)
+            ).scalars()
+            assert [(row[0], row[1]["user_id"]) for row in events] == [
+                ("PROJECT_MEMBER_ADDED", str(engineer_id)),
+                ("PROJECT_MEMBER_REMOVED", str(engineer_id)),
+            ]
+            assert list(audits) == ["project.member.add", "project.member.remove"]
+    finally:
+        engine.dispose()
+
+
+def test_resource_and_cost_register_lifecycle_permissions_and_load(
+    client: TestClient,
+    isolated_work_item_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    scope = seed_project(isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id)
+    other = seed_project(
+        isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id, label="OTHER"
+    )
+    project_id = scope["project_id"]
+    engineer_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="engineer",
+        role=Role.ENGINEER,
+    )
+    supplier_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="supplier",
+        role=Role.SUPPLIER,
+    )
+    owner_headers = bearer_headers(client)
+    engineer_headers = bearer_headers(client, username="engineer")
+    costs_url = f"/api/projects/{project_id}/costs"
+    resources_url = f"/api/projects/{project_id}/resources"
+
+    first = client.post(
+        costs_url,
+        headers=owner_headers,
+        json={"cost_type": "tooling", "amount": "1200.50", "description": "  Mould deposit  "},
+    )
+    assert first.status_code == 201
+    cost = first.json()
+    assert (cost["code"], cost["status"], cost["currency"], cost["amount"]) == (
+        "COST-001",
+        "estimate",
+        "CNY",
+        "1200.50",
+    )
+    assert cost["description"] == "Mould deposit"
+    second = client.post(
+        costs_url, headers=owner_headers, json={"cost_type": "labor", "amount": "80"}
+    ).json()
+    assert second["code"] == "COST-002"
+    assert (
+        client.post(
+            costs_url, headers=owner_headers, json={"cost_type": "labor", "amount": "-1"}
+        ).status_code
+        == 422
+    )
+
+    cost_url = f"{costs_url}/{cost['id']}"
+    edited = client.patch(cost_url, headers=owner_headers, json={"amount": "1500"})
+    assert edited.status_code == 200
+    assert edited.json()["amount"] == "1500.00"
+    skip = client.post(
+        f"{cost_url}/transitions", headers=owner_headers, json={"to_status": "actual"}
+    )
+    assert skip.status_code == 409
+    assert skip.json()["detail"]["code"] == "REGISTER_INVALID_TRANSITION"
+    for target in ("approved", "actual"):
+        moved = client.post(
+            f"{cost_url}/transitions", headers=owner_headers, json={"to_status": target}
+        )
+        assert moved.status_code == 200
+        assert moved.json()["status"] == target
+    locked = client.patch(cost_url, headers=owner_headers, json={"amount": "1"})
+    assert locked.status_code == 409
+    assert locked.json()["detail"]["code"] == "REGISTER_RECORD_LOCKED"
+
+    assert client.get(costs_url, headers=engineer_headers).status_code == 403
+    assert client.get(resources_url, headers=engineer_headers).status_code == 200
+    assert (
+        client.post(
+            resources_url,
+            headers=engineer_headers,
+            json={"name": "Self", "resource_type": "person"},
+        ).status_code
+        == 403
+    )
+
+    outsider = client.post(
+        resources_url,
+        headers=owner_headers,
+        json={"name": "Vendor", "resource_type": "person", "assigned_user_id": str(supplier_id)},
+    )
+    assert outsider.status_code == 404
+    assert outsider.json()["detail"]["code"] == "REGISTER_ASSIGNEE_NOT_MEMBER"
+    backwards = client.post(
+        resources_url,
+        headers=owner_headers,
+        json={
+            "name": "Backwards",
+            "resource_type": "equipment",
+            "start_date": "2026-12-01",
+            "end_date": "2026-11-01",
+        },
+    )
+    assert backwards.status_code == 422
+
+    resource = client.post(
+        resources_url,
+        headers=owner_headers,
+        json={
+            "name": "Firmware engineer",
+            "resource_type": "person",
+            "assigned_user_id": str(engineer_id),
+            "allocation_percent": "60",
+        },
+    ).json()
+    assert (resource["code"], resource["status"], resource["allocation_percent"]) == (
+        "RES-001",
+        "planned",
+        "60.00",
+    )
+    assert resource["assignee_active_allocation_percent"] == "0.00"
+    resource_url = f"{resources_url}/{resource['id']}"
+    assert (
+        client.post(
+            f"{resource_url}/transitions", headers=owner_headers, json={"to_status": "active"}
+        ).status_code
+        == 200
+    )
+    with create_engine(psycopg_database_url(isolated_work_item_database)).begin() as connection:
+        connection.execute(
+            tables.project_members.insert(),
+            {
+                "id": uuid4(),
+                "tenant_id": tenant_id,
+                "project_id": other["project_id"],
+                "user_id": engineer_id,
+                "added_by_user_id": owner_id,
+            },
+        )
+    other_resource = client.post(
+        f"/api/projects/{other['project_id']}/resources",
+        headers=owner_headers,
+        json={
+            "name": "Test support",
+            "resource_type": "person",
+            "assigned_user_id": str(engineer_id),
+            "allocation_percent": "50",
+        },
+    ).json()
+    client.post(
+        f"/api/projects/{other['project_id']}/resources/{other_resource['id']}/transitions",
+        headers=owner_headers,
+        json={"to_status": "active"},
+    )
+    listed = client.get(resources_url, headers=engineer_headers).json()["items"]
+    assert [Decimal(item["assignee_active_allocation_percent"]) for item in listed] == [
+        Decimal(110)
+    ]
+
+    blocked = client.delete(
+        f"/api/projects/{project_id}/members/{engineer_id}", headers=owner_headers
+    )
+    assert blocked.status_code == 409
+    assert blocked.json()["detail"]["open_work"] == {"resources": 1}
+
+    assert (
+        client.post(
+            f"{resource_url}/transitions", headers=owner_headers, json={"to_status": "released"}
+        ).status_code
+        == 200
+    )
+    assert (
+        client.patch(resource_url, headers=owner_headers, json={"name": "Late"}).status_code == 409
+    )
+
+    engine = create_engine(psycopg_database_url(isolated_work_item_database))
+    try:
+        with engine.connect() as connection:
+            event_counts: dict[str, int] = dict(
+                (row[0], row[1])
+                for row in connection.execute(
+                    select(tables.events.c.event_type, func.count())
+                    .where(
+                        tables.events.c.project_id == project_id,
+                        tables.events.c.event_type.in_(
+                            ["COST_RECORD_CHANGED", "RESOURCE_RECORD_CHANGED"]
+                        ),
+                    )
+                    .group_by(tables.events.c.event_type)
+                ).all()
+            )
+            audit_actions = set(
+                connection.execute(
+                    select(tables.audit_log.c.action).where(
+                        tables.audit_log.c.project_id == project_id
+                    )
+                ).scalars()
+            )
+        assert event_counts == {"COST_RECORD_CHANGED": 5, "RESOURCE_RECORD_CHANGED": 3}
+        assert {
+            "cost.create",
+            "cost.update",
+            "cost.transition",
+            "resource.create",
+            "resource.transition",
+        } <= audit_actions
     finally:
         engine.dispose()

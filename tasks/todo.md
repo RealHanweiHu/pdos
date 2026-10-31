@@ -1377,3 +1377,42 @@
 | Production smoke 的基础设施入口未继承测试 URL 中的非默认端口 | 1 | 默认 `55432` 与 CEHub 冲突后停止；按现有 PDOS 端口 `57432` 恢复本机容器并以显式 `PDOS_POSTGRES_PORT=57432` 重跑，未连接 CEHub 或生产库 |
 | 沙箱内完整测试无法访问本机 PostgreSQL 和临时 HTTP socket | 1 | lint/type 先完成；随后在获批本机运行边界外以同一 `pdos_test` 重跑，Server 354、Web 121 与 production build 全绿 |
 | 依赖升级后的旧 Compose 2.17 对共享 API image 发起多服务重复构建，首次 metadata 超时、串行模式随后无进展 | 2 | 中止并确认零容器残留；production smoke 与 ECS build 入口均固化为只构建唯一 `api web`，再按原顺序启动服务，避免五个后端服务并行争用同一 image，所有验收断言保持不变 |
+
+## Post-Cutover 优化：PM-1 任务排期与负责人（计划外，2026-10-31 经人授权在分支 `claude/project-task-planning-ui` 实现）
+
+> 不改动 canonical 执行计划与 checkbox；无 schema 变更、无新迁移；未 push、未部署。
+
+**Acceptance criteria**
+
+- [x] 任务创建可填负责人、所属阶段（默认当前阶段）、开始/截止日期；前端拦截截止早于开始
+- [x] 未完成任务可编辑标题/描述/优先级/负责人/阶段/日期/前置任务，PATCH 只发送变更字段；前置候选排除已依赖本任务的任务（防环）
+- [x] 任务行显示负责人、阶段、截止日期与“逾期 N 天”；支持状态/负责人/阶段筛选与“截止日期优先 / 最近更新”排序
+- [x] 概览“进行中任务”口径更正为“未完成任务”，并提示逾期数量
+- [x] 新增只读 `GET /api/projects/{id}/members`（`work_item.view`，仅 display_name/role/is_active/assignable，不含邮箱/用户名）与同源 BFF；成员加载失败只降级为“未知成员”，不影响工作项
+
+**Verification**
+
+- [x] Server：`test_work_items_api.py` 新增成员接口角色/范围/401 用例；完整 389 tests（`pdos_test`）、ruff、format、mypy 全绿
+- [x] Web：139 tests、eslint、typecheck、production build 全绿
+- [x] 本地真实浏览器：390px 无横向滚动、亮/暗主题、console warning/error 为 0
+
+## Post-Cutover 优化：PM-2 项目管理剩余项（计划外，2026-10-31 经人授权在同一分支实现）
+
+> 含 schema 变更：迁移 `0031_project_planning`（见 `docs/decisions/ADR-002-project-cancelled-status-and-stage-plan.md`）。未 push、未部署；上线需单独授权执行生产迁移 0030 → 0031。
+
+**Acceptance criteria**
+
+- [x] 项目/任务列表去除 N+1 查询；任务列表查询数不随任务数增长（回归测试固定）
+- [x] `GET /api/portfolio/risks` 与 `/api/portfolio/my-tasks` 按可见项目范围返回；Dashboard 风险卡改为单次请求，新增“我的任务”卡（逾期优先）
+- [x] 项目成员增删（`project.members.manage`）：负责人不可移除；名下有未完成任务/问题/风险/投诉/NCR/CAPA/在用资源时拒绝移除；同事务写 `PROJECT_MEMBER_ADDED/REMOVED` + 审计
+- [x] 由 Case 创建项目可选 NPD/OBT 模板，OBT 自动套用 OBT Gate 策略
+- [x] 项目新增“已取消”状态：需填写原因（写入审计 context），只能转归档；取消/归档后阶段计划锁定
+- [x] 阶段计划（计划起止）与实际（进入/退出时间）：推进同事务记录实际时间，迁移按事件历史回填；时间线显示计划/实际/延期，概览提示当前阶段逾期
+- [x] 资源与成本登记接入既有 `costs`/`resources` 表：成本 预估→已批准→实际（批准后锁定，仅 `project.edit` 角色可见）；资源 计划中→在岗→已释放，显示跨项目在岗总负荷与超负荷
+- [ ] 列表分页：未做。当前规模（单项目 ≤117 任务）下前端需要全量做筛选，真正的性能问题是 N+1，已修复
+
+**Verification**
+
+- [x] Server：完整 397 tests（`pdos_test`，含 0031 升降级、回填与降级守卫）、ruff、format、mypy 全绿
+- [x] Web：152 tests、eslint、typecheck、production build 全绿
+- [x] 本地真实浏览器：Dashboard 我的任务、成员卡、时间线计划/实际、资源与成本页在 390px 无横向滚动，亮/暗主题，console warning/error 为 0

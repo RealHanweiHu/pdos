@@ -7,12 +7,13 @@ vi.mock("next/headers", () => ({
 }));
 
 import { GET, PATCH } from "./route";
+import { PUT as STAGE_PLAN } from "./stage-plan/route";
 import { POST as STAGE_TRANSITION } from "./stage-transitions/route";
 import { POST as STATUS_TRANSITION } from "./transitions/route";
 
 const context = { params: Promise.resolve({ projectId: "project/id with spaces" }) };
 
-function request(path: string, body: object, method: "PATCH" | "POST") {
+function request(path: string, body: object, method: "PATCH" | "POST" | "PUT") {
   return new Request(`http://localhost${path}`, {
     method,
     headers: { "Content-Type": "application/json" },
@@ -63,5 +64,17 @@ describe("dynamic Project BFF routes", () => {
       expect.objectContaining({ method: "POST", body: JSON.stringify(statusBody) }),
       expect.objectContaining({ method: "POST", body: JSON.stringify(stageBody) }),
     ]);
+  });
+
+  it("forwards the stage plan as a PUT", async () => {
+    fetchMock.mockResolvedValueOnce(Response.json({ id: "project-1" }));
+    const planBody = { stages: [{ stage_id: "stage-1", planned_start_date: null, planned_end_date: "2026-12-01" }] };
+
+    await STAGE_PLAN(request("/api/projects/project-1/stage-plan", planBody, "PUT"), context);
+
+    expect(String(fetchMock.mock.calls[0]?.[0])).toBe(
+      "http://127.0.0.1:8000/api/projects/project%2Fid%20with%20spaces/stage-plan",
+    );
+    expect(fetchMock.mock.calls[0]?.[1]).toEqual(expect.objectContaining({ method: "PUT", body: JSON.stringify(planBody) }));
   });
 });
